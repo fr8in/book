@@ -1,0 +1,20 @@
+# faster docker and size is samll
+image: node:12-alpine
+pipelines:
+  branches:
+    dev:
+      - step:
+          script:
+            - apk add python3
+            - npm install -g serverless
+            - sls config credentials --provider aws --key ${DEV_AWS_ACCESS_KEY} --secret ${DEV_AWS_SECRET_ACCESS_KEY} --o
+            - yarn install
+            - yarn dev
+    exp:
+      - step:
+          script:
+            - apk add python3
+            - npm install -g serverless
+            - sls config credentials --provider aws --key ${AWS_ACCESS_KEY} --secret ${DEV_AWS_SECRET_ACCESS_KEY} --o
+            - yarn install
+            - yarn prod

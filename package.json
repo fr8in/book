@@ -1,0 +1,47 @@
+{
+  "name": "load-graphql",
+  "version": "0.0.1",
+  "description": "Load Backend API",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "preoffline": "cp stages/offline.yml serverless.yml",
+    "predev": "cp stages/dev.yml serverless.yml",
+    "preprod": "cp stages/prod.yml serverless.yml",
+    "offline": "sls offline --stage offline --DB_USERNAME root --DB_PASSWORD password --DB_HOST 127.0.0.1 --DB_PORT 3306 --BITBUCKET_BUILD_NUMBER 123",
+    "uat": "sls deploy --stage prod --DB_USERNAME ${DB_USERNAME} --DB_PASSWORD ${RDS_SECRET_ARN} --DB_HOST ${RDS_RESOURCE_ARN} --DB_PORT ${DB_PORT} --SAP_DB_USERNAME ${SAP_DB_USERNAME} --SAP_DB_PASSWORD ${SAP_DB_PASSWORD} --SAP_DB_HOST ${SAP_DB_HOST} --SAP_DB_PORT 1433 --BITBUCKET_BUILD_NUMBER ${BITBUCKET_BUILD_NUMBER} --sg ${SG} --sn1 ${SN1} --sn2 ${SN2} --sn3 ${SN3}",
+    "prod": "sls deploy --stage prod --DB_USERNAME ${DB_USERNAME} --DB_PASSWORD ${RDS_SECRET_ARN} --DB_HOST ${RDS_RESOURCE_ARN} --DB_PORT ${DB_PORT} --SAP_DB_USERNAME ${SAP_DB_USERNAME} --SAP_DB_PASSWORD ${SAP_DB_PASSWORD} --SAP_DB_HOST ${SAP_DB_HOST} --SAP_DB_PORT 1433 --BITBUCKET_BUILD_NUMBER ${BITBUCKET_BUILD_NUMBER} --sg ${SG} --sn1 ${SN1} --sn2 ${SN2} --sn3 ${SN3}",
+    "test": "jest --watchAll --setupFiles dotenv/config"
+  },
+  "author": "FR8",
+  "dependencies": {
+    "@zeit/next-less": "^1.0.1",
+    "@zeit/next-sass": "^1.0.1",
+    "antd": "^3.5.4",
+    "less": "^3.11.3",
+    "next": "latest",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "reflect-metadata": "^0.1.13",
+    "sequelize": "^6.2.0",
+    "serverless-http": "^2.5.0",
+    "umzug": "^3.0.0-beta.5"
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.32",
+    "@types/express": "^4.17.6",
+    "@types/jest": "^25.2.3",
+    "@types/node": "^14.0.14",
+    "@types/supertest": "^2.0.9",
+    "@types/umzug": "^2.2.3",
+    "@types/validator": "^13.1.0",
+    "jest": "^26.0.1",
+    "sequelize-typescript": "^1.1.0",
+    "serverless-offline": "^6.1.5",
+    "serverless-plugin-typescript": "^1.1.9",
+    "supertest": "^4.0.2",
+    "typescript": "^3.9.3"
+  }
+}

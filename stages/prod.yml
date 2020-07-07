@@ -1,0 +1,40 @@
+service: ${file(./package.json):name}
+package:
+  exclude:
+    - .gitignore
+    - bitbucket-pipelines.yml
+    - README.md
+    - serverless.yml
+    - stages/**
+  excludeDevDependencies: true
+  individually: true
+provider:
+  name: aws
+  iamManagedPolicies:
+    - arn:aws:iam::843928126612:policy/mysqlRDS
+  runtime: nodejs12.x
+  stage: ${opt:stage}
+  timeout: 30
+  region: ap-south-1
+
+  environment:
+    NODE_ENV: ${opt:stage}
+    DB_USERNAME: ${opt:DB_USERNAME}
+    DB_PASSWORD: ${opt:DB_PASSWORD}
+    DB_HOST: ${opt:DB_HOST}
+    DB_PORT: ${opt:DB_PORT}
+    KAFKA: ${opt:KAFKA}
+    BITBUCKET_BUILD_NUMBER: ${opt:BITBUCKET_BUILD_NUMBER}
+
+functions:
+  app:
+    handler: src/lambda.server # reference the file and exported method
+    events: # events trigger lambda functions
+      - http: # all routes get proxied to the Express router
+          path: /
+          method: ANY
+          cors: true
+      - http: # all routes get proxied to the Express router
+          path: /{proxy+}
+          method: ANY
+          cors: true
