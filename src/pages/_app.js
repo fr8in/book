@@ -1,7 +1,7 @@
 import React from 'react'
 import App from 'next/app'
-import '../styles/global.less'
 import 'antd/dist/antd.less'
+import '../styles/global.less'
 
 import SiteLayout from '../components/layout/Site'
 import SettingsLayout from '../components/layout/Settings'
