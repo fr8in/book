@@ -88,7 +88,7 @@ const Site = (props) => {
             </Row>
           </Header>
           <Content>
-            <Card size='small'>
+            <Card size='small' className='pageCard'>
               {props.children}
             </Card>
           </Content>
