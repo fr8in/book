@@ -1,10 +1,10 @@
 import React from 'react'
 import App from 'next/app'
-
+import '../styles/global.less'
 import 'antd/dist/antd.less'
 
-import SiteLayout from '../ui/components/layout/Site'
-import SettingsLayout from '../ui/components/layout/Settings'
+import SiteLayout from '../components/layout/Site'
+import SettingsLayout from '../components/layout/Settings'
 
 class MyApp extends App {
   render () {
@@ -21,7 +21,7 @@ class MyApp extends App {
     }
 
     return (
-      <SiteLayout>
+      <SiteLayout fixed collapsible collapseHandle collapsed>
         <Component {...pageProps} />
       </SiteLayout>
     )

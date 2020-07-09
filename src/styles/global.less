@@ -1,0 +1,48 @@
+
+html, body {
+  min-height: 100%;
+}
+
+
+#page {
+  min-height: 100vh;
+  height: auto;
+}
+.asideFixed  {
+  > aside {
+    height: 100vh;
+    position: fixed;
+    left: 0
+  }
+  .brand {
+    height: 64px;
+    padding: 0 15px;
+    text-align: center;
+    line-height: 64px;
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #fff;
+    > span {
+      color: #1890ff;
+    }
+  }
+  .header {
+    background: #fff;
+    box-shadow: 0 1px 6px rgba(26, 21, 48, 0.15);
+    padding: 0 20px;
+  }
+}
+.ant-layout.openMenu {
+  margin-left: 200px;
+  transition: all 0.2s
+}
+.ant-layout.closeMenu {
+  margin-left: 80px;
+  transition: all 0.2s
+}
+
+@media only screen and (max-width: 640px) {
+  .ant-layout.closeMenu {
+    margin-left: 0;
+  }
+}
