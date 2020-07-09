@@ -19,23 +19,32 @@ html, body {
         color: #1890ff;
       }
     }
-  }
-  .ant-layout.openMenu {
-    margin-left: 200px;
-    transition: all 0.2s;
-    .header {
-      width: calc(100% - 200px);
+    .ant-layout-sider-zero-width-trigger {
+      background: #fff;
+      color: #001529;
+      top:12px;
+      &:hover{
+        background: #001529;
+        color: #fff;
+      }
     }
   }
-  .ant-layout.closeMenu {
-    margin-left: 80px;
-    transition: all 0.2s;
-    .header {
-      width: calc(100% - 80px);
-    }
-  }
-  > .ant-layout {
+  > .ant-layout{
     padding: 10px;
+    &.openMenu {
+      margin-left: 200px;
+      transition: all 0.2s;
+      .header {
+        width: calc(100% - 200px);
+      }
+    }
+    &.closeMenu {
+      margin-left: 80px;
+      transition: all 0.2s;
+      .header {
+        width: calc(100% - 80px);
+      }
+    }
     .header {
       background: #fff;
       box-shadow: 0 1px 6px rgba(26, 21, 48, 0.15);
@@ -46,44 +55,40 @@ html, body {
     }
   }
 }
-#page.asideFixed  {
-  > aside {
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    z-index: 9;
-    &.ant-layout-sider-has-trigger {
-      .scrollFix {
-        height: calc(100% - 64px);
-        overflow-y: auto;
+#page{
+  &.asideFixed  {
+    > aside {
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      z-index: 9;
+      &.ant-layout-sider-has-trigger {
+        .scrollFix {
+          height: calc(100% - 64px);
+          overflow-y: auto;
+        }
       }
     }
-  }
-  .header {
-    position: fixed;
-    right: 0;
-    top:0;
-    z-index: 1;
-    transition: all 0.2s;
-  }
-  .ant-layout.clearTop{
-    padding-top: 74px;
-  }
-}
-.ant-layout-sider-zero-width-trigger {
-  background: #fff;
-  color: #001529;
-  top:12px;
-  &:hover{
-    background: #001529;
-    color: #fff;
-  }
-}
-@media only screen and (max-width: 640px) {
-  .ant-layout.closeMenu {
-    margin-left: 0;
     .header {
-      width: 100%;
+      position: fixed;
+      right: 0;
+      top:0;
+      z-index: 1;
+      transition: all 0.2s;
+    }
+    .ant-layout.clearTop{
+      padding-top: 74px;
+    }
+  }
+}
+
+@media only screen and (max-width: 640px) {
+  #page{ 
+    .ant-layout.closeMenu {
+      margin-left: 0;
+      .header {
+        width: 100%;
+      }
     }
   }
 }

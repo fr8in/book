@@ -39,6 +39,7 @@ const Dashboard = () => {
       dataSource={unloading}
       rowKey={record => record.id}
       size='middle'
+      scroll={{ x: 800, y: 400 }}
       pagination={false}
     />
   )

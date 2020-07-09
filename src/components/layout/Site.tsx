@@ -16,7 +16,7 @@ import {
 import Link from 'next/link'
 import useWindowSize from '../customHooks/useWindowSize'
 
-const { Header, Footer, Sider, Content } = Layout
+const { Header, Sider, Content } = Layout
 
 const Site = (props) => {
   const initial = props.collapsed
