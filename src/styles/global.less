@@ -3,17 +3,33 @@ html, body {
   min-height: 100%;
 }
 
-
 #page {
   min-height: 100vh;
   height: auto;
+  .ant-layout.openMenu {
+    margin-left: 200px;
+    transition: all 0.2s;
+    .header {
+      width: calc(100% - 200px);
+    }
+  }
+  .ant-layout.closeMenu {
+    margin-left: 80px;
+    transition: all 0.2s;
+    .header {
+      width: calc(100% - 80px);
+    }
+  }
+  > .ant-layout {
+    padding: 10px;
+  }
 }
-.asideFixed  {
+#page.asideFixed  {
   > aside {
     height: 100vh;
     position: fixed;
-    left: 0
-  }
+    left: 0;
+    z-index: 9;
   .brand {
     height: 64px;
     padding: 0 15px;
@@ -26,20 +42,22 @@ html, body {
       color: #1890ff;
     }
   }
+  }
   .header {
     background: #fff;
     box-shadow: 0 1px 6px rgba(26, 21, 48, 0.15);
     padding: 0 20px;
+    position: fixed;
+    right: 0;
+    top:0;
+    z-index: 1;
+    transition: all 0.2s;
+  }
+  .ant-layout.clearTop{
+    padding-top: 74px;
   }
 }
-.ant-layout.openMenu {
-  margin-left: 200px;
-  transition: all 0.2s
-}
-.ant-layout.closeMenu {
-  margin-left: 80px;
-  transition: all 0.2s
-}
+
 .ant-layout-sider-zero-width-trigger {
   background: #fff;
   color: #001529;
@@ -52,5 +70,8 @@ html, body {
 @media only screen and (max-width: 640px) {
   .ant-layout.closeMenu {
     margin-left: 0;
+    .header {
+      width: 100%;
+    }
   }
 }

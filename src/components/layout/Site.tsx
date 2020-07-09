@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Layout, Menu, Row, Col } from 'antd'
+import { Layout, Menu, Row, Col, Card } from 'antd'
 import {
   DashboardOutlined,
   SwapOutlined,
@@ -17,6 +17,7 @@ import Link from 'next/link'
 import useWindowSize from '../customHooks/useWindowSize'
 
 const { Header, Footer, Sider, Content } = Layout
+
 const Site = (props) => {
   const initial = props.collapsed
   const [menuCollapse, setMenuCollapse] = useState(initial)
@@ -75,7 +76,7 @@ const Site = (props) => {
             </Menu.Item>
           </Menu>
         </Sider>
-        <Layout className={menuCollapse ? 'closeMenu' : 'openMenu'}>
+        <Layout className={`${menuCollapse ? 'closeMenu' : 'openMenu'} ${fixed ? 'clearTop' : ''}`}>
           <Header className='header'>
             <Row justify='space-between'>
               <Col sm={4} />
@@ -85,7 +86,9 @@ const Site = (props) => {
             </Row>
           </Header>
           <Content>
-            {props.children}
+            <Card size='small'>
+              {props.children}
+            </Card>
           </Content>
           <Footer>Footer</Footer>
         </Layout>

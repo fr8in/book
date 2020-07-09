@@ -13,7 +13,7 @@ const Option = Select.Option
 
 const Dashboard = () => {
   return (
-    <div style={{ marginTop: 100 }}>
+    <div>
       <Form layout='horizontal'>
         <FormItem
           label='Input Number'
