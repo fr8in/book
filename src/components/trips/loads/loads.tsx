@@ -1,8 +1,7 @@
-import unloading from '../../../mock/dashboard/unloading'
+import tripsData from '../../../../mock/dashboard/tripsData'
 import { Table } from 'antd'
-import PageLayout from '../common/PageLayout'
 
-const Dashboard = () => {
+const TripStatus = () => {
   const columns = [
     {
       title: 'Truck No',
@@ -34,17 +33,15 @@ const Dashboard = () => {
     }
   ]
   return (
-    <PageLayout title='Dashboard'>
-      <Table
-        columns={columns}
-        dataSource={unloading}
-        rowKey={record => record.id}
-        size='middle'
-        scroll={{ x: 800, y: 400 }}
-        pagination={false}
-      />
-    </PageLayout>
+    <Table
+      columns={columns}
+      dataSource={tripsData}
+      rowKey={record => record.id}
+      size='small'
+      scroll={{ x: 800, y: 220 }}
+      pagination={false}
+    />
   )
 }
 
-export default Dashboard
+export default TripStatus

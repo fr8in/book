@@ -1,5 +1,5 @@
 
-import PageLayout from '../common/PageLayout'
+import PageLayout from '../layout/PageLayout'
 
 const Payables = () => {
   return (

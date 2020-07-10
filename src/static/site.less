@@ -7,7 +7,7 @@
         padding: 5px 0 0;
         transition: all 0.2s;
         z-index: 9;
-        background: linear-gradient(to top, #244375, #373B44); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        background: linear-gradient(to top, @dark-blue, @deep-blue); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
         .brand {
             height: auto;
             line-height: 32px;
@@ -41,8 +41,8 @@
             &.ant-btn-ghost {
             background-color: #192934;
             border-color: #0a161f;
-            color: #fff;
-            box-shadow: 0 1px 0 rgba(255,255,255,0.15);
+            color: @white;
+            box-shadow: @box-shadow-white;
             }
         }
         }
@@ -56,7 +56,7 @@
         height: calc(100vh - 70px);
         .pageCard{
         border-radius: 10px;
-        box-shadow: 0 1px 6px rgba(26, 21, 48, 0.15);
+        box-shadow: @box-shadow-base;
         }
     }
 }

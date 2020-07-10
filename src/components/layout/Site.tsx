@@ -18,6 +18,7 @@ import {
   BankFilled
 } from '@ant-design/icons'
 import Link from 'next/link'
+import '../../static/site.less'
 
 const { Header, Content } = Layout
 
