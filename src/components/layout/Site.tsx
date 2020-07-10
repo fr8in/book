@@ -26,7 +26,7 @@ const Site = (props) => {
     <Layout id='page'>
       <Header className='siteLayout'>
         <Row>
-          <Col xs={4} className='brand'>FR<span>8</span></Col>
+          <Col xs={4} className='brand'><Link href='/'><a>FR<span>8</span></a></Link></Col>
           <Col xs={20} className='actions'>
             <Button size='small' type='ghost' shape='circle' icon={<FilterFilled />} />
             <Button size='small' type='ghost' shape='circle' icon={<SearchOutlined />} />
@@ -76,9 +76,9 @@ const Site = (props) => {
         </Row>
       </Header>
       <Content className='siteBody'>
-        <Card size='small' className='pageCard'>
+        <div className='pageCard'>
           {props.children}
-        </Card>
+        </div>
       </Content>
     </Layout>
   )

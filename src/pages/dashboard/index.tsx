@@ -1,6 +1,7 @@
 import React from 'react'
 import unloading from '../../../mock/dashboard/unloading'
 import { Table } from 'antd'
+import PageLayout from '../../components/layout/PageLayout'
 
 const Dashboard = () => {
   const columns = [
@@ -34,14 +35,16 @@ const Dashboard = () => {
     }
   ]
   return (
-    <Table
-      columns={columns}
-      dataSource={unloading}
-      rowKey={record => record.id}
-      size='middle'
-      scroll={{ x: 800, y: 400 }}
-      pagination={false}
-    />
+    <PageLayout title='FR8 - Dashboard'>
+      <Table
+        columns={columns}
+        dataSource={unloading}
+        rowKey={record => record.id}
+        size='middle'
+        scroll={{ x: 800, y: 400 }}
+        pagination={false}
+      />
+    </PageLayout>
   )
 }
 

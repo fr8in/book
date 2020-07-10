@@ -88,9 +88,9 @@ const Admin = (props) => {
             </Row>
           </Header>
           <Content>
-            <Card size='small' className='pageCard'>
+            <div className='pageCard'>
               {props.children}
-            </Card>
+            </div>
           </Content>
         </Layout>
       </Layout>
