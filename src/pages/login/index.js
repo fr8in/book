@@ -1,5 +1,5 @@
+import Login from '../../components/login/login'
 
-const City = () => ('City')
+const LoginPage = () => <Login />
 
-
-export default City
+export default LoginPage

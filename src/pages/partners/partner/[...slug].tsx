@@ -2,9 +2,9 @@ import { useRouter } from 'next/router'
 
 const PartnerDetail = () => {
   const router = useRouter()
-  const { slug } = router.query
+  const slug = router.query.slug || []
 
-  return <p>Post: {slug}</p>
+  return <h1>Slug: {slug.join('/')}</h1>
 }
 
 export default PartnerDetail

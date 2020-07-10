@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Layout, Menu, Row, Col, Card } from 'antd'
+import { Layout, Menu, Row, Col } from 'antd'
 import {
   DashboardOutlined,
   SwapOutlined,
@@ -14,7 +14,7 @@ import {
   FullscreenOutlined
 } from '@ant-design/icons'
 import Link from 'next/link'
-import useWindowSize from '../customHooks/useWindowSize'
+import useWindowSize from '../../hooks/useWindowSize'
 
 const { Header, Sider, Content } = Layout
 

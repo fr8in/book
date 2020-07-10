@@ -1,4 +1,4 @@
-import { Layout, Row, Col, Menu, Card, Button } from 'antd'
+import { Layout, Row, Col, Menu, Button } from 'antd'
 import {
   DashboardOutlined,
   SwapOutlined,
@@ -54,7 +54,7 @@ const Site = (props) => {
                 <Link href='/customers'><a>Customers</a></Link>
               </Menu.Item>
               <Menu.Item key='6' icon={<CreditCardOutlined />}>
-                <Link href='/cards'><a>Cads</a></Link>
+                <Link href='/cards'><a>Cards</a></Link>
               </Menu.Item>
               <Menu.Item key='7' icon={<NodeIndexOutlined />}>
                 <Link href='/branches'><a>Branches</a></Link>
