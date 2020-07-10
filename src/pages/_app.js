@@ -3,6 +3,7 @@ import App from 'next/app'
 import 'antd/dist/antd.less'
 import '../styles/global.less'
 
+import AdminLayout from '../components/layout/Admin'
 import SiteLayout from '../components/layout/Site'
 import SettingsLayout from '../components/layout/Settings'
 
@@ -12,11 +13,11 @@ class MyApp extends App {
 
     if (router.pathname.startsWith('/settings')) {
       return (
-        <SiteLayout>
+        <AdminLayout>
           <SettingsLayout>
             <Component {...pageProps} />
           </SettingsLayout>
-        </SiteLayout>
+        </AdminLayout>
       )
     }
 
