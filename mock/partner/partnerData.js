@@ -1,7 +1,7 @@
 const PartnerList = 
 
          [{
-            Id: 1,
+            id: 1,
             partnerCode: 235467,
             name: "ajay",
             regionName: "north",
@@ -14,7 +14,7 @@ const PartnerList =
             active: "inactive"
         },
         {
-            Id: 2,
+            id: 2,
             partnerCode: 856498,
             name: "nithya",
             regionName: "west",
@@ -27,7 +27,7 @@ const PartnerList =
             active: "active"
         },
         {
-            Id: 3,
+            id: 3,
             partnerCode: 8638643,
             name: "kavya",
             regionName: "east",
@@ -40,7 +40,7 @@ const PartnerList =
             active: "active"
         },
         {
-            Id: 4,
+            id: 4,
             partnerCode: 2475897,
             name: "saran",
             regionName: "north",
@@ -53,7 +53,7 @@ const PartnerList =
             active: "active"
         },
         {
-            Id: 5,
+            id: 5,
             partnerCode: 4656872,
             name: "sandhiya",
             regionName: "south",
@@ -66,7 +66,7 @@ const PartnerList =
             active: "active"
         },
         {
-            Id: 6,
+            id: 6,
             partnerCode: 9875897,
             name: "Lakshmi",
             regionName: "south",
@@ -78,7 +78,7 @@ const PartnerList =
             invoicePendingAmount: 0,
             active: "active"
         },{
-            Id: 7,
+            id: 7,
             partnerCode: 2475897,
             name: "Raja",
             regionName: "north-west",
@@ -90,7 +90,7 @@ const PartnerList =
             invoicePendingAmount: 4000,
             active: "in-active"
         },{
-            Id: 8,
+            id: 8,
             partnerCode: 4275897,
             name: "Guru",
             regionName: "north",
@@ -102,7 +102,7 @@ const PartnerList =
             invoicePendingAmount: 0,
             active: "active"
         },{
-            Id: 9,
+            id: 9,
             partnerCode: 4785897,
             name: "Arun",
             regionName: "north",
@@ -114,7 +114,7 @@ const PartnerList =
             invoicePendingAmount: 0,
             active: "in-active"
         },{
-            Id: 10,
+            id: 10,
             partnerCode: 1775897,
             name: "Surya",
             regionName: "north",
