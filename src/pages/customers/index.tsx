@@ -1,7 +1,7 @@
 import { Tabs } from 'antd'
-import CustomerList from './customerList'
-import RejectedList from './rejectedList'
-import NewCustomer from './newCustomer'
+import CustomerList from '../../components/customers/customerList'
+import RejectedList from '../../components/customers/rejectedList'
+import NewCustomer from '../../components/customers/newCustomer'
 
 import PageLayout from '../../components/layout/PageLayout'
 
