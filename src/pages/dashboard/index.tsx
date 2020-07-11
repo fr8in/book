@@ -4,8 +4,8 @@ import PageLayout from '../../components/layout/PageLayout'
 import Loads from '../../components/trips/loads/loads'
 
 const { TabPane } = Tabs
-const { Panel } = Collapse;
-const DashboardPage = () => {
+const { Panel } = Collapse
+const Dashboard = () => {
   const callback = (key) => {
     console.log(key)
   }
@@ -77,4 +77,4 @@ const DashboardPage = () => {
   )
 }
 
-export default DashboardPage
+export default Dashboard

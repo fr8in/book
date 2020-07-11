@@ -1,5 +1,12 @@
-import Trips from '../../components/trips/trips'
 
-const TripsPage = () => <Trips />
+import PageLayout from '../../components/layout/PageLayout'
 
-export default TripsPage
+const Trips = () => {
+  return (
+    <PageLayout title='Trips'>
+              Trips
+    </PageLayout>
+  )
+}
+
+export default Trips

@@ -1,5 +1,12 @@
-import Payables from '../../components/payables/payables'
 
-const PayablesPage = () => <Payables />
+import PageLayout from '../../components/layout/PageLayout'
 
-export default PayablesPage
+const Payables = () => {
+  return (
+    <PageLayout title='Payables'>
+              Payables
+    </PageLayout>
+  )
+}
+
+export default Payables

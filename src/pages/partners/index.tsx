@@ -1,5 +1,12 @@
-import Partnes from '../../components/partners/partners'
 
-const PartnesPage = () => <Partnes />
+import PageLayout from '../../components/layout/PageLayout'
 
-export default PartnesPage
+const Partner = () => {
+  return (
+    <PageLayout title='Partner'>
+              Partner
+    </PageLayout>
+  )
+}
+
+export default Partner

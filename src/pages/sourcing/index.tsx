@@ -1,5 +1,12 @@
-import Sourcing from '../../components/sourcing/sourcing'
 
-const SourcingPage = () => <Sourcing />
+import PageLayout from '../../components/layout/PageLayout'
 
-export default SourcingPage
+const Sourcing = () => {
+  return (
+    <PageLayout title='Sourcing'>
+              Sourcing
+    </PageLayout>
+  )
+}
+
+export default Sourcing

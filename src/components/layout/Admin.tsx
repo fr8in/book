@@ -15,7 +15,7 @@ import {
 } from '@ant-design/icons'
 import Link from 'next/link'
 import useWindowSize from '../../hooks/useWindowSize'
-import '../../static/admin.less'
+import '../../styles/admin.less'
 
 const { Header, Sider, Content } = Layout
 

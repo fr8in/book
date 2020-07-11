@@ -1,12 +1,12 @@
-const TruckDetail = (props) => {
+const CustomerDetail = (props) => {
 
-  return <h1>Truck ID: {props.id}</h1>
+  return <h1>Customer ID: {props.id}</h1>
 }
 
-TruckDetail.getInitialProps = ({ query }) => {
+CustomerDetail.getInitialProps = ({ query }) => {
   return {
     id: query.id
   }
 }
 
-export default TruckDetail
+export default CustomerDetail
