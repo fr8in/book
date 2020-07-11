@@ -9,7 +9,7 @@ const TripStatus = () => {
       dataIndex: 'truckNo',
       render: (text, record) => {
         return (
-          <Link href='/partners/partner/[id]' as={`/partners/partner/${record.id} `}>
+          <Link href='/trucks/truck/[id]' as={`/trucks/truck/${record.id} `}>
             <a>{text}</a>
           </Link>
         )
