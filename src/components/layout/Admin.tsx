@@ -1,44 +1,48 @@
-import { Layout, Row, Col, Menu, Button } from 'antd'
+import { useState } from 'react'
+import { Layout, Menu, Row, Col } from 'antd'
 import {
   DashboardOutlined,
   SwapOutlined,
   CarOutlined,
   SmileOutlined,
   TeamOutlined,
-  UserOutlined,
   CreditCardOutlined,
   NodeIndexOutlined,
   CopyOutlined,
   LineChartOutlined,
   TransactionOutlined,
-  FullscreenOutlined,
-  SearchOutlined,
-  CodeOutlined,
-  FilterFilled,
-  BankFilled
+  FullscreenOutlined
 } from '@ant-design/icons'
 import Link from 'next/link'
-import '../../styles/site.less'
+import useWindowSize from '../../hooks/useWindowSize'
+import '../../styles/admin.less'
 
-const { Header, Content } = Layout
+const { Header, Sider, Content } = Layout
 
-const Site = (props) => {
+const Admin = (props) => {
+  const initial = props.collapsed
+  const [menuCollapse, setMenuCollapse] = useState(initial)
+  const size = useWindowSize()
+
+  const onCollapse = () => {
+    if (collapseHandle) {
+      return setMenuCollapse(!menuCollapse)
+    }
+  }
+  const { fixed, collapsed, collapsible, collapseHandle } = props
   return (
-    <Layout id='page'>
-      <Header className='siteLayout'>
-        <Row>
-          <Col xs={4} className='brand'><Link href='/'><a>FR<span>8</span></a></Link></Col>
-          <Col xs={20} className='actions'>
-            <Button size='small' type='ghost' shape='circle' icon={<FilterFilled />} />
-            <Button size='small' type='ghost' shape='circle' icon={<SearchOutlined />} />
-            <Button size='small' type='ghost' shape='circle' icon={<BankFilled />} />
-            <Button size='small' type='ghost' shape='circle' icon={<CodeOutlined />} />
-            <Button size='small' type='primary' shape='circle' icon={<UserOutlined />} />
-          </Col>
-        </Row>
-        <Row justify='center'>
-          <Col xs={24} sm={24} md={24}>
-            <Menu theme='dark' mode='horizontal' defaultSelectedKeys={['1']}>
+    <>
+      <Layout id='page' className={`${fixed ? 'asideFixed' : ''}`}>
+        <Sider
+          defaultCollapsed={collapsed}
+          collapsible={collapsible}
+          onCollapse={onCollapse}
+          collapsedWidth={size.width <= 640 ? 0 : collapsed ? 80 : 200}
+          theme='dark'
+        >
+          <div className='brand'>FR<span>8</span></div>
+          <div className='scrollFix'>
+            <Menu theme='dark' mode='inline' defaultSelectedKeys={['1']}>
               <Menu.Item key='1' icon={<DashboardOutlined />}>
                 <Link href='/'><a>Dashboard</a></Link>
               </Menu.Item>
@@ -55,7 +59,7 @@ const Site = (props) => {
                 <Link href='/customers'><a>Customers</a></Link>
               </Menu.Item>
               <Menu.Item key='6' icon={<CreditCardOutlined />}>
-                <Link href='/cards'><a>Cards</a></Link>
+                <Link href='/cards'><a>Cads</a></Link>
               </Menu.Item>
               <Menu.Item key='7' icon={<NodeIndexOutlined />}>
                 <Link href='/branches'><a>Branches</a></Link>
@@ -73,16 +77,25 @@ const Site = (props) => {
                 <Link href='/sourcing'><a>Sourcing</a></Link>
               </Menu.Item>
             </Menu>
-          </Col>
-        </Row>
-      </Header>
-      <Content className='siteBody'>
-        <div className='pageCard'>
-          {props.children}
-        </div>
-      </Content>
-    </Layout>
+          </div>
+        </Sider>
+        <Layout className={`${menuCollapse ? 'closeMenu' : 'openMenu'} ${fixed ? 'clearTop' : ''}`}>
+          <Header className='header'>
+            <Row justify='space-between'>
+              <Col sm={4} />
+              <Col sm={12} style={{ textAlign: 'right' }}>
+                {/* <Button onClick={toggleTheme} type={darkTheme ? 'default' : 'primary'} shape='circle' icon={<HeartOutlined />} /> */}
+              </Col>
+            </Row>
+          </Header>
+          <Content>
+            <div className='pageCard'>
+              {props.children}
+            </div>
+          </Content>
+        </Layout>
+      </Layout>
+    </>
   )
 }
-
-export default Site
+export default Admin

@@ -1,0 +1,75 @@
+@import './variables.less';
+#page {
+    min-height: 100vh;
+    height: auto;
+    > aside {
+      .ant-layout-sider-zero-width-trigger {
+        background: @white;
+        color: @gray-dark;
+        top:12px;
+        &:hover{
+          background: @gray-dark;
+          color: @white;
+        }
+      }
+    }
+    > .ant-layout{
+      padding: 10px;
+      &.openMenu {
+        margin-left: 200px;
+        transition: all 0.2s;
+        .header {
+          width: calc(100% - 200px);
+        }
+      }
+      &.closeMenu {
+        margin-left: 80px;
+        transition: all 0.2s;
+        .header {
+          width: calc(100% - 80px);
+        }
+      }
+      .header {
+        background: @white;
+        box-shadow: @box-shadow-base;
+        padding: 0 20px;
+      }
+    }
+  }
+  #page{
+    &.asideFixed  {
+      > aside {
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        z-index: 9;
+        &.ant-layout-sider-has-trigger {
+          .scrollFix {
+            height: calc(100% - 64px);
+            overflow-y: auto;
+          }
+        }
+      }
+      .header {
+        position: fixed;
+        right: 0;
+        top:0;
+        z-index: 1;
+        transition: all 0.2s;
+      }
+      .ant-layout.clearTop{
+        padding-top: 74px;
+      }
+    }
+  }
+  
+  @media only screen and (max-width: 640px) {
+    #page{ 
+      .ant-layout.closeMenu {
+        margin-left: 0;
+        .header {
+          width: 100%;
+        }
+      }
+    }
+  }
