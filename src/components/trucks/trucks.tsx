@@ -1,23 +1,21 @@
-import React from 'react'
+
 import trucks from '../../../mock/trucks/trucks'
 import { Table } from 'antd'
 import Link from 'next/link'
 
-import PageLayout from '../common/PageLayout'
-
 const Trucks = () => {
   const columns = [
     {
-       title: 'Truck No',
+      title: 'Truck No',
       dataIndex: 'truckNo',
       render: (text, record) => {
         return (
-          <Link href='trucks/truck/[id]'as={`trucks/truck/${record.id}`}>
+          <Link href='trucks/truck/[id]' as={`trucks/truck/${record.id}`}>
             <a>{text}</a>
           </Link>
         )
       }
-      
+
     },
     {
       title: 'Trip Id',
@@ -36,19 +34,16 @@ const Trucks = () => {
       dataIndex: 'phoneNo'
     },
     {
-        title: 'Status',
-        dataIndex: 'status'
-      },
+      title: 'Status',
+      dataIndex: 'status'
+    },
     {
       title: 'city',
       dataIndex: 'city'
-    } ]
+    }]
 
   return (
-
-    
-    <PageLayout title='Trucks'>
-       <Table
+    <Table
       columns={columns}
       dataSource={trucks}
       rowKey={record => record.id}
@@ -56,9 +51,7 @@ const Trucks = () => {
       scroll={{ x: 800, y: 400 }}
       pagination={false}
     />
-    </PageLayout>
   )
 }
-
 
 export default Trucks
