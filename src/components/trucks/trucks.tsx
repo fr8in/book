@@ -1,6 +1,7 @@
 import React from 'react'
 import trucks from '../../../mock/trucks/trucks'
 import { Table } from 'antd'
+import Link from 'next/link'
 
 import PageLayout from '../common/PageLayout'
 
@@ -8,7 +9,14 @@ const Trucks = () => {
   const columns = [
     {
        title: 'Truck No',
-      dataIndex: 'truckNo'
+      dataIndex: 'truckNo',
+      render: (text, record) => {
+        return (
+          <Link href='trucks/truck/[id]'as={`trucks/truck/${record.id}`}>
+            <a>{text}</a>
+          </Link>
+        )
+      }
       
     },
     {
