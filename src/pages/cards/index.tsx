@@ -1,5 +1,12 @@
-import Cards from '../../components/cards/cards'
 
-const CardsPage = () => <Cards />
+import PageLayout from '../../components/layout/PageLayout'
 
-export default CardsPage
+const Cards = () => {
+  return (
+    <PageLayout title='Cards'>
+              Cards
+    </PageLayout>
+  )
+}
+
+export default Cards

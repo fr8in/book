@@ -1,5 +1,12 @@
-import Trucks from '../../components/trucks/trucks'
 
-const TrucksPage = () => <Trucks />
+import PageLayout from '../../components/layout/PageLayout'
 
-export default TrucksPage
+const Trucks = () => {
+  return (
+    <PageLayout title='Trucks'>
+              Trucks
+    </PageLayout>
+  )
+}
+
+export default Trucks

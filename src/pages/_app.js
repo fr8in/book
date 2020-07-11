@@ -11,7 +11,7 @@ class MyApp extends App {
   render () {
     const { Component, pageProps, router } = this.props
 
-    if (router.pathname.startsWith('/settings')) {
+    if (router.pathname.startsWith('/login')) {
       return (
         <AdminLayout>
           <SettingsLayout>

@@ -1,8 +1,10 @@
-@import './admin.less';
-@import './site.less';
+@import './variables.less';
+@import './utils.less';
+@import './antdCustomise.less';
 
 html, body {
   min-height: 100%;
+  font-size: 13px;
 }
 .brand {
   height: 64px;
@@ -11,16 +13,16 @@ html, body {
   line-height: 64px;
   font-weight: 600;
   font-size: 1.2rem;
-  color: #fff;
+  color: @white;
   > a {
-    color: #fff;
+    color: @white;
     span {
-      color: #1890ff;
+      color: @primary;
     }
   }
 }
 .pageCard {
-  background-color: #fff;
+  background-color: @white;
   height: 100%;
   padding: 10px;
   .pageBox {

@@ -1,6 +1,12 @@
 
-import Branches from '../../components/branches/branches'
+import PageLayout from '../../components/layout/PageLayout'
 
-const BranchesPage = () => <Branches />
+const Branches = () => {
+  return (
+    <PageLayout title='Branches'>
+              Branches
+    </PageLayout>
+  )
+}
 
-export default BranchesPage
+export default Branches

@@ -1,5 +1,12 @@
-import Reports from '../../components/reports/reports'
 
-const ReportsPage = () => <Reports />
+import PageLayout from '../../components/layout/PageLayout'
 
-export default ReportsPage
+const Reports = () => {
+  return (
+    <PageLayout title='Reports'>
+              Reports
+    </PageLayout>
+  )
+}
+
+export default Reports

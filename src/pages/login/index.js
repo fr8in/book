@@ -1,5 +1,12 @@
-import Login from '../../components/login/login'
 
-const LoginPage = () => <Login />
+import PageLayout from '../components/layout/PageLayout'
 
-export default LoginPage
+const Login = () => {
+  return (
+    <PageLayout title='Login'>
+              Login
+    </PageLayout>
+  )
+}
+
+export default Login
