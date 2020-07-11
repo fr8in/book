@@ -1,11 +1,19 @@
 import tripsData from '../../../../mock/dashboard/tripsData'
 import { Table } from 'antd'
+import Link from 'next/link'
 
 const TripStatus = () => {
   const columns = [
     {
       title: 'Truck No',
-      dataIndex: 'truckNo'
+      dataIndex: 'truckNo',
+      render: (text, record) => {
+        return (
+          <Link href='/partners/partner/[id]' as={`/partners/partner/${record.id} `}>
+            <a>{text}</a>
+          </Link>
+        )
+      }
     },
     {
       title: 'Truck No',

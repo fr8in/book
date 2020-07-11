@@ -1,6 +1,12 @@
 
-import Approvals from '../../components/approvals/approvals'
+import PageLayout from '../../components/layout/PageLayout'
 
-const ApprovalsPage = () => <Approvals />
+const Approvals = () => {
+  return (
+    <PageLayout title='Approvals'>
+              Approvals
+    </PageLayout>
+  )
+}
 
-export default ApprovalsPage
+export default Approvals

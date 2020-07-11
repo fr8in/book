@@ -1,9 +1,10 @@
 
-import { Row, Col, Card, Tabs } from 'antd'
+import { Row, Col, Card, Tabs, Collapse } from 'antd'
 import PageLayout from '../../components/layout/PageLayout'
 import Loads from '../../components/trips/loads/loads'
 
 const { TabPane } = Tabs
+const { Panel } = Collapse;
 const DashboardPage = () => {
   const callback = (key) => {
     console.log(key)
@@ -60,11 +61,15 @@ const DashboardPage = () => {
       <Row>
         <Col sm={24}>
           <Card size='small' className='card-body-0 border-top-blue'>
-            <Tabs defaultActiveKey='1' onChange={callback}>
-              <TabPane tab='Loads' key='1'>
+            <Collapse
+              defaultActiveKey={['1']}
+              onChange={callback}
+              ghost
+            >
+              <Panel header='Loads' key='1'>
                 <Loads />
-              </TabPane>
-            </Tabs>
+              </Panel>
+            </Collapse>
           </Card>
         </Col>
       </Row>

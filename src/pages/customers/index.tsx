@@ -1,6 +1,12 @@
 
-import Customers from '../../components/customers/customers'
+import PageLayout from '../../components/layout/PageLayout'
 
-const CustomersPage = () => <Customers />
+const Customers = () => {
+  return (
+    <PageLayout title='Customers'>
+              Customers
+    </PageLayout>
+  )
+}
 
-export default CustomersPage
+export default Customers
