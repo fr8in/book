@@ -2,13 +2,20 @@ import React from 'react'
 import {Table} from "antd";
 import mock from '../../../mock/partner/partnerData';
 import PageLayout from '../layout/PageLayout'
-
+import Link from 'next/link'
 
 const Partners = () => {
   const columnsCurrent = [
     {
         title: "Partner Code",
-        dataIndex: "partnerCode",               
+        dataIndex: "partnerCode", 
+        render: (text, record) => {
+            return (
+              <Link href='partners/partners/[id]'as={`partners/partners/${record.id}`}>
+                <a>{text}</a>
+              </Link>
+            )
+          }              
     },
     {
         title: "Partner",
