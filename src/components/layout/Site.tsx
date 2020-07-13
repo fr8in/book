@@ -1,24 +1,20 @@
-import { Layout, Row, Col, Menu, Button } from 'antd'
+import { Layout, Row, Col, Menu } from 'antd'
 import {
   DashboardOutlined,
   SwapOutlined,
   CarOutlined,
   SmileOutlined,
   TeamOutlined,
-  UserOutlined,
   CreditCardOutlined,
   NodeIndexOutlined,
   CopyOutlined,
   LineChartOutlined,
   TransactionOutlined,
-  FullscreenOutlined,
-  SearchOutlined,
-  CodeOutlined,
-  FilterFilled,
-  BankFilled
+  FullscreenOutlined
 } from '@ant-design/icons'
 import Link from 'next/link'
 import '../../styles/site.less'
+import Actions from '../common/actions'
 
 const { Header, Content } = Layout
 
@@ -28,13 +24,7 @@ const Site = (props) => {
       <Header className='siteLayout'>
         <Row>
           <Col xs={4} className='brand'><Link href='/'><a>FR<span>8</span></a></Link></Col>
-          <Col xs={20} className='actions'>
-            <Button size='small' type='ghost' shape='circle' icon={<FilterFilled />} />
-            <Button size='small' type='ghost' shape='circle' icon={<SearchOutlined />} />
-            <Button size='small' type='ghost' shape='circle' icon={<BankFilled />} />
-            <Button size='small' type='ghost' shape='circle' icon={<CodeOutlined />} />
-            <Button size='small' type='primary' shape='circle' icon={<UserOutlined />} />
-          </Col>
+          <Actions />
         </Row>
         <Row justify='center'>
           <Col xs={24} sm={24} md={24}>

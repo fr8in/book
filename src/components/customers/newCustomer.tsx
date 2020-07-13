@@ -1,51 +1,51 @@
-import React, { Component } from "react";
-import { Table } from "antd";
-import newCusMock from "../../../mock/newCusMock";
+import React, { Component } from 'react'
+import { Table } from 'antd'
+import newCusMock from '../../../mock/customer/newCusMock'
 
 export default class NewCustomer extends Component {
-  render() {
+  render () {
     const newCustomer = [
       {
-        title: "User Name",
-        dataIndex: "name",
+        title: 'User Name',
+        dataIndex: 'name'
       },
       {
-        title: "Company Name",
-        dataIndex: "companyName",
+        title: 'Company Name',
+        dataIndex: 'companyName'
       },
       {
-        title: "Mobile No",
-        dataIndex: "mobileNo",
+        title: 'Mobile No',
+        dataIndex: 'mobileNo'
       },
       {
-        title: "Customer Type",
-        dataIndex: "companyType",
+        title: 'Customer Type',
+        dataIndex: 'companyType'
       },
       {
-        title: "Reg Date",
-        dataIndex: "registrationDate",
+        title: 'Reg Date',
+        dataIndex: 'registrationDate'
       },
       {
-        title: "PAN",
-        dataIndex: "panNo",
+        title: 'PAN',
+        dataIndex: 'panNo'
       },
       {
-        title: "Credit Limit",
-        dataIndex: "type",
+        title: 'Credit Limit',
+        dataIndex: 'type'
       },
       {
-        title: "Default Mamul",
-        dataIndex: "mamul",
+        title: 'Default Mamul',
+        dataIndex: 'mamul'
       },
       {
-        title: "Advance %",
-        dataIndex: "advancePercentage",
+        title: 'Advance %',
+        dataIndex: 'advancePercentage'
       },
       {
-        title: "Action",
-      },
-    ];
+        title: 'Action'
+      }
+    ]
 
-    return <Table columns={newCustomer} dataSource={newCusMock} />;
+    return <Table columns={newCustomer} dataSource={newCusMock} />
   }
 }
