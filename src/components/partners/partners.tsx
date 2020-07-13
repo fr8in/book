@@ -1,7 +1,7 @@
 import React from 'react'
 import { Table } from 'antd'
 import mock from '../../../mock/partner/partnerData'
-import PageLayout from '../layout/PageLayout'
+import PageLayout from '../layout/pageLayout'
 import Link from 'next/link'
 
 const Partners = () => {

@@ -1,5 +1,5 @@
 
-import PageLayout from '../layout/PageLayout'
+import PageLayout from '../layout/pageLayout'
 
 const Trips = () => {
   return (

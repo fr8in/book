@@ -2,6 +2,7 @@
 import { Row, Col, Card, Tabs, Collapse } from 'antd'
 import PageLayout from '../../components/layout/pageLayout'
 import Loads from '../../components/trips/loads/loads'
+import WaitingForLoad from '../../components/trucks/waitingForLoad/waitingForLoad'
 import Orders from '../../components/reports/orders'
 import Revenue from '../../components/reports/revenue'
 import Progress from '../../components/reports/progress'
@@ -35,7 +36,7 @@ const Dashboard = () => {
                 <Loads />
               </TabPane>
               <TabPane tab='Load' key='2'>
-                <Loads />
+                <WaitingForLoad />
               </TabPane>
               <TabPane tab='Assigned' key='3'>
                 <Loads />
