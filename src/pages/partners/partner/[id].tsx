@@ -1,4 +1,4 @@
-import PageLayout from '../../../components/layout/PageLayout'
+import PageLayout from '../../../components/layout/pageLayout'
 import HeaderInfo from '../../../components/partners/partnerDetail/partnerInfo'
 import WalletStatus from '../../../components/partners/partnerDetail/walletStatus'
 import BasicDetail from '../../../components/partners/partnerDetail/partnerBasicDetail'

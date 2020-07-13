@@ -1,6 +1,6 @@
 import React from 'react'
 import {Row, Col, Table , Input, Button } from 'antd'
-import PageLayout from '../../layout/PageLayout'
+import PageLayout from '../../layout/pageLayout'
 import Mock from '../../../../mock/partner/partnerComment'
 
 const Comment = () => {
@@ -24,7 +24,7 @@ const Comment = () => {
          <Col><Input placeholder="Please Enter Comments" /></Col>
          <Col>  <Button type="primary">Submit</Button></Col>
         </Row>
-        <Row>
+       
       <Table
         columns={columnsCurrent}
         dataSource={Mock}
@@ -33,7 +33,7 @@ const Comment = () => {
         scroll={{ x: 800, y: 400 }}
         pagination={false}
       />
-      </Row>
+     
     </PageLayout>
   )
 }

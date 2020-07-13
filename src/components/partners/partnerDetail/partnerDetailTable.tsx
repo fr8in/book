@@ -1,10 +1,9 @@
 import React from 'react'
-import { Row, Col, Tabs } from 'antd'
-import PageLayout from '../../../components/layout/PageLayout'
+import { Tabs } from 'antd'
+import PageLayout from '../../../components/layout/pageLayout'
 import TripDetail from '../../../components/trips/tripDetail/tripDetailByPartner'
 import PartnerTruck from '../../../components/trucks/trucksByPartner'
 import DetailInfo from '../../../components/partners/partnerDetail/partnerDetailInfo'
-import DetailDoc from '../../../components/partners/partnerDetail/partnerDetailDoc'
 import Comment from '../../../components/partners/partnerDetail/partnerComment'
 const TabPane = Tabs.TabPane
 
@@ -16,10 +15,7 @@ export default function partnerDetailTable() {
                     <PartnerTruck />
                 </TabPane>
                 <TabPane tab='Detail' key='2'>
-                    <Row>
-                        <Col span={12}> <DetailInfo /></Col>
-                        <Col> <DetailDoc /></Col>
-                    </Row>                  
+                    <DetailInfo />
                 </TabPane>
                 <TabPane tab='Comment' key='3'>
                      <Comment />

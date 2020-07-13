@@ -4,10 +4,7 @@ import DetailInfo from '../../../../mock/partner/partnerDetailInfo'
 export default function partnerDetailInfo () {
   
     return (
-        <div>
-           
-            <Col xs={{ span: 24 }} sm={{ span: 10 }} md={{ span: 8 }}>
-                
+        <div>   
 				<Row>
 					<Col span={18}>
 						<label><h3> On Boarded Date  </h3></label>
@@ -113,8 +110,7 @@ export default function partnerDetailInfo () {
 					<Col span={18}>
 						<label><h3> Mapped Customer </h3></label>
 					</Col>
-				</Row>
-            </Col>	   
+				</Row>       	   
         </div>
     )
 }

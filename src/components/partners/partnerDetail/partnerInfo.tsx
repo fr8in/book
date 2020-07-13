@@ -20,7 +20,6 @@ export default function partnerInfo(props) {
                     <h3> <label>9873456254</label> </h3>
                     </Col>
                 </Row>
-             
         </div>
     )
 }

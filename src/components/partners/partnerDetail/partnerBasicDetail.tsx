@@ -4,10 +4,7 @@ import Detail from '../../../../mock/partner/partnerBasicDetail'
 export default function partnerBasicDetail() {
   
     return (
-        <div>
-           
-            <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 8 }}>
-                
+        <div>   
 				<Row>
 					<Col span={10}>
 						<label><h3> City </h3></label>
@@ -47,8 +44,7 @@ export default function partnerBasicDetail() {
 					<Col span={14}>
 						<p>{ Detail && Detail.advance}</p>
 					</Col>
-				</Row>
-            </Col>	   
+				</Row>   
         </div>
     )
 }
