@@ -38,7 +38,7 @@ const Admin = (props) => {
         </Sider>
         <Layout className={`${menuCollapse ? 'closeMenu' : 'openMenu'} ${fixed ? 'clearTop' : ''}`}>
           <Header className='header'>
-            <Row justify='space-between'>
+            <Row>
               <Col flex='60px' />
               <Actions />
             </Row>
