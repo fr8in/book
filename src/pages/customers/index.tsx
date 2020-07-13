@@ -3,7 +3,7 @@ import CustomerList from '../../components/customers/customerList'
 import RejectedList from '../../components/customers/rejectedList'
 import NewCustomer from '../../components/customers/newCustomer'
 
-import PageLayout from '../../components/layout/PageLayout'
+import PageLayout from '../../components/layout/pageLayout'
 
 const TabPane = Tabs.TabPane
 

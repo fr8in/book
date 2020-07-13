@@ -1,10 +1,10 @@
 
-import PageLayout from '../../components/layout/PageLayout'
-
+import PageLayout from '../../components/layout/pageLayout'
+import PartnerLead from '../../components/partners/partnerDetail/partnerLead'
 const Approvals = () => {
   return (
     <PageLayout title='Approvals'>
-              Approvals
+              <PartnerLead />
     </PageLayout>
   )
 }
