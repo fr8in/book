@@ -2,7 +2,7 @@ import tripsData from '../../../../mock/trip/tripsData'
 import { Table } from 'antd'
 import Link from 'next/link'
 
-const Load = () => {
+const Load = (props) => {
   const callDriver = record => {
     window.location.href = 'tel:' + record.driverNo
   }
@@ -75,6 +75,15 @@ const Load = () => {
       dataIndex: 'tat',
       width: '5%'
     },
+    props.intransit ? {
+      title: 'Delay',
+      dataIndex: 'delay',
+      width: '5%'
+    } : {},
+    props.intransit ? {
+      title: 'ETA',
+      dataIndex: 'eta'
+    } : {},
     {
       title: 'Comment',
       dataIndex: 'comment'

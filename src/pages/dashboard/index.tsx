@@ -48,7 +48,7 @@ const Dashboard = () => {
                 <Loads />
               </TabPane>
               <TabPane tab='Intransit(S)' key='6'>
-                <Loads />
+                <Loads intransit />
               </TabPane>
               <TabPane tab='Delivery On-hold' key='7'>
                 <Loads />
@@ -66,7 +66,7 @@ const Dashboard = () => {
                 <Loads />
               </TabPane>
               <TabPane tab='Intransit(D)' key='2'>
-                <Loads />
+                <Loads intransit />
               </TabPane>
             </Tabs>
           </Card>

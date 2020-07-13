@@ -11,6 +11,8 @@ const tripData = [
     source: 'Chennai',
     destination: 'Guwahati',
     tat: 11.27,
+    delay: 1.21,
+    eta: '11-Jul-20',
     comment: 'lockdown issue truck not available'
   },
   {
@@ -25,6 +27,8 @@ const tripData = [
     source: 'Chennai',
     destination: 'Guwahati',
     tat: 11.27,
+    delay: 1.21,
+    eta: '11-Jul-20',
     comment: 'lockdown issue truck not available'
   },
   {
@@ -39,6 +43,8 @@ const tripData = [
     source: 'Chennai',
     destination: 'Guwahati',
     tat: 11.27,
+    delay: 1.21,
+    eta: '11-Jul-20',
     comment: 'lockdown issue truck not available'
   },
   {
@@ -53,6 +59,8 @@ const tripData = [
     source: 'Chennai',
     destination: 'Guwahati',
     tat: 11.27,
+    delay: 1.21,
+    eta: '11-Jul-20',
     comment: 'lockdown issue truck not available'
   },
   {
@@ -67,6 +75,8 @@ const tripData = [
     source: 'Chennai',
     destination: 'Guwahati',
     tat: 11.27,
+    delay: 1.21,
+    eta: '11-Jul-20',
     comment: 'lockdown issue truck not available'
   },
   {
@@ -81,6 +91,8 @@ const tripData = [
     source: 'Chennai',
     destination: 'Guwahati',
     tat: 11.27,
+    delay: 1.21,
+    eta: '11-Jul-20',
     comment: 'lockdown issue truck not available'
   },
   {
@@ -95,6 +107,8 @@ const tripData = [
     source: 'Chennai',
     destination: 'Guwahati',
     tat: 11.27,
+    delay: 1.21,
+    eta: '11-Jul-20',
     comment: 'lockdown issue truck not available'
   },
   {
@@ -109,6 +123,8 @@ const tripData = [
     source: 'Chennai',
     destination: 'Guwahati',
     tat: 11.27,
+    delay: 1.21,
+    eta: '11-Jul-20',
     comment: 'lockdown issue truck not available'
   }
 ]
