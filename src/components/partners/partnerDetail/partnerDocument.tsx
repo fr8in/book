@@ -1,9 +1,22 @@
-import React from 'react'
+import { Collapse } from 'antd';
 
-export default function partnerDocument() {
+const { Panel } = Collapse;
+
+
+const PartnerDocument = () =>{
     return (
-        <div>
-            Document
-        </div>
+  <Collapse accordion>
+    <Panel header="Document" key="1">
+      <p>Document</p>
+    </Panel>
+    <Panel header="Fuel Detail" key="2">
+      <p>Fuel Detail</p>
+    </Panel>
+    <Panel header="Fas Card" key="3">
+      <p>Fas Card</p>
+    </Panel>
+  </Collapse>
     )
 }
+
+export default PartnerDocument

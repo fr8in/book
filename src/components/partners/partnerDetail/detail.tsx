@@ -7,10 +7,10 @@ export default function detail() {
         <div>
             <Row gutter={[10, 10]}>
              
-                <Col xs={24} sm={12}>
+                <Col sm={12}>
                 <DetailInfo/>
                 </Col>
-                <Col xs={24} sm={12}>
+                <Col  sm={12}>
                 <Document />
                 </Col>
               

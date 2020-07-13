@@ -7,7 +7,7 @@ export default function partnerDetailInfo () {
         <div>   
 				<Row>
 					<Col span={12}>
-						<label><h3> On Boarded Date  </h3></label>
+						<label><h5> On Boarded Date  </h5></label>
 					</Col>
 					<Col span={12}>
 						<p>{DetailInfo && DetailInfo.date}</p>
@@ -15,7 +15,7 @@ export default function partnerDetailInfo () {
 				</Row>
 				<Row>
 					<Col span={12}>
-						<label><h3>Email</h3></label>
+						<label><h5>Email</h5></label>
 					</Col>
 					<Col span={12}>
 						<p>{ DetailInfo && DetailInfo.mail}</p>
@@ -23,7 +23,7 @@ export default function partnerDetailInfo () {
 				</Row>
 				<Row>
 					<Col span={12}>
-                        <label><h3>No.Of Trucks</h3></label>
+                        <label><h5>No.Of Trucks</h5></label>
                     </Col>
                     <Col span={12}>
 						<p>{ DetailInfo && DetailInfo.truck}</p>
@@ -31,7 +31,7 @@ export default function partnerDetailInfo () {
 				</Row>
 				<Row>
 					<Col span={12}>
-						<label><h3> Address </h3></label>
+						<label><h5> Address </h5></label>
 					</Col>
 					<Col span={12}>
 						<p>{ DetailInfo && DetailInfo.address}</p>
@@ -39,7 +39,7 @@ export default function partnerDetailInfo () {
 				</Row>
 				<Row>
 					<Col span={12}>
-						<label><h3> State </h3></label>
+						<label><h5> State </h5></label>
 					</Col>
 					<Col span={12}>
 						<p>{ DetailInfo && DetailInfo.state}</p>
@@ -47,7 +47,7 @@ export default function partnerDetailInfo () {
 				</Row>
                 <Row>
 					<Col span={12}>
-						<label><h3> Bank </h3></label>
+						<label><h5> Bank </h5></label>
 					</Col>
 					<Col span={12}>
 						<p>{ DetailInfo && DetailInfo.bank}</p>
@@ -55,7 +55,7 @@ export default function partnerDetailInfo () {
 				</Row>
                 <Row>
 					<Col span={12}>
-						<label><h3> Account Number </h3></label>
+						<label><h5> Account Number </h5></label>
 					</Col>
 					<Col span={12}>
 						<p>{ DetailInfo && DetailInfo.accNo}</p>
@@ -63,7 +63,7 @@ export default function partnerDetailInfo () {
 				</Row>
                 <Row>
 					<Col span={12}>
-						<label><h3> IFSC Code </h3></label>
+						<label><h5> IFSC Code </h5></label>
 					</Col>
 					<Col span={12}>
 						<p>{ DetailInfo && DetailInfo.IFSC}</p>
@@ -71,7 +71,7 @@ export default function partnerDetailInfo () {
 				</Row>
                 <Row>
 					<Col span={12}>
-						<label><h3> Cibil Score </h3></label>
+						<label><h5> Cibil Score </h5></label>
 					</Col>
 					<Col span={12}>
 						<p>{ DetailInfo && DetailInfo.cibilScore}</p>
@@ -79,12 +79,12 @@ export default function partnerDetailInfo () {
 				</Row>
                 <Row>
 					<Col span={12}>
-						<label><h3> EMI </h3></label>
+						<label><h5> EMI </h5></label>
 					</Col>
 				</Row>
                 <Row>
 					<Col span={12}>
-						<label><h3> TDS % </h3></label>
+						<label><h5> TDS % </h5></label>
 					</Col>
 					<Col span={12}>
 						<p>{ DetailInfo && DetailInfo.TDS}</p>
@@ -92,7 +92,7 @@ export default function partnerDetailInfo () {
 				</Row>
                 <Row>
 					<Col span={12}>
-						<label><h3> PAN </h3></label>
+						<label><h5> PAN </h5></label>
 					</Col>
 					<Col span={12}>
 						<p>{ DetailInfo && DetailInfo.PAN}</p>
@@ -100,7 +100,7 @@ export default function partnerDetailInfo () {
 				</Row>
                 <Row>
 					<Col span={12}>
-						<label><h3> GST </h3></label>
+						<label><h5> GST </h5></label>
 					</Col>
 					<Col span={12}>
 						<p>{ DetailInfo && DetailInfo.GST}</p>
@@ -108,7 +108,7 @@ export default function partnerDetailInfo () {
 				</Row>
                 <Row>
 					<Col span={12}>
-						<label><h3> Mapped Customer </h3></label>
+						<label><h5> Mapped Customer </h5></label>
 					</Col>
 				</Row>       	   
         </div>
