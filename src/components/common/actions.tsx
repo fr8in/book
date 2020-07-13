@@ -56,7 +56,7 @@ const Actions = () => {
   }
 
   return (
-    <Col xs={20} className='actions'>
+    <Col flex='auto' className='actions'>
       <Button size='small' type='ghost' shape='circle' icon={<FilterFilled />} onClick={() => onShow('filter')} />
       <Button size='small' type='ghost' shape='circle' icon={<SearchOutlined />} onClick={() => onShow('search')} />
       <Dropdown overlay={account} trigger={['click']} placement='bottomRight'>

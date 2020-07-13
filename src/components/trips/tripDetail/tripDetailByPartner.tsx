@@ -1,6 +1,6 @@
 import React from 'react'
 import { Table } from 'antd'
-import PageLayout from '../../layout/PageLayout'
+import PageLayout from '../../layout/pageLayout'
 
 
 const Partners = () => {

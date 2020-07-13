@@ -77,9 +77,9 @@ const Dashboard = () => {
         <Col sm={24}>
           <Card size='small' className='card-body-0 border-top-blue'>
             <Collapse
-              defaultActiveKey={['1']}
               onChange={callback}
               ghost
+              accordion
             >
               <Panel header='Loads' key='1'>
                 <Loads />
