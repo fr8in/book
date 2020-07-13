@@ -51,12 +51,12 @@ export default function CustomerList() {
   ];
 
   return (
-    <PageLayout title="Partners">
+    <PageLayout title="Customer">
       <Table
         columns={columnsCurrent}
         dataSource={cusMock}
         rowKey={(record) => record.id}
-        size="middle"
+        size="small"
         scroll={{ x: 800, y: 400 }}
         pagination={false}
       />
