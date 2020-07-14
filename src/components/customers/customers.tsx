@@ -1,10 +1,10 @@
 import { Table } from 'antd'
 import Link from 'next/link'
-// import cusMock from '../../../mock/customer/CustomerListMock'
 import PageLayout from '../layout/pageLayout'
 import { useQuery } from '@apollo/react-hooks'
 import { NetworkStatus } from 'apollo-client'
 import gql from 'graphql-tag'
+// import cusMock from '../../../mock/customer/CustomerListMock'
 // import ErrorMessage from './ErrorMessage'
 
 export const ALL_CUSTOMER_QUERY = gql`
@@ -12,6 +12,8 @@ export const ALL_CUSTOMER_QUERY = gql`
     customer(offset: $offset, limit: $limit) {
       id
       name
+      mobileNo
+      cardCode
     }
   }
 `
@@ -65,7 +67,7 @@ const Customers = () => {
         return (
           <Link
             href='customers/customer/[id]'
-            as={`customers/customer/${record.id}`}
+            as={`customers/customer/${record.cardCode}`}
           >
             <a>{text}</a>
           </Link>
@@ -74,7 +76,7 @@ const Customers = () => {
     },
     {
       title: 'User Phone',
-      dataIndex: 'mobileNoList'
+      dataIndex: 'mobileNo'
     },
     {
       title: 'Orders',

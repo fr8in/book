@@ -102,3 +102,37 @@ a, .link {
     color: @white;
   }
 }
+
+/* these make sure it can work in any text element */
+.inline-wrapper {
+  padding: 0 2px;
+  margin-left: -4px;
+  .inline-text-copy,
+  .inline-text-input {
+    background: none;
+    border: none;
+    outline: none;
+    line-height: 1.8;
+    display: inline-block;
+    padding: 0 4px;
+    &.active {
+      cursor: pointer;
+    }
+    &.hidden {
+      display: none;
+    }
+  }
+  .inline-text-copy {
+    border-bottom: dashed 1px lighten(@gray, 40%);
+    &:hover{
+      border-bottom-color: @white;
+      box-shadow: 0 0 1px 1px lighten(@gray, 40%);
+      border-radius: 4px;
+      .anticon { color: @primary; }
+    }
+    .anticon { color: @light-gray; margin-left: 10px; }
+  }
+  .inline-text-input.active {
+    border-bottom: 1px solid @primary;
+  }
+}
