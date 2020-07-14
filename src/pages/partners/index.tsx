@@ -1,4 +1,4 @@
-import {Row,Col,Card} from 'antd'
+import {Row, Col, Card} from 'antd'
 import PageLayout from '../../components/layout/pageLayout'
 import PartnerList from '../../components/partners/partners'
 import CreatePartner from '../../components/partners/partnerDetail/createPartner'

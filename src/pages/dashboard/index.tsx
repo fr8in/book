@@ -1,16 +1,20 @@
 
-import { Row, Col, Card, Tabs, Collapse } from 'antd'
+import { useState } from 'react'
+import { Row, Col, Card, Tabs, Collapse, Button, Tooltip, Input } from 'antd'
 import PageLayout from '../../components/layout/pageLayout'
-import Loads from '../../components/trips/loads/loads'
+import Trips from '../../components/trips/trips'
+import WaitingForLoad from '../../components/trucks/waitingForLoad/waitingForLoad'
 import Orders from '../../components/reports/orders'
 import Revenue from '../../components/reports/revenue'
 import Progress from '../../components/reports/progress'
+import { WhatsAppOutlined, FullscreenOutlined } from '@ant-design/icons'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
 const Dashboard = () => {
+  const [tabAkey, setTabAkey] = useState('1')
   const callback = (key) => {
-    console.log(key)
+    setTabAkey(key)
   }
   return (
     <PageLayout title='Dashboard'>
@@ -28,29 +32,42 @@ const Dashboard = () => {
       {/** All trips status wise: Filter applocable for Source city
         ** Waiting for load and Delivery On-hold records */}
       <Row gutter={[10, 10]}>
-        <Col sm={24}>
+        <Col xs={24} sm={24}>
           <Card size='small' className='card-body-0 border-top-blue'>
-            <Tabs defaultActiveKey='1' onChange={callback}>
-              <TabPane tab='Unloading(s)' key='1'>
-                <Loads />
+            <Tabs
+              defaultActiveKey='1'
+              onChange={callback}
+              tabBarExtraContent={
+                <span className='extra'>
+                  <Button size='small' type='primary' shape='circle' icon={<WhatsAppOutlined />} />
+                  <Tooltip title='Full Screen Mode'>
+                    <Button size='small' type='primary' shape='circle' icon={<FullscreenOutlined />} />
+                  </Tooltip>
+                  {tabAkey === '1' &&
+                    <Input placeholder='Search Truck...' style={{ width: 'auto' }} />}
+                </span>
+              }
+            >
+              <TabPane tab='Unloading(s)' key='2'>
+                <Trips />
               </TabPane>
-              <TabPane tab='Load' key='2'>
-                <Loads />
+              <TabPane tab='Load' key='1'>
+                <WaitingForLoad />
               </TabPane>
               <TabPane tab='Assigned' key='3'>
-                <Loads />
+                <Trips />
               </TabPane>
               <TabPane tab='Confirmed' key='4'>
-                <Loads />
+                <Trips />
               </TabPane>
               <TabPane tab='Loading' key='5'>
-                <Loads />
+                <Trips />
               </TabPane>
               <TabPane tab='Intransit(S)' key='6'>
-                <Loads />
+                <Trips intransit />
               </TabPane>
               <TabPane tab='Delivery On-hold' key='7'>
-                <Loads />
+                <Trips />
               </TabPane>
             </Tabs>
           </Card>
@@ -58,30 +75,38 @@ const Dashboard = () => {
       </Row>
       {/** Unloading and Intransit: Filter applocable for Destination city */}
       <Row gutter={[10, 10]}>
-        <Col sm={24}>
+        <Col xs={24} sm={24}>
           <Card size='small' className='card-body-0 border-top-blue'>
-            <Tabs defaultActiveKey='1' onChange={callback}>
+            <Tabs
+              defaultActiveKey='1'
+              onChange={callback}
+              tabBarExtraContent={
+                <span className='extra'>
+                  <Input placeholder='Search Truck...' style={{ width: 'auto' }} />
+                </span>
+              }
+            >
               <TabPane tab='Unloading(D)' key='1'>
-                <Loads />
+                <Trips />
               </TabPane>
               <TabPane tab='Intransit(D)' key='2'>
-                <Loads />
+                <Trips intransit />
               </TabPane>
             </Tabs>
           </Card>
         </Col>
       </Row>
-      {/** Excess Loads */}
+      {/** Excess Trips */}
       <Row>
-        <Col sm={24}>
+        <Col xs={24} sm={24}>
           <Card size='small' className='card-body-0 border-top-blue'>
             <Collapse
-              defaultActiveKey={['1']}
               onChange={callback}
               ghost
+              accordion
             >
               <Panel header='Loads' key='1'>
-                <Loads />
+                <Trips />
               </Panel>
             </Collapse>
           </Card>
