@@ -6,27 +6,27 @@ import '../styles/global.less'
 // import AdminLayout from '../components/layout/Admin'
 import SiteLayout from '../components/layout/Site'
 import LoginLayout from '../components/layout/loginLayout'
+import { withApollo } from '../lib/apollo'
 
 class MyApp extends App {
-  render () {
+  render() {
     const { Component, pageProps, router } = this.props
+    //const ApolloComponent = withApollo({ ssr: true })()
 
     if (router.pathname.startsWith('/login')) {
       return (
         <LoginLayout>
-          <Component {...pageProps} />
+          <Component {...pageProps} />)
         </LoginLayout>
       )
     }
 
     return (
-      <>
-        <SiteLayout fixed collapsible collapseHandle collapsed>
-          <Component {...pageProps} />
-        </SiteLayout>
-      </>
+      <SiteLayout fixed collapsible collapseHandle collapsed>
+        <Component {...pageProps} />)
+      </SiteLayout>
     )
   }
 }
 
-export default MyApp
+export default withApollo({ ssr: true })(MyApp)

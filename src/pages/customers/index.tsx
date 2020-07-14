@@ -2,7 +2,6 @@ import { Tabs, Row, Col, Card, Input } from 'antd'
 import Customers from '../../components/customers/customers'
 import CustomerKyc from '../../components/customers/customerKyc'
 import PageLayout from '../../components/layout/pageLayout'
-
 const { Search } = Input
 
 const TabPane = Tabs.TabPane
