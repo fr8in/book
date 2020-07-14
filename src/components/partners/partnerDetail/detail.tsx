@@ -1,5 +1,5 @@
 import React from 'react'
-import DetailInfo from '../../../components/partners/partnerDetail/partnerDetailInfo'
+import DetailInfo from './partnerDetail'
 import Document from '../../../components/partners/partnerDetail/partnerDocument'
 import {Row, Col} from 'antd'
 export default function detail() {
@@ -7,10 +7,10 @@ export default function detail() {
         <div>
             <Row gutter={[10, 10]}>
              
-                <Col sm={12}>
+                <Col xs={24} sm={12}>
                 <DetailInfo/>
                 </Col>
-                <Col  sm={12}>
+                <Col xs={24} sm={12}>
                 <Document />
                 </Col>
               

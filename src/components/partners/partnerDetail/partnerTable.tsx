@@ -1,9 +1,9 @@
 import React from 'react'
 import {Row,Col,Card, Tabs } from 'antd'
-import PageLayout from '../../../components/layout/pageLayout'
-import TripDetail from '../../trips/tripsByStages'
-import PartnerTruck from '../../../components/trucks/trucksByPartner'
-import Detail from '../../../components/partners/partnerDetail/detail'
+import PageLayout from '../../layout/pageLayout'
+import TripDetail from '../../trips/trip/tripsByStages'
+import PartnerTruck from '../../trucks/trucksByPartner'
+import Detail from './detail'
 import Comment from './comment'
 const TabPane = Tabs.TabPane
 

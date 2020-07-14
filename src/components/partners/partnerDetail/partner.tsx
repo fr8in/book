@@ -1,11 +1,14 @@
 import React from 'react'
 import {Row, Col} from 'antd'
-import { CheckCircleOutlined } from '@ant-design/icons'
+import { CheckCircleOutlined,CrownFilled } from '@ant-design/icons'
 
 export default function partnerInfo(props) {
     return (
         <div>
                 <Row gutter={[10, 10]}> 
+                <Col>
+					<h2> <CrownFilled /> </h2>	
+					</Col>
                     <Col>
 					<h2> <label>Surya</label> </h2>	
 					</Col>

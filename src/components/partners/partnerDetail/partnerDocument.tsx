@@ -1,5 +1,7 @@
-import { Collapse } from 'antd';
-
+import { Collapse, Input, Tabs } from 'antd';
+import Documents from '../../../components//partners/partnerDetail/document'
+import FasTag from '../../cards/fasTag'
+import FuelCard from '../../cards/fuelCard'
 const { Panel } = Collapse;
 
 
@@ -7,13 +9,18 @@ const PartnerDocument = () =>{
     return (
   <Collapse accordion>
     <Panel header="Document" key="1">
-      <p>Document</p>
+     <Documents />
     </Panel>
     <Panel header="Fuel Detail" key="2">
-      <p>Fuel Detail</p>
+      <FuelCard />
     </Panel>
     <Panel header="Fas Card" key="3">
-      <p>Fas Card</p>
+   
+                <span className='extra'>
+                  <Input placeholder='Search...' style={{ width: 'auto' }} />
+                </span>
+          
+    <FasTag />
     </Panel>
   </Collapse>
     )
