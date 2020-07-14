@@ -2,7 +2,6 @@ import { Tabs, Row, Col, Card, Input } from 'antd'
 import CustomerList from '../../components/customers/customerList'
 import NewCustomer from '../../components/customers/newCustomer'
 import PageLayout from '../../components/layout/pageLayout'
-
 const { Search } = Input
 
 const TabPane = Tabs.TabPane
@@ -51,5 +50,4 @@ const Customers = () => {
     </PageLayout>
   )
 }
-
 export default Customers

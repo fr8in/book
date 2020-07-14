@@ -2,8 +2,61 @@ import { Table } from 'antd';
 import Link from 'next/link';
 import cusMock from '../../../mock/customer/CustomerListMock';
 import PageLayout from '../layout/pageLayout';
+import { useQuery } from '@apollo/react-hooks'
+import { NetworkStatus } from 'apollo-client'
+import gql from 'graphql-tag'
+//import ErrorMessage from './ErrorMessage'
 
-export default function CustomerList () {
+export const ALL_CUSTOMER_QUERY = gql`
+  query customers($offset: Int!, $limit: Int!) {
+    customer(offset: $offset, limit: $limit) {
+      id
+      name
+    }
+  }
+`
+export const customersQueryVars = {
+  offset: 0,
+  limit: 10,
+}
+
+export default function CustomerList() {
+  const { loading, error, data, fetchMore, networkStatus } = useQuery(
+    ALL_CUSTOMER_QUERY,
+    {
+      variables: customersQueryVars,
+      // Setting this value to true will make the component rerender when
+      // the "networkStatus" changes, so we are able to know if it is fetching
+      // more data
+      notifyOnNetworkStatusChange: true,
+    }
+  )
+
+  const loadingMoreCustomers = networkStatus === NetworkStatus.fetchMore
+
+  const loadMoreCustomers = () => {
+    fetchMore({
+      variables: {
+        offset: customer.length,
+      },
+      updateQuery: (previousResult, { fetchMoreResult }) => {
+        if (!fetchMoreResult) {
+          return previousResult
+        }
+        return Object.assign({}, previousResult, {
+          // Append the new posts results to the old one
+          customer: [...previousResult.customer, ...fetchMoreResult.customer],
+        })
+      },
+    })
+  }
+
+  //if (error) return <ErrorMessage message="Error loading posts." />
+  if (loading && !loadingMoreCustomers) return <div>Loading</div>
+  console.log(data)
+  const { customer } = data
+
+  //export default function CustomerList() {
   const columnsCurrent = [
     {
       title: 'Customer',
@@ -54,7 +107,7 @@ export default function CustomerList () {
     <PageLayout title='Customer'>
       <Table
         columns={columnsCurrent}
-        dataSource={cusMock}
+        dataSource={customer}
         rowKey={record => record.id}
         size='small'
         scroll={{ x: 800, y: 400 }}

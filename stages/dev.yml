@@ -17,11 +17,7 @@ provider:
 
   environment:
     NODE_ENV: ${opt:stage}
-    DB_USERNAME: ${opt:DB_USERNAME}
-    DB_PASSWORD: ${opt:DB_PASSWORD}
-    DB_HOST: ${opt:DB_HOST}
-    DB_PORT: ${opt:DB_PORT}
-    KAFKA: ${opt:KAFKA}
+    CORE: ${opt:CORE}
     BITBUCKET_BUILD_NUMBER: ${opt:BITBUCKET_BUILD_NUMBER}
 
 functions:
