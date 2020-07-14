@@ -21,6 +21,7 @@
     "@zeit/next-less": "^1.0.1",
     "@zeit/next-sass": "^1.0.1",
     "antd": "^4.4.1",
+    "moment": "^2.27.0",
     "next": "latest",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

@@ -1,9 +1,9 @@
-import { Table } from 'antd';
-import Link from 'next/link';
-import cusMock from '../../../mock/customer/CustomerListMock';
-import PageLayout from '../layout/pageLayout';
+import { Table } from 'antd'
+import Link from 'next/link'
+import cusMock from '../../../mock/customer/CustomerListMock'
+import PageLayout from '../layout/pageLayout'
 
-export default function CustomerList () {
+const Customers = () => {
   const columnsCurrent = [
     {
       title: 'Customer',
@@ -63,3 +63,5 @@ export default function CustomerList () {
     </PageLayout>
   )
 }
+
+export default Customers

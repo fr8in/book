@@ -1,32 +1,66 @@
 import tripsData from '../../../mock/trip/tripsData'
-import { Table, Tooltip, Button } from 'antd'
+import { Table, Tooltip, Input, Checkbox } from 'antd'
 import Link from 'next/link'
-import { PhoneOutlined, CommentOutlined, WhatsAppOutlined } from '@ant-design/icons'
+import { SearchOutlined, DownSquareOutlined } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
+import moment from 'moment'
+
+const CheckboxGroup = Checkbox.Group
+const statusList = [
+  { value: 1, text: 'Delivered' },
+  { value: 11, text: 'Approval Pending' },
+  { value: 12, text: 'POD Verified' },
+  { value: 13, text: 'Invoiced' },
+  { value: 20, text: 'Paid' },
+  { value: 21, text: 'Received' },
+  { value: 22, text: 'Closed' }
+]
 
 const Trips = (props) => {
-  const initial = { comment: false }
-  const { visible, onShow, onHide } = useShowHide(initial)
-  const callNow = record => {
-    window.location.href = 'tel:' + record
-  }
+  const initial = { tripIdSearch: false }
+  const { visible, onShow } = useShowHide(initial)
 
   const columns = [
     {
-      title: 'Load Id',
+      title: 'ID',
       dataIndex: 'id',
+      width: '5%',
       render: (text, record) => {
         return (
           <Link href='/trips/trip/[id]' as={`/trips/trip/${record.id} `}>
             <a>{text}</a>
           </Link>)
       },
-      sorter: (a, b) => a.tripId - b.tripId,
-      width: '8%'
+
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search TripId'
+            id='id'
+            name='id'
+            type='number'
+          />
+        </div>
+      ),
+      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+      onFilterDropdownVisibleChange: () => onShow('tripIdSearch')
+    },
+    {
+      title: <Tooltip title='Order date'><span>O.Date</span></Tooltip>,
+      dataIndex: 'orderDate',
+      key: 'orderDate',
+      render: (text, record) => {
+        return text ? (
+          moment(text).format('DD-MMM')
+        ) : ''
+      },
+      sorter: (a, b) => (a.orderDate > b.orderDate ? 1 : -1),
+      width: '6%'
     },
     {
       title: 'Customer',
       dataIndex: 'customer',
+      key: 'customer',
       render: (text, record) => {
         return (
           <Link href='/customers/customer/[id]' as={`/customers/customer/${record.customerId} `}>
@@ -35,16 +69,23 @@ const Trips = (props) => {
               : <a>{text}</a>}
           </Link>)
       },
-      sorter: (a, b) =>
-        (a.customerName ? a.customerName.toLowerCase() : '') >
-          (b.customerName ? b.customerName.toLowerCase() : '')
-          ? 1
-          : -1,
-      width: '10%'
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search Customer Name'
+            id='customer'
+            name='customer'
+          />
+        </div>
+      ),
+      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+      onFilterDropdownVisibleChange: () => onShow('tripCustomerSearch'),
+      width: '9%'
     },
     {
       title: 'Partner',
       dataIndex: 'partner',
+      key: 'partner',
       render: (text, record) => {
         return (
           <Link href='/partners/partner/[id]' as={`/partners/partner/${record.partnerId} `}>
@@ -53,123 +94,124 @@ const Trips = (props) => {
               : <a>{text}</a>}
           </Link>)
       },
-      sorter: (a, b) =>
-        (a.partner ? a.partner.toLowerCase() : '') >
-          (b.partner ? b.partner.toLowerCase() : '')
-          ? 1
-          : -1,
-      width: '10%'
-    },
-    {
-      title: 'Driver No',
-      dataIndex: 'driverNo',
-      render: (text, record) => {
-        return (
-          <span onClick={() => callNow(record.driverNo)} className='link'>{record.driverNo}</span>
-        )
-      },
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search Partner Name'
+            id='partner'
+            name='partner'
+          />
+        </div>
+      ),
+      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+      onFilterDropdownVisibleChange: () => onShow('tripPartnerSearch'),
       width: '9%'
     },
     {
       title: 'Truck',
       dataIndex: 'truck',
+      key: 'truckNo',
       render: (text, record) => {
         return (
           <Link href='/trucks/truck/[id]' as={`/trucks/truck/${record.truckId} `}>
             <a>{text}</a>
           </Link>)
       },
-      width: '14%'
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search Truck'
+            id='truck'
+            name='truck'
+          />
+        </div>
+      ),
+      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+      onFilterDropdownVisibleChange: () => onShow('tripTruckSearch'),
+      width: '13%'
     },
     {
       title: 'Source',
       dataIndex: 'source',
+      key: 'source',
+      width: '8%',
       render: (text, record) => {
-        return text && text > 10 ? text.slice(0, 10) + '...' : text
+        return text > 12 ? (
+          <Tooltip title={text}>
+            <span>{text.slice(0, 9) + '...'}</span>
+          </Tooltip>
+        ) : text
       },
-      sorter: (a, b) =>
-        (a.source ? a.source.toLowerCase() : '') >
-          (b.source ? b.source.toLowerCase() : '')
-          ? 1
-          : -1,
-      width: '8%'
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search Source City'
+            id='source'
+            name='source'
+          />
+        </div>
+      ),
+      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+      onFilterDropdownVisibleChange: () => onShow('tripSourceSearch')
     },
+
     {
       title: 'Destination',
       dataIndex: 'destination',
+      key: 'destination',
+      width: '8%',
       render: (text, record) => {
-        return text && text.length > 10 ? text.slice(0, 10) + '...' : text
+        return text > 12 ? (
+          <Tooltip title={text}>
+            <span>{text.slice(0, 9) + '...'}</span>
+          </Tooltip>
+        ) : text
       },
-      sorter: (a, b) =>
-        (a.destination ? a.destination.toLowerCase() : '') >
-          (b.destination ? b.destination.toLowerCase() : '')
-          ? 1
-          : -1,
-      width: '9%'
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search Destination City'
+            id='destination'
+            name='destination'
+          />
+        </div>
+      ),
+      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+      onFilterDropdownVisibleChange: () => onShow('tripDestSearch')
     },
     {
-      title: 'TAT',
-      dataIndex: 'deviceTat',
-      sorter: (a, b) =>
-        (a.deviceTat ? a.deviceTat : 0) -
-          (b.deviceTat ? b.deviceTat : 0),
-      render: (text, record) => {
-        return text && text ? text.toFixed(2) : 0
-      },
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      width: '7%',
+      filters: statusList
+    },
+    {
+      title: 'SO Price',
+      dataIndex: 'soPrice',
+      key: 'soPrice',
       width: '6%'
     },
-    props.intransit ? {
-      title: 'Delay',
-      dataIndex: 'delay',
-      width: '5%',
-      sorter: (a, b) => (a.delay > b.delay ? 1 : -1)
-    } : {},
-    props.intransit ? {
-      title: 'ETA',
-      dataIndex: 'eta',
-      width: '7%',
-      sorter: (a, b) => (a.eta > b.eta ? 1 : -1)
-    } : {},
     {
-      title: 'Comment',
-      dataIndex: 'comment',
-      render: (text, record) => {
-        return (
-          text ? (
-            <Tooltip title={text}>{text.slice(0, 18) + '...'}</Tooltip>
-          ) : null
-        )
-      },
-      width: props.intransit ? '14%' : '17%'
+      title: 'PO Price',
+      dataIndex: 'poPrice',
+      key: 'poPrice',
+      width: '6%'
     },
     {
-      title: 'Action',
-      render: (text, record) => (
-        <span className='actions'>
-          <Tooltip title={record.driverPhoneNo}>
-            <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.driverPhoneNo)} />
-          </Tooltip>
-          <Tooltip title='Comment'>
-            <Button type='link' disabled icon={<CommentOutlined />} onClick={() => onShow('comment')} />
-          </Tooltip>
-          <span>
-            <Tooltip title='click to copy message'>
-              <Button type='link' icon={<WhatsAppOutlined />} />
-            </Tooltip>
-          </span>
-        </span>
-      ),
-      width: '10%'
+      title: 'Trip KM',
+      dataIndex: 'tripKm',
+      key: 'tripKm',
+      width: '6%'
     }
   ]
   return (
     <Table
       columns={columns}
       dataSource={tripsData}
-      className='withAction'
       rowKey={record => record.id}
       size='small'
-      scroll={{ x: 1156, y: 210 }}
+      scroll={{ x: 1156 }}
       pagination={false}
     />
   )
