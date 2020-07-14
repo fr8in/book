@@ -1,6 +1,7 @@
 const tripData = [
   {
     id: 187550,
+    orderDate: 1594717031873,
     customer: 'Ritco Logistics',
     customerId: 100,
     partner: 'Sabir khan',
@@ -14,10 +15,15 @@ const tripData = [
     deviceTat: 11.27,
     delay: 1.21,
     eta: '11-Jul',
-    comment: 'lockdown issue truck not available'
+    comment: 'lockdown issue truck not available',
+    status: 'Delivered',
+    soPrice: 68000,
+    poPrice: 65000,
+    tripKM: 1300
   },
   {
     id: 187551,
+    orderDate: 1594717031873,
     customer: 'Ritco Logistics',
     customerId: 101,
     partner: 'Sabir khan',
@@ -31,10 +37,15 @@ const tripData = [
     deviceTat: 11.27,
     delay: 1.21,
     eta: '11-Jul',
-    comment: 'lockdown issue truck not available'
+    comment: 'lockdown issue truck not available',
+    status: 'Delivered',
+    soPrice: 68000,
+    poPrice: 65000,
+    tripKM: 1300
   },
   {
     id: 187552,
+    orderDate: 1594717031873,
     customer: 'Ritco Logistics',
     customerId: 102,
     partner: 'Sabir khan',
@@ -48,10 +59,15 @@ const tripData = [
     deviceTat: 11.27,
     delay: 1.21,
     eta: '11-Jul',
-    comment: 'lockdown issue truck not available'
+    comment: 'lockdown issue truck not available',
+    status: 'Delivered',
+    soPrice: 68000,
+    poPrice: 65000,
+    tripKM: 1300
   },
   {
     id: 187553,
+    orderDate: 1594717031873,
     customer: 'Ritco Logistics',
     customerId: 103,
     partner: 'Sabir khan',
@@ -65,10 +81,15 @@ const tripData = [
     deviceTat: 11.27,
     delay: 1.21,
     eta: '11-Jul',
-    comment: 'lockdown issue truck not available'
+    comment: 'lockdown issue truck not available',
+    status: 'Delivered',
+    soPrice: 68000,
+    poPrice: 65000,
+    tripKM: 1300
   },
   {
     id: 187554,
+    orderDate: 1594717031873,
     customer: 'Ritco Logistics',
     customerId: 104,
     partner: 'Sabir khan',
@@ -82,10 +103,15 @@ const tripData = [
     deviceTat: 11.27,
     delay: 1.21,
     eta: '11-Jul',
-    comment: 'lockdown issue truck not available'
+    comment: 'lockdown issue truck not available',
+    status: 'Delivered',
+    soPrice: 68000,
+    poPrice: 65000,
+    tripKM: 1300
   },
   {
     id: 187555,
+    orderDate: 1594717031873,
     customer: 'Ritco Logistics',
     customerId: 105,
     partner: 'Sabir khan',
@@ -99,10 +125,15 @@ const tripData = [
     deviceTat: 11.27,
     delay: 1.21,
     eta: '11-Jul',
-    comment: 'lockdown issue truck not available'
+    comment: 'lockdown issue truck not available',
+    status: 'Delivered',
+    soPrice: 68000,
+    poPrice: 65000,
+    tripKM: 1300
   },
   {
     id: 187556,
+    orderDate: 1594717031873,
     customer: 'Ritco Logistics',
     customerId: 106,
     partner: 'Sabir khan',
@@ -116,10 +147,15 @@ const tripData = [
     deviceTat: 11.27,
     delay: 1.21,
     eta: '11-Jul',
-    comment: 'lockdown issue truck not available'
+    comment: 'lockdown issue truck not available',
+    status: 'Delivered',
+    soPrice: 68000,
+    poPrice: 65000,
+    tripKM: 1300
   },
   {
     id: 187557,
+    orderDate: 1594717031873,
     customer: 'Ritco Logistics',
     customerId: 107,
     partner: 'Sabir khan',
@@ -133,7 +169,11 @@ const tripData = [
     deviceTat: 11.27,
     delay: 1.21,
     eta: '11-Jul',
-    comment: 'lockdown issue truck not available'
+    comment: 'lockdown issue truck not available',
+    status: 'Delivered',
+    soPrice: 68000,
+    poPrice: 65000,
+    tripKM: 1300
   }
 ]
 
