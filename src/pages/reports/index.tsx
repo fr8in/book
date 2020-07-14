@@ -1,5 +1,5 @@
 
-import PageLayout from '../../components/layout/PageLayout'
+import PageLayout from '../../components/layout/pageLayout'
 
 const Reports = () => {
   return (

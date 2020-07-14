@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import PageLayout from '../../../components/layout/PageLayout'
+import PageLayout from '../../../components/layout/pageLayout'
 
 const PartnerDetail = () => {
   const router = useRouter()

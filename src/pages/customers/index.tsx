@@ -1,7 +1,7 @@
 import { Tabs, Row, Col, Card } from "antd";
 import CustomerList from "../../components/customers/customerList";
 import NewCustomer from "../../components/customers/newCustomer";
-import PageLayout from "../../components/layout/PageLayout";
+import PageLayout from "../../components/layout/pageLayout";
 import { Input } from "antd";
 
 const { Search } = Input;

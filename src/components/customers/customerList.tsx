@@ -1,7 +1,7 @@
 import { Table } from "antd";
 import Link from "next/link";
 import cusMock from "../../../mock/customer/CustomerListMock";
-import PageLayout from "../layout/PageLayout";
+import PageLayout from "../layout/pageLayout";
 
 export default function CustomerList() {
   const columnsCurrent = [

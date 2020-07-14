@@ -3,9 +3,9 @@ import App from 'next/app'
 import 'antd/dist/antd.less'
 import '../styles/global.less'
 
-import AdminLayout from '../components/layout/Admin'
+// import AdminLayout from '../components/layout/Admin'
 import SiteLayout from '../components/layout/Site'
-import SettingsLayout from '../components/layout/Settings'
+import LoginLayout from '../components/layout/loginLayout'
 
 class MyApp extends App {
   render () {
@@ -13,18 +13,18 @@ class MyApp extends App {
 
     if (router.pathname.startsWith('/login')) {
       return (
-        <AdminLayout>
-          <SettingsLayout>
-            <Component {...pageProps} />
-          </SettingsLayout>
-        </AdminLayout>
+        <LoginLayout>
+          <Component {...pageProps} />
+        </LoginLayout>
       )
     }
 
     return (
-      <SiteLayout fixed collapsible collapseHandle collapsed>
-        <Component {...pageProps} />
-      </SiteLayout>
+      <>
+        <SiteLayout fixed collapsible collapseHandle collapsed>
+          <Component {...pageProps} />
+        </SiteLayout>
+      </>
     )
   }
 }

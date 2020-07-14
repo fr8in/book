@@ -1,42 +1,96 @@
-import tripsData from '../../../../mock/dashboard/tripsData'
+import tripsData from '../../../../mock/trip/tripsData'
 import { Table } from 'antd'
 import Link from 'next/link'
 
-const TripStatus = () => {
+const Load = (props) => {
+  const callDriver = record => {
+    window.location.href = 'tel:' + record.driverNo
+  }
   const columns = [
     {
-      title: 'Truck No',
-      dataIndex: 'truckNo',
+      title: 'Load Id',
+      dataIndex: 'id',
+      width: '6%',
       render: (text, record) => {
         return (
-          <Link href='/partners/partner/[id]' as={`/partners/partner/${record.id} `}>
+          <Link href='/trips/trip/[id]' as={`/trips/trip/${record.id} `}>
             <a>{text}</a>
           </Link>
         )
       }
     },
     {
-      title: 'Truck No',
-      dataIndex: 'truckNo'
+      title: 'Customer',
+      dataIndex: 'customer',
+      render: (text, record) => {
+        return (
+          <Link href='/customers/customer/[id]' as={`/customers/customer/${record.customerId} `}>
+            <a>{text}</a>
+          </Link>
+        )
+      }
     },
     {
-      title: 'Truck No',
-      dataIndex: 'truckNo'
+      title: 'Partner',
+      dataIndex: 'partner',
+      render: (text, record) => {
+        return (
+          <Link href='/partners/partner/[id]' as={`/partners/partner/${record.partnerId} `}>
+            <a>{text}</a>
+          </Link>
+        )
+      }
     },
     {
-      title: 'Truck No',
-      dataIndex: 'truckNo'
+      title: 'Driver No',
+      dataIndex: 'driverNo',
+      width: '8%',
+      render: (text, record) => {
+        return (
+          <span onClick={() => callDriver(record)} className='link'>{text}</span>
+        )
+      }
     },
     {
-      title: 'Truck No',
-      dataIndex: 'truckNo'
+      title: 'Truck',
+      dataIndex: 'truck',
+      render: (text, record) => {
+        return (
+          <Link href='/trucks/truck/[id]' as={`/trucks/truck/${record.truckId} `}>
+            <a>{text}</a>
+          </Link>
+        )
+      }
     },
     {
-      title: 'Truck No',
-      dataIndex: 'truckNo'
+      title: 'Source',
+      dataIndex: 'source'
+    },
+    {
+      title: 'Destination',
+      dataIndex: 'destination'
+    },
+    {
+      title: 'TAT',
+      dataIndex: 'tat',
+      width: '5%'
+    },
+    props.intransit ? {
+      title: 'Delay',
+      dataIndex: 'delay',
+      width: '5%'
+    } : {},
+    props.intransit ? {
+      title: 'ETA',
+      dataIndex: 'eta'
+    } : {},
+    {
+      title: 'Comment',
+      dataIndex: 'comment'
     },
     {
       title: 'Action',
+      width: '8%',
       render: (text, record) => ('test')
     }
   ]
@@ -52,4 +106,4 @@ const TripStatus = () => {
   )
 }
 
-export default TripStatus
+export default Load

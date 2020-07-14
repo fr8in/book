@@ -4,5 +4,30 @@
 // Paddings 
 .p0 { padding: 0 !important;}
 // Borders
-.border-top-blue { border-top: solid 1px @blue}
-.border-top-dark { border-top: solid 1px @dark-blue}
+.border-top-blue { border-top: solid 2px lighten(@blue, 20%)}
+.border-top-dark { border-top: solid 2px @dark-blue}
+// gradients
+.purple {
+    background-color: @purple;
+    background-image: linear-gradient(315deg, lighten(@purple,20%) 0%, lighten(@purple,10%) 75%);
+}
+.blue {
+    background-color: @primary;
+    background-image: linear-gradient(315deg, lighten(@primary,5%) 0%, @primary 75%); 
+}
+.teal {
+    background-color: @teal;
+    background-image: linear-gradient(315deg, @teal 0%, darken(@teal,5%) 75%);
+}
+.pink {
+    background-color: @pink;
+    background-image: linear-gradient(315deg, lighten(@pink,5%) 0%, @pink 75%);
+}
+.orange {
+    background: @orange; 
+    background-image: linear-gradient(315deg, @orange 0%, darken(@orange, 10%) 75%);
+}
+.yellow {
+    background-color: @golden;
+    background-image: linear-gradient(315deg, lighten(@golden, 10%) 0%, @golden 75%);
+}
