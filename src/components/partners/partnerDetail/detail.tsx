@@ -5,8 +5,8 @@ import {Row, Col} from 'antd'
 export default function detail() {
     return (
         <div>
+            <br />
             <Row gutter={[10, 10]}>
-             
                 <Col xs={24} sm={12}>
                 <DetailInfo/>
                 </Col>

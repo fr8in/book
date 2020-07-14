@@ -16,9 +16,9 @@ const PartnerDocument = () =>{
     </Panel>
     <Panel header="Fas Card" key="3">
    
-                <span className='extra'>
-                  <Input placeholder='Search...' style={{ width: 'auto' }} />
-                </span>
+      <span className='extra'>
+      <Input placeholder='Search...' style={{ width: 'auto' }} />
+      </span>
           
     <FasTag />
     </Panel>

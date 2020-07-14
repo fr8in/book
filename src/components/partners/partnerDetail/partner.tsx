@@ -10,10 +10,10 @@ export default function partnerInfo(props) {
 					<h2> <CrownFilled /> </h2>	
 					</Col>
                     <Col>
-					<h2> <label>Surya</label> </h2>	
+					<h1> <label>Surya</label> </h1>	
 					</Col>
                     <Col>
-                     <h2><CheckCircleOutlined twoToneColor="#28a745" /></h2>
+                     <h2><CheckCircleOutlined /></h2>
                        {props.children}
                     </Col>
                     <Col>
