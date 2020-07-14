@@ -19,15 +19,39 @@ const Trucks = () => {
     },
     {
       title: 'Trip Id',
-      dataIndex: 'tripId'
+      dataIndex: 'tripId',
+      render: (text, record) => {
+        return (
+          <Link href='trips/trip/[id]' as={`trips/trip/${record.id}`}>
+            <a>{text}</a>
+          </Link>
+        )
+      }
+
     },
     {
       title: 'Trip',
-      dataIndex: 'trip'
+      dataIndex: 'trip',
+      render: (text, record) => {
+        return (
+          <Link href='trips/trip/[id]' as={`trips/trip/${record.id}`}>
+            <a>{text}</a>
+          </Link>
+        )
+      }
+
     },
     {
       title: 'Partner',
-      dataIndex: 'partner'
+      dataIndex: 'partner',
+      render: (text, record) => {
+        return (
+          <Link href='partners/partner/[id]' as={`partners/partner/${record.id}`}>
+            <a>{text}</a>
+          </Link>
+        )
+      }
+
     },
     {
       title: 'Phone No',
