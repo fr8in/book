@@ -104,6 +104,7 @@ const WaitingForLoad = () => {
     <Table
       columns={columns}
       dataSource={loadData}
+      className='withAction'
       rowKey={record => record.id}
       size='small'
       scroll={{ x: 1156, y: 210 }}

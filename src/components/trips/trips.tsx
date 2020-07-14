@@ -166,6 +166,7 @@ const Trips = (props) => {
     <Table
       columns={columns}
       dataSource={tripsData}
+      className='withAction'
       rowKey={record => record.id}
       size='small'
       scroll={{ x: 1156, y: 210 }}
