@@ -1,5 +1,6 @@
 const customerDetails = [
   {
+    id: 1,
     name: 'Matheen',
     mobileNoList: 9945272789,
     noOfLoadsTaken: 0,
@@ -10,6 +11,7 @@ const customerDetails = [
     Status: 'approved'
   },
   {
+    id: 2,
     name: 'LRC LOGISTICS',
     mobileNoList: 9945248789,
     noOfLoadsTaken: 1,
@@ -20,6 +22,7 @@ const customerDetails = [
     Status: 'approved'
   },
   {
+    id: 3,
     name: 'Mana Transport Co',
     mobileNoList: 8885272789,
     noOfLoadsTaken: 0,
@@ -30,6 +33,7 @@ const customerDetails = [
     Status: 'approved'
   },
   {
+    id: 4,
     name: 'Kalaimagal transport',
     mobileNoList: 9995272700,
     noOfLoadsTaken: 1,
@@ -40,6 +44,7 @@ const customerDetails = [
     Status: 'approved'
   },
   {
+    id: 5,
     name: 'Jai Balaji Logistics',
     mobileNoList: 7745272788,
     noOfLoadsTaken: 0,
@@ -50,6 +55,7 @@ const customerDetails = [
     Status: 'approved'
   },
   {
+    id: 6,
     name: 'AKASH TRANSLINES',
     mobileNoList: 9665272777,
     noOfLoadsTaken: 1,
