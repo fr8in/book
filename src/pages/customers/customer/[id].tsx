@@ -1,12 +1,18 @@
-const CustomerDetail = (props) => {
+import PageLayout from "../../../components/layout/pageLayout";
 
-  return <h1>Customer ID: {props.id}</h1>
-}
+const CustomerDetail = (props) => {
+  console.log("object", props);
+  return (
+    <PageLayout title={`Customer - ${props.id}`}>
+      <h1>Customer ID: {props.id}</h1>
+    </PageLayout>
+  );
+};
 
 CustomerDetail.getInitialProps = ({ query }) => {
   return {
-    id: query.id
-  }
-}
+    id: query.id,
+  };
+};
 
-export default CustomerDetail
+export default CustomerDetail;
