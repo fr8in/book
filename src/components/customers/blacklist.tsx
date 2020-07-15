@@ -26,7 +26,7 @@ const Blacklist = ({ cardCode, statusId }) => {
     updateStatusId({
       variables: {
         cardCode,
-        statusId: checked ? customerStatus.Active : customerStatus.Blacklisted,
+        statusId: checked ? customerStatus.Blacklisted : customerStatus.Active,
       },
       update(cache, data) {
         //console.log('cache:', cache, 'data: ', ç)
@@ -37,12 +37,15 @@ const Blacklist = ({ cardCode, statusId }) => {
 
     })
   }
+  const checked = statusId === customerStatus.Blacklisted
   return (
+
     <div>
       <label>Blacklisted &nbsp;</label>
       <Switch
         onChange={onChange}
-        checked={statusId !== customerStatus.Blacklisted}
+        checked={checked}
+        className={checked ? 'block' : 'unblock'}
         disabled={false}
       />
     </div>
