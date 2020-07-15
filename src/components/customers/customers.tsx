@@ -55,7 +55,7 @@ const Customers = () => {
 
   // if (error) return <ErrorMessage message="Error loading posts." />
   if (loading && !loadingMoreCustomers) return <div>Loading</div>
-  console.log(data)
+  //console.log(data)
   const { customer } = data
 
   // export default function CustomerList() {
