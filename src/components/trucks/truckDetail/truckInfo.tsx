@@ -1,10 +1,11 @@
 import React from 'react'
-import {Row,Col,Input} from 'antd'
+import {Row,Col,Input,Space} from 'antd'
 export default function truckInfo() {
     return (
         <div>
-            <Row>
-                <Col>
+            <Space>
+            <Row gutter={[10, 10]}>
+                <Col xs={24} sm={24} md={6}>
             <Row>
                 Length(Ft)
             </Row>
@@ -12,7 +13,7 @@ export default function truckInfo() {
             <Input placeholder="Length" />
              </Row>
              </Col>
-             <Col>
+             <Col xs={24} sm={12} md={6}>
              <Row>
                Height(Ft)
             </Row>            
@@ -20,23 +21,25 @@ export default function truckInfo() {
             <Input placeholder="height" />
              </Row>
              </Col>
-             <Col>
+             <Col xs={24} sm={12} md={6}>
              <Row>
                 Breadth(Ft)
             </Row>
              <Row>
             <Input placeholder="Breadth" />
              </Row>
-             </Col>
-             <Col>
+             </Col >
+             <Col xs={24} sm={12} md={6}>
              <Row>
-                Driner Number(Ft)
+                Driver Number(Ft)
             </Row>
              <Row>
             <Input placeholder="number" />
              </Row>
              </Col>
+            
 </Row>
+</Space>
         </div>
     )
 }

@@ -32,13 +32,6 @@ const Trucks = () => {
     {
       title: 'Trip',
       dataIndex: 'trip',
-      render: (text, record) => {
-        return (
-          <Link href='trips/trip/[id]' as={`trips/trip/${record.id}`}>
-            <a>{text}</a>
-          </Link>
-        )
-      }
 
     },
     {

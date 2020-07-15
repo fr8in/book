@@ -2,7 +2,7 @@ import React from 'react'
 import { Tabs } from 'antd'
 import PageLayout from '../../../components/layout/pageLayout'
 import TripDetail from '../../../components/trips/tripDetail/tripDetailByPartner'
-import PartnerTruck from '../../../components/trucks/trucksByPartner'
+import PartnerTruck from '../../../components/trucks/truckDetail/trucksByPartner'
 import DetailInfo from '../../../components/partners/partnerDetail/partnerDetailInfo'
 import Comment from '../../../components/partners/partnerDetail/partnerComment'
 const TabPane = Tabs.TabPane
