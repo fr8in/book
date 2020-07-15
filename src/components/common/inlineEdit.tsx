@@ -15,12 +15,11 @@ function InlineEdit (props) {
   const enter = useKeypress('Enter')
   const esc = useKeypress('Escape')
 
-  const { onSetText, onSubmit, objKey, text } = props
+  const { onSetText, objKey, text } = props
 
   // check to see if the user clicked outside of this component
   useOnClickOutside(wrapperRef, () => {
     if (isInputActive) {
-      onSetText(text)
       setInputValue(text)
       setIsInputActive(false)
     }
@@ -28,8 +27,7 @@ function InlineEdit (props) {
 
   const onEnter = useCallback(() => {
     if (enter) {
-      onSetText(inputValue)
-      onSubmit(objKey, inputValue)
+      onSetText(objKey, inputValue)
       setIsInputActive(false)
     }
   }, [enter, inputValue, onSetText])
