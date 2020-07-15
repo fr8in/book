@@ -23,7 +23,7 @@ class MyApp extends App {
 
     return (
       <SiteLayout fixed collapsible collapseHandle collapsed>
-        <Component {...pageProps} />)
+        <Component {...pageProps} />
       </SiteLayout>
     )
   }

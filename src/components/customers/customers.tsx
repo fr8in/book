@@ -1,17 +1,17 @@
 import { Table } from 'antd'
 import Link from 'next/link'
-// import cusMock from '../../../mock/customer/CustomerListMock'
 import PageLayout from '../layout/pageLayout'
 import { useQuery } from '@apollo/react-hooks'
 import { NetworkStatus } from 'apollo-client'
 import gql from 'graphql-tag'
-// import ErrorMessage from './ErrorMessage'
 
 export const ALL_CUSTOMER_QUERY = gql`
   query customers($offset: Int!, $limit: Int!) {
     customer(offset: $offset, limit: $limit) {
       id
       name
+      mobileNo
+      cardCode
     }
   }
 `
@@ -51,12 +51,10 @@ const Customers = () => {
     })
   }
 
-  // if (error) return <ErrorMessage message="Error loading posts." />
   if (loading && !loadingMoreCustomers) return <div>Loading</div>
   console.log(data)
   const { customer } = data
 
-  // export default function CustomerList() {
   const columnsCurrent = [
     {
       title: 'Customer',
@@ -64,8 +62,8 @@ const Customers = () => {
       render: (text, record) => {
         return (
           <Link
-            href='customers/customer/[id]'
-            as={`customers/customer/${record.id}`}
+            href='customers/[id]'
+            as={`customers/${record.cardCode}`}
           >
             <a>{text}</a>
           </Link>
@@ -74,7 +72,7 @@ const Customers = () => {
     },
     {
       title: 'User Phone',
-      dataIndex: 'mobileNoList'
+      dataIndex: 'mobileNo'
     },
     {
       title: 'Orders',

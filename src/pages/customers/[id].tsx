@@ -1,12 +1,13 @@
-import PageLayout from "../../../components/layout/pageLayout";
+import PageLayout from "../../components/layout/pageLayout";
+import CustomerDetailContainer from "../../components/customers/containers/customerDetailContainer";
+
 
 const CustomerDetail = (props) => {
-  console.log("object", props);
   return (
     <PageLayout title={`Customer - ${props.id}`}>
-      <h1>Customer ID: {props.id}</h1>
+      <CustomerDetailContainer cardCode={props.id} />
     </PageLayout>
-  );
+  )
 };
 
 CustomerDetail.getInitialProps = ({ query }) => {
