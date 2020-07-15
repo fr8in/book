@@ -1,34 +1,40 @@
 import { useState } from 'react'
 import { Row, Col, Checkbox, Space, Button } from 'antd'
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons'
-import data from '../../../mock/customer/customerDetail'
-import LabelWithData from '../common/labelWithData'
 import InlineEdit from '../common/inlineEdit'
+import LabelWithData from '../common/labelWithData'
 
-const CustomerInfo = () => {
+import mockData from '../../../mock/customer/customerDetail'
+
+const CustomerInfo = (props) => {
+  const { customerInfo } = props
+
   const initial = {
-    gst: data.gst,
-    region: data.region,
-    paymentManager: data.paymentManager,
-    onBoardedBy: data.onBoardedBy,
-    companyType: data.companyType,
-    advancePercentage: data.advancePercentage,
-    advException: data.advanceException,
-    finalException: data.finalPaymentException,
-    creditLimit: data.creditLimit,
-    managed: data.managed === 'Yes'
+    gst: mockData.gst,
+    region: mockData.region,
+    paymentManager: mockData.paymentManager,
+    onBoardedBy: mockData.onBoardedBy,
+    companyType: mockData.companyType,
+    advancePercentage: mockData.advancePercentage,
+    advException: mockData.advanceException,
+    finalException: mockData.finalPaymentException,
+    creditLimit: mockData.creditLimit,
+    managed: mockData.managed === 'Yes'
   }
   const [value, setValue] = useState(initial)
+
   const editSubmit = (objKey, text) => {
     setValue({ ...value, [objKey]: text })
   }
+
   const textChangeHandle = (objKey, text) => {
     setValue({ ...value, [objKey]: text })
   }
+
   const onChange = (e) => {
-    console.log(`checked = ${e.target.checked}`)
     setValue({ ...value, managed: e.target.checked })
   }
+
   return (
     <Row>
       <Col xs={24} sm={24} md={12}>
@@ -36,8 +42,8 @@ const CustomerInfo = () => {
           label='PAN'
           data={
             <Space>
-              <span>{data.pan}</span>
-              {data.panUrl
+              <span>{customerInfo.PAN}</span>
+              {customerInfo.panUrl
                 ? <Button type='primary' shape='circle' icon={<DownloadOutlined />} size='small' />
                 : <Button shape='circle' icon={<UploadOutlined />} size='small' />}
             </Space>
@@ -49,7 +55,7 @@ const CustomerInfo = () => {
           label='LR'
           data={
             <Space>
-              {data.lrUrl
+              {customerInfo.lrUrl
                 ? <Button type='primary' shape='circle' icon={<DownloadOutlined />} size='small' />
                 : <Button shape='circle' icon={<UploadOutlined />} size='small' />}
             </Space>
@@ -63,9 +69,9 @@ const CustomerInfo = () => {
           labelSpan={10}
           dataSpan={14}
         />
-        <LabelWithData label='BP Code' data={data.cartCode} labelSpan={10} dataSpan={14} />
-        <LabelWithData label='Virtual Account' data={data.virtualAccount} labelSpan={10} dataSpan={14} />
-        <LabelWithData label='Mobile No' data={data.mobileNo} labelSpan={10} dataSpan={14} />
+        <LabelWithData label='BP Code' data={customerInfo.cardCode} labelSpan={10} dataSpan={14} />
+        <LabelWithData label='Virtual Account' data={mockData.virtualAccount} labelSpan={10} dataSpan={14} />
+        <LabelWithData label='Mobile No' data={customerInfo.mobileNo} labelSpan={10} dataSpan={14} />
         <LabelWithData
           label='Region'
           data={<InlineEdit text={value.region} objKey='region' onSetText={text => textChangeHandle('region', text)} onSubmit={editSubmit} />}
@@ -78,7 +84,7 @@ const CustomerInfo = () => {
           labelSpan={10}
           dataSpan={14}
         />
-        <LabelWithData label='Receivable Days' data={data.receivableDays} labelSpan={10} dataSpan={14} />
+        <LabelWithData label='Receivable Days' data={mockData.receivableDays} labelSpan={10} dataSpan={14} />
         <LabelWithData
           label='OnBoarded By'
           data={<InlineEdit text={value.onBoardedBy} objKey='onBoardedBy' onSetText={text => textChangeHandle('onBoardedBy', text)} onSubmit={editSubmit} />}
@@ -130,8 +136,8 @@ const CustomerInfo = () => {
           labelSpan={10}
           dataSpan={14}
         />
-        <LabelWithData label='Payment Pending' data={data.paymentPending} labelSpan={10} dataSpan={14} />
-        <LabelWithData label='System Mamul' data={data.systemMamul} labelSpan={10} dataSpan={14} />
+        <LabelWithData label='Payment Pending' data={mockData.paymentPending} labelSpan={10} dataSpan={14} />
+        <LabelWithData label='System Mamul' data={mockData.systemMamul} labelSpan={10} dataSpan={14} />
       </Col>
     </Row>
   )
