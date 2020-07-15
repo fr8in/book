@@ -47,11 +47,11 @@ export default function approvedAndRejected() {
       filterIcon: <FilterOutlined />,
     },
     {
-      title: "Claim",
+      title: "Claim ₹",
       dataIndex: "claim",
     },
     {
-      title: "Approved",
+      title: "Approved ₹",
       dataIndex: "approved",
     },
     {
