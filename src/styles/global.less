@@ -127,23 +127,21 @@ a, .link {
     }
   }
   .inline-text-input {
-    margin-bottom: 5px;
+    margin-bottom: 4px;
     &.active {
       border-bottom: 1px solid @primary;
     }
   }
   .inline-text-copy {
-    border-bottom: dashed 1px @white;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     padding-right: 18px;
     position: relative;
     &:hover{
-      border-bottom-color: @white;
       box-shadow: 0 0 1px 1px lighten(@gray, 40%);
       border-radius: 4px;
-      background-color: lighten(@gray, 60%);
+      background-color: lighten(@gray, 50%);
       .anticon { color: @primary; }
     }
     .anticon { 
@@ -154,3 +152,4 @@ a, .link {
     }
   }
 }
+.ant-card-head-title .inline-text-copy { margin-bottom: -1px;}
