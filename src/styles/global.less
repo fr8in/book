@@ -6,6 +6,9 @@ html, body {
   min-height: 100%;
   font-size: 13px;
 }
+label {
+  font-weight: 600;
+}
 a, .link {
   color: @mid-blue;
   cursor: pointer;
@@ -102,4 +105,52 @@ a, .link {
     color: @white;
   }
 }
-.extra > * { margin: 0 4px;}
+
+/* these make sure it can work in any text element */
+.inline-wrapper {
+  padding: 0 2px;
+  margin-left: -4px;
+  .inline-text-copy,
+  .inline-text-input {
+    background: none;
+    border: none;
+    outline: none;
+    line-height: 1.8;
+    display: inline-block;
+    padding: 0 4px;
+    max-width: 100%;
+    &.active {
+      cursor: pointer;
+    }
+    &.hidden {
+      display: none;
+    }
+  }
+  .inline-text-input {
+    margin-bottom: 5px;
+    &.active {
+      border-bottom: 1px solid @primary;
+    }
+  }
+  .inline-text-copy {
+    border-bottom: dashed 1px @white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 18px;
+    position: relative;
+    &:hover{
+      border-bottom-color: @white;
+      box-shadow: 0 0 1px 1px lighten(@gray, 40%);
+      border-radius: 4px;
+      background-color: lighten(@gray, 60%);
+      .anticon { color: @primary; }
+    }
+    .anticon { 
+      color: @light-gray;
+      position: absolute;
+      right: 2px;
+      top:5px;
+    }
+  }
+}

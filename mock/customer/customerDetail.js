@@ -1,14 +1,23 @@
-const customerDetail = [
-  {
-    pan: "AABCU0689F",
-    gstNo: "unregistered",
-    bpCode: "RT003662",
-    virtualAccount: "FR8YES842387",
-    mobileNo: 9781200079,
-    region: "North",
-    paymentManager: "SONU KUMAR",
-    receivableDays: 7,
-    onboardedBy: "Ravi K",
-  },
-];
-export default customerDetail;
+const customerInfo = {
+  pan: 'EGRPS8100Q',
+  panUrl: 'url',
+  lr: null,
+  lrUrl: null,
+  gst: 'NO10EGRPS8100Q1ZT',
+  cartCode: 'RT003457',
+  virtualAccount: 'FR8YES180772',
+  mobileNo: '9113157980',
+  region: 'East',
+  paymentManager: 'ROSY',
+  receivableDays: 5.6,
+  onBoardedBy: 'Ashwani Kumar',
+  companyType: 'Transporter',
+  managed: 'Yes',
+  advancePercentage: 90,
+  advanceException: 1594750087851,
+  finalPaymentException: 1594750087851,
+  creditLimit: 50000,
+  paymentPending: 0,
+  systemMamul: 0
+}
+export default customerInfo

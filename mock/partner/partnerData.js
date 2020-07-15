@@ -125,5 +125,108 @@ const PartnerList =
            invoiceAmount: 0,
            invoicePendingAmount: 5633,
            active: 'active'
-         }]
+         },
+         {
+          id: 11,
+          partnerCode: 856498,
+          name: 'nithya',
+          regionName: 'west',
+          mobileNo: 676547476,
+          email: 'nithya@fr8.in',
+          averageKm: 0,
+          truckCount: 3,
+          invoiceAmount: 0,
+          invoicePendingAmount: 3400,
+          active: 'active'
+        },
+        {
+          id: 12,
+          partnerCode: 8638643,
+          name: 'kavya',
+          regionName: 'east',
+          mobileNo: 786547489,
+          email: 'kavya@fr8.in',
+          averageKm: 0,
+          truckCount: 1,
+          invoiceAmount: 0,
+          invoicePendingAmount: 0,
+          active: 'active'
+        },
+        {
+          id: 13,
+          partnerCode: 2475897,
+          name: 'Raja',
+          regionName: 'north-west',
+          mobileNo: 8907547450,
+          email: 'raja@fr8.in',
+          averageKm: 0,
+          truckCount: 1,
+          invoiceAmount: 0,
+          invoicePendingAmount: 4000,
+          active: 'in-active'
+        },
+        {
+          id: 14,
+          partnerCode: 2475897,
+          name: 'saran',
+          regionName: 'north',
+          mobileNo: 987547450,
+          email: 'saran@fr8.in',
+          averageKm: 0,
+          truckCount: 4,
+          invoiceAmount: 0,
+          invoicePendingAmount: 0,
+          active: 'active'
+        },
+        {
+          id: 15,
+          partnerCode: 4656872,
+          name: 'sandhiya',
+          regionName: 'south',
+          mobileNo: 8485756753,
+          email: 'sandhiya@fr8.in',
+          averageKm: 0,
+          truckCount: 2,
+          invoiceAmount: 0,
+          invoicePendingAmount: 4400,
+          active: 'active'
+        },
+        {
+          id: 16,
+          partnerCode: 9875897,
+          name: 'Lakshmi',
+          regionName: 'south',
+          mobileNo: 987547450,
+          email: 'lakshmi@fr8.in',
+          averageKm: 0,
+          truckCount: 2,
+          invoiceAmount: 0,
+          invoicePendingAmount: 0,
+          active: 'active'
+        }, {
+          id: 17,
+          partnerCode: 2475897,
+          name: 'Raja',
+          regionName: 'north-west',
+          mobileNo: 8907547450,
+          email: 'raja@fr8.in',
+          averageKm: 0,
+          truckCount: 1,
+          invoiceAmount: 0,
+          invoicePendingAmount: 4000,
+          active: 'in-active'
+        }, {
+          id: 18,
+          partnerCode: 4275897,
+          name: 'Guru',
+          regionName: 'north',
+          mobileNo: 768947450,
+          email: 'guru@fr8.in',
+          averageKm: 0,
+          truckCount: 2,
+          invoiceAmount: 0,
+          invoicePendingAmount: 0,
+          active: 'active'
+        }
+        ]
 export default PartnerList

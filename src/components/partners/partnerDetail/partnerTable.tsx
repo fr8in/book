@@ -1,21 +1,27 @@
 import React from 'react'
-import { Tabs } from 'antd'
-import PageLayout from '../../../components/layout/pageLayout'
-import TripDetail from '../../../components/trips/tripDetail/tripDetailByPartner'
-import PartnerTruck from '../../../components/trucks/truckDetail/trucksByPartner'
-import DetailInfo from '../../../components/partners/partnerDetail/partnerDetailInfo'
-import Comment from '../../../components/partners/partnerDetail/partnerComment'
+import {Row,Col,Card, Tabs } from 'antd'
+import PageLayout from '../../layout/pageLayout'
+import TripDetail from '../../trips/trip/tripsByStages'
+import PartnerTruck from '../../trucks/trucksByPartner'
+import Detail from './detail'
+import Comment from './comment'
 const TabPane = Tabs.TabPane
 
 export default function partnerDetailTable() {
+    const callback = (key) => {
+        console.log(key)
+      }
     return (
         <PageLayout title='Partner'>
-            <Tabs >
+           <Row gutter={[10, 10]}>
+        <Col sm={24}>
+          <Card size='small' className='card-body-0 border-top-blue'>
+            <Tabs defaultActiveKey='1' onChange={callback}>
                 <TabPane tab='Truck' key='1'>
                     <PartnerTruck />
                 </TabPane>
                 <TabPane tab='Detail' key='2'>
-                    <DetailInfo />
+                    <Detail />
                 </TabPane>
                 <TabPane tab='Comment' key='3'>
                      <Comment />
@@ -33,6 +39,9 @@ export default function partnerDetailTable() {
                     <TripDetail />
                 </TabPane>
             </Tabs>
+            </Card>
+        </Col>
+      </Row>
         </PageLayout>
     )
 }

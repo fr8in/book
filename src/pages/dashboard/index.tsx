@@ -1,9 +1,9 @@
 
 import { useState } from 'react'
-import { Row, Col, Card, Tabs, Collapse, Button, Tooltip, Input } from 'antd'
+import { Row, Col, Card, Tabs, Collapse, Button, Tooltip, Input, Space } from 'antd'
 import PageLayout from '../../components/layout/pageLayout'
-import Trips from '../../components/trips/trips'
-import WaitingForLoad from '../../components/trucks/waitingForLoad/waitingForLoad'
+import Trips from '../../components/trips/activeTrips'
+import WaitingForLoad from '../../components/trucks/waitingForLoad'
 import Orders from '../../components/reports/orders'
 import Revenue from '../../components/reports/revenue'
 import Progress from '../../components/reports/progress'
@@ -12,9 +12,9 @@ import { WhatsAppOutlined, FullscreenOutlined } from '@ant-design/icons'
 const { TabPane } = Tabs
 const { Panel } = Collapse
 const Dashboard = () => {
-  const [tabAkey, setTabAkey] = useState('1')
+  const [tabKey, setTabKey] = useState('1')
   const callback = (key) => {
-    setTabAkey(key)
+    setTabKey(key)
   }
   return (
     <PageLayout title='Dashboard'>
@@ -38,14 +38,14 @@ const Dashboard = () => {
               defaultActiveKey='1'
               onChange={callback}
               tabBarExtraContent={
-                <span className='extra'>
+                <Space>
                   <Button size='small' type='primary' shape='circle' icon={<WhatsAppOutlined />} />
                   <Tooltip title='Full Screen Mode'>
                     <Button size='small' type='primary' shape='circle' icon={<FullscreenOutlined />} />
                   </Tooltip>
-                  {tabAkey === '1' &&
+                  {tabKey === '1' &&
                     <Input placeholder='Search Truck...' style={{ width: 'auto' }} />}
-                </span>
+                </Space>
               }
             >
               <TabPane tab='Unloading(s)' key='2'>
@@ -81,9 +81,9 @@ const Dashboard = () => {
               defaultActiveKey='1'
               onChange={callback}
               tabBarExtraContent={
-                <span className='extra'>
+                <Space>
                   <Input placeholder='Search Truck...' style={{ width: 'auto' }} />
-                </span>
+                </Space>
               }
             >
               <TabPane tab='Unloading(D)' key='1'>

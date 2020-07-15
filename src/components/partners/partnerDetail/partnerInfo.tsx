@@ -1,25 +1,50 @@
 import React from 'react'
 import {Row, Col} from 'antd'
-import { CheckCircleOutlined } from '@ant-design/icons'
-
-export default function partnerInfo(props) {
+import Detail from '../../../../mock/partner/partnerBasicDetail'
+export default function partnerBasicDetail() {
+  
     return (
-        <div>
-                <Row>
-                    <Col span={1}>
-					<h2> <label>Surya</label> </h2>	
+        <div>   
+				<Row>
+					<Col sm={12}>
+						<label><h3> City </h3></label>
 					</Col>
-                    <Col span={1}>
-                     <h2><CheckCircleOutlined twoToneColor="#52c41a" /></h2>
-                       {props.children}
+					<Col >
+						<p>{Detail && Detail.city}</p>
+					</Col>
+				</Row>
+				<Row>
+					<Col sm={12}>
+						<label><h3>Region</h3></label>
+					</Col>
+					<Col >
+						<p>{ Detail && Detail.region}</p>
+					</Col>
+				</Row>
+				<Row>
+					<Col sm={12}>
+                        <label><h3>On Boarded By</h3></label>
                     </Col>
-                    <Col span={2}>
-                    <h3> <label>3456254</label> </h3>
-                    </Col>
-                    <Col span={2}>
-                    <h3> <label>9873456254</label> </h3>
-                    </Col>
-                </Row>
+                    <Col >
+						<p>{ Detail && Detail.onBoardedBy}</p>
+					</Col>
+				</Row>
+				<Row>
+					<Col sm={12}>
+						<label><h3>Final Payment Date</h3></label>
+					</Col>
+					<Col >
+						<p>{ Detail && Detail.amount}</p>
+					</Col>
+				</Row>
+				<Row>
+					<Col sm={12}>
+						<label><h3>Advance Percentage</h3></label>
+					</Col>
+					<Col >
+						<p>{ Detail && Detail.advance}</p>
+					</Col>
+				</Row>   
         </div>
     )
 }
