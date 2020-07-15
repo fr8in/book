@@ -63,7 +63,7 @@ const Trips = (props) => {
       key: 'customer',
       render: (text, record) => {
         return (
-          <Link href='/customers/customer/[id]' as={`/customers/customer/${record.customerId} `}>
+          <Link href='/customers/[id]' as={`/customers/${record.customerId} `}>
             {text && text.length > 12
               ? <Tooltip title={text}><a>{text.slice(0, 12) + '...'}</a></Tooltip>
               : <a>{text}</a>}

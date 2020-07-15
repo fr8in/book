@@ -1,9 +1,9 @@
 import {useState} from 'react'
-import PageLayout from "../../../components/layout/pageLayout";
+import PageLayout from "../../components/layout/pageLayout";
 import { Row, Col, Card } from "antd";
-import InlineEdit from '../../../components/common/inlineEdit'
-import Blacklist from '../../../components/customers/blacklist';
-import CustomerInfo from '../../../components/customers/customerInfo';
+import InlineEdit from '../../components/common/inlineEdit'
+import Blacklist from '../../components/customers/blacklist';
+import CustomerInfo from '../../components/customers/customerInfo';
 
 const CustomerDetail = (props) => {
   console.log("object", props);
