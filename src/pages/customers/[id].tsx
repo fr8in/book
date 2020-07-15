@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import PageLayout from "../../../components/layout/pageLayout";
-import CustomerInfo from '../../../components/customers/customerInfo';
+import PageLayout from "../../components/layout/pageLayout";
+import CustomerInfo from '../../components/customers/customerInfo';
 
 const CustomerDetail = (props) => {
 

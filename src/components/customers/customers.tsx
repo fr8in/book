@@ -66,8 +66,8 @@ const Customers = () => {
       render: (text, record) => {
         return (
           <Link
-            href='customers/customer/[id]'
-            as={`customers/customer/${record.cardCode}`}
+            href='customers/[id]'
+            as={`customers/${record.cardCode}`}
           >
             <a>{text}</a>
           </Link>
