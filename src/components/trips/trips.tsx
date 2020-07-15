@@ -27,7 +27,7 @@ const Trips = (props) => {
       width: '5%',
       render: (text, record) => {
         return (
-          <Link href='/trips/trip/[id]' as={`/trips/trip/${record.id} `}>
+          <Link href='/trips/[id]' as={`/trips/${record.id} `}>
             <a>{text}</a>
           </Link>)
       },
