@@ -1,6 +1,6 @@
 import React from 'react'
 import {Row, Col, Table , Input, Button } from 'antd'
-import Mock from '../../../../mock/partner/comment'
+import Mock from '../../../mock/partner/comment'
 
 const Comment = () => {
   const columnsCurrent = [

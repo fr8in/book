@@ -1,9 +1,14 @@
-import { Tabs, Row, Col, Input } from 'antd';
+import { Collapse, Input, Row, Col, Tabs } from 'antd';
 import { UploadOutlined } from '@ant-design/icons'
-import React from 'react'
+import FasTag from '../cards/fasTag'
+import FuelCard from '../cards/fuelCard'
+const { Panel } = Collapse;
+
 const { TabPane } = Tabs;
-export default function document() {
-  return (
+const PartnerDocument = () =>{
+    return (
+  <Collapse accordion>
+    <Panel header="Document" key="1">
     <div>
       <br />
       <Tabs type="card">
@@ -116,5 +121,20 @@ export default function document() {
         </TabPane>
       </Tabs>
     </div>
-  )
+    </Panel>
+    <Panel header="Fuel Detail" key="2">
+      <FuelCard />
+    </Panel>
+    <Panel header="Fas Card" key="3">
+   
+      <span className='extra'>
+      <Input placeholder='Search...' style={{ width: 'auto' }} />
+      </span>
+          
+    <FasTag />
+    </Panel>
+  </Collapse>
+    )
 }
+
+export default PartnerDocument

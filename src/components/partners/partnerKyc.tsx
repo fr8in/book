@@ -1,5 +1,5 @@
 import { Table } from 'antd'
-import mock from '../../../../mock/partner/partnerKyc'
+import mock from '../../../mock/partner/partnerKyc'
 
 const PartnerKyc = () => {
   const columnsCurrent = [

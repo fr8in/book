@@ -16,7 +16,9 @@ const Partners = () => {
       dataIndex: 'partnerCode',
               render: (text, record) => {
                 return (
-                  <Link href='partners/partner/[id]' as={`partners/partner/${record.id}`}>
+                  <Link
+                   href='partners/[id]'
+                   as={`partners/${record.cardCode}`}>
                     <a>{text}</a>
                   </Link>
                 )
