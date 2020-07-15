@@ -1,7 +1,7 @@
 import React from 'react'
 import { Table } from 'antd'
-import PageLayout from '../layout/pageLayout'
-import mock from '../../../mock/partner/truckByPartner'
+import PageLayout from '../../layout/pageLayout'
+import mock from '../../../../mock/partner/truckByPartner'
 
 const PartnerTruck = () => {
   const columnsCurrent = [
