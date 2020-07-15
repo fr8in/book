@@ -1,139 +1,102 @@
 import { useState } from 'react'
-import { Row, Col, Checkbox, Space, Button } from 'antd'
-import { DownloadOutlined, UploadOutlined } from '@ant-design/icons'
+import { Row, Col, Card } from 'antd'
+import InlineEdit from '../common/inlineEdit'
+import Blacklist from './blacklist';
+
 import data from '../../../mock/customer/customerDetail'
 import LabelWithData from '../common/labelWithData'
-import InlineEdit from '../common/inlineEdit'
 
-const CustomerInfo = () => {
+import { useQuery } from '@apollo/react-hooks'
+import gql from 'graphql-tag'
+import customerInfo from '../../../mock/customer/customerDetail';
+// import cusMock from '../../../mock/customer/CustomerListMock'
+// import ErrorMessage from './ErrorMessage'
+
+export const CUSTOMER_STCODE_QUERY = gql`
+  query customers($cardCode: String) {
+    customer(where: {cardCode: {_eq: $cardCode}}) {
+      id
+      PAN
+      name
+      mobileNo
+      cardCode
+      statusId
+    }
+  }
+`
+
+const CustomerInfo = ({ cardCode }) => {
+
+  const onCustomerNameSave = (value) => {
+    console.log('value', value)
+  }
+
+  const { loading, error, data, } = useQuery(
+    CUSTOMER_STCODE_QUERY,
+    {
+      variables: { cardCode },
+      // Setting this value to true will make the component rerender when
+      // the "networkStatus" changes, so we are able to know if it is fetching
+      // more data
+      notifyOnNetworkStatusChange: true
+    }
+  )
+
+
+
+
+  // if (error) return <ErrorMessage message="Error loading posts." />
+  if (loading) return <div>Loading</div>
+  const { customer } = data
+  const customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
+
   const initial = {
-    gst: data.gst,
-    region: data.region,
-    paymentManager: data.paymentManager,
-    onBoardedBy: data.onBoardedBy,
-    companyType: data.companyType,
-    advancePercentage: data.advancePercentage,
-    advException: data.advanceException,
-    finalException: data.finalPaymentException,
-    creditLimit: data.creditLimit,
-    managed: data.managed === 'Yes'
+    gst: customerInfo.gst,
+    region: customerInfo.region,
+    paymentManager: customerInfo.paymentManager,
+    onBoardedBy: customerInfo.onBoardedBy
   }
-  const [value, setValue] = useState(initial)
-  const editSubmit = (objKey, text) => {
-    setValue({ ...value, [objKey]: text })
-  }
-  const textChangeHandle = (objKey, text) => {
-    setValue({ ...value, [objKey]: text })
-  }
-  const onChange = (e) => {
-    console.log(`checked = ${e.target.checked}`)
-    setValue({ ...value, managed: e.target.checked })
-  }
+
   return (
-    <Row>
-      <Col xs={24} sm={24} md={12}>
-        <LabelWithData
-          label='PAN'
-          data={
-            <Space>
-              <span>{data.pan}</span>
-              {data.panUrl
-                ? <Button type='primary' shape='circle' icon={<DownloadOutlined />} size='small' />
-                : <Button shape='circle' icon={<UploadOutlined />} size='small' />}
-            </Space>
-          }
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='LR'
-          data={
-            <Space>
-              {data.lrUrl
-                ? <Button type='primary' shape='circle' icon={<DownloadOutlined />} size='small' />
-                : <Button shape='circle' icon={<UploadOutlined />} size='small' />}
-            </Space>
-          }
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='GST No'
-          data={<InlineEdit text={value.gst} objKey='gst' onSetText={text => textChangeHandle('gst', text)} onSubmit={editSubmit} />}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData label='BP Code' data={data.cartCode} labelSpan={10} dataSpan={14} />
-        <LabelWithData label='Virtual Account' data={data.virtualAccount} labelSpan={10} dataSpan={14} />
-        <LabelWithData label='Mobile No' data={data.mobileNo} labelSpan={10} dataSpan={14} />
-        <LabelWithData
-          label='Region'
-          data={<InlineEdit text={value.region} objKey='region' onSetText={text => textChangeHandle('region', text)} onSubmit={editSubmit} />}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Payment Manager'
-          data={<InlineEdit text={value.paymentManager} objKey='paymentManager' onSetText={text => textChangeHandle('paymentManager', text)} onSubmit={editSubmit} />}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData label='Receivable Days' data={data.receivableDays} labelSpan={10} dataSpan={14} />
-        <LabelWithData
-          label='OnBoarded By'
-          data={<InlineEdit text={value.onBoardedBy} objKey='onBoardedBy' onSetText={text => textChangeHandle('onBoardedBy', text)} onSubmit={editSubmit} />}
-          labelSpan={10}
-          dataSpan={14}
-        />
-      </Col>
-      <Col xs={24} sm={24} md={12}>
-        <LabelWithData
-          label='Company Type'
-          data={<InlineEdit text={value.companyType} objKey='companyType' onSetText={text => textChangeHandle('companyType', text)} onSubmit={editSubmit} />}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Managed'
-          data={
-            <Checkbox
-              onChange={onChange}
-              checked={value.managed}
-              disabled={false}
-            >
-                Yes
-            </Checkbox>
-          }
-          labelSpan={10} dataSpan={14}
-        />
-        <LabelWithData
-          label='Advance %'
-          data={<InlineEdit text={value.advancePercentage} objKey='advancePercentage' onSetText={text => textChangeHandle('advancePercentage', text)} onSubmit={editSubmit} />}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Advance Exception'
-          data={<InlineEdit text={value.advException} objKey='advException' onSetText={text => textChangeHandle('advException', text)} onSubmit={editSubmit} />}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Final Payment Exception'
-          data={<InlineEdit text={value.finalException} objKey='finalException' onSetText={text => textChangeHandle('finalException', text)} onSubmit={editSubmit} />}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Credit Limit'
-          data={<InlineEdit text={value.creditLimit} objKey='creditLimit' onSetText={text => textChangeHandle('creditLimit', text)} onSubmit={editSubmit} />}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData label='Payment Pending' data={data.paymentPending} labelSpan={10} dataSpan={14} />
-        <LabelWithData label='System Mamul' data={data.systemMamul} labelSpan={10} dataSpan={14} />
-      </Col>
-    </Row>
+    <Card
+      size='small'
+      title={<InlineEdit
+        text={customerInfo.name}
+        //onSetText={text => text}
+        onSubmit={onCustomerNameSave}
+      />}
+      extra={<Blacklist cardCode={customerInfo.cardCode} statusId={customerInfo.statusId} />}
+    >
+      <Row gutter={[10, 10]}>
+        <Col sm={13}>
+
+          <Row>
+            <Col xs={24} sm={24} md={12}>
+              <LabelWithData label='PAN' data={customerInfo.PAN} labelSpan={10} dataSpan={14} />
+              <LabelWithData label='LR' data={customerInfo.lr} labelSpan={10} dataSpan={14} />
+              <LabelWithData
+                label='GST No'
+                data={<InlineEdit text={customerInfo.gst} objKey='gst'
+                //onSetText={text => setValue({ ...value, gst: text })} 
+                //onSubmit={editSubmit} 
+                />}
+                labelSpan={10}
+                dataSpan={14}
+              />
+              <LabelWithData label='Id' data={customerInfo.cardCode} labelSpan={10} dataSpan={14} />
+              <LabelWithData label='Virtual Account' data={customerInfo.virtualAccount} labelSpan={10} dataSpan={14} />
+              <LabelWithData label='Mobile No' data={customerInfo.mobileNo} labelSpan={10} dataSpan={14} />
+              <LabelWithData label='Region' data={customerInfo.region} labelSpan={10} dataSpan={14} />
+              <LabelWithData label='Payment Manager' data={customerInfo.paymentManager} labelSpan={10} dataSpan={14} />
+              <LabelWithData label='Receivable Days' data={customerInfo.receivableDays} labelSpan={10} dataSpan={14} />
+              <LabelWithData label='OnBoarded By' data={customerInfo.onBoardedBy} labelSpan={10} dataSpan={14} />
+            </Col>
+            <Col xs={24} sm={24} md={12}>
+            </Col>
+          </Row>     </Col>
+        <Col xs={11} />
+      </Row>
+    </Card>
   )
 }
 
