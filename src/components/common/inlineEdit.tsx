@@ -6,6 +6,7 @@ import { EditOutlined } from '@ant-design/icons'
 function InlineEdit (props) {
   const [isInputActive, setIsInputActive] = useState(false)
   const [inputValue, setInputValue] = useState(props.text)
+  const [width, setWidth] = useState(140)
 
   const wrapperRef = useRef(null)
   const textRef = useRef(null)
@@ -40,21 +41,23 @@ function InlineEdit (props) {
     }
   }, [esc, text])
 
+  // get width of text element
+  useEffect(() => {
+    setWidth(prev => textRef.current ? textRef.current.clientWidth : prev)
+  }, [textRef.current])
+
   // focus the cursor in the input field on edit start
   useEffect(() => {
-    if (isInputActive) {
-      inputRef.current.focus()
-    }
+    if (isInputActive) { inputRef.current.focus() }
   }, [isInputActive])
 
+  // watch the Enter and Escape key presses
   useEffect(() => {
     if (isInputActive) {
-      // if Enter is pressed, save the text and close the editor
-      onEnter()
-      // if Escape is pressed, revert the text and close the editor
-      onEsc()
+      onEnter() // if Enter is pressed, save the text and close the editor
+      onEsc() // if Escape is pressed, revert the text and close the editor
     }
-  }, [onEnter, onEsc, isInputActive]) // watch the Enter and Escape key presses
+  }, [onEnter, onEsc, isInputActive])
 
   const handleInputChange = useCallback(e => {
     setInputValue(e.target.value)
@@ -65,7 +68,7 @@ function InlineEdit (props) {
   const handleSpanClick = useCallback(() => setIsInputActive(true), [
     setIsInputActive
   ])
-  console.log('props', props)
+
   return (
     <span className='inline-wrapper' ref={wrapperRef}>
       <span
@@ -82,7 +85,7 @@ function InlineEdit (props) {
         ref={inputRef}
         // set the width to the input length multiplied by the x height
         // it's not quite right but gets it close
-        style={{ width: Math.ceil(inputValue.length * 0.8) + 'ch' }}
+        style={{ minWidth: width }}
         value={inputValue}
         onChange={handleInputChange}
         className={`inline-text-input ${

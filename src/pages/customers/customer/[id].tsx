@@ -16,6 +16,7 @@ const CustomerDetail = (props) => {
   return (
     <PageLayout title={`Customer - ${props.id}`}>
       <Card 
+        size='small'
         title={<InlineEdit 
                 text={storedHeading}
                 onSetText={text => setStoredHeading(text)}
