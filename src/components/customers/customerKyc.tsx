@@ -2,7 +2,7 @@ import { Table } from 'antd'
 import newCusMock from '../../../mock/customer/newCusMock'
 import PageLayout from '../layout/pageLayout'
 
-export default function NewCustomer () {
+const CustomerKyc = () => {
   const newCustomer = [
     {
       title: 'User Name',
@@ -58,3 +58,5 @@ export default function NewCustomer () {
     </PageLayout>
   )
 }
+
+export default CustomerKyc

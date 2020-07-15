@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Col, Button, Menu, Dropdown, Drawer, Modal, Input, Checkbox, Collapse } from 'antd'
+import { Col, Button, Menu, Dropdown, Drawer, Modal, Input, Checkbox, Collapse, Space } from 'antd'
 import {
   UserOutlined,
   SearchOutlined,
@@ -31,9 +31,9 @@ const Actions = () => {
   )
   const account = (
     <Menu>
-      <Menu.Item key='0'>ICICI <span>₹{'7,70,027'}</span></Menu.Item>
-      <Menu.Item key='1'>YesBank <span>₹{'48266'}</span></Menu.Item>
-      <Menu.Item key='2'>Reliance <span>₹{'1,87,694'}</span></Menu.Item>
+      <Menu.Item key='0'>ICICI <b>₹{'7,70,027'}</b></Menu.Item>
+      <Menu.Item key='1'>YesBank <b>₹{'48266'}</b></Menu.Item>
+      <Menu.Item key='2'>Reliance <b>₹{'1,87,694'}</b></Menu.Item>
     </Menu>
   )
   const handleSubmit = () => {
@@ -57,16 +57,17 @@ const Actions = () => {
 
   return (
     <Col flex='auto' className='actions'>
-      <Button size='small' type='ghost' shape='circle' icon={<FilterFilled />} onClick={() => onShow('filter')} />
-      <Button size='small' type='ghost' shape='circle' icon={<SearchOutlined />} onClick={() => onShow('search')} />
-      <Dropdown overlay={account} trigger={['click']} placement='bottomRight'>
-        <Button size='small' type='ghost' shape='circle' icon={<BankFilled />} />
-      </Dropdown>
-      <Button size='small' type='ghost' shape='circle' icon={<CodeOutlined />} onClick={() => onShow('ssh')} />
-      <Dropdown overlay={user} trigger={['click']} placement='bottomRight'>
-        <Button size='small' type='primary' shape='circle' icon={<UserOutlined />} />
-      </Dropdown>
-
+      <Space>
+        <Button size='small' type='ghost' shape='circle' icon={<FilterFilled />} onClick={() => onShow('filter')} />
+        <Button size='small' type='ghost' shape='circle' icon={<SearchOutlined />} onClick={() => onShow('search')} />
+        <Dropdown overlay={account} trigger={['click']} placement='bottomRight'>
+          <Button size='small' type='ghost' shape='circle' icon={<BankFilled />} />
+        </Dropdown>
+        <Button size='small' type='ghost' shape='circle' icon={<CodeOutlined />} onClick={() => onShow('ssh')} />
+        <Dropdown overlay={user} trigger={['click']} placement='bottomRight'>
+          <Button size='small' type='primary' shape='circle' icon={<UserOutlined />} />
+        </Dropdown>
+      </Space>
       <Drawer
         placement='right'
         closable={false}

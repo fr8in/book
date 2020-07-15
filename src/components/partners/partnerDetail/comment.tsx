@@ -20,11 +20,12 @@ const Comment = () => {
   ]
   return (
     <PageLayout title='Partners'>
+      <br />
         <Row>
-         <Col><Input placeholder="Please Enter Comments" /></Col>
+         <Col><Input placeholder="Please enter comments" /></Col>
          <Col>  <Button type="primary">Submit</Button></Col>
         </Row>
-       
+       <br />
       <Table
         columns={columnsCurrent}
         dataSource={Mock}

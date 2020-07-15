@@ -1,13 +1,12 @@
 import { Tabs, Row, Col, Card, Input } from 'antd'
-import CustomerList from '../../components/customers/customerList'
-import NewCustomer from '../../components/customers/newCustomer'
+import Customers from '../../components/customers/customers'
+import CustomerKyc from '../../components/customers/customerKyc'
 import PageLayout from '../../components/layout/pageLayout'
-
 const { Search } = Input
 
 const TabPane = Tabs.TabPane
 
-const Customers = () => {
+const CustomersPage = () => {
   return (
     <PageLayout title='Customers'>
       <Row gutter={[10, 10]}>
@@ -15,34 +14,37 @@ const Customers = () => {
           <Card size='small' className='card-body-0 border-top-blue'>
             <Tabs>
               <TabPane tab='Customers' key='1'>
-                <Search
-                  placeholder='Search...'
-                  onSearch={(value) => console.log(value)}
-                  style={{ width: 200 }}
-                />
-                <br />
-                <br />
-                <CustomerList />
+                <Row justify='end' className='m5'>
+                  <Col flex='180px'>
+                    <Search
+                      placeholder='Search...'
+                      onSearch={(value) => console.log(value)}
+                    />
+                  </Col>
+                </Row>
+                <Customers />
               </TabPane>
               <TabPane tab='Approval Pending' key='2'>
-                <Search
-                  placeholder='PAN or Name or Mobile...'
-                  onSearch={(value) => console.log(value)}
-                  style={{ width: 200 }}
-                />
-                <br />
-                <br />
-                <NewCustomer />
+                <Row justify='end' className='m5'>
+                  <Col flex='180px'>
+                    <Search
+                      placeholder='PAN or Name or Mobile...'
+                      onSearch={(value) => console.log(value)}
+                    />
+                  </Col>
+                </Row>
+                <CustomerKyc />
               </TabPane>
               <TabPane tab='Rejected' key='3'>
-                <Search
-                  placeholder='PAN or Name or Mobile...'
-                  onSearch={(value) => console.log(value)}
-                  style={{ width: 200 }}
-                />
-                <br />
-                <br />
-                <NewCustomer />
+                <Row justify='end' className='m5'>
+                  <Col flex='180px'>
+                    <Search
+                      placeholder='PAN or Name or Mobile...'
+                      onSearch={(value) => console.log(value)}
+                    />
+                  </Col>
+                </Row>
+                <CustomerKyc />
               </TabPane>
             </Tabs>
           </Card>
@@ -52,4 +54,4 @@ const Customers = () => {
   )
 }
 
-export default Customers
+export default CustomersPage

@@ -1,8 +1,8 @@
-import loadData from '../../../../mock/trucks/loadData'
+import loadData from '../../../mock/trucks/loadData'
 import { Table, Tooltip, Badge, Button } from 'antd'
 import Link from 'next/link'
 import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled } from '@ant-design/icons'
-import useShowHide from '../../../hooks/useShowHide'
+import useShowHide from '../../hooks/useShowHide'
 
 const WaitingForLoad = () => {
   const initial = { comment: false }
