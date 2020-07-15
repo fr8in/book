@@ -1,5 +1,4 @@
 import { Table } from 'antd'
-import PageLayout from '../../layout/pageLayout'
 import mock from '../../../../mock/partner/partnerKyc'
 
 const PartnerKyc = () => {
@@ -50,7 +49,7 @@ const PartnerKyc = () => {
         },
   ]
   return (
-    <PageLayout title='Partners'>
+    
       <Table
         columns={columnsCurrent}
         dataSource={mock}
@@ -59,7 +58,7 @@ const PartnerKyc = () => {
         scroll={{ x: 800, y: 400 }}
         pagination={false}
       />
-    </PageLayout>
+    
   )
 }
 

@@ -1,6 +1,5 @@
 import React from 'react'
 import { Table } from 'antd'
-import PageLayout from '../../layout/pageLayout'
 
 
 const walletTopup = () => {
@@ -35,7 +34,7 @@ const walletTopup = () => {
       },
 ]
     return (
-        <PageLayout title='Partners'>
+       
           <Table
             columns={columnsCurrent}
             rowKey={record => record.id}
@@ -43,7 +42,7 @@ const walletTopup = () => {
             scroll={{ x: 800, y: 400 }}
             pagination={false}
           />
-        </PageLayout>
+       
       )
     }
     

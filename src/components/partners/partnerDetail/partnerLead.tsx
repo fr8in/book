@@ -1,5 +1,4 @@
 import { Table } from 'antd'
-import PageLayout from '../../layout/pageLayout'
 
 
 const PartnerKyc = () => {
@@ -47,7 +46,7 @@ const PartnerKyc = () => {
         },
   ]
   return (
-    <PageLayout title='Partners'>
+    
       <Table
         columns={columnsCurrent}
         rowKey={record => record.id}
@@ -55,7 +54,7 @@ const PartnerKyc = () => {
         scroll={{ x: 800, y: 400 }}
         pagination={false}
       />
-    </PageLayout>
+   
   )
 }
 

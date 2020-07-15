@@ -1,9 +1,8 @@
 import React from 'react'
 import { Table } from 'antd'
-import PageLayout from '../../layout/pageLayout'
 
 
-const Partners = () => {
+const TripsByStages = () => {
   const columnsCurrent = [
     {
       title: 'ID',
@@ -32,7 +31,7 @@ const Partners = () => {
    
   ]
   return (
-    <PageLayout title='Partners'>
+    
       <Table
         columns={columnsCurrent}
         rowKey={record => record.id}
@@ -40,8 +39,8 @@ const Partners = () => {
         scroll={{ x: 800, y: 400 }}
         pagination={false}
       />
-    </PageLayout>
+    
   )
 }
 
-export default Partners
+export default TripsByStages

@@ -1,6 +1,6 @@
 import React from 'react'
 import {Row, Col} from 'antd'
-import Detail from '../../../../mock/partner/partnerBasicDetail'
+import Detail from '../../../../mock/partner/partnerInfo'
 export default function partnerBasicDetail() {
   
     return (

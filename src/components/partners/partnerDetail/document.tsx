@@ -105,7 +105,7 @@ export default function document() {
               </Col>
             </Row>
             <br />
-            <Row gutter={8}>
+            <Row gutter={8} justify='end' className='m5'>
               <Col span={2}>
                 <Input placeholder="Save" disabled />
               </Col>

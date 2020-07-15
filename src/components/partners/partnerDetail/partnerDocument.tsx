@@ -1,4 +1,4 @@
-import { Collapse, Input, Tabs } from 'antd';
+import { Collapse, Input } from 'antd';
 import Documents from '../../../components//partners/partnerDetail/document'
 import FasTag from '../../cards/fasTag'
 import FuelCard from '../../cards/fuelCard'

@@ -1,6 +1,5 @@
 import React from 'react'
 import { Table } from 'antd'
-import PageLayout from '../layout/pageLayout'
 import mock from '../../../mock/partner/truckByPartner'
 
 const PartnerTruck = () => {
@@ -36,7 +35,6 @@ const PartnerTruck = () => {
    
   ]
   return (
-    <PageLayout title='Partners'>
       <Table
         columns={columnsCurrent}
         dataSource={mock}
@@ -45,7 +43,6 @@ const PartnerTruck = () => {
         scroll={{ x: 800, y: 400 }}
         pagination={false}
       />
-    </PageLayout>
   )
 }
 

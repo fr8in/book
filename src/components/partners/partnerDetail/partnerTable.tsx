@@ -1,6 +1,5 @@
 import React from 'react'
 import {Row,Col,Card, Tabs } from 'antd'
-import PageLayout from '../../layout/pageLayout'
 import TripDetail from '../../trips/trip/tripsByStages'
 import PartnerTruck from '../../trucks/trucksByPartner'
 import Detail from './detail'
@@ -12,7 +11,6 @@ export default function partnerDetailTable() {
         console.log(key)
       }
     return (
-        <PageLayout title='Partner'>
            <Row gutter={[10, 10]}>
         <Col sm={24}>
           <Card size='small' className='card-body-0 border-top-blue'>
@@ -42,6 +40,5 @@ export default function partnerDetailTable() {
             </Card>
         </Col>
       </Row>
-        </PageLayout>
     )
 }

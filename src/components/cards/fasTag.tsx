@@ -1,9 +1,8 @@
 import React from 'react'
 import { Table } from 'antd'
-import PageLayout from '../layout/pageLayout'
 
 
-const Partners = () => {
+const FasTag = () => {
   const columnsCurrent = [
     {
       title: 'Tag Id',
@@ -22,7 +21,6 @@ const Partners = () => {
       dataIndex: 'partner'
     }]
     return (
-        <PageLayout title='Cards'>
           <Table
             columns={columnsCurrent}
             rowKey={record => record.id}
@@ -30,9 +28,8 @@ const Partners = () => {
             scroll={{ x: 800, y: 400 }}
             pagination={false}
           />
-        </PageLayout>
       )
     }
     
-    export default Partners
+    export default FasTag
     

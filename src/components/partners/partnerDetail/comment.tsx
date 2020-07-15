@@ -1,7 +1,6 @@
 import React from 'react'
 import {Row, Col, Table , Input, Button } from 'antd'
-import PageLayout from '../../layout/pageLayout'
-import Mock from '../../../../mock/partner/partnerComment'
+import Mock from '../../../../mock/partner/comment'
 
 const Comment = () => {
   const columnsCurrent = [
@@ -19,8 +18,8 @@ const Comment = () => {
     },
   ]
   return (
-    <PageLayout title='Partners'>
-      <br />
+   
+     <div>
         <Row>
          <Col><Input placeholder="Please enter comments" /></Col>
          <Col>  <Button type="primary">Submit</Button></Col>
@@ -34,8 +33,8 @@ const Comment = () => {
         scroll={{ x: 800, y: 400 }}
         pagination={false}
       />
-     
-    </PageLayout>
+     </div>
+  
   )
 }
 
