@@ -1,7 +1,7 @@
 import PageLayout from '../../../components/layout/pageLayout'
 import TruckInfo from '../../../components/trucks/truckDetail/truckInfo'
 import Documents from '../../../components/trucks/truckDetail/truckDocuments'
-import TripDetail from '../../../components/trips/tripDetail/tripDetailByPartner'
+import TripDetail from '../../../components/trips/trip/tripsByStages'
 import Truck from '../../../components/trucks/truckDetail/truck'
 import Timeline from '../../../components/trucks/truckDetail/truckTimeline'
 import { Row, Col , Button} from 'antd'
