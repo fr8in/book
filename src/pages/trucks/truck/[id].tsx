@@ -5,6 +5,7 @@ import TripDetail from '../../../components/trips/tripsByStages'
 import Truck from '../../../components/trucks/truckDetail/truck'
 import Timeline from '../../../components/trucks/truckDetail/truckTimeline'
 import { Row, Col , Button} from 'antd'
+
 const TruckDetail = (props) => {
 
     return (
