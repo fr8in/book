@@ -107,7 +107,6 @@ a, .link {
 .inline-wrapper {
   padding: 0 2px;
   margin-left: -4px;
-  position: relative;
   .inline-text-copy,
   .inline-text-input {
     background: none;
@@ -124,12 +123,19 @@ a, .link {
       display: none;
     }
   }
+  .inline-text-input {
+    margin-bottom: 6px;
+    &.active {
+      border-bottom: 1px solid @primary;
+    }
+  }
   .inline-text-copy {
     border-bottom: dashed 1px lighten(@gray, 40%);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     padding-right: 18px;
+    position: relative;
     &:hover{
       border-bottom-color: @white;
       box-shadow: 0 0 1px 1px lighten(@gray, 40%);
@@ -140,11 +146,8 @@ a, .link {
     .anticon { 
       color: @light-gray;
       position: absolute;
-      right: 4px;
-      top: -6px
+      right: 2px;
+      top:6px;
     }
-  }
-  .inline-text-input.active {
-    border-bottom: 1px solid @primary;
   }
 }
