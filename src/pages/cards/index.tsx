@@ -1,5 +1,7 @@
 import Fastag from "../../components/cards/cardsFastag";
 import FuelCard from "../../components/cards/cardsFuel";
+
+import Link from "next/link";
 import { Tabs, Row, Col, Card, Input, Button } from "antd";
 import PageLayout from "../../components/layout/pageLayout";
 import { PlusCircleOutlined } from "@ant-design/icons";
@@ -12,12 +14,7 @@ const cards = () => {
         <Tabs>
           <TabPane tab="Fuel Card" key="1">
             <Row justify="end" className="m5">
-              <Col flex="130px">
-                <Button type="primary">
-                  <PlusCircleOutlined />
-                  Add Card
-                </Button>
-              </Col>
+              <Col flex="130px"></Col>
               <Col flex="180px">
                 <Button type="primary">Refresh Card List</Button>
               </Col>
@@ -34,10 +31,12 @@ const cards = () => {
                 />
               </Col>
               <Col flex="180px">
-                <Button type="primary">
-                  <PlusCircleOutlined />
-                  Add Tag
-                </Button>
+                <Link href="cards/addFuelCard">
+                  <Button type="primary">
+                    <PlusCircleOutlined />
+                    Add Tag
+                  </Button>
+                </Link>
               </Col>
             </Row>
             <Fastag />
