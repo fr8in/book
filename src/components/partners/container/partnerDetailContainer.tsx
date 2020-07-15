@@ -16,30 +16,30 @@ const TabPane = Tabs.TabPane
 const callback = (key) => {
     console.log(key)
   }
-export default function partnerDetailContainer(props) {
+export default function partnerDetailContainer() {
     return (
         <div>
               <Row>   
         <Col span={22}>
-          <HeaderInfo {...props}/>
+          <HeaderInfo/>
         </Col>
         <Col>
-          <WalletStatus {...props} />
+          <WalletStatus />
         </Col>
       </Row>
      
       <Divider />
       <Row gutter={[10, 10]}>
         <Col xs={24} sm={12} md={8}>
-          <BasicDetail {...props}/>
+          <BasicDetail/>
           <br />
-          <PartnerStatus {...props}/>
+          <PartnerStatus/>
         </Col>
         <Col xs={24} sm={12} md={8}>
-          <Barchart {...props}/>
+          <Barchart/>
         </Col>
         <Col xs={24} sm={24} md={8}>
-          <Summary {...props}/>
+          <Summary/>
         </Col>
       </Row>
       <br />

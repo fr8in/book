@@ -18,7 +18,7 @@ const Partners = () => {
                 return (
                   <Link
                    href='partners/[id]'
-                   as={`partners/${record.cardCode}`}>
+                   as={`partners/${record.id}`}>
                     <a>{text}</a>
                   </Link>
                 )

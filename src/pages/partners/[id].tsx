@@ -5,7 +5,7 @@ import PartnerDetailContainer from '../../components/partners/container/partnerD
 const PartnerDetail = (props) => { 
   return (
     <PageLayout title={`Partner - ${props.id}`}>
-        <PartnerDetailContainer  cardCode={props.id} />
+        <PartnerDetailContainer   />
     </PageLayout>
   )
 }
