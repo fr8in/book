@@ -1,6 +1,6 @@
 import React from 'react'
 import { Table } from 'antd'
-import mock from '../../../mock/partner/truckByPartner'
+import mock from '../../../../mock/partner/truckByPartner'
 
 const PartnerTruck = () => {
   const columnsCurrent = [
