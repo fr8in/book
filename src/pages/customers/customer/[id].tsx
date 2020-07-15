@@ -25,10 +25,10 @@ const CustomerDetail = (props) => {
         extra={<Blacklist />}
       >
         <Row gutter={[10,10]}>
-          <Col sm={13}>
+          <Col sm={14}>
             <CustomerInfo />
           </Col>
-          <Col xs={11}/>
+          <Col xs={10}/>
         </Row>
       </Card>
     </PageLayout>

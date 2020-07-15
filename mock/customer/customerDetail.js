@@ -1,6 +1,8 @@
 const customerInfo = {
   pan: 'EGRPS8100Q',
+  panUrl: 'url',
   lr: null,
+  lrUrl: null,
   gst: 'NO10EGRPS8100Q1ZT',
   cartCode: 'RT003457',
   virtualAccount: 'FR8YES180772',
