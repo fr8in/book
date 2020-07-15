@@ -4,8 +4,6 @@ import PageLayout from '../layout/pageLayout'
 import { useQuery } from '@apollo/react-hooks'
 import { NetworkStatus } from 'apollo-client'
 import gql from 'graphql-tag'
-// import cusMock from '../../../mock/customer/CustomerListMock'
-// import ErrorMessage from './ErrorMessage'
 
 export const ALL_CUSTOMER_QUERY = gql`
   query customers($offset: Int!, $limit: Int!) {
@@ -53,12 +51,10 @@ const Customers = () => {
     })
   }
 
-  // if (error) return <ErrorMessage message="Error loading posts." />
   if (loading && !loadingMoreCustomers) return <div>Loading</div>
   console.log(data)
   const { customer } = data
 
-  // export default function CustomerList() {
   const columnsCurrent = [
     {
       title: 'Customer',
@@ -66,8 +62,8 @@ const Customers = () => {
       render: (text, record) => {
         return (
           <Link
-            href='customers/customer/[id]'
-            as={`customers/customer/${record.cardCode}`}
+            href='customers/[id]'
+            as={`customers/${record.cardCode}`}
           >
             <a>{text}</a>
           </Link>
