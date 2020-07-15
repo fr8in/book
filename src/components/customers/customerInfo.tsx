@@ -8,7 +8,7 @@ import mockData from '../../../mock/customer/customerDetail'
 
 const CustomerInfo = (props) => {
   const { customerInfo } = props
-
+console.log('props', props)
   const initial = {
     gst: mockData.gst,
     region: mockData.region,
@@ -36,7 +36,7 @@ const CustomerInfo = (props) => {
   }
 
   return (
-    <Row>
+    <Row gutter={8}>
       <Col xs={24} sm={24} md={12}>
         <LabelWithData
           label='PAN'

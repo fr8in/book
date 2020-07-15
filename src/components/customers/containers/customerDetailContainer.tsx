@@ -52,7 +52,9 @@ const CustomerDetailContainer = (props) => {
         <Col sm={14}>
           <CustomerInfo customerInfo={customerInfo} />
         </Col>
-        <Col xs={10} />
+        <Col xs={10}>
+          
+        </Col>
       </Row>
     </Card>
   )
