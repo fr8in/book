@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import PageLayout from "../../components/layout/pageLayout";
 import CustomerInfo from '../../components/customers/customerInfo';
+import CustomerDetailContainer from '../../components/customers/containers/customerDetailContainer';
 
 const CustomerDetail = (props) => {
 
   return (
     <PageLayout title={`Customer - ${props.id}`}>
-      <CustomerInfo cardCode={props.id} />
-
+      <CustomerDetailContainer cardCode={props.id} />
     </PageLayout>
   )
 };
