@@ -20,6 +20,7 @@ export const CUSTOMER_STCODE_QUERY = gql`
       name
       mobileNo
       cardCode
+      statusId
     }
   }
 `
@@ -64,7 +65,7 @@ const CustomerInfo = ({ cardCode }) => {
         //onSetText={text => text}
         onSubmit={onCustomerNameSave}
       />}
-      extra={<Blacklist />}
+      extra={<Blacklist cardCode={customerInfo.cardCode} statusId={customerInfo.statusId} />}
     >
       <Row gutter={[10, 10]}>
         <Col sm={13}>
