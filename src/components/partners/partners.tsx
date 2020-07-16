@@ -7,17 +7,17 @@ import useShowHide from '../../hooks/useShowHide'
 
  const regionList = [
   { value: 1, text: 'North' },
-  { value: 11, text: 'South-1' },
-  { value: 12, text: 'East-1' },
-  { value: 13, text: 'West-1' },
-  { value: 20, text: 'south-2' },
-  { value: 21, text: 'East-2' },
-  { value: 22, text: 'west-2' }
+  { value: 2, text: 'South-1' },
+  { value: 3, text: 'East-1' },
+  { value: 4, text: 'West-1' },
+  { value: 5, text: 'south-2' },
+  { value: 6, text: 'East-2' },
+  { value: 7, text: 'west-2' }
 ]
 
 const statusList =[
   { value: 1, text: 'Active' },
-  { value: 11, text: 'In-Active' },
+  { value: 2, text: 'In-Active' },
 ]
  
 

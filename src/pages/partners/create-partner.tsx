@@ -8,7 +8,7 @@ function PartnerProfile() {
         <div>
             <Card title="Create Partner">
                 <h4><b>Personal Details</b></h4><br />
-                <Row gutter={[12, 12]}>
+                <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                     <Col xs={24} sm={5}>
                         <Row >
                             <Form.Item
@@ -19,7 +19,7 @@ function PartnerProfile() {
                                 <Input placeholder="PartnerName" />
                             </Form.Item> </Row>
                     </Col>
-                    <Col xs={24} sm={4}>
+                    <Col xs={24} sm={5}>
                         <Row >
                             <Form.Item
                                 label="Contact Person"
@@ -29,7 +29,7 @@ function PartnerProfile() {
                                 <Input placeholder="Contact Person" />
                             </Form.Item> </Row>
                     </Col>
-                    <Col xs={24} sm={4}>
+                    <Col xs={24} sm={5}>
                         <Row >
                             <Form.Item
                                 label="Phone Number"
@@ -39,7 +39,7 @@ function PartnerProfile() {
                                 <Input placeholder="Phone Number" />
                             </Form.Item> </Row>
                     </Col>
-                    <Col xs={24} sm={4}>
+                    <Col xs={24} sm={5}>
                         <Row >
                             <Form.Item
                                 label="Email Address"

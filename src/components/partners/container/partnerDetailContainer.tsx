@@ -11,6 +11,8 @@ import PartnerTruck from '../../trucks/truckDetail/trucksByPartner'
 import DetailInfo from '../partnerDetail'
 import Document from '../partnerDocument'
 import Comment from '../comment'
+import { CrownFilled } from '@ant-design/icons'
+
 const TabPane = Tabs.TabPane
 
 const callback = (key) => {
@@ -18,17 +20,20 @@ const callback = (key) => {
   }
 export default function partnerDetailContainer() {
     return (
-        <div>
-              <Row>   
-        <Col span={22}>
-          <HeaderInfo/>
-        </Col>
-        <Col>
-          <WalletStatus />
-        </Col>
-      </Row>
-     
-      <Divider />
+       
+    <Row>
+      <Col xs={24}>
+        <Row gutter={[10, 10]}>
+          <Col xs={24}>
+            <Card
+              size='small'
+              className='border-top-blue'
+              title={
+                <HeaderInfo />
+              }
+              extra={ <WalletStatus /> }
+            >
+            
       <Row gutter={[10, 10]}>
         <Col xs={24} sm={12} md={8}>
           <BasicDetail/>
@@ -40,7 +45,11 @@ export default function partnerDetailContainer() {
         </Col>
         <Col xs={24} sm={24} md={8}>
           <Summary/>
+         
         </Col>
+      </Row>
+      </Card>
+      </Col>
       </Row>
       <br />
       <Row gutter={[10, 10]}>
@@ -52,7 +61,7 @@ export default function partnerDetailContainer() {
                 </TabPane>
                 <TabPane tab='Detail' key='2'>
                   <br />
-                <Row gutter={[15, 15]}>
+                <Row gutter={[12, 12]} justify="space-around">
                 <Col xs={24} sm={24}md={12}>
                 <DetailInfo/>
                 </Col>
@@ -81,6 +90,7 @@ export default function partnerDetailContainer() {
             </Card>
         </Col>
       </Row>
-        </div>
+       </Col>
+       </Row>
     )
 }

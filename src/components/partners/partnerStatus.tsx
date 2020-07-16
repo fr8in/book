@@ -1,5 +1,5 @@
 import React from 'react'
-import { Checkbox ,Card, Row, Col} from 'antd'
+import { Checkbox ,Card, Row,Space} from 'antd'
 
 function onChange(e) {
     console.log(`checked = ${e.target.checked}`);
@@ -7,21 +7,24 @@ function onChange(e) {
 export default function partnerStatus() {
     return (
         <div>
-            <Card.Grid>
+            <Card>
              <div className='filterMenu'>
                  <Row>
-                     <Col>
-                  <Checkbox onChange={onChange}>BlockList</Checkbox>
-                  </Col>
-                  <Col>
-                  <Checkbox onChange={onChange}>De-activate</Checkbox>
-                  </Col>
-                  <Col>
-                  <Checkbox onChange={onChange}>DND</Checkbox>
-                  </Col>
+                     <Space>
+                    <Row>
+                  <Checkbox onChange={onChange}>BlockList </Checkbox> 
+                 </Row>
+                
+                 <Row>
+                  <Checkbox onChange={onChange}> De-activate</Checkbox>
+                 </Row>
+                 <Row>
+                  <Checkbox onChange={onChange}>DND </Checkbox>
+                 </Row>
+                 </Space>
                   </Row>
               </div>
-              </Card.Grid>
+              </Card>
         </div>
     )
 }
