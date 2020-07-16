@@ -38,10 +38,12 @@ const cards = () => {
                 />
               </Col>
               <Col flex="180px">
-                <Button type="primary">
-                  <PlusCircleOutlined />
-                  Add Tag
-                </Button>
+                <Link href="cards/add-fastag">
+                  <Button type="primary">
+                    <PlusCircleOutlined />
+                    Add Tag
+                  </Button>
+                </Link>
               </Col>
             </Row>
             <Fastag />

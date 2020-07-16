@@ -1,9 +1,7 @@
 import React from "react";
-import { Table, Checkbox, Input } from "antd";
-import { FilterOutlined, DownSquareOutlined } from "@ant-design/icons";
-import PageLayout from "../layout/pageLayout";
+import { Table } from "antd";
+
 import pendingDetail from "../../../mock/approval/approvalPending";
-const { Search } = Input;
 
 const creditType = [
   { value: 1, text: "Credit Note" },
@@ -80,14 +78,12 @@ export default function approvedAndRejected() {
   ];
 
   return (
-    <PageLayout title="pending">
-      <Table
-        columns={ApprovalPending}
-        dataSource={pendingDetail}
-        size="small"
-        scroll={{ x: 800, y: 400 }}
-        pagination={false}
-      />
-    </PageLayout>
+    <Table
+      columns={ApprovalPending}
+      dataSource={pendingDetail}
+      size="small"
+      scroll={{ x: 800, y: 400 }}
+      pagination={false}
+    />
   );
 }

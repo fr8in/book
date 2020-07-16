@@ -1,5 +1,6 @@
 import React from "react";
-import { Table } from "antd";
+import { Table, Button } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
 import PageLayout from "../../layout/pageLayout";
 import Cards from "../../../../mock/card/cards";
 
@@ -44,7 +45,11 @@ export default function cardsFastag() {
       dataIndex: "Reverse",
     },
     {
-      title: "d",
+      title: (
+        <Button size="small">
+          <DownloadOutlined />
+        </Button>
+      ),
     },
   ];
 
