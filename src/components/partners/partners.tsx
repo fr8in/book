@@ -1,19 +1,34 @@
-import { Table, Input, Checkbox } from 'antd'
+import { Table, Input} from 'antd'
 import mock from '../../../mock/partner/partnerData'
-import PageLayout from '../layout/pageLayout'
 import Link from 'next/link'
-import {DownSquareOutlined } from '@ant-design/icons'
+import {SearchOutlined } from '@ant-design/icons'
+import useShowHide from '../../hooks/useShowHide'
 
 
-function onChange(e) {
-  console.log(`checked = ${e.target.checked}`);
-}
+ const regionList = [
+  { value: 1, text: 'North' },
+  { value: 11, text: 'South-1' },
+  { value: 12, text: 'East-1' },
+  { value: 13, text: 'West-1' },
+  { value: 20, text: 'south-2' },
+  { value: 21, text: 'East-2' },
+  { value: 22, text: 'west-2' }
+]
+
+const statusList =[
+  { value: 1, text: 'Active' },
+  { value: 11, text: 'In-Active' },
+]
+ 
 
 const Partners = () => {
+  const initial = { partnerCodeSearch: false }
+  const { onShow } = useShowHide(initial)
   const columnsCurrent = [
     {
       title: 'Partner Code',
       dataIndex: 'partnerCode',
+      key: 'partnerCode',
               render: (text, record) => {
                 return (
                   <Link
@@ -25,70 +40,78 @@ const Partners = () => {
               },
               filterDropdown: (
                 <div > 
-                  <Input placeholder="Search Partner code" />  
+                  <Input placeholder="Search Partner code" 
+                  id='partnerCode'
+                  name='partnerCode'
+                  type='number'/>  
               </div>
             ),
-            filterIcon:<DownSquareOutlined />  
+            filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+            onFilterDropdownVisibleChange: () => onShow('partnerCodeSearch') 
     },
     {
       title: 'Partner',
       dataIndex: 'name',
+      key:'name',
             filterDropdown: (
                 <div > 
-                    <Input placeholder="Search Partner Name" />  
+                    <Input placeholder="Search Partner Name" 
+                      id='name'
+                      name='name'
+                     />  
                 </div>
               ),
-            filterIcon:<DownSquareOutlined />
+              filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+              onFilterDropdownVisibleChange: () => onShow('partnerNameSearch') 
+           
     },
     {
       title: 'Region',
       dataIndex: 'regionName',
-            filterDropdown: (
-              <div className='filterMenu'>
-                  <Checkbox />
-              </div>
-            ),
-            filterIcon:<DownSquareOutlined />
+      key:'regionName',
+      filters:  regionList  
     },
     {
       title: 'Contact No',
       dataIndex: 'mobileNo',
+      key:'mobileNo',
     },
     {
       title: 'Email',
       dataIndex: 'email',
+      key:'email',
     },
     {
       title: 'Avg Km/day',
       dataIndex: 'averageKm',
-      sorter: true
+      key:'averageKm',
+      sorter: true,
+
     },
     {
       title: 'Trucks',
       dataIndex: 'truckCount',
+      key:'truckCount',
     },
     {
       title: 'Invoiced',
       dataIndex: 'invoiceAmount',
+      key:'invoiceAmount',
     },
     {
       title: 'Invoice Pending',
       dataIndex: 'invoicePendingAmount',
+      key:'invoicePendingAmount',
     },
     {
       title: 'Status',
       dataIndex: 'active',
-            filterDropdown: (
-              <div className='filterMenu'>
-                  <Checkbox onChange={onChange}>Active</Checkbox>
-                  <Checkbox onChange={onChange}>In-Active</Checkbox>
-              </div>
-            ),
-            filterIcon:<DownSquareOutlined />
+      key:'active',
+      filters : statusList
     }
   ]
   return (
-    <PageLayout title='Partners'>
+    
       <Table
         columns={columnsCurrent}
         dataSource={mock}
@@ -97,7 +120,6 @@ const Partners = () => {
         scroll={{ x: 800, y: 850 }}
         pagination={false}
       />
-    </PageLayout>
   )
 }
 

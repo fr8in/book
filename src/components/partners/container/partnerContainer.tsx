@@ -1,5 +1,5 @@
 import React from 'react'
-import {Row, Col, Button, Card} from 'antd'
+import {Row, Button, Card} from 'antd'
 import Link from 'next/link'
 import PartnerList from '../partners'
 export default function partnerContainer() {
@@ -10,14 +10,9 @@ export default function partnerContainer() {
                    <Button type="primary">Create Partner</Button>                 
                 </Link>
             </Row>
-                <br />
-            <Row gutter={[10, 10]}>
-                <Col sm={24}>
-                    <Card size='small' className='card-body-0'>
+                <Card size='small' className='card-body-0 border-top-blue' >
                      <PartnerList />
-                    </Card>
-                </Col>
-            </Row>
+                </Card>
         </div>
     )
 }
