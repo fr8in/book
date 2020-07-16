@@ -2,8 +2,8 @@ import { Row, Col, Card, Button, Space, Collapse, Tabs } from 'antd'
 import { BankFilled, LeftCircleFilled, WalletOutlined } from '@ant-design/icons'
 import Blacklist from '../blacklist'
 import CustomerInfo from '../customerInfo'
-import { useQuery } from '@apollo/react-hooks'
-import { CUSTOMER_INFO_QUERY } from './query/cutomerInfoQuery'
+import { useSubscription } from '@apollo/client'
+import { CUSTOMER_DETAIL_SUBSCRIPTION } from './query/cutomerDetailSubscription'
 import CustomerName from '../customerName'
 import useShowHide from '../../../hooks/useShowHide'
 import Transfer from '../transfer'
@@ -28,14 +28,13 @@ const CustomerDetailContainer = (props) => {
   const initial = { transfer: false, rebate: false, wallet: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
-  const { loading, error, data } = useQuery(
-    CUSTOMER_INFO_QUERY,
+  const { loading, error, data } = useSubscription(
+    CUSTOMER_DETAIL_SUBSCRIPTION,
     {
       variables: { cardCode },
       // Setting this value to true will make the component rerender when
       // the "networkStatus" changes, so we are able to know if it is fetching
       // more data
-      notifyOnNetworkStatusChange: true
     }
   )
 

@@ -20,27 +20,33 @@ mutation customerBlacklist($statusId:Int,$cardCode:String) {
 }
 `
 
-const Blacklist = ({ cardCode, statusId }) => {
+const Blacklist = ({ cardCode, statusId, disabled = true }) => {
   const [updateStatusId] = useMutation(UPDATE_CUSTOMER_BLACKLIST_MUTATION)
   const onChange = (checked: Boolean) => {
     updateStatusId({
       variables: {
         cardCode,
         statusId: checked ? customerStatus.Blacklisted : customerStatus.Active,
+      },
+      update(cache, data) {
+        //console.log('cache:', cache, 'data: ', ç)
+        const _result = data.data.update_customer.returning[0]
+        cache.writeData({ data: { [`customer:${_result.id}`]: _result } })
+        localStorage.clear()
       }
 
     })
   }
-  const blacklisted = statusId === customerStatus.Blacklisted
+  const checked = statusId === customerStatus.Blacklisted
   return (
 
     <div>
       <label>Blacklisted &nbsp;</label>
       <Switch
         onChange={onChange}
-        checked={blacklisted}
-        className={blacklisted ? 'block' : 'unblock'}
-        disabled={false}
+        checked={checked}
+        className={checked ? 'block' : 'unblock'}
+        disabled={disabled}
       />
     </div>
   )
