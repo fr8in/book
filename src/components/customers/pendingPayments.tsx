@@ -1,37 +1,35 @@
-import React from "react";
-import { Table } from "antd";
+import React from 'react'
+import { Table } from 'antd'
 
-import PageLayout from "../layout/pageLayout";
-
-export default function pendingPayments() {
+const PendingPayments = () => {
   const pendingPayments = [
     {
-      title: "Pending Payments",
-      dataIndex: "pendingPayments",
+      title: 'Pending Payments',
+      dataIndex: 'pendingPayments'
     },
     {
-      title: "Advance",
-      dataIndex: "advance",
+      title: 'Advance',
+      dataIndex: 'advance'
     },
     {
-      title: "Invoice Pending",
-      dataIndex: "invoicePending",
+      title: 'Invoice Pending',
+      dataIndex: 'invoicePending'
     },
     {
-      title: "Invoiced",
-      dataIndex: "invoiced",
-    },
-  ];
+      title: 'Invoiced',
+      dataIndex: 'invoiced'
+    }
+  ]
 
   return (
-    <PageLayout title="pendingPayments">
-      <Table
-        columns={pendingPayments}
-        rowKey={(record) => record.id}
-        size="small"
-        scroll={{ x: 800, y: 400 }}
-        pagination={false}
-      />
-    </PageLayout>
-  );
+    <Table
+      columns={pendingPayments}
+      rowKey={(record) => record.id}
+      size='small'
+      pagination={false}
+      scroll={{ x: 400 }}
+    />
+  )
 }
+
+export default PendingPayments
