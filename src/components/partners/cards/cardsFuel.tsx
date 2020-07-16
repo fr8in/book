@@ -3,6 +3,7 @@ import { Table, Input } from "antd";
 import { DownSquareOutlined } from "@ant-design/icons";
 import PageLayout from "../../layout/pageLayout";
 import cards from "../../../../mock/card/cards";
+import Link from "next/link";
 const { Search } = Input;
 
 export default function cardsFuel() {
@@ -46,6 +47,13 @@ export default function cardsFuel() {
     {
       title: "Partner Name",
       dataIndex: "partnerName",
+      render: (text, record) => {
+        return (
+          <Link href="partners/[id]" as={`partners/${record.id}`}>
+            <a>{text}</a>
+          </Link>
+        );
+      },
       filterDropdown: (
         <div className="filterMenu">
           <Search
