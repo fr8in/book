@@ -8,7 +8,6 @@ import mockData from '../../../mock/customer/customerDetail'
 
 const CustomerInfo = (props) => {
   const { customerInfo } = props
-  console.log('props', props)
   const initial = {
     gst: mockData.gst,
     region: mockData.region,

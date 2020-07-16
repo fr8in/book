@@ -3,18 +3,8 @@ import Link from 'next/link'
 import PageLayout from '../layout/pageLayout'
 import { useQuery } from '@apollo/react-hooks'
 import { NetworkStatus } from 'apollo-client'
-import gql from 'graphql-tag'
+import { ALL_CUSTOMER_QUERY } from './containers/query/allCustomerQuery'
 
-export const ALL_CUSTOMER_QUERY = gql`
-  query customers($offset: Int!, $limit: Int!) {
-    customer(offset: $offset, limit: $limit) {
-      id
-      name
-      mobileNo
-      cardCode
-    }
-  }
-`
 export const customersQueryVars = {
   offset: 0,
   limit: 10
@@ -52,7 +42,7 @@ const Customers = () => {
   }
 
   if (loading && !loadingMoreCustomers) return <div>Loading</div>
-  //console.log(data)
+  // console.log(data)
   const { customer } = data
 
   const columnsCurrent = [
