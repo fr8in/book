@@ -29,7 +29,7 @@ const Blacklist = ({ cardCode, statusId }) => {
         statusId: checked ? customerStatus.Blacklisted : customerStatus.Active,
       },
       update(cache, data) {
-        //console.log('cache:', cache, 'data: ', ç)
+        console.log('cache:', cache, 'data:', data)
         const _result = data.data.update_customer.returning[0]
         cache.writeData({ data: { [`customer:${_result.id}`]: _result } })
         localStorage.clear()
@@ -37,15 +37,15 @@ const Blacklist = ({ cardCode, statusId }) => {
 
     })
   }
-  const checked = statusId === customerStatus.Blacklisted
+  const blacklisted = statusId === customerStatus.Blacklisted
   return (
 
     <div>
       <label>Blacklisted &nbsp;</label>
       <Switch
         onChange={onChange}
-        checked={checked}
-        className={checked ? 'block' : 'unblock'}
+        checked={blacklisted}
+        className={blacklisted ? 'block' : 'unblock'}
         disabled={false}
       />
     </div>
