@@ -29,15 +29,9 @@ const CustomerName = (props) => {
         variables: {
           cardCode,
           name: text
-        },
-        update(cache, data) {
-          console.log('cache:', cache, 'data:', data)
-          const _result = data.data.update_customer.returning[0]
-          cache.writeData({ data: { [`customer:${_result.name}`]: _result } })
-          message.success(success)
-          localStorage.clear()
         }
       })
+      message.success(success)
     }
   }
 
