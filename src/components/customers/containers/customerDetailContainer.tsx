@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Row, Col, Card } from 'antd'
 import InlineEdit from '../../common/inlineEdit'
 import Blacklist from '../blacklist'
@@ -19,20 +19,15 @@ const CustomerDetailContainer = (props) => {
     }
   )
 
-  // if (error) return <ErrorMessage message="Error loading posts." />
-  if (loading) return <div>Loading</div>
+  const initial = { name: '' }
+  const [company, setCompany] = useState(initial)
+
+  if (loading) return <div>Loading...</div>
   const { customer } = data
   const customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
 
-  const initial = { name: customerInfo.name }
-  const [value, setValue] = useState(initial)
-
-  const onCustomerNameSave = (objKey, text) => {
-    setValue({ ...value, [objKey]: text })
-  }
-
-  const textChangeHandle = (objKey, text) => {
-    setValue({ ...value, [objKey]: text })
+  const onSubmit = (objKey, text) => {
+    setCompany({ ...company, [objKey]: text })
   }
 
   return (
@@ -40,10 +35,9 @@ const CustomerDetailContainer = (props) => {
       size='small'
       title={
         <InlineEdit
-          text={value.name}
-          onSetText={text => textChangeHandle('name', text)}
+          text={company.name ? company.name : customerInfo.name}
+          onSetText={onSubmit}
           objKey='name'
-          onSubmit={onCustomerNameSave}
         />
       }
       extra={<Blacklist cardCode={customerInfo.cardCode} statusId={customerInfo.statusId} />}
@@ -52,9 +46,7 @@ const CustomerDetailContainer = (props) => {
         <Col sm={14}>
           <CustomerInfo customerInfo={customerInfo} />
         </Col>
-        <Col xs={10}>
-          
-        </Col>
+        <Col xs={10} />
       </Row>
     </Card>
   )

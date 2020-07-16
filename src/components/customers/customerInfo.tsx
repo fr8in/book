@@ -8,7 +8,7 @@ import mockData from '../../../mock/customer/customerDetail'
 
 const CustomerInfo = (props) => {
   const { customerInfo } = props
-console.log('props', props)
+  console.log('props', props)
   const initial = {
     gst: mockData.gst,
     region: mockData.region,
@@ -23,14 +23,9 @@ console.log('props', props)
   }
   const [value, setValue] = useState(initial)
 
-  const editSubmit = (objKey, text) => {
+  const onSubmit = (objKey, text) => {
     setValue({ ...value, [objKey]: text })
   }
-
-  const textChangeHandle = (objKey, text) => {
-    setValue({ ...value, [objKey]: text })
-  }
-
   const onChange = (e) => {
     setValue({ ...value, managed: e.target.checked })
   }
@@ -65,7 +60,7 @@ console.log('props', props)
         />
         <LabelWithData
           label='GST No'
-          data={<InlineEdit text={value.gst} objKey='gst' onSetText={text => textChangeHandle('gst', text)} onSubmit={editSubmit} />}
+          data={<InlineEdit text={value.gst} objKey='gst' onSetText={onSubmit} />}
           labelSpan={10}
           dataSpan={14}
         />
@@ -74,20 +69,20 @@ console.log('props', props)
         <LabelWithData label='Mobile No' data={customerInfo.mobileNo} labelSpan={10} dataSpan={14} />
         <LabelWithData
           label='Region'
-          data={<InlineEdit text={value.region} objKey='region' onSetText={text => textChangeHandle('region', text)} onSubmit={editSubmit} />}
+          data={<InlineEdit text={value.region} objKey='region' onSetText={onSubmit} />}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData
           label='Payment Manager'
-          data={<InlineEdit text={value.paymentManager} objKey='paymentManager' onSetText={text => textChangeHandle('paymentManager', text)} onSubmit={editSubmit} />}
+          data={<InlineEdit text={value.paymentManager} objKey='paymentManager' onSetText={onSubmit} />}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData label='Receivable Days' data={mockData.receivableDays} labelSpan={10} dataSpan={14} />
         <LabelWithData
           label='OnBoarded By'
-          data={<InlineEdit text={value.onBoardedBy} objKey='onBoardedBy' onSetText={text => textChangeHandle('onBoardedBy', text)} onSubmit={editSubmit} />}
+          data={<InlineEdit text={value.onBoardedBy} objKey='onBoardedBy' onSetText={onSubmit} />}
           labelSpan={10}
           dataSpan={14}
         />
@@ -95,7 +90,7 @@ console.log('props', props)
       <Col xs={24} sm={24} md={12}>
         <LabelWithData
           label='Company Type'
-          data={<InlineEdit text={value.companyType} objKey='companyType' onSetText={text => textChangeHandle('companyType', text)} onSubmit={editSubmit} />}
+          data={<InlineEdit text={value.companyType} objKey='companyType' onSetText={onSubmit} />}
           labelSpan={10}
           dataSpan={14}
         />
@@ -114,25 +109,25 @@ console.log('props', props)
         />
         <LabelWithData
           label='Advance %'
-          data={<InlineEdit text={value.advancePercentage} objKey='advancePercentage' onSetText={text => textChangeHandle('advancePercentage', text)} onSubmit={editSubmit} />}
+          data={<InlineEdit text={value.advancePercentage} objKey='advancePercentage' onSetText={onSubmit} />}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData
           label='Advance Exception'
-          data={<InlineEdit text={value.advException} objKey='advException' onSetText={text => textChangeHandle('advException', text)} onSubmit={editSubmit} />}
+          data={<InlineEdit text={value.advException} objKey='advException' onSetText={onSubmit} />}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData
           label='Final Payment Exception'
-          data={<InlineEdit text={value.finalException} objKey='finalException' onSetText={text => textChangeHandle('finalException', text)} onSubmit={editSubmit} />}
+          data={<InlineEdit text={value.finalException} objKey='finalException' onSetText={onSubmit} />}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData
           label='Credit Limit'
-          data={<InlineEdit text={value.creditLimit} objKey='creditLimit' onSetText={text => textChangeHandle('creditLimit', text)} onSubmit={editSubmit} />}
+          data={<InlineEdit text={value.creditLimit} objKey='creditLimit' onSetText={onSubmit} />}
           labelSpan={10}
           dataSpan={14}
         />
