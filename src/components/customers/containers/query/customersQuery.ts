@@ -1,6 +1,6 @@
-import gql from 'graphql-tag'
+import { gql } from '@apollo/client'
 
-export const ALL_CUSTOMER_QUERY = gql`
+export const CUSTOMERS_QUERY = gql`
   query customers($offset: Int!, $limit: Int!) {
     customer(offset: $offset, limit: $limit) {
       id

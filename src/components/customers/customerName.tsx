@@ -1,7 +1,7 @@
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/client'
 import { message } from 'antd'
 import InlineEdit from '../common/inlineEdit'
-import gql from 'graphql-tag'
+import { gql } from '@apollo/client'
 
 const UPDATE_CUSTOMER_BLACKLIST_MUTATION = gql`
 
@@ -30,7 +30,7 @@ const CustomerName = (props) => {
           cardCode,
           name: text
         },
-        update (cache, data) {
+        update(cache, data) {
           console.log('cache:', cache, 'data:', data)
           const _result = data.data.update_customer.returning[0]
           cache.writeData({ data: { [`customer:${_result.name}`]: _result } })
