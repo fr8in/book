@@ -51,11 +51,12 @@ export default function partnerDetailContainer() {
                     <PartnerTruck />
                 </TabPane>
                 <TabPane tab='Detail' key='2'>
-                <Row gutter={[10, 10]}>
-                <Col xs={24} sm={12}>
+                  <br />
+                <Row gutter={[15, 15]}>
+                <Col xs={24} sm={24}md={12}>
                 <DetailInfo/>
                 </Col>
-                <Col xs={24} sm={12}>
+                <Col xs={24} sm={24} md={12}>
                 <Document />
                 </Col>
               
