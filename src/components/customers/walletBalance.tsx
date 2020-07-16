@@ -8,7 +8,7 @@ const WalletBalance = (props) => {
   return (
     <Space>
       <h3 className='m0'>Wallet: {1250}</h3>
-      <Button type='primary' size='small' shape='circle' icon={<ReloadOutlined />} onClick={onRefresh} />
+      <Button size='small' shape='circle' icon={<ReloadOutlined />} onClick={onRefresh} />
     </Space>
   )
 }

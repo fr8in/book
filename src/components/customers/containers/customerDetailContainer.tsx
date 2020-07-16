@@ -50,15 +50,15 @@ const CustomerDetailContainer = (props) => {
           <Row justify='space-between'>
             <Space>
               <Button icon={<BankFilled />} onClick={() => onShow('transfer')}>
-              Transfer
+                Transfer
               </Button>
               <Button icon={<LeftCircleFilled />} onClick={() => onShow('rebate')}>
-              Rebate
+                Rebate
               </Button>
             </Space>
             <Space>
               <WalletBalance />
-              <Button type='primary' icon={<WalletOutlined />} onClick={() => onShow('wallet')} />
+              <Button type='primary' shape='circle' icon={<WalletOutlined />} onClick={() => onShow('wallet')} />
             </Space>
           </Row>
           <Card size='small' className='card-body-0 border-top-blue mt10'>
