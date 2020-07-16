@@ -8,6 +8,7 @@ import Orders from '../../components/reports/orders'
 import Revenue from '../../components/reports/revenue'
 import Progress from '../../components/reports/progress'
 import { WhatsAppOutlined, FullscreenOutlined } from '@ant-design/icons'
+import ExcessLoad from '../../components/trips/excessLoad'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
@@ -106,7 +107,7 @@ const Dashboard = () => {
               accordion
             >
               <Panel header='Loads' key='1'>
-                <Trips />
+                <ExcessLoad />
               </Panel>
             </Collapse>
           </Card>
