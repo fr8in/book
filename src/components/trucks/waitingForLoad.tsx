@@ -77,23 +77,19 @@ const WaitingForLoad = () => {
       title: 'Action',
       render: (text, record) => {
         return (
-          <span className='actions'>
+          <span>
             <Tooltip title={record.driverPhoneNo}>
               <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.driverPhoneNo)} />
             </Tooltip>
             <Tooltip title='Comment'>
               <Button type='link' disabled icon={<CommentOutlined />} onClick={() => onShow('comment')} />
             </Tooltip>
-            <span>
-              <Tooltip title='click to copy message'>
-                <Button type='link' icon={<WhatsAppOutlined />} />
-              </Tooltip>
-            </span>
-            <span>
-              <Tooltip title='Quick PO'>
-                <Button type='link' icon={<RocketFilled />} onClick={() => onShow('poModal')} />
-              </Tooltip>
-            </span>
+            <Tooltip title='click to copy message'>
+              <Button type='link' icon={<WhatsAppOutlined />} />
+            </Tooltip>
+            <Tooltip title='Quick PO'>
+              <Button type='link' icon={<RocketFilled />} onClick={() => onShow('poModal')} />
+            </Tooltip>
           </span>
         )
       },
