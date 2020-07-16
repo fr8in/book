@@ -84,7 +84,7 @@ import { CloseCircleOutlined, CopyOutlined } from '@ant-design/icons'
   return (
     <Table
     columns={columns}
-    expandedRowRender={record => <ExcessLoadLead {...record.lead} />}
+    expandedRowRender={record => <ExcessLoadLead {...record} />}
     dataSource={tripsData}
     rowKey={record => record.id}
     size='small'

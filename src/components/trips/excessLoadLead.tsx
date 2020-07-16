@@ -1,15 +1,15 @@
 
 import { Table,Tooltip,Button} from 'antd'
 import { CheckOutlined, DeleteOutlined, WhatsAppOutlined } from '@ant-design/icons'
+import Search from 'antd/lib/input/Search'
 
 const ExcessLoadLead = (props) => {
-   console.log('lead',props)
   const data =[{
     title: 'Partner Name',
     dataIndex: 'partner',
     key: 'partner',
     width: '30%',
-    },
+  },
   {
     title: 'Partner No',
     dataIndex: 'phone',
@@ -26,16 +26,20 @@ const ExcessLoadLead = (props) => {
     title: 'Action',
     render: (text, record) => (
       <span className='actions'>
-          <Button type='link' icon={<CheckOutlined />}  />
-        <Tooltip title='Delete'>
-          <Button type='link' disabled icon={<DeleteOutlined />} />
-        </Tooltip>
-        <span>
-          <Tooltip title='Double Click to Copy Text'>
-            <Button type='link' icon={<WhatsAppOutlined />} />
-          </Tooltip>
+        <Search
+        placeholder="Select Truck"
+        enterButton="Search"
+       />
+       <Button type='link' icon={<CheckOutlined />}  />
+       <Tooltip title='Delete'>
+       <Button type='link' disabled icon={<DeleteOutlined />} />
+       </Tooltip>
+          <span>
+            <Tooltip title='Double Click to Copy Text'>
+              <Button type='link' icon={<WhatsAppOutlined />} />
+            </Tooltip>
+          </span>
         </span>
-      </span>
     ),
     width: '20%'
   }
