@@ -1,4 +1,5 @@
-import { Row, Col, Card, Button, Space, Collapse } from 'antd'
+import { useState } from 'react'
+import { Row, Col, Card, Button, Space, Collapse, Tabs } from 'antd'
 import { BankFilled, LeftCircleFilled, WalletOutlined } from '@ant-design/icons'
 import Blacklist from '../blacklist'
 import CustomerInfo from '../customerInfo'
@@ -11,10 +12,20 @@ import Rebate from '../rebate'
 import WalletTopup from '../walletTopup'
 import WalletBalance from '../walletBalance'
 import PendingPayments from '../pendingPayments'
+import FinalPaymentsPending from '../finalPaymentPending'
+import IncomingPayments from '../incomingPayments'
+import AdvancePending from '../advancePending'
+import InvoicePending from '../invoicePending'
+import Users from '../users'
+import Branch from '../branch'
+import Fr8Branch from '../fr8Branch'
+import Trips from '../../trips/trips'
 
 const { Panel } = Collapse
+const { TabPane } = Tabs
 
 const CustomerDetailContainer = (props) => {
+  const [tabKey, setTabKey] = useState('1')
   const { cardCode } = props
   const initial = { transfer: false, rebate: false, wallet: false }
   const { visible, onShow, onHide } = useShowHide(initial)
@@ -34,46 +45,96 @@ const CustomerDetailContainer = (props) => {
   const { customer } = data
   const customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
 
+  const callback = (key) => {
+    setTabKey(key)
+  }
+
   return (
-    <Card
-      size='small'
-      title={
-        <CustomerName cardCode={customerInfo.cardCode} name={customerInfo.name} />
-      }
-      extra={<Blacklist cardCode={customerInfo.cardCode} statusId={customerInfo.statusId} />}
-    >
-      <Row gutter={[10, 10]}>
-        <Col xs={24} sm={24} md={14}>
-          <CustomerInfo customerInfo={customerInfo} />
-        </Col>
-        <Col xs={24} sm={24} md={10}>
-          <Row justify='space-between'>
-            <Space>
-              <Button icon={<BankFilled />} onClick={() => onShow('transfer')}>
-                Transfer
-              </Button>
-              <Button icon={<LeftCircleFilled />} onClick={() => onShow('rebate')}>
-                Rebate
-              </Button>
-            </Space>
-            <Space>
-              <WalletBalance />
-              <Button type='primary' shape='circle' icon={<WalletOutlined />} onClick={() => onShow('wallet')} />
-            </Space>
-          </Row>
-          <Card size='small' className='card-body-0 border-top-blue mt10'>
-            <Collapse ghost accordion>
-              <Panel header='Payments' key='1'>
-                <PendingPayments />
-              </Panel>
-            </Collapse>
-          </Card>
-        </Col>
-      </Row>
-      {visible.transfer && <Transfer visible={visible.transfer} onHide={() => onHide('transfer')} />}
-      {visible.rebate && <Rebate visible={visible.rebate} onHide={() => onHide('rebate')} />}
-      {visible.wallet && <WalletTopup visible={visible.wallet} onHide={() => onHide('wallet')} />}
-    </Card>
+    <Row>
+      <Col xs={24}>
+        <Row gutter={[10, 10]}>
+          <Col xs={24}>
+            <Card
+              size='small'
+              title={
+                <CustomerName cardCode={customerInfo.cardCode} name={customerInfo.name} />
+              }
+              extra={<Blacklist cardCode={customerInfo.cardCode} statusId={customerInfo.statusId} />}
+            >
+              <Row gutter={10}>
+                <Col xs={24} sm={24} md={14}>
+                  <CustomerInfo customerInfo={customerInfo} />
+                </Col>
+                <Col xs={24} sm={24} md={10}>
+                  <Row justify='space-between'>
+                    <Space>
+                      <Button icon={<BankFilled />} onClick={() => onShow('transfer')}>
+                    Transfer
+                      </Button>
+                      <Button icon={<LeftCircleFilled />} onClick={() => onShow('rebate')}>
+                    Rebate
+                      </Button>
+                    </Space>
+                    <Space>
+                      <WalletBalance />
+                      <Button type='primary' shape='circle' icon={<WalletOutlined />} onClick={() => onShow('wallet')} />
+                    </Space>
+                  </Row>
+                  <Card size='small' className='card-body-0 mt10'>
+                    <Collapse ghost accordion>
+                      <Panel header='Payments' key='1'>
+                        <PendingPayments />
+                      </Panel>
+                    </Collapse>
+                  </Card>
+                </Col>
+                {visible.transfer && <Transfer visible={visible.transfer} onHide={() => onHide('transfer')} />}
+                {visible.rebate && <Rebate visible={visible.rebate} onHide={() => onHide('rebate')} />}
+                {visible.wallet && <WalletTopup visible={visible.wallet} onHide={() => onHide('wallet')} />}
+              </Row>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={24}>
+            <Card size='small' className='card-body-0 border-top-blue'>
+              <Tabs defaultActiveKey='1' onChange={callback}>
+                <TabPane tab='Final' key='1'>
+                  <FinalPaymentsPending />
+                </TabPane>
+                <TabPane tab='Incoming' key='2'>
+                  <IncomingPayments />
+                </TabPane>
+                <TabPane tab='Advance Pending(O)' key='3'>
+                  <AdvancePending />
+                </TabPane>
+                <TabPane tab='Advance Pending (C)' key='4'>
+                  <AdvancePending />
+                </TabPane>
+                <TabPane tab='Invoice Pending' key='5'>
+                  <InvoicePending />
+                </TabPane>
+                <TabPane tab='Users' key='6'>
+                  <Users />
+                </TabPane>
+                <TabPane tab='Branch' key='7'>
+                  <Branch />
+                </TabPane>
+                <TabPane tab='FR8 Branch' key='8'>
+                  <Fr8Branch />
+                </TabPane>
+                <TabPane tab='Ongoing' key='9'>
+                  <Trips />
+                </TabPane>
+                <TabPane tab='Completed' key='10'>
+                  <Trips />
+                </TabPane>
+              </Tabs>
+            </Card>
+          </Col>
+        </Row>
+      </Col>
+    </Row>
   )
 }
 
