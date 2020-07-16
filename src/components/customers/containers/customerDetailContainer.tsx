@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Row, Col, Card, Button, Space, Collapse, Tabs } from 'antd'
 import { BankFilled, LeftCircleFilled, WalletOutlined } from '@ant-design/icons'
 import Blacklist from '../blacklist'
@@ -25,7 +24,6 @@ const { Panel } = Collapse
 const { TabPane } = Tabs
 
 const CustomerDetailContainer = (props) => {
-  const [tabKey, setTabKey] = useState('1')
   const { cardCode } = props
   const initial = { transfer: false, rebate: false, wallet: false }
   const { visible, onShow, onHide } = useShowHide(initial)
@@ -45,10 +43,6 @@ const CustomerDetailContainer = (props) => {
   const { customer } = data
   const customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
 
-  const callback = (key) => {
-    setTabKey(key)
-  }
-
   return (
     <Row>
       <Col xs={24}>
@@ -56,6 +50,7 @@ const CustomerDetailContainer = (props) => {
           <Col xs={24}>
             <Card
               size='small'
+              className='border-top-blue'
               title={
                 <CustomerName cardCode={customerInfo.cardCode} name={customerInfo.name} />
               }
@@ -98,7 +93,7 @@ const CustomerDetailContainer = (props) => {
         <Row>
           <Col xs={24}>
             <Card size='small' className='card-body-0 border-top-blue'>
-              <Tabs defaultActiveKey='1' onChange={callback}>
+              <Tabs defaultActiveKey='1'>
                 <TabPane tab='Final' key='1'>
                   <FinalPaymentsPending />
                 </TabPane>
