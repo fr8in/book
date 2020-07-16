@@ -1,5 +1,5 @@
-import Fastag from "../../components/cards/cardsFastag";
-import FuelCard from "../../components/cards/cardsFuel";
+import Fastag from "../../components/partners/cards/cardsFastag";
+import FuelCard from "../../components/partners/cards/cardsFuel";
 
 import Link from "next/link";
 import { Tabs, Row, Col, Card, Input, Button } from "antd";
@@ -14,7 +14,14 @@ const cards = () => {
         <Tabs>
           <TabPane tab="Fuel Card" key="1">
             <Row justify="end" className="m5">
-              <Col flex="130px"></Col>
+              <Col flex="130px">
+                <Link href="cards/add-fuelcard">
+                  <Button type="primary">
+                    <PlusCircleOutlined />
+                    Add Card
+                  </Button>
+                </Link>
+              </Col>
               <Col flex="180px">
                 <Button type="primary">Refresh Card List</Button>
               </Col>
@@ -31,12 +38,10 @@ const cards = () => {
                 />
               </Col>
               <Col flex="180px">
-                <Link href="cards/addFuelCard">
-                  <Button type="primary">
-                    <PlusCircleOutlined />
-                    Add Tag
-                  </Button>
-                </Link>
+                <Button type="primary">
+                  <PlusCircleOutlined />
+                  Add Tag
+                </Button>
               </Col>
             </Row>
             <Fastag />

@@ -1,8 +1,8 @@
 import React from "react";
 import { Table, Input } from "antd";
 import { DownSquareOutlined } from "@ant-design/icons";
-import PageLayout from "../layout/pageLayout";
-import cards from "../../../mock/card/cards";
+import PageLayout from "../../layout/pageLayout";
+import cards from "../../../../mock/card/cards";
 const { Search } = Input;
 
 export default function cardsFuel() {

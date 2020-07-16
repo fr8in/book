@@ -1,99 +1,105 @@
 import React from "react";
-import { Table, Checkbox, Input } from "antd";
-import { FilterOutlined, DownSquareOutlined } from "@ant-design/icons";
-import PageLayout from "../layout/pageLayout";
-import pendingDetail from "../../../mock/approval/approvalPending";
-const { Search } = Input;
+import { Table, Input } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
-function onChange(e) {
-  console.log(`checked = ${e.target.checked}`);
-}
+import useShowHide from "../../hooks/useShowHide";
+import pendingDetail from "../../../mock/approval/approvalPending";
+
+const regionList = [
+  { value: 1, text: "North" },
+  { value: 11, text: "South-1" },
+  { value: 12, text: "East-1" },
+  { value: 13, text: "West-1" },
+  { value: 20, text: "South-2" },
+  { value: 21, text: "East-2" },
+  { value: 22, text: "West-2" },
+];
+const requestedBy = [
+  { value: 1, text: "Partner" },
+  { value: 11, text: "Fr8" },
+];
 
 export default function pending() {
+  const initial = { tripIdSearch: false };
+  const { visible, onShow } = useShowHide(initial);
   const ApprovalPending = [
     {
       title: "Load ID",
       dataIndex: "loadId",
+      key: "loadId",
     },
     {
       title: "Type",
       dataIndex: "type",
+      key: "type",
     },
     {
       title: "Issue Type",
       dataIndex: "issueType",
+      key: "issueType",
     },
     {
       title: "Amount",
       dataIndex: "amount",
+      key: "amount",
     },
     {
       title: "Reason",
       dataIndex: "reason",
+      key: "reason",
     },
     {
       title: "Region",
       dataIndex: "region",
-      filterDropdown: (
-        <div className="filterMenu">
-          <Checkbox onChange={onChange}>North</Checkbox>
-          <Checkbox onChange={onChange}>South-1</Checkbox>
-          <Checkbox onChange={onChange}>East-1</Checkbox>
-          <Checkbox onChange={onChange}>West-1</Checkbox>
-          <Checkbox onChange={onChange}>South-2</Checkbox>
-          <Checkbox onChange={onChange}>East-2</Checkbox>
-          <Checkbox onChange={onChange}>West-2</Checkbox>
-        </div>
-      ),
-      filterIcon: <FilterOutlined />,
+      key: "region",
+      filters: regionList,
     },
     {
       title: "Request By",
       dataIndex: "requestBy",
-      filterDropdown: (
-        <div className="filterMenu">
-          <Checkbox onChange={onChange}>Partner</Checkbox>
-          <Checkbox onChange={onChange}>Fr8</Checkbox>
-        </div>
-      ),
-      filterIcon: <FilterOutlined />,
+      key: "requestBy",
+      filters: requestedBy,
     },
 
     {
       title: "Req.On",
       dataIndex: "reqOn",
+      key: "reqOn",
       sorter: true,
     },
     {
       title: "Responsibility",
       dataIndex: "responsibility",
+      key: "responsibility",
       filterDropdown: (
-        <Search
-          placeholder="Search..."
-          onSearch={(value) => console.log(value)}
-        />
+        <div>
+          <Input placeholder="Search" id="id" name="id" type="number" />
+        </div>
       ),
-      filterIcon: <DownSquareOutlined />,
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilterDropdownVisibleChange: () => onShow("Search"),
     },
     {
       title: "Comment",
       dataIndex: "comment",
+      key: "comment",
     },
     {
       title: "Action",
       dataIndex: "action",
+      key: "action",
     },
   ];
 
   return (
-    <PageLayout title="pending">
-      <Table
-        columns={ApprovalPending}
-        dataSource={pendingDetail}
-        size="small"
-        scroll={{ x: 800, y: 400 }}
-        pagination={false}
-      />
-    </PageLayout>
+    <Table
+      columns={ApprovalPending}
+      dataSource={pendingDetail}
+      size="small"
+      scroll={{ x: 800, y: 400 }}
+      pagination={false}
+    />
   );
 }

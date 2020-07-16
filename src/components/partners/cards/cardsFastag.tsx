@@ -1,7 +1,7 @@
 import React from "react";
 import { Table } from "antd";
-import PageLayout from "../layout/pageLayout";
-import Cards from "../../../mock/card/cards";
+import PageLayout from "../../layout/pageLayout";
+import Cards from "../../../../mock/card/cards";
 
 export default function cardsFastag() {
   const cardsFastag = [
