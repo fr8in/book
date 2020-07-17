@@ -36,31 +36,34 @@ const WeeklyBranchTarget = () => {
   const lastMonth = moment().subtract(1, 'weeks').format('ww')
   const beforeLastMonth = moment().subtract(2, 'weeks').format('ww')
 
-  const currentMonthTitle = <Title
-    name={'Week - ' + currentMonth}
-    data={sumOfTarget && sumOfTarget.currentActualSum + '/' + sumOfTarget.currentTargetSum}
-  />
-  const lastMonthTitle = <Title
-    name={'Week - ' + lastMonth}
-    data={sumOfTarget && sumOfTarget.lastActualSum + '/' + sumOfTarget.lastTargetSum}
-  />
-  const beforeLastMonthTitle = <Title
-    name={'Week - ' + beforeLastMonth}
-    data={sumOfTarget && sumOfTarget.beforeLastActualSum + '/' + sumOfTarget.beforeLastTargetSum}
-  />
+  const currentMonthTitle = (
+    <Title
+      name={<div>{`W - ${currentMonth}`}</div>}
+      data={sumOfTarget && sumOfTarget.currentActualSum + '/' + sumOfTarget.currentTargetSum}
+    />)
+  const lastMonthTitle = (
+    <Title
+      name={<div>{`W - ${lastMonth}`}</div>}
+      data={sumOfTarget && sumOfTarget.lastActualSum + '/' + sumOfTarget.lastTargetSum}
+    />)
+  const beforeLastMonthTitle = (
+    <Title
+      name={<div>{`W - ${beforeLastMonth}`}</div>}
+      data={sumOfTarget && sumOfTarget.beforeLastActualSum + '/' + sumOfTarget.beforeLastTargetSum}
+    />)
 
   const columns = [
     {
       title: 'Branch',
       dataIndex: 'branchName',
       key: 'branchName',
-      width: '31%'
+      width: '30%'
     },
     {
       title: currentMonthTitle,
       dataIndex: 'currentActual',
       key: 'currentActuals',
-      width: '23%',
+      width: '26%',
       className: 'alignRight',
       render: (text, record) => {
         return (
@@ -77,7 +80,7 @@ const WeeklyBranchTarget = () => {
       title: lastMonthTitle,
       dataIndex: 'lastActual',
       key: 'lastActual',
-      width: '23%',
+      width: '22%',
       className: 'alignRight',
       render: (text, record) => {
         return (
@@ -91,7 +94,7 @@ const WeeklyBranchTarget = () => {
       title: beforeLastMonthTitle,
       dataIndex: 'beforeLastMonth',
       key: 'beforeLastMonth',
-      width: '23%',
+      width: '22%',
       className: 'alignRight',
       render: (text, record) => {
         return (
@@ -108,10 +111,11 @@ const WeeklyBranchTarget = () => {
     <Table
       columns={columns}
       dataSource={branchTargetWeekly}
-      size='middle'
+      size='small'
       pagination={false}
       scroll={{ x: 400, y: '100%' }}
-      rowKey={record => record.orderBranchId}
+      rowKey={record => record.branchId}
+      className='weeklyTarget'
     />
   )
 }
