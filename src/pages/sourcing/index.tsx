@@ -7,7 +7,7 @@ import TruckVerification from '../../components/trucks/truckVerrification'
 import VasRequest from '../../components/partners/vasRequest'
 import Breakdown from '../../components/trucks/breakdown'
 import Announcenmemt from '../../components/partners/announcement'
-import Customer from '../../components/customers/customer'
+import Customer from '../../components/customers/sourcingCus'
 const TabPane = Tabs.TabPane;
 
 function callback(key) {

@@ -37,7 +37,7 @@ export default function partnerDetailContainer() {
             >
             
       <Row gutter={[10, 10]}>
-        <Col xs={24} sm={12} md={8}>
+        <Col xs={24} sm={22} md={8} >
           <br />
           <BasicDetail/>
           <br />
@@ -48,10 +48,10 @@ export default function partnerDetailContainer() {
           <PlusOutlined /> Add Truck
         </Button>
         </Col>
-        <Col xs={24} sm={12} md={8}>
+        <Col xs={24} sm={22} md={8} >
           <Barchart/>
         </Col>
-        <Col xs={24} sm={24} md={8}>
+        <Col xs={24} sm={22} md={8} >
          
          <AccountSummary />
          <PendingBalance />

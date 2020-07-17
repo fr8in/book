@@ -1,37 +1,38 @@
 import React from 'react'
 import { Table } from 'antd'
-
+//import mock from ''
 const Partners = () => {
   const columnsCurrent = [
     {
       title: 'ID',
-      dataIndex: 'partnerCode',
+      dataIndex: 'code',
     },
     {
       title: 'OrderDate',
-      dataIndex: 'name'
+      dataIndex: 'date'
     },
     {
       title: 'Source',
-      dataIndex: 'regionName'
+      dataIndex: 'source'
     },
     {
       title: 'Destination',
-      dataIndex: 'mobileNo'
+      dataIndex: 'city'
     },
     {
       title: 'SourceIn',
-      dataIndex: 'email'
+      dataIndex: 'cityIn'
     },
     {
       title: 'Status',
-      dataIndex: 'averageKm',
+      dataIndex: 'status',
     },
    
   ]
   return (
       <Table
         columns={columnsCurrent}
+       // dataSource={mock}
         rowKey={record => record.id}
         size='middle'
         scroll={{ x: 800, y: 400 }}
