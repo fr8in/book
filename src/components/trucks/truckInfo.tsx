@@ -1,45 +1,40 @@
 import React from 'react'
-import {Row,Col,Input,Space} from 'antd'
+import {Row,Col,Input,Form} from 'antd'
 export default function truckInfo() {
     return (
         <div>
-            <Space>
-            <Row gutter={[10, 10]}>
-                <Col xs={24} sm={24} md={6}>
-            <Row>
-                Length(Ft)
-            </Row>
-             <Row>
-            <Input placeholder="Length" />
-             </Row>
-             </Col>
-             <Col xs={24} sm={12} md={6}>
-             <Row>
-               Height(Ft)
-            </Row>            
-             <Row>
-            <Input placeholder="height" />
-             </Row>
-             </Col>
-             <Col xs={24} sm={12} md={6}>
-             <Row>
-                Breadth(Ft)
-            </Row>
-             <Row>
-            <Input placeholder="Breadth" />
-             </Row>
-             </Col >
-             <Col xs={24} sm={12} md={6}>
-             <Row>
-                Driver Number(Ft)
-            </Row>
-             <Row>
-            <Input placeholder="number" />
-             </Row>
-             </Col>
-            
-</Row>
-</Space>
+            <Row gutter={[12, 12]}>
+                    <Col xs={24} sm={4}>
+             <Row >
+                            <Form.Item
+                                label="Length(Ft)"
+                                name="Length(Ft)"
+                                rules={[{ required: true, message: 'Length(Ft) is required field' }]}
+                            >
+                                <Input placeholder="Length(Ft)" />
+                            </Form.Item> </Row>
+                    </Col>
+                    <Col xs={24} sm={4}>
+                        <Row >
+                            <Form.Item
+                                label="Breadth(Ft)"
+                                name="Breadth(Ft)"
+                                rules={[{ required: true, message: 'Breadth(Ft) is required field' }]}
+                            >
+                                <Input placeholder="Breadth(Ft)" />
+                            </Form.Item> </Row>
+                    </Col>
+                    <Col xs={24} sm={4}>
+                        <Row >
+                            <Form.Item
+                                label="Height(Ft)"
+                                name="Height(Ft)"
+                                rules={[{ required: true, message: 'Height(Ft) is required field' }]}
+                            >
+                                <Input placeholder="Height(Ft)" />
+                            </Form.Item> </Row>
+                    </Col>
+                    </Row>
         </div>
     )
 }

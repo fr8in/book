@@ -64,8 +64,8 @@ const Trucks = () => {
       columns={columns}
       dataSource={trucks}
       rowKey={record => record.id}
-      size='middle'
-      scroll={{ x: 800, y: 400 }}
+      size='small'
+      scroll={{ x: 800, y: 850 }}
       pagination={false}
     />
   )

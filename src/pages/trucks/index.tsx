@@ -1,6 +1,6 @@
 
 import PageLayout from '../../components/layout/pageLayout'
-import TrucksList from '../../components/trucks/trucks'
+import TrucksList from '../../components/trucks/container/truckContainer'
 
 const Trucks = () => {
   return (
