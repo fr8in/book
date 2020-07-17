@@ -1,5 +1,5 @@
 import React from 'react'
-import {Row,Col,Card, Tabs, Divider } from 'antd'
+import {Row,Col,Card, Tabs, Button } from 'antd'
 import HeaderInfo from '../partner'
 import WalletStatus from '../walletStatus'
 import BasicDetail from '../partnerInfo'
@@ -13,7 +13,7 @@ import PartnerTruck from '../../trucks/truckDetail/trucksByPartner'
 import DetailInfo from '../partnerDetail'
 import Document from '../partnerDocument'
 import Comment from '../comment'
-import { CrownFilled } from '@ant-design/icons'
+import { PlusOutlined } from '@ant-design/icons'
 
 const TabPane = Tabs.TabPane
 
@@ -43,6 +43,10 @@ export default function partnerDetailContainer() {
           <br />
           <br />
           <PartnerStatus/>
+          <br />
+          <Button type="primary" >
+          <PlusOutlined /> Add Truck
+        </Button>
         </Col>
         <Col xs={24} sm={12} md={8}>
           <Barchart/>
@@ -74,8 +78,7 @@ export default function partnerDetailContainer() {
                 </Col>
                 <Col xs={24} sm={12} md={12}>
                 <Document />
-                </Col>
-              
+                </Col>             
             </Row>
                 </TabPane>
                 <TabPane tab='Comment' key='3'>

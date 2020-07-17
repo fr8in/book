@@ -1,6 +1,6 @@
 import React from 'react'
-import { Table } from 'antd'
-
+import { Table,Button } from 'antd'
+import {DownloadOutlined} from '@ant-design/icons'
 const Breakdown = () => {
   const columnsCurrent = [
     {
@@ -17,6 +17,11 @@ const Breakdown = () => {
     {
       title: 'City',
       dataIndex: 'city',
+      return: (
+        <div > 
+         <Button type="primary" icon={<DownloadOutlined />} />
+      </div>
+    ),
       width:'30%'
         
     },

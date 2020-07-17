@@ -1,4 +1,4 @@
-import { Table } from 'antd'
+import { Table, Radio } from 'antd'
 import mock from '../../../mock/partner/partnerKyc'
 
 const regionList = [
@@ -16,6 +16,12 @@ const kycStatusList=[
   { value: 3, text: 'Rejected' },
   { value: 4, text: 'Re-Verification' },
 ]
+const radioStyle = {
+  display: 'block',
+  height: '30px',
+  lineHeight: '30px',
+};
+
 const PartnerKyc = () => {
   const columnsCurrent = [
     {
@@ -47,6 +53,24 @@ const PartnerKyc = () => {
     {
       title: 'Truck Count',
       dataIndex: 'count',
+      filterDropdown: (
+        <div > 
+              <Radio.Group >
+        <Radio style={radioStyle} >
+        0
+        </Radio>
+        <Radio style={radioStyle} >
+       1-5
+        </Radio>
+        <Radio style={radioStyle} >
+         {">5"}
+        </Radio>
+        <Radio style={radioStyle} >
+          All
+        </Radio>
+      </Radio.Group>
+      </div>
+    ),
       key:'count',
     },
     {

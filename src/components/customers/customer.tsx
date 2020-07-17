@@ -1,6 +1,19 @@
 import React from 'react'
 import { Table, Input } from 'antd'
 import {DownSquareOutlined} from '@ant-design/icons'
+
+
+const CusSource=[
+  { value: 1, text: 'DIRECT' },
+  { value: 2, text: 'SOCIAL MEDIA' },
+  { value: 3, text: 'REFERRAL' },
+  { value: 4, text: 'APP' },
+]
+const CusState=[
+  { value: 1, text: 'OPEN' },
+  { value: 2, text: 'ON-BOARDED' },
+  { value: 3, text: 'REJECTED' },
+]
 const VasRequest = () => {
   const columnsCurrent = [
     {
@@ -44,22 +57,12 @@ const VasRequest = () => {
       {
         title: 'Source',
         dataIndex: 'source',
-        filterDropdown: (
-            <div > 
-                
-            </div>
-          ),
-        filterIcon:<DownSquareOutlined />
+        filters: CusSource
       },
     {
         title: 'Status',
         dataIndex: 'status',
-        filterDropdown: (
-            <div > 
-                 
-            </div>
-          ),
-        filterIcon:<DownSquareOutlined />
+        filters: CusState
       },
       {
         title: 'Comment',

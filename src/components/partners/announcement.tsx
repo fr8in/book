@@ -1,6 +1,6 @@
 import React from 'react'
 import { Table, Checkbox } from 'antd'
-import mock from '../../../mock/sourcing/announcement'
+import mock from '../../../mock/partner/announcement'
 function onChange(e) {
   console.log(`checked = ${e.target.checked}`);
 }

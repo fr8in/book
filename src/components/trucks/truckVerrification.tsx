@@ -1,6 +1,11 @@
 import React from 'react'
 import { Table } from 'antd'
+import mock from '../../../mock/partner/sourcingMock'
 
+const status = [
+  { value: 1, text: 'Verification Pending' },
+  { value: 2, text: 'Rejected' },
+]
 const truckVerification = () => {
   const columnsCurrent = [
     {
@@ -21,18 +26,19 @@ const truckVerification = () => {
     {
       title: 'Truck Status',
       dataIndex: 'status',
-      width:'20%'
+      filters: status,
+      width:'12%'
     },
     {
       title: 'Reject Reason',
       dataIndex: 'reason',
-      width:'40%'
+      width:'48%'
     }
   ]
   return (
       <Table
         columns={columnsCurrent}
-       //  dataSource={mock}
+        dataSource={mock}
         rowKey={record => record.id}
         size='middle'
         scroll={{ x: 800, y: 400 }}
