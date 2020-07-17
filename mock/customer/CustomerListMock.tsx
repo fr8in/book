@@ -59,6 +59,7 @@ const customerDetails = [
     workingCapitalDays: 5,
     Status: 'approved'
   },
+  
   {
     id: 6,
     cardCode: 'ST00162',
