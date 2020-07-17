@@ -43,7 +43,7 @@ const Customers = () => {
     })
   }
 
-  if (loading && !loadingMoreCustomers) return <div>Loading</div>
+  // if (loading && !loadingMoreCustomers) return <div>Loading</div>
   // console.log(data)
   // const { customer } = data
 
