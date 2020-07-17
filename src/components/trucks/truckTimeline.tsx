@@ -1,5 +1,5 @@
 import React from 'react';
-import { DatePicker,Tooltip,Button,Row,Col,Timeline} from 'antd';
+import { DatePicker,Tooltip,Button,Row,Col,Timeline, Space} from 'antd';
 import { SearchOutlined } from '@ant-design/icons'
 import moment from 'moment';
 
@@ -10,20 +10,20 @@ export default function truck(props) {
 
    <div>     
 
-<Row>
-    <Col>
+<Row className="m5">
+    <Space>
     <DatePicker defaultValue={moment('Start Date', dateFormat)} format={dateFormat} />
-  </Col>
   
-  <Col>
+  
+  
     <DatePicker defaultValue={moment('End Date', dateFormat)} format={dateFormat} />
-  </Col>
   
-<Col>
+  
+
 <Tooltip title="search">
       <Button type="primary" shape="circle" icon={<SearchOutlined />} />
     </Tooltip>
-</Col>
+</Space>
 </Row>
 <br />
 <Row>
