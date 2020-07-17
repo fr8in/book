@@ -39,8 +39,9 @@ const CustomerDetailContainer = (props) => {
   )
 
   if (loading) return <div>Loading...</div>
-  const { customer } = data
-  const customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
+  // const { customer } = data
+  // const customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
+  const customerInfo = {}
 
   return (
     <Row>
