@@ -19,7 +19,22 @@ const tripData = [
     status: 'Delivered',
     soPrice: 68000,
     poPrice: 65000,
-    tripKM: 1300
+    tripKM: 1300,
+    createdOn: '15-07-2020 10:02:09',
+    lead: [
+      {
+        id:1,
+        partner: 'Shiva',
+        phone:'3456784',
+        createdOn: '15-07-2020 10:02:09'
+      },
+      {
+        id:2,
+        partner: 'Shiva',
+        phone:'3456784',
+        createdOn: '15-07-2020 10:02:09'
+      }
+    ]
   },
   {
     id: 187551,
@@ -41,7 +56,22 @@ const tripData = [
     status: 'Delivered',
     soPrice: 68000,
     poPrice: 65000,
-    tripKM: 1300
+    tripKM: 1300,
+    createdOn: '16-07-2020 10:02:09',
+    lead: [
+      {
+        id:1,
+        partner: 'Shiva',
+        phone:'3456784',
+        createdOn: '15-07-2020 10:02:09'
+      },
+      {
+        id:2,
+        partner: 'Shiva',
+        phone:'3456784',
+        createdOn: '15-07-2020 10:02:09'
+      }
+    ]
   },
   {
     id: 187552,
@@ -63,7 +93,22 @@ const tripData = [
     status: 'Delivered',
     soPrice: 68000,
     poPrice: 65000,
-    tripKM: 1300
+    tripKM: 1300,
+    createdOn: '17-07-2020 10:02:09',
+    lead: [
+      {
+        id:1,
+        partner: 'Shiva',
+        phone:'3456784',
+        createdOn: '15-07-2020 10:02:09'
+      },
+      {
+        id:2,
+        partner: 'Shiva',
+        phone:'3456784',
+        createdOn: '15-07-2020 10:02:09'
+      }
+    ]
   },
   {
     id: 187553,
@@ -85,7 +130,22 @@ const tripData = [
     status: 'Delivered',
     soPrice: 68000,
     poPrice: 65000,
-    tripKM: 1300
+    tripKM: 1300,
+    createdOn: '15-07-2020 10:02:09',
+    lead: [
+      {
+        id:1,
+        partner: 'Shiva',
+        phone:'3456784',
+        createdOn: '15-07-2020 10:02:09'
+      },
+      {
+        id:2,
+        partner: 'Shiva',
+        phone:'3456784',
+        createdOn: '15-07-2020 10:02:09'
+      }
+    ]
   },
   {
     id: 187554,
@@ -107,7 +167,22 @@ const tripData = [
     status: 'Delivered',
     soPrice: 68000,
     poPrice: 65000,
-    tripKM: 1300
+    tripKM: 1300,
+    createdOn: '16-07-2020 10:02:09',
+    lead: [
+      {
+        id:1,
+        partner: 'Shiva',
+        phone:'3456784',
+        createdOn: '15-07-2020 10:02:09'
+      },
+      {
+        id:2,
+        partner: 'Shiva',
+        phone:'3456784',
+        createdOn: '15-07-2020 10:02:09'
+      }
+    ]
   },
   {
     id: 187555,
@@ -129,7 +204,22 @@ const tripData = [
     status: 'Delivered',
     soPrice: 68000,
     poPrice: 65000,
-    tripKM: 1300
+    tripKM: 1300,
+    createdOn: '18-07-2020 10:02:09',
+    lead: [
+      {
+        id:1,
+        partner: 'Shiva',
+        phone:'3456784',
+        createdOn: '15-07-2020 10:02:09'
+      },
+      {
+        id:2,
+        partner: 'Shiva',
+        phone:'3456784',
+        createdOn: '15-07-2020 10:02:09'
+      }
+    ]
   },
   {
     id: 187556,
@@ -151,8 +241,23 @@ const tripData = [
     status: 'Delivered',
     soPrice: 68000,
     poPrice: 65000,
-    tripKM: 1300
-  },
+    tripKM: 1300,
+    createdOn: '15-07-2020 10:02:09',
+    lead: [
+      {
+        id:1,
+        partner: 'Shiva',
+        phone:'3456784',
+        createdOn: '15-07-2020 10:02:09'
+      },
+      {
+        id:2,
+        partner: 'Shiva',
+        phone:'3456784',
+        createdOn: '15-07-2020 10:02:09'
+      }
+    ] 
+   },
   {
     id: 187557,
     orderDate: 1594717031873,
@@ -173,7 +278,22 @@ const tripData = [
     status: 'Delivered',
     soPrice: 68000,
     poPrice: 65000,
-    tripKM: 1300
+    tripKM: 1300,
+    createdOn: '17-07-2020 10:02:09',
+    lead: [
+      {
+        id:1,
+        partner: 'Shiva',
+        phone:'3456784',
+        createdOn: '15-07-2020 10:02:09'
+      },
+      {
+        id:2,
+        partner: 'Shiva',
+        phone:'3456784',
+        createdOn: '15-07-2020 10:02:09'
+      }
+    ]
   }
 ]
 

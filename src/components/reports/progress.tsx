@@ -19,6 +19,7 @@ const Progress = () => {
         showReport={onShow}
         period='Last 30 day'
         bgColor='blue'
+        last
       />
       <Modal
         title='Trucks, Partners, Orders Report'
