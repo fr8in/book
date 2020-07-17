@@ -1,41 +1,44 @@
-import React from "react";
-import { Table } from "antd";
+import { Table } from 'antd'
 
-import PageLayout from "../layout/pageLayout";
+const IncomingPayments = (props) => {
+  const columns = [
+    {
+      title: 'Date',
+      dataIndex: 'date',
+      width: '10%'
+    },
+    {
+      title: 'Load Id',
+      dataIndex: 'loadId',
+      width: '10%'
+    },
+    {
+      title: 'Invoice No',
+      dataIndex: 'invoiceNo',
+      width: '10%'
+    },
+    {
+      title: 'Booked For',
+      dataIndex: 'comments',
+      width: '10%'
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'amount',
+      width: '10%'
+    }
 
-export default function incomingPayments() {
-  const incomingPayments = [
-    {
-      title: "Date",
-      dataIndex: "date",
-    },
-    {
-      title: "Amount",
-      dataIndex: "amount",
-    },
-    {
-      title: "Booked",
-      dataIndex: "booked",
-    },
-    {
-      title: "Balance",
-      dataIndex: "balance",
-    },
-    {
-      title: "Remarks",
-      dataIndex: "remarks",
-    },
-  ];
+  ]
 
   return (
-    <PageLayout title="incomingPayments">
-      <Table
-        columns={incomingPayments}
-        rowKey={(record) => record.id}
-        size="small"
-        scroll={{ x: 800, y: 400 }}
-        pagination={false}
-      />
-    </PageLayout>
-  );
+    <Table
+      columns={columns}
+      dataSource={props.docEntry}
+      rowKey={(record) => record.id}
+      size='small'
+      pagination={false}
+    />
+  )
 }
+
+export default IncomingPayments

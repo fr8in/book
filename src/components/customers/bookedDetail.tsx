@@ -1,41 +1,66 @@
-import React from "react";
-import { Table } from "antd";
+import { Table, Modal } from 'antd'
+import bookedAmount from '../../../mock/customer/bookedAmount'
+import IncomingPayments from './incomingPayments'
 
-import PageLayout from "../layout/pageLayout";
+const BookedDetail = (props) => {
+  const { visible, onHide } = props
 
-export default function bookedDetail() {
-  const bookedDetail = [
-    {
-      title: "Date",
-      dataIndex: "date",
-    },
-    {
-      title: "Load Id",
-      dataIndex: "loadId",
-    },
-    {
-      title: "Invoice No",
-      dataIndex: "truckNo",
-    },
-    {
-      title: "Booked For",
-      dataIndex: "bookedFor",
-    },
-    {
-      title: "Amount",
-      dataIndex: "amount",
-    },
-  ];
+  const onSubmit = () => {
+    console.log('data Transfered!')
+    onHide()
+  }
+
+  const columns = [{
+    title: 'Date',
+    dataIndex: 'date',
+    width: '15%'
+  },
+  {
+    title: 'Amount',
+    dataIndex: 'recevied',
+    width: '15%'
+  },
+  {
+    title: 'Booked',
+    dataIndex: 'booked',
+    width: '15%'
+  },
+  {
+    title: 'Balance',
+    dataIndex: 'balance',
+    width: '15%'
+  },
+  {
+    title: 'Remarks',
+    dataIndex: 'remarks',
+    width: '60%'
+  }]
 
   return (
-    <PageLayout title="bookedDetail">
+    <Modal
+      title='Booked Amount'
+      visible={visible}
+      onOk={onSubmit}
+      onCancel={onHide}
+      width={800}
+      bodyStyle={{ padding: 5 }}
+    >
       <Table
-        columns={bookedDetail}
+        columns={columns}
+        dataSource={bookedAmount}
         rowKey={(record) => record.id}
-        size="small"
-        scroll={{ x: 800, y: 400 }}
+        size='small'
+        scroll={{ x: 780, y: 400 }}
         pagination={false}
+        expandedRowRender={data => {
+          return (
+            <IncomingPayments docEntry={data.docEntry} />
+          )
+        }}
       />
-    </PageLayout>
-  );
+    </Modal>
+
+  )
 }
+
+export default BookedDetail

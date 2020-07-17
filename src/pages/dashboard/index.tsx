@@ -19,20 +19,24 @@ const Dashboard = () => {
   }
   return (
     <PageLayout title='Dashboard'>
-      <Row gutter={[10, 10]}>
-        <Col xs={24} sm={9} md={8}>
-          <Orders />
-        </Col>
-        <Col xs={24} sm={15} md={8}>
-          <Revenue />
-        </Col>
-        <Col xs={24} sm={24} md={8}>
-          <Progress />
+      <Row gutter={[0, 10]}>
+        <Col xs={24} style={{overflow:'hidden'}}>
+          <Row gutter={10}>
+            <Col xs={24} sm={9} md={8}>
+            <Orders />
+            </Col>
+            <Col xs={24} sm={15} md={8}>
+              <Revenue />
+            </Col>
+            <Col xs={24} sm={24} md={8}>
+              <Progress />
+            </Col>
+          </Row>
         </Col>
       </Row>
       {/** All trips status wise: Filter applocable for Source city
         ** Waiting for load and Delivery On-hold records */}
-      <Row gutter={[10, 10]}>
+      <Row gutter={[0, 10]}>
         <Col xs={24} sm={24}>
           <Card size='small' className='card-body-0 border-top-blue'>
             <Tabs
@@ -75,7 +79,7 @@ const Dashboard = () => {
         </Col>
       </Row>
       {/** Unloading and Intransit: Filter applocable for Destination city */}
-      <Row gutter={[10, 10]}>
+      <Row gutter={[0, 10]}>
         <Col xs={24} sm={24}>
           <Card size='small' className='card-body-0 border-top-blue'>
             <Tabs

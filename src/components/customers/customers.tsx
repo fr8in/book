@@ -1,20 +1,10 @@
 import { Table } from 'antd'
 import Link from 'next/link'
 import PageLayout from '../layout/pageLayout'
-import { useQuery } from '@apollo/react-hooks'
-import { NetworkStatus } from 'apollo-client'
-import gql from 'graphql-tag'
+import { useQuery } from '@apollo/client'
+import { NetworkStatus } from '@apollo/client'
+import { CUSTOMERS_QUERY } from './containers/query/customersQuery'
 
-export const ALL_CUSTOMER_QUERY = gql`
-  query customers($offset: Int!, $limit: Int!) {
-    customer(offset: $offset, limit: $limit) {
-      id
-      name
-      mobileNo
-      cardCode
-    }
-  }
-`
 export const customersQueryVars = {
   offset: 0,
   limit: 10
@@ -22,7 +12,7 @@ export const customersQueryVars = {
 
 const Customers = () => {
   const { loading, error, data, fetchMore, networkStatus } = useQuery(
-    ALL_CUSTOMER_QUERY,
+    CUSTOMERS_QUERY,
     {
       variables: customersQueryVars,
       // Setting this value to true will make the component rerender when
@@ -52,7 +42,7 @@ const Customers = () => {
   }
 
   if (loading && !loadingMoreCustomers) return <div>Loading</div>
-  //console.log(data)
+  // console.log(data)
   const { customer } = data
 
   const columnsCurrent = [

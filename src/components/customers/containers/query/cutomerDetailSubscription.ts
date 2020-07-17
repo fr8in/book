@@ -1,7 +1,7 @@
-import gql from 'graphql-tag'
+import { gql } from '@apollo/client'
 
-export const CUSTOMER_INFO_QUERY = gql`
-  query customers($cardCode: String) {
+export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
+  subscription customers($cardCode: String) {
     customer(where: {cardCode: {_eq: $cardCode}}) {
       id
       PAN
