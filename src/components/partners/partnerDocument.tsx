@@ -1,8 +1,8 @@
 import { Collapse, Input, Row, Col, Tabs, Button, Space } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import LabelWithData from "../common/labelWithData";
-import FasTag from "../cards/fuelCard";
-import FuelCard from "../cards/fuelCard";
+import FasTag from "../../components/partners/cards/fasTag";
+import FuelCard from "../../components/partners/cards/fuelCard";
 const { Panel } = Collapse;
 
 const { TabPane } = Tabs;
