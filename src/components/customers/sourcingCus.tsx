@@ -1,7 +1,7 @@
 import React from 'react'
-import { Table, Input } from 'antd'
+import { Table, Input, Switch } from 'antd'
 import {DownSquareOutlined} from '@ant-design/icons'
-
+import mock from '../../../mock/customer/sourcingMock'
 
 const CusSource=[
   { value: 1, text: 'DIRECT' },
@@ -14,11 +14,15 @@ const CusState=[
   { value: 2, text: 'ON-BOARDED' },
   { value: 3, text: 'REJECTED' },
 ]
-const VasRequest = () => {
+
+function onChange(e) {
+  console.log(`checked = ${e.target.checked}`);
+}
+const SourcingCus = () => {
   const columnsCurrent = [
     {
       title: 'Company',
-      dataIndex: 'partnerCode',
+      dataIndex: 'company',
     },
     {
       title: 'User',
@@ -26,7 +30,7 @@ const VasRequest = () => {
     },
     {
         title: 'Phone',
-        dataIndex: 'name',
+        dataIndex: 'number',
               filterDropdown: (
                   <div > 
                       <Input placeholder="Search Phone Number" />  
@@ -36,7 +40,7 @@ const VasRequest = () => {
       },
       {
         title: 'City',
-        dataIndex: 'city',
+        dataIndex: 'cityName',
               filterDropdown: (
                   <div > 
                       <Input placeholder="Search City Name" />  
@@ -75,7 +79,10 @@ const VasRequest = () => {
       },
     {
         title: 'Priority',
-        dataIndex: 'Priority'
+        dataIndex: 'Priority',
+        render: (text, record) => (
+          <Switch onChange={onChange}></Switch>
+          ),
       },
       {
         title: 'Action',
@@ -85,7 +92,7 @@ const VasRequest = () => {
   return (
       <Table
         columns={columnsCurrent}
-       //  dataSource={mock}
+        dataSource={mock}
         rowKey={record => record.id}
         size='middle'
         scroll={{ x: 800, y: 400 }}
@@ -94,4 +101,4 @@ const VasRequest = () => {
   )
 }
 
-export default VasRequest
+export default SourcingCus

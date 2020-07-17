@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import {Row,Col,Card, Tabs, Button } from 'antd'
 import HeaderInfo from '../partner'
 import WalletStatus from '../walletStatus'
@@ -44,9 +45,11 @@ export default function partnerDetailContainer() {
           <br />
           <PartnerStatus/>
           <br />
-          <Button type="primary" >
-          <PlusOutlined /> Add Truck
-        </Button>
+         <Link href='trucks/addtruck/[id]'>
+                   <Button type="primary" >
+          <PlusOutlined /> Add Truck </Button>
+                  </Link>
+                
         </Col>
         <Col xs={24} sm={22} md={8} >
           <Barchart/>

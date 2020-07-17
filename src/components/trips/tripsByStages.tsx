@@ -1,5 +1,6 @@
 import React from 'react'
 import { Table } from 'antd'
+import mock from '../../../mock/trip/tripsByStages'
 //import mock from ''
 const Partners = () => {
   const columnsCurrent = [
@@ -32,7 +33,7 @@ const Partners = () => {
   return (
       <Table
         columns={columnsCurrent}
-       // dataSource={mock}
+       dataSource={mock}
         rowKey={record => record.id}
         size='middle'
         scroll={{ x: 800, y: 400 }}

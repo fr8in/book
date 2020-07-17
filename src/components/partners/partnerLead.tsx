@@ -1,7 +1,10 @@
-import { Table, Input } from 'antd'
+import { Table, Input, Switch } from 'antd'
 import {DownSquareOutlined} from '@ant-design/icons'
+import mock from '../../../mock/customer/sourcingMock'
 
-
+function onChange(e) {
+  console.log(`checked = ${e.target.checked}`);
+}
 const PartnerKyc = () => {
   const columnsCurrent = [
     {
@@ -44,7 +47,7 @@ const PartnerKyc = () => {
     },
     {
       title: 'Status',
-      dataIndex: 'sttaus',
+      dataIndex: 'status',
     },
     {
         title: 'Last Comment',
@@ -57,7 +60,10 @@ const PartnerKyc = () => {
       },
       {
         title: 'Priority',
-        dataIndex: 'priority'
+        dataIndex: 'priority',
+        render: (text, record) => (
+          <Switch onChange={onChange}></Switch>
+          ),
       },
       {
           title: 'Action',
@@ -68,6 +74,7 @@ const PartnerKyc = () => {
     
       <Table
         columns={columnsCurrent}
+        dataSource={mock}
         rowKey={record => record.id}
         size='small'
         scroll={{ x: 800, y: 400 }}
