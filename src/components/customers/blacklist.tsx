@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client'
-import { Switch } from 'antd'
+import { Switch, Space } from 'antd'
 import { gql } from '@apollo/client'
 
 // This has to go to global
@@ -34,15 +34,15 @@ const Blacklist = ({ cardCode, statusId }) => {
   const blacklisted = statusId === customerStatus.Blacklisted
   return (
 
-    <div>
-      <label>Blacklisted &nbsp;</label>
+    <Space>
+      <label>Blacklisted</label>
       <Switch
         onChange={onChange}
         checked={blacklisted}
         className={blacklisted ? 'block' : 'unblock'}
         disabled={false}
       />
-    </div>
+    </Space>
   )
 }
 
