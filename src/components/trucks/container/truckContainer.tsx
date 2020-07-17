@@ -21,6 +21,7 @@ export default function truckContainer() {
                     <Card size='small' className='card-body-0'>
                      <TrucksList />
                     </Card>
+                    </Col>
             </Row>
         </div>
     )
