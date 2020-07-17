@@ -9,14 +9,13 @@ import LoginLayout from '../components/layout/loginLayout'
 import { withApollo } from '../lib/apollo'
 
 class MyApp extends App {
-  render() {
+  render () {
     const { Component, pageProps, router } = this.props
-    //const ApolloComponent = withApollo({ ssr: true })()
 
     if (router.pathname.startsWith('/login')) {
       return (
         <LoginLayout>
-          <Component {...pageProps} />)
+          <Component {...pageProps} />
         </LoginLayout>
       )
     }

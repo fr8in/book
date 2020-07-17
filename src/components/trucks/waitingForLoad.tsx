@@ -1,11 +1,11 @@
 import loadData from '../../../mock/trucks/loadData'
-import { Table, Tooltip, Badge, Button } from 'antd'
+import { Table, Tooltip, Badge, Button, Input } from 'antd'
 import Link from 'next/link'
-import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled } from '@ant-design/icons'
+import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled, SearchOutlined } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
 
 const WaitingForLoad = () => {
-  const initial = { comment: false }
+  const initial = { comment: false, truckSearch: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   const callNow = record => {
     window.location.href = 'tel:' + record
@@ -28,7 +28,17 @@ const WaitingForLoad = () => {
             </Link>
           </span>
         )
-      }
+      },
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search Truck'
+            id='truck'
+            name='truck'
+          />
+        </div>
+      ),
+      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
     },
     {
       title: 'Partner',
@@ -42,7 +52,7 @@ const WaitingForLoad = () => {
             <Link href='/partners/partner/[id]' as={`/partners/partner/${record.partnerId} `}>
               <a>{text && text.length > 20
                 ? <Tooltip title={`${text}, ${record.noOfLoadsTaken}, ${record.partnerEngagementPercent}%`}>
-                  {`${text.slice(0, 20)}...`}
+                  <span>{`${text.slice(0, 20)}...`}</span>
                   </Tooltip>
                 : text}
               </a>
@@ -77,23 +87,19 @@ const WaitingForLoad = () => {
       title: 'Action',
       render: (text, record) => {
         return (
-          <span className='actions'>
+          <span>
             <Tooltip title={record.driverPhoneNo}>
               <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.driverPhoneNo)} />
             </Tooltip>
             <Tooltip title='Comment'>
-              <Button type='link' disabled icon={<CommentOutlined />} onClick={() => onShow('comment')} />
+              <Button type='link' icon={<CommentOutlined />} onClick={() => onShow('comment')} />
             </Tooltip>
-            <span>
-              <Tooltip title='click to copy message'>
-                <Button type='link' icon={<WhatsAppOutlined />} />
-              </Tooltip>
-            </span>
-            <span>
-              <Tooltip title='Quick PO'>
-                <Button type='link' icon={<RocketFilled />} onClick={() => onShow('poModal')} />
-              </Tooltip>
-            </span>
+            <Tooltip title='click to copy message'>
+              <Button type='link' icon={<WhatsAppOutlined />} />
+            </Tooltip>
+            <Tooltip title='Quick PO'>
+              <Button type='link' icon={<RocketFilled />} onClick={() => onShow('poModal')} />
+            </Tooltip>
           </span>
         )
       },
@@ -107,7 +113,7 @@ const WaitingForLoad = () => {
       className='withAction'
       rowKey={record => record.id}
       size='small'
-      scroll={{ x: 1156, y: 210 }}
+      scroll={{ x: 1156 }}
       pagination={false}
     />
   )

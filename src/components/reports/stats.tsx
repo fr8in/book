@@ -3,7 +3,7 @@ import { Button, Card, Col, Row } from 'antd'
 import { BarChartOutlined, InsertRowAboveOutlined } from '@ant-design/icons'
 
 const Stats = (props) => {
-  const { visibleStats, visibleOrders, data, showReport, period, bgColor } = props
+  const { visibleStats, visibleOrders, data, showReport, period, bgColor, last } = props
   const dataComp = (count, name, i) => {
     return (
       <div className='data' key={i}>
@@ -13,7 +13,7 @@ const Stats = (props) => {
     )
   }
   return (
-    <Card size='small' className={`stats ${bgColor}`}>
+    <Card size='small' className={`stats ${bgColor} ${last ? 'last' : ''}`}>
       <Row>
         <Col flex='auto'>
           {data && data.length > 0

@@ -1,9 +1,9 @@
 import { Table } from 'antd'
 import Link from 'next/link'
 import PageLayout from '../layout/pageLayout'
-import { useQuery } from '@apollo/react-hooks'
-import { NetworkStatus } from 'apollo-client'
-import { ALL_CUSTOMER_QUERY } from './containers/query/allCustomerQuery'
+import { useQuery } from '@apollo/client'
+import { NetworkStatus } from '@apollo/client'
+import { CUSTOMERS_QUERY } from './containers/query/customersQuery'
 
 export const customersQueryVars = {
   offset: 0,
@@ -12,7 +12,7 @@ export const customersQueryVars = {
 
 const Customers = () => {
   const { loading, error, data, fetchMore, networkStatus } = useQuery(
-    ALL_CUSTOMER_QUERY,
+    CUSTOMERS_QUERY,
     {
       variables: customersQueryVars,
       // Setting this value to true will make the component rerender when
