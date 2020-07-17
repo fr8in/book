@@ -1,35 +1,41 @@
 import { Table } from 'antd'
 
-const IncomingPayments = () => {
-  const incomingPayments = [
+const IncomingPayments = (props) => {
+  const columns = [
     {
       title: 'Date',
-      dataIndex: 'date'
+      dataIndex: 'date',
+      width: '10%'
+    },
+    {
+      title: 'Load Id',
+      dataIndex: 'loadId',
+      width: '10%'
+    },
+    {
+      title: 'Invoice No',
+      dataIndex: 'invoiceNo',
+      width: '10%'
+    },
+    {
+      title: 'Booked For',
+      dataIndex: 'comments',
+      width: '10%'
     },
     {
       title: 'Amount',
-      dataIndex: 'amount'
-    },
-    {
-      title: 'Booked',
-      dataIndex: 'booked'
-    },
-    {
-      title: 'Balance',
-      dataIndex: 'balance'
-    },
-    {
-      title: 'Remarks',
-      dataIndex: 'remarks'
+      dataIndex: 'amount',
+      width: '10%'
     }
+
   ]
 
   return (
     <Table
-      columns={incomingPayments}
+      columns={columns}
+      dataSource={props.docEntry}
       rowKey={(record) => record.id}
       size='small'
-      scroll={{ x: 800, y: 400 }}
       pagination={false}
     />
   )
