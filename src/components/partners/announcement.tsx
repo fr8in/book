@@ -1,6 +1,9 @@
 import React from 'react'
-import { Table } from 'antd'
+import { Table, Checkbox } from 'antd'
 import mock from '../../../mock/sourcing/announcement'
+function onChange(e) {
+  console.log(`checked = ${e.target.checked}`);
+}
 const Announcement = () => {
   const columnsCurrent = [
     {
@@ -21,12 +24,15 @@ const Announcement = () => {
     {
       title: 'Description',
       dataIndex: 'detail',
-      width:'45%'
+      width:'50%'
     },
     {
       title: 'Published',
       dataIndex: 'reason',
-      width:' 15%'
+      render: (text, record) => (
+      <Checkbox onChange={onChange}></Checkbox>
+      ),
+      width:' 10%'
     }
   ]
   return (

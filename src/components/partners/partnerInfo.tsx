@@ -49,7 +49,7 @@ const partnerInfo = () => {
 					dataSpan={14}
 				/>
 				<LabelWithData
-					label='Advance'
+					label='Advance Percentage'
 					data={
 						<Space>
 							<span>{Detail.advance}</span>

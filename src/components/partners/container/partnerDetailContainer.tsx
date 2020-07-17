@@ -4,7 +4,9 @@ import HeaderInfo from '../partner'
 import WalletStatus from '../walletStatus'
 import BasicDetail from '../partnerInfo'
 import Barchart from '../barChart'
-import Summary from '../summary'
+import AccountSummary from '../accountSummary'
+import PendingBalance from '../pendingBalance'
+import AvailableBalance from '../availableBalance'
 import PartnerStatus from '../partnerStatus'
 import TripDetail from '../../trips/tripsByStages'
 import PartnerTruck from '../../trucks/truckDetail/trucksByPartner'
@@ -36,7 +38,9 @@ export default function partnerDetailContainer() {
             
       <Row gutter={[10, 10]}>
         <Col xs={24} sm={12} md={8}>
+          <br />
           <BasicDetail/>
+          <br />
           <br />
           <PartnerStatus/>
         </Col>
@@ -44,8 +48,11 @@ export default function partnerDetailContainer() {
           <Barchart/>
         </Col>
         <Col xs={24} sm={24} md={8}>
-          <Summary/>
          
+         <AccountSummary />
+         <PendingBalance />
+         <AvailableBalance />
+        
         </Col>
       </Row>
       </Card>
@@ -61,11 +68,11 @@ export default function partnerDetailContainer() {
                 </TabPane>
                 <TabPane tab='Detail' key='2'>
                   <br />
-                <Row gutter={[12, 12]} justify="space-around">
-                <Col xs={24} sm={24}md={12}>
+                <Row gutter={[8, 8]} justify="space-around">
+                <Col xs={24} sm={12}md={12}>
                 <DetailInfo/>
                 </Col>
-                <Col xs={24} sm={24} md={12}>
+                <Col xs={24} sm={12} md={12}>
                 <Document />
                 </Col>
               

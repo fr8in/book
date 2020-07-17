@@ -9,13 +9,13 @@ export default function partnerStatus() {
         <div>
             <Card>
              <div className='filterMenu'>
-                 <Row>
-                     <Space>
+            <Row>
+                <Space>
                   <Checkbox onChange={onChange}>BlockList </Checkbox> 
                   <Checkbox onChange={onChange}> De-activate</Checkbox>
                   <Checkbox onChange={onChange}>DND </Checkbox>             
-                 </Space>
-                  </Row>
+                </Space>
+            </Row>
               </div>
               </Card>
         </div>
