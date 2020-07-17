@@ -1,45 +1,62 @@
 import React from 'react'
 import { Table } from 'antd'
+import finalPayment from '../../../mock/customer/finalPayment'
 
 const FinalPaymentsPending = () => {
   const finalPaymentsPending = [
     {
       title: 'LoadId',
-      dataIndex: 'loadId'
+      dataIndex: 'loadId',
+      sorter: (a, b) => (a.loadId > b.loadId ? 1 : -1),
+      width: '10%'
     },
     {
       title: 'Item Name',
-      dataIndex: 'itemName'
+      dataIndex: 'itemName',
+      sorter: (a, b) => (a.itemName > b.itemName ? 1 : -1),
+      width: '15%'
     },
     {
-      title: 'Truk No',
-      dataIndex: 'trukNo'
+      title: 'Truck No',
+      dataIndex: 'truckNo',
+      sorter: (a, b) => (a.truckN0 > b.truckNo ? 1 : -1),
+      width: '10%'
     },
     {
       title: 'Type',
-      dataIndex: 'type'
+      dataIndex: 'type',
+      width: '15%'
     },
     {
       title: 'Customer Name',
-      dataIndex: 'customerName'
+      dataIndex: 'customerName',
+      sorter: (a, b) => (a.customerName > b.customerName ? 1 : -1),
+      width: '15%'
     },
     {
       title: 'SO Price',
-      dataIndex: 'soPrice'
+      dataIndex: 'soPrice',
+      sorter: (a, b) => (a.soPrice > b.soPrice ? 1 : -1),
+      width: '10%'
     },
     {
       title: 'Balance',
-      dataIndex: 'balance'
+      dataIndex: 'balance',
+      sorter: (a, b) => (a.balance > b.balance ? 1 : -1),
+      width: '15%'
     },
     {
       title: 'Aging',
-      dataIndex: 'balance'
+      dataIndex: 'aging',
+      sorter: (a, b) => (a.aging > b.aging ? 1 : -1),
+      width: '10%'
     }
   ]
 
   return (
     <Table
       columns={finalPaymentsPending}
+      dataSource={finalPayment}
       rowKey={(record) => record.id}
       size='small'
       scroll={{ x: 800, y: 400 }}
