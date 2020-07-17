@@ -1,29 +1,35 @@
 import React from 'react'
 import { Table } from 'antd'
+import pending from '../../../mock/customer/pendingPayments'
 
 const PendingPayments = () => {
   const pendingPayments = [
     {
       title: 'Pending Payments',
-      dataIndex: 'pendingPayments'
+      dataIndex: 'pendingPayments',
+      width: '35%'
     },
     {
       title: 'Advance',
-      dataIndex: 'advance'
+      dataIndex: 'advance',
+      width: '25%'
     },
     {
       title: 'Invoice Pending',
-      dataIndex: 'invoicePending'
+      dataIndex: 'invoicePending',
+      width: '25%'
     },
     {
       title: 'Invoiced',
-      dataIndex: 'invoiced'
+      dataIndex: 'invoiced',
+      width: '15%'
     }
   ]
 
   return (
     <Table
       columns={pendingPayments}
+      dataSource={pending}
       rowKey={(record) => record.id}
       size='small'
       pagination={false}

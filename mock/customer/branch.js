@@ -1,6 +1,8 @@
 const BranchData =[
     {
         branchName:'Head Office',
+        orders: '15-July',
+        traffic: 'Ramu',
         name: 'Ravi',
         buildingNo: 120,
         address: 'Gandhi Nagar',
@@ -11,6 +13,8 @@ const BranchData =[
     },
     {
         branchName:'Coimbatore',
+        orders: '16-July',
+        traffic: 'Rahul',
         name: 'Rahul',
         buildingNo: 120,
         address: 'Nehru Nagar',
@@ -21,6 +25,8 @@ const BranchData =[
     },
     {
         branchName:'Salem',
+        orders: '17-July',
+        traffic: 'Suresh',
         name: 'Radha',
         buildingNo: 120,
         address: 'Gokul Nagar',
