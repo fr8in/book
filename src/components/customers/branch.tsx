@@ -1,4 +1,5 @@
-import { Table } from 'antd'
+import { Table,Button } from 'antd'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import branchData from '../../../mock/customer/branch'
 
 const Branch = () => {
@@ -6,7 +7,7 @@ const Branch = () => {
     {
       title: 'Branch Name',
       dataIndex: 'branchName',
-      width: '20%'
+      width: '15%'
     },
     {
       title: 'Name',
@@ -21,7 +22,7 @@ const Branch = () => {
     {
       title: 'Address',
       dataIndex: 'address',
-      width: '20%'
+      width: '15%'
     },
     {
       title: 'City',
@@ -41,6 +42,16 @@ const Branch = () => {
     {
       title: 'Contact No',
       dataIndex: 'contactNo',
+      width: '10%'
+    },
+    {
+      title: 'Action',
+      render: (text, record) => (
+        <span className='actions'>
+          <Button type='link' icon={<DeleteOutlined />}  />
+          <Button type='link' icon={<EditOutlined />}  />
+           </span>
+      ),
       width: '10%'
     }
   ]

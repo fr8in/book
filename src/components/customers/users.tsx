@@ -1,4 +1,5 @@
-import { Table } from 'antd'
+import { Table,Button,Switch } from 'antd'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import userData from '../../../mock/customer/users'
 
 const Users = () => {
@@ -6,7 +7,7 @@ const Users = () => {
     {
       title: 'Name',
       dataIndex: 'name',
-      width: '20%'
+      width: '15%'
     },
     {
       title: 'Mobile No',
@@ -16,7 +17,7 @@ const Users = () => {
     {
       title: 'Email',
       dataIndex: 'email',
-      width: '20%'
+      width: '10%'
     },
     {
       title: 'User Branch',
@@ -26,7 +27,23 @@ const Users = () => {
     {
       title: 'Operating City',
       dataIndex: 'operatingCity',
-      width: '20%'
+      width: '10%'
+    },
+    {
+      title: 'Master',
+      render:(text,record) =>
+      <Switch defaultChecked />,
+      width: '10%'
+    },
+    {
+      title: 'Action',
+      render: (text, record) => (
+        <span className='actions'>
+          <Button type='link' icon={<DeleteOutlined />}  />
+          <Button type='link' disabled icon={<EditOutlined />}  />
+           </span>
+      ),
+      width: '12%'
     }
   ]
 

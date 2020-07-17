@@ -1,30 +1,35 @@
 import { Table } from 'antd'
 import finalPayment from '../../../mock/customer/finalPayment'
 
-const AdvancePending = () => {
+const statusList = [
+  { value: 1, text: "Advance is Pending" },
+  { value: 11, text: "Received Amount< Customer Advance %" }
+  ];
+ 
+  const AdvancePending = () => {
   const advancePending = [
     {
       title: 'Load Id',
       dataIndex: 'loadId',
       sorter: (a, b) => (a.loadId > b.loadId ? 1 : -1),
-      width: '10%'
+      width: '8%'
     },
     {
       title: 'Order',
       dataIndex: 'order',
       sorter: (a, b) => (a.order > b.order ? 1 : -1),
-      width: '10%'
+      width: '5%'
     },
     {
       title: 'Truck No',
       dataIndex: 'truckNo',
       sorter: (a, b) => (a.truckNo > b.truckNo ? 1 : -1),
-      width: '10%'
+      width: '7%'
     },
     {
       title: 'Source',
       dataIndex: 'source',
-      width: '10%'
+      width: '7%'
     },
     {
       title: 'Destination',
@@ -39,8 +44,8 @@ const AdvancePending = () => {
     {
       title: 'Status',
       dataIndex: 'status',
-      sorter: (a, b) => (a.status > b.status ? 1 : -1),
-      width: '10%'
+      filters: statusList,
+      width: '12%'
     },
     {
       title: 'User Name',
@@ -52,7 +57,7 @@ const AdvancePending = () => {
       title: 'Customer Price',
       dataIndex: 'price',
       sorter: (a, b) => (a.price > b.price ? 1 : -1),
-      width: '5%'
+      width: '11%'
     },
     {
       title: 'Received',

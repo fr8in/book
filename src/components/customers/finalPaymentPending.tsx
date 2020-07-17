@@ -8,13 +8,13 @@ const FinalPaymentsPending = () => {
       title: 'LoadId',
       dataIndex: 'loadId',
       sorter: (a, b) => (a.loadId > b.loadId ? 1 : -1),
-      width: '10%'
+      width: '6%'
     },
     {
       title: 'Item Name',
       dataIndex: 'itemName',
       sorter: (a, b) => (a.itemName > b.itemName ? 1 : -1),
-      width: '15%'
+      width: '24%'
     },
     {
       title: 'Truck No',
@@ -43,7 +43,7 @@ const FinalPaymentsPending = () => {
       title: 'Balance',
       dataIndex: 'balance',
       sorter: (a, b) => (a.balance > b.balance ? 1 : -1),
-      width: '15%'
+      width: '10%'
     },
     {
       title: 'Aging',

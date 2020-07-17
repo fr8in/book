@@ -1,6 +1,6 @@
-import incomingPaymentData from '../../../mock/customer/incomingdata'
+//import incomingPaymentData from '../../../mock/customer/incomingdata'
 import { Table } from 'antd'
-import IncomingPaymentsLead from './incomingPaymentsLead'
+//import IncomingPaymentsLead from './incomingPaymentsLead'
 
 
 const IncomingPayments = (props) => {
@@ -39,8 +39,8 @@ const IncomingPayments = (props) => {
     return (
         <Table
           columns={columns}
-          expandedRowRender={record => <IncomingPaymentsLead {...record} />}
-          dataSource={incomingPaymentData}
+          //expandedRowRender={record => <IncomingPaymentsLead {...record} />}
+          //dataSource={incomingPaymentData}
           rowKey={record => record.id}
           size='small'
           scroll={{ x: 1156 }}
