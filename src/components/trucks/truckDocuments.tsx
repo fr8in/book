@@ -1,19 +1,20 @@
 import React from 'react'
-import {Row,Col,Input,Button} from 'antd'
+import {Row,Col,Button,Form} from 'antd'
 import { UploadOutlined} from '@ant-design/icons';
 export default function truckDocuments() {
     return (
         <div>
             <Row gutter={[10, 10]}>
                 <Col xs={24} sm={12} md={6}>
-            <Row>
-                PAN
-            </Row>
-            <br />
              <Row>
-            <Button icon={<UploadOutlined />} >
+             <Form.Item
+                 label="PAN"
+                 name="PAN"
+                 rules={[{ required: true, message: 'PAN is required field!' }]}>
+                <Button icon={<UploadOutlined />} >
             Select File
                 </Button>
+                            </Form.Item> 
              </Row>
              <br />
              <Row>
@@ -72,14 +73,16 @@ export default function truckDocuments() {
 
        <Row gutter={[10, 10]}>
        <Col xs={24} sm={12} md={6}>
+            
             <Row>
-            RC 
-            </Row>
-            <br />
-            <Row>
-            <Button icon={<UploadOutlined />} >
+            <Form.Item
+                 label="RC"
+                 name="RC"
+                 rules={[{ required: true, message: 'RC is required field!' }]}>
+                <Button icon={<UploadOutlined />} >
             Select File
                 </Button>
+                            </Form.Item> 
              </Row>
              <br />
              <Row>
@@ -88,15 +91,16 @@ export default function truckDocuments() {
              </Col>
 
              <Col xs={24} sm={12} md={6}>
-            <Row>
-            Vaahan Screen 
-            </Row>
-            <br />
-            <Row>
-            <Button icon={<UploadOutlined />} >
+             <Row>
+            <Form.Item
+                 label="Vaahan Screen"
+                 name="Vaahan Screen"
+                 rules={[{ required: true, message: 'Vaahan Screen is required field!' }]}>
+                <Button icon={<UploadOutlined />} >
             Select File
                 </Button>
-             </Row>
+                            </Form.Item> 
+                            </Row>
              <br />
              <Row>
              <Button disabled> Start Upload </Button>

@@ -10,7 +10,7 @@ const Trucks = () => {
       dataIndex: 'truckNo',
       render: (text, record) => {
         return (
-          <Link href='trucks/truck/[id]' as={`trucks/truck/${record.id}`}>
+          <Link href='trucks/[id]' as={`trucks/${record.id}`}>
             <a>{text}</a>
           </Link>
         )
@@ -39,7 +39,7 @@ const Trucks = () => {
       dataIndex: 'partner',
       render: (text, record) => {
         return (
-          <Link href='partners/partner/[id]' as={`partners/partner/${record.id}`}>
+          <Link href='partners/[id]' as={`partners/${record.id}`}>
             <a>{text}</a>
           </Link>
         )
@@ -64,8 +64,8 @@ const Trucks = () => {
       columns={columns}
       dataSource={trucks}
       rowKey={record => record.id}
-      size='middle'
-      scroll={{ x: 800, y: 400 }}
+      size='small'
+      scroll={{ x: 800, y: 850 }}
       pagination={false}
     />
   )

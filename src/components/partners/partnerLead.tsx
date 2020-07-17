@@ -1,4 +1,5 @@
-import { Table } from 'antd'
+import { Table, Input } from 'antd'
+import {DownSquareOutlined} from '@ant-design/icons'
 
 
 const PartnerKyc = () => {
@@ -9,15 +10,33 @@ const PartnerKyc = () => {
     },
     {
       title: 'Phone',
-      dataIndex: 'number'
+      dataIndex: 'number',
+            filterDropdown: (
+              <div > 
+                  <Input placeholder="Search Phone Number" />  
+              </div>
+            ),
+          filterIcon:<DownSquareOutlined />
     },
     {
       title: 'City',
-      dataIndex: 'cityName'
+      dataIndex: 'cityName',
+      filterDropdown: (
+        <div > 
+            <Input placeholder="Search City Name" />  
+        </div>
+      ),
+    filterIcon:<DownSquareOutlined />
     },
     {
       title: 'Owner',
-      dataIndex: 'owner'
+      dataIndex: 'owner',
+      filterDropdown: (
+        <div > 
+            <Input placeholder="Search Employee Name" />  
+        </div>
+      ),
+    filterIcon:<DownSquareOutlined />
     },
     {
       title: 'Source',
