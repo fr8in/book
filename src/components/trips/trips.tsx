@@ -1,11 +1,9 @@
 import tripsData from '../../../mock/trip/tripsData'
-import { Table, Tooltip, Input, Checkbox } from 'antd'
+import { Table, Tooltip, Input } from 'antd'
 import Link from 'next/link'
-import { SearchOutlined, DownSquareOutlined } from '@ant-design/icons'
-import useShowHide from '../../hooks/useShowHide'
+import { SearchOutlined } from '@ant-design/icons'
 import moment from 'moment'
 
-const CheckboxGroup = Checkbox.Group
 const statusList = [
   { value: 1, text: 'Delivered' },
   { value: 11, text: 'Approval Pending' },
@@ -17,9 +15,6 @@ const statusList = [
 ]
 
 const Trips = (props) => {
-  const initial = { tripIdSearch: false }
-  const { visible, onShow } = useShowHide(initial)
-
   const columns = [
     {
       title: 'ID',
@@ -42,8 +37,7 @@ const Trips = (props) => {
           />
         </div>
       ),
-      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-      onFilterDropdownVisibleChange: () => onShow('tripIdSearch')
+      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
     },
     {
       title: <Tooltip title='Order date'><span>O.Date</span></Tooltip>,
@@ -79,7 +73,6 @@ const Trips = (props) => {
         </div>
       ),
       filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-      onFilterDropdownVisibleChange: () => onShow('tripCustomerSearch'),
       width: '9%'
     },
     {
@@ -104,7 +97,6 @@ const Trips = (props) => {
         </div>
       ),
       filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-      onFilterDropdownVisibleChange: () => onShow('tripPartnerSearch'),
       width: '9%'
     },
     {
@@ -127,7 +119,6 @@ const Trips = (props) => {
         </div>
       ),
       filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-      onFilterDropdownVisibleChange: () => onShow('tripTruckSearch'),
       width: '13%'
     },
     {
@@ -151,8 +142,7 @@ const Trips = (props) => {
           />
         </div>
       ),
-      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-      onFilterDropdownVisibleChange: () => onShow('tripSourceSearch')
+      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
     },
 
     {
@@ -176,8 +166,7 @@ const Trips = (props) => {
           />
         </div>
       ),
-      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-      onFilterDropdownVisibleChange: () => onShow('tripDestSearch')
+      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
     },
     {
       title: 'Status',

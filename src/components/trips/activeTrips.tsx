@@ -68,7 +68,7 @@ const Trips = (props) => {
           <span onClick={() => callNow(record.driverNo)} className='link'>{record.driverNo}</span>
         )
       },
-      width: '9%'
+      width: props.intransit ? '8%' : '9%'
     },
     {
       title: 'Truck',
@@ -79,7 +79,7 @@ const Trips = (props) => {
             <a>{text}</a>
           </Link>)
       },
-      width: '14%'
+      width: props.intransit ? '12%' : '14%'
     },
     {
       title: 'Source',
@@ -116,7 +116,7 @@ const Trips = (props) => {
       render: (text, record) => {
         return text && text ? text.toFixed(2) : 0
       },
-      width: '6%'
+      width: '4%'
     },
     props.intransit ? {
       title: 'Delay',
@@ -127,7 +127,7 @@ const Trips = (props) => {
     props.intransit ? {
       title: 'ETA',
       dataIndex: 'eta',
-      width: '7%',
+      width: '5%',
       sorter: (a, b) => (a.eta > b.eta ? 1 : -1)
     } : {},
     {
@@ -136,11 +136,11 @@ const Trips = (props) => {
       render: (text, record) => {
         return (
           text ? (
-            <Tooltip title={text}>{text.slice(0, 18) + '...'}</Tooltip>
+            <Tooltip title={text}><span>{text.slice(0, 18) + '...'}</span></Tooltip>
           ) : null
         )
       },
-      width: props.intransit ? '14%' : '17%'
+      width: props.intransit ? '11%' : '17%'
     },
     {
       title: 'Action',
@@ -150,7 +150,7 @@ const Trips = (props) => {
             <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.driverPhoneNo)} />
           </Tooltip>
           <Tooltip title='Comment'>
-            <Button type='link' disabled icon={<CommentOutlined />} onClick={() => onShow('comment')} />
+            <Button type='link' icon={<CommentOutlined />} onClick={() => onShow('comment')} />
           </Tooltip>
           <span>
             <Tooltip title='click to copy message'>
@@ -159,16 +159,17 @@ const Trips = (props) => {
           </span>
         </span>
       ),
-      width: '10%'
+      width: '11%'
     }
   ]
   return (
     <Table
       columns={columns}
       dataSource={tripsData}
+      className='withAction'
       rowKey={record => record.id}
       size='small'
-      scroll={{ x: 1156, y: 210 }}
+      scroll={{ x: 1156 }}
       pagination={false}
     />
   )
