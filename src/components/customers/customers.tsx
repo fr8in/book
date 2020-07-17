@@ -5,6 +5,8 @@ import { useQuery } from '@apollo/client'
 import { NetworkStatus } from '@apollo/client'
 import { CUSTOMERS_QUERY } from './containers/query/customersQuery'
 
+import customer from '../../../mock/customer/CustomerListMock'
+
 export const customersQueryVars = {
   offset: 0,
   limit: 10
@@ -41,9 +43,9 @@ const Customers = () => {
     })
   }
 
-  if (loading && !loadingMoreCustomers) return <div>Loading</div>
+  // if (loading && !loadingMoreCustomers) return <div>Loading</div>
   // console.log(data)
-  const { customer } = data
+  // const { customer } = data
 
   const columnsCurrent = [
     {
