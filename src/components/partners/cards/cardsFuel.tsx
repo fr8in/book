@@ -1,10 +1,14 @@
 import React from "react";
-import { Table, Input } from "antd";
+import { Table, Input, Switch } from "antd";
 import { DownSquareOutlined } from "@ant-design/icons";
 import PageLayout from "../../layout/pageLayout";
 import cards from "../../../../mock/card/cards";
 import Link from "next/link";
 const { Search } = Input;
+
+function onChange(checked) {
+  console.log(`switch to ${checked}`);
+}
 
 export default function cardsFuel() {
   const cardsFuel = [
@@ -92,6 +96,9 @@ export default function cardsFuel() {
     {
       title: "Status",
       dataIndex: "status",
+      render: (text, record) => (
+        <Switch size="small" defaultChecked onChange={onChange} />
+      ),
     },
     {
       title: "Edit",

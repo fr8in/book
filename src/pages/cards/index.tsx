@@ -2,7 +2,7 @@ import Fastag from "../../components/partners/cards/cardsFastag";
 import FuelCard from "../../components/partners/cards/cardsFuel";
 
 import Link from "next/link";
-import { Tabs, Row, Col, Card, Input, Button } from "antd";
+import { Tabs, Row, Col, Card, Input, Button, Space } from "antd";
 import PageLayout from "../../components/layout/pageLayout";
 import { PlusCircleOutlined } from "@ant-design/icons";
 const { Search } = Input;
@@ -14,37 +14,36 @@ const cards = () => {
         <Tabs>
           <TabPane tab="Fuel Card" key="1">
             <Row justify="end" className="m5">
-              <Col flex="130px">
+              <Space>
                 <Link href="cards/add-fuelcard">
                   <Button type="primary">
                     <PlusCircleOutlined />
                     Add Card
                   </Button>
                 </Link>
-              </Col>
-              <Col flex="180px">
+
                 <Button type="primary">Refresh Card List</Button>
-              </Col>
+              </Space>
             </Row>
+
             <FuelCard />
           </TabPane>
           <TabPane tab="FASTag" key="2">
             <Row justify="end" className="m5">
-              <Col flex="130px">
+              <Space>
                 <Search
                   placeholder="Search..."
                   onSearch={(value) => console.log(value)}
                   enterButton
                 />
-              </Col>
-              <Col flex="180px">
+
                 <Link href="cards/add-fastag">
                   <Button type="primary">
                     <PlusCircleOutlined />
                     Add Tag
                   </Button>
                 </Link>
-              </Col>
+              </Space>
             </Row>
             <Fastag />
           </TabPane>
