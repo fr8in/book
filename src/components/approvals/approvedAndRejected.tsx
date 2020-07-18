@@ -1,9 +1,28 @@
 import React from "react";
-import { Table, Checkbox, Input } from "antd";
-import { FilterOutlined, DownSquareOutlined } from "@ant-design/icons";
-import PageLayout from "../layout/pageLayout";
+import { Table } from "antd";
+
 import pendingDetail from "../../../mock/approval/approvalPending";
-const { Search } = Input;
+
+const creditType = [
+  { value: 1, text: "Credit Note" },
+  { value: 2, text: "Debit Note" },
+  { value: 3, text: "Dispute" },
+];
+const issueTypeList = [
+  { value: 1, text: "Loading Charges" },
+  { value: 2, text: "Unloading Charges" },
+  { value: 3, text: "Loading Halting" },
+  { value: 4, text: "Unloading Halting" },
+  { value: 5, text: "Commission Fee" },
+  { value: 6, text: "POD Late Fee" },
+  { value: 7, text: "POD Missing" },
+  { value: 8, text: "Price Difference" },
+  { value: 9, text: "On-Hold" },
+];
+const requestedBy = [
+  { value: 1, text: "Partner" },
+  { value: 2, text: "Fr8" },
+];
 
 function onChange(e) {
   console.log(`checked = ${e.target.checked}`);
@@ -18,33 +37,12 @@ export default function approvedAndRejected() {
     {
       title: "Type",
       dataIndex: "type",
-      filterDropdown: (
-        <div className="filterMenu">
-          <Checkbox onChange={onChange}>Credit Note</Checkbox>
-          <Checkbox onChange={onChange}>Debit Note</Checkbox>
-          <Checkbox onChange={onChange}>Dispute</Checkbox>
-        </div>
-      ),
-      filterIcon: <FilterOutlined />,
+      filters: creditType,
     },
     {
       title: "Issue Type",
       dataIndex: "issueType",
-      filterDropdown: (
-        <div className="filterMenu">
-          <Checkbox onChange={onChange}>Loading Charges</Checkbox>
-          <Checkbox onChange={onChange}>Unloading Charges</Checkbox>
-          <Checkbox onChange={onChange}>Loading Halting</Checkbox>
-          <Checkbox onChange={onChange}>Unloading Halting</Checkbox>
-          <Checkbox onChange={onChange}>Commission Fee</Checkbox>
-          <Checkbox onChange={onChange}>Late Delivery Fee</Checkbox>
-          <Checkbox onChange={onChange}>POD Late Fee</Checkbox>
-          <Checkbox onChange={onChange}>POD Missing</Checkbox>
-          <Checkbox onChange={onChange}>Price Difference</Checkbox>
-          <Checkbox onChange={onChange}>On-Hold</Checkbox>
-        </div>
-      ),
-      filterIcon: <FilterOutlined />,
+      filters: issueTypeList,
     },
     {
       title: "Claim ₹",
@@ -61,13 +59,7 @@ export default function approvedAndRejected() {
     {
       title: "Request By",
       dataIndex: "requestBy",
-      filterDropdown: (
-        <div className="filterMenu">
-          <Checkbox onChange={onChange}>Partner</Checkbox>
-          <Checkbox onChange={onChange}>Fr8</Checkbox>
-        </div>
-      ),
-      filterIcon: <FilterOutlined />,
+      filters: requestedBy,
     },
 
     {
@@ -86,14 +78,12 @@ export default function approvedAndRejected() {
   ];
 
   return (
-    <PageLayout title="pending">
-      <Table
-        columns={ApprovalPending}
-        dataSource={pendingDetail}
-        size="small"
-        scroll={{ x: 800, y: 400 }}
-        pagination={false}
-      />
-    </PageLayout>
+    <Table
+      columns={ApprovalPending}
+      dataSource={pendingDetail}
+      size="small"
+      scroll={{ x: 800, y: 400 }}
+      pagination={false}
+    />
   );
 }

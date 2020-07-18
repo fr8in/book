@@ -1,7 +1,16 @@
 import React from "react";
-import { Table } from "antd";
-import PageLayout from "../layout/pageLayout";
-import Cards from "../../../mock/card/cards";
+import { Table, Button, Switch } from "antd";
+import {
+  DownloadOutlined,
+  LeftCircleOutlined,
+  StopOutlined,
+} from "@ant-design/icons";
+import PageLayout from "../../layout/pageLayout";
+import Cards from "../../../../mock/card/cards";
+
+function onChange(checked) {
+  console.log(`switch to ${checked}`);
+}
 
 export default function cardsFastag() {
   const cardsFastag = [
@@ -38,13 +47,21 @@ export default function cardsFastag() {
     {
       title: "C.Status",
       dataIndex: "cStatus",
+      render: () => <Switch size="small" defaultChecked onChange={onChange} />,
     },
     {
       title: "Reverse",
       dataIndex: "Reverse",
+      render: () => <LeftCircleOutlined />,
     },
     {
-      title: "d",
+      title: (
+        <Button size="small">
+          Sus.
+          <DownloadOutlined />
+        </Button>
+      ),
+      render: () => <StopOutlined />,
     },
   ];
 
