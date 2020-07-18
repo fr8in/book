@@ -1,14 +1,11 @@
 
 import PageLayout from '../../components/layout/pageLayout'
-import { Card } from 'antd'
-import Trips from '../../components/trips/trips'
+import TripsContainer from '../../components/trips/containers/tripsContainer'
 
 const TripsPage = () => {
   return (
     <PageLayout title='Trips'>
-      <Card size='small' className='card-body-0 border-top-blue'>
-        <Trips />
-      </Card>
+      <TripsContainer />
     </PageLayout>
   )
 }
