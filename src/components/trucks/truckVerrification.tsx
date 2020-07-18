@@ -1,6 +1,7 @@
 import React from 'react'
 import { Table } from 'antd'
 import mock from '../../../mock/partner/sourcingMock'
+import Link from 'next/link'
 
 const status = [
   { value: 1, text: 'Verification Pending' },
@@ -11,11 +12,25 @@ const truckVerification = () => {
     {
       title: 'Truck No',
       dataIndex: 'truckNo',
+      render: (text, record) => {
+        return (
+          <Link href="trucks/[id]" as={`trucks/${record.id}`}>
+            <a>{text}</a>
+          </Link>
+        )
+      },
       width:'10%'
     },
     {
       title: 'Partner Code',
       dataIndex: 'code',
+      render: (text, record) => {
+        return (
+          <Link href="partners/[id]" as={`partners/${record.id}`}>
+            <a>{text}</a>
+          </Link>
+        )
+      },
       width:'15%'
     },
     {

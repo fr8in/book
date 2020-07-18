@@ -1,6 +1,8 @@
-import { Table, Radio } from 'antd'
+import { Table, Radio,Tooltip, Button } from 'antd'
+import {CommentOutlined} from '@ant-design/icons'
 import mock from '../../../mock/partner/partnerKyc'
-
+import Link from 'next/link'
+import useShowHide from '../../hooks/useShowHide'
 const regionList = [
   { value: 1, text: 'North' },
   { value: 2, text: 'South-1' },
@@ -23,11 +25,20 @@ const radioStyle = {
 };
 
 const PartnerKyc = () => {
+  const initial = { comment: false }
+  const { visible, onShow, onHide } = useShowHide(initial)
   const columnsCurrent = [
     {
       title: 'Partner Code',
       dataIndex: 'code',
       key:'code',
+      render: (text, record) => {
+        return (
+          <Link href="partners/[id]" as={`partners/${record.id}`}>
+            <a>{text}</a>
+          </Link>
+        )
+      },
     },
     {
       title: 'Partner Name',
@@ -98,6 +109,13 @@ const PartnerKyc = () => {
           title: 'Action',
           dataIndex: 'action',
           key:'action',
+          render: (text, record) => (
+            <span className='actions'>
+              <Tooltip title='Comment'>
+                <Button type='link' icon={<CommentOutlined />} onClick={() => onShow('comment')} />
+              </Tooltip>
+            </span>
+          ),
         },
   ]
   return (

@@ -1,11 +1,28 @@
-import { Table, Input, Switch } from 'antd'
-import {DownSquareOutlined} from '@ant-design/icons'
+  
+  import {Space, Table, Input, Switch, Popover, Button,Tooltip,Row } from 'antd'
+import {DownSquareOutlined, CommentOutlined,CloseCircleTwoTone,ExclamationCircleTwoTone} from '@ant-design/icons'
+import useShowHide from '../../hooks/useShowHide'
 import mock from '../../../mock/customer/sourcingMock'
 
+
+
+const content = (
+  <div>
+    <p> <ExclamationCircleTwoTone twoToneColor="#eca92b"/> Are you sure want to cancel the lead?</p>
+    <Row justify='end' className='m5'>
+      <Space>
+      <Button>No</Button>
+    <Button  type="primary">Yes</Button>
+      </Space>
+    </Row>
+  </div>
+);
 function onChange(e) {
   console.log(`checked = ${e.target.checked}`);
 }
 const PartnerKyc = () => {
+  const initial = { comment: false }
+  const { visible, onShow, onHide } = useShowHide(initial)
   const columnsCurrent = [
     {
       title: 'Name',
@@ -68,6 +85,16 @@ const PartnerKyc = () => {
       {
           title: 'Action',
           dataIndex: 'action',
+          render: (text, record) => (
+            <span className='actions'>
+              <Tooltip title='Comment'>
+                <Button type='link' icon={<CommentOutlined />} onClick={() => onShow('comment')} />
+              </Tooltip>
+              <Popover content={content} >
+    <CloseCircleTwoTone />
+  </Popover>,
+            </span>
+          )
         },
   ]
   return (
