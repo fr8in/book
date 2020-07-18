@@ -1,5 +1,5 @@
 import React from "react";
-import { Table } from "antd";
+import { Table, Switch } from "antd";
 import Branch from "../../../mock/branches/branches";
 
 export default function Branches() {

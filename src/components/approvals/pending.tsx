@@ -1,6 +1,11 @@
 import React from "react";
-import { Table, Input } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { Table, Input, Tooltip, Button } from "antd";
+import {
+  SearchOutlined,
+  CommentOutlined,
+  CheckCircleTwoTone,
+  CloseCircleTwoTone,
+} from "@ant-design/icons";
 
 import useShowHide from "../../hooks/useShowHide";
 import pendingDetail from "../../../mock/approval/approvalPending";
@@ -88,8 +93,21 @@ export default function pending() {
     },
     {
       title: "Action",
-      dataIndex: "action",
-      key: "action",
+      render: (text, record) => (
+        <span className="actions">
+          <Tooltip title="Comment">
+            <Button type="link" icon={<CommentOutlined />} />
+          </Tooltip>
+          <Tooltip title="Accept">
+            <Button type="link" icon={<CheckCircleTwoTone />} />
+          </Tooltip>
+          <span>
+            <Tooltip title="Decline">
+              <Button type="link" icon={<CloseCircleTwoTone />} />
+            </Tooltip>
+          </span>
+        </span>
+      ),
     },
   ];
 
