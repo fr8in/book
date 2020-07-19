@@ -6,7 +6,7 @@ const { Option } = Select;
 function handleChange(value) {
   console.log(`selected ${value}`);
 }
-class App extends React.Component {
+class AssignModal extends React.Component {
   state = { visible: false };
 
   showModal = () => {
@@ -52,4 +52,4 @@ class App extends React.Component {
   }
 }
 
-export default App
+export default AssignModal

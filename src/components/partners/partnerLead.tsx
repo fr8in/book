@@ -1,11 +1,25 @@
   
-  import {Space, Table, Input, Switch, Popover, Button,Tooltip,Row } from 'antd'
+import {Space, Table, Input, Switch, Popover, Button,Tooltip,Row } from 'antd'
 import {DownSquareOutlined, CommentOutlined,CloseCircleTwoTone,ExclamationCircleTwoTone} from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
 import mock from '../../../mock/customer/sourcingMock'
 
 
-
+const source = [
+  { value: 1, text: 'DIRECT' },
+  { value: 2, text: 'SOCIAL MEDIA' },
+  { value: 3, text: 'REFERRAL' },
+  { value: 4, text: 'APP' },
+  
+]
+const status =[
+  { value: 1, text: 'OPEN' },
+  { value: 2, text: 'ON-BOARDED' },
+  { value: 3, text: 'REJECTED' },
+]
+const comment =[
+  { value: 1, text: 'No Comment' },
+]
 const content = (
   <div>
     <p> <ExclamationCircleTwoTone twoToneColor="#eca92b"/> Are you sure want to cancel the lead?</p>
@@ -60,15 +74,18 @@ const PartnerKyc = () => {
     },
     {
       title: 'Source',
-      dataIndex: 'source'
+      dataIndex: 'source',
+      filters:source
     },
     {
       title: 'Status',
       dataIndex: 'status',
+      filters:status
     },
     {
         title: 'Last Comment',
         dataIndex: 'comment',
+        filters:comment
       },
       {
         title: 'Created Date',
