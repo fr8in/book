@@ -1,6 +1,5 @@
 import PageLayout from "../../components/layout/pageLayout";
-import { Tabs, Input, Row, Col, Button, Space } from "antd";
-import { UserAddOutlined, FilterOutlined, WhatsAppOutlined, CarOutlined } from '@ant-design/icons'
+import { Tabs, Input, Row, Col, Space } from "antd";
 import PartnerKyc from '../../components/partners/partnerKyc'
 import PartnerLead from '../../components/partners/partnerLead'
 import TruckVerification from '../../components/trucks/truckVerrification'
@@ -8,6 +7,9 @@ import VasRequest from '../../components/partners/vasRequest'
 import Breakdown from '../../components/trucks/breakdown'
 import Announcenmemt from '../../components/partners/announcement'
 import Customer from '../../components/customers/sourcingCus'
+import AssignModal from '../../components/partners/assignModal'
+import AddLeadModal from '../../components/partners/addLeadModal'
+import FilterModal from '../../components/partners/filterModel'
 const TabPane = Tabs.TabPane;
 
 function callback(key) {
@@ -19,14 +21,14 @@ const sourcing = () => {
   return (
     <PageLayout title="Sourcing">
       <div className='card-body-0 border-top-blue'>
-        <Tabs>
+        <Tabs >
           <TabPane tab="Partner" key="1">
             <Tabs onChange={callback} type="card" className='card-body-0'
                tabBarExtraContent={
                 <Space>
-                  <Button type="primary"> Assign </Button>
-                  <Button type="primary" icon={<FilterOutlined />} />
-                  <Button type="primary" icon={<UserAddOutlined />} />
+                  <AssignModal />
+                  <FilterModal />
+                  <AddLeadModal />
                 </Space>
               }
             >
