@@ -7,12 +7,14 @@ export default function Employees() {
     {
       title: "Name",
       dataIndex: "name",
-      keys: "name",
+      key: "name",
+      width: "10%",
     },
     {
       title: "Mobile Number",
       dataIndex: "mobileNumber",
-      keys: "mobileNumber",
+      key: "mobileNumber",
+      width: "20%",
     },
   ];
 

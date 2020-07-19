@@ -16,6 +16,7 @@ const Approvals = () => {
             <Row justify="end" className="m5">
               <Col flex="180px">
                 <Search
+                  size="small"
                   placeholder="Search Load Id or Request By"
                   onSearch={(value) => console.log(value)}
                   enterButton
