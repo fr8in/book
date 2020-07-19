@@ -1,6 +1,8 @@
 // Margins
 .m0 {margin: 0;}
+.mb0 {margin-bottom: 0;}
 .mb10 {margin-bottom: 10px;}
+.mb15 {margin-bottom: 15px;}
 .mt5 {margin-top: 5px !important;}
 .mt10 {margin-top: 10px !important;}
 .m5 {margin: 5px !important;}
@@ -12,9 +14,21 @@
 .b { font-weight: bold;}
 .u { text-decoration: underline;}
 .bu { font-weight: bold; text-decoration: underline;}
+.normal { font-weight: normal;}
 // Borders
 .border-top-blue { border-top: solid 2px lighten(@blue, 20%)}
 .border-top-dark { border-top: solid 2px @dark-blue}
+// Text color 
+.text-primary { color: @primary }
+.text-gray { color: lighten(@gray, 15%) }
+// Text align
+.text-right { text-align: right;}
+.text-left { text-align: left;}
+.text-center { text-align: center;}
+// Show Hide
+.hideLabel {
+    .ant-form-item-label { visibility: hidden }
+}
 // gradients
 .purple {
     background-color: @purple;

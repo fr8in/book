@@ -1,28 +1,23 @@
 import React from 'react'
-import {Row, Col} from 'antd'
-import { CheckCircleOutlined,CrownFilled } from '@ant-design/icons'
+import { Row, Col ,Space,Typography} from 'antd'
+import { CheckCircleOutlined, CrownFilled } from '@ant-design/icons'
 
-export default function partnerInfo(props) {
+const { Text, Link} = Typography;
+export default function partnerInfo() {
     return (
-        <div>
-                <Row gutter={[10, 10]}> 
-                <Col>
-					<h2> <CrownFilled /> </h2>	
-					</Col>
-                    <Col>
-					<h1> <label>Surya</label> </h1>	
-					</Col>
-                    <Col>
-                     <h2><CheckCircleOutlined /></h2>
-                       {props.children}
-                    </Col>
-                    <Col>
-                    <h3> <label>3456254</label> </h3>
-                    </Col>
-                    <Col>
-                    <h3> <label>9873456254</label> </h3>
-                    </Col>
-                </Row>
-        </div>
+        <Row >
+          <Space  direction="horizontal">
+          <h2> <CrownFilled /> </h2>
+          <h2>   <text>SAEF LOGISTICS</text> </h2>
+          <h2> <CheckCircleOutlined /> </h2>
+          <h4>  <text> ST563869 </text> </h4>
+          
+         <h4>  <Link href=" " target="_blank">
+                    9873456254 
+                </Link> </h4>
+            </Space>
+        </Row>
+
+
     )
 }

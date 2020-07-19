@@ -20,9 +20,10 @@ const Comment = () => {
   return (
    
      <div>
+       <br />
         <Row>
-         <Col><Input placeholder="Please enter comments" /></Col>
-         <Col>  <Button type="primary">Submit</Button></Col>
+         <Col span={8} ><Input placeholder="Please enter comments" /></Col> 
+         <Col offset={1}>  <Button type="primary">Submit</Button></Col>
         </Row>
        <br />
       <Table

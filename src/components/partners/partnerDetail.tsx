@@ -1,116 +1,159 @@
-import React from 'react'
-import {Row, Col} from 'antd'
+import { Row, Col, Space,Checkbox,Input} from 'antd'
+import LabelWithData from '../common/labelWithData'
 import DetailInfo from '../../../mock/partner/partnerDetailInfo'
-export default function partnerDetailInfo () {
-  
-    return (
-        <div>   
-				<Row>
-					<Col sm={12}>
-						<label><h3> On Boarded Date  </h3></label>
-					</Col>
-					<Col>
-						<p>{DetailInfo && DetailInfo.date}</p>
-					</Col>
-				</Row>
-				<Row>
-					<Col sm={12}>
-						<label><h3>Email</h3></label>
-					</Col>
-					<Col>
-						<p>{ DetailInfo && DetailInfo.mail}</p>
-					</Col>
-				</Row>
-				<Row>
-					<Col sm={12}>
-                        <label><h3>No.Of Trucks</h3></label>
-                    </Col>
-                    <Col>
-						<p>{ DetailInfo && DetailInfo.truck}</p>
-					</Col>
-				</Row>
-				<Row>
-					<Col sm={12}>
-						<label><h3> Address </h3></label>
-					</Col>
-					<Col>
-						<p>{ DetailInfo && DetailInfo.address}</p>
-					</Col>
-				</Row>
-				<Row>
-					<Col sm={12}>
-						<label><h3> State </h3></label>
-					</Col>
-					<Col>
-						<p>{ DetailInfo && DetailInfo.state}</p>
-					</Col>
-				</Row>
-                <Row>
-					<Col sm={12}>
-						<label><h3> Bank </h3></label>
-					</Col>
-					<Col>
-						<p>{ DetailInfo && DetailInfo.bank}</p>
-					</Col>
-				</Row>
-                <Row>
-					<Col sm={12}>
-						<label><h3> Account Number </h3></label>
-					</Col>
-					<Col>
-						<p>{ DetailInfo && DetailInfo.accNo}</p>
-					</Col>
-				</Row>
-                <Row>
-					<Col sm={12}>
-						<label><h3> IFSC Code </h3></label>
-					</Col>
-					<Col>
-						<p>{ DetailInfo && DetailInfo.IFSC}</p>
-					</Col>
-				</Row>
-                <Row>
-					<Col sm={12}>
-						<label><h3> Cibil Score </h3></label>
-					</Col>
-					<Col>
-						<p>{ DetailInfo && DetailInfo.cibilScore}</p>
-					</Col>
-				</Row>
-                <Row>
-					<Col sm={12}>
-						<label><h3> EMI </h3></label>
-					</Col>
-				</Row>
-                <Row>
-					<Col sm={12}>
-						<label><h3> TDS % </h3></label>
-					</Col>
-					<Col>
-						<p>{ DetailInfo && DetailInfo.TDS}</p>
-					</Col>
-				</Row>
-                <Row>
-					<Col sm={12}>
-						<label><h3> PAN </h3></label>
-					</Col>
-					<Col>
-						<p>{ DetailInfo && DetailInfo.PAN}</p>
-					</Col>
-				</Row>
-                <Row>
-					<Col sm={12}>
-						<label><h3> GST </h3></label>
-					</Col>
-					<Col>
-						<p>{ DetailInfo && DetailInfo.GST}</p>
-					</Col>
-				</Row>
-                <Row>
-					<Col sm={12}>
-						<label><h3> Mapped Customer </h3></label>
-					</Col>
-				</Row>       	   
-        </div>
-    )
+import { PlusOutlined } from '@ant-design/icons'
+function onChange(e) {
+	console.log(`checked = ${e.target.checked}`);
+  }
+export default function partnerDetailInfo() {
+
+	return (
+		<Row gutter={8}>
+			<Col xs={24} sm={24} md={24}>
+				<LabelWithData
+					label='On Boarded Date'
+					data={
+						<Space>
+							<span>{DetailInfo.date}</span>
+						</Space>
+					}
+					labelSpan={10}
+					dataSpan={14}
+				/>
+				<LabelWithData
+					label='Email'
+					data={
+						<Space>
+							<span>{DetailInfo.mail}</span>
+						</Space>
+					}
+					labelSpan={10}
+					dataSpan={14}
+				/>
+				<LabelWithData
+					label='No.Of Trucks'
+					data={
+						<Space>
+							<span>{DetailInfo.truck}</span>
+						</Space>
+					}
+					labelSpan={10}
+					dataSpan={14}
+				/>
+				<LabelWithData
+					label=' Address'
+					data={
+						<Space>
+							<span>{DetailInfo.address}</span>
+						</Space>
+					}
+					labelSpan={10}
+					dataSpan={14}
+				/>
+				<LabelWithData
+					label='State'
+					data={
+						<Space>
+							<span>{DetailInfo.state}</span>
+						</Space>
+					}
+					labelSpan={10}
+					dataSpan={14}
+				/>
+
+				<LabelWithData
+					label='Bank'
+					data={
+						<Space>
+							<span>{DetailInfo.bank}</span>
+						</Space>
+					}
+					labelSpan={10}
+					dataSpan={14}
+				/>
+				<LabelWithData
+					label='Account Number '
+					data={
+						<Space>
+							<span>{DetailInfo.accNo}</span>
+						</Space>
+					}
+					labelSpan={10}
+					dataSpan={14}
+				/>
+				<LabelWithData
+					label='IFSC Code'
+					data={
+						<Space>
+							<span>{DetailInfo.IFSC}</span>
+						</Space>
+					}
+					labelSpan={10}
+					dataSpan={14}
+				/>
+				<LabelWithData
+					label='Cibil Score '
+					data={
+						<Space>
+							<span>{DetailInfo.cibilScore}</span>
+						</Space>
+					}
+					labelSpan={10}
+					dataSpan={14}
+				/>
+				<LabelWithData
+					label='EMI'
+					data={
+						<Space> 
+						<Checkbox onChange={onChange}></Checkbox>
+						</Space>
+					}
+					labelSpan={10}
+					dataSpan={14}
+				/>
+				<LabelWithData
+					label=' TDS %'
+					data={
+						<Space>
+							<span>{DetailInfo.TDS}</span>
+						</Space>
+					}
+					labelSpan={10}
+					dataSpan={14}
+				/>
+				<LabelWithData
+					label='PAN'
+					data={
+						<Space>
+							<span>{DetailInfo.PAN}</span>
+						</Space>
+					}
+					labelSpan={10}
+					dataSpan={14}
+				/>
+				<LabelWithData
+					label=' GST'
+					data={
+						<Space>
+							<span>{DetailInfo.GST}</span>
+						</Space>
+					}
+					labelSpan={10}
+					dataSpan={14}
+				/>
+				<LabelWithData
+					label='Mapped Customers '
+					data={
+						<Space>
+							<Input placeholder = '+ Add Customer' />
+						</Space>
+					}
+					labelSpan={10}
+					dataSpan={14}
+				/>
+			</Col>
+		</Row>
+
+
+	)
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Radio, Card, Input, Form, Button, Select } from 'antd';
+import { Row, Col, Radio, Card, Input, Form, Button, Select, Space } from 'antd';
 const RadioGroup = Radio.Group
 
 
@@ -8,7 +8,7 @@ function PartnerProfile() {
         <div>
             <Card title="Create Partner">
                 <h4><b>Personal Details</b></h4><br />
-                <Row gutter={[12, 12]}>
+                <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                     <Col xs={24} sm={5}>
                         <Row >
                             <Form.Item
@@ -19,7 +19,7 @@ function PartnerProfile() {
                                 <Input placeholder="PartnerName" />
                             </Form.Item> </Row>
                     </Col>
-                    <Col xs={24} sm={4}>
+                    <Col xs={24} sm={5}>
                         <Row >
                             <Form.Item
                                 label="Contact Person"
@@ -29,7 +29,7 @@ function PartnerProfile() {
                                 <Input placeholder="Contact Person" />
                             </Form.Item> </Row>
                     </Col>
-                    <Col xs={24} sm={4}>
+                    <Col xs={24} sm={5}>
                         <Row >
                             <Form.Item
                                 label="Phone Number"
@@ -39,7 +39,7 @@ function PartnerProfile() {
                                 <Input placeholder="Phone Number" />
                             </Form.Item> </Row>
                     </Col>
-                    <Col xs={24} sm={4}>
+                    <Col xs={24} sm={5}>
                         <Row >
                             <Form.Item
                                 label="Email Address"
@@ -120,7 +120,7 @@ function PartnerProfile() {
             <br />
             <Card>
                 <h4><b>Bank Details</b></h4><br />
-                <Row gutter={[12, 12]}>
+                <Row gutter={[12, 12]} >
                     <Col xs={24} sm={4}>
 
                         <Row >
@@ -188,8 +188,9 @@ function PartnerProfile() {
             <br />
             <Card>
                 <h4><b>FR8 Details</b></h4><br />
-                <Row gutter={[12, 12]}>
-                    <Col xs={24} sm={6} flex="100px">
+                <Row >
+            <Space>
+                    <Col xs={24} sm={5} flex="100px">
                         <Row >
                             <Form.Item label="Advance Percentage" name="Advance Percentage"
                                 rules={[{ required: true }]}
@@ -200,7 +201,7 @@ function PartnerProfile() {
                             </Form.Item>
                         </Row>
                     </Col>
-                    <Col xs={24} sm={{ span: 20 }} flex="100px">
+                    <Col xs={24} sm={5} flex="100px">
 
                         <Row >
                             <Form.Item
@@ -213,7 +214,7 @@ function PartnerProfile() {
                                 </Select>
                             </Form.Item> </Row>
                     </Col>
-                    <Col xs={24} sm={4} flex="100px">
+                    <Col xs={24} sm={5} flex="100px">
 
                         <Row >
                             <Form.Item
@@ -250,7 +251,7 @@ function PartnerProfile() {
                                 </Select>
                             </Form.Item> </Row>
                     </Col>
-
+              </Space>
                 </Row>
             </Card>
             <Row justify="end" className="m5">

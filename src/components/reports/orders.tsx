@@ -1,6 +1,8 @@
 import Stats from './stats'
 import useShowHide from '../../hooks/useShowHide'
-import { Modal } from 'antd'
+import { Modal, Button } from 'antd'
+import WeeklyBranchTarget from '../partners/weeklyBranchTarget'
+import OrderReport from '../partners/orderReport'
 
 const data = [{ count: 400, name: 'Orders' }]
 const Orders = () => {
@@ -17,18 +19,38 @@ const Orders = () => {
         bgColor='yellow'
       />
       <Modal
-        title='Weekly Orders'
+        style={{ top: 20 }}
+        bodyStyle={{ padding: 10 }}
         visible={visible.orders}
         onCancel={() => onHide('orders')}
+        closable={false}
+        footer={[
+          <Button
+            type='default'
+            key='back'
+            onClick={() => onHide('orders')}
+          >
+            Close
+          </Button>
+        ]}
       >
-        <p>Report will come</p>
+        <WeeklyBranchTarget />
       </Modal>
       <Modal
         title='Orders Report'
         visible={visible.report}
         onCancel={() => onHide('report')}
+        footer={[
+          <Button
+            type='default'
+            key='back'
+            onClick={() => onHide('report')}
+          >
+            Close
+          </Button>
+        ]}
       >
-        <p>Report will come</p>
+        <OrderReport />
       </Modal>
     </>
   )

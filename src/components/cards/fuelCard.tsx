@@ -1,51 +1,64 @@
-import React from 'react'
-import {Row, Col,Switch} from 'antd'
-import fuelDetail from '../../../mock/card/fuelCard'
-export default function partnerfuelDetail () {
-  
-    return (
-        <div>   
-				<Row>
-					<Col span={12}>
-						<label><h5> Card ID  </h5></label>
-					</Col>
-					<Col span={12}>
-						<p>{fuelDetail && fuelDetail.id}</p>
-					</Col>
-				</Row>
-				<Row>
-					<Col span={12}>
-						<label><h5>Card Number</h5></label>
-					</Col>
-					<Col span={12}>
-						<p>{ fuelDetail && fuelDetail.cardNumber}</p>
-					</Col>
-				</Row>
-				<Row>
-					<Col span={12}>
-                        <label><h5>Balance</h5></label>
-                    </Col>
-                    <Col span={12}>
-						<p>{ fuelDetail && fuelDetail.balance}</p>
-					</Col>
-				</Row>
-				<Row>
-					<Col span={12}>
-						<label><h5> Linked Mobile </h5></label>
-					</Col>
-					<Col span={12}>
-						<p>{ fuelDetail && fuelDetail.mobileNo}</p>
-					</Col>
-				</Row>
-				<Row>
-					<Col span={12}>
-						<label><h5> Status </h5></label>
-					</Col>
-					<Col span={12}>
-						<Switch size="small" defaultChecked />
-					</Col>
-				</Row>
-               
-        </div>
-    )
+import React from "react";
+import { Row, Col, Switch, Space } from "antd";
+import LabelWithData from "../common/labelWithData";
+import fuelDetail from "../../../mock/card/fuelCard";
+export default function partnerfuelDetail() {
+  return (
+    <div>
+      <Row gutter={15}>
+        <Col xs={24} sm={24} md={24}>
+          <LabelWithData
+            label="Card ID"
+            data={
+              <Space>
+                <span>{fuelDetail.id}</span>
+              </Space>
+            }
+            labelSpan={10}
+            dataSpan={14}
+          />
+          <LabelWithData
+            label="Card Number"
+            data={
+              <Space>
+                <span>{fuelDetail.cardNumber}</span>
+              </Space>
+            }
+            labelSpan={10}
+            dataSpan={14}
+          />
+          <LabelWithData
+            label="Balance"
+            data={
+              <Space>
+                <span>{fuelDetail.balance}</span>
+              </Space>
+            }
+            labelSpan={10}
+            dataSpan={14}
+          />
+          <LabelWithData
+            label=" Linked Mobile"
+            data={
+              <Space>
+                <span>{fuelDetail.mobileNo}</span>
+              </Space>
+            }
+            labelSpan={10}
+            dataSpan={14}
+          />
+          <LabelWithData
+            label="Status"
+            data={
+              <Space>
+                <Switch size="small" defaultChecked />
+              </Space>
+            }
+            labelSpan={10}
+            dataSpan={14}
+          />
+        </Col>
+      </Row>
+    </div>
+  );
 }

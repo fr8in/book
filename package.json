@@ -29,6 +29,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "recharts": "^1.8.5",
     "reflect-metadata": "^0.1.13",
     "serverless-http": "^2.5.0",
     "subscriptions-transport-ws": "^0.9.17",
