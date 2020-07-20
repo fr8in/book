@@ -65,7 +65,7 @@ export default function CityPricing() {
       columns={CityPricing}
       dataSource={Branch}
       size="small"
-      scroll={{ x: 800, y: 400 }}
+      scroll={{ x: 1156, y: 400 }}
       pagination={false}
     />
   );

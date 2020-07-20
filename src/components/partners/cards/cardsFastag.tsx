@@ -89,7 +89,7 @@ export default function CardsFastag() {
       columns={CardsFastag}
       dataSource={Cards}
       size="small"
-      scroll={{ x: 800, y: 400 }}
+      scroll={{ x: 1156, y: 400 }}
       pagination={false}
     />
   );
