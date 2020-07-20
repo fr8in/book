@@ -1,4 +1,4 @@
-import { Timeline, Row, Col, Input, Button, Divider, Card } from 'antd'
+import { Timeline, Row, Col, Input, Button, Card } from 'antd'
 import moment from 'moment'
 import data from '../../../mock/trip/tripComment'
 
