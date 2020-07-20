@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Table, Input, Switch,Row, Button,Space,Tooltip, Popover} from 'antd'
 import {DownSquareOutlined,ExclamationCircleTwoTone,CommentOutlined,CloseCircleTwoTone} from '@ant-design/icons'
 import mock from '../../../mock/customer/sourcingMock'
@@ -29,13 +29,27 @@ const content = (
     </Row>
   </div>
 );
+const rowSelection = {
+  onChange: (selectedRowKeys, selectedRows) => {
+    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+  },
+  getCheckboxProps: record => ({
+    disabled: record.name === 'Disabled User', // Column configuration not to be checked
+    name: record.name,
+  }),
+};
+
+
 const SourcingCus = () => {
+
+  const [selectionType, setSelectionType] = useState('checkbox');
   const initial = { comment: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   const columnsCurrent = [
     {
       title: 'Company',
       dataIndex: 'company',
+      
     },
     {
       title: 'User',
@@ -113,14 +127,20 @@ const SourcingCus = () => {
       }
   ]
   return (
+    <div>
+       
       <Table
+      rowSelection={{
+         ...rowSelection,
+      }}
         columns={columnsCurrent}
         dataSource={mock}
         rowKey={record => record.id}
         size='middle'
-        scroll={{ x: 800, y: 400 }}
+        scroll={{ x: 1156 }}
         pagination={false}
       />
+      </div>
   )
 }
 

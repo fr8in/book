@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Switch } from "antd";
+import { Table } from "antd";
 import Branch from "../../../mock/branches/branches";
 
 export default function Branches() {
@@ -7,22 +7,26 @@ export default function Branches() {
     {
       title: "Branch Name",
       dataIndex: "branchName",
-      keys: "branchName",
+      key: "branchName",
+      width: "13%",
     },
     {
       title: "Connected City",
       dataIndex: "connectedCity",
-      keys: "connectedCity",
+      key: "connectedCity",
+      width: "25%",
     },
     {
       title: "Traffic Members",
       dataIndex: "trafficMembers",
-      keys: "trafficMembers",
+      key: "trafficMembers",
+      width: "25%",
     },
     {
       title: "Weekly Target",
       dataIndex: "weeklyTarget",
-      keys: "weeklyTarget",
+      key: "weeklyTarget",
+      width: "25%",
     },
   ];
 

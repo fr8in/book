@@ -9,6 +9,9 @@ import TripPod from './tripPod'
 import TripInvoice from './tripInvoice'
 import InvoiceDetail from './invoiceDetail'
 import CreateAdditionalAdvance from './createAdditionalAdvance'
+import AdditionalAdvance from './additionalAdvance'
+import Payables from './payables'
+import Receivables from './receivables'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
@@ -69,11 +72,46 @@ const TripDetail = (props) => {
               <Collapse accordion className='small mt10'>
                 <Panel header='Additional Advance' key='1'>
                   <CreateAdditionalAdvance />
+                  <AdditionalAdvance />
                 </Panel>
               </Collapse>
             </TabPane>
             <TabPane tab='Payment' key='2'>
-              Payment
+              <Collapse accordion className='small box-0'>
+                <Panel
+                  header={
+                    <span>
+                    Partner - Payables
+                      <span className='pull-right'>
+                        <b>{23500}</b>
+                      </span>
+                    </span>
+                  }
+                  key='1'
+                >
+                  <Payables />
+                </Panel>
+              </Collapse>
+              <Collapse accordion className='small box-0 mt10'>
+                <Panel
+                  header={
+                    <span>
+                    Customer - Receivables
+                      <span className='pull-right'>
+                        <b>{23500}</b>
+                      </span>
+                    </span>
+                  }
+                  key='1'
+                >
+                  <Receivables />
+                </Panel>
+              </Collapse>
+              <Collapse accordion className='small mt10'>
+                <Panel header='Credit/Debit Note' key='1'>
+                Credit/Debit Note
+                </Panel>
+              </Collapse>
             </TabPane>
             <TabPane tab='Timeline' key='3'>
               Timeline

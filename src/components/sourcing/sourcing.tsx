@@ -10,7 +10,7 @@ import Customer from '../../components/customers/sourcingCus'
 import AssignModal from '../../components/partners/assignModal'
 import AddLeadModal from '../../components/partners/addLeadModal'
 import FilterModal from '../../components/partners/filterModel'
-
+import TitleWithCount from '../common/titleWithCount'
 
 const TabPane = Tabs.TabPane;
 
@@ -50,7 +50,7 @@ const Sourcing = () => {
                                 </Row>
                                 < TruckVerification />
                             </TabPane>
-                            <TabPane tab="Lead" key="3" >
+                            <TabPane tab={<TitleWithCount name='Lead' value={120} />} key="3" >
                                 <PartnerLead />
                             </TabPane>
                             <TabPane tab="Vas Request" key="4">
@@ -61,10 +61,10 @@ const Sourcing = () => {
                     <TabPane tab="Customer" key="2">
                         <Customer />
                     </TabPane>
-                    <TabPane tab="Waiting For Load" key="3">
+                    <TabPane tab={<TitleWithCount name='Waiting for Load' value={671} />} key="3">
                         <Breakdown />
                     </TabPane>
-                    <TabPane tab="Breakdown" key="4">
+                    <TabPane tab={<TitleWithCount name='Breakdown' value={65} />} key="4">
                         <Breakdown />
                     </TabPane>
                     <TabPane tab="Announcement" key="5">

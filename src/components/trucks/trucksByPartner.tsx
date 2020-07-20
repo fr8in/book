@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Table } from 'antd'
 import Link from 'next/link'
 import mock from '../../../mock/partner/truckByPartner'
@@ -20,7 +20,18 @@ const status=[
   { value: 1, text: 'Express' },
   { value: 2, text: 'Non-Express' },
 ]
+const rowSelection = {
+  onChange: (selectedRowKeys, selectedRows) => {
+    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+  },
+  getCheckboxProps: record => ({
+    disabled: record.name === 'Disabled User', // Column configuration not to be checked
+    name: record.name,
+  }),
+};
+
 const PartnerTruck = () => {
+  const [selectionType] = useState('checkbox');
   const columnsCurrent = [
     {
       title: 'Truck No',
@@ -65,6 +76,9 @@ const PartnerTruck = () => {
   ]
   return (
       <Table
+      rowSelection={{
+        ...rowSelection,
+      }}
         columns={columnsCurrent}
         dataSource={mock}
         rowKey={record => record.id}
