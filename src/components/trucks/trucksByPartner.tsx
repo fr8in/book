@@ -38,12 +38,11 @@ const PartnerTruck = () => {
       dataIndex: 'truckNo',
       render: (text, record) => {
         return (
-          <Link href="trucks/[id]" 
-          as={`trucks/${record.id}`}>
+          <Link href="/trucks/[id]" as={`/trucks/${record.id}`}>
             <a>{text}</a>
           </Link>
         )
-      }
+      },
     },
     {
       title: 'Truck Type',
@@ -51,7 +50,13 @@ const PartnerTruck = () => {
     },
     {
       title: 'Trip ID',
-      dataIndex: 'tripId'
+      dataIndex: 'tripId',
+      render: (text, record) => {
+        return (
+          <Link href='/trips/[id]' as={`/trips/${record.id} `}>
+            <a>{text}</a>
+          </Link>)
+      },
     },
     {
       title: 'Trip',

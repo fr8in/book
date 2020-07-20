@@ -11,8 +11,8 @@ export default function partnerStatus() {
              <div className='filterMenu'>
             <Row>
             <Col span={8}><Checkbox onChange={onChange}>BlockList </Checkbox> </Col>
-            <Col span={8}><Checkbox onChange={onChange}> De-activate</Checkbox></Col>
-            <Col span={8}><Checkbox onChange={onChange}>DND </Checkbox> </Col>   
+            <Col span={9}><Checkbox onChange={onChange}> De-activate</Checkbox></Col>
+            <Col span={7}><Checkbox onChange={onChange}>DND </Checkbox> </Col>   
             </Row>
               </div>
               </Card>
