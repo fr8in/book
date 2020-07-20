@@ -8,6 +8,8 @@ import Progress from '../reports/progress'
 import { WhatsAppOutlined, CarOutlined } from '@ant-design/icons'
 import ExcessLoad from '../trips/excessLoad'
 import TitleWithCount from '../common/titleWithCount'
+import useShowHide from '../../hooks/useShowHide'
+import QuickPo from '../dashboard/quickpo'
 
 const { TabPane } = Tabs
 
@@ -15,7 +17,9 @@ const Dashboard = () => {
   const [tabKey, setTabKey] = useState('1')
   const callback = (key) => {
     setTabKey(key)
-  }
+   }
+    const initial = { excessLoad: false,}
+    const {onShow } = useShowHide(initial)
   return (
     <Row>
       <Col xs={24}>
@@ -45,8 +49,9 @@ const Dashboard = () => {
                 onChange={callback}
                 tabBarExtraContent={
                   <Space>
-                    <Button size='small' shape='circle' type='primary' className='btn-success' icon={<WhatsAppOutlined />} />
                     <Button size='small' type='primary' shape='circle' icon={<CarOutlined />} />
+                    <Button size='small' shape='circle' type='primary' className='btn-success' icon={<WhatsAppOutlined />} />
+                    <QuickPo />
                   </Space>
                 }
               >
