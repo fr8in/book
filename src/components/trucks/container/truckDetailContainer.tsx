@@ -26,8 +26,9 @@ export default function truckDetailContainer() {
       </Col>
       </Row>
       
+      <Card size='small' className='card-body-0 border-top-blue'>
       <Row>
-      <Col>
+        <Col>
         <TruckInfo/>
       </Col>
     </Row>
@@ -36,6 +37,7 @@ export default function truckDetailContainer() {
         <Documents/>
       </Col>
     </Row>
+    </Card>
 
     <Row justify="end" className="m5">
                 
