@@ -1,40 +1,49 @@
 import React from 'react'
 import { Table } from 'antd'
+import mock from '../../../mock/trip/tripsByStages'
+import Link from 'next/link'
 
 const Partners = () => {
   const columnsCurrent = [
     {
       title: 'ID',
-      dataIndex: 'partnerCode',
+      dataIndex: 'code',
+      render: (text, record) => {
+        return (
+          <Link href='/trips/[id]' as={`/trips/${record.id} `}>
+            <a>{text}</a>
+          </Link>)
+      },
     },
     {
       title: 'OrderDate',
-      dataIndex: 'name'
+      dataIndex: 'date'
     },
     {
       title: 'Source',
-      dataIndex: 'regionName'
+      dataIndex: 'source'
     },
     {
       title: 'Destination',
-      dataIndex: 'mobileNo'
+      dataIndex: 'city'
     },
     {
       title: 'SourceIn',
-      dataIndex: 'email'
+      dataIndex: 'cityIn'
     },
     {
       title: 'Status',
-      dataIndex: 'averageKm',
+      dataIndex: 'status',
     },
    
   ]
   return (
       <Table
         columns={columnsCurrent}
+       dataSource={mock}
         rowKey={record => record.id}
         size='middle'
-        scroll={{ x: 800, y: 400 }}
+        scroll={{ x: 900, y: 400 }}
         pagination={false}
       />
   )

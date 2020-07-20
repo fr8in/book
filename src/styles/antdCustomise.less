@@ -1,5 +1,4 @@
-.ant-table.ant-table-small { font-size: 13px;}
-.card-body-0 {
+ .card-body-0 {
     .ant-card-body { 
         padding: 0;
         .ant-tabs-nav {
@@ -26,7 +25,6 @@ td .ant-badge {position: absolute; left: -3px;top: 20px;}
 .ant-card-small > .ant-card-head .inline-text-input { font-size: 14px; font-weight: 500;}
 .ant-switch.block { background-color: @red;}
 .ant-switch.unblock { background-color: @green;}
-.ant-card {font-size: @font-size-base;}
 .ant-btn {
     border-radius: 4px;
     &.ant-btn-circle { border-radius: 50%; }
@@ -39,3 +37,31 @@ td .ant-badge {position: absolute; left: -3px;top: 20px;}
     // .ant-modal-header { border-bottom: 0 none }
     .ant-modal-footer { border-top: 0 none }
 }
+.ant-divider-horizontal { margin: 10px 0;}
+.ant-card-head-title {
+    h1,h2,h3,h4,h5,h6 { margin: 0;}
+}
+.ant-collapse{
+    &.small{
+        background-color: @white;
+        .ant-collapse-header {
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+        .ant-collapse-content-box {padding: 10px}
+    }
+}
+.ant-form-item-label > label, 
+.ant-collapse, 
+.ant-card, 
+.ant-table.ant-table-small,
+.ant-timeline-item { 
+    font-size: @font-size-base;
+}
+.ant-form-item { margin-bottom: 16px;}
+.box-0 {
+    &.ant-collapse.small{
+        .ant-collapse-content-box { padding: 0;}
+    }
+}
+.btn-success { background-color: @success; border-color: @success;}

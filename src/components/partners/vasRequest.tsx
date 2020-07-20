@@ -1,6 +1,6 @@
 import React from 'react'
 import { Table } from 'antd'
-
+import mock from '../../../mock/customer/sourcingMock'
 const VasRequest = () => {
   const columnsCurrent = [
     {
@@ -15,7 +15,7 @@ const VasRequest = () => {
     },
     {
       title: '	Contact No',
-      dataIndex: 'mobileNo',
+      dataIndex: 'number',
       width:'13%'
     },
     {
@@ -25,7 +25,7 @@ const VasRequest = () => {
     },
     {
       title: 'Request Date',
-      dataIndex: 'date,',
+      dataIndex: 'date',
       width:'12%'
     },
     {
@@ -42,10 +42,10 @@ const VasRequest = () => {
   return (
       <Table
         columns={columnsCurrent}
-       //  dataSource={mock}
+        dataSource={mock}
         rowKey={record => record.id}
         size='middle'
-        scroll={{ x: 800, y: 400 }}
+        scroll={{ x: 1156 }}
         pagination={false}
       />
   )

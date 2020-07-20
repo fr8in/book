@@ -1,6 +1,8 @@
-import { Table, Radio } from 'antd'
+import { Table, Radio,Tooltip, Button } from 'antd'
+import {CommentOutlined} from '@ant-design/icons'
 import mock from '../../../mock/partner/partnerKyc'
-
+import Link from 'next/link'
+import useShowHide from '../../hooks/useShowHide'
 const regionList = [
   { value: 1, text: 'North' },
   { value: 2, text: 'South-1' },
@@ -23,36 +25,51 @@ const radioStyle = {
 };
 
 const PartnerKyc = () => {
+  const initial = { comment: false }
+  const { visible, onShow, onHide } = useShowHide(initial)
   const columnsCurrent = [
     {
       title: 'Partner Code',
       dataIndex: 'code',
       key:'code',
+      width:'8%',
+      render: (text, record) => {
+        return (
+          <Link href="partners/[id]" as={`partners/${record.id}`}>
+            <a>{text}</a>
+          </Link>
+        )
+      },
     },
     {
       title: 'Partner Name',
       dataIndex: 'name',
       key:'name',
+      width:'8%',
     },
     {
       title: 'Region',
       dataIndex: 'region',
       key:'region',
+      width:'8%',
       filters: regionList
     },
     {
       title: 'On Boarded By',
       dataIndex: 'boardedBy',
       key:'boardedBy',
+      width:'11%',
     },
     {
       title: 'Contact No',
       dataIndex: 'number',
       key:'number',
+      width:'10%',
     },
     {
       title: 'Truck Count',
       dataIndex: 'count',
+      width:'9%',
       filterDropdown: (
         <div > 
               <Radio.Group >
@@ -77,27 +94,39 @@ const PartnerKyc = () => {
         title: 'Registration Date',
         dataIndex: 'date',
         key:'date',
+        width:'9%',
       },
       {
         title: 'PAN',
         dataIndex: 'pan',
         key:'pan',
+        width:'9%',
       },
       {
         title: 'KYC Status',
         dataIndex: 'status',
         key:'status',
+        width:'9%',
         filters: kycStatusList
       },
       {
         title: 'Comment',
         dataIndex: 'comment',
+        width:'9%',
         key:'comment',
       },
       {
           title: 'Action',
           dataIndex: 'action',
           key:'action',
+          width:'10%',
+          render: (text, record) => (
+            <span className='actions'>
+              <Tooltip title='Comment'>
+                <Button type='link' icon={<CommentOutlined />} onClick={() => onShow('comment')} />
+              </Tooltip>
+            </span>
+          ),
         },
   ]
   return (
@@ -107,7 +136,7 @@ const PartnerKyc = () => {
         dataSource={mock}
         rowKey={record => record.id}
         size='small'
-        scroll={{ x: 800, y: 400 }}
+        scroll={{ x: 1556 }}
         pagination={false}
       />
     

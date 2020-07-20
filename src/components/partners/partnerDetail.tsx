@@ -1,6 +1,10 @@
-import { Row, Col, Space } from 'antd'
+import { Row, Col, Space,Checkbox,Input} from 'antd'
 import LabelWithData from '../common/labelWithData'
 import DetailInfo from '../../../mock/partner/partnerDetailInfo'
+import { PlusOutlined } from '@ant-design/icons'
+function onChange(e) {
+	console.log(`checked = ${e.target.checked}`);
+  }
 export default function partnerDetailInfo() {
 
 	return (
@@ -100,8 +104,8 @@ export default function partnerDetailInfo() {
 				<LabelWithData
 					label='EMI'
 					data={
-						<Space>
-
+						<Space> 
+						<Checkbox onChange={onChange}></Checkbox>
 						</Space>
 					}
 					labelSpan={10}
@@ -132,6 +136,16 @@ export default function partnerDetailInfo() {
 					data={
 						<Space>
 							<span>{DetailInfo.GST}</span>
+						</Space>
+					}
+					labelSpan={10}
+					dataSpan={14}
+				/>
+				<LabelWithData
+					label='Mapped Customers '
+					data={
+						<Space>
+							<Input placeholder = '+ Add Customer' />
 						</Space>
 					}
 					labelSpan={10}

@@ -14,7 +14,6 @@ import useShowHide from '../../hooks/useShowHide'
   { value: 6, text: 'East-2' },
   { value: 7, text: 'west-2' }
 ]
-
 const statusList =[
   { value: 1, text: 'Active' },
   { value: 2, text: 'In-Active' },
@@ -117,7 +116,7 @@ const Partners = () => {
         dataSource={mock}
         rowKey={record => record.id}
         size='small'
-        scroll={{ x: 800, y: 850 }}
+        scroll={{ x: 1156, y: 850 }}
         pagination={false}
       />
   )

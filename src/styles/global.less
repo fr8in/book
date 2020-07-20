@@ -11,7 +11,7 @@ label {
   font-weight: 600;
 }
 a, .link {
-  color: @mid-blue;
+  color: @blue;
   cursor: pointer;
   &:hover { color: @primary}
 }
@@ -142,7 +142,47 @@ a, .link {
     .ant-tag { margin: 0; margin-left: 5px; border-radius: 4px;}
   }
 }
+.status {
+  border-radius: 24px;
+  font-weight: 600;
+}
 
+.invoice {
+  .item {
+    padding: 8px 10px;
+    border-bottom: solid 1px #f9f9f9;
+    line-height: 24px;
+    position: relative;
+    p { margin: 0;}
+    label { font-size: @font-size-base; padding: 0 10px 0 28px }
+    b{
+      .ant-checkbox-wrapper {
+        padding: 0;
+        position: absolute;
+        top: 0;
+        left: 8px;
+      }
+    }
+    .ant-checkbox-wrapper { padding-left: 0 }
+    .ant-form-item {
+      display: inline-block;
+      width: 75px;
+      margin-bottom: 0;
+      line-height: normal;
+      .ant-form-item-control-input { min-height: auto;}
+    }
+  }
+}
+.additonalAdv {
+  margin: 0 -10px -10px;
+  p { background-color: @light; padding: 10px; text-align: center; margin-bottom: 0;}
+}
+.payableHead { padding: 8px; background-color: @border-light;}
+.cardFix { margin: 0 -10px -10px;}
+.timeLine {
+  .ant-timeline-item-content { border-bottom: solid 1px @border-light;}
+  li { padding-bottom: 10px; }
+}
 @media only screen and (max-width: 767px) {
   .stats {
     margin-bottom: 10px;

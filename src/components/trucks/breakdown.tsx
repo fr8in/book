@@ -1,6 +1,7 @@
 import React from 'react'
 import { Table,Button } from 'antd'
 import {DownloadOutlined} from '@ant-design/icons'
+import mock from '../../../mock/customer/sourcingMock'
 const Breakdown = () => {
   const columnsCurrent = [
     {
@@ -29,7 +30,7 @@ const Breakdown = () => {
   return (
       <Table
         columns={columnsCurrent}
-       //  dataSource={mock}
+        dataSource={mock}
         rowKey={record => record.id}
         size='middle'
         scroll={{ x: 800, y: 400 }}
