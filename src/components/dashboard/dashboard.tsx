@@ -45,7 +45,7 @@ const Dashboard = () => {
                 onChange={callback}
                 tabBarExtraContent={
                   <Space>
-                    <Button size='small' shape='circle' icon={<WhatsAppOutlined />} />
+                    <Button size='small' shape='circle' type='primary' className='btn-success' icon={<WhatsAppOutlined />} />
                     <Button size='small' type='primary' shape='circle' icon={<CarOutlined />} />
                   </Space>
                 }
