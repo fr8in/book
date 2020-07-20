@@ -38,8 +38,6 @@ const rowSelection = {
     name: record.name,
   }),
 };
-
-
 const SourcingCus = () => {
 
   const [selectionType, setSelectionType] = useState('checkbox');

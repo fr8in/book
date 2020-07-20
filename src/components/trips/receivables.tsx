@@ -68,7 +68,7 @@ const Receivables = () => {
         pagination={false}
         size='small'
       />
-      <Row className='p10' gutter={6}>
+      <Row className='payableHead' gutter={6}>
         <Col xs={12}><b>Receipts</b></Col>
         <Col xs={12} className='text-right'>
           <b>{23000}</b>
