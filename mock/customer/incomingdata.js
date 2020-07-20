@@ -6,6 +6,8 @@ const incomingPayment=[
       booked: 0,
       balance: 7100,
       remarks: 'Wallet Top Up -SD',
+      referenceNo:15789,
+      paymentDetails: 'Naveen',
       lead:[{
           id:18456,
           date: '16-06-2020',
@@ -21,6 +23,8 @@ const incomingPayment=[
         booked: 0,
         balance: 70100,
         remarks: 'Wallet Top Up -SD',
+        referenceNo:15789,
+        paymentDetails: 'Naveen',
         lead:[{
             id:18456,
             date: '16-06-2020',
