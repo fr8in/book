@@ -1,4 +1,4 @@
-  
+import React, { useState } from 'react'  
 import {Space, Table, Input, Switch, Popover, Button,Tooltip,Row } from 'antd'
 import {DownSquareOutlined, CommentOutlined,CloseCircleTwoTone,ExclamationCircleTwoTone} from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
@@ -34,7 +34,19 @@ const content = (
 function onChange(e) {
   console.log(`checked = ${e.target.checked}`);
 }
+const rowSelection = {
+  onChange: (selectedRowKeys, selectedRows) => {
+    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+  },
+  getCheckboxProps: record => ({
+    disabled: record.name === 'Disabled User', // Column configuration not to be checked
+    name: record.name,
+  }),
+};
+
+
 const PartnerKyc = () => {
+  const [selectionType, setSelectionType] = useState('checkbox');
   const initial = { comment: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   const columnsCurrent = [
@@ -109,7 +121,7 @@ const PartnerKyc = () => {
               </Tooltip>
               <Popover content={content} >
     <CloseCircleTwoTone />
-  </Popover>,
+  </Popover>
             </span>
           )
         },
@@ -117,11 +129,14 @@ const PartnerKyc = () => {
   return (
     
       <Table
+      rowSelection={{
+        ...rowSelection,
+      }}
         columns={columnsCurrent}
         dataSource={mock}
         rowKey={record => record.id}
         size='small'
-        scroll={{ x: 800, y: 400 }}
+        scroll={{ x: 1156 }}
         pagination={false}
       />
    
