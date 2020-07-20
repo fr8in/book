@@ -16,13 +16,15 @@ const cards = () => {
             <Row justify="end" className="m5">
               <Space>
                 <Link href="cards/add-fuelcard">
-                  <Button type="primary">
+                  <Button type="primary" size="small">
                     <PlusCircleOutlined />
                     Add Card
                   </Button>
                 </Link>
 
-                <Button type="primary">Refresh Card List</Button>
+                <Button type="primary" size="small">
+                  Refresh Card List
+                </Button>
               </Space>
             </Row>
 
@@ -33,12 +35,13 @@ const cards = () => {
               <Space>
                 <Search
                   placeholder="Search..."
+                  size="small"
                   onSearch={(value) => console.log(value)}
                   enterButton
                 />
 
                 <Link href="cards/add-fastag">
-                  <Button type="primary">
+                  <Button type="primary" size="small">
                     <PlusCircleOutlined />
                     Add Tag
                   </Button>

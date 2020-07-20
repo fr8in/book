@@ -7,6 +7,11 @@ import TripTime from './tripTime'
 import BillingComment from './billingComment'
 import TripPod from './tripPod'
 import TripInvoice from './tripInvoice'
+import InvoiceDetail from './invoiceDetail'
+import CreateAdditionalAdvance from './createAdditionalAdvance'
+import AdditionalAdvance from './additionalAdvance'
+import Payables from './payables'
+import Receivables from './receivables'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
@@ -49,7 +54,7 @@ const TripDetail = (props) => {
         <Col xs={24} sm={24} md={10}>
           <Tabs defaultActiveKey='1'>
             <TabPane tab='Billing' key='1'>
-              <Collapse accordion className='small'>
+              <Collapse className='small' defaultActiveKey={['1']}>
                 <Panel header='Trip POD' key='1'>
                   <TripPod />
                 </Panel>
@@ -59,9 +64,54 @@ const TripDetail = (props) => {
                   <TripInvoice />
                 </Panel>
               </Collapse>
+              <Collapse accordion className='small mt10'>
+                <Panel header='Invoice Detail' key='1'>
+                  <InvoiceDetail />
+                </Panel>
+              </Collapse>
+              <Collapse accordion className='small mt10'>
+                <Panel header='Additional Advance' key='1'>
+                  <CreateAdditionalAdvance />
+                  <AdditionalAdvance />
+                </Panel>
+              </Collapse>
             </TabPane>
             <TabPane tab='Payment' key='2'>
-              Payment
+              <Collapse accordion className='small box-0'>
+                <Panel
+                  header={
+                    <span>
+                    Partner - Payables
+                      <span className='pull-right'>
+                        <b>{23500}</b>
+                      </span>
+                    </span>
+                  }
+                  key='1'
+                >
+                  <Payables />
+                </Panel>
+              </Collapse>
+              <Collapse accordion className='small box-0 mt10'>
+                <Panel
+                  header={
+                    <span>
+                    Customer - Receivables
+                      <span className='pull-right'>
+                        <b>{23500}</b>
+                      </span>
+                    </span>
+                  }
+                  key='1'
+                >
+                  <Receivables />
+                </Panel>
+              </Collapse>
+              <Collapse accordion className='small mt10'>
+                <Panel header='Credit/Debit Note' key='1'>
+                Credit/Debit Note
+                </Panel>
+              </Collapse>
             </TabPane>
             <TabPane tab='Timeline' key='3'>
               Timeline

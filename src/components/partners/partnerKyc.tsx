@@ -32,6 +32,7 @@ const PartnerKyc = () => {
       title: 'Partner Code',
       dataIndex: 'code',
       key:'code',
+      width:'8%',
       render: (text, record) => {
         return (
           <Link href="partners/[id]" as={`partners/${record.id}`}>
@@ -44,26 +45,31 @@ const PartnerKyc = () => {
       title: 'Partner Name',
       dataIndex: 'name',
       key:'name',
+      width:'8%',
     },
     {
       title: 'Region',
       dataIndex: 'region',
       key:'region',
+      width:'8%',
       filters: regionList
     },
     {
       title: 'On Boarded By',
       dataIndex: 'boardedBy',
       key:'boardedBy',
+      width:'11%',
     },
     {
       title: 'Contact No',
       dataIndex: 'number',
       key:'number',
+      width:'10%',
     },
     {
       title: 'Truck Count',
       dataIndex: 'count',
+      width:'9%',
       filterDropdown: (
         <div > 
               <Radio.Group >
@@ -88,27 +94,32 @@ const PartnerKyc = () => {
         title: 'Registration Date',
         dataIndex: 'date',
         key:'date',
+        width:'9%',
       },
       {
         title: 'PAN',
         dataIndex: 'pan',
         key:'pan',
+        width:'9%',
       },
       {
         title: 'KYC Status',
         dataIndex: 'status',
         key:'status',
+        width:'9%',
         filters: kycStatusList
       },
       {
         title: 'Comment',
         dataIndex: 'comment',
+        width:'9%',
         key:'comment',
       },
       {
           title: 'Action',
           dataIndex: 'action',
           key:'action',
+          width:'10%',
           render: (text, record) => (
             <span className='actions'>
               <Tooltip title='Comment'>
@@ -125,7 +136,7 @@ const PartnerKyc = () => {
         dataSource={mock}
         rowKey={record => record.id}
         size='small'
-        scroll={{ x: 800, y: 400 }}
+        scroll={{ x: 1556 }}
         pagination={false}
       />
     

@@ -6,59 +6,61 @@ const RadioGroup = Radio.Group
 function PartnerProfile() {
     return (
         <div>
-            <Card title="Create Partner">
+            <Card title="Create Partner" className='mt10'>
                 <h4><b>Personal Details</b></h4><br />
-                <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                    <Col xs={24} sm={5}>
-                        <Row >
+                
+                  <Col xs={24}>
+                    <Form layout='vertical'>
+                    <Row gutter={10}>
+                         <Col sm={5}>
                             <Form.Item
                                 label="Partner Name (Should be RC name)"
                                 name="Partner Name (Should be RC name)"
                                 rules={[{ required: true, message: 'Partner Name(Should be RC name) is required field!' }]}
                             >
                                 <Input placeholder="PartnerName" />
-                            </Form.Item> </Row>
+                            </Form.Item> 
                     </Col>
-                    <Col xs={24} sm={5}>
-                        <Row >
+                    <Col sm={5}>
+                        
                             <Form.Item
                                 label="Contact Person"
                                 name="Contact Person"
                                 rules={[{ required: true, message: 'Contact Person is required field!' }]}
                             >
                                 <Input placeholder="Contact Person" />
-                            </Form.Item> </Row>
+                            </Form.Item> 
                     </Col>
-                    <Col xs={24} sm={5}>
-                        <Row >
+                    <Col  sm={5}>
+                       
                             <Form.Item
                                 label="Phone Number"
                                 name="Phone Number"
                                 rules={[{ required: true, message: 'Mobile Number is required field' }]}
                             >
                                 <Input placeholder="Phone Number" />
-                            </Form.Item> </Row>
+                            </Form.Item> 
                     </Col>
-                    <Col xs={24} sm={5}>
-                        <Row >
+                    <Col sm={5}>
+
                             <Form.Item
                                 label="Email Address"
                                 name="Email Address"
                                 rules={[{ required: true, message: 'Email is required field' }]}
                             >
                                 <Input placeholder="Email Address" />
-                            </Form.Item> </Row>
+                            </Form.Item> 
 
                     </Col>
-                    <Col xs={24} sm={4}>
-                        <Row >
+                    <Col  sm={4}>
+                       
                             <Form.Item
                                 label="Pan Number"
                                 name="Pan Number"
                                 rules={[{ required: true, message: 'Pan Number is required field' }]}
                             >
                                 <Input placeholder="Pan Number" />
-                            </Form.Item> </Row>
+                            </Form.Item> 
 
                     </Col>
                 </Row>
@@ -116,82 +118,83 @@ function PartnerProfile() {
                     </Col>
 
                 </Row>
+                </Form>
+                </Col>
             </Card>
             <br />
-            <Card>
+            <Card size='small' className='mt10'>
                 <h4><b>Bank Details</b></h4><br />
-                <Row gutter={[12, 12]} >
-                    <Col xs={24} sm={4}>
-
-                        <Row >
+                <Col xs={24}>
+                <Form layout='vertical'>
+                <Row gutter={10} >
+                    <Col xs={5} >
                             <Form.Item
                                 label="Account Holder Name"
                                 name="Account Holder Name"
                                 rules={[{ required: true, message: 'Account Holder Name is required field!' }]}
                             >
                                 <Input placeholder="Address" />
-                            </Form.Item> </Row>
+                            </Form.Item> 
                     </Col>
-                    <Col xs={24} sm={4}>
-
-                        <Row >
+                    <Col xs={5}>
                             <Form.Item
                                 label="Account No"
                                 name="Account No"
                                 rules={[{ required: true, message: 'Account No is required field!' }]}
                             >
                                 <Input placeholder="Account No" />
-                            </Form.Item> </Row>
+                            </Form.Item> 
                     </Col>
-                    <Col xs={24} sm={4}>
-                        <Row >
+                    <Col xs={5}>
+                        
                             <Form.Item
                                 label="Re-enter Account No"
                                 name="Re-enter Account No"
                                 rules={[{ required: true, message: 'Re-enter Account No is required field!' }]}
                             >
                                 <Input placeholder="Confirm Account No" />
-                            </Form.Item> </Row>
+                            </Form.Item> 
                     </Col>
                 </Row>
-                <Row gutter={[12, 12]}>
-                    <Col xs={24} sm={4}>
+                <Row gutter={10}>
+                    <Col xs={5}>
 
-                        <Row >
+                       
                             <Form.Item
                                 label="IFSC Code"
                                 name="IFSC Code"
                                 rules={[{ required: true, message: 'IFSC Code is required field!' }]}
                             >
                                 <Input placeholder="IFSC Code" />
-                            </Form.Item> </Row>
+                            </Form.Item> 
                     </Col>
-                    <Col xs={24} sm={4}>
-                        <Row >
+                    <Col xs={5} >
+                        
                             <Form.Item
                                 label="Bank Name"
                             >
                                 <Input placeholder="Bank Name" />
-                            </Form.Item> </Row>
+                            </Form.Item> 
 
                     </Col>
-                    <Col xs={24} sm={4}>
-                        <Row >
+                    <Col xs={5}>
                             <Form.Item
                                 label="Branch Name"
                             >
                                 <Input placeholder="Branch Name" />
-                            </Form.Item> </Row>
+                            </Form.Item> 
                     </Col>
                 </Row>
+            </Form>
+            </Col>
             </Card>
             <br />
-            <Card>
+            <Card size='small' className='mt10'>
                 <h4><b>FR8 Details</b></h4><br />
-                <Row >
-            <Space>
-                    <Col xs={24} sm={5} flex="100px">
-                        <Row >
+                <Col xs={24}>
+                <Form layout='vertical'>
+                <Row gutter={10} >
+                    <Col xs={5} >
                             <Form.Item label="Advance Percentage" name="Advance Percentage"
                                 rules={[{ required: true }]}
                             >
@@ -199,11 +202,11 @@ function PartnerProfile() {
                                     <Select.Option value="Advance Percentage" disabled> </Select.Option>
                                 </Select>
                             </Form.Item>
-                        </Row>
+                       
                     </Col>
-                    <Col xs={24} sm={5} flex="100px">
+                    <Col  xs={5} >
 
-                        <Row >
+                       
                             <Form.Item
                                 label="Region"
                                 name="Region"
@@ -212,11 +215,11 @@ function PartnerProfile() {
                                 <Select>
                                     <Select.Option value="Region"> </Select.Option>
                                 </Select>
-                            </Form.Item> </Row>
+                            </Form.Item>
                     </Col>
-                    <Col xs={24} sm={5} flex="100px">
+                    <Col xs={4} >
 
-                        <Row >
+                       
                             <Form.Item
                                 label="City"
                                 name="City"
@@ -225,11 +228,11 @@ function PartnerProfile() {
                                 <Select>
                                     <Select.Option value="City"> </Select.Option>
                                 </Select>
-                            </Form.Item> </Row>
+                            </Form.Item>
                     </Col>
-                    <Col xs={24} sm={5} flex="100px">
+                    <Col xs={5}  >
 
-                        <Row >
+                       
                             <Form.Item
                                 label="On Boarded By"
                                 name="On Boarded By"
@@ -238,21 +241,23 @@ function PartnerProfile() {
                                 <Select>
                                     <Select.Option value="On Boarded By"> </Select.Option>
                                 </Select>
-                            </Form.Item> </Row>
+                            </Form.Item>
                     </Col>
-                    <Col xs={24} sm={5} flex="100px">
+                    <Col xs={5}  >
 
-                        <Row >
+                       
                             <Form.Item
                                 label="Lane Manager"
                             >
                                 <Select>
                                     <Select.Option value="Lane Manager"> </Select.Option>
                                 </Select>
-                            </Form.Item> </Row>
+                            </Form.Item>
                     </Col>
-              </Space>
+            
                 </Row>
+                </Form>
+                </Col>
             </Card>
             <Row justify="end" className="m5">
                 <Col flex="100px">

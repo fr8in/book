@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Input, Switch } from "antd";
 import { DownSquareOutlined } from "@ant-design/icons";
-import PageLayout from "../../layout/pageLayout";
+
 import cards from "../../../../mock/card/cards";
 import Link from "next/link";
 const { Search } = Input;
@@ -10,15 +10,18 @@ function onChange(checked) {
   console.log(`switch to ${checked}`);
 }
 
-export default function cardsFuel() {
-  const cardsFuel = [
+export default function CardsFuel() {
+  const CardsFuel = [
     {
       title: "Card ID",
       dataIndex: "cardId",
+      key: "cardId",
+      width: "8%",
     },
     {
       title: "Card Provider",
       dataIndex: "cardProvider",
+      key: "cardProvider",
       filterDropdown: (
         <div className="filterMenu">
           <Search
@@ -29,10 +32,12 @@ export default function cardsFuel() {
         </div>
       ),
       filterIcon: <DownSquareOutlined />,
+      width: "12%",
     },
     {
       title: "Card Number",
       dataIndex: "cardNumber",
+      key: "cardNumber",
       filterDropdown: (
         <div className="filterMenu">
           <Search
@@ -43,14 +48,18 @@ export default function cardsFuel() {
         </div>
       ),
       filterIcon: <DownSquareOutlined />,
+      width: "13%",
     },
     {
       title: "Balance",
       dataIndex: "balance",
+      key: "balance",
+      width: "8%",
     },
     {
       title: "Partner Name",
       dataIndex: "partnerName",
+      key: "partnerName",
       render: (text, record) => {
         return (
           <Link href="partners/[id]" as={`partners/${record.id}`}>
@@ -68,14 +77,17 @@ export default function cardsFuel() {
         </div>
       ),
       filterIcon: <DownSquareOutlined />,
+      width: "14%",
     },
     {
       title: "Partner State",
       dataIndex: "partnerState",
+      key: "partnerState",
     },
     {
       title: "Truck",
       dataIndex: "truck",
+      key: "truck",
       filterDropdown: (
         <div className="filterMenu">
           <Search
@@ -86,35 +98,40 @@ export default function cardsFuel() {
         </div>
       ),
       filterIcon: <DownSquareOutlined />,
+      width: "12%",
     },
 
     {
       title: "Partner Number",
       dataIndex: "partnerNumber",
+      key: "partnerNumber",
       sorter: true,
     },
     {
       title: "Status",
       dataIndex: "status",
+      key: "status",
+      width: "8%",
       render: (text, record) => (
         <Switch size="small" defaultChecked onChange={onChange} />
       ),
     },
     {
       title: "Edit",
-      dataIndex: "Edit",
+      dataIndex: "edit",
+      key: "edit",
+      width: "4%",
     },
   ];
 
   return (
-    <PageLayout title="cardsFuel">
-      <Table
-        columns={cardsFuel}
-        dataSource={cards}
-        size="small"
-        scroll={{ x: 800, y: 400 }}
-        pagination={false}
-      />
-    </PageLayout>
+    <Table
+      columns={CardsFuel}
+      dataSource={cards}
+      rowKey={(record) => record.id}
+      size="small"
+      scroll={{ x: 800, y: 400 }}
+      pagination={false}
+    />
   );
 }

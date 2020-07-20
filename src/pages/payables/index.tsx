@@ -1,28 +1,36 @@
 import DownPayment from "../../components/payables/downPayment";
 import ICICIBankOutgoing from "../../components/payables/iciciBankOutgoing";
-
+import React, { useState } from "react";
 const { Search } = Input;
-
-import { Tabs, Row, Col, Card, Input, Calendar, Button } from "antd";
+const { RangePicker } = DatePicker;
+import { Tabs, Row, Col, Card, Input, Button, DatePicker, Space } from "antd";
 import PageLayout from "../../components/layout/pageLayout";
-import { PlusCircleOutlined, MailTwoTone } from "@ant-design/icons";
-
-function onPanelChange(value, mode) {
-  console.log(value, mode);
-}
+import { DownloadOutlined, MailTwoTone } from "@ant-design/icons";
 
 const TabPane = Tabs.TabPane;
 const Branches = () => {
+  const [dates, setDates] = useState([]);
+  const disabledDate = (current) => {
+    if (!dates || dates.length === 0) {
+      return false;
+    }
+    const tooLate = dates[0] && current.diff(dates[0], "days") > 7;
+    const tooEarly = dates[1] && dates[1].diff(current, "days") > 7;
+    return tooEarly || tooLate;
+  };
   return (
     <PageLayout title="Payables">
       <Card size="small" className="card-body-0 border-top-blue">
         <Tabs
-          tabBarExtraContent={<Button type="primary" icon={<MailTwoTone />} />}
+          tabBarExtraContent={
+            <Button type="primary" size="small" icon={<MailTwoTone />} />
+          }
         >
           <TabPane tab="Down Payment" key="1">
             <Row justify="end" className="m5">
               <Col flex="190px">
                 <Search
+                  size="small"
                   placeholder="Search..."
                   onSearch={(value) => console.log(value)}
                   enterButton
@@ -35,6 +43,7 @@ const Branches = () => {
             <Row justify="end" className="m5">
               <Col flex="190px">
                 <Search
+                  size="small"
                   placeholder="Search..."
                   onSearch={(value) => console.log(value)}
                   enterButton
@@ -47,6 +56,7 @@ const Branches = () => {
             <Row justify="end" className="m5">
               <Col flex="190px">
                 <Search
+                  size="small"
                   placeholder="Search..."
                   onSearch={(value) => console.log(value)}
                   enterButton
@@ -59,17 +69,33 @@ const Branches = () => {
             <Row justify="end" className="m5">
               <Col flex="190px">
                 <Search
+                  size="small"
                   placeholder="Search..."
                   onSearch={(value) => console.log(value)}
                   enterButton
                 />
               </Col>
             </Row>
+
             <Row justify="start" className="m5">
-              <Col flex="300px">
-                <Calendar fullscreen={false} onPanelChange={onPanelChange} />
-              </Col>
+              <Space>
+                <Col flex="230px">
+                  <RangePicker
+                    size="small"
+                    disabledDate={disabledDate}
+                    onCalendarChange={(value) => {
+                      setDates(value);
+                    }}
+                  />
+                </Col>
+                <Col>
+                  <Button size="small">
+                    <DownloadOutlined />
+                  </Button>
+                </Col>
+              </Space>
             </Row>
+
             <ICICIBankOutgoing />
           </TabPane>
         </Tabs>
