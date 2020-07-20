@@ -2,11 +2,11 @@ import { Row, Col, Card, Form, DatePicker, Tooltip, Input, Space, Button, Checkb
 import {
   FilePdfOutlined,
   FileWordOutlined,
-  MailOutlined,
   DownloadOutlined,
   DeleteOutlined,
   CloseCircleOutlined
 } from '@ant-design/icons'
+import MessageModal from '../../components/trips/messageModal'
 
 const TripTime = () => {
   return (
@@ -85,7 +85,7 @@ const TripTime = () => {
                   <Space>
                     <Button type='primary' icon={<FilePdfOutlined />} />
                     <Button type='primary' icon={<FileWordOutlined />} />
-                    <Button shape='circle' icon={<MailOutlined />} />
+                    <MessageModal />
                   </Space>
                 </Form.Item>
               </Col>

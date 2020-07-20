@@ -103,7 +103,7 @@ export default function Pending() {
       render: (text, record) => {
         return record.comment && record.comment.length > 9 ? (
           <Tooltip title={record.comment}>
-            {record.comment.slice(0, 9) + "..."}
+            <span> {record.comment.slice(0, 9) + "..."}</span>
           </Tooltip>
         ) : (
           record.comment
@@ -136,7 +136,7 @@ export default function Pending() {
       columns={ApprovalPending}
       dataSource={pendingDetail}
       size="small"
-      scroll={{ x: 800, y: 400 }}
+      scroll={{ x: 1156, y: 400 }}
       pagination={false}
     />
   );

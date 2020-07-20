@@ -1,6 +1,6 @@
 import { Modal, Button, Form, Input, Select, Row, Space } from "antd";
 import React from "react";
-import { PlusCircleOutlined, LeftOutlined } from "@ant-design/icons";
+import { PlusCircleOutlined } from "@ant-design/icons";
 const { Option } = Select;
 class AddBranch extends React.Component {
   state = { visible: false };

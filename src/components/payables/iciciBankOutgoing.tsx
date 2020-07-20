@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Input, Row, Col, Button, Tooltip } from "antd";
+import { Table, Input, Row, Col, Button, Tooltip, Space } from "antd";
 import Payables from "../../../mock/payables/payables";
 import { CheckCircleTwoTone } from "@ant-design/icons";
 
@@ -10,7 +10,7 @@ export default function OutGoing() {
       dataIndex: "outgoingNo",
       key: "outgoingNo",
       sorter: true,
-      width: "7%",
+      width: "6%",
     },
     {
       title: "DocDate",
@@ -23,7 +23,7 @@ export default function OutGoing() {
       title: "Vendor Code",
       dataIndex: "vendorCode",
       key: "vendorCode",
-      width: "6%",
+      width: "5%",
     },
     {
       title: "Vendor Name",
@@ -75,19 +75,23 @@ export default function OutGoing() {
       key: "referenceNumber",
       width: "7%",
       render: () => (
-        <Col flex="100px">
-          <Row className="m5">
-            <Input size="small" />
-            <CheckCircleTwoTone />
-          </Row>
-        </Col>
+        <Row className="m5">
+          <Space>
+            <Col flex="100px">
+              <Input size="small" />
+            </Col>
+            <Col>
+              <CheckCircleTwoTone />
+            </Col>
+          </Space>
+        </Row>
       ),
     },
     {
       title: "Action",
       dataIndex: "action",
       key: "action",
-      width: "6%",
+      width: "4%",
       render: () => <Button size="small">Execute Transfer</Button>,
     },
   ];
@@ -97,7 +101,7 @@ export default function OutGoing() {
       columns={OutGoing}
       dataSource={Payables}
       size="small"
-      scroll={{ x: 800, y: 400 }}
+      scroll={{ x: 1156, y: 400 }}
       pagination={false}
     />
   );

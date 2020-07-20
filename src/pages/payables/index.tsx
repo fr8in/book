@@ -1,5 +1,6 @@
 import DownPayment from "../../components/payables/downPayment";
 import ICICIBankOutgoing from "../../components/payables/iciciBankOutgoing";
+import StmtEmail from "../payables/stmtMail";
 import React, { useState } from "react";
 const { Search } = Input;
 const { RangePicker } = DatePicker;
@@ -21,11 +22,7 @@ const Branches = () => {
   return (
     <PageLayout title="Payables">
       <Card size="small" className="card-body-0 border-top-blue">
-        <Tabs
-          tabBarExtraContent={
-            <Button type="primary" size="small" icon={<MailTwoTone />} />
-          }
-        >
+        <Tabs tabBarExtraContent={<StmtEmail />}>
           <TabPane tab="Down Payment" key="1">
             <Row justify="end" className="m5">
               <Col flex="190px">

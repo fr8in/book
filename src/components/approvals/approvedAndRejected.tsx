@@ -92,7 +92,7 @@ export default function ApprovedAndRejected() {
       render: (text, record) => {
         return record.remarks && record.remarks.length > 12 ? (
           <Tooltip title={record.remarks}>
-            {record.remarks.slice(0, 12) + "..."}
+            <span> {record.remarks.slice(0, 12) + "..."}</span>
           </Tooltip>
         ) : (
           record.remarks
@@ -106,7 +106,7 @@ export default function ApprovedAndRejected() {
       columns={ApprovalPending}
       dataSource={pendingDetail}
       size="small"
-      scroll={{ x: 800, y: 400 }}
+      scroll={{ x: 1156, y: 400 }}
       pagination={false}
     />
   );
