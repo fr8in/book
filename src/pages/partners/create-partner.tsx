@@ -1,15 +1,14 @@
 import React from 'react';
-import { Row, Col, Radio, Card, Input, Form, Button, Select, Space } from 'antd';
+import { Row, Col, Radio, Card, Input, Form, Button, Select } from 'antd';
+
+
 const RadioGroup = Radio.Group
-
-
 function PartnerProfile() {
     return (
         <div>
-            <Card title="Create Partner" className='mt10'>
+            <Card title="Create Partner"  className='card-body-0 border-top-blue'>
+            <br />
                 <h4><b>Personal Details</b></h4><br />
-                
-                  <Col xs={24}>
                     <Form layout='vertical'>
                     <Row gutter={10}>
                          <Col sm={5}>
@@ -64,7 +63,7 @@ function PartnerProfile() {
 
                     </Col>
                 </Row>
-                <Row gutter={[12, 12]}>
+                <Row gutter={10}>
 
                     <Col xs={24} sm={{ span: 3 }} >
                         <h4><b>Auto Final Payment</b></h4><br />
@@ -85,7 +84,7 @@ function PartnerProfile() {
                             </Form.Item> </Row>
 
                     </Col>
-                    <Col xs={24} sm={3}>
+                    <Col xs={24} sm={4}>
                         <Row >
                             <Form.Item
                                 label="Building Number"
@@ -105,7 +104,7 @@ function PartnerProfile() {
                                 <Input placeholder="Address" />
                             </Form.Item> </Row>
                     </Col>
-                    <Col xs={24} sm={{ span: 4, offset: 7 }} >
+                    <Col xs={24} sm={{ span: 4, offset: 6}} >
                         <Row >
                             <Form.Item
                                 label="Zip Code"
@@ -119,12 +118,14 @@ function PartnerProfile() {
 
                 </Row>
                 </Form>
-                </Col>
+                
             </Card>
             <br />
-            <Card size='small' className='mt10'>
+            <br />
+            <Card size='small'  className='card-body-0 border-top-blue'>
+            <br />
                 <h4><b>Bank Details</b></h4><br />
-                <Col xs={24}>
+                
                 <Form layout='vertical'>
                 <Row gutter={10} >
                     <Col xs={5} >
@@ -186,12 +187,15 @@ function PartnerProfile() {
                     </Col>
                 </Row>
             </Form>
-            </Col>
+            
             </Card>
             <br />
-            <Card size='small' className='mt10'>
+            <br />
+            <Card size='small'  className='card-body-0 border-top-blue'>
+            <br />
+            
                 <h4><b>FR8 Details</b></h4><br />
-                <Col xs={24}>
+                
                 <Form layout='vertical'>
                 <Row gutter={10} >
                     <Col xs={5} >
@@ -257,8 +261,9 @@ function PartnerProfile() {
             
                 </Row>
                 </Form>
-                </Col>
+               
             </Card>
+            <br />
             <Row justify="end" className="m5">
                 <Col flex="100px">
                     <Button >

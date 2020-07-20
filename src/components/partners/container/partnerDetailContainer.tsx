@@ -27,7 +27,7 @@ export default function partnerDetailContainer() {
     <Row>
       <Col xs={24}>
         <Row gutter={[10, 10]}>
-          <Col xs={24}>
+          <Col xs={24} >
             <Card
               size='small'
               className='border-top-blue'
@@ -38,7 +38,7 @@ export default function partnerDetailContainer() {
             >
             
       <Row gutter={[10, 10]}>
-        <Col xs={24} sm={22} md={8} >
+      <Col xs={24} md={12}  xl={8}>
           <br />
           <BasicDetail/>
           <br />
@@ -51,10 +51,10 @@ export default function partnerDetailContainer() {
                   </Link>
                 
         </Col>
-        <Col xs={24} sm={22} md={8} >
+         <Col xs={24} md={12}  xl={8}>
           <Barchart/>
         </Col>
-        <Col xs={24} sm={22} md={8} >
+         <Col xs={24} md={24}  xl={8}>
          
          <AccountSummary />
          <PendingBalance />
