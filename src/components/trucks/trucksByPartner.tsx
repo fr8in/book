@@ -88,7 +88,7 @@ const PartnerTruck = () => {
         dataSource={mock}
         rowKey={record => record.id}
         size='middle'
-        scroll={{ x: 800, y: 400 }}
+        scroll={{ x:1050, y: 400 }}
         pagination={false}
       />
   )

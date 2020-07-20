@@ -1,4 +1,4 @@
-import { Collapse, Input, Row, Col, Tabs, Button, Space } from "antd";
+import { Collapse, Input, Row, Col, Tabs, Button, Space,Form } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import LabelWithData from "../common/labelWithData";
 import FasTag from "../../components/partners/cards/fasTag";
@@ -90,68 +90,6 @@ const PartnerDocument = () => {
                 />
               </Col>
             </Row>
-          </TabPane>
-          <TabPane tab="Sub Company" key="2">
-            <br />
-            <Row>
-              <Col span={7}>
-                <label>
-                  <h5> Name </h5>
-                </label>
-              </Col>
-              <Col span={10}>
-                <Input placeholder="Company Name" />
-              </Col>
-            </Row>
-            <br />
-            <Row>
-              <Col span={7}>
-                <label>
-                  <h5>PAN</h5>
-                </label>
-              </Col>
-              <Col span={10}>
-                <Input placeholder="PAN Number" />
-              </Col>
-            </Row>
-            <br />
-            <Row>
-              <Col span={7}>
-                <label>
-                  <h5>Cibil Score</h5>
-                </label>
-              </Col>
-              <Col span={10}>
-                <Input placeholder="Cibil Score" />
-              </Col>
-            </Row>
-            <br />
-            <Row>
-              <Col span={7}>
-                <label>
-                  <h5> TDS </h5>
-                </label>
-              </Col>
-              <Col span={10}>1</Col>
-            </Row>
-            <br />
-            <Row>
-              <Col span={7}>
-                <label>
-                  <h5> Trucks </h5>
-                </label>
-              </Col>
-              <Col span={14}>
-                <Input placeholder="Add Trucks" disabled />
-              </Col>
-            </Row>
-            <br />
-            <Row gutter={8} justify="end" className="m5">
-              <Col span={2}>
-                <Input placeholder="Save" disabled />
-              </Col>
-            </Row>
-            <br />
           </TabPane>
         </Tabs>
       </Panel>
