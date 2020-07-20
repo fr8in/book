@@ -1,4 +1,4 @@
-import { Form, Input, Button, Select } from "antd";
+import { Form, Input, Button, Select, Space } from "antd";
 import React from "react";
 import { FormInstance } from "antd/lib/form";
 
@@ -12,7 +12,7 @@ const tailLayout = {
   wrapperCol: { offset: 9, span: 12 },
 };
 
-class Demo extends React.Component {
+class AddFuelCard extends React.Component {
   formRef = React.createRef<FormInstance>();
 
   onFinish = (values) => {
@@ -91,16 +91,18 @@ class Demo extends React.Component {
           }}
         </Form.Item>
         <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-          <Button htmlType="button" onClick={this.onReset}>
-            Cancel
-          </Button>
+          <Space>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+            <Button htmlType="button" onClick={this.onReset}>
+              Cancel
+            </Button>
+          </Space>
         </Form.Item>
       </Form>
     );
   }
 }
 
-export default Demo;
+export default AddFuelCard;

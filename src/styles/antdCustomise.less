@@ -1,5 +1,4 @@
-.ant-table.ant-table-small { font-size: 13px;}
-.card-body-0 {
+ .card-body-0 {
     .ant-card-body { 
         padding: 0;
         .ant-tabs-nav {
@@ -26,7 +25,6 @@ td .ant-badge {position: absolute; left: -3px;top: 20px;}
 .ant-card-small > .ant-card-head .inline-text-input { font-size: 14px; font-weight: 500;}
 .ant-switch.block { background-color: @red;}
 .ant-switch.unblock { background-color: @green;}
-.ant-card {font-size: @font-size-base;}
 .ant-btn {
     border-radius: 4px;
     &.ant-btn-circle { border-radius: 50%; }
@@ -53,7 +51,12 @@ td .ant-badge {position: absolute; left: -3px;top: 20px;}
         .ant-collapse-content-box {padding: 10px}
     }
 }
-.ant-form-item-label > label { font-size: @font-size-base;}
+.ant-form-item-label > label, 
+.ant-collapse, 
+.ant-card, 
+.ant-table.ant-table-small { 
+    font-size: @font-size-base;
+}
 .ant-form-item { margin-bottom: 16px;}
 .box-0 {
     &.ant-collapse.small{

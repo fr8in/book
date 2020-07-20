@@ -1,6 +1,6 @@
 import { Row, Col } from 'antd'
 
-const LabelWithData = (props) => {
+const LabelData = (props) => {
   const { label, labelSpan, data, dataSpan,iconSpan,icon,valueSpan,value } = props
   return (
     <Row gutter={6}>
@@ -19,4 +19,4 @@ const LabelWithData = (props) => {
     </Row>
   )
 }
-export default LabelWithData
+export default LabelData

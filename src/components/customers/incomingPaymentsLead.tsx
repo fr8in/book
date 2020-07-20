@@ -9,7 +9,7 @@ const IncomingPaymentsLead = (props) => {
     },
     {
       title: 'Load Id',
-      dataIndex: 'loadId',
+      dataIndex: 'id',
       width: '10%'
     },
     {
@@ -19,7 +19,7 @@ const IncomingPaymentsLead = (props) => {
     },
     {
       title: 'Booked For',
-      dataIndex: 'comments',
+      dataIndex: 'bookedFor',
       width: '10%'
     },
     {
