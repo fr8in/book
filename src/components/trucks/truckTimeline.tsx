@@ -1,24 +1,33 @@
 import React from 'react';
 import { DatePicker,Tooltip,Button,Row,Col,Timeline, Space} from 'antd';
 import { SearchOutlined } from '@ant-design/icons'
-import moment from 'moment';
-
-const dateFormat = 'YYYY/MM/DD';
-
+import CommentModal from '../../components/trucks/commentModal'
+import SelectTimelineModal from '../../components/trucks/selectTimelineModal'
+import EditModal from '../../components/trucks/editModal'
 export default function truck(props) {
+
+
     return (
+        
 
-   <div>     
+   <div className="ant-form-item">     
 
-<Row className="m5">
+    <Row className="timelineFilter">
     <Space>
-    <DatePicker defaultValue={moment('Start Date', dateFormat)} format={dateFormat} />
-  
-  
-  
-    <DatePicker defaultValue={moment('End Date', dateFormat)} format={dateFormat} />
-  
-  
+                            <DatePicker
+                                showTime
+                                name="startSearchDate"
+                                format="YYYY-MM-DD"
+                                className="startSearchdate1"
+                                placeholder="Start Date"/>
+        
+                            <DatePicker
+                                showTime
+                                name="endSearchDate"
+                                format="YYYY-MM-DD"
+                                className="endSearchdate1"
+                                placeholder="End Date"/>
+                            
 
 <Tooltip title="search">
       <Button type="primary" shape="circle" icon={<SearchOutlined />} />
@@ -28,16 +37,25 @@ export default function truck(props) {
 <br />
 <Row>
     <Col>
-        <Timeline>
-    <Timeline.Item color="green">
+        <Timeline >
+    <Timeline.Item label="2015-09-01 09:12:11" color="green">
         <p>Waiting for load </p>
         <p> Truck Activated </p>
     </Timeline.Item>
-    <Timeline.Item color="red">
+    <Timeline.Item label="2015-09-01 09:12:11" color="red">
         <p>Breakdown </p>
         <p> Device Deactivated </p>
     </Timeline.Item>
     </Timeline>
+    </Col>
+    <Col>
+    <CommentModal/>
+    </Col>
+    <Col>
+    <SelectTimelineModal/>
+    </Col>
+    <Col>
+    <EditModal/>
     </Col>
     </Row>
     </div>
