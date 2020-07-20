@@ -7,14 +7,17 @@ const Comment = () => {
     {
       title: 'Comment',
       dataIndex: 'comment',
+      width:'35'
     },
     {
       title: 'Created By',
-      dataIndex: 'detail'
+      dataIndex: 'detail',
+      width:'35'
     },
     {
       title: 'Created On',
-      dataIndex: 'date'
+      dataIndex: 'date',
+      width:'30'
     },
   ]
   return (

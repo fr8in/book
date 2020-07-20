@@ -14,7 +14,6 @@ import useShowHide from '../../hooks/useShowHide'
   { value: 6, text: 'East-2' },
   { value: 7, text: 'west-2' }
 ]
-
 const statusList =[
   { value: 1, text: 'Active' },
   { value: 2, text: 'In-Active' },
