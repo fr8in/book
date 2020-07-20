@@ -41,18 +41,23 @@ const Transfer = (props) => {
 ]
 
   return (
-    <Card size='small' className='mt10'>
-      <Row>
-        <Col xs={60}>
+   
     <Modal
       title='Wallet Balance : 1250'
       visible={visible}
       onOk={onSubmit}
       onCancel={onHide}
+      width={900}
+      bodyStyle={{ padding: 20 }}
+      footer={<Row justify='start' className='m5'>
+           <Radio defaultChecked={false}>Include Mamul</Radio>
+           <Radio>Include Special Mamul(System Mamul won't be reduced)</Radio>
+            <Button type="primary">Transfer </Button>
+        </Row>}
     >
       <Row justify='start' className='m5'>
       <Col span={8}>Wallet Balance: 1250</Col>
-      <Col span={8} offset={8}>
+      <Col span={8} offset={20}>
       <Button type="primary" >Wallet Top-up</Button>
       </Col>
       </Row>
@@ -133,16 +138,8 @@ const Transfer = (props) => {
                 </Form.Item>
               </Col>
               </Row> 
-            </Form> 
-            <Row justify='start' className='m5'>
-            <Radio defaultChecked={false}>Include Mamul</Radio>
-            <Radio>Include Special Mamul(System Mamul won't be reduced)</Radio>
-          <Button type="primary">Transfer </Button>
-          </Row>
-    </Modal>
-    </Col>
-    </Row>
-    </Card>
+        </Form> 
+   </Modal>
   )
 }
 

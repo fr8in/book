@@ -4,6 +4,7 @@ import data from '../../../mock/trip/tripDetail'
 import TripInfo from './tripInfo'
 import TripLr from './tripLr'
 import TripTime from './tripTime'
+import TripComment from './tripComment'
 import BillingComment from './billingComment'
 import TripPod from './tripPod'
 import TripInvoice from './tripInvoice'
@@ -14,6 +15,7 @@ import Payables from './payables'
 import Receivables from './receivables'
 import CustomerPayments from './customerPayments'
 import CreditNote from './creditNote'
+import CreditNoteTable from './creditNoteTable'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
@@ -111,11 +113,12 @@ const TripDetail = (props) => {
               <Collapse accordion className='small mt10'>
                 <Panel header='Credit/Debit Note' key='1'>
                   <CreditNote />
+                  <CreditNoteTable />
                 </Panel>
               </Collapse>
             </TabPane>
             <TabPane tab='Timeline' key='3'>
-              Timeline
+              <TripComment />
             </TabPane>
           </Tabs>
         </Col>

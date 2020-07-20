@@ -40,7 +40,7 @@ const Users = () => {
       render: (text, record) => (
         <span className='actions'>
           <Button type='link' icon={<DeleteOutlined />}  />
-          <Button type='link' disabled icon={<EditOutlined />}  />
+          <Button type='link' icon={<EditOutlined />}  />
            </span>
       ),
       width: '12%'

@@ -178,7 +178,11 @@ a, .link {
   p { background-color: @light; padding: 10px; text-align: center; margin-bottom: 0;}
 }
 .payableHead { padding: 8px; background-color: @border-light;}
-
+.cardFix { margin: 0 -10px -10px;}
+.timeLine {
+  .ant-timeline-item-content { border-bottom: solid 1px @border-light;}
+  li { padding-bottom: 10px; }
+}
 @media only screen and (max-width: 767px) {
   .stats {
     margin-bottom: 10px;
