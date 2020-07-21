@@ -7,9 +7,12 @@ const { RangePicker } = DatePicker;
 import { Tabs, Row, Col, Card, Input, Button, DatePicker, Space } from "antd";
 import PageLayout from "../../components/layout/pageLayout";
 import { DownloadOutlined, MailTwoTone } from "@ant-design/icons";
+import useShowHide from "../../hooks/useShowHide";
 
 const TabPane = Tabs.TabPane;
 const Branches = () => {
+  const initial = { showModal: false };
+  const { visible, onShow, onHide } = useShowHide(initial);
   const [dates, setDates] = useState([]);
   const disabledDate = (current) => {
     if (!dates || dates.length === 0) {
@@ -22,7 +25,17 @@ const Branches = () => {
   return (
     <PageLayout title="Payables">
       <Card size="small" className="card-body-0 border-top-blue">
-        <Tabs tabBarExtraContent={<StmtEmail />}>
+        <Tabs
+          tabBarExtraContent={
+            <Button
+              title="Add Branch"
+              size="small"
+              type="primary"
+              icon={<MailTwoTone />}
+              onClick={() => onShow("showModal")}
+            />
+          }
+        >
           <TabPane tab="Down Payment" key="1">
             <Row justify="end" className="m5">
               <Col flex="190px">
@@ -97,6 +110,12 @@ const Branches = () => {
           </TabPane>
         </Tabs>
       </Card>
+      {visible.showModal && (
+        <StmtEmail
+          visible={visible.showModal}
+          onHide={() => onHide("showModal")}
+        />
+      )}
     </PageLayout>
   );
 };
