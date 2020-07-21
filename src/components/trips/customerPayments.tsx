@@ -1,6 +1,10 @@
 import { Table, Row, Col, Button } from 'antd'
-
+import invoicePending from '../../../mock/trip/payment'
+import EditModal from '../../components/trips/editModal'
+import useShowHide from '../../hooks/useShowHide'
 const CustomerPayments = () => {
+  const initial = { edit:false}
+  const { visible, onShow,onHide } = useShowHide(initial)
   const advancePaymentColumns = [{
     title: 'Type',
     dataIndex: 'type',
@@ -72,9 +76,10 @@ const CustomerPayments = () => {
     dataIndex: 'edit',
     render: (text, record) => (
       <span>
-        <Button type='primary'>
+        <Button type='primary' onClick={() => onShow('edit')} >
           Edit
         </Button>
+        {visible.edit && <EditModal  visible={visible.edit} onHide={() => onHide('edit')} />}
       </span>
     )
   }]
@@ -152,7 +157,7 @@ const CustomerPayments = () => {
         </Row>
         <Table
           columns={invoicePendigColumns}
-          //   dataSource={props.invoicePendingPaymentArray}
+          dataSource={invoicePending}
           rowKey={record => record.id}
           scroll={{ x: 540 }}
           pagination={false}

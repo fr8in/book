@@ -1,14 +1,28 @@
+import { useState } from 'react'
 import loadData from '../../../mock/trucks/loadData'
 import { Table, Tooltip, Badge, Button, Input } from 'antd'
 import Link from 'next/link'
 import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled, SearchOutlined } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
+import CustomerPo from '../customers/customerPo'
+import PartnerUsers from '../partners/partnerUsers'
 
 const WaitingForLoad = () => {
   const initial = { comment: false, truckSearch: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+  const usersInitial = { users: [], name: '', visible: false }
+  const [users, setUsers] = useState(usersInitial)
+
   const callNow = record => {
     window.location.href = 'tel:' + record
+  }
+
+  const usersClose = () => {
+    setUsers(usersInitial)
+  }
+
+  const showUsers = (record) => {
+    setUsers({ ...users, users: record.users, name: record.partner, visible: true })
   }
 
   const columns = [
@@ -51,9 +65,10 @@ const WaitingForLoad = () => {
             <Badge dot style={{ backgroundColor: (record.partnerMembershipId === 0 ? '#FFD700' : '#C0C0C0') }} />
             <Link href='/partners/partner/[id]' as={`/partners/partner/${record.partnerId} `}>
               <a>{text && text.length > 20
-                ? <Tooltip title={`${text}, ${record.noOfLoadsTaken}, ${record.partnerEngagementPercent}%`}>
-                  <span>{`${text.slice(0, 20)}...`}</span>
-                  </Tooltip>
+                ? (
+                  <Tooltip title={`${text}, ${record.noOfLoadsTaken}, ${record.partnerEngagementPercent}%`}>
+                    <span>{`${text.slice(0, 20)}...`}</span>
+                  </Tooltip>)
                 : text}
               </a>
             </Link>
@@ -64,7 +79,12 @@ const WaitingForLoad = () => {
     {
       title: 'Partner No',
       dataIndex: 'partnerNo',
-      width: '10%'
+      width: '10%',
+      render: (text, record) => {
+        return (
+          <span className='link' onClick={() => showUsers(record)}>{text}</span>
+        )
+      }
     },
     {
       title: 'City',
@@ -107,15 +127,25 @@ const WaitingForLoad = () => {
     }
   ]
   return (
-    <Table
-      columns={columns}
-      dataSource={loadData}
-      className='withAction'
-      rowKey={record => record.id}
-      size='small'
-      scroll={{ x: 1156 }}
-      pagination={false}
-    />
+    <>
+      <Table
+        columns={columns}
+        dataSource={loadData}
+        className='withAction'
+        rowKey={record => record.id}
+        size='small'
+        scroll={{ x: 1156 }}
+        pagination={false}
+      />
+      {users.visible &&
+        <PartnerUsers
+          visible={users.visible}
+          data={users.users}
+          onHide={usersClose}
+          name={users.name}
+        />}
+      {visible.poModal && <CustomerPo visible={visible.poModal} onHide={() => onHide('poModal')} />}
+    </>
   )
 }
 
