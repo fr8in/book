@@ -2,8 +2,12 @@ import { Row, Col, Divider } from 'antd'
 import LabelAndData from '../common/labelAndData'
 import LabelWithData from '../common/labelWithData'
 import Link from 'next/link'
-
+import {EditTwoTone} from '@ant-design/icons'
+import useShowHide from '../../hooks/useShowHide'
+import CustomerPrice from '../trips/customerPrice'
 const TripInfo = (props) => {
+  const initial = {  price:false}
+  const { visible, onShow,onHide } = useShowHide(initial)
   const { data } = props
   return (
     <Row>
@@ -50,11 +54,13 @@ const TripInfo = (props) => {
           <Col sm={24} md={12}>
             <LabelWithData label='Order Date' data={data.trip.orderDate} labelSpan={10} />
             <LabelWithData label='ETA' data={data.trip.ETA} labelSpan={10} />
-            <LabelWithData label='Customer Price' data={data.priceDetail.customerPrice} labelSpan={10} />
+            <LabelWithData label='Customer Price' data={[data.priceDetail.customerPrice ,
+            <EditTwoTone onClick={() => onShow('price')}/>]} labelSpan={10} />
             <LabelWithData label='Cash' data={data.priceDetail.cash} labelSpan={10} />
             <LabelWithData label='To Pay' data={data.priceDetail.toPay} labelSpan={10} />
             <LabelWithData label='Mamul' data={data.priceDetail.mamul} labelSpan={10} />
           </Col>
+          {visible.price && <CustomerPrice visible={visible.price} onHide={() => onHide('price')} />}
           <Col sm={24} md={12}>
             <LabelWithData label='PO Date' data={data.trip.poDate} labelSpan={10} />
             <LabelWithData label='Delay' data={data.trip.delay} labelSpan={10} />
