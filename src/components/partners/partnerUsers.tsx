@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Button, Row, InputNumber, Col, Table, Popconfirm } from 'antd'
+import { Modal, Button, Row, Input, Col, Table, Popconfirm, Form } from 'antd'
 import { PhoneOutlined, DeleteOutlined } from '@ant-design/icons'
 
 const PartnerUsers = (props) => {
@@ -44,9 +44,11 @@ const PartnerUsers = (props) => {
         size='small'
         pagination={false}
       />
-      <Row className='mt10'>
+      <Row className='mt10' gutter={10}>
         <Col flex='auto'>
-          <InputNumber min={-10} max={10} placeholder='Enter Mobile Number' />
+          <Form.Item>
+            <Input type='number' min={-10} max={10} placeholder='Enter Mobile Number' />
+          </Form.Item>
         </Col>
         <Col flex='90px'>
           <Button type='primary'>Add User</Button>
