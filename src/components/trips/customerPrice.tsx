@@ -19,8 +19,7 @@ const CustomerPrice = (props) => {
       footer={[
         <Button > Cancel </Button>,
       <Button type="primary"> Update </Button>
-       ]}
-      >
+       ]}>
           <Form layout='vertical'>
                     <Row gutter={10}>
                         <Col sm={12}>

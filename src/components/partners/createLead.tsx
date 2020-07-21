@@ -1,6 +1,5 @@
 import React from 'react'
 import { Modal, Button, Input, Row, Col, Space, Select } from 'antd';
-import { UserAddOutlined } from '@ant-design/icons'
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -11,49 +10,24 @@ function handleChange(value) {
 const onChange = e => {
     console.log(e);
 };
-class AddLeadModal extends React.Component {
-    state = {
-        loading: false,
-        visible: false,
-    };
+const CreateLead = (props) => {
+    const { visible, onHide } = props
 
-    showModal = () => {
-        this.setState({
-            visible: true,
-            value: '',
-        });
-    };
-    handleCancel = e => {
-        console.log(e);
-        this.setState({
-            visible: false,
-        });
-    };
-
-    handleOk = () => {
-        this.setState({ loading: true });
-        setTimeout(() => {
-            this.setState({ loading: false, visible: false });
-        }, 3000);
-    };
-
-    render() {
-        const { visible, loading } = this.state;
-
+    const onSubmit = () => {
+      console.log('data Transfered!')
+      onHide()
+    }
         return (
             <div>
-                <Button type="primary" icon={<UserAddOutlined />} onClick={this.showModal} />
                 <Modal
-                    visible={visible}
                     title="Create Lead"
-                    onOk={this.handleOk}
-                    onCancel={this.handleCancel}
+                    visible={visible}
+                    onOk={onSubmit}
+                    onCancel={onHide}
                     footer={[
-                        <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
-                            Submit
-            </Button>,
+                    <Button type="primary"> Submit </Button>
                     ]}
-                >
+                    >
                     <Input placeholder='Company Name' />
                     <br />
                     <br />
@@ -102,6 +76,6 @@ class AddLeadModal extends React.Component {
             </div>
         );
     }
-}
 
-export default AddLeadModal
+
+export default CreateLead
