@@ -4,6 +4,7 @@ import data from '../../../mock/trip/tripDetail'
 import TripInfo from './tripInfo'
 import TripLr from './tripLr'
 import TripTime from './tripTime'
+import TripComment from './tripComment'
 import BillingComment from './billingComment'
 import TripPod from './tripPod'
 import TripInvoice from './tripInvoice'
@@ -12,6 +13,9 @@ import CreateAdditionalAdvance from './createAdditionalAdvance'
 import AdditionalAdvance from './additionalAdvance'
 import Payables from './payables'
 import Receivables from './receivables'
+import CustomerPayments from './customerPayments'
+import CreditNote from './creditNote'
+import CreditNoteTable from './creditNoteTable'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
@@ -80,8 +84,7 @@ const TripDetail = (props) => {
               <Collapse accordion className='small box-0'>
                 <Panel
                   header={
-                    <span>
-                    Partner - Payables
+                    <span>Partner - Payables
                       <span className='pull-right'>
                         <b>{23500}</b>
                       </span>
@@ -95,8 +98,7 @@ const TripDetail = (props) => {
               <Collapse accordion className='small box-0 mt10'>
                 <Panel
                   header={
-                    <span>
-                    Customer - Receivables
+                    <span>Customer - Receivables
                       <span className='pull-right'>
                         <b>{23500}</b>
                       </span>
@@ -105,16 +107,18 @@ const TripDetail = (props) => {
                   key='1'
                 >
                   <Receivables />
+                  <CustomerPayments />
                 </Panel>
               </Collapse>
               <Collapse accordion className='small mt10'>
                 <Panel header='Credit/Debit Note' key='1'>
-                Credit/Debit Note
+                  <CreditNote />
+                  <CreditNoteTable />
                 </Panel>
               </Collapse>
             </TabPane>
             <TabPane tab='Timeline' key='3'>
-              Timeline
+              <TripComment />
             </TabPane>
           </Tabs>
         </Col>

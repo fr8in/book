@@ -116,7 +116,7 @@ const Partners = () => {
         dataSource={mock}
         rowKey={record => record.id}
         size='small'
-        scroll={{ x: 800, y: 850 }}
+        scroll={{ x: 1156, y: 850 }}
         pagination={false}
       />
   )
