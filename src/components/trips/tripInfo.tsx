@@ -17,7 +17,7 @@ const TripInfo = (props) => {
             <Row>
               <LabelAndData
                 colSpan={12}
-                label='Customer'
+                label={<p className='mb0 b'>Customer</p>}
                 data={
                   <Link href='/customers/[id]' as={`/customers/${data.customer.cardCode}`}>
                     <a>{data.customer.name}</a>
@@ -26,7 +26,7 @@ const TripInfo = (props) => {
               />
               <LabelAndData
                 colSpan={12}
-                label='Partner'
+                label={<p className='mb0 b'>Partner</p>}
                 data={
                   <Link href='/partners/[id]' as={`/partners/${data.partner.cardCode}`}>
                     <a>{data.partner.name}</a>
@@ -39,7 +39,7 @@ const TripInfo = (props) => {
             <Row>
               <LabelAndData
                 colSpan={24}
-                label='Truck No'
+                label={<p className='mb0 b'>Truck No</p>}
                 data={
                   <Link href='/trucks/[id]' as={`/truck/${data.device.deviceId}`}>
                     <a>{data.device.truckNo}</a>

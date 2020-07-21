@@ -35,6 +35,14 @@ const PartnerUsers = (props) => {
       title={props.name}
       visible={props.visible}
       onCancel={props.onHide}
+      footer={[
+        <Button
+          type='default'
+          key='back'
+          onClick={props.onHide}
+        >Close
+        </Button>
+      ]}
     >
       <Table
         columns={partnerUserColumn}
