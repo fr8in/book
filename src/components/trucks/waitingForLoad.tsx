@@ -3,6 +3,9 @@ import { Table, Tooltip, Badge, Button, Input } from 'antd'
 import Link from 'next/link'
 import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled, SearchOutlined } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
+import CustomerPo from '../customers/customerPo'
+import PhoneModel from '../partners/phoneModal'
+
 
 const WaitingForLoad = () => {
   const initial = { comment: false, truckSearch: false }
@@ -64,7 +67,12 @@ const WaitingForLoad = () => {
     {
       title: 'Partner No',
       dataIndex: 'partnerNo',
-      width: '10%'
+      width: '10%',
+      render:() =>{
+        return(
+          <PhoneModel />
+        )
+      }
     },
     {
       title: 'City',
@@ -100,6 +108,7 @@ const WaitingForLoad = () => {
             <Tooltip title='Quick PO'>
               <Button type='link' icon={<RocketFilled />} onClick={() => onShow('poModal')} />
             </Tooltip>
+            {visible.poModal && <CustomerPo visible={visible.poModal} onHide={() => onHide('poModal')} />}
           </span>
         )
       },
