@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Row, Col, Card, Tabs, Button, Space } from 'antd'
 import Trips from '../trips/activeTrips'
 import WaitingForLoad from '../trucks/waitingForLoad'
@@ -9,17 +8,13 @@ import { WhatsAppOutlined, CarOutlined } from '@ant-design/icons'
 import ExcessLoad from '../trips/excessLoad'
 import TitleWithCount from '../common/titleWithCount'
 import useShowHide from '../../hooks/useShowHide'
-import QuickPo from '../dashboard/quickpo'
+import CreateExcessLoad from '../trips/createExcessLoad'
 
 const { TabPane } = Tabs
 
 const Dashboard = () => {
-  const [tabKey, setTabKey] = useState('1')
-  const callback = (key) => {
-    setTabKey(key)
-   }
-    const initial = { excessLoad: false,}
-    const {onShow } = useShowHide(initial)
+  const initial = { excessLoad: false }
+  const { visible, onShow, onHide } = useShowHide(initial)
   return (
     <Row>
       <Col xs={24}>
@@ -46,11 +41,10 @@ const Dashboard = () => {
             <Card size='small' className='card-body-0 border-top-blue'>
               <Tabs
                 defaultActiveKey='1'
-                onChange={callback}
                 tabBarExtraContent={
                   <Space>
                     <Button size='small' shape='circle' type='primary' className='btn-success' icon={<WhatsAppOutlined />} />
-                    <Button size='small' type='primary' shape='circle' icon={<CarOutlined />} />
+                    <Button size='small' type='primary' shape='circle' icon={<CarOutlined />} onClick={() => onShow('excessLoad')} />
                   </Space>
                 }
               >
@@ -89,6 +83,7 @@ const Dashboard = () => {
           </Col>
         </Row>
       </Col>
+      {visible.excessLoad && <CreateExcessLoad visible={visible.excessLoad} onHide={() => onHide('excessLoad')} />}
     </Row>
   )
 }
