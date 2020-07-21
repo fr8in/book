@@ -1,6 +1,6 @@
 import { Modal, Button , Row, Col , DatePicker, Select, Space, Input} from 'antd';
 import React from 'react'
-import { EditTwoTone } from '@ant-design/icons'
+
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -8,50 +8,33 @@ const { TextArea } = Input;
 function handleChange(value) {
     console.log(`selected ${value}`);
   }
-  
 
-class editModal extends React.Component {
-  state = { visible: false };
+  const EditModal = (props) => {
+    const { visible, onHide } = props
 
-  showModal = () => {
-    this.setState({
-      visible: true,
-    });
-  };
+    const onSubmit = () => {
+      console.log('data Transfered!')
+      onHide()
+    }
 
-  handleOk = e => {
-    console.log(e);
-    this.setState({
-      visible: false,
-    });
-  };
-
-  handleCancel = e => {
-    console.log(e);
-    this.setState({
-      visible: false,
-    });
-  };
-
-  render() {
     return (
-      <div>
-        <Button onClick={this.showModal}>
-        <EditTwoTone />
-        </Button>
-        <Modal
-          title="Breakdown"
-          visible={this.state.visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-        >
+      <> 
+       <Modal
+      title="Add BreakDown or In-transit Halting"
+      visible={visible}
+      onOk={onSubmit}
+      onCancel={onHide}
+      footer={[
+        <Button type="primary"> Save </Button>
+       ]}
+      > 
         <Row>
             <Space>
-      <Col>
+      <Col >
       <p>Available Date</p>
       </Col>
-      <Col>
-      <p> Current City</p>
+      <Col >
+      <p> Current City:</p>
       </Col>
       </Space>
         </Row>
@@ -80,10 +63,10 @@ class editModal extends React.Component {
           placeholder="Enter Comment"
           autoSize={{ minRows: 2, maxRows: 6 }}
         />
-    </Modal>
-      </div>
+        </Modal>
+      </>
     );
   }
-}
 
-export default editModal
+
+export default EditModal;
