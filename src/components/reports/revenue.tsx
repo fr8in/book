@@ -19,13 +19,14 @@ const Revenue = () => {
         period='Current Month'
         bgColor='teal'
       />
-      <Modal
-        title='Revenue Report'
-        visible={visible.report}
-        onCancel={() => onHide('report')}
-      >
-        <p>Report will come</p>
-      </Modal>
+      {visible.report &&
+        <Modal
+          title='Revenue Report'
+          visible={visible.report}
+          onCancel={() => onHide('report')}
+        >
+          <p>Report will come</p>
+        </Modal>}
     </>
   )
 }

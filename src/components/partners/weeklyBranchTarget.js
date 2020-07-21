@@ -2,9 +2,9 @@ import u from '../../lib/util'
 import weeklyTarget from '../../../mock/partner/weeklyBranchTarget'
 import Title from '../common/title'
 import moment from 'moment'
-import { Table, Tag } from 'antd'
+import { Table, Tag, Modal, Button } from 'antd'
 
-const WeeklyBranchTarget = () => {
+const WeeklyBranchTarget = (props) => {
   const sortedWeeklyTarget = weeklyTarget.sort(u.objSort)
 
   const branchTargetWeekly = sortedWeeklyTarget.map(data => {
@@ -108,15 +108,32 @@ const WeeklyBranchTarget = () => {
   ]
 
   return (
-    <Table
-      columns={columns}
-      dataSource={branchTargetWeekly}
-      size='small'
-      pagination={false}
-      scroll={{ x: 400, y: '100%' }}
-      rowKey={record => record.branchId}
-      className='weeklyTarget'
-    />
+    <Modal
+      style={{ top: 20 }}
+      bodyStyle={{ padding: 10 }}
+      visible={props.visible}
+      onCancel={props.onHide}
+      closable={false}
+      footer={[
+        <Button
+          type='default'
+          key='back'
+          onClick={props.onHide}
+        >
+            Close
+        </Button>
+      ]}
+    >
+      <Table
+        columns={columns}
+        dataSource={branchTargetWeekly}
+        size='small'
+        pagination={false}
+        scroll={{ x: 400, y: '100%' }}
+        rowKey={record => record.branchId}
+        className='weeklyTarget'
+      />
+    </Modal>
   )
 }
 

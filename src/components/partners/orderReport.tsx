@@ -1,5 +1,5 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
-import { Row, Col } from 'antd'
+import { Row, Col, Modal, Button } from 'antd'
 import moment from 'moment'
 import data from '../../../mock/partner/orderReport'
 
@@ -17,24 +17,39 @@ const TooltipText = (props) => {
   }
   return null
 }
-const OrderReport = () => {
+const OrderReport = (props) => {
   return (
-    <Row>
-      <Col sm={{ span: 24 }} xs={{ span: 24 }}>
-        <div style={{ width: '100%', overflowX: 'auto', overflowY: 'hidden' }}>
-          {data && data.length > 0
-            ? (
-              <BarChart width={400} height={200} style={{ margin: 'auto' }} data={data}>
-                <XAxis dataKey='month' tickFormatter={(month) => moment(month, 'MM').format('MMM')} />
-                <YAxis />
-                <CartesianGrid strokeDasharray='3 3' />
-                <Tooltip content={<TooltipText />} />
-                <Legend />
-                <Bar dataKey='orderCount' fill='#8884d8' name='Completed Orders' />
-              </BarChart>) : <div />}
-        </div>
-      </Col>
-    </Row>
+    <Modal
+      title='Orders Report'
+      visible={props.visible}
+      onCancel={props.onHide}
+      footer={[
+        <Button
+          type='default'
+          key='back'
+          onClick={props.onHide}
+        >
+            Close
+        </Button>
+      ]}
+    >
+      <Row>
+        <Col sm={{ span: 24 }} xs={{ span: 24 }}>
+          <div style={{ width: '100%', overflowX: 'auto', overflowY: 'hidden' }}>
+            {data && data.length > 0
+              ? (
+                <BarChart width={400} height={200} style={{ margin: 'auto' }} data={data}>
+                  <XAxis dataKey='month' tickFormatter={(month) => moment(month, 'MM').format('MMM')} />
+                  <YAxis />
+                  <CartesianGrid strokeDasharray='3 3' />
+                  <Tooltip content={<TooltipText />} />
+                  <Legend />
+                  <Bar dataKey='orderCount' fill='#8884d8' name='Completed Orders' />
+                </BarChart>) : <div />}
+          </div>
+        </Col>
+      </Row>
+    </Modal>
   )
 }
 
