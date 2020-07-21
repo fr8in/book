@@ -1,12 +1,15 @@
 import React from 'react';
 import { DatePicker,Tooltip,Button,Row,Col,Timeline, Space} from 'antd';
-import { SearchOutlined } from '@ant-design/icons'
+import { SearchOutlined , CommentOutlined ,SelectOutlined ,  EditTwoTone } from '@ant-design/icons'
 import CommentModal from '../../components/trucks/commentModal'
 import SelectTimelineModal from '../../components/trucks/selectTimelineModal'
 import EditModal from '../../components/trucks/editModal'
-export default function truck(props) {
+import useShowHide from '../../hooks/useShowHide'
 
 
+const truckTimeline = () => {
+const initial = {mail:false}
+const {visible,onShow,onHide} = useShowHide(initial)
     return (
         
 
@@ -15,6 +18,7 @@ export default function truck(props) {
     <Row className="timelineFilter">
     <Space>
                             <DatePicker
+                               size='small'
                                 showTime
                                 name="startSearchDate"
                                 format="YYYY-MM-DD"
@@ -22,6 +26,7 @@ export default function truck(props) {
                                 placeholder="Start Date"/>
         
                             <DatePicker
+                               size='small'
                                 showTime
                                 name="endSearchDate"
                                 format="YYYY-MM-DD"
@@ -48,17 +53,23 @@ export default function truck(props) {
     </Timeline.Item>
     </Timeline>
     </Col>
+    <Space>
     <Col>
-    <CommentModal/>
+    <Button  size='small' icon={<CommentOutlined/>} onClick={() => onShow('mail')} />
+    {visible.mail && <CommentModal visible={visible.mail} onHide={()=> onHide('mail')} />}
     </Col>
     <Col>
-    <SelectTimelineModal/>
+    <Button  size='small' icon={<SelectOutlined/>} onClick={() => onShow('mail')} />
+    {visible.mail && <SelectTimelineModal visible={visible.mail} onHide={()=> onHide('mail')} />}
     </Col>
     <Col>
-    <EditModal/>
+    <Button  size='small' icon={ <EditTwoTone />} onClick={() => onShow('mail')} />
+    {visible.mail && <EditModal visible={visible.mail} onHide={()=> onHide('mail')} />}
     </Col>
+    </Space>
     </Row>
     </div>
 )
 }
   
+export default truckTimeline

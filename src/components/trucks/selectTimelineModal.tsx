@@ -1,6 +1,5 @@
 import { Modal, Button , Row, Col , DatePicker, Select, Space, Input, Radio} from 'antd';
 import React from 'react'
-import { SelectOutlined } from '@ant-design/icons'
 
 const RadioGroup = Radio.Group
 const { Option } = Select;
@@ -9,44 +8,27 @@ const { TextArea } = Input;
 function handleChange(value) {
     console.log(`selected ${value}`);
   }
-  
 
-class selectTimelineModal extends React.Component {
-  state = { visible: false };
+  const selectTimelineModal = (props) => {
+    const { visible, onHide } = props
 
-  showModal = () => {
-    this.setState({
-      visible: true,
-    });
-  };
+    const onSubmit = () => {
+      console.log('data Transfered!')
+      onHide()
+    }
 
-  handleOk = e => {
-    console.log(e);
-    this.setState({
-      visible: false,
-    });
-  };
-
-  handleCancel = e => {
-    console.log(e);
-    this.setState({
-      visible: false,
-    });
-  };
-
-  render() {
     return (
-      <div>
-        <Button onClick={this.showModal}>
-        <SelectOutlined />
-        </Button>
-        <Modal
-          title="Add BreakDown or In-transit Halting"
-          visible={this.state.visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-        >
-          <Row>
+      <> 
+       <Modal
+      title="Add BreakDown or In-transit Halting"
+      visible={visible}
+      onOk={onSubmit}
+      onCancel={onHide}
+      footer={[
+        <Button type="primary"> Save </Button>
+       ]}
+      >
+       <Row>
           <RadioGroup >
                             <Radio value={1}>Breakdown</Radio>
                             <Radio value={0}>In-transit haulting</Radio>
@@ -55,11 +37,11 @@ class selectTimelineModal extends React.Component {
           <br/>
         <Row>
             <Space>
-      <Col>
+      <Col >
       <p>Available Date</p>
       </Col>
-      <Col>
-      <p> Current City</p>
+      <Col >
+      <p> Current City:</p>
       </Col>
       </Space>
         </Row>
@@ -88,10 +70,10 @@ class selectTimelineModal extends React.Component {
           placeholder="Enter Comment"
           autoSize={{ minRows: 2, maxRows: 6 }}
         />
-    </Modal>
-      </div>
+        </Modal>
+      </>
     );
   }
-}
 
-export default selectTimelineModal
+
+export default selectTimelineModal;
