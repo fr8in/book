@@ -1,5 +1,4 @@
 import { Modal, Button, Row, Col, Form, Input, Table } from 'antd';
-import React from 'react'
 
 
 const columnsCurrent = [
@@ -31,17 +30,11 @@ const columnsCurrent = [
 const EditModal = (props) => {
     const { visible, onHide } = props
 
-    const onSubmit = () => {
-        console.log('data Transfered!')
-        onHide()
-    }
-
     return (
         <div>
             <Modal
                 title="Advance Booking"
                 visible={visible}
-                onOk={onSubmit}
                 onCancel={onHide}
                 width={700}
                 footer={[

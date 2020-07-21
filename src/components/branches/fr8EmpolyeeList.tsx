@@ -1,6 +1,6 @@
 import { Modal, Select } from 'antd';
 import React from 'react'
-
+import EmailList from '../../../mock/sourcing/sourcingDetail'
 
 const { Option } = Select;
 function handleChange(value) {
@@ -21,11 +21,8 @@ const EmployeeList = (props) => {
               onOk={onSubmit}
               onCancel={onHide}
              >
-          <Select defaultValue="Owner" style={{ width: 300 }} onChange={handleChange}>
-            <Option value="ravi@fr8.in">ravi@fr8.in</Option>
-            <Option value="kaviya@fr8.in">kaviya@fr8.in</Option>
-            <Option value="sourav@fr8.in">sourav@fr8.in</Option>
-            <Option value="tharun@fr8.in">tharun@fr8.in</Option>
+          <Select defaultValue="Owner" style={{ width: 300 }} onChange={handleChange} options={EmailList} >
+    
           </Select>
         </Modal>
       </div>

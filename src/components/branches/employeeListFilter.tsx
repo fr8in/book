@@ -1,6 +1,6 @@
-import { Modal,Checkbox,Row } from 'antd';
+import { Modal,Checkbox,Row,Col } from 'antd';
 import React from 'react'
-
+import FilterList from '../../../mock/sourcing/employeeListFilter'
 function onChange(e) {
     console.log(`checked = ${e.target.checked}`);
   }
@@ -8,19 +8,20 @@ function onChange(e) {
   const EmployeeListFilter = (props) => {
     const { visible, onHide } = props
   
-
+    // function onChange(checkedValues) {
+    //   setCheckedItems(checkedValues);
+    // }
     return (
       <div>
         <Modal
               visible={visible}
               onCancel={onHide}
              >
+              <Col> 
         <Row>  
-        <Checkbox onChange={onChange}>All</Checkbox>
+        <Checkbox.Group options={FilterList}  onChange={onChange} /> 
         </Row>
-        <Row>
-        <Checkbox onChange={onChange}>jay@fr8.in</Checkbox>
-        </Row>
+        </Col>
         </Modal>
       </div>
     );

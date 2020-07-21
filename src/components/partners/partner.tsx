@@ -1,7 +1,7 @@
 import React from 'react'
 import { Row ,Space} from 'antd'
 import { CheckCircleOutlined, CrownFilled } from '@ant-design/icons'
-import PhoneModel from '../../components/partners/phoneModal'
+import PhoneModel from '../../components/partners/partnerUsers'
 
 export default function partnerInfo() {
     return (

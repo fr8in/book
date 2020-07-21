@@ -37,9 +37,6 @@ const Sourcing = () => {
                                 </Space>
                             }
                         >
-                             {visible.createLead && <CreateLead visible={visible.createLead} onHide={() => onHide('createLead')} />}
-                             {visible.filterList && <FilterList visible={visible.filterList} onHide={() => onHide('filterList')} />}
-                             {visible.employeeList && <EmployeeList visible={visible.employeeList} onHide={() => onHide('employeeList')} />}
                             <TabPane tab="KYC Verification" key="1" >
                                 <Row gutter={8} justify='end' className='m5'>
                                     <Col span={3}>
@@ -78,6 +75,9 @@ const Sourcing = () => {
                     </TabPane>
                 </Tabs>
             </div>
+            {visible.createLead && <CreateLead visible={visible.createLead} onHide={() => onHide('createLead')} />}
+            {visible.filterList && <FilterList visible={visible.filterList} onHide={() => onHide('filterList')} />}
+            {visible.employeeList && <EmployeeList visible={visible.employeeList} onHide={() => onHide('employeeList')} />}
         </PageLayout>
     );
 };

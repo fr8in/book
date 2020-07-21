@@ -1,5 +1,6 @@
 import React from 'react'
 import { Modal, Button, Input, Row, Col, Space, Select } from 'antd';
+import {OwnerName,SelectType} from '../../../mock/sourcing/createLead'
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -50,22 +51,12 @@ const CreateLead = (props) => {
                     <Row>
                         <Space>
                             <Col >
-                                <Select defaultValue="Select Source" style={{ width: 200 }} onChange={handleChange}>
-                                    <Option value="App">App</Option>
-                                    <Option value="Direct">Direct</Option>
-                                    <Option value="Refferal">Refferal</Option>
-                                    <Option value="Social Media">Social Media</Option>
-                                    <Option value="Track">Track</Option>
-                                </Select>
+                                <Select defaultValue="Select Source" style={{ width: 200 }} onChange={handleChange} options={SelectType}/>
+                                    
                             </Col>
                             <Col>
-                                <Select defaultValue="Select Owner" style={{ width: 200 }} onChange={handleChange}>
-                                    <Option value="Ravi">Ravi</Option>
-                                    <Option value="Kaviya">Kaviya</Option>
-                                    <Option value="Sourav">Sourav</Option>
-                                    <Option value="Tharun">Tharun</Option>
-                                    <Option value="Aswin">Aswin</Option>
-                                </Select>
+                                <Select defaultValue="Select Owner" style={{ width: 200 }} onChange={handleChange} options={OwnerName} />
+                                   
                             </Col>
                         </Space>
                     </Row>
