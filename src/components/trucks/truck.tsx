@@ -1,34 +1,61 @@
 import React from 'react'
-import {Row, Col} from 'antd'
+import LabelAndData from '../common/labelAndData'
+import Link from 'next/link'
+import data from '../../../mock/trucks/truckDetail'
+import { Row,Col } from "antd";
 
-export default function truck(props) {
+const Truck = (props) => {
+  console.log('id', props)
+  
     return (
         <div>
-                <Row gutter={[10, 10]}> 
-                    <Col >
-                    <h1> Singh</h1> 
-                    </Col>
-                    <Col >
-                     <h2><label>MH14GD1806</label></h2>
-                    </Col>
-                    <Col >
-                    <h3> <label>Kalamboli</label> </h3>
-                    </Col>
-                    </Row>
-
-                    <Row gutter={[10, 10]}>
-                    <Col>
-                    <h3> <label>9873456254</label> </h3>
-                    </Col>
-
-                    <Col>
-                    <h3> <label>32 Feet Single Axle</label> </h3>
-                    </Col>
-
-                    <Col>
-                    <h3> <label>Tat:0.49</label> </h3>
-                    </Col>
-                </Row>
+            <Row gutter={10}>
+              <Col span={8}>
+                <LabelAndData
+                colSpan={6}
+                data={
+                  <Link href='/partners/[id]' as={`/partners/${'Vijay'}`}>
+                   <h1> <a>{'Vijay'}</a> </h1>
+                  </Link> 
+                }
+              />
+              </Col>
+              <Col span={8}>
+             <LabelAndData
+                colSpan={12}
+                data={data.truck.truckid }
+              />
+             </Col>
+             <Col span={8}>
+             <LabelAndData
+                colSpan={12}
+                data={data.truck.destination }
+              />
+             </Col>
+             </Row>
+             <Row gutter={10}>
+             <Col span={8}>
+             <LabelAndData
+                colSpan={12}
+                data={data.truck.phonenumber }
+              />
+             </Col>
+             <Col span={8}>
+             <LabelAndData
+                colSpan={12}
+                data={data.truck.trucktype}
+              />
+             </Col>
+             <Col span={8}>
+             <LabelAndData
+                colSpan={12}
+                data={data.truck.tat }
+              />
+             </Col>
+             </Row>
+              
         </div>
     )
 }
+
+export default  Truck

@@ -1,48 +1,79 @@
-import { Modal, Button , Input } from 'antd';
+import { Modal, Button , Row, Col , DatePicker, Select, Space, Input, Radio} from 'antd';
 import React from 'react'
-import { SelectOutlined } from '@ant-design/icons'
 
-class selectTimelineModal extends React.Component {
-  state = { visible: false };
+const RadioGroup = Radio.Group
+const { Option } = Select;
+const { TextArea } = Input;
 
-  showModal = () => {
-    this.setState({
-      visible: true,
-    });
-  };
+function handleChange(value) {
+    console.log(`selected ${value}`);
+  }
 
-  handleOk = e => {
-    console.log(e);
-    this.setState({
-      visible: false,
-    });
-  };
+  const selectTimelineModal = (props) => {
+    const { visible, onHide } = props
 
-  handleCancel = e => {
-    console.log(e);
-    this.setState({
-      visible: false,
-    });
-  };
+    const onSubmit = () => {
+      console.log('data Transfered!')
+      onHide()
+    }
 
-  render() {
     return (
-      <div>
-        <Button onClick={this.showModal}>
-        <SelectOutlined />
-        </Button>
-        <Modal
-          title="Add Comment"
-          visible={this.state.visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-        >
-          <p>Comment</p>
-          <Input placeholder="Enter Comments" />
+      <> 
+       <Modal
+      title="Add BreakDown or In-transit Halting"
+      visible={visible}
+      onOk={onSubmit}
+      onCancel={onHide}
+      footer={[
+        <Button type="primary"> Save </Button>
+       ]}
+      >
+       <Row>
+          <RadioGroup >
+                            <Radio value={1}>Breakdown</Radio>
+                            <Radio value={0}>In-transit haulting</Radio>
+                        </RadioGroup>
+          </Row>
+          <br/>
+        <Row>
+            <Space>
+      <Col >
+      <p>Available Date</p>
+      </Col>
+      <Col >
+      <p> Current City:</p>
+      </Col>
+      </Space>
+        </Row>
+        <Row>
+            <Space>
+            <Col>
+            <DatePicker
+                                showTime
+                                name="selectSearchDate"
+                                format="YYYY-MM-DD"
+                                className="selectSearchdate1"
+                                placeholder="Select Date"/>
+        
+            </Col>
+            <Col>
+            <Select defaultValue="Chennai" style={{ width: 120 }} onChange={handleChange}>
+      <Option value="Coimbatore">Coimbatore</Option>
+      <Option value="Madurai">Madurai</Option>
+      <Option value="Trichy">Trichy</Option>
+      </Select>
+            </Col>
+            </Space>
+        </Row>
+        <br/>
+        <TextArea
+          placeholder="Enter Comment"
+          autoSize={{ minRows: 2, maxRows: 6 }}
+        />
         </Modal>
-      </div>
+      </>
     );
   }
-}
 
-export default selectTimelineModal
+
+export default selectTimelineModal;

@@ -1,40 +1,56 @@
 import React from 'react'
-import {Row,Col,Input,Form} from 'antd'
+import {Row,Col,Form, Input} from 'antd'
+
+
 export default function truckInfo() {
     return (
         <div>
-            <Row gutter={[12, 12]}>
-                    <Col xs={24} sm={4}>
-             <Row >
-                            <Form.Item
+             <Form layout='vertical'>
+             <Row gutter={10}>
+                        <Col span={6}>
+                        <Form.Item
                                 label="Length(Ft)"
                                 name="Length(Ft)"
                                 rules={[{ required: true, message: 'Length(Ft) is required field' }]}
                             >
-                                <Input placeholder="Length(Ft)" />
-                            </Form.Item> </Row>
+                               <Input placeholder="Length(Ft)" type='number'disabled={false}/>
+                            </Form.Item> 
                     </Col>
-                    <Col xs={24} sm={4}>
-                        <Row >
+                    <Col span={6}>
                             <Form.Item
                                 label="Breadth(Ft)"
                                 name="Breadth(Ft)"
                                 rules={[{ required: true, message: 'Breadth(Ft) is required field' }]}
                             >
-                                <Input placeholder="Breadth(Ft)" />
-                            </Form.Item> </Row>
+                                <Input placeholder="Breadth(Ft)" type='number'disabled={false} />
+                            </Form.Item> 
                     </Col>
-                    <Col xs={24} sm={4}>
-                        <Row >
+                    <Col span={6}>
+                    
                             <Form.Item
                                 label="Height(Ft)"
                                 name="Height(Ft)"
                                 rules={[{ required: true, message: 'Height(Ft) is required field' }]}
                             >
-                                <Input placeholder="Height(Ft)" />
-                            </Form.Item> </Row>
+                                <Input  placeholder="Height(Ft)" type='number'disabled={false}/>
+                            </Form.Item> 
+                            
                     </Col>
+
+                    <Col span={6}>
+                    
+                            <Form.Item
+                                label="Driver Number"
+                                name="Driver Number"
+                                rules={[{ required: true, message: 'Driver Number is required field' }]}
+                            >
+                                <Input placeholder="Driver Number" />
+                            </Form.Item> 
+                            
+                    </Col>
+                   
                     </Row>
+                    </Form>
         </div>
     )
 }

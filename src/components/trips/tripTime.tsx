@@ -1,14 +1,20 @@
+import React,{useState} from 'react'
 import { Row, Col, Card, Form, DatePicker, Tooltip, Input, Space, Button, Checkbox } from 'antd'
 import {
   FilePdfOutlined,
   FileWordOutlined,
-  MailOutlined,
   DownloadOutlined,
+  MailOutlined,
   DeleteOutlined,
   CloseCircleOutlined
 } from '@ant-design/icons'
+import MailModal from './loadingMemo'
+import useShowHide from '../../hooks/useShowHide'
+
 
 const TripTime = () => {
+  const initial = { checkbox: false, mail:false}
+  const { visible, onShow,onHide } = useShowHide(initial)
   return (
     <Card size='small' className='mt10'>
       <Row>
@@ -85,7 +91,7 @@ const TripTime = () => {
                   <Space>
                     <Button type='primary' icon={<FilePdfOutlined />} />
                     <Button type='primary' icon={<FileWordOutlined />} />
-                    <Button shape='circle' icon={<MailOutlined />} />
+                    <Button type="primary" size="small" shape='circle' icon={<MailOutlined />} onClick={() => onShow('mail')} />
                   </Space>
                 </Form.Item>
               </Col>
@@ -156,8 +162,13 @@ const TripTime = () => {
           </Modal> */}
         </Col>
       </Row>
+      {visible.mail && <MailModal visible={visible.mail} onHide={() => onHide('mail')} />}
     </Card>
+     
   )
 }
 
 export default TripTime
+
+
+ 

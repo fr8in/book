@@ -21,13 +21,14 @@ const Progress = () => {
         bgColor='blue'
         last
       />
-      <Modal
-        title='Trucks, Partners, Orders Report'
-        visible={visible.report}
-        onCancel={() => onHide('report')}
-      >
-        <p>Trucks, Partners, Orders Report will come</p>
-      </Modal>
+      {visible.report &&
+        <Modal
+          title='Trucks, Partners, Orders Report'
+          visible={visible.report}
+          onCancel={() => onHide('report')}
+        >
+          <p>Trucks, Partners, Orders Report will come</p>
+        </Modal>}
     </>
   )
 }

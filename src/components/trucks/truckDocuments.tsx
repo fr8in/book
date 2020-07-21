@@ -4,8 +4,9 @@ import { UploadOutlined} from '@ant-design/icons';
 export default function truckDocuments() {
     return (
         <div>
+            <Form layout='vertical'>
             <Row gutter={[10, 10]}>
-                <Col xs={24} sm={12} md={6}>
+                <Col span={6}>
              <Row>
              <Form.Item
                  label="PAN"
@@ -16,63 +17,59 @@ export default function truckDocuments() {
                 </Button>
                             </Form.Item> 
              </Row>
-             <br />
              <Row>
              <Button disabled>  Start Upload </Button>
              </Row>
              </Col>
              
-             <Col xs={24} sm={12} md={6}>
+             <Col span={6}>
             <Row>
-            Cancelled cheque/PassBook
-            </Row>
-            <br />
-            <Row>
-            <Button icon={<UploadOutlined />} >
+            <Form.Item
+                 label="Cancelled cheque/PassBook">
+                     <Button icon={<UploadOutlined />} >
             Select File
                 </Button>
-             </Row>
-             <br />
+                 </Form.Item> 
+            </Row>
+            
              <Row>
              <Button disabled> Start Upload </Button>
              </Row>
              </Col>
 
-             <Col xs={24} sm={12} md={6}>
+             <Col span={6}>
             <Row>
-            TDS Document
-            </Row>
-            <br />
-            <Row>
-            <Button icon={<UploadOutlined />} >
+            <Form.Item
+                 label="TDS Document">
+                     <Button icon={<UploadOutlined />} >
             Select File
                 </Button>
-             </Row>
-             <br />
+                 </Form.Item> 
+            </Row>
+
              <Row>
              <Button disabled> Start Upload </Button>
              </Row>
              </Col>
              
-             <Col xs={24} sm={12} md={6} >
+             <Col span={6} >
             <Row>
-            EMI 
-            </Row>
-            <br />
-            <Row>
-            <Button icon={<UploadOutlined />} >
+            <Form.Item
+                 label="EMI">
+                     <Button icon={<UploadOutlined />} >
             Select File
                 </Button>
-             </Row>
-             <br />
+                 </Form.Item> 
+            </Row>
              <Row>
              <Button disabled> Start Upload </Button>
              </Row>
              </Col>
 </Row>
 
+       <br/>
        <Row gutter={[10, 10]}>
-       <Col xs={24} sm={12} md={6}>
+       <Col span={6}>
             
             <Row>
             <Form.Item
@@ -84,13 +81,13 @@ export default function truckDocuments() {
                 </Button>
                             </Form.Item> 
              </Row>
-             <br />
+        
              <Row>
              <Button disabled> Start Upload </Button>
              </Row>
              </Col>
 
-             <Col xs={24} sm={12} md={6}>
+             <Col span={6} >
              <Row>
             <Form.Item
                  label="Vaahan Screen"
@@ -101,44 +98,42 @@ export default function truckDocuments() {
                 </Button>
                             </Form.Item> 
                             </Row>
-             <br />
+            
              <Row>
              <Button disabled> Start Upload </Button>
              </Row>
              </Col>
 
-             <Col xs={24} sm={12} md={6}>
+             <Col span={6} >
             <Row>
-            Insurance
-            </Row>
-            <br />
-            <Row>
-            <Button icon={<UploadOutlined />} >
+            <Form.Item
+                 label="Insurance">
+                     <Button icon={<UploadOutlined />} >
             Select File
                 </Button>
-             </Row>
-             <br />
+                 </Form.Item> 
+            </Row>
+            
              <Row>
              <Button disabled> Start Upload </Button>
              </Row>
              </Col>
 
-             <Col xs={24} sm={12} md={6}>
+             <Col span={6}>
             <Row>
-            Permit
-            </Row>
-            <br />
-            <Row>
-            <Button icon={<UploadOutlined />} >
+            <Form.Item
+                 label="Permit">
+                      <Button icon={<UploadOutlined />} >
             Select File
                 </Button>
-             </Row>
-             <br />
+                 </Form.Item> 
+            </Row>
              <Row>
              <Button disabled> Start Upload </Button>
              </Row>
              </Col>
        </Row>
+       </Form>
         </div>
     )
 }

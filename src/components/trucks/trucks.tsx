@@ -1,14 +1,23 @@
-
+import React, {useState} from 'react'
 import trucks from '../../../mock/trucks/trucks'
 import { Table , Button} from 'antd'
 import Link from 'next/link'
-import useShowHide from '../../hooks/useShowHide'
-import {EditTwoTone } from '@ant-design/icons'
+import EditModal from '../../components/trucks/editModal'
+import PhoneModal from '../partners/phoneModal'
+
+const rowSelection = {
+  onChange: (selectedRowKeys, selectedRows) => {
+  },
+  getCheckboxProps: record => ({
+    disabled: record.name === 'Disabled User', 
+    name: record.name,
+  }),
+};
+
 
 
 const Trucks = () => {
-  const initial = { edit: false }
-  const { visible, onShow } = useShowHide(initial)
+  const [selectionType,setSelectionType] = useState('checkbox');
 
   const statusList = [
     { value: 1, text: 'Ordered' },
@@ -19,6 +28,8 @@ const Trucks = () => {
     { value: 6, text: 'Deactivated' },
     { value: 7, text: 'Intransit halting' }
   ]
+
+  
 
   const columns = [
     {
@@ -65,6 +76,12 @@ const Trucks = () => {
     {
       title: 'Phone No',
       dataIndex: 'phoneNo',
+      render: () => {
+        return (
+         <PhoneModal/>
+        )
+      }
+      
     },
     {
       title: 'Status',
@@ -77,15 +94,20 @@ const Trucks = () => {
     },
     {
       title: '',
+      render: () => {
+        return (
+         <EditModal/>
+        )
+      }
       
-      render: (text, record) => (
-        <Button size='small' type='ghost' shape='circle' icon={<EditTwoTone />} onClick={() => onShow('edit')} />
-  
-        ),
     }]
 
   return (
+    
     <Table
+    rowSelection={{
+      ...rowSelection,
+    }}
       columns={columns}
       dataSource={trucks}
       rowKey={record => record.id}
