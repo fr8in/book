@@ -1,5 +1,5 @@
 import PageLayout from "../../components/layout/pageLayout";
-import { Tabs, Input, Row, Col, Space } from "antd";
+import { Tabs, Input, Row, Col, Space,Button } from "antd";
 import PartnerKyc from '../../components/partners/partnerKyc'
 import PartnerLead from '../../components/partners/partnerLead'
 import TruckVerification from '../../components/trucks/truckVerrification'
@@ -7,11 +7,12 @@ import VasRequest from '../../components/partners/vasRequest'
 import Breakdown from '../../components/trucks/breakdown'
 import Announcenmemt from '../../components/partners/announcement'
 import Customer from '../../components/customers/sourcingCus'
-import AssignModal from '../../components/partners/assignModal'
-import AddLeadModal from '../../components/partners/addLeadModal'
-import FilterModal from '../../components/partners/filterModel'
+import CreateLead from '../partners/createLead'
+import FilterList from '../branches/employeeListFilter'
 import TitleWithCount from '../common/titleWithCount'
-
+import useShowHide from '../../hooks/useShowHide'
+import {UserAddOutlined,FilterOutlined} from '@ant-design/icons'
+import EmployeeList from "../branches/fr8EmpolyeeList";
 const TabPane = Tabs.TabPane;
 
 function callback(key) {
@@ -20,6 +21,8 @@ function callback(key) {
 
 
 const Sourcing = () => {
+    const initial = {  createLead:false , employeeList:false , filterList:false}
+  const { visible, onShow,onHide } = useShowHide(initial)
     return (
         <PageLayout title="Sourcing">
             <div className='card-body-0 border-top-blue'>
@@ -28,9 +31,9 @@ const Sourcing = () => {
                         <Tabs onChange={callback} type="card" className='card-body-0'
                             tabBarExtraContent={
                                 <Space>
-                                    <AssignModal />
-                                    <FilterModal />
-                                    <AddLeadModal />
+                                    <Button type="primary" onClick={() => onShow('employeeList')} > Assign </Button>
+                                    <Button type="primary" icon={<FilterOutlined />} onClick={() => onShow('filterList')} />
+                                    <Button type="primary" icon={<UserAddOutlined />} onClick={() => onShow('createLead')} />
                                 </Space>
                             }
                         >
@@ -72,6 +75,9 @@ const Sourcing = () => {
                     </TabPane>
                 </Tabs>
             </div>
+            {visible.createLead && <CreateLead visible={visible.createLead} onHide={() => onHide('createLead')} />}
+            {visible.filterList && <FilterList visible={visible.filterList} onHide={() => onHide('filterList')} />}
+            {visible.employeeList && <EmployeeList visible={visible.employeeList} onHide={() => onHide('employeeList')} />}
         </PageLayout>
     );
 };

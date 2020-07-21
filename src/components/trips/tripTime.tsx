@@ -8,7 +8,7 @@ import {
   DeleteOutlined,
   CloseCircleOutlined
 } from '@ant-design/icons'
-import MailModal from './mailModal'
+import MailModal from './loadingMemo'
 import useShowHide from '../../hooks/useShowHide'
 
 
@@ -92,7 +92,6 @@ const TripTime = () => {
                     <Button type='primary' icon={<FilePdfOutlined />} />
                     <Button type='primary' icon={<FileWordOutlined />} />
                     <Button type="primary" size="small" shape='circle' icon={<MailOutlined />} onClick={() => onShow('mail')} />
-                    {visible.mail && <MailModal visible={visible.mail} onHide={() => onHide('mail')} />}
                   </Space>
                 </Form.Item>
               </Col>
@@ -163,6 +162,7 @@ const TripTime = () => {
           </Modal> */}
         </Col>
       </Row>
+      {visible.mail && <MailModal visible={visible.mail} onHide={() => onHide('mail')} />}
     </Card>
      
   )
@@ -171,10 +171,4 @@ const TripTime = () => {
 export default TripTime
 
 
- {/* {this.props.editData && this.props.editData.onHoldTripId ?
-  <Checkbox checked="true" onChange={this.checkedPrivateGodown}
-      disabled={disableDefaultOnHoldTrip}>Unloaded at private
-      godown</Checkbox>
-  : <Checkbox onChange={this.checkedPrivateGodown}
-      disabled={disableDefaultOnHoldTrip}>Unloaded at private
-      godown</Checkbox>} */}
+ 
