@@ -9,20 +9,17 @@ export default function truckInfo() {
     return (
         <div>
              <Form layout='vertical'>
-                 <Space>
-            <Row gutter={10}>
-           
-                    <Col xs={24} sm={5}>
-             
-                            <Form.Item
+             <Row gutter={10}>
+                        <Col span={8}>
+                        <Form.Item
                                 label="Length(Ft)"
                                 name="Length(Ft)"
                                 rules={[{ required: true, message: 'Length(Ft) is required field' }]}
                             >
-                               <InputNumber min={1} max={10} onChange={onChange} placeholder="Length(Ft)"/>
+                               <InputNumber min={1} max={10} onChange={onChange}  placeholder="Length(Ft)"/>
                             </Form.Item> 
                     </Col>
-                    <Col xs={24} sm={5}>
+                    <Col span={8}>
                             <Form.Item
                                 label="Breadth(Ft)"
                                 name="Breadth(Ft)"
@@ -31,7 +28,7 @@ export default function truckInfo() {
                                 <InputNumber min={1} max={10} onChange={onChange} placeholder="Breadth(Ft)" />
                             </Form.Item> 
                     </Col>
-                    <Col xs={24} sm={5}>
+                    <Col span={8}>
                     
                             <Form.Item
                                 label="Height(Ft)"
@@ -44,7 +41,6 @@ export default function truckInfo() {
                     </Col>
                    
                     </Row>
-                    </Space>
                     </Form>
         </div>
     )

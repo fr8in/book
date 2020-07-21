@@ -1,14 +1,24 @@
 import React from 'react'
 import {Row, Col, Space} from 'antd'
+import LabelAndData from '../common/labelAndData'
+import Link from 'next/link'
+
 
 export default function truck(props) {
+  const { data } = props
     return (
         <div>
                 <Row gutter={[12, 12]}> 
                 <Space  direction="horizontal">
-                    <Col >
-                    <h1> Singh</h1> 
-                    </Col>
+                <LabelAndData
+                colSpan={12}
+                data={
+                  <Link href='/partners/[id]' as={`/partners/${'Vijay'}`}>
+                    <a>{'Vijay'}</a>
+                  </Link>
+                }
+              />
+               
                     <Col >
                      <h2>MH14GD1806</h2>
                     </Col>
@@ -33,6 +43,7 @@ export default function truck(props) {
                     </Col>
                     </Space>
                 </Row>
+              
         </div>
     )
 }
