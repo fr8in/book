@@ -18,6 +18,7 @@ const {visible,onShow,onHide} = useShowHide(initial)
     <Row className="timelineFilter">
     <Space>
                             <DatePicker
+                               size='small'
                                 showTime
                                 name="startSearchDate"
                                 format="YYYY-MM-DD"
@@ -25,6 +26,7 @@ const {visible,onShow,onHide} = useShowHide(initial)
                                 placeholder="Start Date"/>
         
                             <DatePicker
+                               size='small'
                                 showTime
                                 name="endSearchDate"
                                 format="YYYY-MM-DD"

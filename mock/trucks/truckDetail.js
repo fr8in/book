@@ -6,7 +6,7 @@ const data = {
         truckid: 'RJ10GB0950',
         trucktype: '32 Feet Multi Axle',
         destination: 'Chennai',
-        tat: '0.23'
+        tat: 'Tat:0.23'
     },
 }
 

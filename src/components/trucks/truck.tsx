@@ -2,20 +2,15 @@ import React from 'react'
 import LabelAndData from '../common/labelAndData'
 import Link from 'next/link'
 import data from '../../../mock/trucks/truckDetail'
-
+import { Row,Col } from "antd";
 
 const Truck = (props) => {
   console.log('id', props)
-  const title = (
-    <h3>
-      <span className='text-primary'>{props.id}</span>
-      <span>&nbsp;{`${data.truck.phonenumber}  ${data.truck.truckid}  ${data.truck.trucktype} ${data.truck.destination} ${data.truck.tat}`}&nbsp;</span>
-    </h3>)
-
-
+  
     return (
         <div>
-            
+            <Row gutter={10}>
+              <Col span={8}>
                 <LabelAndData
                 colSpan={6}
                 data={
@@ -24,8 +19,41 @@ const Truck = (props) => {
                   </Link> 
                 }
               />
-
-              {title}
+              </Col>
+              <Col span={8}>
+             <LabelAndData
+                colSpan={12}
+                data={data.truck.truckid }
+              />
+             </Col>
+             <Col span={8}>
+             <LabelAndData
+                colSpan={12}
+                data={data.truck.destination }
+              />
+             </Col>
+             </Row>
+             <Row gutter={10}>
+             <Col span={8}>
+             <LabelAndData
+                colSpan={12}
+                data={data.truck.phonenumber }
+              />
+             </Col>
+             <Col span={8}>
+             <LabelAndData
+                colSpan={12}
+                data={data.truck.trucktype}
+              />
+             </Col>
+             <Col span={8}>
+             <LabelAndData
+                colSpan={12}
+                data={data.truck.tat }
+              />
+             </Col>
+             </Row>
+              
         </div>
     )
 }

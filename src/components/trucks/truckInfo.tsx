@@ -1,9 +1,6 @@
 import React from 'react'
-import {Row,Col,InputNumber,Form, Input} from 'antd'
+import {Row,Col,Form, Input} from 'antd'
 
-function onChange(value) {
-    console.log('changed', value);
-  }
 
 export default function truckInfo() {
     return (
@@ -16,7 +13,7 @@ export default function truckInfo() {
                                 name="Length(Ft)"
                                 rules={[{ required: true, message: 'Length(Ft) is required field' }]}
                             >
-                               <InputNumber min={1} max={10} onChange={onChange}  placeholder="Length(Ft)"/>
+                               <Input placeholder="Length(Ft)" type='number'disabled={false}/>
                             </Form.Item> 
                     </Col>
                     <Col span={6}>
@@ -25,7 +22,7 @@ export default function truckInfo() {
                                 name="Breadth(Ft)"
                                 rules={[{ required: true, message: 'Breadth(Ft) is required field' }]}
                             >
-                                <InputNumber min={1} max={10} onChange={onChange} placeholder="Breadth(Ft)" />
+                                <Input placeholder="Breadth(Ft)" type='number'disabled={false} />
                             </Form.Item> 
                     </Col>
                     <Col span={6}>
@@ -35,7 +32,7 @@ export default function truckInfo() {
                                 name="Height(Ft)"
                                 rules={[{ required: true, message: 'Height(Ft) is required field' }]}
                             >
-                                <InputNumber  min={1} max={10} onChange={onChange}  placeholder="Height(Ft)" />
+                                <Input  placeholder="Height(Ft)" type='number'disabled={false}/>
                             </Form.Item> 
                             
                     </Col>
