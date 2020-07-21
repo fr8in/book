@@ -3,7 +3,7 @@ import Documents from '../truckDocuments'
 import TripDetail from '../../trips/tripsByStages'
 import Truck from '../truck'
 import Timeline from '../truckTimeline'
-import { Row, Col, Button, Card } from 'antd'
+import { Row, Col, Button, Card, Divider } from 'antd'
 import AssignStatus from '../assignStatus'
 
 export default function TruckDetailContainer () {
@@ -24,7 +24,7 @@ export default function TruckDetailContainer () {
                 </Card>
               </Col>
               <Col xs={24} sm={12}>
-                <Card size='small' className='card-body-0 border-top-blue'>
+                <Card size='small' className='card-body-0'>
                   <TripDetail />
                 </Card>
               </Col>
@@ -36,6 +36,7 @@ export default function TruckDetailContainer () {
                   <TruckInfo />
                 </Col>
               </Row>
+              <Divider />
               <Row gutter={[10, 10]}>
                 <Col xs={24}>
                   <Documents />

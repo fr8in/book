@@ -13,7 +13,7 @@ const Partners = () => {
           <Link href='/trips/[id]' as={`/trips/${record.id} `}>
             <a>{text}</a>
           </Link>)
-      },
+      }
     },
     {
       title: 'OrderDate',
@@ -33,19 +33,19 @@ const Partners = () => {
     },
     {
       title: 'Status',
-      dataIndex: 'status',
-    },
-   
+      dataIndex: 'status'
+    }
+
   ]
   return (
-      <Table
-        columns={columnsCurrent}
-       dataSource={mock}
-        rowKey={record => record.id}
-        size='middle'
-        scroll={{ x: 900, y: 400 }}
-        pagination={false}
-      />
+    <Table
+      columns={columnsCurrent}
+      dataSource={mock}
+      rowKey={record => record.id}
+      size='middle'
+      scroll={{ x: 900, y: 270 }}
+      pagination={false}
+    />
   )
 }
 
