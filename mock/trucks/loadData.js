@@ -6,6 +6,10 @@ const loadData = [
     partner: 'Irshad Akhtar khan',
     partnerMembershipId: 0,
     partnerNo: '9594210257',
+    users: [
+      { id: 1, mobileNo: '9594210257' },
+      { id: 2, mobileNo: '9594210250' }
+    ],
     noOfLoadsTaken: 20,
     partnerEngagementPercent: 60,
     driverPhoneNo: '9594210256',
@@ -20,6 +24,10 @@ const loadData = [
     partnerId: 101,
     partner: 'Irshad Akhtar khan',
     partnerNo: '9594210257',
+    users: [
+      { id: 1, mobileNo: '9594210257' },
+      { id: 2, mobileNo: '9594210250' }
+    ],
     partnerMembershipId: 1,
     noOfLoadsTaken: 20,
     partnerEngagementPercent: 60,
@@ -36,6 +44,10 @@ const loadData = [
     partner: 'Irshad Akhtar khan',
     partnerMembershipId: 0,
     partnerNo: '9594210257',
+    users: [
+      { id: 1, mobileNo: '9594210257' },
+      { id: 2, mobileNo: '9594210250' }
+    ],
     noOfLoadsTaken: 20,
     partnerEngagementPercent: 60,
     driverPhoneNo: '9594210256',
@@ -51,6 +63,10 @@ const loadData = [
     partner: 'Irshad Akhtar khan',
     partnerMembershipId: 1,
     partnerNo: '9594210257',
+    users: [
+      { id: 1, mobileNo: '9594210257' },
+      { id: 2, mobileNo: '9594210250' }
+    ],
     noOfLoadsTaken: 20,
     partnerEngagementPercent: 60,
     driverPhoneNo: '9594210256',
@@ -66,6 +82,10 @@ const loadData = [
     partner: 'Irshad Akhtar khan',
     partnerMembershipId: 0,
     partnerNo: '9594210257',
+    users: [
+      { id: 1, mobileNo: '9594210257' },
+      { id: 2, mobileNo: '9594210250' }
+    ],
     noOfLoadsTaken: 20,
     partnerEngagementPercent: 60,
     driverPhoneNo: '9594210256',
@@ -81,6 +101,10 @@ const loadData = [
     partner: 'Irshad Akhtar khan',
     partnerMembershipId: 0,
     partnerNo: '9594210257',
+    users: [
+      { id: 1, mobileNo: '9594210257' },
+      { id: 2, mobileNo: '9594210250' }
+    ],
     noOfLoadsTaken: 20,
     partnerEngagementPercent: 60,
     driverPhoneNo: '9594210256',
@@ -96,6 +120,10 @@ const loadData = [
     partner: 'Irshad Akhtar khan',
     partnerMembershipId: 0,
     partnerNo: '9594210257',
+    users: [
+      { id: 1, mobileNo: '9594210257' },
+      { id: 2, mobileNo: '9594210250' }
+    ],
     noOfLoadsTaken: 20,
     partnerEngagementPercent: 60,
     driverPhoneNo: '9594210256',
@@ -111,6 +139,10 @@ const loadData = [
     partner: 'Irshad Akhtar khan',
     partnerMembershipId: 0,
     partnerNo: '9594210257',
+    users: [
+      { id: 1, mobileNo: '9594210257' },
+      { id: 2, mobileNo: '9594210250' }
+    ],
     noOfLoadsTaken: 20,
     partnerEngagementPercent: 60,
     driverPhoneNo: '9594210256',

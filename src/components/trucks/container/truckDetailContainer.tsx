@@ -15,18 +15,18 @@ export default function truckDetailContainer() {
       </Row>
       <Row gutter={[10, 10]}>
                 <Col xs={24} sm={12}>
-                <Card size='small' className='card-body-0 border-top-blue'>
+                <Card size='small' className='card-body-0 border-top-blue'> <br/>
         <Timeline/>
         </Card>
       </Col>
       <Col xs={24} sm={12}>
-      <Card size='small' className='card-body-0 border-top-blue'>
+      <Card size='small' className='card-body-0 border-top-blue'> <br/>
         <TripDetail/>
         </Card>
       </Col>
       </Row>
       
-      <Card size='small' className='card-body-0 border-top-blue'>
+      <Card size='small' className='card-body-0 border-top-blue'> <br/>
       <Row>
         <Col>
         <TruckInfo/>
