@@ -4,12 +4,13 @@ import FilterList from '../../../mock/sourcing/employeeListFilter'
 
   const EmployeeListFilter = (props) => {
     const { visible, onHide } = props
-    const usersInitial = { checkedItems:[] }
+    const usersInitial = { checkedItems:[],visible:false }
     const [checkedItems, setCheckedItems] = useState(usersInitial)
 
     function onChange(checkedValues) {
     setCheckedItems(checkedValues);
     }
+
     return (
       <div>
         <Modal
@@ -18,8 +19,9 @@ import FilterList from '../../../mock/sourcing/employeeListFilter'
           footer={null}
              >
          <Row>
-         <Col xs={24} className='emp-list'>
-           <Checkbox.Group options={FilterList} defaultValue= {['checkedItems']} onChange={onChange} /> 
+         <Checkbox>  All  </Checkbox>
+         <Col xs={24} className='emp-list'>         
+           <Checkbox.Group options={FilterList} defaultValue= {['checkedItems']} onChange={onChange} />    
         </Col>
         </Row>
         <br />

@@ -1,15 +1,10 @@
 import { useState } from 'react'
 import { Table } from 'antd'
 import Link from 'next/link'
-<<<<<<< HEAD
-import EditModal from '../../components/trucks/editModal'
-import PhoneModal from '../partners/partnerUsers'
-=======
 import { EditTwoTone } from '@ant-design/icons'
 import trucks from '../../../mock/trucks/trucks'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
 import PartnerUsers from '../partners/partnerUsers'
->>>>>>> 72ac8b33ed6a637a8dd285f61d72dfa450f27a07
 
 const statusList = [
   { value: 1, text: 'Ordered' },

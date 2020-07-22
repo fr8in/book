@@ -1,4 +1,4 @@
-const sourcingDetail=[
+const employeeList=[
    { 
        value:'1',
        label:'ravi@fr8.in',
@@ -20,8 +20,5 @@ const sourcingDetail=[
         label:'pavi@fr8.in',
      }
 ]
-
-
-
-export default sourcingDetail
+export default employeeList
   
