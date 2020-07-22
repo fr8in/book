@@ -1,90 +1,47 @@
-import { Collapse, Input, Row, Col, Tabs, Button, Space,Form } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
-import LabelWithData from "../common/labelWithData";
-import FasTag from "../../components/partners/cards/fasTag";
-import FuelCard from "../../components/partners/cards/fuelCard";
-const { Panel } = Collapse;
+import { Collapse, Input, Row, Col, Tabs, Button, Space } from 'antd'
+import { UploadOutlined } from '@ant-design/icons'
+import LabelWithData from '../common/labelWithData'
+import FasTag from '../../components/partners/cards/fasTag'
+import FuelCard from '../../components/partners/cards/fuelCard'
+const { Panel } = Collapse
 
-const { TabPane } = Tabs;
+const { TabPane } = Tabs
 const PartnerDocument = () => {
   return (
     <Collapse accordion>
-      <Panel header="Document" key="1"> 
-        <br />
-        <Tabs type="card">
-          <TabPane tab="Main" key="1">
-            <br />
+      <Panel header='Document' key='1'>
+        <Tabs type='card'>
+          <TabPane tab='Main' key='1'>
             <Row gutter={8}>
               <Col xs={24} sm={24} md={24}>
                 <LabelWithData
-                  label="PAN"
-                  data={
-                    <Space>
-                      <span>                      
-                        <Button size="middle">
-                          <UploadOutlined />
-                        </Button>
-                      </span>
-                    </Space>
-                  }
+                  label='PAN'
+                  data={<Button icon={<UploadOutlined />} />}
                   labelSpan={10}
                   dataSpan={14}
                 />
                 <LabelWithData
-                  label="Card Number"
-                  data={
-                    <Space>
-                      <span>                      
-                        <Button>
-                          <UploadOutlined />
-                        </Button>
-                      </span>
-                    </Space>
-                  }
+                  label='Card Number'
+                  data={<Button icon={<UploadOutlined />} />}
                   labelSpan={10}
                   dataSpan={14}
                 />
                 <LabelWithData
-                  label="Balance"
-                  data={
-                    <Space>
-                      <span>
-                       
-                        <Button>
-                          <UploadOutlined />
-                        </Button>
-                      </span>
-                    </Space>
-                  }
+                  label='Balance'
+                  data={<Button icon={<UploadOutlined />} />}
                   labelSpan={10}
                   dataSpan={14}
                 />
                 <LabelWithData
-                  label=" Linked Mobile "
-                  data={
-                    <Space>
-                      <span>                      
-                        <Button>
-                          <UploadOutlined />
-                        </Button>
-                      </span>
-                    </Space>
-                  }
+                  label=' Linked Mobile '
+                  data={<Button icon={<UploadOutlined />} />}
                   labelSpan={10}
                   dataSpan={14}
                 />
 
                 <LabelWithData
-                  label="Status"
-                  data={
-                    <Space>
-                      <span>
-                        <Button>
-                          <UploadOutlined />
-                        </Button>
-                      </span>
-                    </Space>
-                  }
+                  label='Status'
+                  data={<Button icon={<UploadOutlined />} />}
                   labelSpan={10}
                   dataSpan={14}
                 />
@@ -93,22 +50,17 @@ const PartnerDocument = () => {
           </TabPane>
         </Tabs>
       </Panel>
-      <Panel header="Fuel Detail" key="2">
-        <br />
+      <Panel header='Fuel Detail' key='2'>
         <FuelCard />
-        <br />
       </Panel>
-      <Panel header="Fas Card" key="3">
-        <Row justify="end" className="m5">
-          <span className="extra">
-            <Input placeholder="Search..." style={{ width: "auto" }} />
-          </span>
+      <Panel header='FasTag' key='3'>
+        <Row justify='end' className='mb5'>
+          <Input placeholder='Search...' style={{ width: 'auto' }} />
         </Row>
-        <br />
         <FasTag />
       </Panel>
     </Collapse>
-  );
-};
+  )
+}
 
-export default PartnerDocument;
+export default PartnerDocument

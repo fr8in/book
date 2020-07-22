@@ -26,7 +26,7 @@ const PartnerDetailContainer = () => {
   return (
     <Row>
       <Col xs={24}>
-        <Row gutter={[10, 10]}>
+        <Row className='mb10'>
           <Col xs={24}>
             <Card
               size='small'
@@ -41,9 +41,7 @@ const PartnerDetailContainer = () => {
                   <BasicDetail />
                   <PartnerStatus />
                   <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${'ST003579'}`}>
-                    <Button type='primary' icon={<PlusOutlined />}>
-                       Add Truck
-                    </Button>
+                    <Button type='primary' icon={<PlusOutlined />}>Add Truck</Button>
                   </Link>
                 </Col>
                 <Col xs={24} md={12} xl={8}>
@@ -58,7 +56,7 @@ const PartnerDetailContainer = () => {
             </Card>
           </Col>
         </Row>
-        <Row gutter={[10, 10]}>
+        <Row>
           <Col sm={24}>
             <Card size='small' className='card-body-0 border-top-blue'>
               <Tabs defaultActiveKey='1' onChange={callback}>
@@ -66,8 +64,7 @@ const PartnerDetailContainer = () => {
                   <PartnerTruck />
                 </TabPane>
                 <TabPane tab='Detail' key='2'>
-                  <br />
-                  <Row gutter={[8, 8]} justify='space-around'>
+                  <Row gutter={10} className='p10'>
                     <Col xs={24} sm={12} md={12}>
                       <DetailInfo />
                     </Col>

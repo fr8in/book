@@ -14,7 +14,7 @@ const ReportBarChart = () => {
   }) : null
   return (
     <Card size='small'>
-      <BarChart width={360} height={220} data={data}>
+      <BarChart width={360} height={220} data={data} id='monthlyReport'>
         <CartesianGrid strokeDasharray='3 3' />
         <XAxis dataKey='month' />
         <YAxis />
