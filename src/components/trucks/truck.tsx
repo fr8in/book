@@ -66,4 +66,4 @@ const Truck = (props) => {
     )
 }
 
-export default  Truck
+export default Truck

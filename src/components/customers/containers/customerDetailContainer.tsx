@@ -1,5 +1,5 @@
 import { Row, Col, Card, Button, Space, Collapse, Tabs } from 'antd'
-import { BankFilled, LeftCircleFilled, WalletOutlined,PlusOutlined } from '@ant-design/icons'
+import { BankFilled, LeftCircleFilled, WalletOutlined, PlusOutlined } from '@ant-design/icons'
 import Blacklist from '../blacklist'
 import CustomerInfo from '../customerInfo'
 import { useSubscription } from '@apollo/client'
@@ -33,7 +33,7 @@ const CustomerDetailContainer = (props) => {
   const { loading, error, data } = useSubscription(
     CUSTOMER_DETAIL_SUBSCRIPTION,
     {
-      variables: { cardCode },
+      variables: { cardCode }
       // Setting this value to true will make the component rerender when
       // the "networkStatus" changes, so we are able to know if it is fetching
       // more data
