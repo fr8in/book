@@ -1,27 +1,30 @@
-import { Modal,Checkbox,Row,Col } from 'antd';
-import React from 'react'
+import { Modal,Checkbox,Row,Col } from 'antd'
+import React,{useState} from 'react'
 import FilterList from '../../../mock/sourcing/employeeListFilter'
-function onChange(e) {
-    console.log(`checked = ${e.target.checked}`);
-  }
 
   const EmployeeListFilter = (props) => {
     const { visible, onHide } = props
-  
-    // function onChange(checkedValues) {
-    //   setCheckedItems(checkedValues);
-    // }
+    const usersInitial = { checkedItems:[],visible:false }
+    const [checkedItems, setCheckedItems] = useState(usersInitial)
+
+    function onChange(checkedValues) {
+    setCheckedItems(checkedValues);
+    }
+
     return (
       <div>
         <Modal
-              visible={visible}
-              onCancel={onHide}
+          visible={visible}
+          onCancel={onHide}
+          footer={null}
              >
-              <Col> 
-        <Row>  
-        <Checkbox.Group options={FilterList}  onChange={onChange} /> 
-        </Row>
+         <Row>
+         <Checkbox>  All  </Checkbox>
+         <Col xs={24} className='emp-list'>         
+           <Checkbox.Group options={FilterList} defaultValue= {['checkedItems']} onChange={onChange} />    
         </Col>
+        </Row>
+        <br />
         </Modal>
       </div>
     );

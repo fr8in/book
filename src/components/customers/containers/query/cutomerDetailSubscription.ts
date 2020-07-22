@@ -4,11 +4,20 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
   subscription customers($cardCode: String) {
     customer(where: {cardCode: {_eq: $cardCode}}) {
       id
-      PAN
-      name
-      mobileNo
       cardCode
+      name
+      PAN
+      GSTNo
+      virtualAccount
+      mobileNo
+      managed
+      advancePercentageId
+      exceptionDate
+      creditLimit
+      onboardedById
+      paymentManagerId
       statusId
+      typeId
     }
   }
 `
