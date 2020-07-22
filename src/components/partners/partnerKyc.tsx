@@ -1,4 +1,4 @@
-import { Table, Radio,Tooltip, Button } from 'antd'
+import { Table, Radio,Tooltip, Button,Col } from 'antd'
 import {CommentOutlined} from '@ant-design/icons'
 import mock from '../../../mock/partner/partnerKyc'
 import Link from 'next/link'
@@ -18,6 +18,13 @@ const kycStatusList=[
   { value: 3, text: 'Rejected' },
   { value: 4, text: 'Re-Verification' },
 ]
+
+const RadioList =[
+    { label:'0' ,value: '1' },
+    { label:'1-5' ,value: '2' },
+    { label:'>5' ,value: '3' },
+    { label:'All' ,value: '4' },
+  ]
 const radioStyle = {
   display: 'block',
   height: '30px',
@@ -71,21 +78,8 @@ const PartnerKyc = () => {
       dataIndex: 'count',
       width:'9%',
       filterDropdown: (
-        <div > 
-              <Radio.Group >
-        <Radio style={radioStyle} >
-        0
-        </Radio>
-        <Radio style={radioStyle} >
-       1-5
-        </Radio>
-        <Radio style={radioStyle} >
-         {">5"}
-        </Radio>
-        <Radio style={radioStyle} >
-          All
-        </Radio>
-      </Radio.Group>
+        <div >  
+              <Radio.Group options={RadioList}  />
       </div>
     ),
       key:'count',

@@ -3,7 +3,7 @@ import trucks from '../../../mock/trucks/trucks'
 import { Table , Button} from 'antd'
 import Link from 'next/link'
 import EditModal from '../../components/trucks/editModal'
-import PhoneModal from '../partners/phoneModal'
+import PhoneModal from '../partners/partnerUsers'
 
 const rowSelection = {
   onChange: (selectedRowKeys, selectedRows) => {

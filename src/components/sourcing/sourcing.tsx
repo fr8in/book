@@ -15,14 +15,16 @@ import {UserAddOutlined,FilterOutlined} from '@ant-design/icons'
 import EmployeeList from "../branches/fr8EmpolyeeList";
 const TabPane = Tabs.TabPane;
 
-function callback(key) {
-    console.log(key);
-}
+
 
 
 const Sourcing = () => {
-    const initial = {  createLead:false , employeeList:false , filterList:false}
+  const initial = {  createLead:false , employeeList:false , filterList:false}
   const { visible, onShow,onHide } = useShowHide(initial)
+
+  function callback(key) {
+    console.log(key);
+}
     return (
         <PageLayout title="Sourcing">
             <div className='card-body-0 border-top-blue'>
