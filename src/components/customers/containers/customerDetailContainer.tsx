@@ -1,5 +1,5 @@
 import { Row, Col, Card, Button, Space, Collapse, Tabs } from 'antd'
-import { BankFilled, LeftCircleFilled, WalletOutlined,PlusOutlined } from '@ant-design/icons'
+import { BankFilled, LeftCircleFilled, WalletOutlined, PlusOutlined } from '@ant-design/icons'
 import Blacklist from '../blacklist'
 import CustomerInfo from '../customerInfo'
 import { useSubscription } from '@apollo/client'
@@ -31,7 +31,7 @@ const CustomerDetailContainer = (props) => {
   const { loading, error, data } = useSubscription(
     CUSTOMER_DETAIL_SUBSCRIPTION,
     {
-      variables: { cardCode },
+      variables: { cardCode }
       // Setting this value to true will make the component rerender when
       // the "networkStatus" changes, so we are able to know if it is fetching
       // more data
@@ -110,19 +110,19 @@ const CustomerDetailContainer = (props) => {
                   <InvoicePending />
                 </TabPane>
                 <TabPane tab='Users' key='6'>
-                <Row justify='end' className='m5'>
-                  <Button type="primary" >
-                <PlusOutlined /> Add Users
-                 </Button>
-                 </Row>
+                  <Row justify='end' className='m5'>
+                    <Button type='primary'>
+                      <PlusOutlined /> Add Users
+                    </Button>
+                  </Row>
                   <Users />
                 </TabPane>
                 <TabPane tab='Branch' key='7'>
-                <Row justify='end' className='m5'>
-                  <Button type="primary" >
-                <PlusOutlined /> Add Branch
-                 </Button>
-                 </Row>
+                  <Row justify='end' className='m5'>
+                    <Button type='primary'>
+                      <PlusOutlined /> Add Branch
+                    </Button>
+                  </Row>
                   <Branch />
                 </TabPane>
                 <TabPane tab='FR8 Branch' key='8'>
