@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Layout, Row, Col } from 'antd'
 import useWindowSize from '../../hooks/useWindowSize'
 import '../../styles/admin.less'
-import Actions from '../common/actions'
+import Actions from './actions'
 import Nav from './nav'
 import Link from 'next/link'
 
