@@ -4,7 +4,7 @@ import { Table, Tooltip, Badge, Button, Input } from 'antd'
 import Link from 'next/link'
 import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled, SearchOutlined } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
-import CustomerPo from '../customers/customerPo'
+import CreatePo from '../customers/createPo'
 import PartnerUsers from '../partners/partnerUsers'
 import TripFeedBack from '../trips/tripFeedBack'
 
@@ -162,7 +162,7 @@ const WaitingForLoad = () => {
           data={previousComment.previousComment}
           onHide={previousCommentClose}
         />}
-      {visible.poModal && <CustomerPo visible={visible.poModal} onHide={() => onHide('poModal')} />}
+      {visible.poModal && <CreatePo visible={visible.poModal} onHide={() => onHide('poModal')} />}
     </>
   )
 }
