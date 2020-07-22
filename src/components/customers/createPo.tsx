@@ -1,6 +1,11 @@
-import { Modal, Row, Button, Form, Input, Col, Select, DatePicker, Space, Radio } from 'antd'
+import { Modal, Row, Button, Form, Input, Col, Select, DatePicker, Space, Radio } from 'antd';
+import {createPO,customer} from '../../../mock/customer/createQuickPo'
 
 
+const {Option} = Select;
+function handlechange(value){
+    console.log(`Selected ${value}`);
+}
 const CustomerPo = (props) => {
     const { visible, onHide } = props
 
@@ -15,7 +20,7 @@ const CustomerPo = (props) => {
     return (
         <Modal
             visible={props.visible}
-            title='Po:'
+            title='PO:Irshad Akhtar khan'
             onOk={onSubmit}
             onCancel={props.onHide}
             width={900}
@@ -37,7 +42,8 @@ const CustomerPo = (props) => {
                         <Form.Item label='Customer'>
                             <Select
                                 placeholder='Customer'
-                                disabled={false}
+                                onChange={handlechange}
+                               options={customer}
                             />
                         </Form.Item>
                     </Col>
@@ -60,16 +66,17 @@ const CustomerPo = (props) => {
                     <Col xs={6}>
                         <Form.Item label='Source'>
                             <Select
-                                placeholder='Source'
-                                disabled={false}
+                                onChange={handlechange}
+                                options={createPO}
+                                
                             />
                         </Form.Item>
                     </Col>
                     <Col xs={6}>
                         <Form.Item label='Destination'>
                             <Select
-                                placeholder='destinaion'
-                                disabled={false}
+                               onChange={handlechange}
+                               options={createPO}
                             />
                         </Form.Item>
                     </Col>

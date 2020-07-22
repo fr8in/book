@@ -4,8 +4,9 @@ import SourcingContainer from '../../components/sourcing/container/sourcingConta
 const Sourcing = () => {
   return (
     <PageLayout title='Sourcing'>
-              <SourcingContainer />
+      <SourcingContainer />
     </PageLayout>
   )
 }
+
 export default Sourcing
