@@ -6,12 +6,16 @@ import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled, SearchO
 import useShowHide from '../../hooks/useShowHide'
 import CustomerPo from '../customers/customerPo'
 import PartnerUsers from '../partners/partnerUsers'
+import TripFeedBack from '../trips/tripFeedBack'
 
 const WaitingForLoad = () => {
   const initial = { comment: false, truckSearch: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   const usersInitial = { users: [], name: '', visible: false }
   const [users, setUsers] = useState(usersInitial)
+
+  const Initial ={previousComment: [],visible:false}
+  const [previousComment,setPreviousComment] =useState(Initial)
 
   const callNow = record => {
     window.location.href = 'tel:' + record
@@ -23,6 +27,13 @@ const WaitingForLoad = () => {
 
   const showUsers = (record) => {
     setUsers({ ...users, users: record.users, name: record.partner, visible: true })
+  }
+ 
+  const previousCommentClose = () => {
+    setPreviousComment(Initial)
+  }
+  const showPreviousComment = (record) => {
+    setPreviousComment({ ...previousComment, previousComment: record, visible: true })
   }
 
   const columns = [
@@ -112,7 +123,7 @@ const WaitingForLoad = () => {
               <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.driverPhoneNo)} />
             </Tooltip>
             <Tooltip title='Comment'>
-              <Button type='link' icon={<CommentOutlined />} onClick={() => onShow('comment')} />
+              <Button type='link' icon={<CommentOutlined />} onClick={() => showPreviousComment(record.previousComment)} />
             </Tooltip>
             <Tooltip title='click to copy message'>
               <Button type='link' icon={<WhatsAppOutlined />} />
@@ -143,6 +154,13 @@ const WaitingForLoad = () => {
           data={users.users}
           onHide={usersClose}
           name={users.name}
+        />}
+         
+      {previousComment.visible &&
+        <TripFeedBack
+          visible={previousComment.visible}
+          data={previousComment.previousComment}
+          onHide={previousCommentClose}
         />}
       {visible.poModal && <CustomerPo visible={visible.poModal} onHide={() => onHide('poModal')} />}
     </>
