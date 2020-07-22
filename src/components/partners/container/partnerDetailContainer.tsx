@@ -40,7 +40,7 @@ const PartnerDetailContainer = () => {
                 <Col xs={24} sm={12} md={8}>
                   <BasicDetail />
                   <PartnerStatus />
-                  <Link href='/trucks/addtruck/[id]'>
+                  <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${'ST003579'}`}>
                     <Button type='primary' icon={<PlusOutlined />}>
                        Add Truck
                     </Button>
