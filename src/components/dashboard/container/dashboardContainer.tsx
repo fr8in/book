@@ -1,18 +1,18 @@
 import { Row, Col, Card, Tabs, Button, Space } from 'antd'
-import Trips from '../trips/activeTrips'
-import WaitingForLoad from '../trucks/waitingForLoad'
-import Orders from '../reports/orders'
-import Revenue from '../reports/revenue'
-import Progress from '../reports/progress'
+import Trips from '../../trips/activeTrips'
+import WaitingForLoad from '../../trucks/waitingForLoad'
+import Orders from '../../reports/orders'
+import Revenue from '../../reports/revenue'
+import Progress from '../../reports/progress'
 import { WhatsAppOutlined, CarOutlined } from '@ant-design/icons'
-import ExcessLoad from '../trips/excessLoad'
-import TitleWithCount from '../common/titleWithCount'
-import useShowHide from '../../hooks/useShowHide'
-import CreateExcessLoad from '../trips/createExcessLoad'
+import ExcessLoad from '../../trips/excessLoad'
+import TitleWithCount from '../../common/titleWithCount'
+import useShowHide from '../../../hooks/useShowHide'
+import CreateExcessLoad from '../../trips/createExcessLoad'
 
 const { TabPane } = Tabs
 
-const Dashboard = () => {
+const DashboardContainer = () => {
   const initial = { excessLoad: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   return (
@@ -88,4 +88,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default DashboardContainer
