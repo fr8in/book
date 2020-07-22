@@ -1,65 +1,44 @@
-import { Row, Col, Space } from 'antd'
+import { Row, Col } from 'antd'
 import LabelWithData from '../common/labelWithData'
-import Detail from '../../../mock/partner/partnerInfo'
+import detail from '../../../mock/partner/partnerInfo'
 
-
-const partnerInfo = () => {
-
-	return (
-		<Row gutter={8}>
-			<Col xs={24} sm={24} md={24}>
-				<LabelWithData
-					label='City'
-					data={
-						<Space>
-							<span>{Detail.city}</span>
-						</Space>
-					}
-					labelSpan={10}
-					dataSpan={14}
-				/>
-				<LabelWithData
-					label='Region'
-					data={
-						<Space>
-							<span>{Detail.region}</span>
-						</Space>
-					}
-					labelSpan={10}
-					dataSpan={14}
-				/>
-				<LabelWithData
-					label='On Boarded By'
-					data={
-						<Space>
-							<span>{Detail.onBoardedBy}</span>
-						</Space>
-					}
-					labelSpan={10}
-					dataSpan={14}
-				/>
-				<LabelWithData
-					label='Amount'
-					data={
-						<Space>
-							<span>{Detail.amount}</span>
-						</Space>
-					}
-					labelSpan={10}
-					dataSpan={14}
-				/>
-				<LabelWithData
-					label='Advance Percentage'
-					data={
-						<Space>
-							<span>{Detail.advance}</span>
-						</Space>
-					}
-					labelSpan={10}
-					dataSpan={14}
-				/>
-			</Col>
-		</Row>
-	)
+const PartnerInfo = () => {
+  return (
+    <Row gutter={8} className='mb10'>
+      <Col xs={24} sm={24} md={24}>
+        <LabelWithData
+          label='City'
+          data={detail.city}
+          labelSpan={10}
+          dataSpan={14}
+        />
+        <LabelWithData
+          label='Region'
+          data={detail.region}
+          labelSpan={10}
+          dataSpan={14}
+        />
+        <LabelWithData
+          label='On Boarded By'
+          data={detail.onBoardedBy}
+          labelSpan={10}
+          dataSpan={14}
+        />
+        <LabelWithData
+          label='Amount'
+          data={detail.amount}
+          labelSpan={10}
+          dataSpan={14}
+        />
+        <LabelWithData
+          label='Advance Percentage'
+          data={detail.advance}
+          labelSpan={10}
+          dataSpan={14}
+        />
+      </Col>
+    </Row>
+  )
 }
-export default partnerInfo
+
+export default PartnerInfo

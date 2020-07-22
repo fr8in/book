@@ -1,50 +1,24 @@
 import React from 'react'
-import { Card, Space } from 'antd'
+import { Card } from 'antd'
 import LabelData from '../../components/common/labelData'
-export default function AvailableBalance () {
+
+const AvailableBalance = (props) => {
   return (
-    <div>
-      <Card>
+    <Card size='small'>
       <LabelData
-          label='Wallet'
-					data={
-						<Space>
-							<span>0</span>
-						</Space>
-          }
-          iconSpan={1}
-          labelSpan={2}
-          valueSpan={19}
-					dataSpan={2}
-				/>
-        
-					<LabelData
-          label='Fuel Card'
-					data={
-						<Space>
-							<span>0</span>
-						</Space>
-          }
-          iconSpan={1}
-          labelSpan={4}
-          valueSpan={17}
-					dataSpan={2}
-				/>
-       
-        	<LabelData
-          label='Fas Tag'
-					data={
-						<Space>
-							<span>0</span>
-						</Space>
-          }
-          iconSpan={1}
-          labelSpan={4}
-          valueSpan={17}
-					dataSpan={2}
-				/>
-       
-      </Card>
-    </div>
+        label='Wallet'
+        value={props.wallet}
+      />
+      <LabelData
+        label='Fuel Card'
+        value={props.fuel}
+      />
+      <LabelData
+        label='FasTag'
+        value={props.fasTag}
+      />
+    </Card>
   )
 }
+
+export default AvailableBalance
