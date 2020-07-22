@@ -41,6 +41,7 @@ const content = (
 
 
 const PartnerKyc = () => {
+
   const [selectionType, setSelectionType] = useState('checkbox');
   const initial = { comment: false,employeeList:false  }
   const { visible, onShow, onHide } = useShowHide(initial)

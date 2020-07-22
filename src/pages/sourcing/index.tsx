@@ -1,5 +1,5 @@
 import PageLayout from '../../components/layout/pageLayout'
-import SourcingContainer from '../../components/sourcing/sourcing'
+import SourcingContainer from '../../components/sourcing/container/sourcingContainer'
 
 const Sourcing = () => {
   return (
@@ -8,5 +8,4 @@ const Sourcing = () => {
     </PageLayout>
   )
 }
-
 export default Sourcing

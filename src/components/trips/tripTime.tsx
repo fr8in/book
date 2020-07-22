@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React from 'react'
 import { Row, Col, Card, Form, DatePicker, Tooltip, Input, Space, Button, Checkbox } from 'antd'
 import {
   FilePdfOutlined,
@@ -8,12 +8,13 @@ import {
   DeleteOutlined,
   CloseCircleOutlined
 } from '@ant-design/icons'
-import MailModal from './loadingMemo'
+import LoadingMemo from './loadingMemo'
+import DeletePO from '../../components/trips/deletePO'
 import useShowHide from '../../hooks/useShowHide'
 
 
 const TripTime = () => {
-  const initial = { checkbox: false, mail:false}
+  const initial = { checkbox: false, mail:false, deletePO:false}
   const { visible, onShow,onHide } = useShowHide(initial)
   return (
     <Card size='small' className='mt10'>
@@ -130,7 +131,7 @@ const TripTime = () => {
             <Row>
               <Col xs={16}>
                 <Space>
-                  <Button type='primary' danger icon={<DeleteOutlined />}>PO</Button>
+                  <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')} >PO</Button>
                   <Button type='primary'>Process Advance</Button>
                   <Button danger icon={<CloseCircleOutlined />}>Sout</Button>
                   <Button danger icon={<CloseCircleOutlined />}>Dout</Button>
@@ -162,7 +163,8 @@ const TripTime = () => {
           </Modal> */}
         </Col>
       </Row>
-      {visible.mail && <MailModal visible={visible.mail} onHide={() => onHide('mail')} />}
+      {visible.mail && <LoadingMemo visible={visible.mail} onHide={() => onHide('mail')} />}
+      {visible.deletePO && <DeletePO visible={visible.deletePO} onHide={() => onHide('deletePO')} />}
     </Card>
      
   )

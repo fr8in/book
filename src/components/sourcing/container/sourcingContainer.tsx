@@ -1,20 +1,21 @@
-import PageLayout from "../../components/layout/pageLayout";
+import PageLayout from "../../layout/pageLayout";
 import { Tabs, Input, Row, Col, Space,Button } from "antd";
-import PartnerKyc from '../../components/partners/partnerKyc'
-import PartnerLead from '../../components/partners/partnerLead'
-import TruckVerification from '../../components/trucks/truckVerrification'
-import VasRequest from '../../components/partners/vasRequest'
-import Breakdown from '../../components/trucks/breakdown'
-import Announcenmemt from '../../components/partners/announcement'
-import Customer from '../../components/customers/sourcingCus'
-import CreateLead from '../partners/createLead'
-import FilterList from '../branches/employeeListFilter'
-import TitleWithCount from '../common/titleWithCount'
-import useShowHide from '../../hooks/useShowHide'
+import PartnerKyc from '../../partners/partnerKyc'
+import PartnerLead from '../../partners/partnerLead'
+import TruckVerification from '../../trucks/truckVerrification'
+import VasRequest from '../../partners/vasRequest'
+import Breakdown from '../../trucks/breakdown'
+import Announcenmemt from '../../partners/announcement'
+import Customer from '../../customers/sourcingCus'
+import CreateLead from '../../partners/createLead'
+import FilterList from '../../branches/employeeListFilter'
+import TitleWithCount from '../../common/titleWithCount'
+import useShowHide from '../../../hooks/useShowHide'
 import {UserAddOutlined,FilterOutlined} from '@ant-design/icons'
-import EmployeeList from "../branches/fr8EmpolyeeList"
-const TabPane = Tabs.TabPane;
+import EmployeeList from "../../branches/fr8EmpolyeeList"
 
+
+const TabPane = Tabs.TabPane;
 
 const Sourcing = () => {
   const initial = {  createLead:false , employeeList:false , filterList:false}

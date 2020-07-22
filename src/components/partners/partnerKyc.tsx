@@ -1,5 +1,5 @@
-import { Table, Radio, Tooltip, Button, Col, Badge, Row } from 'antd'
-import { CommentOutlined } from '@ant-design/icons'
+import { Table, Radio, Tooltip, Button, Col, Badge, Row,Input } from 'antd'
+import { CommentOutlined,SearchOutlined } from '@ant-design/icons'
 import mock from '../../../mock/partner/partnerKyc'
 import Link from 'next/link'
 import useShowHide from '../../hooks/useShowHide'
@@ -20,10 +20,11 @@ const kycStatusList = [
   { value: 4, text: 'Re-Verification' },
 ]
 
-
 const PartnerKyc = () => {
+  
   const initial = { comment: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+
   function onChange(checkedValues) {
     console.log('checked = ', checkedValues);
   }
@@ -32,7 +33,7 @@ const PartnerKyc = () => {
       title: 'Partner Code',
       dataIndex: 'code',
       key:'code',
-      width:'8%',
+      width:'10%',
       render: (text, record) => {
         return (
           <Link href="partners/[id]" as={`partners/${record.id}`}>
@@ -40,11 +41,22 @@ const PartnerKyc = () => {
           </Link>
         )
       },
+      filterDropdown: (
+        <div > 
+        <Input placeholder="Search Partner Code" 
+        id='code'
+        name='code'
+        type='number'/>  
+    </div>
+          ),
+          filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+          onFilterDropdownVisibleChange: () => onShow('partnerCodeSearch') 
     },
     {
       title: 'Partner Name',
       dataIndex: 'name',
       key:'name',
+      width: '10%',
       className: 'pl10',
       render: (text, record) => {
         return (
@@ -54,19 +66,23 @@ const PartnerKyc = () => {
           </span>
         )
       },
-      width: '8%',
+      filterDropdown: (
+        <div > 
+        <Input placeholder="Search Partner Name" 
+        id='name'
+        name='name'
+       />  
+    </div>
+          ),
+          filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+          onFilterDropdownVisibleChange: () => onShow('partnerNameSearch') ,
+     
     },
-    {
-      title: 'Region',
-      dataIndex: 'region',
-      key:'region',
-      width:'8%',
-      filters: regionList
-    },
-    {
+   {
       title: 'On Boarded By',
       dataIndex: 'boardedBy',
       key:'boardedBy',
+      width: '10%',
       render: (text, record) => {
         return (
           <a>{record.remarks && record.remarks.length > 12 ? (
@@ -77,12 +93,24 @@ const PartnerKyc = () => {
           </a>
         )
       },
-      width: '11%',
+    },
+    {
+      title: 'Region',
+      dataIndex: 'region',
+      key:'region',
+      width:'7%',
+      filters: regionList
     },
     {
       title: 'Contact No',
       dataIndex: 'number',
       key:'number',
+      width:'9%',
+    },
+    {
+      title: 'Registration Date',
+      dataIndex: 'date',
+      key:'date',
       width:'10%',
     },
     {
@@ -112,12 +140,6 @@ const PartnerKyc = () => {
       ),
     },
     {
-      title: 'Registration Date',
-      dataIndex: 'date',
-      key:'date',
-      width:'9%',
-    },
-    {
       title: 'PAN',
       dataIndex: 'pan',
       key:'pan',
@@ -134,13 +156,13 @@ const PartnerKyc = () => {
       title: 'Comment',
       dataIndex: 'comment',
       key: 'comment',
-      width: '9%',
+      width: '8%',
     },
     {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      width: '10%',
+      width: '9%',
       render: (text, record) => (
         <span className='actions'>
           <Tooltip title='Comment'>
@@ -157,7 +179,7 @@ const PartnerKyc = () => {
       dataSource={mock}
       rowKey={record => record.id}
       size='small'
-      scroll={{ x: 956 }}
+      scroll={{ x: 1256 }}
       pagination={false}
     />
 
