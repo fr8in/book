@@ -1,47 +1,5 @@
 const partnerMemberShip = [
   {
-    earnings: 10.29,
-    month: 8,
-    partnerType: 'Gold',
-    partnerTypeId: 0,
-    truckCount: 4,
-    year: 2019
-  }, {
-    earnings: 10.17,
-    month: 9,
-    partnerType: 'Gold',
-    partnerTypeId: 0,
-    truckCount: 4,
-    year: 2019
-  }, {
-    earnings: 5.4,
-    month: 10,
-    partnerType: 'Silver',
-    partnerTypeId: 1,
-    truckCount: 4,
-    year: 2019
-  }, {
-    earnings: 9.79,
-    month: 11,
-    partnerType: 'Gold',
-    partnerTypeId: 0,
-    truckCount: 4,
-    year: 2019
-  }, {
-    earnings: 4.17,
-    month: 12,
-    partnerType: 'Silver',
-    partnerTypeId: 1,
-    truckCount: 4,
-    year: 2019
-  }, {
-    earnings: 5.91,
-    month: 1,
-    partnerType: 'Silver',
-    partnerTypeId: 1,
-    truckCount: 4,
-    year: 2020
-  }, {
     earnings: 6.42,
     month: 2,
     partnerType: 'Gold',

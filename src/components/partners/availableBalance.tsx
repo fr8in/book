@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card } from 'antd'
+import { Card, Button } from 'antd'
 import LabelData from '../../components/common/labelData'
 
 const AvailableBalance = (props) => {
@@ -7,7 +7,8 @@ const AvailableBalance = (props) => {
     <Card size='small'>
       <LabelData
         label='Wallet'
-        value={props.wallet}
+        value={<h3 className='link'>{props.wallet || 0}</h3>}
+        modelTrigger={<Button type='primary' size='small'>Top Up</Button>}
       />
       <LabelData
         label='Fuel Card'

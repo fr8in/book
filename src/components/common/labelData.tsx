@@ -2,7 +2,7 @@ import { Row, Col, Tooltip, Space } from 'antd'
 import { InfoCircleTwoTone } from '@ant-design/icons'
 
 const LabelData = (props) => {
-  const { info, label, count, value } = props
+  const { info, label, count, value, modelTrigger } = props
   return (
     <Row>
       <Col flex='auto'>
@@ -10,6 +10,7 @@ const LabelData = (props) => {
           {info &&
             <Tooltip title={info}><InfoCircleTwoTone /></Tooltip>}
           <span>{label}</span>
+          {modelTrigger || ''}
           {count && <span>({count})</span>}
         </Space>
       </Col>
