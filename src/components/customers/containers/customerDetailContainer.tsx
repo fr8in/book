@@ -19,13 +19,15 @@ import Users from '../users'
 import Branch from '../branch'
 import Fr8Branch from '../fr8Branch'
 import Trips from '../../trips/trips'
+import CustomerUser from '../../../components/customers/createCustomerUser'
+import CustomerBranch from '../../../components/customers/createCustomerBranch'
 
 const { Panel } = Collapse
 const { TabPane } = Tabs
 
 const CustomerDetailContainer = (props) => {
   const { cardCode } = props
-  const initial = { transfer: false, rebate: false, wallet: false }
+  const initial = { transfer: false, rebate: false, wallet: false , addUser: false, addBranch: false}
   const { visible, onShow, onHide } = useShowHide(initial)
 
   const { loading, error, data } = useSubscription(
@@ -110,19 +112,19 @@ const CustomerDetailContainer = (props) => {
                   <InvoicePending />
                 </TabPane>
                 <TabPane tab='Users' key='6'>
-                  <Row justify='end' className='m5'>
-                    <Button type='primary'>
-                      <PlusOutlined /> Add Users
-                    </Button>
-                  </Row>
+                <Row justify='end' className='m5'>
+                  <Button type="primary" onClick={() => onShow('addUser')} >
+                <PlusOutlined /> Add Users
+                 </Button>
+                 </Row>
                   <Users />
                 </TabPane>
                 <TabPane tab='Branch' key='7'>
-                  <Row justify='end' className='m5'>
-                    <Button type='primary'>
-                      <PlusOutlined /> Add Branch
-                    </Button>
-                  </Row>
+                <Row justify='end' className='m5'>
+                  <Button type="primary" onClick={() => onShow('addBranch')} >
+                <PlusOutlined /> Add Branch
+                 </Button>
+                 </Row>
                   <Branch />
                 </TabPane>
                 <TabPane tab='FR8 Branch' key='8'>
@@ -137,6 +139,8 @@ const CustomerDetailContainer = (props) => {
               </Tabs>
             </Card>
           </Col>
+          {visible.addUser && <CustomerUser visible={visible.addUser} onHide={() => onHide('addUser')} />}
+          {visible.addBranch && <CustomerBranch visible={visible.addBranch} onHide={() => onHide('addBranch')} />}
         </Row>
       </Col>
     </Row>
