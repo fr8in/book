@@ -12,7 +12,7 @@ const PendingBalance = (props) => {
       />
       <LabelData
         label='OnHold'
-        value={<h4 className='link'>{props.onhold || 0}</h4>}
+        value={<h4 className='link u'>{props.onhold || 0}</h4>}
       />
       <LabelData
         label='Cleared'
