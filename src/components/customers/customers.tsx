@@ -1,11 +1,10 @@
 import { Table } from 'antd'
 import Link from 'next/link'
 import PageLayout from '../layout/pageLayout'
-import { useQuery } from '@apollo/client'
-import { NetworkStatus } from '@apollo/client'
+import { useQuery, NetworkStatus } from '@apollo/client'
 import { CUSTOMERS_QUERY } from './containers/query/customersQuery'
 
-import customer from '../../../mock/customer/CustomerListMock'
+// import customer from '../../../mock/customer/CustomerListMock'
 
 export const customersQueryVars = {
   offset: 0,
@@ -43,9 +42,9 @@ const Customers = () => {
     })
   }
 
-  // if (loading && !loadingMoreCustomers) return <div>Loading</div>
-  // console.log(data)
-  // const { customer } = data
+  if (loading && !loadingMoreCustomers) return <div>Loading</div>
+  console.log(data)
+  const { customer } = data
 
   const columnsCurrent = [
     {
