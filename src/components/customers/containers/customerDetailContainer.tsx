@@ -1,11 +1,11 @@
 import { Row, Col, Card, Button, Space, Collapse, Tabs } from 'antd'
-import { BankFilled, LeftCircleFilled, WalletOutlined,PlusOutlined } from '@ant-design/icons'
+import { BankFilled, LeftCircleFilled, WalletOutlined, PlusOutlined } from '@ant-design/icons'
+import useShowHide from '../../../hooks/useShowHide'
+// All components
+import Loading from '../../common/loading'
+import CustomerName from '../customerName'
 import Blacklist from '../blacklist'
 import CustomerInfo from '../customerInfo'
-import { useSubscription } from '@apollo/client'
-import { CUSTOMER_DETAIL_SUBSCRIPTION } from './query/cutomerDetailSubscription'
-import CustomerName from '../customerName'
-import useShowHide from '../../../hooks/useShowHide'
 import Transfer from '../transfer'
 import Rebate from '../rebate'
 import WalletTopup from '../walletTopup'
@@ -18,35 +18,38 @@ import InvoicePending from '../invoicePending'
 import Users from '../users'
 import Branch from '../branch'
 import Fr8Branch from '../fr8Branch'
+import CustomerUser from '../createCustomerUser'
+import CustomerBranch from '../createCustomerBranch'
 import Trips from '../../trips/trips'
+// Apollo Client
+import { useSubscription } from '@apollo/client'
+import { CUSTOMER_DETAIL_SUBSCRIPTION } from './query/cutomerDetailSubscription'
 
 const { Panel } = Collapse
 const { TabPane } = Tabs
 
 const CustomerDetailContainer = (props) => {
   const { cardCode } = props
-  const initial = { transfer: false, rebate: false, wallet: false }
+  const initial = { transfer: false, rebate: false, wallet: false, addUser: false, addBranch: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
   const { loading, error, data } = useSubscription(
     CUSTOMER_DETAIL_SUBSCRIPTION,
     {
-      variables: { cardCode },
-      // Setting this value to true will make the component rerender when
-      // the "networkStatus" changes, so we are able to know if it is fetching
-      // more data
+      variables: { cardCode }
     }
   )
 
-  // if (loading) return <div>Loading...</div>
-  // const { customer } = data
-  // const customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
-  const customerInfo = {}
+  if (loading) return <Loading />
+  console.log('CustomerDetailContainer Error', error)
+
+  const { customer } = data
+  const customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
 
   return (
     <Row>
       <Col xs={24}>
-        <Row gutter={[10, 10]}>
+        <Row className='mb10'>
           <Col xs={24}>
             <Card
               size='small'
@@ -110,19 +113,19 @@ const CustomerDetailContainer = (props) => {
                   <InvoicePending />
                 </TabPane>
                 <TabPane tab='Users' key='6'>
-                <Row justify='end' className='m5'>
-                  <Button type="primary" >
-                <PlusOutlined /> Add Users
-                 </Button>
-                 </Row>
+                  <Row justify='end' className='m5'>
+                    <Button type='primary' onClick={() => onShow('addUser')}>
+                      <PlusOutlined /> Add Users
+                    </Button>
+                  </Row>
                   <Users />
                 </TabPane>
                 <TabPane tab='Branch' key='7'>
-                <Row justify='end' className='m5'>
-                  <Button type="primary" >
-                <PlusOutlined /> Add Branch
-                 </Button>
-                 </Row>
+                  <Row justify='end' className='m5'>
+                    <Button type='primary' onClick={() => onShow('addBranch')}>
+                      <PlusOutlined /> Add Branch
+                    </Button>
+                  </Row>
                   <Branch />
                 </TabPane>
                 <TabPane tab='FR8 Branch' key='8'>
@@ -137,6 +140,8 @@ const CustomerDetailContainer = (props) => {
               </Tabs>
             </Card>
           </Col>
+          {visible.addUser && <CustomerUser visible={visible.addUser} onHide={() => onHide('addUser')} />}
+          {visible.addBranch && <CustomerBranch visible={visible.addBranch} onHide={() => onHide('addBranch')} />}
         </Row>
       </Col>
     </Row>

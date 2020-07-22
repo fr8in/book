@@ -1,19 +1,13 @@
-import { Row, Col , Button, Divider, Tag} from 'antd'
+import { Space, Button, Tag } from 'antd'
 import { SnippetsOutlined } from '@ant-design/icons'
 
-export default function assignStatus() {
-    return (
-        <div>
-
-      <Row gutter={[10, 10]}>
-          <Col xs={24} >
-              <Button type='primary' size='small'><SnippetsOutlined/></Button>
-              <Divider type="vertical" />
-              <Tag >Waiting for load</Tag>
-          </Col>
-
-          </Row>
-
-          </div>
-    )
+const AssignStatus = () => {
+  return (
+    <Space>
+      <Button type='primary' size='small'><SnippetsOutlined /></Button>
+      <Tag>Waiting for load</Tag>
+    </Space>
+  )
 }
+
+export default AssignStatus

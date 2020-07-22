@@ -1,14 +1,21 @@
-import React from 'react'
-import { Switch } from 'antd';
+import { Switch, Space } from 'antd'
 
-
-function onChange(checked) {
-    console.log(`switch to ${checked}`);
+const PartnerStatus = () => {
+  const onChange = (checked) => {
+    console.log(`switch to ${checked}`)
   }
-export default function partnerStatus() {
-    return (
-        <div>
-               <h3> Wallet:<Switch defaultChecked onChange={onChange} /></h3>
-        </div>
-    )
+  const isBlocked = false
+  return (
+    <Space>
+      <label>Wallet</label>
+      <Switch
+        onChange={onChange}
+        checked={isBlocked}
+        className={isBlocked ? 'block' : 'unblock'}
+        disabled={false}
+      />
+    </Space>
+  )
 }
+
+export default PartnerStatus

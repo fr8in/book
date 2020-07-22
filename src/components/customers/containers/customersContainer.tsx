@@ -2,9 +2,32 @@ import { Tabs, Row, Col, Card, Input } from 'antd'
 import Customers from '../customers'
 import CustomerKyc from '../customerKyc'
 
+import { useQuery } from '@apollo/client'
+import { CUSTOMERS_QUERY } from './query/customersQuery'
+import Loading from '../../common/loading'
+
 const { Search } = Input
 const TabPane = Tabs.TabPane
+
+export const customersQueryVars = {
+  offset: 0,
+  limit: 10
+}
+
 const CustomersContainer = () => {
+  const { loading, error, data } = useQuery(
+    CUSTOMERS_QUERY,
+    {
+      variables: customersQueryVars,
+      notifyOnNetworkStatusChange: true
+    }
+  )
+
+  if (loading) return <Loading />
+  console.log('CustomersContainer error', error)
+
+  const { customer } = data
+
   return (
     <Row gutter={[10, 10]}>
       <Col sm={24}>
@@ -19,7 +42,7 @@ const CustomersContainer = () => {
                   />
                 </Col>
               </Row>
-              <Customers />
+              <Customers customers={customer} />
             </TabPane>
             <TabPane tab='Approval Pending' key='2'>
               <Row justify='end' className='m5'>

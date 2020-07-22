@@ -14,8 +14,12 @@ const loadData = [
     partnerEngagementPercent: 60,
     driverPhoneNo: '9594210250',
     statusId: 7,
-    city: 'Kolkata',
-    tat: 3.24,
+    city: 'Chennai',
+    tat: 6.24,
+    previousComment: [
+      {id:11,message:'Available for Load',userName:'raju@fr8.in',date:'2020-06-15 02:12'},
+      {id:12,message:'Available for Load',userName:'babu@fr8.in',date:'2020-06-15 02:12'}
+    ],
     comment: 'available in chennai'
   },
   {
@@ -35,6 +39,10 @@ const loadData = [
     statusId: 6,
     city: 'Chennai',
     tat: 6.24,
+    previousComment: [
+      {id:11,message:'Available for Load',userName:'raju@fr8.in',date:'2020-06-15 02:12'},
+      {id:12,message:'Available for Load',userName:'babu@fr8.in',date:'2020-06-15 02:12'}
+    ],
     comment: 'available in chennai'
   },
   {
@@ -54,6 +62,10 @@ const loadData = [
     statusId: 6,
     city: 'Chennai',
     tat: 6.24,
+    previousComment: [
+      {id:11,message:'Available for Load',userName:'raju@fr8.in',date:'2020-06-15 02:12'},
+      {id:12,message:'Available for Load',userName:'babu@fr8.in',date:'2020-06-15 02:12'}
+    ],
     comment: 'available in chennai'
   },
   {
@@ -73,6 +85,10 @@ const loadData = [
     statusId: 7,
     city: 'Chennai',
     tat: 6.24,
+    previousComment: [
+      {id:11,message:'Available for Load',userName:'raju@fr8.in',date:'2020-06-15 02:12'},
+      {id:12,message:'Available for Load',userName:'babu@fr8.in',date:'2020-06-15 02:12'}
+    ],
     comment: 'available in chennai'
   },
   {
@@ -92,6 +108,10 @@ const loadData = [
     statusId: 6,
     city: 'Chennai',
     tat: 6.24,
+    previousComment: [
+      {id:11,message:'Available for Load',userName:'raju@fr8.in',date:'2020-06-15 02:12'},
+      {id:12,message:'Available for Load',userName:'babu@fr8.in',date:'2020-06-15 02:12'}
+    ],
     comment: 'available in chennai'
   },
   {
@@ -111,6 +131,10 @@ const loadData = [
     statusId: 6,
     city: 'Chennai',
     tat: 6.24,
+    previousComment: [
+      {id:11,message:'Available for Load',userName:'raju@fr8.in',date:'2020-06-15 02:12'},
+      {id:12,message:'Available for Load',userName:'babu@fr8.in',date:'2020-06-15 02:12'}
+    ],
     comment: 'available in chennai'
   },
   {
@@ -130,6 +154,10 @@ const loadData = [
     statusId: 6,
     city: 'Chennai',
     tat: 6.24,
+    previousComment: [
+      {id:11,message:'Available for Load',userName:'raju@fr8.in',date:'2020-06-15 02:12'},
+      {id:12,message:'Available for Load',userName:'raju@fr8.in',date:'2020-06-15 02:12'}
+    ],
     comment: 'available in chennai'
   },
   {
@@ -149,6 +177,10 @@ const loadData = [
     statusId: 6,
     city: 'Chennai',
     tat: 6.24,
+    previousComment: [
+      {id:11,message:'Available for Load',userName:'raju@fr8.in',date:'2020-06-15 02:12'},
+      {id:12,message:'Available for Load',userName:'babu@fr8.in',date:'2020-06-15 02:12'}
+    ],
     comment: 'available in chennai'
   }
 ]

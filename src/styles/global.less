@@ -15,6 +15,13 @@ a, .link {
   cursor: pointer;
   &:hover { color: @primary}
 }
+.loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .brand {
   height: 64px;
   padding: 0 15px;
@@ -44,6 +51,7 @@ a, .link {
   border: 0;
   border-top: 1px solid #d9d9d9;
   margin-top: 10px;
+  width: calc(100% + 20px);
   .clear{
     float: right;
     font-size: 10px;
@@ -179,9 +187,58 @@ a, .link {
 }
 .payableHead { padding: 8px; background-color: @border-light;}
 .cardFix { margin: 0 -10px -10px;}
+
 .timeLine {
-  .ant-timeline-item-content { border-bottom: solid 1px @border-light;}
-  li { padding-bottom: 10px; }
+  &.editPage {
+    max-height: 260px;
+    overflow-x: hidden;
+    padding: 10px 0 0 80px;
+    border-bottom: solid 1px @border-light;
+    overflow-y: auto;
+  }
+  .ant-timeline-item-content {
+    > p:first-child {
+      padding-right: 100px;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+    .ant-btn-group {
+      position: absolute;
+      top: -2px;
+      right: 0;
+    }
+    .time {
+      position: absolute;
+      right: 105%;
+      top: 3px;
+      margin-right: 10px;
+      width: 70px;
+      text-align: center;
+      font-size: 12px;
+    }
+    .status {
+      margin-bottom: 16px;
+      font-weight: bold;
+    }
+  }
+  .ant-timeline {
+    li { 
+      padding-bottom: 10px;
+      .ant-timeline-item-content { border-bottom: solid 1px @border-light; }
+    }
+    &:last-child { 
+      li { 
+        padding-bottom: 0;
+        .ant-timeline-item-content { border-bottom: 0 none }
+      }
+    }
+  }
+}
+.emp-list {
+  .ant-checkbox-group-item {
+    display: block;
+    line-height: 40px;
+}
 }
 @media only screen and (max-width: 767px) {
   .stats {

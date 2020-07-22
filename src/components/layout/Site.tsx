@@ -1,7 +1,7 @@
 import { Layout, Row, Col } from 'antd'
 import Link from 'next/link'
 import '../../styles/site.less'
-import Actions from '../common/actions'
+import Actions from './actions'
 import Nav from './nav'
 
 const { Header, Content } = Layout

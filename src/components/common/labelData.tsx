@@ -1,20 +1,21 @@
-import { Row, Col } from 'antd'
+import { Row, Col, Tooltip, Space } from 'antd'
+import { InfoCircleTwoTone } from '@ant-design/icons'
 
 const LabelData = (props) => {
-  const { label, labelSpan, data, dataSpan,iconSpan,icon,valueSpan,value } = props
+  const { info, label, count, value, modelTrigger } = props
   return (
-    <Row gutter={6}>
-      <Col xs={iconSpan || 1}>
-        <label>{icon}</label>
+    <Row>
+      <Col flex='auto'>
+        <Space>
+          {info &&
+            <Tooltip title={info}><InfoCircleTwoTone /></Tooltip>}
+          <span>{label}</span>
+          {modelTrigger || ''}
+          {count && <span>({count})</span>}
+        </Space>
       </Col>
-      <Col xs={labelSpan || 5}>
-        {label}
-      </Col>
-      <Col xs={valueSpan || 17}>
-        {value}
-      </Col>
-      <Col xs={dataSpan || 1}>
-        {data}
+      <Col flex='80px' className='text-right'>
+        <span>{value || 0}</span>
       </Col>
     </Row>
   )

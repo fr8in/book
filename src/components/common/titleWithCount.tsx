@@ -5,7 +5,7 @@ const TitleWithCount = (props) => {
   return (
     <span className='titleCount'>
       {name}
-      {value && <Tag>{value}</Tag>}
+      {value ? <Tag>{value}</Tag> : ''}
     </span>
   )
 }

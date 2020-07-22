@@ -1,55 +1,25 @@
 import React from 'react'
-import { Card, Space } from 'antd'
-import {InfoCircleOutlined} from '@ant-design/icons'
+import { Card } from 'antd'
 import LabelData from '../../components/common/labelData'
 
-export default function PendingBalance () {
+const PendingBalance = (props) => {
   return (
-    <div>
-      <Card>
-				<LabelData
-          icon= {<InfoCircleOutlined />}
-          label='Active'
-					data={
-						<Space>
-							<span>0</span>
-						</Space>
-          }
-          iconSpan={1}
-          labelSpan={2}
-          valueSpan={19}
-					dataSpan={2}
-				/>
-        
-					<LabelData
-          label='OnHold'
-					data={
-						<Space>
-							<span>0</span>
-						</Space>
-          }
-          iconSpan={1}
-          labelSpan={4}
-          valueSpan={17}
-					dataSpan={2}
-				/>
-     
-        	<LabelData
-          label='Cleared'
-					data={
-						<Space>
-							<span>0</span>
-						</Space>
-          }
-          iconSpan={1}
-          labelSpan={4}
-          valueSpan={17}
-					dataSpan={2}
-				/>
-       
-      </Card>
-    </div>
+    <Card size='small'>
+      <LabelData
+        info='On-going + POD trips pending balance'
+        label='Active'
+        value={props.active}
+      />
+      <LabelData
+        label='OnHold'
+        value={<h4 className='link u'>{props.onhold || 0}</h4>}
+      />
+      <LabelData
+        label='Cleared'
+        value={props.cleared}
+      />
+    </Card>
   )
 }
 
-    
+export default PendingBalance

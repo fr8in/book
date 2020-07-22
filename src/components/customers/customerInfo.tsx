@@ -9,16 +9,9 @@ import mockData from '../../../mock/customer/customerDetail'
 const CustomerInfo = (props) => {
   const { customerInfo } = props
   const initial = {
-    gst: mockData.gst,
-    region: mockData.region,
-    paymentManager: mockData.paymentManager,
-    onBoardedBy: mockData.onBoardedBy,
-    companyType: mockData.companyType,
-    advancePercentage: mockData.advancePercentage,
-    advException: mockData.advanceException,
-    finalException: mockData.finalPaymentException,
-    creditLimit: mockData.creditLimit,
-    managed: mockData.managed === 'Yes'
+    GSTNo: customerInfo.GSTNo,
+    creditLimit: customerInfo.creditLimit,
+    managed: customerInfo.managed
   }
   const [value, setValue] = useState(initial)
 
@@ -59,29 +52,29 @@ const CustomerInfo = (props) => {
         />
         <LabelWithData
           label='GST No'
-          data={<InlineEdit text={value.gst} objKey='gst' onSetText={onSubmit} />}
+          data={<InlineEdit text={value.GSTNo} objKey='GSTNo' onSetText={onSubmit} />}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData label='BP Code' data={customerInfo.cardCode} labelSpan={10} dataSpan={14} />
-        <LabelWithData label='Virtual Account' data={mockData.virtualAccount} labelSpan={10} dataSpan={14} />
+        <LabelWithData label='Virtual Account' data={customerInfo.virtualAccount} labelSpan={10} dataSpan={14} />
         <LabelWithData label='Mobile No' data={customerInfo.mobileNo} labelSpan={10} dataSpan={14} />
         <LabelWithData
           label='Region'
-          data={<InlineEdit text={value.region} objKey='region' onSetText={onSubmit} />}
+          data={mockData.region}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData
           label='Payment Manager'
-          data={<InlineEdit text={value.paymentManager} objKey='paymentManager' onSetText={onSubmit} />}
+          data={customerInfo.paymentManagerId}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData label='Receivable Days' data={mockData.receivableDays} labelSpan={10} dataSpan={14} />
         <LabelWithData
           label='OnBoarded By'
-          data={<InlineEdit text={value.onBoardedBy} objKey='onBoardedBy' onSetText={onSubmit} />}
+          data={customerInfo.onboardedById}
           labelSpan={10}
           dataSpan={14}
         />
@@ -89,7 +82,7 @@ const CustomerInfo = (props) => {
       <Col xs={24} sm={24} md={12}>
         <LabelWithData
           label='Company Type'
-          data={<InlineEdit text={value.companyType} objKey='companyType' onSetText={onSubmit} />}
+          data={customerInfo.typeId}
           labelSpan={10}
           dataSpan={14}
         />
@@ -108,19 +101,13 @@ const CustomerInfo = (props) => {
         />
         <LabelWithData
           label='Advance %'
-          data={<InlineEdit text={value.advancePercentage} objKey='advancePercentage' onSetText={onSubmit} />}
+          data={customerInfo.advancePercentageId}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData
-          label='Advance Exception'
-          data={<InlineEdit text={value.advException} objKey='advException' onSetText={onSubmit} />}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Final Payment Exception'
-          data={<InlineEdit text={value.finalException} objKey='finalException' onSetText={onSubmit} />}
+          label='Exception Date'
+          data={customerInfo.exceptionDate}
           labelSpan={10}
           dataSpan={14}
         />

@@ -1,25 +1,12 @@
 import { useMutation } from '@apollo/client'
 import { message } from 'antd'
 import InlineEdit from '../common/inlineEdit'
-import { gql } from '@apollo/client'
-
-const UPDATE_CUSTOMER_BLACKLIST_MUTATION = gql`
-
-
-mutation CustomerNameEdit($name:String,$cardCode:String) {
-  update_customer(_set: {name: $name}, where: {cardCode: {_eq: $cardCode}}) {
-    returning {
-      id
-      name
-    }
-  }
-}
-`
+import { UPDATE_CUSTOMER_NAME_MUTATION } from './containers/query/updateCustomerNameMutation'
 
 const CustomerName = (props) => {
   const { cardCode, name } = props
 
-  const [updateStatusId] = useMutation(UPDATE_CUSTOMER_BLACKLIST_MUTATION)
+  const [updateStatusId] = useMutation(UPDATE_CUSTOMER_NAME_MUTATION)
 
   const onSubmit = (text, success, err) => {
     if (err) {

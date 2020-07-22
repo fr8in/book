@@ -15,9 +15,6 @@ const CusState=[
   { value: 3, text: 'REJECTED' },
 ]
 
-function onChange(e) {
-  console.log(`checked = ${e.target.checked}`);
-}
 const content = (
   <div>
     <p> <ExclamationCircleTwoTone twoToneColor="#eca92b"/> Are you sure want to cancel the lead?</p>
@@ -29,20 +26,24 @@ const content = (
     </Row>
   </div>
 );
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  getCheckboxProps: record => ({
-    disabled: record.name === 'Disabled User', // Column configuration not to be checked
-    name: record.name,
-  }),
-};
-const SourcingCus = () => {
 
+const SourcingCus = () => {
   const [selectionType, setSelectionType] = useState('checkbox');
   const initial = { comment: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+
+  function onChange(e) {
+    console.log(`checked = ${e.target.checked}`);
+  }
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    },
+    getCheckboxProps: record => ({
+      disabled: record.name === 'Disabled User', // Column configuration not to be checked
+      name: record.name,
+    }),
+  };
   const columnsCurrent = [
     {
       title: 'Company',
