@@ -1,7 +1,8 @@
 import { Table, Row, Col, Button } from 'antd'
-import invoicePending from '../../../mock/trip/payment'
-import EditModal from '../../components/trips/editModal'
+import  customerPending from '../../../mock/trip/payment'
+import EditModal from './AdvanceBookingEdit'
 import useShowHide from '../../hooks/useShowHide'
+
 const CustomerPayments = () => {
   const initial = { edit:false}
   const { visible, onShow,onHide } = useShowHide(initial)
@@ -13,7 +14,7 @@ const CustomerPayments = () => {
   },
   {
     title: 'Doc No',
-    dataIndex: 'base_Advance_DocEntry',
+    dataIndex: 'docEntry',
     width: '20%'
   },
   {
@@ -31,7 +32,7 @@ const CustomerPayments = () => {
   },
   {
     title: 'Balance',
-    dataIndex: 'pending',
+    dataIndex: 'balance',
     width: '20%'
   },
   {
@@ -39,14 +40,15 @@ const CustomerPayments = () => {
     dataIndex: 'edit',
     render: (text, record) => (
       <span>
-        <Button type='primary'>
-          edit
-        </Button>
+        <Button type='primary' onClick={() => onShow('edit')} >
+          Edit
+        </Button> 
+       
       </span>
     )
   }]
 
-  const invoicePendigColumns = [{
+  const invoicePendingColumns = [{
     title: 'Type',
     dataIndex: 'type',
     render: () => 'Invoice Pending',
@@ -55,7 +57,7 @@ const CustomerPayments = () => {
 
   {
     title: 'Amount',
-    dataIndex: 'price',
+    dataIndex: 'amount',
     width: '20%'
   },
   {
@@ -68,7 +70,7 @@ const CustomerPayments = () => {
   },
   {
     title: 'Balance',
-    dataIndex: 'invoicePending',
+    dataIndex: 'balance',
     width: '20%'
   },
   {
@@ -78,20 +80,25 @@ const CustomerPayments = () => {
       <span>
         <Button type='primary' onClick={() => onShow('edit')} >
           Edit
-        </Button>
-        {visible.edit && <EditModal  visible={visible.edit} onHide={() => onHide('edit')} />}
+        </Button> 
+        
       </span>
     )
-  }]
+    
+  }
+ 
+]
+ 
 
   const finalPaymentColumns = [{
     title: 'Type',
-    dataIndex: 'invoiceType',
+    dataIndex: 'type',
+    render: () => 'Invoiced',
     width: '19%'
   },
   {
     title: 'Doc No',
-    dataIndex: 'docentry',
+    dataIndex: 'docEntry',
     render: (text, record) => {
       return text || 0
     },
@@ -127,14 +134,13 @@ const CustomerPayments = () => {
     key: 'edit',
     render: (text, record) => (
       <span>
-        <Button type='primary'>
+       <Button type='primary' onClick={() => onShow('edit')} >
           Edit
-        </Button>
+        </Button> 
       </span>
     ),
     width: '4%'
   }
-
   ]
   return (
     <>
@@ -144,7 +150,7 @@ const CustomerPayments = () => {
         </Row>
         <Table
           columns={advancePaymentColumns}
-          //   dataSource={props.advancePendingPaymentArray}
+          dataSource ={customerPending}
           pagination={false}
           rowKey={record => record.id}
           scroll={{ x: 540 }}
@@ -156,8 +162,8 @@ const CustomerPayments = () => {
           <Col xs={24}><b>Invoice Pending Payments</b></Col>
         </Row>
         <Table
-          columns={invoicePendigColumns}
-          dataSource={invoicePending}
+          columns={invoicePendingColumns}
+           dataSource={customerPending}
           rowKey={record => record.id}
           scroll={{ x: 540 }}
           pagination={false}
@@ -170,7 +176,7 @@ const CustomerPayments = () => {
         </Row>
         <Table
           columns={finalPaymentColumns}
-          //   dataSource={props.balancePendingPayment}
+          dataSource={customerPending}
           rowKey={record => record.id}
           scroll={{ x: 540 }}
           pagination={false}
@@ -180,6 +186,7 @@ const CustomerPayments = () => {
       <div className='payableHead'>
         <h4 className='text-center'>100% payment received from customer</h4>
       </div>
+      {visible.edit && <EditModal  visible={visible.edit} onHide={() => onHide('edit')} />}
     </>
   )
 }

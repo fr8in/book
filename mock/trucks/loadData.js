@@ -1,18 +1,18 @@
 const loadData = [
   {
     id: 1,
-    truckNo: 'HR38S9209 - 32 Ft M',
-    partnerId: 100,
-    partner: 'Irshad Akhtar khan',
+    truckNo: 'HR38S9210 - 32 Ft S',
+    partnerId: '100',
+    partner: 'Sivasakthian',
     partnerMembershipId: 0,
-    partnerNo: '9594210257',
+    partnerNo: '9594210250',
     users: [
-      { id: 1, mobileNo: '9594210257' },
-      { id: 2, mobileNo: '9594210250' }
+      { id: 1, mobileNo: '9594210250' },
+      { id: 2, mobileNo: '9594210251' }
     ],
     noOfLoadsTaken: 20,
     partnerEngagementPercent: 60,
-    driverPhoneNo: '9594210256',
+    driverPhoneNo: '9594210250',
     statusId: 7,
     city: 'Chennai',
     tat: 6.24,
@@ -49,7 +49,7 @@ const loadData = [
     id: 3,
     truckNo: 'HR38S9202 - 32 Ft M',
     partnerId: 102,
-    partner: 'Irshad Akhtar khan',
+    partner: 'Ram Ratan',
     partnerMembershipId: 0,
     partnerNo: '9594210257',
     users: [

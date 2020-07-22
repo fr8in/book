@@ -1,12 +1,12 @@
 import PageLayout from '../../components/layout/pageLayout'
-import Dashboard from '../../components/dashboard/dashboard'
+import DashboardContainer from '../../components/dashboard/container/dashboardContainer'
 
-const DashboardPage = () => {
+const Dashboard = () => {
   return (
     <PageLayout title='Dashboard'>
-      <Dashboard />
+      <DashboardContainer />
     </PageLayout>
   )
 }
 
-export default DashboardPage
+export default Dashboard

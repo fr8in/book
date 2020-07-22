@@ -2,12 +2,12 @@ import { Row, Col, Divider } from 'antd'
 import LabelAndData from '../common/labelAndData'
 import LabelWithData from '../common/labelWithData'
 import Link from 'next/link'
-import {EditTwoTone} from '@ant-design/icons'
+import { EditTwoTone } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
 import CustomerPrice from '../trips/customerPrice'
 const TripInfo = (props) => {
-  const initial = {  price:false}
-  const { visible, onShow,onHide } = useShowHide(initial)
+  const initial = { price: false }
+  const { visible, onShow, onHide } = useShowHide(initial)
   const { data } = props
   return (
     <Row>
@@ -17,7 +17,7 @@ const TripInfo = (props) => {
             <Row>
               <LabelAndData
                 colSpan={12}
-                label='Customer'
+                label={<p className='mb0 b'>Customer</p>}
                 data={
                   <Link href='/customers/[id]' as={`/customers/${data.customer.cardCode}`}>
                     <a>{data.customer.name}</a>
@@ -26,7 +26,7 @@ const TripInfo = (props) => {
               />
               <LabelAndData
                 colSpan={12}
-                label='Partner'
+                label={<p className='mb0 b'>Partner</p>}
                 data={
                   <Link href='/partners/[id]' as={`/partners/${data.partner.cardCode}`}>
                     <a>{data.partner.name}</a>
@@ -39,7 +39,7 @@ const TripInfo = (props) => {
             <Row>
               <LabelAndData
                 colSpan={24}
-                label='Truck No'
+                label={<p className='mb0 b'>Truck No</p>}
                 data={
                   <Link href='/trucks/[id]' as={`/truck/${data.device.deviceId}`}>
                     <a>{data.device.truckNo}</a>
@@ -54,8 +54,11 @@ const TripInfo = (props) => {
           <Col sm={24} md={12}>
             <LabelWithData label='Order Date' data={data.trip.orderDate} labelSpan={10} />
             <LabelWithData label='ETA' data={data.trip.ETA} labelSpan={10} />
-            <LabelWithData label='Customer Price' data={[data.priceDetail.customerPrice ,
-            <EditTwoTone onClick={() => onShow('price')}/>]} labelSpan={10} />
+            <LabelWithData
+              label='Customer Price'
+              data={<p>{data.priceDetail.customerPrice} <EditTwoTone onClick={() => onShow('price')} /></p>}
+              labelSpan={10}
+            />
             <LabelWithData label='Cash' data={data.priceDetail.cash} labelSpan={10} />
             <LabelWithData label='To Pay' data={data.priceDetail.toPay} labelSpan={10} />
             <LabelWithData label='Mamul' data={data.priceDetail.mamul} labelSpan={10} />
