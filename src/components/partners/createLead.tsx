@@ -5,13 +5,15 @@ import {OwnerName,SelectType} from '../../../mock/sourcing/createLead'
 const { TextArea } = Input;
 const { Option } = Select;
 
-function handleChange(value) {
-    console.log(`selected ${value}`);
-}
-const onChange = e => {
-    console.log(e);
-};
+
 const CreateLead = (props) => {
+    
+    function handleChange(value) {
+        console.log(`selected ${value}`);
+    }
+    const onChange = e => {
+        console.log(e);
+    };
     const { visible, onHide } = props
 
     const onSubmit = () => {
