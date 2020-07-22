@@ -19,16 +19,15 @@ import TitleWithCount from '../../common/titleWithCount'
 
 const TabPane = Tabs.TabPane
 
-const callback = (key) => {
-  console.log(key)
-}
-export default function partnerDetailContainer() {
+const PartnerDetailContainer = () => {
+  const callback = (key) => {
+    console.log(key)
+  }
   return (
-
     <Row>
       <Col xs={24}>
-        <Row gutter={[10, 10]}>
-          <Col xs={24} >
+        <Row className='mb10'>
+          <Col xs={24}>
             <Card
               size='small'
               className='border-top-blue'
@@ -38,16 +37,11 @@ export default function partnerDetailContainer() {
               extra={<WalletStatus />}
             >
               <Row gutter={[10, 10]}>
-                <Col xs={24} md={12} xl={8}>
-                  <br />
+                <Col xs={24} sm={12} md={8}>
                   <BasicDetail />
-                  <br />
-                  <br />
                   <PartnerStatus />
-                  <br />
-                  <Link href='/trucks/addtruck/[id]'>
-                    <Button type="primary" >
-                      <PlusOutlined /> Add Truck </Button>
+                  <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${'ST003579'}`}>
+                    <Button type='primary' icon={<PlusOutlined />}>Add Truck</Button>
                   </Link>
                 </Col>
                 <Col xs={24} md={12} xl={8}>
@@ -62,8 +56,7 @@ export default function partnerDetailContainer() {
             </Card>
           </Col>
         </Row>
-        <br />
-        <Row gutter={[10, 10]}>
+        <Row>
           <Col sm={24}>
             <Card size='small' className='card-body-0 border-top-blue'>
               <Tabs defaultActiveKey='1' onChange={callback}>
@@ -71,8 +64,7 @@ export default function partnerDetailContainer() {
                   <PartnerTruck />
                 </TabPane>
                 <TabPane tab='Detail' key='2'>
-                  <br />
-                  <Row gutter={[8, 8]} justify="space-around">
+                  <Row gutter={10} className='p10'>
                     <Col xs={24} sm={12} md={12}>
                       <DetailInfo />
                     </Col>
@@ -84,16 +76,16 @@ export default function partnerDetailContainer() {
                 <TabPane tab='Comment' key='3'>
                   <Comment />
                 </TabPane>
-                <TabPane tab={<TitleWithCount name='On-going' value={5} />}  key='4'>
+                <TabPane tab={<TitleWithCount name='On-going' value={5} />} key='4'>
                   <TripDetail />
                 </TabPane>
-                <TabPane tab='POD' key='5'>
+                <TabPane tab={<TitleWithCount name='POD' value={null} />} key='5'>
                   <TripDetail />
                 </TabPane>
-                <TabPane tab='Invoiced' key='6'>
+                <TabPane tab={<TitleWithCount name='Invoiced' value={0} />} key='6'>
                   <TripDetail />
                 </TabPane>
-                <TabPane tab='Paid' key='7'>
+                <TabPane tab={<TitleWithCount name='Paid' value={14} />} key='7'>
                   <TripDetail />
                 </TabPane>
               </Tabs>
@@ -104,3 +96,5 @@ export default function partnerDetailContainer() {
     </Row>
   )
 }
+
+export default PartnerDetailContainer
