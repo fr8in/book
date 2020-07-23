@@ -29,14 +29,14 @@ const { Panel } = Collapse
 const { TabPane } = Tabs
 
 const CustomerDetailContainer = (props) => {
-  const { cardCode } = props
+  const { cardcode } = props
   const initial = { transfer: false, rebate: false, wallet: false, addUser: false, addBranch: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
   const { loading, error, data } = useSubscription(
     CUSTOMER_DETAIL_SUBSCRIPTION,
     {
-      variables: { cardCode }
+      variables: { cardcode }
     }
   )
 
@@ -55,9 +55,9 @@ const CustomerDetailContainer = (props) => {
               size='small'
               className='border-top-blue'
               title={
-                <CustomerName cardCode={customerInfo.cardCode} name={customerInfo.name} />
+                <CustomerName cardcode={customerInfo.cardcode} name={customerInfo.name} />
               }
-              extra={<Blacklist cardCode={customerInfo.cardCode} statusId={customerInfo.statusId} />}
+              extra={<Blacklist cardcode={customerInfo.cardcode} statusId={customerInfo.status_id} />}
             >
               <Row gutter={10}>
                 <Col xs={24} sm={24} md={14}>

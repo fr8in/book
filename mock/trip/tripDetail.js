@@ -71,7 +71,7 @@ const tripDetail = {
     }
   },
   customer: {
-    cardCode: 'RT001587',
+    cardcode: 'RT001587',
     name: 'Kalaimagal Transport',
     userName: 'Ravikumar',
     contactNo: '9988776655',
@@ -86,7 +86,7 @@ const tripDetail = {
     }
   },
   partner: {
-    cardCode: 'ST004837',
+    cardcode: 'ST004837',
     name: 'Ashok Kumar S'
   },
   device: {

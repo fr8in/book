@@ -1,8 +1,6 @@
 import { Table } from 'antd'
 import Link from 'next/link'
 
-// import customer from '../../../mock/customer/CustomerListMock'
-
 const Customers = (props) => {
   const { customers } = props
   const columnsCurrent = [
@@ -13,7 +11,7 @@ const Customers = (props) => {
         return (
           <Link
             href='customers/[id]'
-            as={`customers/${record.cardCode}`}
+            as={`customers/${record.cardcode}`}
           >
             <a>{text}</a>
           </Link>

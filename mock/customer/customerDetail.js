@@ -1,5 +1,5 @@
 const customerInfo = {
-  cardCode: 'ST00157',
+  cardcode: 'ST00157',
   pan: 'EGRPS8100Q',
   panUrl: 'url',
   lr: null,
