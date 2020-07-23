@@ -1,39 +1,28 @@
 import { useMutation } from '@apollo/client'
 import { Switch, Space } from 'antd'
-import { gql } from '@apollo/client'
+import { UPDATE_CUSTOMER_BLACKLIST_MUTATION } from './containers/query/updateCustomerBlacklistMutation'
 
 // This has to go to global
 const customerStatus = {
   Blacklisted: 6,
   Active: 1
 }
-const UPDATE_CUSTOMER_BLACKLIST_MUTATION = gql`
-
-
-mutation customerBlacklist($statusId:Int,$cardCode:String) {
-  update_customer(_set: {statusId: $statusId}, where: {cardCode: {_eq: $cardCode}}) {
-    returning {
-      id
-      statusId
-    }
-  }
-}
-`
 
 const Blacklist = ({ cardCode, statusId }) => {
   const [updateStatusId] = useMutation(UPDATE_CUSTOMER_BLACKLIST_MUTATION)
-  const onChange = (checked: Boolean) => {
+
+  const onChange = (checked) => {
     updateStatusId({
       variables: {
         cardCode,
-        statusId: checked ? customerStatus.Blacklisted : customerStatus.Active,
+        statusId: checked ? customerStatus.Blacklisted : customerStatus.Active
       }
-
     })
   }
-  const blacklisted = statusId === customerStatus.Blacklisted
-  return (
 
+  const blacklisted = statusId === customerStatus.Blacklisted
+
+  return (
     <Space>
       <label>Blacklisted</label>
       <Switch
