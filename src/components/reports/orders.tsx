@@ -17,8 +17,8 @@ const Orders = () => {
         period='Current Month'
         bgColor='yellow'
       />
-      {visible.orders && <WeeklyBranchTarget visible={visible.orders} onHide={() => onHide('orders')} />}
-      {visible.report && <OrderReport visible={visible.report} onHide={() => onHide('report')} />}
+      {visible.orders && <WeeklyBranchTarget visible={visible.orders} onHide={onHide} />}
+      {visible.report && <OrderReport visible={visible.report} onHide={onHide} />}
     </>
   )
 }

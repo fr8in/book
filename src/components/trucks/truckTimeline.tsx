@@ -102,11 +102,11 @@ const truckTimeline = () => {
         {visible.breakdown &&
           <CreateBreakdown
             visible={visible.breakdown}
-            onHide={() => onHide('breakdown')}
+            onHide={onHide}
             title='Add BreakDown or In-transit Halting'
             radioType
           />}
-        {visible.comment && <CommentModal visible={visible.comment} onHide={() => onHide('comment')} />}
+        {visible.comment && <CommentModal visible={visible.comment} onHide={onHide} />}
       </div>
     </div>
   )

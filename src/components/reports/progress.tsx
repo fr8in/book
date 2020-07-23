@@ -25,7 +25,7 @@ const Progress = () => {
         <Modal
           title='Trucks, Partners, Orders Report'
           visible={visible.report}
-          onCancel={() => onHide('report')}
+          onCancel={onHide}
         >
           <p>Trucks, Partners, Orders Report will come</p>
         </Modal>}

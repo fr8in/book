@@ -23,7 +23,7 @@ const Revenue = () => {
         <Modal
           title='Revenue Report'
           visible={visible.report}
-          onCancel={() => onHide('report')}
+          onCancel={onHide}
         >
           <p>Report will come</p>
         </Modal>}

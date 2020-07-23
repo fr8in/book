@@ -186,7 +186,7 @@ const CustomerPayments = () => {
       <div className='payableHead'>
         <h4 className='text-center'>100% payment received from customer</h4>
       </div>
-      {visible.edit && <EditModal  visible={visible.edit} onHide={() => onHide('edit')} />}
+      {visible.edit && <EditModal  visible={visible.edit} onHide={onHide} />}
     </>
   )
 }
