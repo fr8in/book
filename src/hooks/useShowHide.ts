@@ -5,8 +5,8 @@ const useShowHide = (initial) => {
   const onShow = (value) => {
     setVisible({ ...visible, [value]: true })
   }
-  const onHide = (value) => {
-    setVisible({ ...visible, [value]: false })
+  const onHide = () => {
+    setVisible(initial)
   }
   const onToggle = (value) => {
     setVisible({ ...visible, [value]: !visible.value })

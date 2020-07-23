@@ -171,7 +171,7 @@ const PartnerKyc = () => {
         scroll={{ x: 1156 }}
         pagination={false}
       />
-      {visible.employeeList && <EmployeeList visible={visible.employeeList} onHide={() => onHide('employeeList')} />}
+      {visible.employeeList && <EmployeeList visible={visible.employeeList} onHide={onHide} />}
 
    </>
   )

@@ -145,8 +145,8 @@ const TripTime = () => {
           </Form>
         </Col>
       </Row>
-      {visible.mail && <SendLoadingMemo visible={visible.mail} onHide={() => onHide('mail')} />}
-      {visible.deletePO && <DeletePO visible={visible.deletePO} onHide={() => onHide('deletePO')} />}
+      {visible.mail && <SendLoadingMemo visible={visible.mail} onHide={onHide} />}
+      {visible.deletePO && <DeletePO visible={visible.deletePO} onHide={onHide} />}
     </Card>
 
   )
