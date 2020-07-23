@@ -6,6 +6,12 @@ const useShowHide = (initial) => {
     setVisible({ ...visible, [value]: true })
   }
   const onHide = () => {
+    /**
+     * Warning: If multiple model required
+     * use your own useState and method for the second and third ... models
+     * this hook reset all state value to Initial
+     * so this is always suitable for single Model
+     * */
     setVisible(initial)
   }
   const onToggle = (value) => {

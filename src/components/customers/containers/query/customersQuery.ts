@@ -5,9 +5,9 @@ export const CUSTOMERS_QUERY = gql`
     customer(offset: $offset, limit: $limit) {
       id
       name
-      mobileNo
-      cardCode
-      creditLimit
+      mobile
+      cardcode
+      credit_limit
       status {
         id
       }

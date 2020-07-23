@@ -1,4 +1,4 @@
-import React from 'react'
+
 import Link from 'next/link'
 import { Row, Col, Card, Tabs, Button } from 'antd'
 import HeaderInfo from '../partner'

@@ -8,13 +8,13 @@ const customerStatus = {
   Active: 1
 }
 
-const Blacklist = ({ cardCode, statusId }) => {
+const Blacklist = ({ cardcode, statusId }) => {
   const [updateStatusId] = useMutation(UPDATE_CUSTOMER_BLACKLIST_MUTATION)
 
   const onChange = (checked) => {
     updateStatusId({
       variables: {
-        cardCode,
+        cardcode,
         statusId: checked ? customerStatus.Blacklisted : customerStatus.Active
       }
     })

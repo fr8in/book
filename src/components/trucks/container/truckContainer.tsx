@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Row, Col, Input, Card } from 'antd'
 import TrucksList from '../trucks'
 

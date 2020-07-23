@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Checkbox, Card, Row, Col } from 'antd'
 
 const PartnerStatus = () => {

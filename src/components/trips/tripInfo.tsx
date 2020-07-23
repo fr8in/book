@@ -19,7 +19,7 @@ const TripInfo = (props) => {
                 colSpan={12}
                 label={<p className='mb0 b'>Customer</p>}
                 data={
-                  <Link href='/customers/[id]' as={`/customers/${data.customer.cardCode}`}>
+                  <Link href='/customers/[id]' as={`/customers/${data.customer.cardcode}`}>
                     <a>{data.customer.name}</a>
                   </Link>
                 }
@@ -28,7 +28,7 @@ const TripInfo = (props) => {
                 colSpan={12}
                 label={<p className='mb0 b'>Partner</p>}
                 data={
-                  <Link href='/partners/[id]' as={`/partners/${data.partner.cardCode}`}>
+                  <Link href='/partners/[id]' as={`/partners/${data.partner.cardcode}`}>
                     <a>{data.partner.name}</a>
                   </Link>
                 }

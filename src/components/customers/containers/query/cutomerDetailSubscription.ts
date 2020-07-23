@@ -1,23 +1,23 @@
 import { gql } from '@apollo/client'
 
 export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
-  subscription customers($cardCode: String) {
-    customer(where: {cardCode: {_eq: $cardCode}}) {
+  subscription customers($cardcode: String) {
+    customer(where: {cardcode: {_eq: $cardcode}}) {
       id
-      cardCode
+      cardcode
       name
-      PAN
-      GSTNo
-      virtualAccount
-      mobileNo
+      pan
+      gst
+      virtual_account
+      mobile
       managed
-      advancePercentageId
-      exceptionDate
-      creditLimit
-      onboardedById
-      paymentManagerId
-      statusId
-      typeId
+      advance_percentage_id
+      exception_date
+      credit_limit
+      onboarded_by_id
+      payment_manager_id
+      status_id
+      type_id
     }
   }
 `
