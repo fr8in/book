@@ -27,7 +27,7 @@ const columnsCurrent = [
         dataIndex: 'remark'
     },
 ]
-const EditModal = (props) => {
+const AdvanceBooking = (props) => {
     const { visible, onHide } = props
 
     return (
@@ -86,4 +86,4 @@ const EditModal = (props) => {
 }
 
 
-export default EditModal;
+export default AdvanceBooking;

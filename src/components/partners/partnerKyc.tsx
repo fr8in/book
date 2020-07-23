@@ -1,5 +1,5 @@
-import { Table, Tooltip, Button, Badge, Input } from 'antd'
-import { CommentOutlined, SearchOutlined } from '@ant-design/icons'
+import { Table, Tooltip, Button, Badge, Input, Space } from 'antd'
+import { CommentOutlined, SearchOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import mock from '../../../mock/partner/partnerKyc'
 import Link from 'next/link'
 
@@ -51,7 +51,7 @@ const PartnerKyc = () => {
       filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
     },
     {
-      title: 'Partner Name',
+      title: 'Partner',
       dataIndex: 'name',
       width: '10%',
       render: (text, record) => {
@@ -99,7 +99,7 @@ const PartnerKyc = () => {
       width: '9%'
     },
     {
-      title: 'Registration Date',
+      title: 'Registred At',
       dataIndex: 'date',
       width: '10%',
       render: (text, record) => {
@@ -115,13 +115,13 @@ const PartnerKyc = () => {
     {
       title: 'Trucks',
       dataIndex: 'count',
-      width: '9%',
+      width: '7%',
       filters: truckCount
     },
     {
       title: 'PAN',
       dataIndex: 'pan',
-      width: '9%'
+      width: '8%'
     },
     {
       title: 'KYC Status',
@@ -141,7 +141,7 @@ const PartnerKyc = () => {
     {
       title: 'Comment',
       dataIndex: 'comment',
-      width: '8%',
+      width: '11%',
       render: (text, record) => {
         return (
           text && text.length > 12 ? (
@@ -157,11 +157,13 @@ const PartnerKyc = () => {
       dataIndex: 'action',
       width: '9%',
       render: (text, record) => (
-        <span className='actions'>
+        <Space>
           <Tooltip title='Comment'>
             <Button type='link' icon={<CommentOutlined />} />
           </Tooltip>
-        </span>
+          <Button type='primary' className='btn-success' icon={<CheckOutlined />} />
+          <Button type='primary' danger icon={<CloseOutlined />} />
+        </Space>
       )
     }
   ]

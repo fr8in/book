@@ -6,11 +6,11 @@ import cards from "../../../../mock/card/cards";
 import Link from "next/link";
 const { Search } = Input;
 
-function onChange(checked) {
+const onChange = (checked) => {
   console.log(`switch to ${checked}`);
-}
+};
 
-export default function CardsFuel() {
+const CardsFuel = () => {
   const CardsFuel = [
     {
       title: "Card ID",
@@ -88,6 +88,13 @@ export default function CardsFuel() {
       title: "Truck",
       dataIndex: "truck",
       key: "truck",
+      render: (text, record) => {
+        return (
+          <Link href="trucks/[id]" as={`trucks/${record.id}`}>
+            <a>{text}</a>
+          </Link>
+        );
+      },
       filterDropdown: (
         <div className="filterMenu">
           <Search
@@ -134,4 +141,6 @@ export default function CardsFuel() {
       pagination={false}
     />
   );
-}
+};
+
+export default CardsFuel;

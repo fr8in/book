@@ -1,38 +1,28 @@
 import { Table, Input} from 'antd'
-import mock from '../../../mock/partner/partnerData'
+// import mock from '../../../mock/partner/partnerData'
 import Link from 'next/link'
 import {SearchOutlined } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
 
-
- const regionList = [
-  { value: 1, text: 'North' },
-  { value: 2, text: 'South-1' },
-  { value: 3, text: 'East-1' },
-  { value: 4, text: 'West-1' },
-  { value: 5, text: 'south-2' },
-  { value: 6, text: 'East-2' },
-  { value: 7, text: 'west-2' }
-]
 const statusList =[
   { value: 1, text: 'Active' },
   { value: 2, text: 'In-Active' },
 ]
  
-
-const Partners = () => {
+const Partners = (props) => {
+  const { partners,region } = props
   const initial = { partnerCodeSearch: false }
   const { onShow } = useShowHide(initial)
   const columnsCurrent = [
     {
       title: 'Partner Code',
-      dataIndex: 'partnerCode',
-      key: 'partnerCode',
+      dataIndex: 'cardcode',
+      key: 'cardcode',
               render: (text, record) => {
                 return (
                   <Link
                    href='partners/[id]'
-                   as={`partners/${record.id}`}>
+                   as={`partners/${record.cardcode}`}>
                     <a>{text}</a>
                   </Link>
                 )
@@ -68,7 +58,7 @@ const Partners = () => {
       title: 'Region',
       dataIndex: 'regionName',
       key:'regionName',
-      filters:  regionList  
+      filters: region 
     },
     {
       title: 'Contact No',
@@ -113,7 +103,7 @@ const Partners = () => {
     
       <Table
         columns={columnsCurrent}
-        dataSource={mock}
+        dataSource={partners}
         rowKey={record => record.id}
         size='small'
         scroll={{ x: 1156, y: 850 }}
