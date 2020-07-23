@@ -16,6 +16,8 @@ const cards = [
     partnerStates: "Rajasthan",
     tagBal: 0,
     tStatus: "Active",
+    bmTraffic: "Anbarasu",
+    phone: "9087875667",
   },
   {
     cardId: 33451,
@@ -34,6 +36,8 @@ const cards = [
     partnerStates: "Rajasthan",
     tagBal: 0,
     tStatus: "Active",
+    bmTraffic: "Rajesh",
+    phone: "9087875667",
   },
   {
     cardId: 30221,
@@ -42,7 +46,7 @@ const cards = [
     balance: 23456,
     partnerName: "Manish kumar",
     partnerState: "Maharashtra",
-    truck: "MH12RN9299",
+    truck: "Balaji",
     partnerNumber: "9881179599",
 
     tagId: "34161FA820328A5202F01120",
@@ -52,6 +56,8 @@ const cards = [
     partnerStates: "Rajasthan",
     tagBal: 0,
     tStatus: "Active",
+    bmTraffic: "Anbu",
+    phone: "9087875667",
   },
   {
     cardId: 30678,
@@ -70,6 +76,8 @@ const cards = [
     partnerStates: "Rajasthan",
     tagBal: 0,
     tStatus: "Active",
+    bmTraffic: "Sarath",
+    phone: "9087875667",
   },
   {
     cardId: 36541,
@@ -88,6 +96,8 @@ const cards = [
     partnerStates: "Rajasthan",
     tagBal: 0,
     tStatus: "Active",
+    bmTraffic: "Bharath",
+    phone: "9087875667",
   },
   {
     cardId: 30411,
@@ -106,6 +116,8 @@ const cards = [
     partnerStates: "Rajasthan",
     tagBal: 0,
     tStatus: "Active",
+    bmTraffic: "Ravi",
+    phone: "9087875667",
   },
   {
     cardId: 30781,
@@ -124,6 +136,8 @@ const cards = [
     partnerStates: "Rajasthan",
     tagBal: 0,
     tStatus: "Active",
+    bmTraffic: "Sanjay",
+    phone: "9087875667",
   },
 ];
 

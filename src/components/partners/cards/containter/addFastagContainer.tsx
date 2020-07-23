@@ -24,10 +24,7 @@ class AddFastag extends React.Component {
   };
 
   onFill = () => {
-    this.formRef.current.setFieldsValue({
-      note: "Hello world!",
-      gender: "male",
-    });
+    this.formRef.current.setFieldsValue({});
   };
 
   render() {

@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import { Table, Input, Tooltip, Button } from "antd";
 import {
   SearchOutlined,
@@ -9,6 +10,8 @@ import {
 
 import useShowHide from "../../hooks/useShowHide";
 import pendingDetail from "../../../mock/approval/approvalPending";
+import Comment from "../../components/trips/tripFeedBack";
+import CommentMock from "../../../mock/trucks/loadData";
 
 const RegionList = [
   { value: 1, text: "North" },
@@ -25,8 +28,24 @@ const RequestedBy = [
 ];
 
 export default function Pending() {
-  const initial = { tripIdSearch: false };
-  const { visible, onShow } = useShowHide(initial);
+  const previousCommentClose = () => {
+    setPreviousComment(Initial);
+  };
+  const showPreviousComment = (record) => {
+    setPreviousComment({
+      ...previousComment,
+      previousComment: record,
+      visible: true,
+    });
+  };
+  const Initial = { previousComment: [], visible: false };
+  const [previousComment, setPreviousComment] = useState(Initial);
+
+  const initial = { comment: false, truckSearch: false };
+  const { visible, onShow, onHide } = useShowHide(initial);
+
+  //const initial = { tripIdSearch: false };
+  //const { visible, onShow } = useShowHide(initial);
   const ApprovalPending = [
     {
       title: "Load ID",
@@ -116,7 +135,11 @@ export default function Pending() {
       render: (text, record) => (
         <span className="actions">
           <Tooltip title="Comment">
-            <Button type="link" icon={<CommentOutlined />} />
+            <Button
+              type="link"
+              icon={<CommentOutlined />}
+              onClick={() => showPreviousComment(record.previousComment)}
+            />
           </Tooltip>
           <Tooltip title="Accept">
             <Button type="link" icon={<CheckCircleTwoTone />} />
@@ -132,12 +155,21 @@ export default function Pending() {
   ];
 
   return (
-    <Table
-      columns={ApprovalPending}
-      dataSource={pendingDetail}
-      size="small"
-      scroll={{ x: 1156, y: 400 }}
-      pagination={false}
-    />
+    <>
+      <Table
+        columns={ApprovalPending}
+        dataSource={pendingDetail}
+        size="small"
+        scroll={{ x: 1156, y: 400 }}
+        pagination={false}
+      />
+      {previousComment.visible && (
+        <Comment
+          visible={previousComment.visible}
+          data={previousComment.previousComment}
+          onHide={previousCommentClose}
+        />
+      )}
+    </>
   );
 }

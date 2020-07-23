@@ -1,5 +1,9 @@
 import React from "react";
 import { Table, Button, Switch } from "antd";
+import Link from "next/link";
+import FastagSuspend from "../cards/fastagSuspend";
+import FastagReversal from "./fastagReversal";
+import useShowHide from "../../../hooks/useShowHide";
 import {
   DownloadOutlined,
   LeftCircleOutlined,
@@ -8,11 +12,14 @@ import {
 
 import Cards from "../../../../mock/card/cards";
 
-function onChange(checked) {
+const onChange = (checked) => {
   console.log(`switch to ${checked}`);
-}
+};
 
-export default function CardsFastag() {
+const CardsFastag = () => {
+  const initial = { suspend: false, reversal: false };
+  const { visible, onShow, onHide } = useShowHide(initial);
+
   const CardsFastag = [
     {
       title: "Tag Id",
@@ -25,6 +32,13 @@ export default function CardsFastag() {
       dataIndex: "truckNo",
       key: "truckNo",
       width: "9%",
+      render: (text, record) => {
+        return (
+          <Link href="trucks/[id]" as={`trucks/${record.id}`}>
+            <a>{text}</a>
+          </Link>
+        );
+      },
     },
     {
       title: "ST Code",
@@ -37,6 +51,13 @@ export default function CardsFastag() {
       dataIndex: "partner",
       key: "partner",
       width: "11%",
+      render: (text, record) => {
+        return (
+          <Link href="partners/[id]" as={`partners/${record.id}`}>
+            <a>{text}</a>
+          </Link>
+        );
+      },
     },
     {
       title: "Partner State",
@@ -70,7 +91,14 @@ export default function CardsFastag() {
       dataIndex: "Reverse",
       key: "cardId",
       width: "7%",
-      render: () => <LeftCircleOutlined />,
+      render: () => (
+        <Button
+          size="small"
+          shape="circle"
+          icon={<LeftCircleOutlined />}
+          onClick={() => onShow("reversal")}
+        />
+      ),
     },
     {
       title: (
@@ -80,17 +108,42 @@ export default function CardsFastag() {
         </Button>
       ),
       width: "7%",
-      render: () => <StopOutlined />,
+      render: () => (
+        <Button
+          size="small"
+          shape="circle"
+          icon={<StopOutlined />}
+          onClick={() => onShow("suspend")}
+        />
+      ),
     },
   ];
 
   return (
-    <Table
-      columns={CardsFastag}
-      dataSource={Cards}
-      size="small"
-      scroll={{ x: 1156, y: 400 }}
-      pagination={false}
-    />
+    <>
+      <Table
+        columns={CardsFastag}
+        dataSource={Cards}
+        rowKey={(record) => record.id}
+        size="small"
+        scroll={{ x: 1156, y: 400 }}
+        pagination={false}
+      />
+
+      {visible.suspend && (
+        <FastagSuspend
+          visible={visible.suspend}
+          onHide={() => onHide("suspend")}
+        />
+      )}
+      {visible.reversal && (
+        <FastagReversal
+          visible={visible.reversal}
+          onHide={() => onHide("reversal")}
+        />
+      )}
+    </>
   );
-}
+};
+
+export default CardsFastag;
