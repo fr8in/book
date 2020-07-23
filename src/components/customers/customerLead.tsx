@@ -1,5 +1,5 @@
-import { Table, Input, Switch, Row, Button, Space, Tooltip, Popover } from 'antd'
-import { SearchOutlined, ExclamationCircleTwoTone, CommentOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import { Table, Input, Switch, Button, Tooltip, Popconfirm } from 'antd'
+import { SearchOutlined, CommentOutlined, CloseOutlined } from '@ant-design/icons'
 import mock from '../../../mock/customer/sourcingMock'
 
 const CusSource = [
@@ -13,18 +13,6 @@ const CusState = [
   { value: 2, text: 'ON-BOARDED' },
   { value: 3, text: 'REJECTED' }
 ]
-
-const content = (
-  <div>
-    <p> <ExclamationCircleTwoTone twoToneColor='#eca92b' /> Are you sure want to cancel the lead?</p>
-    <Row justify='end' className='m5'>
-      <Space>
-        <Button>No</Button>
-        <Button type='primary'>Yes</Button>
-      </Space>
-    </Row>
-  </div>
-)
 
 const CustomerLead = () => {
   const onChange = (checked) => {
@@ -124,9 +112,14 @@ const CustomerLead = () => {
           <Tooltip title='Comment'>
             <Button type='link' icon={<CommentOutlined />} />
           </Tooltip>
-          <Popover content={content}>
-            <Button type='link' icon={<CloseCircleOutlined />} />
-          </Popover>,
+          <Popconfirm
+            title='Are you sure want to Reject the lead?'
+            okText='Yes'
+            cancelText='No'
+            onConfirm={() => console.log('Rejected!')}
+          >
+            <Button type='primary' danger icon={<CloseOutlined />} />
+          </Popconfirm>
         </span>
       )
     }
