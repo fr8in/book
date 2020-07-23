@@ -6,7 +6,7 @@ import trucks from '../../../mock/trucks/trucks'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
 import PartnerUsers from '../partners/partnerUsers'
 import useShowHide from '../../hooks/useShowHide'
-import CustomerPo from '../customers/customerPo'
+import CustomerPo from '../../components/customers/createPo'
 
 const statusList = [
   { value: 1, text: 'Ordered' },
