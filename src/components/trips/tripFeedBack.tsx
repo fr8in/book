@@ -1,27 +1,26 @@
 import React from 'react'
 import { Modal, Button, Row, Input, Col, Table } from 'antd'
 
-
 const Tripcomment = (props) => {
-  const { onHide } = props
+  const { visible, data, onHide } = props
 
   const columns = [{
     dataIndex: 'message',
-    key: 'message',
+    key: 'message'
   },
   {
     dataIndex: 'userName',
-    key: 'userName',
+    key: 'userName'
   },
   {
     dataIndex: 'date',
-    key: 'date',
+    key: 'date'
   }]
 
   return (
     <Modal
       title='Comments'
-      visible={props.visible}
+      visible={visible}
       onCancel={onHide}
     >
       <Row gutter={10}>
@@ -35,11 +34,11 @@ const Tripcomment = (props) => {
           <Button type='primary'>Submit</Button>
         </Col>
       </Row>
-      <br></br>
+      <br />
       <Row><p>Previous Comments</p></Row>
       <Table
         columns={columns}
-        dataSource={props.data}
+        dataSource={data}
         rowKey={record => record.id}
         size='small'
         pagination={false}

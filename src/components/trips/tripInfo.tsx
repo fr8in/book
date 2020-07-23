@@ -73,7 +73,7 @@ const TripInfo = (props) => {
           </Col>
         </Row>
       </Col>
-      {visible.price && <CustomerPrice visible={visible.price} onHide={() => onHide('price')} />}
+      {visible.price && <CustomerPrice visible={visible.price} onHide={onHide} />}
     </Row>
   )
 }

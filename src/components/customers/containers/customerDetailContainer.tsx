@@ -86,9 +86,9 @@ const CustomerDetailContainer = (props) => {
                     </Collapse>
                   </Card>
                 </Col>
-                {visible.transfer && <Transfer visible={visible.transfer} onHide={() => onHide('transfer')} />}
-                {visible.rebate && <Rebate visible={visible.rebate} onHide={() => onHide('rebate')} />}
-                {visible.wallet && <WalletTopup visible={visible.wallet} onHide={() => onHide('wallet')} />}
+                {visible.transfer && <Transfer visible={visible.transfer} onHide={onHide} />}
+                {visible.rebate && <Rebate visible={visible.rebate} onHide={onHide} />}
+                {visible.wallet && <WalletTopup visible={visible.wallet} onHide={onHide} />}
               </Row>
             </Card>
           </Col>
@@ -140,8 +140,8 @@ const CustomerDetailContainer = (props) => {
               </Tabs>
             </Card>
           </Col>
-          {visible.addUser && <CustomerUser visible={visible.addUser} onHide={() => onHide('addUser')} />}
-          {visible.addBranch && <CustomerBranch visible={visible.addBranch} onHide={() => onHide('addBranch')} />}
+          {visible.addUser && <CustomerUser visible={visible.addUser} onHide={onHide} />}
+          {visible.addBranch && <CustomerBranch visible={visible.addBranch} onHide={onHide} />}
         </Row>
       </Col>
     </Row>

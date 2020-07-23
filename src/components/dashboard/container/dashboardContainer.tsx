@@ -83,7 +83,7 @@ const DashboardContainer = () => {
           </Col>
         </Row>
       </Col>
-      {visible.excessLoad && <CreateExcessLoad visible={visible.excessLoad} onHide={() => onHide('excessLoad')} />}
+      {visible.excessLoad && <CreateExcessLoad visible={visible.excessLoad} onHide={onHide} />}
     </Row>
   )
 }

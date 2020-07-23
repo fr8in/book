@@ -15,7 +15,7 @@ const WalletBalance = (props) => {
         <Button type='link' onClick={() => onShow('booked')} className='p0 bu'>{1250}</Button>
       </h3>
       <Button size='small' shape='circle' icon={<ReloadOutlined />} onClick={onRefresh} />
-      {visible.booked && <BookedDetail visible={visible.booked} onHide={() => onHide('booked')} />}
+      {visible.booked && <BookedDetail visible={visible.booked} onHide={onHide} />}
     </Space>
   )
 }

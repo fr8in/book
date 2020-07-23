@@ -1,39 +1,26 @@
-import { useState } from 'react'
 import loadData from '../../../mock/trucks/loadData'
 import { Table, Tooltip, Badge, Button, Input } from 'antd'
 import Link from 'next/link'
 import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled, SearchOutlined } from '@ant-design/icons'
-import useShowHide from '../../hooks/useShowHide'
-import CreatePo from '../customers/createPo'
+import CreatePo from '../trips/createPo'
 import PartnerUsers from '../partners/partnerUsers'
 import TripFeedBack from '../trips/tripFeedBack'
+import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 
 const WaitingForLoad = () => {
-  const initial = { comment: false, truckSearch: false }
-  const { visible, onShow, onHide } = useShowHide(initial)
-  const usersInitial = { users: [], name: '', visible: false }
-  const [users, setUsers] = useState(usersInitial)
-
-  const Initial ={previousComment: [],visible:false}
-  const [previousComment,setPreviousComment] =useState(Initial)
+  const initial = {
+    usersData: [],
+    usersVisible: false,
+    commentData: [],
+    commentVisible: false,
+    poData: [],
+    poVisible: false,
+    title: ''
+  }
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
   const callNow = record => {
     window.location.href = 'tel:' + record
-  }
-
-  const usersClose = () => {
-    setUsers(usersInitial)
-  }
-
-  const showUsers = (record) => {
-    setUsers({ ...users, users: record.users, name: record.partner, visible: true })
-  }
- 
-  const previousCommentClose = () => {
-    setPreviousComment(Initial)
-  }
-  const showPreviousComment = (record) => {
-    setPreviousComment({ ...previousComment, previousComment: record, visible: true })
   }
 
   const columns = [
@@ -93,7 +80,7 @@ const WaitingForLoad = () => {
       width: '10%',
       render: (text, record) => {
         return (
-          <span className='link' onClick={() => showUsers(record)}>{text}</span>
+          <span className='link' onClick={() => handleShow('usersVisible', record.partner, 'usersData', record.users)}>{text}</span>
         )
       }
     },
@@ -123,13 +110,13 @@ const WaitingForLoad = () => {
               <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.driverPhoneNo)} />
             </Tooltip>
             <Tooltip title='Comment'>
-              <Button type='link' icon={<CommentOutlined />} onClick={() => showPreviousComment(record.previousComment)} />
+              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.previousComment)} />
             </Tooltip>
             <Tooltip title='click to copy message'>
               <Button type='link' icon={<WhatsAppOutlined />} />
             </Tooltip>
             <Tooltip title='Quick PO'>
-              <Button type='link' icon={<RocketFilled />} onClick={() => onShow('poModal')} />
+              <Button type='link' icon={<RocketFilled />} onClick={() => handleShow('poVisible', record.partner, 'poData', record)} />
             </Tooltip>
           </span>
         )
@@ -148,21 +135,28 @@ const WaitingForLoad = () => {
         scroll={{ x: 1156 }}
         pagination={false}
       />
-      {users.visible &&
+      {object.usersVisible &&
         <PartnerUsers
-          visible={users.visible}
-          data={users.users}
-          onHide={usersClose}
-          name={users.name}
+          visible={object.usersVisible}
+          data={object.usersData}
+          onHide={handleHide}
+          title={object.title}
         />}
-         
-      {previousComment.visible &&
+
+      {object.commentVisible &&
         <TripFeedBack
-          visible={previousComment.visible}
-          data={previousComment.previousComment}
-          onHide={previousCommentClose}
+          visible={object.commentVisible}
+          data={object.commentData}
+          onHide={handleHide}
         />}
-      {visible.poModal && <CreatePo visible={visible.poModal} onHide={() => onHide('poModal')} />}
+
+      {object.poVisible &&
+        <CreatePo
+          visible={object.poVisible}
+          data={object.poData}
+          onHide={handleHide}
+          title={object.title}
+        />}
     </>
   )
 }
