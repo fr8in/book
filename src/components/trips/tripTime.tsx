@@ -7,7 +7,7 @@ import {
   DeleteOutlined,
   CloseCircleOutlined
 } from '@ant-design/icons'
-import LoadingMemo from './loadingMemo'
+import SendLoadingMemo from './sendLoadingMemo'
 import useShowHide from '../../hooks/useShowHide'
 
 const TripTime = () => {
@@ -144,7 +144,7 @@ const TripTime = () => {
           </Form>
         </Col>
       </Row>
-      {visible.mail && <LoadingMemo visible={visible.mail} onHide={() => onHide('mail')} />}
+      {visible.mail && <SendLoadingMemo visible={visible.mail} onHide={() => onHide('mail')} />}
     </Card>
 
   )
