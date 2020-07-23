@@ -1,0 +1,30 @@
+const walletTopUp = [
+    {
+       id:'1',
+       orderId:186534,
+       apDate:'2020-07-22',
+       dueDate:'2020-07-31',
+       price:1000,
+       balance:1000,
+       topUp:1000,
+  },
+  {
+    id:'2',
+    orderId:186535,
+    apDate:'2020-07-22',
+    dueDate:'2020-07-31',
+    price:1000,
+    balance:1000,
+    topUp:1000,
+  },
+  {
+    id:'3',
+    orderId:186536,
+    apDate:'2020-07-22',
+    dueDate:'2020-07-31',
+    price:1000,
+    balance:1000,
+    topUp:1000,
+  }
+  ]
+  export default walletTopUp

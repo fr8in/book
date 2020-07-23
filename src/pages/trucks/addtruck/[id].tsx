@@ -13,9 +13,7 @@ function onChange(value) {
 function AddTruck() {
     return (
         <div>
-                  
-                    <h1> Savdesh Kumar</h1> 
-            
+           <h1> Savdesh Kumar</h1> 
             <Divider />
             
             <br />
