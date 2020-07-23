@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Table } from 'antd'
 import Link from 'next/link'
 import { EditTwoTone } from '@ant-design/icons'
-import trucks from '../../../mock/trucks/trucks'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
 import PartnerUsers from '../partners/partnerUsers'
 import useShowHide from '../../hooks/useShowHide'
@@ -18,7 +17,11 @@ const statusList = [
   { value: 7, text: 'Intransit halting' }
 ]
 
-const Trucks = () => {
+const Trucks = (props) => {
+  const { trucks } = props
+
+  console.log(props)
+
   const usersInitial = { users: [], name: '', visible: false }
   const [users, setUsers] = useState(usersInitial)
 
@@ -59,10 +62,10 @@ const Trucks = () => {
   const columns = [
     {
       title: 'Truck No',
-      dataIndex: 'truckNo',
+      dataIndex: 'truck_no',
       render: (text, record) => {
         return (
-          <Link href='trucks/[id]' as={`trucks/${record.id}`}>
+          <Link href='trucks/[id]' as={`trucks/${record.truck_no}`}>
             <a>{text}</a>
           </Link>
         )
@@ -70,7 +73,7 @@ const Trucks = () => {
     },
     {
       title: 'Trip Id',
-      dataIndex: 'tripId',
+      dataIndex: 'id',
       render: (text, record) => {
         return (
           <Link href='trips/[id]' as={`trips/${record.id}`}>
@@ -89,10 +92,10 @@ const Trucks = () => {
     },
     {
       title: 'Partner',
-      dataIndex: 'partner',
+      dataIndex: 'name',
       render: (text, record) => {
         return (
-          <Link href='partners/[id]' as={`partners/${record.id}`}>
+          <Link href='partners/[id]' as={`partners/${record.cardcode}`}>
             <a>{text}</a>
           </Link>
         )
@@ -100,7 +103,7 @@ const Trucks = () => {
     },
     {
       title: 'Phone No',
-      dataIndex: 'phoneNo',
+      dataIndex: 'phone_no',
       render: (text,record) => {
         return (
           <span className='link' onClick={() => showUsers(record)} >{text}</span>
@@ -114,7 +117,7 @@ const Trucks = () => {
     },
     {
       title: 'City',
-      dataIndex: 'city'
+      dataIndex: 'city',
     },
     {
       title: '',
