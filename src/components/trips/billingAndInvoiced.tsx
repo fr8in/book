@@ -16,7 +16,6 @@ const { Option } = Select;
       title={
           "Billing & Invoice-" 
         }
-      
       visible={visible}
       onCancel={onHide}
       footer={[
