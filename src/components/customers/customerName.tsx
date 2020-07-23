@@ -4,7 +4,7 @@ import InlineEdit from '../common/inlineEdit'
 import { UPDATE_CUSTOMER_NAME_MUTATION } from './containers/query/updateCustomerNameMutation'
 
 const CustomerName = (props) => {
-  const { cardCode, name } = props
+  const { cardcode, name } = props
 
   const [updateStatusId] = useMutation(UPDATE_CUSTOMER_NAME_MUTATION)
 
@@ -14,7 +14,7 @@ const CustomerName = (props) => {
     } else {
       updateStatusId({
         variables: {
-          cardCode,
+          cardcode,
           name: text
         }
       })

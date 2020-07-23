@@ -50,17 +50,17 @@ const Actions = () => {
         <Drawer
           placement='right'
           closable={false}
-          onClose={() => onHide('filter')}
+          onClose={onHide}
           visible={visible.filter}
         >
           <GlobalFilter />
         </Drawer>}
 
       {visible.search &&
-        <GlobalSearch visible={visible.search} onHide={() => onHide('search')} />}
+        <GlobalSearch visible={visible.search} onHide={onHide} />}
 
       {visible.ssh &&
-        <Ssh visible={visible.ssh} onHide={() => onHide('ssh')} />}
+        <Ssh visible={visible.ssh} onHide={onHide} />}
     </Col>
   )
 }

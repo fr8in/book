@@ -1,8 +1,9 @@
-import React from 'react'
+
 import { Modal, Button, Row, Input, Col, Table, Popconfirm, Form } from 'antd'
 import { PhoneOutlined, DeleteOutlined } from '@ant-design/icons'
 
 const PartnerUsers = (props) => {
+  const { title, visible, onHide } = props
   const userDelete = (value) => {
     console.log('changed', value)
   }
@@ -32,14 +33,14 @@ const PartnerUsers = (props) => {
   ]
   return (
     <Modal
-      title={props.name}
-      visible={props.visible}
-      onCancel={props.onHide}
+      title={title}
+      visible={visible}
+      onCancel={onHide}
       footer={[
         <Button
           type='default'
           key='back'
-          onClick={props.onHide}
+          onClick={onHide}
         >Close
         </Button>
       ]}

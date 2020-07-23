@@ -29,14 +29,14 @@ const { Panel } = Collapse
 const { TabPane } = Tabs
 
 const CustomerDetailContainer = (props) => {
-  const { cardCode } = props
+  const { cardcode } = props
   const initial = { transfer: false, rebate: false, wallet: false, addUser: false, addBranch: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
   const { loading, error, data } = useSubscription(
     CUSTOMER_DETAIL_SUBSCRIPTION,
     {
-      variables: { cardCode }
+      variables: { cardcode }
     }
   )
 
@@ -55,9 +55,9 @@ const CustomerDetailContainer = (props) => {
               size='small'
               className='border-top-blue'
               title={
-                <CustomerName cardCode={customerInfo.cardCode} name={customerInfo.name} />
+                <CustomerName cardcode={customerInfo.cardcode} name={customerInfo.name} />
               }
-              extra={<Blacklist cardCode={customerInfo.cardCode} statusId={customerInfo.statusId} />}
+              extra={<Blacklist cardcode={customerInfo.cardcode} statusId={customerInfo.status_id} />}
             >
               <Row gutter={10}>
                 <Col xs={24} sm={24} md={14}>
@@ -86,9 +86,9 @@ const CustomerDetailContainer = (props) => {
                     </Collapse>
                   </Card>
                 </Col>
-                {visible.transfer && <Transfer visible={visible.transfer} onHide={() => onHide('transfer')} />}
-                {visible.rebate && <Rebate visible={visible.rebate} onHide={() => onHide('rebate')} />}
-                {visible.wallet && <WalletTopup visible={visible.wallet} onHide={() => onHide('wallet')} />}
+                {visible.transfer && <Transfer visible={visible.transfer} onHide={onHide} />}
+                {visible.rebate && <Rebate visible={visible.rebate} onHide={onHide} />}
+                {visible.wallet && <WalletTopup visible={visible.wallet} onHide={onHide} />}
               </Row>
             </Card>
           </Col>
@@ -140,8 +140,8 @@ const CustomerDetailContainer = (props) => {
               </Tabs>
             </Card>
           </Col>
-          {visible.addUser && <CustomerUser visible={visible.addUser} onHide={() => onHide('addUser')} />}
-          {visible.addBranch && <CustomerBranch visible={visible.addBranch} onHide={() => onHide('addBranch')} />}
+          {visible.addUser && <CustomerUser visible={visible.addUser} onHide={onHide} />}
+          {visible.addBranch && <CustomerBranch visible={visible.addBranch} onHide={onHide} />}
         </Row>
       </Col>
     </Row>

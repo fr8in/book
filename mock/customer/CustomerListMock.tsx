@@ -1,7 +1,7 @@
 const customerDetails = [
   {
     id: 1,
-    cardCode: 'ST00157',
+    cardcode: 'ST00157',
     name: 'Matheen',
     mobileNoList: 9945272789,
     noOfLoadsTaken: 0,
@@ -13,7 +13,7 @@ const customerDetails = [
   },
   {
     id: 2,
-    cardCode: 'ST00158',
+    cardcode: 'ST00158',
     name: 'LRC LOGISTICS',
     mobileNoList: 9945248789,
     noOfLoadsTaken: 1,
@@ -25,7 +25,7 @@ const customerDetails = [
   },
   {
     id: 3,
-    cardCode: 'ST00159',
+    cardcode: 'ST00159',
     name: 'Mana Transport Co',
     mobileNoList: 8885272789,
     noOfLoadsTaken: 0,
@@ -37,7 +37,7 @@ const customerDetails = [
   },
   {
     id: 4,
-    cardCode: 'ST00160',
+    cardcode: 'ST00160',
     name: 'Kalaimagal transport',
     mobileNoList: 9995272700,
     noOfLoadsTaken: 1,
@@ -49,7 +49,7 @@ const customerDetails = [
   },
   {
     id: 5,
-    cardCode: 'ST001561',
+    cardcode: 'ST001561',
     name: 'Jai Balaji Logistics',
     mobileNoList: 7745272788,
     noOfLoadsTaken: 0,
@@ -62,7 +62,7 @@ const customerDetails = [
   
   {
     id: 6,
-    cardCode: 'ST00162',
+    cardcode: 'ST00162',
     name: 'AKASH TRANSLINES',
     mobileNoList: 9665272777,
     noOfLoadsTaken: 1,

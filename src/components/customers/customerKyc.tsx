@@ -1,6 +1,5 @@
 import { Table } from 'antd'
 import newCusMock from '../../../mock/customer/newCusMock'
-import PageLayout from '../layout/pageLayout'
 
 const CustomerKyc = () => {
   const newCustomer = [
@@ -46,16 +45,14 @@ const CustomerKyc = () => {
   ]
 
   return (
-    <PageLayout title='Customer'>
-      <Table
-        columns={newCustomer}
-        dataSource={newCusMock}
-        rowKey={record => record.id}
-        size='small'
-        scroll={{ x: 800, y: 400 }}
-        pagination={false}
-      />
-    </PageLayout>
+    <Table
+      columns={newCustomer}
+      dataSource={newCusMock}
+      rowKey={record => record.id}
+      size='small'
+      scroll={{ x: 800, y: 400 }}
+      pagination={false}
+    />
   )
 }
 

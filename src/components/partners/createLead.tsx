@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Modal, Button, Input, Row, Col, Space, Select } from 'antd';
 import {OwnerName,SelectType} from '../../../mock/sourcing/createLead'
 

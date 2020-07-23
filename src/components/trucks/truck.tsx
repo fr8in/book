@@ -1,4 +1,4 @@
-import React from 'react'
+
 import LabelAndData from '../common/labelAndData'
 import Link from 'next/link'
 import data from '../../../mock/trucks/truckDetail'

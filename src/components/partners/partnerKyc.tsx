@@ -1,166 +1,183 @@
-import { Table, Radio, Tooltip, Button, Col, Badge, Row } from 'antd'
-import { CommentOutlined } from '@ant-design/icons'
+import { Table, Tooltip, Button, Badge, Input, Space } from 'antd'
+import { CommentOutlined, SearchOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import mock from '../../../mock/partner/partnerKyc'
 import Link from 'next/link'
-import useShowHide from '../../hooks/useShowHide'
 
 const regionList = [
   { value: 1, text: 'North' },
   { value: 2, text: 'South-1' },
-  { value: 3, text: 'East-1' },
-  { value: 4, text: 'West-1' },
-  { value: 5, text: 'south-2' },
-  { value: 6, text: 'East-2' },
-  { value: 7, text: 'west-2' }
+  { value: 3, text: 'South-2' },
+  { value: 4, text: 'East-1' },
+  { value: 5, text: 'East-2' },
+  { value: 6, text: 'West-1' },
+  { value: 7, text: 'West-2' }
 ]
 const kycStatusList = [
-  { value: 1, text: 'verification Pending' },
+  { value: 1, text: 'Verification Pending' },
   { value: 2, text: 'Document Pending' },
   { value: 3, text: 'Rejected' },
-  { value: 4, text: 'Re-Verification' },
+  { value: 4, text: 'Re-Verification' }
+]
+const truckCount = [
+  { value: 1, text: '0' },
+  { value: 2, text: '1-5' },
+  { value: 3, text: '>5' },
+  { value: 4, text: 'All' }
 ]
 
-
 const PartnerKyc = () => {
-  const initial = { comment: false }
-  const { visible, onShow, onHide } = useShowHide(initial)
-  function onChange(checkedValues) {
-    console.log('checked = ', checkedValues);
-  }
   const columnsCurrent = [
     {
       title: 'Partner Code',
       dataIndex: 'code',
-      key:'code',
-      width:'8%',
+      width: '10%',
       render: (text, record) => {
         return (
-          <Link href="partners/[id]" as={`partners/${record.id}`}>
+          <Link href='partners/[id]' as={`partners/${record.id}`}>
             <a>{text}</a>
           </Link>
         )
       },
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search Partner Code'
+            id='code'
+            name='code'
+            type='number'
+          />
+        </div>
+      ),
+      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
     },
     {
-      title: 'Partner Name',
+      title: 'Partner',
       dataIndex: 'name',
-      key:'name',
-      className: 'pl10',
+      width: '10%',
       render: (text, record) => {
         return (
           <span>
             <Badge dot style={{ backgroundColor: '#28a745' }} />
-            <a>{text}</a>
+            <span>{text}</span>
           </span>
         )
       },
-      width: '8%',
-    },
-    {
-      title: 'Region',
-      dataIndex: 'region',
-      key:'region',
-      width:'8%',
-      filters: regionList
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search Partner Name'
+            id='name'
+            name='name'
+          />
+        </div>
+      ),
+      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
     },
     {
       title: 'On Boarded By',
       dataIndex: 'boardedBy',
-      key:'boardedBy',
+      width: '10%',
       render: (text, record) => {
         return (
-          <a>{record.remarks && record.remarks.length > 12 ? (
-            <Tooltip title={record.remarks}>
-              <span> {record.remarks.slice(0, 12) + "..."}</span>
+          text && text.length > 12 ? (
+            <Tooltip title={text}>
+              <span> {text.slice(0, 12) + '...'}</span>
             </Tooltip>
-          ) : text}
-          </a>
+          ) : text
         )
-      },
-      width: '11%',
+      }
+    },
+    {
+      title: 'Region',
+      dataIndex: 'region',
+      width: '7%',
+      filters: regionList
     },
     {
       title: 'Contact No',
       dataIndex: 'number',
-      key:'number',
-      width:'10%',
+      width: '9%'
     },
     {
-      title: 'Truck Count',
-      dataIndex: 'count',
-      key: 'count',
-      width:'9%',
-      filterDropdown: (
-        <div>
-          <Radio.Group onChange={onChange}>
-            <Row gutter={10}>
-              <Col xs={{ span: 24 }} sm={{ span: 24 }}>
-                <Radio value={1}>0</Radio>
-              </Col>
-              <Col xs={{ span: 24 }} sm={{ span: 24 }}>
-                <Radio value={2}>1-5</Radio>
-              </Col>
-              <Col xs={{ span: 24 }} sm={{ span: 24 }}>
-                <Radio value={3}>{">5"}</Radio>
-              </Col>
-              <Col xs={{ span: 24 }} sm={{ span: 24 }}>
-                <Radio value={4}>All</Radio>
-              </Col>
-            </Row>
-          </Radio.Group>
-        </div>
-      ),
-    },
-    {
-      title: 'Registration Date',
+      title: 'Registred At',
       dataIndex: 'date',
-      key:'date',
-      width:'9%',
+      width: '10%',
+      render: (text, record) => {
+        return (
+          text && text.length > 12 ? (
+            <Tooltip title={text}>
+              <span> {text.slice(0, 12) + '...'}</span>
+            </Tooltip>
+          ) : text
+        )
+      }
+    },
+    {
+      title: 'Trucks',
+      dataIndex: 'count',
+      width: '7%',
+      filters: truckCount
     },
     {
       title: 'PAN',
       dataIndex: 'pan',
-      key:'pan',
-      width:'9%',
+      width: '8%'
     },
     {
       title: 'KYC Status',
       dataIndex: 'status',
-      key: 'status',
       width: '9%',
+      render: (text, record) => {
+        return (
+          text && text.length > 12 ? (
+            <Tooltip title={text}>
+              <span> {text.slice(0, 12) + '...'}</span>
+            </Tooltip>
+          ) : text
+        )
+      },
       filters: kycStatusList
     },
     {
       title: 'Comment',
       dataIndex: 'comment',
-      key: 'comment',
-      width: '9%',
+      width: '11%',
+      render: (text, record) => {
+        return (
+          text && text.length > 12 ? (
+            <Tooltip title={text}>
+              <span> {text.slice(0, 12) + '...'}</span>
+            </Tooltip>
+          ) : text
+        )
+      }
     },
     {
       title: 'Action',
       dataIndex: 'action',
-      key: 'action',
-      width: '10%',
+      width: '9%',
       render: (text, record) => (
-        <span className='actions'>
+        <Space>
           <Tooltip title='Comment'>
-            <Button type='link' icon={<CommentOutlined />} onClick={() => onShow('comment')} />
+            <Button type='link' icon={<CommentOutlined />} />
           </Tooltip>
-        </span>
-      ),
-    },
+          <Button type='primary' className='btn-success' icon={<CheckOutlined />} />
+          <Button type='primary' danger icon={<CloseOutlined />} />
+        </Space>
+      )
+    }
   ]
   return (
-
     <Table
       columns={columnsCurrent}
       dataSource={mock}
       rowKey={record => record.id}
       size='small'
-      scroll={{ x: 956 }}
+      scroll={{ x: 1256 }}
       pagination={false}
+      className='withAction'
     />
-
   )
 }
+
 export default PartnerKyc

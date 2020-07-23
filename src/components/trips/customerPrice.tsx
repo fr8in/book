@@ -1,5 +1,5 @@
 import { Modal, Button,Row,Col,Form,Input } from 'antd';
-import React from 'react'
+
 
 const CustomerPrice = (props) => {
   const { visible, onHide } = props

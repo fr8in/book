@@ -4,7 +4,7 @@ import CustomerDetailContainer from '../../components/customers/containers/custo
 const Customer = (props) => {
   return (
     <PageLayout title={`Customer - ${props.id}`}>
-      <CustomerDetailContainer cardCode={props.id} />
+      <CustomerDetailContainer cardcode={props.id} />
     </PageLayout>
   )
 };

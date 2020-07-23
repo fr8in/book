@@ -5,6 +5,8 @@ import { EditTwoTone } from '@ant-design/icons'
 import trucks from '../../../mock/trucks/trucks'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
 import PartnerUsers from '../partners/partnerUsers'
+import useShowHide from '../../hooks/useShowHide'
+import CustomerPo from '../../components/trips/createPo'
 
 const statusList = [
   { value: 1, text: 'Ordered' },
@@ -22,6 +24,10 @@ const Trucks = () => {
 
   const initial = { record: null, title: '', visible: false }
   const [availability, setAvailability] = useState(initial)
+
+  const poInitial = { poModal: false}
+    const { visible, onShow, onHide } = useShowHide(initial)
+
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -48,6 +54,8 @@ const Trucks = () => {
     setAvailability({ ...record, record: record, title: 'Breakdown', visible: true })
   }
 
+  
+
   const columns = [
     {
       title: 'Truck No',
@@ -73,7 +81,11 @@ const Trucks = () => {
     },
     {
       title: 'Trip',
-      dataIndex: 'trip'
+      dataIndex: 'trip',
+      render: (text, record) => {
+        return (
+          <span className='link'onClick={() => onShow('poModal')} >{text}</span>
+        )}
     },
     {
       title: 'Partner',
@@ -89,9 +101,9 @@ const Trucks = () => {
     {
       title: 'Phone No',
       dataIndex: 'phoneNo',
-      render: (text, record) => {
+      render: (text,record) => {
         return (
-          <span className='link' onClick={() => showUsers(record)}>{text}</span>
+          <span className='link' onClick={() => showUsers(record)} >{text}</span>
         )
       }
     },
@@ -136,6 +148,7 @@ const Trucks = () => {
           onHide={breakdownClose}
           title={availability.title}
         />}
+         {visible.poModal && <CustomerPo visible={visible.poModal} onHide={() => onHide()} />}
     </>
   )
 }
