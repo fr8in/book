@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Table, Input, Switch,Row, Button,Space,Tooltip, Popover} from 'antd'
-import {DownSquareOutlined,ExclamationCircleTwoTone,CommentOutlined,CloseCircleTwoTone} from '@ant-design/icons'
+import {SearchOutlined,ExclamationCircleTwoTone,CommentOutlined,CloseCircleTwoTone} from '@ant-design/icons'
 import mock from '../../../mock/customer/sourcingMock'
 import useShowHide from '../../hooks/useShowHide'
 const CusSource=[
@@ -57,33 +57,47 @@ const SourcingCus = () => {
     {
         title: 'Phone',
         dataIndex: 'number',
-              filterDropdown: (
-                  <div > 
-                      <Input placeholder="Search Phone Number" />  
-                  </div>
-                ),
-              filterIcon:<DownSquareOutlined />
+        filterDropdown: (
+          <div > 
+          <Input placeholder="Search Phone Number" 
+          id='number'
+          name='number'
+          type='number'/>  
+      </div>
+            ),
+            filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+            onFilterDropdownVisibleChange: () => onShow('phoneNumberSearch') 
+
       },
       {
         title: 'City',
         dataIndex: 'cityName',
-              filterDropdown: (
-                  <div > 
-                      <Input placeholder="Search City Name" />  
-                  </div>
-                ),
-              filterIcon:<DownSquareOutlined />
+        filterDropdown: (
+          <div > 
+            <Input placeholder="Search City Name" 
+            id='cityName'
+            name='cityName'
+            />  
+        </div>
+              ),
+              filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+              onFilterDropdownVisibleChange: () => onShow('cityNameSearch') 
       },
       {
         title: 'Owner',
         dataIndex: 'owner',
-              filterDropdown: (
-                  <div > 
-                      <Input placeholder="Search Employee Name" />  
-                  </div>
-                ),
-              filterIcon:<DownSquareOutlined />
-      },
+        filterDropdown: (
+          <div > 
+          <Input placeholder="Search Employee Name" 
+          id='owner'
+          name='owner'
+          />  
+      </div>
+            ),
+            filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+            onFilterDropdownVisibleChange: () => onShow('employeeNameSearch') 
+    },
+    
       {
         title: 'Source',
         dataIndex: 'source',

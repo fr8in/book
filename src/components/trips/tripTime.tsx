@@ -9,9 +9,10 @@ import {
 } from '@ant-design/icons'
 import SendLoadingMemo from './sendLoadingMemo'
 import useShowHide from '../../hooks/useShowHide'
+import DeletePO from './deletePO'
 
 const TripTime = () => {
-  const initial = { checkbox: false, mail: false }
+  const initial = { checkbox: false, mail: false, deletePO: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   return (
     <Card size='small' className='mt10'>
@@ -128,7 +129,7 @@ const TripTime = () => {
             <Row>
               <Col xs={16}>
                 <Space>
-                  <Button type='primary' danger icon={<DeleteOutlined />}>PO</Button>
+                  <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>
                   <Button type='primary'>Process Advance</Button>
                   <Button danger icon={<CloseCircleOutlined />}>Sout</Button>
                   <Button danger icon={<CloseCircleOutlined />}>Dout</Button>
@@ -145,6 +146,7 @@ const TripTime = () => {
         </Col>
       </Row>
       {visible.mail && <SendLoadingMemo visible={visible.mail} onHide={() => onHide('mail')} />}
+      {visible.deletePO && <DeletePO visible={visible.deletePO} onHide={() => onHide('deletePO')} />}
     </Card>
 
   )
