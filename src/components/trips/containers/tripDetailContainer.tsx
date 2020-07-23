@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Row, Col, Card, Space, Tag, Tabs, Collapse } from 'antd'
 import data from '../../../../mock/trip/tripDetail'
 import TripInfo from '../tripInfo'

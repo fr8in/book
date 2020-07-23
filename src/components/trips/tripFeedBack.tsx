@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Modal, Button, Row, Input, Col, Table } from 'antd'
 
 const Tripcomment = (props) => {

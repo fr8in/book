@@ -20,20 +20,20 @@ const Customers = (props) => {
     },
     {
       title: 'User Phone',
-      dataIndex: 'mobileNo'
+      dataIndex: 'mobile'
     },
     {
-      title: 'Orders',
-      dataIndex: 'noOfLoadsTaken',
+      title: 'No of Loads',
+      dataIndex: 'no_of_loads_taken',
       sorter: true
     },
     {
-      title: 'systemMamul',
-      dataIndex: 'systemMamul'
+      title: 'System Mamul',
+      dataIndex: 'system_mamul'
     },
     {
       title: 'Credit Limit',
-      dataIndex: 'creditLimit'
+      dataIndex: 'credit_limit'
     },
     {
       title: 'Receivables',
@@ -41,11 +41,11 @@ const Customers = (props) => {
     },
     {
       title: 'Receivable Days',
-      dataIndex: 'workingCapitalDays'
+      dataIndex: 'working_capital_days'
     },
     {
       title: 'Status',
-      dataIndex: 'Status'
+      dataIndex: 'status'
     }
   ]
 

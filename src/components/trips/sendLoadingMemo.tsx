@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Modal, Button, Input } from 'antd'
 
 const SendLoadingMemo = (props) => {

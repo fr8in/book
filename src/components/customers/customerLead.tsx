@@ -1,51 +1,39 @@
-import { Table, Input, Switch, Popconfirm, Button, Tooltip } from 'antd'
-import {
-  EditTwoTone,
-  CommentOutlined,
-  CloseOutlined,
-  SearchOutlined
-} from '@ant-design/icons'
-import useShowHide from '../../hooks/useShowHide'
+import { Table, Input, Switch, Button, Tooltip, Popconfirm } from 'antd'
+import { SearchOutlined, CommentOutlined, CloseOutlined } from '@ant-design/icons'
 import mock from '../../../mock/customer/sourcingMock'
-import EmployeeList from '../branches/fr8EmpolyeeList'
 
-const source = [
+const CusSource = [
   { value: 1, text: 'DIRECT' },
   { value: 2, text: 'SOCIAL MEDIA' },
   { value: 3, text: 'REFERRAL' },
   { value: 4, text: 'APP' }
 ]
-
-const status = [
+const CusState = [
   { value: 1, text: 'OPEN' },
   { value: 2, text: 'ON-BOARDED' },
   { value: 3, text: 'REJECTED' }
 ]
 
-const comment = [
-  { value: 1, text: 'No Comment' }
-]
-
-const PartnerKyc = () => {
-  const initial = { comment: false, employeeList: false }
-  const { visible, onShow, onHide } = useShowHide(initial)
-
-  const onChange = (e) => {
-    console.log(`checked = ${e.target.checked}`)
+const CustomerLead = () => {
+  const onChange = (checked) => {
+    console.log(`checked = ${checked}`)
   }
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
     },
     getCheckboxProps: record => ({
-      disabled: record.name === 'Disabled User',
+      disabled: record.name === 'Disabled User', // Column configuration not to be checked
       name: record.name
     })
   }
-
   const columnsCurrent = [
     {
-      title: 'Name',
+      title: 'Company',
+      dataIndex: 'company'
+    },
+    {
+      title: 'User',
       dataIndex: 'name'
     },
     {
@@ -80,14 +68,6 @@ const PartnerKyc = () => {
     {
       title: 'Owner',
       dataIndex: 'owner',
-      render: (text, record) => {
-        return (
-          <div>
-            <span>{text}&nbsp;</span>
-            <EditTwoTone onClick={() => onShow('employeeList')} />
-          </div>
-        )
-      },
       filterDropdown: (
         <div>
           <Input
@@ -102,17 +82,16 @@ const PartnerKyc = () => {
     {
       title: 'Source',
       dataIndex: 'source',
-      filters: source
+      filters: CusSource
     },
     {
       title: 'Status',
       dataIndex: 'status',
-      filters: status
+      filters: CusState
     },
     {
-      title: 'Last Comment',
-      dataIndex: 'comment',
-      filters: comment
+      title: 'Comment',
+      dataIndex: 'comment'
     },
     {
       title: 'Created Date',
@@ -128,11 +107,10 @@ const PartnerKyc = () => {
     },
     {
       title: 'Action',
-      dataIndex: 'action',
       render: (text, record) => (
         <span className='actions'>
           <Tooltip title='Comment'>
-            <Button type='link' icon={<CommentOutlined />} onClick={() => onShow('comment')} />
+            <Button type='link' icon={<CommentOutlined />} />
           </Tooltip>
           <Popconfirm
             title='Are you sure want to Reject the lead?'
@@ -147,22 +125,18 @@ const PartnerKyc = () => {
     }
   ]
   return (
-    <>
-      <Table
-        rowSelection={{
-          ...rowSelection
-        }}
-        columns={columnsCurrent}
-        dataSource={mock}
-        rowKey={record => record.id}
-        size='small'
-        scroll={{ x: 1156 }}
-        pagination={false}
-        className='withAction'
-      />
-      {visible.employeeList && <EmployeeList visible={visible.employeeList} onHide={onHide} />}
-    </>
+    <Table
+      rowSelection={{
+        ...rowSelection
+      }}
+      columns={columnsCurrent}
+      dataSource={mock}
+      rowKey={record => record.id}
+      size='middle'
+      scroll={{ x: 1156 }}
+      pagination={false}
+    />
   )
 }
 
-export default PartnerKyc
+export default CustomerLead

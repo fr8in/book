@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Card, Button } from 'antd'
 import LabelData from '../../components/common/labelData'
 import WalletTopUp from '../../components/partners/walletTopup'

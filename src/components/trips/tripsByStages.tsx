@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Table } from 'antd'
 import mock from '../../../mock/trip/tripsByStages'
 import Link from 'next/link'
