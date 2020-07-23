@@ -1,5 +1,5 @@
 import { Modal, Button,Row,Col,Form,Input } from 'antd';
-import React from 'react'
+
 import {UploadOutlined} from '@ant-design/icons'
 class CheckBoxModal extends React.Component {
   state = {

@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Row, Col, Modal, Button, Input, Select, Form } from 'antd'
 import { UserBranch, OperatingCities } from '../../../mock/customer/createCustomerUserMock'
 

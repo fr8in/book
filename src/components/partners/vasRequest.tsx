@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Table } from 'antd'
 import mock from '../../../mock/customer/sourcingMock'
 const VasRequest = () => {

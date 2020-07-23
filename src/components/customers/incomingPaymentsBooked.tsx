@@ -1,6 +1,6 @@
 import { Table } from 'antd'
 
-const IncomingPaymentsLead = (props) => {
+const IncomingPaymentsBooked = (props) => {
   const data = [
     {
       title: 'Date',
@@ -41,4 +41,4 @@ const IncomingPaymentsLead = (props) => {
   )
 }
 
-export default IncomingPaymentsLead
+export default IncomingPaymentsBooked

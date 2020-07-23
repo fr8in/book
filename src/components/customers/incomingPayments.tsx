@@ -1,6 +1,6 @@
 import IncomingPaymentData from '../../../mock/customer/incomingdata'
 import { Table } from 'antd'
-import IncomingPaymentsLead from './incomingPaymentsLead'
+import IncomingPaymentsBooked from './incomingPaymentsBooked'
 
 const IncomingPayments = (props) => {
   const columns = [
@@ -38,7 +38,7 @@ const IncomingPayments = (props) => {
   return (
     <Table
       columns={columns}
-      expandedRowRender={record => <IncomingPaymentsLead {...record} />}
+      expandedRowRender={record => <IncomingPaymentsBooked {...record} />}
       dataSource={IncomingPaymentData}
       rowKey={record => record.id}
       size='small'

@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Table,Button } from 'antd'
 import {DownloadOutlined} from '@ant-design/icons'
 import mock from '../../../mock/customer/sourcingMock'

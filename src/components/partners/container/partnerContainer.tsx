@@ -1,4 +1,4 @@
-import React from 'react'
+
 import {Row, Button, Card} from 'antd'
 import Link from 'next/link'
 import PartnerList from '../partners'

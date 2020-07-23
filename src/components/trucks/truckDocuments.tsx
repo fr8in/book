@@ -1,4 +1,4 @@
-import React from 'react'
+
 import {Row,Col,Button,Form} from 'antd'
 import { UploadOutlined} from '@ant-design/icons';
 export default function truckDocuments() {
