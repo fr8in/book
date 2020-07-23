@@ -1,26 +1,26 @@
 import React from 'react'
 import { Row, Col, Card, Space, Tag, Tabs, Collapse } from 'antd'
-import data from '../../../mock/trip/tripDetail'
-import TripInfo from './tripInfo'
-import TripLr from './tripLr'
-import TripTime from './tripTime'
-import TripComment from './tripComment'
-import BillingComment from './billingComment'
-import TripPod from './tripPod'
-import TripInvoice from './tripInvoice'
-import InvoiceDetail from './invoiceDetail'
-import CreateAdditionalAdvance from './createAdditionalAdvance'
-import AdditionalAdvance from './additionalAdvance'
-import Payables from './payables'
-import Receivables from './receivables'
-import CustomerPayments from './customerPayments'
-import CreditNote from './creditNote'
-import CreditNoteTable from './creditNoteTable'
+import data from '../../../../mock/trip/tripDetail'
+import TripInfo from '../tripInfo'
+import TripLr from '../tripLr'
+import TripTime from '../tripTime'
+import TripComment from '../tripComment'
+import BillingComment from '../billingComment'
+import TripPod from '../tripPod'
+import TripInvoice from '../tripInvoice'
+import InvoiceDetail from '../invoiceDetail'
+import CreateAdditionalAdvance from '../createAdditionalAdvance'
+import AdditionalAdvance from '../additionalAdvance'
+import Payables from '../payables'
+import Receivables from '../receivables'
+import CustomerPayments from '../customerPayments'
+import CreditNote from '../creditNote'
+import CreditNoteTable from '../creditNoteTable'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
 
-const TripDetail = (props) => {
+const TripDetailContainer = (props) => {
   console.log('tripId', props)
   const title = (
     <h3>
@@ -127,4 +127,4 @@ const TripDetail = (props) => {
   )
 }
 
-export default TripDetail
+export default TripDetailContainer
