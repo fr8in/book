@@ -1,4 +1,4 @@
-import { Table,Button } from 'antd'
+import { Table, Button } from 'antd'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import branchData from '../../../mock/customer/branch'
 
@@ -47,10 +47,10 @@ const Branch = () => {
     {
       title: 'Action',
       render: (text, record) => (
-        <span className='actions'>
-          <Button type='link' icon={<DeleteOutlined />}  />
-          <Button type='link' icon={<EditOutlined />}  />
-           </span>
+        <span>
+          <Button type='link' icon={<DeleteOutlined />} />
+          <Button type='link' icon={<EditOutlined />} />
+        </span>
       ),
       width: '10%'
     }
@@ -64,6 +64,7 @@ const Branch = () => {
       size='small'
       scroll={{ x: 800, y: 400 }}
       pagination={false}
+      className='withAction'
     />
   )
 }

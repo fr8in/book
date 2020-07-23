@@ -2,11 +2,11 @@ import { Table } from 'antd'
 import finalPayment from '../../../mock/customer/finalPayment'
 
 const statusList = [
-  { value: 1, text: "Advance is Pending" },
-  { value: 11, text: "Received Amount< Customer Advance %" }
-  ];
- 
-  const AdvancePending = () => {
+  { value: 1, text: 'Advance is Pending' },
+  { value: 11, text: 'Received Amount< Customer Advance %' }
+]
+
+const AdvancePending = () => {
   const advancePending = [
     {
       title: 'Load Id',
