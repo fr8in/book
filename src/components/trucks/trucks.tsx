@@ -6,7 +6,7 @@ import trucks from '../../../mock/trucks/trucks'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
 import PartnerUsers from '../partners/partnerUsers'
 import useShowHide from '../../hooks/useShowHide'
-import CustomerPo from '../../components/customers/createPo'
+import CustomerPo from '../../components/trips/createPo'
 
 const statusList = [
   { value: 1, text: 'Ordered' },
@@ -148,7 +148,7 @@ const Trucks = () => {
           onHide={breakdownClose}
           title={availability.title}
         />}
-         {visible.poModal && <CustomerPo visible={visible.poModal} onHide={() => onHide('poModal')} />}
+         {visible.poModal && <CustomerPo visible={visible.poModal} onHide={() => onHide()} />}
     </>
   )
 }

@@ -1,7 +1,7 @@
 import { Row, Button, Tag ,Col,Divider} from 'antd'
 import { SnippetsOutlined } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
-import CustomerPo from '../../components/customers/createPo'
+import CustomerPo from '../../components/trips/createPo'
 
 const AssignStatus = () => {
     const initial = { poModal: false}
@@ -15,7 +15,7 @@ const AssignStatus = () => {
               <Divider type="vertical" />
               <Tag >Waiting for load</Tag>
           </Col>
-          {visible.poModal && <CustomerPo visible={visible.poModal} onHide={() => onHide('poModal')} />}
+          {visible.poModal && <CustomerPo visible={visible.poModal} onHide={() => onHide()} />}
           </Row>
 
           </div>
