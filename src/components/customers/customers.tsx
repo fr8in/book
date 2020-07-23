@@ -1,51 +1,10 @@
 import { Table } from 'antd'
 import Link from 'next/link'
-import PageLayout from '../layout/pageLayout'
-import { useQuery, NetworkStatus } from '@apollo/client'
-import { CUSTOMERS_QUERY } from './containers/query/customersQuery'
 
 // import customer from '../../../mock/customer/CustomerListMock'
 
-export const customersQueryVars = {
-  offset: 0,
-  limit: 10
-}
-
-const Customers = () => {
-  const { loading, error, data, fetchMore, networkStatus } = useQuery(
-    CUSTOMERS_QUERY,
-    {
-      variables: customersQueryVars,
-      // Setting this value to true will make the component rerender when
-      // the "networkStatus" changes, so we are able to know if it is fetching
-      // more data
-      notifyOnNetworkStatusChange: true
-    }
-  )
-
-  const loadingMoreCustomers = networkStatus === NetworkStatus.fetchMore
-
-  const loadMoreCustomers = () => {
-    fetchMore({
-      variables: {
-        offset: customer.length
-      },
-      updateQuery: (previousResult, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return previousResult
-        }
-        return Object.assign({}, previousResult, {
-          // Append the new posts results to the old one
-          customer: [...previousResult.customer, ...fetchMoreResult.customer]
-        })
-      }
-    })
-  }
-
-  if (loading && !loadingMoreCustomers) return <div>Loading</div>
-  console.log(data)
-  const { customer } = data
-
+const Customers = (props) => {
+  const { customers } = props
   const columnsCurrent = [
     {
       title: 'Customer',
@@ -93,16 +52,14 @@ const Customers = () => {
   ]
 
   return (
-    <PageLayout title='Customer'>
-      <Table
-        columns={columnsCurrent}
-        dataSource={customer}
-        rowKey={record => record.id}
-        size='small'
-        scroll={{ x: 800, y: 400 }}
-        pagination={false}
-      />
-    </PageLayout>
+    <Table
+      columns={columnsCurrent}
+      dataSource={customers}
+      rowKey={record => record.id}
+      size='small'
+      scroll={{ x: 800, y: 400 }}
+      pagination={false}
+    />
   )
 }
 

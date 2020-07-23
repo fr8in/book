@@ -15,6 +15,13 @@ a, .link {
   cursor: pointer;
   &:hover { color: @primary}
 }
+.loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .brand {
   height: 64px;
   padding: 0 15px;
@@ -227,6 +234,18 @@ a, .link {
     }
   }
 }
+.emp-list {
+  .ant-checkbox-group-item {
+    display: block;
+    line-height: 40px;
+  }
+}
+.truckPO {
+  top: 42px;
+  position: absolute;
+  left: 24px;
+  background: #fff;
+}
 
 @media only screen and (max-width: 767px) {
   .stats {
@@ -234,4 +253,13 @@ a, .link {
     &.last { margin-bottom: 0;}
   }
   
+}
+
+@media only screen and (max-width: 575px) {
+  .hidden-xs {
+    display: none
+  }
+  .create-po {
+    .ant-form-item-label { display: none; }
+  }
 }

@@ -7,6 +7,10 @@ export const CUSTOMERS_QUERY = gql`
       name
       mobileNo
       cardCode
+      creditLimit
+      status {
+        id
+      }
     }
   }
 `

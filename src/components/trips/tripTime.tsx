@@ -1,4 +1,3 @@
-import React,{useState} from 'react'
 import { Row, Col, Card, Form, DatePicker, Tooltip, Input, Space, Button, Checkbox } from 'antd'
 import {
   FilePdfOutlined,
@@ -8,13 +7,13 @@ import {
   DeleteOutlined,
   CloseCircleOutlined
 } from '@ant-design/icons'
-import MailModal from './loadingMemo'
+import SendLoadingMemo from './sendLoadingMemo'
 import useShowHide from '../../hooks/useShowHide'
-
+import DeletePO from './deletePO'
 
 const TripTime = () => {
-  const initial = { checkbox: false, mail:false}
-  const { visible, onShow,onHide } = useShowHide(initial)
+  const initial = { checkbox: false, mail: false, deletePO: false }
+  const { visible, onShow, onHide } = useShowHide(initial)
   return (
     <Card size='small' className='mt10'>
       <Row>
@@ -89,9 +88,9 @@ const TripTime = () => {
               <Col xs={8}>
                 <Form.Item label='Loading Memo'>
                   <Space>
-                    <Button type='primary' icon={<FilePdfOutlined />} />
-                    <Button type='primary' icon={<FileWordOutlined />} />
-                    <Button type="primary" size="small" shape='circle' icon={<MailOutlined />} onClick={() => onShow('mail')} />
+                    <Button type='primary' shape='circle' icon={<FilePdfOutlined />} />
+                    <Button type='primary' shape='circle' icon={<FileWordOutlined />} />
+                    <Button shape='circle' icon={<MailOutlined />} onClick={() => onShow('mail')} />
                   </Space>
                 </Form.Item>
               </Col>
@@ -130,7 +129,7 @@ const TripTime = () => {
             <Row>
               <Col xs={16}>
                 <Space>
-                  <Button type='primary' danger icon={<DeleteOutlined />}>PO</Button>
+                  <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>
                   <Button type='primary'>Process Advance</Button>
                   <Button danger icon={<CloseCircleOutlined />}>Sout</Button>
                   <Button danger icon={<CloseCircleOutlined />}>Dout</Button>
@@ -144,31 +143,13 @@ const TripTime = () => {
               </Col>
             </Row>
           </Form>
-          {/*
-          <Modal
-            title='Loading Memo Email'
-            visible={this.state.memoEmail}
-            onOk={this.sendLoadingMemoMail}
-            onCancel={this.handleMemoEmail.bind(this, false)}
-            okText='Send'
-          >
-            <InputComponent
-              id='loadingMemoEmail' type='email'
-              placeholder='Email address'
-              name='loadingMemoEmail'
-              form={this.props.form}
-              itemProps={{ ...styles.formCityLayout }}
-            />
-          </Modal> */}
         </Col>
       </Row>
-      {visible.mail && <MailModal visible={visible.mail} onHide={() => onHide('mail')} />}
+      {visible.mail && <SendLoadingMemo visible={visible.mail} onHide={() => onHide('mail')} />}
+      {visible.deletePO && <DeletePO visible={visible.deletePO} onHide={() => onHide('deletePO')} />}
     </Card>
-     
+
   )
 }
 
 export default TripTime
-
-
- 

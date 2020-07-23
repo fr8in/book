@@ -63,7 +63,7 @@ const TripInfo = (props) => {
             <LabelWithData label='To Pay' data={data.priceDetail.toPay} labelSpan={10} />
             <LabelWithData label='Mamul' data={data.priceDetail.mamul} labelSpan={10} />
           </Col>
-          {visible.price && <CustomerPrice visible={visible.price} onHide={() => onHide('price')} />}
+          
           <Col sm={24} md={12}>
             <LabelWithData label='PO Date' data={data.trip.poDate} labelSpan={10} />
             <LabelWithData label='Delay' data={data.trip.delay} labelSpan={10} />
@@ -73,6 +73,7 @@ const TripInfo = (props) => {
           </Col>
         </Row>
       </Col>
+      {visible.price && <CustomerPrice visible={visible.price} onHide={() => onHide('price')} />}
     </Row>
   )
 }

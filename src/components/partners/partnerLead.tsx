@@ -1,8 +1,15 @@
 import React, { useState } from 'react'  
 import {Space, Table, Input, Switch, Popover, Button,Tooltip,Row } from 'antd'
-import {DownSquareOutlined, CommentOutlined,CloseCircleTwoTone,ExclamationCircleTwoTone} from '@ant-design/icons'
+import {
+  EditTwoTone,
+  CommentOutlined,
+  CloseCircleTwoTone,
+  ExclamationCircleTwoTone,
+  SearchOutlined,
+    } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
 import mock from '../../../mock/customer/sourcingMock'
+import EmployeeList from '../branches/fr8EmpolyeeList'
 
 
 const source = [
@@ -31,24 +38,27 @@ const content = (
     </Row>
   </div>
 );
-function onChange(e) {
-  console.log(`checked = ${e.target.checked}`);
-}
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  getCheckboxProps: record => ({
-    disabled: record.name === 'Disabled User', // Column configuration not to be checked
-    name: record.name,
-  }),
-};
 
 
 const PartnerKyc = () => {
+
   const [selectionType, setSelectionType] = useState('checkbox');
-  const initial = { comment: false }
+  const initial = { comment: false,employeeList:false  }
   const { visible, onShow, onHide } = useShowHide(initial)
+
+  function onChange(e) {
+    console.log(`checked = ${e.target.checked}`);
+  }
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    },
+    getCheckboxProps: record => ({
+      disabled: record.name === 'Disabled User', 
+      name: record.name,
+    }),
+  };
+  
   const columnsCurrent = [
     {
       title: 'Name',
@@ -59,31 +69,53 @@ const PartnerKyc = () => {
       dataIndex: 'number',
             filterDropdown: (
               <div > 
-                  <Input placeholder="Search Phone Number" />  
-              </div>
-            ),
-          filterIcon:<DownSquareOutlined />
+              <Input placeholder="Search Phone Number" 
+              id='number'
+              name='number'
+              type='number'/>  
+          </div>
+                ),
+                filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+                onFilterDropdownVisibleChange: () => onShow('phoneNumberSearch') 
+    
     },
     {
       title: 'City',
       dataIndex: 'cityName',
       filterDropdown: (
-        <div > 
-            <Input placeholder="Search City Name" />  
-        </div>
-      ),
-    filterIcon:<DownSquareOutlined />
-    },
+            <div > 
+              <Input placeholder="Search City Name" 
+              id='cityName'
+              name='cityName'
+              />  
+          </div>
+                ),
+                filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+                onFilterDropdownVisibleChange: () => onShow('cityNameSearch') 
+                  },
     {
       title: 'Owner',
       dataIndex: 'owner',
+      render: (text, record) => {
+        return (
+          <span className='pull-left'>
+         <a>{text} </a>
+         <EditTwoTone onClick={() => onShow('employeeList')} />
+        </span>
+        )
+      },
       filterDropdown: (
-        <div > 
-            <Input placeholder="Search Employee Name" />  
-        </div>
-      ),
-    filterIcon:<DownSquareOutlined />
-    },
+                  <div > 
+                  <Input placeholder="Search Employee Name" 
+                  id='owner'
+                  name='owner'
+                  />  
+              </div>
+          ),
+          filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+          onFilterDropdownVisibleChange: () => onShow('employeeNameSearch') 
+            },
+            
     {
       title: 'Source',
       dataIndex: 'source',
@@ -126,8 +158,8 @@ const PartnerKyc = () => {
           )
         },
   ]
-  return (
-    
+  return ( 
+    <>
       <Table
       rowSelection={{
         ...rowSelection,
@@ -139,8 +171,11 @@ const PartnerKyc = () => {
         scroll={{ x: 1156 }}
         pagination={false}
       />
-   
+      {visible.employeeList && <EmployeeList visible={visible.employeeList} onHide={() => onHide('employeeList')} />}
+
+   </>
   )
+  
 }
 
 export default PartnerKyc

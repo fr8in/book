@@ -1,7 +1,7 @@
-import { Row, Col , Button, Divider, Tag} from 'antd'
+import { Row, Button, Tag ,Col,Divider} from 'antd'
 import { SnippetsOutlined } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
-import CustomerPo from '../customers/customerPo'
+import CustomerPo from '../../components/customers/createPo'
 
 const AssignStatus = () => {
     const initial = { poModal: false}

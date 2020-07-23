@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Table, Input, Switch,Row, Button,Space,Tooltip, Popover} from 'antd'
-import {DownSquareOutlined,ExclamationCircleTwoTone,CommentOutlined,CloseCircleTwoTone} from '@ant-design/icons'
+import {SearchOutlined,ExclamationCircleTwoTone,CommentOutlined,CloseCircleTwoTone} from '@ant-design/icons'
 import mock from '../../../mock/customer/sourcingMock'
 import useShowHide from '../../hooks/useShowHide'
 const CusSource=[
@@ -15,9 +15,6 @@ const CusState=[
   { value: 3, text: 'REJECTED' },
 ]
 
-function onChange(e) {
-  console.log(`checked = ${e.target.checked}`);
-}
 const content = (
   <div>
     <p> <ExclamationCircleTwoTone twoToneColor="#eca92b"/> Are you sure want to cancel the lead?</p>
@@ -29,20 +26,24 @@ const content = (
     </Row>
   </div>
 );
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  getCheckboxProps: record => ({
-    disabled: record.name === 'Disabled User', // Column configuration not to be checked
-    name: record.name,
-  }),
-};
-const SourcingCus = () => {
 
+const SourcingCus = () => {
   const [selectionType, setSelectionType] = useState('checkbox');
   const initial = { comment: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+
+  function onChange(e) {
+    console.log(`checked = ${e.target.checked}`);
+  }
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    },
+    getCheckboxProps: record => ({
+      disabled: record.name === 'Disabled User', // Column configuration not to be checked
+      name: record.name,
+    }),
+  };
   const columnsCurrent = [
     {
       title: 'Company',
@@ -56,33 +57,47 @@ const SourcingCus = () => {
     {
         title: 'Phone',
         dataIndex: 'number',
-              filterDropdown: (
-                  <div > 
-                      <Input placeholder="Search Phone Number" />  
-                  </div>
-                ),
-              filterIcon:<DownSquareOutlined />
+        filterDropdown: (
+          <div > 
+          <Input placeholder="Search Phone Number" 
+          id='number'
+          name='number'
+          type='number'/>  
+      </div>
+            ),
+            filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+            onFilterDropdownVisibleChange: () => onShow('phoneNumberSearch') 
+
       },
       {
         title: 'City',
         dataIndex: 'cityName',
-              filterDropdown: (
-                  <div > 
-                      <Input placeholder="Search City Name" />  
-                  </div>
-                ),
-              filterIcon:<DownSquareOutlined />
+        filterDropdown: (
+          <div > 
+            <Input placeholder="Search City Name" 
+            id='cityName'
+            name='cityName'
+            />  
+        </div>
+              ),
+              filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+              onFilterDropdownVisibleChange: () => onShow('cityNameSearch') 
       },
       {
         title: 'Owner',
         dataIndex: 'owner',
-              filterDropdown: (
-                  <div > 
-                      <Input placeholder="Search Employee Name" />  
-                  </div>
-                ),
-              filterIcon:<DownSquareOutlined />
-      },
+        filterDropdown: (
+          <div > 
+          <Input placeholder="Search Employee Name" 
+          id='owner'
+          name='owner'
+          />  
+      </div>
+            ),
+            filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+            onFilterDropdownVisibleChange: () => onShow('employeeNameSearch') 
+    },
+    
       {
         title: 'Source',
         dataIndex: 'source',

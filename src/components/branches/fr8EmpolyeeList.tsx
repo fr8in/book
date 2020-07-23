@@ -1,6 +1,6 @@
 import { Modal, Select } from 'antd';
 import React from 'react'
-import EmailList from '../../../mock/sourcing/sourcingDetail'
+import EmailList from '../../../mock/sourcing/employeeList'
 
 const { Option } = Select;
 function handleChange(value) {

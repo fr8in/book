@@ -1,5 +1,6 @@
 const partnerKyc = [
     {
+        id:'1',
         code:243778,
         name:'N.Menaka',
         region:'north',
@@ -11,6 +12,62 @@ const partnerKyc = [
         status:'Verification Pending',
         comment:'verification pending',
         action:''
-    }
+    },
+    {
+        id:'2',
+        code:243778,
+        name:'N.Menaka',
+        region:'north',
+        boardedBy:'ramesh.s@fr8.in',
+        number:'9842467888',
+        count:2,
+        date:'2020-07-13 17:46',
+        pan:'AJLPN2935R',
+        status:'Verification Pending',
+        comment:'verification pending',
+        action:''
+    },
+    {
+        id:'3',
+        code:243778,
+        name:'N.Menaka',
+        region:'north',
+        boardedBy:'ramesh.s@fr8.in',
+        number:'9842467888',
+        count:2,
+        date:'2020-07-13 17:46',
+        pan:'AJLPN2935R',
+        status:'Verification Pending',
+        comment:'verification pending',
+        action:''
+    },
+    {
+        id:'4',
+        code:243778,
+        name:'N.Menaka',
+        region:'north',
+        boardedBy:'ramesh.s@fr8.in',
+        number:'9842467888',
+        count:2,
+        date:'2020-07-13 17:46',
+        pan:'AJLPN2935R',
+        status:'Verification Pending',
+        comment:'verification pending',
+        action:''
+    },
+    {
+        id:'5',
+        code:243778,
+        name:'N.Menaka',
+        region:'north',
+        boardedBy:'ramesh.s@fr8.in',
+        number:'9842467888',
+        count:2,
+        date:'2020-07-13 17:46',
+        pan:'AJLPN2935R',
+        status:'Verification Pending',
+        comment:'verification pending',
+        action:''
+    },
 ]
 export default partnerKyc

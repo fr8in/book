@@ -1,18 +1,18 @@
 import PageLayout from "../../components/layout/pageLayout"
-import TripDetail from '../../components/trips/tripDetail'
+import TripDetailContainer from '../../components/trips/containers/tripDetailContainer'
 
-const TripDetailPage = (props) => {
+const TripDetail = (props) => {
   return (
     <PageLayout title={`Trip - ${props.id}`}>
-      <TripDetail tripId={props.id} />
+      <TripDetailContainer tripId={props.id} />
     </PageLayout>
   )
 }
 
-TripDetailPage.getInitialProps = ({ query }) => {
+TripDetail.getInitialProps = ({ query }) => {
   return {
     id: query.id
   }
 }
 
-export default TripDetailPage
+export default TripDetail
