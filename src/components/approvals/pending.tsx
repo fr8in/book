@@ -9,6 +9,7 @@ import {
 import useShowHideWithRecord from "../../hooks/useShowHideWithRecord";
 import pendingDetail from "../../../mock/approval/approvalPending";
 import Comment from "../../components/trips/tripFeedBack";
+import Approve from "../approvals/accept";
 
 const RegionList = [
   { value: 1, text: "North" },
@@ -25,7 +26,13 @@ const RequestedBy = [
 ];
 
 export default function Pending() {
-  const initial = { commentData: [], commentVisible: false };
+  const initial = {
+    commentData: [],
+    commentVisible: false,
+    approveVisible: false,
+    title: null,
+    approveData: [],
+  };
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial);
 
   const ApprovalPending = [
@@ -136,6 +143,9 @@ export default function Pending() {
               size="small"
               className="btn-success"
               icon={<CheckOutlined />}
+              onClick={() =>
+                handleShow("approveVisible", "Approved", "approveData", record)
+              }
             />
           </Tooltip>
           <Tooltip title="Decline">
@@ -145,6 +155,9 @@ export default function Pending() {
               size="small"
               danger
               icon={<CloseOutlined />}
+              onClick={() =>
+                handleShow("approveVisible", "Rejected", "approveData", record)
+              }
             />
           </Tooltip>
         </Space>
@@ -167,6 +180,14 @@ export default function Pending() {
           visible={object.commentVisible}
           data={object.commentData}
           onHide={handleHide}
+        />
+      )}
+      {object.approveVisible && (
+        <Approve
+          visible={object.approveVisible}
+          onHide={handleHide}
+          data={object.approveData}
+          title={object.title}
         />
       )}
     </>
