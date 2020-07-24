@@ -28,6 +28,7 @@ const truckContainer = () => {
 
  console.log('TrucksContainer data', data)
   const { truck } = data
+  console.log(truck)
 
 
   return (

@@ -95,8 +95,8 @@ const Trucks = (props) => {
       dataIndex: 'name',
       render: (text, record) => {
         return (
-          <Link href='partners/[id]' as={`partners/${record.cardcode}`}>
-            <a>{text}</a>
+          <Link href='partners/[id]' as={`partners/${record.partner.cardcode}`}>
+            <a>{record.partner.name}</a>
           </Link>
         )
       }
@@ -117,7 +117,9 @@ const Trucks = (props) => {
     },
     {
       title: 'City',
-      dataIndex: 'city',
+      render: (record) => {
+        return(record.city.id)
+      }
     },
     {
       title: '',
