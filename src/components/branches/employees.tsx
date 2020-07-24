@@ -2,7 +2,7 @@ import React from "react";
 import { Table } from "antd";
 import Branch from "../../../mock/branches/branches";
 
-export default function Employees() {
+const Employees = () => {
   const Employees = [
     {
       title: "Name",
@@ -27,4 +27,6 @@ export default function Employees() {
       pagination={false}
     />
   );
-}
+};
+
+export default Employees;

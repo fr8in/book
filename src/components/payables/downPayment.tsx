@@ -2,7 +2,7 @@ import React from 'react'
 import { Table } from 'antd'
 import Payables from '../../../mock/payables/payables'
 
-export default function DownPayment () {
+const DownPayment = () => {
   const DownPayment = [
     {
       title: 'Load ID',
@@ -80,3 +80,5 @@ export default function DownPayment () {
     />
   )
 }
+
+export default DownPayment

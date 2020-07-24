@@ -80,7 +80,12 @@ export default function ApprovedAndRejected () {
       width: '12%',
       filterDropdown: (
         <div>
-          <Input placeholder='Search' id='requestBy' name='requestBy' type='number' />
+          <Input
+            placeholder='Search'
+            id='requestBy'
+            name='requestBy'
+            type='number'
+          />
         </div>
       ),
       filterIcon: (filtered) => (
