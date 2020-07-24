@@ -27,7 +27,7 @@ const RequestedBy = [
   { value: 11, text: "Fr8" },
 ];
 
-export default function Pending() {
+const Pending = () => {
   const previousCommentClose = () => {
     setPreviousComment(Initial);
   };
@@ -41,7 +41,7 @@ export default function Pending() {
   const Initial = { previousComment: [], visible: false };
   const [previousComment, setPreviousComment] = useState(Initial);
 
-  const initial = { comment: false, truckSearch: false };
+  const initial = { comment: false };
   const { visible, onShow, onHide } = useShowHide(initial);
 
   //const initial = { tripIdSearch: false };
@@ -172,4 +172,6 @@ export default function Pending() {
       )}
     </>
   );
-}
+};
+
+export default Pending;

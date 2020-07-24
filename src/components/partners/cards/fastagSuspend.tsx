@@ -14,6 +14,7 @@ const FastagSuspend = (props) => {
 
   return (
     <Modal visible={visible} onOk={onSubmit} onCancel={onHide}>
+      <br />
       <h3>
         <QuestionCircleTwoTone twoToneColor="#ffc107" /> Suspended Tags will get
         permanently deactivated. This action cannot be undone

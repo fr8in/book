@@ -3,7 +3,7 @@ import { Table, Input, Row, Col, Button, Tooltip, Space } from "antd";
 import Payables from "../../../mock/payables/payables";
 import { CheckCircleTwoTone } from "@ant-design/icons";
 
-export default function OutGoing() {
+const OutGoing = () => {
   const OutGoing = [
     {
       title: "Outgoing No",
@@ -105,4 +105,6 @@ export default function OutGoing() {
       pagination={false}
     />
   );
-}
+};
+
+export default OutGoing;

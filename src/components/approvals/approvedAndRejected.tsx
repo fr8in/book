@@ -24,7 +24,7 @@ const requestedBy = [
   { value: 2, text: "Fr8" },
 ];
 
-export default function ApprovedAndRejected() {
+const ApprovedAndRejected = () => {
   const ApprovalPending = [
     {
       title: "Load ID",
@@ -110,4 +110,6 @@ export default function ApprovedAndRejected() {
       pagination={false}
     />
   );
-}
+};
+
+export default ApprovedAndRejected;
