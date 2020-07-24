@@ -1,63 +1,50 @@
-import { Form, Input, Button, Select, Space } from "antd";
-import React from "react";
-import { FormInstance } from "antd/lib/form";
+import { Row, Col, Form, Input, Button, Select, Space, Card } from 'antd'
 
-const { Option } = Select;
-
-const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 7 },
-};
-const tailLayout = {
-  wrapperCol: { offset: 9, span: 12 },
-};
+const { Option } = Select
 
 const AddFastag = () => {
   return (
-    <Form {...layout} name="control-ref">
-      <br />
-      <br />
-      <br />
-      <Form.Item name="Tag Id" label="Tag Id" rules={[{ required: true }]}>
-        <Input placeholder="Tag Id" />
-      </Form.Item>
-      <Form.Item
-        name="Confirm Tag Id"
-        label="Confirm Tag Id"
-        rules={[{ required: true }]}
-      >
-        <Input placeholder="Confirm Tag Id" />
-      </Form.Item>
-      <Form.Item name="Partner" label="Partner" rules={[{ required: true }]}>
-        <Select placeholder="Select Partner" allowClear>
-          <Option value="Not Found">Not Found</Option>
-        </Select>
-      </Form.Item>
-      <Form.Item
-        name="Truck Number"
-        label="Truck Number"
-        rules={[{ required: true }]}
-      >
-        <Select placeholder="Select Truck" allowClear>
-          <Option value="Not Found">Not Found</Option>
-        </Select>
-      </Form.Item>
-      <Form.Item
-        noStyle
-        shouldUpdate={(prevValues, currentValues) =>
-          prevValues.gender !== currentValues.gender
-        }
-      ></Form.Item>
-      <Form.Item {...tailLayout}>
-        <Space>
-          <Button type="primary" htmlType="submit">
+    <Card size='small' title='Add FasTag' className='border-top-blue'>
+      <Row justify='center'>
+        <Col xs={24} sm={12} md={8}>
+          <Form layout='vertical'>
+            <Form.Item name='Tag Id' label='Tag Id' rules={[{ required: true }]}>
+              <Input placeholder='Tag Id' />
+            </Form.Item>
+            <Form.Item
+              name='Confirm Tag Id'
+              label='Confirm Tag Id'
+              rules={[{ required: true }]}
+            >
+              <Input placeholder='Confirm Tag Id' />
+            </Form.Item>
+            <Form.Item name='Partner' label='Partner' rules={[{ required: true }]}>
+              <Select placeholder='Select Partner' allowClear>
+                <Option value='Not Found'>Not Found</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name='Truck Number'
+              label='Truck Number'
+              rules={[{ required: true }]}
+            >
+              <Select placeholder='Select Truck' allowClear>
+                <Option value='Not Found'>Not Found</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item>
+              <Space>
+                <Button type='primary' htmlType='submit'>
             Submit
-          </Button>
-          <Button htmlType="button">Cancel</Button>
-        </Space>
-      </Form.Item>
-    </Form>
-  );
-};
+                </Button>
+                <Button htmlType='button'>Cancel</Button>
+              </Space>
+            </Form.Item>
+          </Form>
+        </Col>
+      </Row>
+    </Card>
+  )
+}
 
-export default AddFastag;
+export default AddFastag
