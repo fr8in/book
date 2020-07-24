@@ -2,7 +2,7 @@ import React from "react";
 import { Table } from "antd";
 import Branch from "../../../mock/branches/branches";
 
-export default function CityPricing() {
+const CityPricing = () => {
   const CityPricing = [
     {
       title: "City",
@@ -69,4 +69,6 @@ export default function CityPricing() {
       pagination={false}
     />
   );
-}
+};
+
+export default CityPricing;

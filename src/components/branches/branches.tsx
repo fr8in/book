@@ -2,12 +2,17 @@ import React from "react";
 import { Table, Button } from "antd";
 import Branch from "../../../mock/branches/branches";
 import { EditTwoTone } from "@ant-design/icons";
-import useShowHide from "../../hooks/useShowHide";
+
 import AddTraffic from "../branches/addTraffic";
+import useShowHideWithRecord from "../../hooks/useShowHideWithRecord";
 
 const Branches = () => {
-  const initial = { traffic: false };
-  const { visible, onShow, onHide } = useShowHide(initial);
+  const initial = {
+    trafficVisible: false,
+    title: null,
+    trafficData: [],
+  };
+  const { object, handleHide, handleShow } = useShowHideWithRecord(initial);
 
   const Branches = [
     {
@@ -31,7 +36,12 @@ const Branches = () => {
         return (
           <span className="pull-left">
             <a>{text} </a>
-            <EditTwoTone onClick={() => onShow("traffic")} />
+            <EditTwoTone
+              className="link"
+              onClick={() =>
+                handleShow("trafficVisible", record.branchName, null, null)
+              }
+            />
           </span>
         );
       },
@@ -61,10 +71,12 @@ const Branches = () => {
         scroll={{ x: 800, y: 400 }}
         pagination={false}
       />
-      {visible.traffic && (
+      {object.trafficVisible && (
         <AddTraffic
-          visible={visible.traffic}
-          onHide={() => onHide("traffic")}
+          visible={object.trafficVisible}
+          onHide={handleHide}
+          data={object.trafficData}
+          title={object.title}
         />
       )}
     </>

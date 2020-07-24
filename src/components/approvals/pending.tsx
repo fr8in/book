@@ -1,17 +1,15 @@
-import React from "react";
-import { useState } from "react";
-import { Table, Input, Tooltip, Button } from "antd";
+import { Table, Input, Tooltip, Button, Space } from "antd";
 import {
   SearchOutlined,
   CommentOutlined,
-  CheckCircleTwoTone,
-  CloseCircleTwoTone,
+  CheckOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 
-import useShowHide from "../../hooks/useShowHide";
+import useShowHideWithRecord from "../../hooks/useShowHideWithRecord";
 import pendingDetail from "../../../mock/approval/approvalPending";
 import Comment from "../../components/trips/tripFeedBack";
-import CommentMock from "../../../mock/trucks/loadData";
+import Approve from "../approvals/accept";
 
 const RegionList = [
   { value: 1, text: "North" },
@@ -28,24 +26,15 @@ const RequestedBy = [
 ];
 
 export default function Pending() {
-  const previousCommentClose = () => {
-    setPreviousComment(Initial);
+  const initial = {
+    commentData: [],
+    commentVisible: false,
+    approveVisible: false,
+    title: null,
+    approveData: [],
   };
-  const showPreviousComment = (record) => {
-    setPreviousComment({
-      ...previousComment,
-      previousComment: record,
-      visible: true,
-    });
-  };
-  const Initial = { previousComment: [], visible: false };
-  const [previousComment, setPreviousComment] = useState(Initial);
+  const { object, handleHide, handleShow } = useShowHideWithRecord(initial);
 
-  const initial = { comment: false, truckSearch: false };
-  const { visible, onShow, onHide } = useShowHide(initial);
-
-  //const initial = { tripIdSearch: false };
-  //const { visible, onShow } = useShowHide(initial);
   const ApprovalPending = [
     {
       title: "Load ID",
@@ -96,7 +85,7 @@ export default function Pending() {
       title: "Req.On",
       dataIndex: "reqOn",
       key: "reqOn",
-      sorter: true,
+      sorter: (a, b) => (a.reqOn > b.reqOn ? 1 : -1),
       width: "7%",
     },
     {
@@ -112,7 +101,6 @@ export default function Pending() {
       filterIcon: (filtered) => (
         <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
       ),
-      onFilterDropdownVisibleChange: () => onShow("Search"),
     },
     {
       title: "Comment",
@@ -133,23 +121,46 @@ export default function Pending() {
       title: "Action",
       width: "12%",
       render: (text, record) => (
-        <span className="actions">
+        <Space>
           <Tooltip title="Comment">
             <Button
               type="link"
               icon={<CommentOutlined />}
-              onClick={() => showPreviousComment(record.previousComment)}
+              onClick={() =>
+                handleShow(
+                  "commentVisible",
+                  null,
+                  "commentData",
+                  record.previousComment
+                )
+              }
             />
           </Tooltip>
           <Tooltip title="Accept">
-            <Button type="link" icon={<CheckCircleTwoTone />} />
+            <Button
+              type="primary"
+              shape="circle"
+              size="small"
+              className="btn-success"
+              icon={<CheckOutlined />}
+              onClick={() =>
+                handleShow("approveVisible", "Approved", "approveData", record)
+              }
+            />
           </Tooltip>
-          <span>
-            <Tooltip title="Decline">
-              <Button type="link" icon={<CloseCircleTwoTone />} />
-            </Tooltip>
-          </span>
-        </span>
+          <Tooltip title="Decline">
+            <Button
+              type="primary"
+              shape="circle"
+              size="small"
+              danger
+              icon={<CloseOutlined />}
+              onClick={() =>
+                handleShow("approveVisible", "Rejected", "approveData", record)
+              }
+            />
+          </Tooltip>
+        </Space>
       ),
     },
   ];
@@ -162,12 +173,21 @@ export default function Pending() {
         size="small"
         scroll={{ x: 1156, y: 400 }}
         pagination={false}
+        className="withAction"
       />
-      {previousComment.visible && (
+      {object.commentVisible && (
         <Comment
-          visible={previousComment.visible}
-          data={previousComment.previousComment}
-          onHide={previousCommentClose}
+          visible={object.commentVisible}
+          data={object.commentData}
+          onHide={handleHide}
+        />
+      )}
+      {object.approveVisible && (
+        <Approve
+          visible={object.approveVisible}
+          onHide={handleHide}
+          data={object.approveData}
+          title={object.title}
         />
       )}
     </>

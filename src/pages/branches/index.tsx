@@ -1,12 +1,12 @@
-import BranchesContainer from "../../components/branches/container/branchesContainer";
-import PageLayout from "../../components/layout/pageLayout";
+import PageLayout from '../../components/layout/pageLayout'
+import BranchesContainer from '../../components/branches/container/branchesContainer'
 
 const Branches = () => {
   return (
-    <PageLayout title="Branches">
+    <PageLayout title='Branches'>
       <BranchesContainer />
     </PageLayout>
-  );
-};
+  )
+}
 
-export default Branches;
+export default Branches

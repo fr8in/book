@@ -4,6 +4,7 @@ const Tripcomment = (props) => {
   const { visible, data, onHide } = props
 
   const columns = [{
+    title: 'Previous Comments',
     dataIndex: 'message',
     key: 'message'
   },
@@ -22,19 +23,17 @@ const Tripcomment = (props) => {
       visible={visible}
       onCancel={onHide}
     >
-      <Row gutter={10}>
+      <Row gutter={10} className='mb10'>
         <Col flex='auto'>
-          <Input
+          <Input.TextArea
+            name='comment'
             placeholder='Please Enter Comments......'
-            type='textarea'
           />
         </Col>
         <Col flex='80px'>
           <Button type='primary'>Submit</Button>
         </Col>
       </Row>
-      <br />
-      <Row><p>Previous Comments</p></Row>
       <Table
         columns={columns}
         dataSource={data}
