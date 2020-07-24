@@ -25,7 +25,7 @@ const Customers = (props) => {
     {
       title: 'No of Loads',
       dataIndex: 'no_of_loads_taken',
-      sorter: true
+      sorter: (a, b) => (a.no_of_loads_taken > b.no_of_loads_taken ? 1 : -1)
     },
     {
       title: 'System Mamul',
