@@ -1,12 +1,10 @@
-
 import { Table } from 'antd'
 
-
-const FasTag = () => {
+const PartnerFasTag = () => {
   const columnsCurrent = [
     {
       title: 'Tag Id',
-      dataIndex: 'id',
+      dataIndex: 'id'
     },
     {
       title: 'Truck No',
@@ -20,16 +18,15 @@ const FasTag = () => {
       title: 'Partner',
       dataIndex: 'partner'
     }]
-    return (
-          <Table
-            columns={columnsCurrent}
-            rowKey={record => record.id}
-            size='middle'
-            scroll={{ x: 800, y: 400 }}
-            pagination={false}
-          />
-      )
-    }
-    
-    export default FasTag
-    
+  return (
+    <Table
+      columns={columnsCurrent}
+      rowKey={record => record.id}
+      size='middle'
+      scroll={{ x: 800, y: 400 }}
+      pagination={false}
+    />
+  )
+}
+
+export default PartnerFasTag
