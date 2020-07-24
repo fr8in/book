@@ -2,7 +2,10 @@ import { Row, Col, Space, Checkbox, Input } from 'antd'
 import LabelWithData from '../common/labelWithData'
 import DetailInfo from '../../../mock/partner/partnerDetailInfo'
 
-const PartnerDetail = () => {
+const PartnerDetail = (props) => {
+  const { partnerDetail } = props
+  
+  console.log('partnerDetail',partnerDetail)
   const onChange = (e) => {
     console.log(`checked = ${e.target.checked}`)
   }
@@ -13,7 +16,7 @@ const PartnerDetail = () => {
           label='On Boarded Date'
           data={
             <Space>
-              <span>{DetailInfo.date}</span>
+              <span>{partnerDetail.onboarded_date}</span>
             </Space>
           }
           labelSpan={10}
@@ -43,7 +46,7 @@ const PartnerDetail = () => {
           label=' Address'
           data={
             <Space>
-              <span>{DetailInfo.address}</span>
+              <span>{partnerDetail.address}</span>
             </Space>
           }
           labelSpan={10}
@@ -57,25 +60,25 @@ const PartnerDetail = () => {
         />
         <LabelWithData
           label='Bank'
-          data={<span>{DetailInfo.bank}</span>}
+          data={<span>{partnerDetail.bank_id}</span>}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData
           label='Account Number '
-          data={<span>{DetailInfo.accNo}</span>}
+          data={<span>{partnerDetail.account_number}</span>}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData
           label='IFSC Code'
-          data={<span>{DetailInfo.IFSC}</span>}
+          data={<span>{partnerDetail.ifsc_code}</span>}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData
           label='Cibil Score '
-          data={<span>{DetailInfo.cibilScore}</span>}
+          data={<span>{partnerDetail.cibil}</span>}
           labelSpan={10}
           dataSpan={14}
         />
@@ -93,13 +96,13 @@ const PartnerDetail = () => {
         />
         <LabelWithData
           label='PAN'
-          data={<span>{DetailInfo.PAN}</span>}
+          data={<span>{partnerDetail.pan}</span>}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData
           label=' GST'
-          data={<span>{DetailInfo.GST}</span>}
+          data={<span>{partnerDetail.gst}</span>}
           labelSpan={10}
           dataSpan={14}
         />

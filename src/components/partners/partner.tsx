@@ -4,7 +4,8 @@ import { CheckCircleOutlined, CrownFilled } from '@ant-design/icons'
 import PartnerUsers from '../../components/partners/partnerUsers'
 import data from '../../../mock/partner/partner'
 
-const PartnerInfo = () => {
+const PartnerInfo = (props) => {
+  const { partner } = props
   const usersInitial = { users: [], name: '', visible: false }
   const [users, setUsers] = useState(usersInitial)
 
@@ -21,7 +22,7 @@ const PartnerInfo = () => {
       <Space align='baseline'>
         <CrownFilled style={{ color: data.membership ? '#FFD700' : '#C0C0C0', fontSize: '18px' }} />
         <CheckCircleOutlined style={{ color: data.kycStatus === 'Verified' ? '#28a745' : '#dc3545', fontSize: '18px' }} />
-        <h2>{data.name}</h2>
+        <h2>{partner.name}</h2>
         <Divider type='vertical' />
         <h3>{data.code}</h3>
         <h3 className='link' onClick={() => showUsers(data)}>{data.number}</h3>
