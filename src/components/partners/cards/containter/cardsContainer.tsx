@@ -15,11 +15,8 @@ const cards = () => {
           <Row justify="end" className="m5">
             <Space>
               <Link href="cards/add-fuelcard">
-                <Button
-                  type="primary"
-                  size="small"
-                  icon={<PlusCircleOutlined />}
-                >
+                <Button type="primary" size="small">
+                  <PlusCircleOutlined />
                   Add Card
                 </Button>
               </Link>
@@ -43,11 +40,8 @@ const cards = () => {
               />
 
               <Link href="cards/add-fastag">
-                <Button
-                  type="primary"
-                  size="small"
-                  icon={<PlusCircleOutlined />}
-                >
+                <Button type="primary" size="small">
+                  <PlusCircleOutlined />
                   Add Tag
                 </Button>
               </Link>
