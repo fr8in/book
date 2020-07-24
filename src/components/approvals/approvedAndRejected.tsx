@@ -97,7 +97,7 @@ export default function ApprovedAndRejected() {
       title: "Req.On",
       dataIndex: "reqOn",
       key: "reqOn",
-      sorter: true,
+      sorter: (a, b) => (a.reqOn > b.reqOn ? 1 : -1),
       width: "7%",
     },
     {

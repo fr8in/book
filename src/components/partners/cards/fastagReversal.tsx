@@ -1,36 +1,32 @@
-import { Modal, Button, Form, Input, Select, Row, Space } from "antd";
-import React from "react";
-import { QuestionCircleTwoTone } from "@ant-design/icons";
-
-const { Option } = Select;
+import { Modal, Form, Input } from 'antd'
+import React from 'react'
 
 const FastagReversal = (props) => {
-  const { visible, onHide } = props;
+  const { visible, onHide, data } = props
 
   const onSubmit = () => {
-    console.log("branch Added!");
-    onHide();
-  };
+    console.log('Fastag Amount Reversed!', data)
+    onHide()
+  }
 
   return (
     <Modal
-      title="Fastag Reversal"
+      title='Fastag Reversal'
       visible={visible}
       onOk={onSubmit}
       onCancel={onHide}
     >
-      <Form layout="vertical">
+      <Form layout='vertical'>
         <Form.Item
-          name="Reversal Amount"
-          label="Reversal Amount"
+          label='Reversal Amount'
           rules={[{ required: true }]}
         >
-          <Input placeholder="Reversal Amount" />
+          <Input placeholder='Reversal Amount' />
           <p>Tag balance Amount:</p>
         </Form.Item>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default FastagReversal;
+export default FastagReversal

@@ -1,7 +1,7 @@
-import { Collapse, Input, Row, Col, Tabs, Button } from 'antd'
+import { Collapse, Row, Col, Tabs, Button } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 import LabelWithData from '../common/labelWithData'
-import FasTag from '../../components/partners/cards/fasTag'
+import FasTags from '../../components/partners/cards/fasTags'
 import PartnerFuelDetail from '../../components/partners/cards/partnerFuelDetail'
 const { Panel } = Collapse
 
@@ -54,7 +54,7 @@ const PartnerDocument = () => {
         <PartnerFuelDetail />
       </Panel>
       <Panel header='FasTag' key='3'>
-        <FasTag />
+        <FasTags />
       </Panel>
     </Collapse>
   )
