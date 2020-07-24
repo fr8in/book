@@ -15,10 +15,10 @@ import TrafficMock from "../../../mock/card/cards";
 
 const { Option } = Select;
 const StatementMail = (props) => {
-  const { visible, onHide } = props;
+  const { visible, onHide, data, title } = props;
 
   const onSubmit = () => {
-    console.log("branch Added!");
+    console.log("Traffic Added", data);
     onHide();
   };
 
@@ -41,17 +41,17 @@ const StatementMail = (props) => {
     <>
       <Modal
         visible={visible}
-        title="Traffic"
+        title={` ${title} Traffic`}
         onOk={onSubmit}
         onCancel={onHide}
         footer={[]}
       >
         <Form.Item>
-          <Col>
+          <Form.Item rules={[{ required: true }]}>
             <Select>
               <Option value="Not Found">Not Found</Option>
             </Select>
-          </Col>
+          </Form.Item>
           <Col>
             <Button key="submit" type="primary" size="small" onClick={onSubmit}>
               Add Traffic
