@@ -1,4 +1,4 @@
-import tripsData from '../../../mock/trip/tripsData'
+//import tripsData from '../../../mock/trip/tripsData'
 import { Table, Tooltip, Input } from 'antd'
 import Link from 'next/link'
 import { SearchOutlined } from '@ant-design/icons'
@@ -15,6 +15,7 @@ const statusList = [
 ]
 
 const Trips = (props) => {
+  const { trips } = props
   const columns = [
     {
       title: 'ID',
@@ -41,23 +42,23 @@ const Trips = (props) => {
     },
     {
       title: <Tooltip title='Order date'><span>O.Date</span></Tooltip>,
-      dataIndex: 'orderDate',
-      key: 'orderDate',
+      dataIndex: 'order_date',
+      key: 'order_date',
       render: (text, record) => {
         return text ? (
           moment(text).format('DD-MMM')
         ) : ''
       },
-      sorter: (a, b) => (a.orderDate > b.orderDate ? 1 : -1),
+      sorter: (a, b) => (a.order_date > b.order_date ? 1 : -1),
       width: '6%'
     },
     {
       title: 'Customer',
-      dataIndex: 'customer',
-      key: 'customer',
+      dataIndex: 'name',
+      key: 'name',
       render: (text, record) => {
         return (
-          <Link href='/customers/[id]' as={`/customers/${record.customerId} `}>
+          <Link href='/customers/[id]' as={`/customers/${record.cardcode} `}>
             {text && text.length > 12
               ? <Tooltip title={text}><a>{text.slice(0, 12) + '...'}</a></Tooltip>
               : <a>{text}</a>}
@@ -67,8 +68,8 @@ const Trips = (props) => {
         <div>
           <Input
             placeholder='Search Customer Name'
-            id='customer'
-            name='customer'
+            id='name'
+            name='name'
           />
         </div>
       ),
@@ -77,8 +78,8 @@ const Trips = (props) => {
     },
     {
       title: 'Partner',
-      dataIndex: 'partner',
-      key: 'partner',
+      dataIndex: 'name',
+      key: 'name',
       render: (text, record) => {
         return (
           <Link href='/partners/partner/[id]' as={`/partners/partner/${record.partnerId} `}>
@@ -91,8 +92,8 @@ const Trips = (props) => {
         <div>
           <Input
             placeholder='Search Partner Name'
-            id='partner'
-            name='partner'
+            id='name'
+            name='name'
           />
         </div>
       ),
@@ -101,8 +102,8 @@ const Trips = (props) => {
     },
     {
       title: 'Truck',
-      dataIndex: 'truck',
-      key: 'truckNo',
+      dataIndex: 'truck_no',
+      key: 'truck_no',
       render: (text, record) => {
         return (
           <Link href='/trucks/truck/[id]' as={`/trucks/truck/${record.truckId} `}>
@@ -113,8 +114,8 @@ const Trips = (props) => {
         <div>
           <Input
             placeholder='Search Truck'
-            id='truck'
-            name='truck'
+            id='truck_no'
+            name='truck_no'
           />
         </div>
       ),
@@ -123,8 +124,8 @@ const Trips = (props) => {
     },
     {
       title: 'Source',
-      dataIndex: 'source',
-      key: 'source',
+      dataIndex: 'name',
+      key: 'name',
       width: '8%',
       render: (text, record) => {
         return text > 12 ? (
@@ -137,8 +138,8 @@ const Trips = (props) => {
         <div>
           <Input
             placeholder='Search Source City'
-            id='source'
-            name='source'
+            id='name'
+            name='name'
           />
         </div>
       ),
@@ -147,8 +148,8 @@ const Trips = (props) => {
 
     {
       title: 'Destination',
-      dataIndex: 'destination',
-      key: 'destination',
+      dataIndex: 'name',
+      key: 'name',
       width: '8%',
       render: (text, record) => {
         return text > 12 ? (
@@ -161,8 +162,8 @@ const Trips = (props) => {
         <div>
           <Input
             placeholder='Search Destination City'
-            id='destination'
-            name='destination'
+            id='name'
+            name='name'
           />
         </div>
       ),
@@ -177,27 +178,27 @@ const Trips = (props) => {
     },
     {
       title: 'SO Price',
-      dataIndex: 'soPrice',
-      key: 'soPrice',
+      dataIndex: 'partner_price',
+      key: 'partner_price',
       width: '6%'
     },
     {
       title: 'PO Price',
-      dataIndex: 'poPrice',
-      key: 'poPrice',
+      dataIndex: 'customer_price',
+      key: 'customer_price',
       width: '6%'
     },
     {
       title: 'Trip KM',
-      dataIndex: 'tripKm',
-      key: 'tripKm',
+      dataIndex: 'km',
+      key: 'km',
       width: '6%'
     }
   ]
   return (
     <Table
       columns={columns}
-      dataSource={tripsData}
+      dataSource={trips}
       rowKey={record => record.id}
       size='small'
       scroll={{ x: 1156 }}
