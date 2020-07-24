@@ -6,12 +6,12 @@ const Comment = () => {
   const columnsCurrent = [
     {
       title: 'Comment',
-      dataIndex: 'comment',
+      dataIndex: 'message',
       width:'35'
     },
     {
       title: 'Created By',
-      dataIndex: 'detail',
+      dataIndex: 'userName',
       width:'35'
     },
     {

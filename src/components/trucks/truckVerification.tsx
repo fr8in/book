@@ -2,12 +2,17 @@ import { Table, Button, Space } from 'antd'
 import mock from '../../../mock/partner/sourcingMock'
 import Link from 'next/link'
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
+import useShowHide from '../../hooks/useShowHide'
+import TruckReject from '../../components/trucks/truckReject'
+
 
 const status = [
   { value: 1, text: 'Verification Pending' },
   { value: 2, text: 'Rejected' }
 ]
 const TruckVerification = () => {
+  const initial = { reject: false }
+  const { visible, onShow, onHide } = useShowHide(initial)
   const columnsCurrent = [
     {
       title: 'Truck No',
@@ -51,7 +56,7 @@ const TruckVerification = () => {
         return (
           <Space>
             <Button type='primary' className='btn-success' icon={<CheckOutlined />} />
-            <Button type='primary' danger icon={<CloseOutlined />} />
+            <Button type='primary' danger icon={<CloseOutlined />} onClick={() => onShow('reject')}/>
           </Space>
         )
       }
@@ -63,6 +68,7 @@ const TruckVerification = () => {
     }
   ]
   return (
+    <>
     <Table
       columns={columnsCurrent}
       dataSource={mock}
@@ -71,6 +77,8 @@ const TruckVerification = () => {
       scroll={{ x: 1150 }}
       pagination={false}
     />
+    {visible.reject && <TruckReject visible={visible.reject} onHide={onHide} />}
+    </>
   )
 }
 

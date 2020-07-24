@@ -96,7 +96,7 @@ const CustomerLead = () => {
     {
       title: 'Created Date',
       dataIndex: 'date',
-      sorter: true
+      sorter: (a, b) => (a.date > b.date ? 1 : -1)
     },
     {
       title: 'Priority',
