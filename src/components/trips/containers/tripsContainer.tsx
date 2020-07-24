@@ -57,13 +57,13 @@ const TripsContainer = () => {
         <Trips trips={trip} />
         </TabPane>
         <TabPane tab={<TitleWithCount name='Delivered' value={1840} />} key='2'>
-          <Trips />
+          <Trips trips={trip} delivered />
         </TabPane>
         <TabPane tab={<TitleWithCount name='POD Verified' value={42} />} key='3'>
-          <Trips />
+          <Trips trips={trip} delivered />
         </TabPane>
         <TabPane tab={<TitleWithCount name='Invoiced' value={451} />} key='4'>
-          <Trips />
+          <Trips trips={trip} delivered />
         </TabPane>
       </Tabs>
     </Card>

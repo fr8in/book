@@ -54,60 +54,54 @@ const Trips = (props) => {
     },
     {
       title: 'Customer',
-      dataIndex: 'name',
-      key: 'name',
       render: (text, record) => {
         return (
-          <Link href='/customers/[id]' as={`/customers/${record.cardcode} `}>
-            {text && text.length > 12
-              ? <Tooltip title={text}><a>{text.slice(0, 12) + '...'}</a></Tooltip>
-              : <a>{text}</a>}
+          <Link href='/customers/[id]' as={`/customers/${record.customer.cardcode} `}>
+            {record.customer.name && record.customer.name.length > 12
+              ? <Tooltip title={record.customer.name}><a>{record.customer.name.slice(0, 12) + '...'}</a></Tooltip>
+              : <a>{record.customer.name}</a>}
           </Link>)
       },
       filterDropdown: (
         <div>
           <Input
             placeholder='Search Customer Name'
-            id='name'
-            name='name'
+            id='customer.name'
+            name='customer.name'
           />
         </div>
       ),
       filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-      width: '9%'
+      width: '12%'
     },
     {
       title: 'Partner',
-      dataIndex: 'name',
-      key: 'name',
       render: (text, record) => {
         return (
-          <Link href='/partners/partner/[id]' as={`/partners/partner/${record.partnerId} `}>
-            {text && text.length > 12
-              ? <Tooltip title={text}><a>{text.slice(0, 12) + '...'}</a></Tooltip>
-              : <a>{text}</a>}
+          <Link href='/partners/partner/[id]' as={`/partners/partner/${record.partner.cardcode} `}>
+            {record.partner.name && record.partner.name.length > 12
+              ? <Tooltip title={record.partner.name}><a>{record.partner.name.slice(0, 12) + '...'}</a></Tooltip>
+              : <a>{record.partner.name}</a>}
           </Link>)
       },
       filterDropdown: (
         <div>
           <Input
             placeholder='Search Partner Name'
-            id='name'
-            name='name'
+            id='partner.name'
+            name='partner.name'
           />
         </div>
       ),
       filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-      width: '9%'
+      width: '13%'
     },
     {
       title: 'Truck',
-      dataIndex: 'truck_no',
-      key: 'truck_no',
       render: (text, record) => {
         return (
-          <Link href='/trucks/truck/[id]' as={`/trucks/truck/${record.truckId} `}>
-            <a>{text}</a>
+          <Link href='/trucks/truck/[id]' as={`/trucks/truck/${record.truck_no} `}>
+            <a>{record.truck.truck_no}</a>
           </Link>)
       },
       filterDropdown: (
@@ -124,15 +118,13 @@ const Trips = (props) => {
     },
     {
       title: 'Source',
-      dataIndex: 'name',
-      key: 'name',
       width: '8%',
       render: (text, record) => {
-        return text > 12 ? (
-          <Tooltip title={text}>
-            <span>{text.slice(0, 9) + '...'}</span>
+        return  text > 12 ? (
+          <Tooltip title={record.source.name}>
+            <span>{record.source.name.slice(0, 9) + '...'}</span>
           </Tooltip>
-        ) : text
+        ) : record.source.name
       },
       filterDropdown: (
         <div>
@@ -148,15 +140,13 @@ const Trips = (props) => {
 
     {
       title: 'Destination',
-      dataIndex: 'name',
-      key: 'name',
       width: '8%',
       render: (text, record) => {
         return text > 12 ? (
-          <Tooltip title={text}>
-            <span>{text.slice(0, 9) + '...'}</span>
+          <Tooltip title={record.destination.name}>
+            <span>{record.destination.name.slice(0, 9) + '...'}</span>
           </Tooltip>
-        ) : text
+        ) : record.destination.name
       },
       filterDropdown: (
         <div>
@@ -171,29 +161,48 @@ const Trips = (props) => {
     },
     {
       title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      width: '7%',
+      render: (record) => { 
+        return (record.trip_status.value) 
+        },
+      width: '12%',
       filters: statusList
     },
-    {
+    props.trips ?{
       title: 'SO Price',
       dataIndex: 'partner_price',
       key: 'partner_price',
-      width: '6%'
-    },
-    {
+      width: '9%'
+    } : {},
+    props.trips ?{
       title: 'PO Price',
       dataIndex: 'customer_price',
       key: 'customer_price',
-      width: '6%'
-    },
-    {
+      width: '9%'
+    }: {},
+    props.trips ?{
       title: 'Trip KM',
       dataIndex: 'km',
       key: 'km',
+      width: '11%'
+    }:{},
+    props.delivered ?{
+      title: 'O.Type',
+      dataIndex: 'order_type',
+      key: 'order_type',
       width: '6%'
-    }
+    } : {},
+    props.delivered ?{
+      title: 'Aging',
+      dataIndex: 'aging',
+      key: 'aging',
+      width: '6%'
+    } : {},
+    props.delivered ?{
+      title: 'Comment',
+      dataIndex: 'comment',
+      key: 'comment',
+      width: '6%'
+    } : {}
   ]
   return (
     <Table
