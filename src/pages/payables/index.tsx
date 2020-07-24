@@ -1,12 +1,12 @@
-import PayablesContainer from "../../components/payables/container/payablesContainer";
-import PageLayout from "../../components/layout/pageLayout";
+import PageLayout from '../../components/layout/pageLayout'
+import PayablesContainer from '../../components/payables/container/payablesContainer'
 
 const Payables = () => {
   return (
-    <PageLayout title="Payables">
+    <PageLayout title='Payables'>
       <PayablesContainer />
     </PageLayout>
-  );
-};
+  )
+}
 
-export default Payables;
+export default Payables
