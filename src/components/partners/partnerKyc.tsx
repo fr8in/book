@@ -2,7 +2,11 @@ import { Table, Tooltip, Button, Badge, Input, Space } from 'antd'
 import { CommentOutlined, SearchOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import mock from '../../../mock/partner/partnerKyc'
 import Link from 'next/link'
-
+import useShowHide from '../../hooks/useShowHide'
+import KycReject from '../../components/partners/partnerKycReject'
+import Comment from '../../../mock/partner/comment'
+import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
+import TripFeedBack from '../trips/tripFeedBack'
 const regionList = [
   { value: 1, text: 'North' },
   { value: 2, text: 'South-1' },
@@ -26,6 +30,14 @@ const truckCount = [
 ]
 
 const PartnerKyc = () => {
+  const initial = {
+    commentData: [],
+    commentVisible: false,
+    title: ''
+  }
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
+  const value = { reject: false }
+  const { visible, onShow, onHide } = useShowHide(value)
   const columnsCurrent = [
     {
       title: 'Partner Code',
@@ -99,7 +111,7 @@ const PartnerKyc = () => {
       width: '9%'
     },
     {
-      title: 'Registred At',
+      title: 'Registered At',
       dataIndex: 'date',
       width: '10%',
       render: (text, record) => {
@@ -159,15 +171,18 @@ const PartnerKyc = () => {
       render: (text, record) => (
         <Space>
           <Tooltip title='Comment'>
-            <Button type='link' icon={<CommentOutlined />} />
+            <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.Comment)}/>
           </Tooltip>
           <Button type='primary' className='btn-success' icon={<CheckOutlined />} />
-          <Button type='primary' danger icon={<CloseOutlined />} />
+          <Button type='primary' danger icon={<CloseOutlined />} onClick={() => onShow('reject')} />
         </Space>
       )
     }
+    
   ]
+ 
   return (
+    <>
     <Table
       columns={columnsCurrent}
       dataSource={mock}
@@ -177,7 +192,16 @@ const PartnerKyc = () => {
       pagination={false}
       className='withAction'
     />
+     {object.commentVisible &&
+        <TripFeedBack
+          visible={object.commentVisible}
+          data={object.commentData}
+          onHide={handleHide}
+        />}
+     {visible.reject && <KycReject visible={visible.reject} onHide={onHide} />}
+    </>
   )
+  
 }
 
 export default PartnerKyc
