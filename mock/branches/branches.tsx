@@ -1,8 +1,8 @@
 const BranchDetails = [
   {
     branchName: "Chennai",
-    connectedCity: "chennai Pondicherry",
-    trafficMembers: "7010989890-sabari k",
+    connectedCity: ["chennai", "Pondicherry"],
+    trafficMembers: ["7010989890", "sabari k"],
     weeklyTarget: 28,
     name: "Ravi k",
     mobileNumber: "9958585737",
@@ -17,8 +17,8 @@ const BranchDetails = [
   },
   {
     branchName: "Coimbatore",
-    connectedCity: "Coimbatore Pondicherry",
-    trafficMembers: "7010989890-sabari k",
+    connectedCity: ["Coimbatore", "Pondicherry"],
+    trafficMembers: ["7010989890", "sabari k"],
     weeklyTarget: 28,
     name: "Ravi k",
     mobileNumber: "9958585737",
@@ -33,8 +33,8 @@ const BranchDetails = [
   },
   {
     branchName: "cochin",
-    connectedCity: "chennai cochin",
-    trafficMembers: "7010989890-sabari k",
+    connectedCity: ["chennai", "cochin"],
+    trafficMembers: ["7010989890", "sabari k"],
     weeklyTarget: 28,
     name: "Ravi k",
     mobileNumber: "9958585737",
@@ -49,8 +49,8 @@ const BranchDetails = [
   },
   {
     branchName: "Trichy",
-    connectedCity: "chennai Pondicherry Trichy Madurai",
-    trafficMembers: "7010989890-sabari k",
+    connectedCity: ["chennai", "Pondicherry", "Trichy", "Madurai"],
+    trafficMembers: ["7010989890", "sabari k"],
     weeklyTarget: 28,
     name: "Ravi k",
     mobileNumber: "9958585737",
@@ -65,8 +65,8 @@ const BranchDetails = [
   },
   {
     branchName: "Hyderabad",
-    connectedCity: "Hyderabad chennai Pondicherry",
-    trafficMembers: "7010989890-sabari k",
+    connectedCity: ["Hyderabad", "chennai", "Pondicherry"],
+    trafficMembers: ["7010989890", "sabari k"],
     weeklyTarget: 28,
     name: "Ravi k",
     mobileNumber: "9958585737",
@@ -81,8 +81,8 @@ const BranchDetails = [
   },
   {
     branchName: "Vijayawada",
-    connectedCity: "Vijayawada chennai Pondicherry",
-    trafficMembers: "7010989890-sabari k",
+    connectedCity: ["Vijayawada", "chennai", "Pondicherry"],
+    trafficMembers: ["7010989890", "sabari k"],
     weeklyTarget: 28,
     name: "Ravi k",
     mobileNumber: "9958585737",
@@ -97,8 +97,8 @@ const BranchDetails = [
   },
   {
     branchName: "Bangalore",
-    connectedCity: "Bangalore chennai Pondicherry",
-    trafficMembers: "7010989890-sabari k",
+    connectedCity: ["Bangalore", "chennai", "Pondicherry"],
+    trafficMembers: ["7010989890", "sabari k"],
     weeklyTarget: 28,
     name: "Ravi k",
     mobileNumber: "9958585737",
@@ -113,8 +113,8 @@ const BranchDetails = [
   },
   {
     branchName: "Thanjavur",
-    connectedCity: "Thanjavur chennai Pondicherry",
-    trafficMembers: "7010989890-sabari k",
+    connectedCity: ["Thanjavur", "chennai", "Pondicherry"],
+    trafficMembers: ["7010989890", "sabari k"],
     weeklyTarget: 28,
     name: "Ravi k",
     mobileNumber: "9958585737",
