@@ -32,12 +32,10 @@ const AddFastag = () => {
                 <Option value='Not Found'>Not Found</Option>
               </Select>
             </Form.Item>
-            <Form.Item>
+            <Form.Item className='text-right'>
               <Space>
-                <Button type='primary' htmlType='submit'>
-            Submit
-                </Button>
                 <Button htmlType='button'>Cancel</Button>
+                <Button type='primary' htmlType='submit'>Submit</Button>
               </Space>
             </Form.Item>
           </Form>
