@@ -1,6 +1,6 @@
 
 import { Row, Col, Input, Card } from 'antd'
-import TrucksList from '../trucks'
+import Trucks from '../trucks'
 
 import { useQuery } from '@apollo/client'
 import { TRUCKS_QUERY } from './query/trucksQuery'
@@ -13,8 +13,7 @@ export const trucksQueryVars = {
   limit: 10
 }
 
-const truckContainer = () => {
-
+const TruckContainer = () => {
   const { loading, error, data } = useQuery(
     TRUCKS_QUERY,
     {
@@ -26,9 +25,9 @@ const truckContainer = () => {
   if (loading) return <Loading />
   console.log('TrucksContainer error', error)
 
- console.log('TrucksContainer data', data)
+  console.log('TrucksContainer data', data)
   const { truck } = data
-
+  console.log('truck', truck)
 
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
@@ -43,11 +42,11 @@ const truckContainer = () => {
       <Row>
         <Col sm={24}>
           <Card size='small' className='card-body-0'>
-            <TrucksList trucks={truck}/>
+            <Trucks trucks={truck} />
           </Card>
         </Col>
       </Row>
     </Card>
   )
 }
- export default truckContainer
+export default TruckContainer
