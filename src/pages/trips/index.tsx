@@ -2,7 +2,7 @@
 import PageLayout from '../../components/layout/pageLayout'
 import TripsContainer from '../../components/trips/containers/tripsContainer'
 
-const TripsPage = () => {
+const Trips = () => {
   return (
     <PageLayout title='Trips'>
       <TripsContainer />
@@ -10,4 +10,4 @@ const TripsPage = () => {
   )
 }
 
-export default TripsPage
+export default Trips

@@ -1,10 +1,10 @@
 import PageLayout from '../../../components/layout/pageLayout'
-import Addtruck from '../../../components/trucks/container/addTruckContainer'
+import AddTruckContainer from '../../../components/trucks/container/addTruckContainer'
 
 const AddTruck = () => {
   return (
     <PageLayout title='Trucks'>
-      <Addtruck/>
+      <AddTruckContainer />
     </PageLayout>
   )
 }
