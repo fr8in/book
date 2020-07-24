@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { Table } from 'antd'
 import Link from 'next/link'
 import { EditTwoTone } from '@ant-design/icons'
-import trucks from '../../../mock/trucks/trucks'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
 import PartnerUsers from '../partners/partnerUsers'
+import useShowHide from '../../hooks/useShowHide'
+import CustomerPo from '../../components/trips/createPo'
 
 const statusList = [
   { value: 1, text: 'Ordered' },
@@ -16,12 +17,20 @@ const statusList = [
   { value: 7, text: 'Intransit halting' }
 ]
 
-const Trucks = () => {
+const Trucks = (props) => {
+  const { trucks } = props
+
+  console.log(props)
+
   const usersInitial = { users: [], name: '', visible: false }
   const [users, setUsers] = useState(usersInitial)
 
   const initial = { record: null, title: '', visible: false }
   const [availability, setAvailability] = useState(initial)
+
+  const poInitial = { poModal: false}
+    const { visible, onShow, onHide } = useShowHide(initial)
+
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -48,13 +57,15 @@ const Trucks = () => {
     setAvailability({ ...record, record: record, title: 'Breakdown', visible: true })
   }
 
+  
+
   const columns = [
     {
       title: 'Truck No',
-      dataIndex: 'truckNo',
+      dataIndex: 'truck_no',
       render: (text, record) => {
         return (
-          <Link href='trucks/[id]' as={`trucks/${record.id}`}>
+          <Link href='trucks/[id]' as={`trucks/${record.truck_no}`}>
             <a>{text}</a>
           </Link>
         )
@@ -62,7 +73,7 @@ const Trucks = () => {
     },
     {
       title: 'Trip Id',
-      dataIndex: 'tripId',
+      dataIndex: 'id',
       render: (text, record) => {
         return (
           <Link href='trips/[id]' as={`trips/${record.id}`}>
@@ -73,14 +84,18 @@ const Trucks = () => {
     },
     {
       title: 'Trip',
-      dataIndex: 'trip'
+      dataIndex: 'trip',
+      render: (text, record) => {
+        return (
+          <span className='link'onClick={() => onShow('poModal')} >{text}</span>
+        )}
     },
     {
       title: 'Partner',
-      dataIndex: 'partner',
+      dataIndex: 'name',
       render: (text, record) => {
         return (
-          <Link href='partners/[id]' as={`partners/${record.id}`}>
+          <Link href='partners/[id]' as={`partners/${record.cardcode}`}>
             <a>{text}</a>
           </Link>
         )
@@ -88,10 +103,10 @@ const Trucks = () => {
     },
     {
       title: 'Phone No',
-      dataIndex: 'phoneNo',
-      render: (text, record) => {
+      dataIndex: 'phone_no',
+      render: (text,record) => {
         return (
-          <span className='link' onClick={() => showUsers(record)}>{text}</span>
+          <span className='link' onClick={() => showUsers(record)} >{text}</span>
         )
       }
     },
@@ -102,7 +117,7 @@ const Trucks = () => {
     },
     {
       title: 'City',
-      dataIndex: 'city'
+      dataIndex: 'city',
     },
     {
       title: '',
@@ -136,6 +151,7 @@ const Trucks = () => {
           onHide={breakdownClose}
           title={availability.title}
         />}
+         {visible.poModal && <CustomerPo visible={visible.poModal} onHide={() => onHide()} />}
     </>
   )
 }
