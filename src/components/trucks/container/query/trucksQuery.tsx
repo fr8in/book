@@ -6,6 +6,7 @@ export const TRUCKS_QUERY = gql`
       id
       truck_no
       city{
+        id
         name
       }
       partner{
