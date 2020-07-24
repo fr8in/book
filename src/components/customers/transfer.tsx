@@ -1,4 +1,5 @@
-import { Modal,Row,Button,Table,Form,Col,Input,Radio,Card } from 'antd'
+import { Modal, Row, Button, Form, Col, Input, Radio } from 'antd'
+import PaymentTraceability from './paymentTraceability'
 
 const Transfer = (props) => {
   const { visible, onHide } = props
@@ -7,139 +8,99 @@ const Transfer = (props) => {
     console.log('data Transfered!')
     onHide()
   }
-
-  const columns = [{
-    title: 'Date',
-    dataIndex: 'date',
-    width: '15%'
-  },
-  {
-    title: 'Amount',
-    dataIndex: 'recevied',
-    width: '15%'
-  },
-  {
-    title: 'Booked',
-    dataIndex: 'booked',
-    width: '15%'
-  },
-  {
-    title: 'Balance',
-    dataIndex: 'balance',
-    width: '15%'
-  },
-  {
-    title: 'Book Now',
-    dataIndex: 'bookNow',
-    width: '15%'
-  },
-  {
-    title: 'Remarks',
-    dataIndex: 'remarks',
-    width: '15%'
-  }
-]
+  const footerData = (
+    <Row>
+      <Col flex='auto' className='text-left'>
+        <Radio defaultChecked={false}>Include Mamul</Radio>
+        <Radio>Include Special Mamul(System Mamul won't be reduced)</Radio>
+      </Col>
+      <Col flex='90px'>
+        <Button type='primary'>Transfer </Button>
+      </Col>
+    </Row>)
 
   return (
-   
+
     <Modal
-      title='Wallet Balance : 1250'
+      title={`Wallet Balance: ₹${1250}`}
       visible={visible}
       onOk={onSubmit}
       onCancel={onHide}
       width={900}
-      bodyStyle={{ padding: 20 }}
-      footer={<Row justify='start' className='m5'>
-           <Radio defaultChecked={false}>Include Mamul</Radio>
-           <Radio>Include Special Mamul(System Mamul won't be reduced)</Radio>
-            <Button type="primary">Transfer </Button>
-        </Row>}
+      bodyStyle={{ padding: 10 }}
+      style={{ top: 20 }}
+      footer={footerData}
     >
-      <Row justify='start' className='m5'>
-      <Col span={8}>Wallet Balance: 1250</Col>
-      <Col span={8} offset={20}>
-      <Button type="primary" >Wallet Top-up</Button>
-      </Col>
+      <Row className='mb10'>
+        <Col xs={24}>
+          <PaymentTraceability />
+        </Col>
       </Row>
-      <Table
-        columns={columns}
-        rowKey={(record) => record.id}
-        size='small'
-        scroll={{ x: 780, y: 400 }}
-        pagination={false}
-           />
-        <Form layout='vertical'>
-            <Row gutter={10}>
-              <Col xs={8}>
-                <Form.Item label='Account Name'>
-                  <Input
-                  placeholder='Account Name'
-                  style={{ width: '100%' }}
-                  disabled={false}
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={8}>
-                <Form.Item label='Account Number'>
-                  <Input
-                  placeholder='Select Time'
-                      style={{ width: '100%' }}
-                      disabled={false}
-                    />  
-                </Form.Item>
-              </Col>
-              <Col xs={8}>
-                <Form.Item label='Confirm Account Number'>
-                   <Input
-                      placeholder='Confirm Account Number'
-                      style={{ width: '100%' }}
-                      disabled={false}
-                    />
-                </Form.Item>
-              </Col>
-            </Row>  
-            <Row gutter={10}>
-              <Col xs={8}>
-                <Form.Item label='IFSC Code'>
-                  <Input
-                  placeholder='IFSC Code'
-                  style={{ width: '100%' }}
-                  disabled={false}
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={8}>
-                <Form.Item label='Amount'>
-                  <Input
-                  placeholder='Amount'
-                      style={{ width: '100%' }}
-                      disabled={false}
-                    />  
-                </Form.Item>
-              </Col>
-              <Col xs={8}>
-                <Form.Item label='loadId'>
-                   <Input
-                      placeholder='loadId'
-                      style={{ width: '100%' }}
-                      disabled={false}
-                    />
-                </Form.Item>
-              </Col>
-            </Row> 
-            <Row gutter={10}>
-              <Col xs={15}>
-                <Form.Item label='Comment'>
-                  <Input
-                  placeholder='Comment'
-                  style={{ width: '100%' }}
-                  disabled={false}
-                  />
-                </Form.Item>
-              </Col>
-              </Row> 
-        </Form> 
-   </Modal>
+      <Form layout='vertical'>
+        <Row gutter={10}>
+          <Col xs={8}>
+            <Form.Item label='Account Name'>
+              <Input
+                placeholder='Account Name'
+                disabled={false}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={8}>
+            <Form.Item label='Account Number'>
+              <Input
+                placeholder='Select Time'
+                disabled={false}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={8}>
+            <Form.Item label='Confirm Account Number'>
+              <Input
+                placeholder='Confirm Account Number'
+                disabled={false}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={10}>
+          <Col xs={8}>
+            <Form.Item label='IFSC Code'>
+              <Input
+                placeholder='IFSC Code'
+                disabled={false}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={8}>
+            <Form.Item label='Amount'>
+              <Input
+                placeholder='Amount'
+                disabled={false}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={8}>
+            <Form.Item label='loadId'>
+              <Input
+                placeholder='loadId'
+                disabled={false}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={24}>
+            <Form.Item label='Comment'>
+              <Input.TextArea
+                placeholder='Comment'
+                disabled={false}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
+    </Modal>
   )
 }
 

@@ -1,22 +1,22 @@
 import React from "react";
-import { Table, Input, Row, Col, Button, Tooltip, Space } from "antd";
+import { Table, Input, Row, Col, Button, Space } from "antd";
 import Payables from "../../../mock/payables/payables";
 import { CheckCircleTwoTone } from "@ant-design/icons";
 
-export default function OutGoing() {
+const OutGoing = () => {
   const OutGoing = [
     {
       title: "Outgoing No",
       dataIndex: "outgoingNo",
       key: "outgoingNo",
-      sorter: true,
+      sorter: (a, b) => (a.outgoingNo > b.outgoingNo ? 1 : -1),
       width: "6%",
     },
     {
       title: "DocDate",
       dataIndex: "docDate",
       key: "docDate",
-      sorter: true,
+      sorter: (a, b) => (a.docDate > b.docDate ? 1 : -1),
       width: "5%",
     },
     {
@@ -29,7 +29,7 @@ export default function OutGoing() {
       title: "Vendor Name",
       dataIndex: "vendor",
       key: "vendor",
-      sorter: true,
+      sorter: (a, b) => (a.vendor > b.vendor ? 1 : -1),
       width: "7%",
     },
     {
@@ -105,4 +105,6 @@ export default function OutGoing() {
       pagination={false}
     />
   );
-}
+};
+
+export default OutGoing;

@@ -1,5 +1,6 @@
 import React from "react";
-import { Table, Tooltip } from "antd";
+import { Table, Tooltip, Input } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 import pendingDetail from "../../../mock/approval/approvalPending";
 
@@ -31,6 +32,14 @@ export default function ApprovedAndRejected() {
       dataIndex: "loadId",
       key: "loadId",
       width: "7%",
+      filterDropdown: (
+        <div>
+          <Input placeholder="Search" id="id" name="id" type="number" />
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
     },
     {
       title: "Type",
@@ -69,13 +78,26 @@ export default function ApprovedAndRejected() {
       key: "requestBy",
       filters: requestedBy,
       width: "12%",
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder="Search"
+            id="requestBy"
+            name="requestBy"
+            type="number"
+          />
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
     },
 
     {
       title: "Req.On",
       dataIndex: "reqOn",
       key: "reqOn",
-      sorter: true,
+      sorter: (a, b) => (a.reqOn > b.reqOn ? 1 : -1),
       width: "7%",
     },
     {

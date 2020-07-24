@@ -1,13 +1,12 @@
 import PageLayout from '../../components/layout/pageLayout'
-import PartnerList from '../../components/partners/container/partnersContainer'
+import PartnersContainer from '../../components/partners/container/partnersContainer'
 
-
-const Partner = () => {
+const Partners = () => {
   return (
     <PageLayout title='Partner'>
-         <PartnerList />
+      <PartnersContainer />
     </PageLayout>
-    
+
   )
 }
-export default Partner
+export default Partners
