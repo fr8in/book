@@ -10,6 +10,7 @@ export const CUSTOMERS_QUERY = gql`
       credit_limit
       status {
         id
+        value
       }
     }
   }

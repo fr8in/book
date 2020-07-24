@@ -6,18 +6,35 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
       id
       cardcode
       name
-      pan
-      gst
-      virtual_account
       mobile
-      managed
-      advance_percentage_id
-      exception_date
       credit_limit
-      onboarded_by_id
-      payment_manager_id
-      status_id
+      status {
+        id
+        value
+      }
+      advance_percentage_id
+      approved_by_id
+      created_at
+      exception_date
+      gst
+      managed
+      onboardedBy {
+        id
+        email
+      }
+      pan
+      paymentManager {
+        id
+        email
+      }
       type_id
+      updated_at
+      virtual_account
+      walletcode
+      type {
+        comment
+        value
+      }      
     }
   }
 `

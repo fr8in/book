@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Button } from "antd";
+import { Table, Button, Tag } from "antd";
 import Branch from "../../../mock/branches/branches";
 import { EditTwoTone } from "@ant-design/icons";
 
@@ -26,6 +26,14 @@ const Branches = () => {
       dataIndex: "connectedCity",
       key: "connectedCity",
       width: "25%",
+      render: (text, record) =>
+        record.connectedCity.length > 0
+          ? record.connectedCity.map((data, i) => (
+              <Tag className="tagSpace" key={i}>
+                {data}
+              </Tag>
+            ))
+          : null,
     },
     {
       title: "Traffic Members",
