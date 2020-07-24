@@ -4,14 +4,36 @@ import { DownloadOutlined } from '@ant-design/icons'
 import Trips from '../trips'
 import TitleWithCount from '../../common/titleWithCount'
 
+import { useQuery } from '@apollo/client'
+import { TRIPS_QUERY } from './query/tripsQuery'
+import Loading from '../../common/loading'
+
 const { TabPane } = Tabs
 
+export const tripsQueryVars = {
+  offset: 0,
+  limit: 10
+}
+
 const TripsContainer = () => {
+  const { loading, error, data } = useQuery(
+    TRIPS_QUERY,
+    {
+      variables: tripsQueryVars,
+      notifyOnNetworkStatusChange: true
+    }
+  )
   const [tabKey, setTabKey] = useState('1')
   const onTabChange = (key) => {
     console.log('key', key)
     setTabKey(key)
   }
+
+  if (loading) return <Loading />
+  console.log('TripsContainer error', error)
+
+  const {trip} = data
+
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
       <Tabs
@@ -32,7 +54,7 @@ const TripsContainer = () => {
         }
       >
         <TabPane tab={<TitleWithCount name='Trips' />} key='1'>
-          <Trips />
+        <Trips trips={trip} />
         </TabPane>
         <TabPane tab={<TitleWithCount name='Delivered' value={1840} />} key='2'>
           <Trips />
