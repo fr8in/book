@@ -1,14 +1,20 @@
+import {useState} from 'react'
 import { Row, Col } from 'antd'
 import LabelWithData from '../common/labelWithData'
 import detail from '../../../mock/partner/partnerInfo'
 
-const PartnerInfo = () => {
+const PartnerInfo = (props) => {
+
+  const { partnerInfo } = props
+  
+  console.log('partnerInfo',partnerInfo)
+
   return (
     <Row gutter={8} className='mb10'>
       <Col xs={24} sm={24} md={24}>
         <LabelWithData
           label='City'
-          data={detail.city}
+          data={partnerInfo.city.name}
           labelSpan={10}
           dataSpan={14}
         />
@@ -20,19 +26,19 @@ const PartnerInfo = () => {
         />
         <LabelWithData
           label='On Boarded By'
-          data={detail.onBoardedBy}
+          data={partnerInfo.onboarded_by.name}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData
-          label='Amount'
-          data={detail.amount}
+          label='Final Payment Date'
+          data={partnerInfo.final_payment_date}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData
           label='Advance Percentage'
-          data={detail.advance}
+          data={partnerInfo.partner_advance_percentage_id}
           labelSpan={10}
           dataSpan={14}
         />

@@ -1,4 +1,4 @@
-
+import Loading from '../../common/loading'
 import Link from 'next/link'
 import { Row, Col, Card, Tabs, Button } from 'antd'
 import HeaderInfo from '../partner'
@@ -16,10 +16,25 @@ import Document from '../partnerDocument'
 import Comment from '../comment'
 import { PlusOutlined } from '@ant-design/icons'
 import TitleWithCount from '../../common/titleWithCount'
-
+import { useSubscription } from '@apollo/client'
+import { PARTNER_DETAIL_SUBSCRIPTION } from '../query/partnerDetailSubscription'
 const TabPane = Tabs.TabPane
 
-const PartnerDetailContainer = () => {
+const PartnerDetailContainer = (props) => {
+  const { cardcode } = props
+  const { loading, error, data } = useSubscription(
+    PARTNER_DETAIL_SUBSCRIPTION,
+    {
+      variables: { cardcode }
+    }
+  )
+
+  if (loading) return <Loading />
+  console.log('PartnerDetailContainer Error', error)
+  console.log('PartnerDetailContainer Data', data)
+  const { partner } = data
+  const partnerData = partner[0] ? partner[0] : { name: 'ID does not exist' }
+  
   const callback = (key) => {
     console.log(key)
   }
@@ -32,13 +47,13 @@ const PartnerDetailContainer = () => {
               size='small'
               className='border-top-blue'
               title={
-                <HeaderInfo />
+                <HeaderInfo partner={partnerData}/>
               }
               extra={<WalletStatus />}
             >
               <Row gutter={[10, 10]}>
                 <Col xs={24} sm={12} md={8}>
-                  <BasicDetail />
+                  <BasicDetail partnerInfo={partnerData}/>
                   <PartnerStatus />
                   <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${'ST003579'}`}>
                     <Button type='primary' icon={<PlusOutlined />}>Add Truck</Button>
@@ -66,7 +81,7 @@ const PartnerDetailContainer = () => {
                 <TabPane tab='Detail' key='2'>
                   <Row gutter={10} className='p10'>
                     <Col xs={24} sm={12} md={12}>
-                      <DetailInfo />
+                      <DetailInfo partnerDetail={partnerData}/>
                     </Col>
                     <Col xs={24} sm={12} md={12}>
                       <Document />

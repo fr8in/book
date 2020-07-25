@@ -10,7 +10,8 @@ const statusList =[
 ]
  
 const Partners = (props) => {
-  const { partners,region } = props
+  const { partners,region} = props
+  console.log(props)
   const initial = { partnerCodeSearch: false }
   const { onShow } = useShowHide(initial)
   const columnsCurrent = [
@@ -18,6 +19,7 @@ const Partners = (props) => {
       title: 'Partner Code',
       dataIndex: 'cardcode',
       key: 'cardcode',
+      width:'7',
               render: (text, record) => {
                 return (
                   <Link
@@ -42,6 +44,7 @@ const Partners = (props) => {
       title: 'Partner',
       dataIndex: 'name',
       key:'name',
+      width:'15',
             filterDropdown: (
                 <div > 
                     <Input placeholder="Search Partner Name" 
@@ -58,22 +61,26 @@ const Partners = (props) => {
       title: 'Region',
       dataIndex: 'regionName',
       key:'regionName',
+      width:'8',
       filters: region 
     },
     {
       title: 'Contact No',
       dataIndex: 'mobileNo',
       key:'mobileNo',
+      width:'10',
     },
     {
       title: 'Email',
       dataIndex: 'email',
       key:'email',
+      width:'14',
     },
     {
       title: 'Avg Km/day',
       dataIndex: 'averageKm',
       key:'averageKm',
+      width:'9',
       sorter: true,
 
     },
@@ -81,26 +88,30 @@ const Partners = (props) => {
       title: 'Trucks',
       dataIndex: 'truckCount',
       key:'truckCount',
+      width:'7',
     },
     {
       title: 'Invoiced',
       dataIndex: 'invoiceAmount',
       key:'invoiceAmount',
+      width:'9',
     },
     {
       title: 'Invoice Pending',
       dataIndex: 'invoicePendingAmount',
       key:'invoicePendingAmount',
+      width:'12',
     },
     {
       title: 'Status',
-      dataIndex: 'active',
-      key:'active',
-      filters : statusList
+      width:'9',
+      filters : statusList,    
+      render: (record) => { 
+        return (record.partner_status.value)
+        }
     }
   ]
   return (
-    
       <Table
         columns={columnsCurrent}
         dataSource={partners}

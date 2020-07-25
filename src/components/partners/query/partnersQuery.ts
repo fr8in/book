@@ -6,10 +6,13 @@ export const PARTNERS_QUERY = gql`
       id
       name
       cardcode
+      partner_status{
+       value
+      } 
     }
-    region{
-      id
-      name
-    }
+  region{
+    id
+    name
   }
+}
 `
