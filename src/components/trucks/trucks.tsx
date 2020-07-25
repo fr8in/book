@@ -104,19 +104,22 @@ const Trucks = (props) => {
       dataIndex: 'phone_no',
       render: (text, record) => {
         return (
-          <span className='link' onClick={() => showUsers(record)}>{text}</span>
+          <span className='link' onClick={() => showUsers(record)}>{record.driver && record.driver.mobile_no}</span>
         )
       }
     },
     {
       title: 'Status',
       dataIndex: 'status',
-      filters: statusList
+      filters: statusList,
+      render: (text, record) => {
+        return (record.truck_status && record.truck_status.value)
+      }
     },
     {
       title: 'City',
       render: (text, record) => {
-        return (record.city && record.city.id)
+        return (record.city && record.city.name)
       }
     },
     {

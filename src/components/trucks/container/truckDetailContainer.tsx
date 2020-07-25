@@ -5,8 +5,28 @@ import Truck from '../truck'
 import Timeline from '../truckTimeline'
 import { Row, Col, Button, Card, Divider } from 'antd'
 import AssignStatus from '../assignStatus'
+import Loading from '../../common/loading'
 
-export default function TruckDetailContainer () {
+import { useSubscription } from '@apollo/client'
+import { TRUCK_DETAIL_SUBSCRIPTION } from './query/truckDetailSubscription'
+
+const  TruckDetailContainer  = (props) => {
+  const { truck_no } = props
+
+  const { loading, error, data } = useSubscription(
+    TRUCK_DETAIL_SUBSCRIPTION,
+    {
+      variables: { truck_no }
+    }
+  )
+
+  if (loading) return <Loading />
+  console.log('TruckDetailContainer Error', error)
+
+  const { truck } = data
+  const truckInfo = truck[0] ? truck[0] : { name: 'ID does not exist' }
+
+
   return (
     <div>
       <Row>
@@ -14,7 +34,7 @@ export default function TruckDetailContainer () {
           <Card
             size='small'
             className='border-top-blue'
-            title={<Truck />}
+            title={<Truck truckInfo={truckInfo}/>}
             extra={<AssignStatus />}
           >
             <Row gutter={[10, 10]}>
@@ -63,3 +83,4 @@ export default function TruckDetailContainer () {
     </div>
   )
 }
+export default  TruckDetailContainer 

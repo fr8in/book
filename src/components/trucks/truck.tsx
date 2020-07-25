@@ -6,6 +6,7 @@ import { Row,Col,Button} from "antd";
 import { PhoneOutlined} from '@ant-design/icons'
 
 const Truck = (props) => {
+  const { truckInfo } = props
   console.log('id', props)
 
   const callNow = data => {
@@ -19,8 +20,8 @@ const Truck = (props) => {
                 <LabelAndData
                 colSpan={6}
                 data={
-                  <Link href='/partners/[id]' as={`/partners/${'Vijay'}`}>
-                   <h1> <a>{'Vijay'}</a> </h1>
+                  <Link href='/partners/[id]' as={`/partners/${truckInfo.partner.name}`}>
+                   <h1> <a>{truckInfo.partner.name}</a> </h1>
                   </Link> 
                 }
               />
@@ -28,13 +29,13 @@ const Truck = (props) => {
               <Col span={8}>
              <LabelAndData
                 colSpan={12}
-                data={data.truck.truckid }
+                data={truckInfo.truck_no }
               />
              </Col>
              <Col span={8}>
              <LabelAndData
                 colSpan={12}
-                data={data.truck.destination }
+                data={truckInfo.city.name }
               />
              </Col>
              </Row>
@@ -43,7 +44,7 @@ const Truck = (props) => {
              <LabelAndData
                 colSpan={12}
                 data= { 
-                <span  onClick={() => callNow(data.truck.phonenumber)} className='link'><Button type='link' icon={<PhoneOutlined />}/>{data.truck.phonenumber}</span>
+                <span  onClick={() => callNow(truckInfo.driver.mobile_no)} className='link'><Button type='link' icon={<PhoneOutlined />}/>{truckInfo.driver.mobile_no}</span>
               }
               />
               
@@ -51,7 +52,7 @@ const Truck = (props) => {
              <Col span={8}>
              <LabelAndData
                 colSpan={12}
-                data={data.truck.trucktype}
+                data={truckInfo.truck_type.value}
               />
              </Col>
              <Col span={8}>
