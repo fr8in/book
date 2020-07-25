@@ -5,7 +5,6 @@ import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
 import TruckReject from '../../components/trucks/truckReject'
 
-
 const status = [
   { value: 1, text: 'Verification Pending' },
   { value: 2, text: 'Rejected' }
@@ -55,8 +54,8 @@ const TruckVerification = () => {
       render: (text, record) => {
         return (
           <Space>
-            <Button type='primary' className='btn-success' icon={<CheckOutlined />} />
-            <Button type='primary' danger icon={<CloseOutlined />} onClick={() => onShow('reject')}/>
+            <Button type='primary' size='small' shape='circle' className='btn-success' icon={<CheckOutlined />} />
+            <Button type='primary' size='small' shape='circle' danger icon={<CloseOutlined />} onClick={() => onShow('reject')} />
           </Space>
         )
       }
@@ -69,15 +68,16 @@ const TruckVerification = () => {
   ]
   return (
     <>
-    <Table
-      columns={columnsCurrent}
-      dataSource={mock}
-      rowKey={record => record.id}
-      size='middle'
-      scroll={{ x: 1150 }}
-      pagination={false}
-    />
-    {visible.reject && <TruckReject visible={visible.reject} onHide={onHide} />}
+      <Table
+        columns={columnsCurrent}
+        dataSource={mock}
+        rowKey={record => record.id}
+        size='middle'
+        scroll={{ x: 1150 }}
+        pagination={false}
+        className='withAction'
+      />
+      {visible.reject && <TruckReject visible={visible.reject} onHide={onHide} />}
     </>
   )
 }

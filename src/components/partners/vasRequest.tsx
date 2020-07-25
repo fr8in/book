@@ -57,12 +57,16 @@ const VasRequest = () => {
           <Space>
             <Button
               type='primary'
+              size='small'
+              shape='circle'
               className='btn-success'
               icon={<CheckOutlined />}
               onClick={() => showConfirmation('Accept', record)}
             />
             <Button
               type='primary'
+              size='small'
+              shape='circle'
               danger
               icon={<CloseOutlined />}
               onClick={() => showConfirmation('Reject', record)}
@@ -81,6 +85,7 @@ const VasRequest = () => {
         size='middle'
         scroll={{ x: 1156 }}
         pagination={false}
+        className='withAction'
       />
       {confirm.visible &&
         <VasConfirmation

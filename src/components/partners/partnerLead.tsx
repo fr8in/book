@@ -140,7 +140,7 @@ const PartnerKyc = () => {
             cancelText='No'
             onConfirm={() => console.log('Rejected!')}
           >
-            <Button type='primary' danger icon={<CloseOutlined />} />
+            <Button type='primary' size='small' shape='circle' danger icon={<CloseOutlined />} />
           </Popconfirm>
         </span>
       )

@@ -8,29 +8,29 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
       name
       mobile
       credit_limit
-      status {
-        id
-        value
-      }
       advance_percentage_id
       approved_by_id
       created_at
       exception_date
       gst
       managed
-      onboardedBy {
-        id
-        email
-      }
       pan
-      paymentManager {
-        id
-        email
-      }
       type_id
       updated_at
       virtual_account
       walletcode
+      status {
+        id
+        value
+      }
+      onboardedBy {
+        id
+        email
+      }
+      paymentManager {
+        id
+        email
+      }
       type {
         comment
         value

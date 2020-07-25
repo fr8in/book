@@ -1,4 +1,4 @@
-import { Table, Input, Switch, Button, Tooltip, Popconfirm } from 'antd'
+import { Table, Input, Switch, Button, Tooltip, Popconfirm, Space } from 'antd'
 import { SearchOutlined, CommentOutlined, CloseOutlined } from '@ant-design/icons'
 import mock from '../../../mock/customer/sourcingMock'
 
@@ -102,13 +102,13 @@ const CustomerLead = () => {
       title: 'Priority',
       dataIndex: 'priority',
       render: (text, record) => (
-        <Switch onChange={onChange} />
+        <Switch onChange={onChange} size='small' />
       )
     },
     {
       title: 'Action',
       render: (text, record) => (
-        <span className='actions'>
+        <Space>
           <Tooltip title='Comment'>
             <Button type='link' icon={<CommentOutlined />} />
           </Tooltip>
@@ -118,9 +118,9 @@ const CustomerLead = () => {
             cancelText='No'
             onConfirm={() => console.log('Rejected!')}
           >
-            <Button type='primary' danger icon={<CloseOutlined />} />
+            <Button type='primary' size='small' shape='circle' danger icon={<CloseOutlined />} />
           </Popconfirm>
-        </span>
+        </Space>
       )
     }
   ]

@@ -173,8 +173,8 @@ const PartnerKyc = () => {
           <Tooltip title='Comment'>
             <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.Comment)}/>
           </Tooltip>
-          <Button type='primary' className='btn-success' icon={<CheckOutlined />} />
-          <Button type='primary' danger icon={<CloseOutlined />} onClick={() => onShow('reject')} />
+          <Button type='primary' size='small' shape='circle' className='btn-success' icon={<CheckOutlined />} />
+          <Button type='primary' size='small' shape='circle' danger icon={<CloseOutlined />} onClick={() => onShow('reject')} />
         </Space>
       )
     }
