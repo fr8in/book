@@ -40,33 +40,29 @@ const Branches = () => {
       dataIndex: "trafficMembers",
       key: "trafficMembers",
       width: "25%",
-      render: (text, record) => {
-        return (
-          <span className="pull-left">
-            <a>{text} </a>
-            <EditTwoTone
-              className="link"
-              onClick={() =>
-                handleShow("trafficVisible", record.branchName, null, null)
-              }
-            />
-          </span>
-        );
-      },
+      render: (text, record) =>
+        record.trafficMembers.length > 0
+          ? record.trafficMembers.map((data, i) => (
+              <>
+                {" "}
+                <Tag className="tagSpace" key={i}>
+                  {data}
+                </Tag>
+                <EditTwoTone
+                  className="link"
+                  onClick={() =>
+                    handleShow("trafficVisible", record.branchName, null, null)
+                  }
+                />
+              </>
+            ))
+          : null,
     },
     {
       title: "Weekly Target",
       dataIndex: "weeklyTarget",
       key: "weeklyTarget",
       width: "25%",
-      render: (text, record) => {
-        return (
-          <span className="pull-left">
-            <a>{text} </a>
-            <EditTwoTone />
-          </span>
-        );
-      },
     },
   ];
 
