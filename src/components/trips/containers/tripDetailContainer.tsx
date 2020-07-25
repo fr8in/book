@@ -1,6 +1,6 @@
 
 import { Row, Col, Card, Space, Tag, Tabs, Collapse } from 'antd'
-import data from '../../../../mock/trip/tripDetail'
+//import data from '../../../../mock/trip/tripDetail'
 import TripInfo from '../tripInfo'
 import TripLr from '../tripLr'
 import TripTime from '../tripTime'
@@ -17,17 +17,36 @@ import CustomerPayments from '../customerPayments'
 import CreditNote from '../creditNote'
 import CreditNoteTable from '../creditNoteTable'
 
+import Loading from '../../common/loading'
+import { useSubscription } from '@apollo/client'
+import { TRIP_DETAIL_SUBSCRIPTION } from './query/tripDetailSubscription'
+
 const { TabPane } = Tabs
 const { Panel } = Collapse
 
 const TripDetailContainer = (props) => {
+  const { id } = props
   console.log('tripId', props)
+  const { loading, error, data } = useSubscription(
+    TRIP_DETAIL_SUBSCRIPTION,
+    {
+      variables: { id }
+    }
+  )
+
+  if (loading) return <Loading />
+  console.log('TripDetailContainer Data',data)
+  console.log('TripDetailContainer Error', error)
+
+  const { trip } = data
+  const tripInfo = trip[0] ? trip[0] : { name: 'ID does not exist' }
+
   const title = (
     <h3>
-      <span className='text-primary'>{props.tripId}</span>
-      <span>:&nbsp;{`${data.trip.source} - ${data.trip.Destination}`}&nbsp;</span>
-      <small className='text-gray normal'>{data.device.truckType}</small>
-    </h3>)
+      <span className='text-primary'>{tripInfo.id}</span>
+      <span>:&nbsp;{`${tripInfo.source.name} - ${tripInfo.destination.name}`}&nbsp;</span>
+      <small className='text-gray normal'>{tripInfo.truck.truck_type.value}</small> 
+     </h3>)
   return (
     <Card
       size='small'
@@ -36,19 +55,19 @@ const TripDetailContainer = (props) => {
       extra={
         <Space>
           <span>Status:</span>
-          <Tag className='status'>{data.trip.status}</Tag>
+          <Tag className='status'>{tripInfo.trip_status.value}</Tag>
         </Space>
       }
     >
       <Row gutter={10}>
         <Col xs={24} sm={24} md={14}>
-          <TripInfo data={data} />
+          <TripInfo tripInfo={tripInfo} />
           <Collapse accordion className='small mt10'>
             <Panel header='Trip LR' key='1'>
               <TripLr />
             </Panel>
           </Collapse>
-          <TripTime />
+          <TripTime tripTime={tripInfo} />
           <Collapse accordion className='small mt10'>
             <Panel header='Customer/Partner - Billing Comment' key='1'>
               <BillingComment />
