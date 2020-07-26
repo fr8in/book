@@ -19,14 +19,21 @@ import Comment from '../comment'
 import TitleWithCount from '../../common/titleWithCount'
 import FasTags from '../cards/fasTags'
 import PartnerFuelDetail from '../cards/partnerFuelDetail'
+import WalletTopUp from '../walletTopup'
+import useShowHide from '../../../hooks/useShowHide'
 
 import { useSubscription } from '@apollo/client'
 import { PARTNER_DETAIL_SUBSCRIPTION } from './query/partnerDetailSubscription'
+import ReportEmail from '../reportEmail'
+import WalletStatement from '../walletStatement'
 const TabPane = Tabs.TabPane
 
 const tripStatusId = [2, 3, 4, 5, 6]
 
 const PartnerDetailContainer = (props) => {
+  const initial = { topUp: false, reportMail: false, statememt: false }
+  const { visible, onShow, onHide } = useShowHide(initial)
+
   const { cardcode } = props
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,
@@ -57,13 +64,13 @@ const PartnerDetailContainer = (props) => {
               extra={
                 <Space>
                   <Tooltip title='Account Statement'>
-                    <Button icon={<MailOutlined />} shape='circle' />
+                    <Button icon={<MailOutlined />} shape='circle' onClick={() => onShow('reportMail')} />
                   </Tooltip>
                   <Tooltip title='Wallet Statement'>
-                    <Button icon={<FileTextOutlined />} shape='circle' />
+                    <Button icon={<FileTextOutlined />} shape='circle' onClick={() => onShow('statement')} />
                   </Tooltip>
                   <Tooltip title='Wallet Topup'>
-                    <Button shape='circle' icon={<WalletOutlined />} />
+                    <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('topUp')} />
                   </Tooltip>
                   <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${'ST003579'}`}>
                     <Tooltip title='Add Truck'>
@@ -142,6 +149,9 @@ const PartnerDetailContainer = (props) => {
           </Row>
         </Card>
       </Col>
+      {visible.topUp && <WalletTopUp visible={visible.topUp} onHide={onHide} />}
+      {visible.reportMail && <ReportEmail visible={visible.reportMail} onHide={onHide} />}
+      {visible.statement && <WalletStatement visible={visible.statement} onHide={onHide} />}
     </Row>
   )
 }

@@ -1,35 +1,32 @@
-import React from "react";
-import { Modal, Button, Input } from "antd";
-import { MailTwoTone } from "@ant-design/icons";
+import React from 'react'
+import { Modal, Button, Input } from 'antd'
 
 const StatementMail = (props) => {
-  const { visible, onHide } = props;
+  const { visible, onHide } = props
 
   const onSubmit = () => {
-    console.log("branch Added!");
-    onHide();
-  };
+    console.log('branch Added!')
+    onHide()
+  }
 
   return (
-    <>
-      <Modal
-        visible={visible}
-        title="Statement Email"
-        onOk={onSubmit}
-        onCancel={onHide}
-        footer={[
-          <Button key="back" size="small" onClick={onHide}>
+    <Modal
+      visible={visible}
+      title='DownPayment Statement'
+      onOk={onSubmit}
+      onCancel={onHide}
+      footer={[
+        <Button key='back' size='small' onClick={onHide}>
             Cancel
-          </Button>,
-          <Button key="submit" type="primary" size="small" onClick={onSubmit}>
+        </Button>,
+        <Button key='submit' type='primary' size='small' onClick={onSubmit}>
             Send Email
-          </Button>,
-        ]}
-      >
-        <Input placeholder="Your Email Address..." />
-      </Modal>
-    </>
-  );
-};
+        </Button>
+      ]}
+    >
+      <Input placeholder='Your Email Address...' />
+    </Modal>
+  )
+}
 
-export default StatementMail;
+export default StatementMail

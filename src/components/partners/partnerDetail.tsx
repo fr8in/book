@@ -1,4 +1,5 @@
-import { Row, Col, Space, Checkbox, Input } from 'antd'
+import { Row, Col, Space, Checkbox, Tag } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
 import LabelWithData from '../common/labelWithData'
 import DetailInfo from '../../../mock/partner/partnerDetailInfo'
 
@@ -102,7 +103,11 @@ const PartnerDetail = (props) => {
         />
         <LabelWithData
           label='Mapped Customers '
-          data={<Input placeholder='+ Add Customer' />}
+          data={
+            <Tag style={{ borderStyle: 'dashed' }}>
+              <PlusOutlined /> Add Customer
+            </Tag>
+          }
           labelSpan={10}
           dataSpan={14}
         />
