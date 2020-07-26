@@ -1,5 +1,13 @@
 import { Row, Col, Card, Button, Space, Tabs, Tooltip } from 'antd'
-import { BankFilled, FileDoneOutlined, WalletOutlined, PlusOutlined } from '@ant-design/icons'
+import {
+  BankFilled,
+  FileDoneOutlined,
+  WalletOutlined,
+  PlusOutlined,
+  FileTextOutlined,
+  EyeOutlined,
+  UploadOutlined
+} from '@ant-design/icons'
 import useShowHide from '../../../hooks/useShowHide'
 // All components
 import Loading from '../../common/loading'
@@ -59,6 +67,12 @@ const CustomerDetailContainer = (props) => {
               title={<CustomerName cardcode={customerInfo.cardcode} name={customerInfo.name} />}
               extra={
                 <Space>
+                  {!customerInfo.lrUrl
+                    ? <Button shape='round' icon={<EyeOutlined />}>LR</Button>
+                    : <Button type='primary' shape='round' icon={<UploadOutlined />}>LR</Button>}
+                  <Tooltip title='Account Statement'>
+                    <Button icon={<FileTextOutlined />} shape='circle' onClick={() => onShow('transfer')} />
+                  </Tooltip>
                   <Tooltip title='Transfer'>
                     <Button icon={<BankFilled />} shape='circle' onClick={() => onShow('transfer')} />
                   </Tooltip>
