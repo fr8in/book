@@ -12,6 +12,7 @@ export const TRUCK_DETAIL_SUBSCRIPTION = gql`
         }
         
         partner{
+          cardcode
           name
         }
         driver{
