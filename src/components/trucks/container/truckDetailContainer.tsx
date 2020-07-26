@@ -10,7 +10,7 @@ import Loading from '../../common/loading'
 import { useSubscription } from '@apollo/client'
 import { TRUCK_DETAIL_SUBSCRIPTION } from './query/truckDetailSubscription'
 
-const  TruckDetailContainer  = (props) => {
+const TruckDetailContainer = (props) => {
   const { truck_no } = props
 
   const { loading, error, data } = useSubscription(
@@ -26,7 +26,6 @@ const  TruckDetailContainer  = (props) => {
   const { truck } = data
   const truckInfo = truck[0] ? truck[0] : { name: 'ID does not exist' }
 
-
   return (
     <div>
       <Row>
@@ -34,7 +33,7 @@ const  TruckDetailContainer  = (props) => {
           <Card
             size='small'
             className='border-top-blue'
-            title={<Truck truckInfo={truckInfo}/>}
+            title={<Truck truckInfo={truckInfo} />}
             extra={<AssignStatus />}
           >
             <Row gutter={[10, 10]}>
@@ -83,4 +82,4 @@ const  TruckDetailContainer  = (props) => {
     </div>
   )
 }
-export default  TruckDetailContainer 
+export default TruckDetailContainer

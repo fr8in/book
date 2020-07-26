@@ -92,60 +92,62 @@ const CustomerDetailContainer = (props) => {
           <CustomerInfo customerInfo={customerInfo} />
           <Row gutter={10} className='mt10'>
             <Col xs={24}>
-              <Tabs defaultActiveKey='1' className='border-top-blue'>
-                <TabPane tab={<TitleWithCount name='Final' value={35} />} key='1'>
-                  <FinalPaymentsPending />
-                </TabPane>
-                <TabPane tab={<TitleWithCount name='Incoming' value={29} />} key='2'>
-                  <IncomingPayments />
-                </TabPane>
-                <TabPane tab={<TitleWithCount name='Advance Pending(O)' value={3} />} key='3'>
-                  <AdvancePending />
-                </TabPane>
-                <TabPane tab={<TitleWithCount name='Advance Pending(C)' value={0} />} key='4'>
-                  <AdvancePending />
-                </TabPane>
-                <TabPane tab={<TitleWithCount name='Invoice Pending' value={2} />} key='5'>
-                  <InvoicePending />
-                </TabPane>
-                <TabPane tab='Users' key='6'>
-                  <Row justify='end' className='m5'>
-                    <Button type='primary' onClick={() => onShow('addUser')}>
-                      <PlusOutlined /> Add Users
-                    </Button>
-                  </Row>
-                  <Users />
-                </TabPane>
-                <TabPane tab='Branch' key='7'>
-                  <Row justify='end' className='m5'>
-                    <Button type='primary' onClick={() => onShow('addBranch')}>
-                      <PlusOutlined /> Add Branch
-                    </Button>
-                  </Row>
-                  <Branch />
-                </TabPane>
-                <TabPane tab='FR8 Branch' key='8'>
-                  <Fr8Branch />
-                </TabPane>
-                <TabPane tab={<TitleWithCount name='Ongoing' value={3} />} key='9'>
-                  <Trips />
-                </TabPane>
-                <TabPane tab={<TitleWithCount name='Completed' value={65} />} key='10'>
-                  <Trips />
-                </TabPane>
-                <TabPane tab='Details' key='11'>
-                  <Row>
-                    <Col xs={24} sm={24} md={14}>
-                      <CustomerDetails customerInfo={customerInfo} />
-                    </Col>
-                    <Col xs={24} sm={24} md={10}>
-                      <Card size='small' className='card-body-0'>
-                        <PendingPayments />
-                      </Card>
-                    </Col>
-                  </Row>
-                </TabPane>
-              </Tabs>
+              <Card size='small' className='card-body-0 border-top-blue'>
+                <Tabs defaultActiveKey='1'>
+                  <TabPane tab={<TitleWithCount name='Final' value={35} />} key='1'>
+                    <FinalPaymentsPending />
+                  </TabPane>
+                  <TabPane tab={<TitleWithCount name='Incoming' value={29} />} key='2'>
+                    <IncomingPayments />
+                  </TabPane>
+                  <TabPane tab={<TitleWithCount name='Advance Pending(O)' value={3} />} key='3'>
+                    <AdvancePending />
+                  </TabPane>
+                  <TabPane tab={<TitleWithCount name='Advance Pending(C)' value={0} />} key='4'>
+                    <AdvancePending />
+                  </TabPane>
+                  <TabPane tab={<TitleWithCount name='Invoice Pending' value={2} />} key='5'>
+                    <InvoicePending />
+                  </TabPane>
+                  <TabPane tab='Users' key='6'>
+                    <Row justify='end' className='m5'>
+                      <Button type='primary' onClick={() => onShow('addUser')}>
+                        <PlusOutlined /> Add Users
+                      </Button>
+                    </Row>
+                    <Users />
+                  </TabPane>
+                  <TabPane tab='Branch' key='7'>
+                    <Row justify='end' className='m5'>
+                      <Button type='primary' onClick={() => onShow('addBranch')}>
+                        <PlusOutlined /> Add Branch
+                      </Button>
+                    </Row>
+                    <Branch />
+                  </TabPane>
+                  <TabPane tab='FR8 Branch' key='8'>
+                    <Fr8Branch />
+                  </TabPane>
+                  <TabPane tab={<TitleWithCount name='Ongoing' value={3} />} key='9'>
+                    <Trips />
+                  </TabPane>
+                  <TabPane tab={<TitleWithCount name='Completed' value={65} />} key='10'>
+                    <Trips />
+                  </TabPane>
+                  <TabPane tab='Details' key='11'>
+                    <Row>
+                      <Col xs={24} sm={24} md={14}>
+                        <CustomerDetails customerInfo={customerInfo} />
+                      </Col>
+                      <Col xs={24} sm={24} md={10}>
+                        <Card size='small' className='card-body-0'>
+                          <PendingPayments />
+                        </Card>
+                      </Col>
+                    </Row>
+                  </TabPane>
+                </Tabs>
+              </Card>
             </Col>
             {visible.addUser && <CustomerUser visible={visible.addUser} onHide={onHide} />}
             {visible.addBranch && <CustomerBranch visible={visible.addBranch} onHide={onHide} />}
