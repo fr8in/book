@@ -1,6 +1,6 @@
-import { Table } from 'antd'
+import { Table, Button } from 'antd'
 import Link from 'next/link'
-import mock from '../../../mock/partner/truckByPartner'
+//import mock from '../../../mock/partner/truckByPartner'
 
 const list = [
   { value: 1, text: 'All' },
@@ -23,49 +23,80 @@ const rowSelection = {
     console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
   },
   getCheckboxProps: record => ({
-    disabled: record.name === 'Disabled User', // Column configuration not to be checked
+    disabled: record.name === 'Disabled User', 
     name: record.name
   })
 }
 
-const PartnerTruck = () => {
+const PartnerTruck = (props) => {
+  const { trucks } = props
+ 
   const columnsCurrent = [
     {
       title: 'Truck No',
-      dataIndex: 'truckNo',
+      dataIndex: 'truck_no',
       render: (text, record) => {
         return (
-          <Link href='/trucks/[id]' as={`/trucks/${record.id}`}>
-            <a>{text}</a>
+          <Link href='/trucks/[id]' as={`/trucks/${record.truck_no}`}>
+            <a>{ record.truck_no}</a>
           </Link>
         )
       }
     },
     {
       title: 'Truck Type',
-      dataIndex: 'type'
+      dataIndex: 'truck_type_id'
     },
     {
       title: 'Trip ID',
-      dataIndex: 'tripId',
       render: (text, record) => {
+     const id = record && record.trips[0] ? record.trips[0].id : null
         return (
-          <Link href='/trips/[id]' as={`/trips/${record.id} `}>
-            <a>{text}</a>
-          </Link>)
+          <span>{
+            id && 
+            <Link href='/trips/[id]' as={`/trips/${id} `}>
+              <a>{id}</a>
+            </Link>
+            }
+            </span>
+          )
       }
     },
     {
       title: 'Trip',
-      dataIndex: 'trip'
+      render:(text,record)=>{
+        const id = record && record.trips[0] ? record.trips[0].id : null
+        const source = record && record.trips[0] && record.trips[0].source ? record.trips[0].source.name : null
+        const destination = record && record.trips[0] && record.trips[0].destination ? record.trips[0].destination.name : null
+        return( 
+          <span>{
+            id ?  
+            <span>
+              {
+                source.slice(0,3)+ '-' + destination.slice(0,3)
+              }
+            </span>: (record.trucks_status.value === 7 || record.trucks_status.value === 8 || record.trucks_status.value === 11 ) ? 'NA' :
+            <Button type='link'>Assing</Button>
+            
+            }
+            </span>
+        )
+     }
     },
     {
       title: 'City',
-      dataIndex: 'cityName'
+      render:(text,record)=>{
+        return( record.city && record.city.name)
+      },
+
     },
     {
       title: 'Status',
-      dataIndex: 'status',
+      render:(text,record)=>{
+
+        return(
+          record.truck_status && record.truck_status.value)
+      },
       filters: list
     },
     {
@@ -74,7 +105,6 @@ const PartnerTruck = () => {
       sorter: (a, b) => (a.averageKm > b.averageKm ? 1 : -1),
       filters: status
     }
-
   ]
   return (
     <Table
@@ -82,7 +112,7 @@ const PartnerTruck = () => {
         ...rowSelection
       }}
       columns={columnsCurrent}
-      dataSource={mock}
+      dataSource={trucks}
       rowKey={record => record.id}
       size='middle'
       scroll={{ x: 1050, y: 400 }}

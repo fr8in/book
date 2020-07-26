@@ -20,12 +20,14 @@ import { useSubscription } from '@apollo/client'
 import { PARTNER_DETAIL_SUBSCRIPTION } from '../query/partnerDetailSubscription'
 const TabPane = Tabs.TabPane
 
+const trip_status_id = [2,3,4,5,6]
 const PartnerDetailContainer = (props) => {
+ 
   const { cardcode } = props
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,
     {
-      variables: { cardcode }
+      variables: { cardcode , trip_status_id }
     }
   )
 
@@ -34,7 +36,8 @@ const PartnerDetailContainer = (props) => {
   console.log('PartnerDetailContainer Data', data)
   const { partner } = data
   const partnerData = partner[0] ? partner[0] : { name: 'ID does not exist' }
-  
+  const trucks = partnerData.trucks
+  console.log('trucks', trucks)
   const callback = (key) => {
     console.log(key)
   }
@@ -49,7 +52,7 @@ const PartnerDetailContainer = (props) => {
               title={
                 <HeaderInfo partner={partnerData}/>
               }
-              extra={<WalletStatus />}
+              extra={<WalletStatus cardcode={partnerData.cardcode} status={partnerData.wallet_block}/>}
             >
               <Row gutter={[10, 10]}>
                 <Col xs={24} sm={12} md={8}>
@@ -76,7 +79,7 @@ const PartnerDetailContainer = (props) => {
             <Card size='small' className='card-body-0 border-top-blue'>
               <Tabs defaultActiveKey='1' onChange={callback}>
                 <TabPane tab='Truck' key='1'>
-                  <PartnerTruck />
+                  <PartnerTruck trucks ={trucks}/>
                 </TabPane>
                 <TabPane tab='Detail' key='2'>
                   <Row gutter={10} className='p10'>
