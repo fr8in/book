@@ -18,7 +18,7 @@ const customerList = [
     mobileNo: 5548474726,
     companyType: 'Broker',
     registrationDate: '2020-04-04 14:04',
-    panNo: 'ATIPC63988',
+    panNo: null,
     type: 15000,
     mamul: 1700,
     advancePercentage: 80
@@ -42,7 +42,7 @@ const customerList = [
     mobileNo: 9948474726,
     companyType: 'Broker',
     registrationDate: '2020-05-07 21:04',
-    panNo: 'ATIPC6395B',
+    panNo: null,
     type: 10000,
     mamul: 1800,
     advancePercentage: 90

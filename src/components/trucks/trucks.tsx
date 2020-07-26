@@ -28,9 +28,8 @@ const Trucks = (props) => {
   const initial = { record: null, title: '', visible: false }
   const [availability, setAvailability] = useState(initial)
 
-  const poInitial = { poModal: false}
-    const { visible, onShow, onHide } = useShowHide(initial)
-
+  const poInitial = { poModal: false }
+  const { visible, onShow, onHide } = useShowHide(initial)
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -56,8 +55,6 @@ const Trucks = (props) => {
   const showBreadown = (record) => {
     setAvailability({ ...record, record: record, title: 'Breakdown', visible: true })
   }
-
-  
 
   const columns = [
     {
@@ -87,16 +84,17 @@ const Trucks = (props) => {
       dataIndex: 'trip',
       render: (text, record) => {
         return (
-          <span className='link'onClick={() => onShow('poModal')} >{text}</span>
-        )}
+          <span className='link' onClick={() => onShow('poModal')}>{text}</span>
+        )
+      }
     },
     {
       title: 'Partner',
       dataIndex: 'name',
       render: (text, record) => {
         return (
-          <Link href='partners/[id]' as={`partners/${record.cardcode}`}>
-            <a>{text}</a>
+          <Link href='partners/[id]' as={`partners/${record.partner.cardcode}`}>
+            <a>{record.partner.name}</a>
           </Link>
         )
       }
@@ -104,20 +102,25 @@ const Trucks = (props) => {
     {
       title: 'Phone No',
       dataIndex: 'phone_no',
-      render: (text,record) => {
+      render: (text, record) => {
         return (
-          <span className='link' onClick={() => showUsers(record)} >{text}</span>
+          <span className='link' onClick={() => showUsers(record)}>{record.driver && record.driver.mobile_no}</span>
         )
       }
     },
     {
       title: 'Status',
       dataIndex: 'status',
-      filters: statusList
+      filters: statusList,
+      render: (text, record) => {
+        return (record.truck_status && record.truck_status.value)
+      }
     },
     {
       title: 'City',
-      dataIndex: 'city',
+      render: (text, record) => {
+        return (record.city && record.city.name)
+      }
     },
     {
       title: '',
@@ -151,7 +154,7 @@ const Trucks = (props) => {
           onHide={breakdownClose}
           title={availability.title}
         />}
-         {visible.poModal && <CustomerPo visible={visible.poModal} onHide={() => onHide()} />}
+      {visible.poModal && <CustomerPo visible={visible.poModal} onHide={() => onHide()} />}
     </>
   )
 }

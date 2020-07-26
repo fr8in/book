@@ -1,9 +1,9 @@
 import { Col } from 'antd'
 
 const LabelAndData = (props) => {
-  const { label, colSpan, data } = props
+  const { label, xsSpan, smSpan, mdSpan, data } = props
   return (
-    <Col xs={24} sm={colSpan || 12}>
+    <Col xs={xsSpan || 24} sm={smSpan || 12} md={mdSpan || 12} className='mb10'>
       <div>{label}</div>
       <div>{data}</div>
     </Col>

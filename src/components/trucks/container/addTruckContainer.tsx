@@ -16,7 +16,7 @@ const { Option } = Select;
         <div>
                   
                   <LabelAndData
-                colSpan={6}
+                smSpan={6}
                 data={
                   <Link href='/partners/[id]' as={`/partners/${'Vijay'}`}>
                    <h1> <a>{'Savdesh Kumar'}</a> </h1>

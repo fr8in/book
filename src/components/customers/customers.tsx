@@ -45,7 +45,7 @@ const Customers = (props) => {
     },
     {
       title: 'Status',
-      dataIndex: 'status'
+      render: (text, record) => record.status && record.status.value
     }
   ]
 
