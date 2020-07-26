@@ -5,10 +5,13 @@ import Link from 'next/link'
 import { EditTwoTone } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
 import CustomerPrice from '../trips/customerPrice'
+import data from '../../../mock/trip/tripDetail'
 const TripInfo = (props) => {
+  const { tripInfo } = props
   const initial = { price: false }
   const { visible, onShow, onHide } = useShowHide(initial)
-  const { data } = props
+  //const { data } = props
+  
   return (
     <Row>
       <Col xs={24}>
@@ -19,8 +22,8 @@ const TripInfo = (props) => {
                 smSpan={12}
                 label={<p className='mb0 b'>Customer</p>}
                 data={
-                  <Link href='/customers/[id]' as={`/customers/${data.customer.cardcode}`}>
-                    <a>{data.customer.name}</a>
+                  <Link href='/customers/[id]' as={`/customers/${tripInfo.customer.cardcode}`}>
+                    <a>{tripInfo.customer.name}</a>
                   </Link>
                 }
               />
@@ -28,48 +31,48 @@ const TripInfo = (props) => {
                 smSpan={12}
                 label={<p className='mb0 b'>Partner</p>}
                 data={
-                  <Link href='/partners/[id]' as={`/partners/${data.partner.cardcode}`}>
-                    <a>{data.partner.name}</a>
+                  <Link href='/partners/[id]' as={`/partners/${tripInfo.partner.cardcode}`}>
+                    <a>{tripInfo.partner.name}</a>
                   </Link>
                 }
               />
             </Row>
           </Col>
-          <Col flex='120px'>
+           <Col flex='120px'>
             <Row>
               <LabelAndData
                 smSpan={24}
                 label={<p className='mb0 b'>Truck No</p>}
                 data={
-                  <Link href='/trucks/[id]' as={`/truck/${data.device.deviceId}`}>
-                    <a>{data.device.truckNo}</a>
+                  <Link href='/trucks/[id]' as={`/truck/${tripInfo.truck.truck_no}`}>
+                    <a>{tripInfo.truck.truck_no}</a>
                   </Link>
                 }
               />
             </Row>
-          </Col>
-        </Row>
+              </Col>
+        </Row> 
         <Divider />
         <Row>
           <Col sm={24} md={12}>
-            <LabelWithData label='Order Date' data={data.trip.orderDate} labelSpan={10} />
+            <LabelWithData label='Order Date' data={tripInfo.order_date} labelSpan={10} />
             <LabelWithData label='ETA' data={data.trip.ETA} labelSpan={10} />
             <LabelWithData
               label='Customer Price'
-              data={<p>{data.priceDetail.customerPrice} <EditTwoTone onClick={() => onShow('price')} /></p>}
+              data={<p>{tripInfo.customer_price} <EditTwoTone onClick={() => onShow('price')} /></p>}
               labelSpan={10}
             />
             <LabelWithData label='Cash' data={data.priceDetail.cash} labelSpan={10} />
-            <LabelWithData label='To Pay' data={data.priceDetail.toPay} labelSpan={10} />
-            <LabelWithData label='Mamul' data={data.priceDetail.mamul} labelSpan={10} />
+            <LabelWithData label='To Pay' data={tripInfo.to_pay} labelSpan={10} />
+            <LabelWithData label='Mamul' data={tripInfo.mamul} labelSpan={10} />
           </Col>
           
           <Col sm={24} md={12}>
-            <LabelWithData label='PO Date' data={data.trip.poDate} labelSpan={10} />
+            <LabelWithData label='PO Date' data={tripInfo.po_date} labelSpan={10} />
             <LabelWithData label='Delay' data={data.trip.delay} labelSpan={10} />
-            <LabelWithData label='Partner Price' data={data.priceDetail.partnerPrice} labelSpan={10} />
-            <LabelWithData label='Including loading' data={data.priceDetail.includingLoading} labelSpan={10} />
-            <LabelWithData label='Including Unloading' data={data.priceDetail.includingUnloading} labelSpan={10} />
+            <LabelWithData label='Partner Price' data={tripInfo.partner_price} labelSpan={10} />
+            <LabelWithData label='Including loading' data={tripInfo.including_loading = false ? 'Yes' : 'No'} labelSpan={10} />
+            <LabelWithData label='Including Unloading' data={(tripInfo.including_unloading = false ? 'yes':'No')} labelSpan={10} />
           </Col>
         </Row>
       </Col>

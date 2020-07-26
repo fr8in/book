@@ -1,8 +1,12 @@
 //import tripsData from '../../../mock/trip/tripsData'
-import { Table, Tooltip, Input } from 'antd'
+import { Table, Tooltip, Input,Button } from 'antd'
 import Link from 'next/link'
-import { SearchOutlined } from '@ant-design/icons'
+import { SearchOutlined,CommentOutlined } from '@ant-design/icons'
 import moment from 'moment'
+import TripFeedBack from '../trips/tripFeedBack'
+//import loadData from '../../../mock/trucks/loadData'
+import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
+
 
 const statusList = [
   { value: 1, text: 'Delivered' },
@@ -15,6 +19,11 @@ const statusList = [
 ]
 
 const Trips = (props) => {
+  const initial = {
+    commentData: [],
+    commentVisible: false
+  }
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
   const { trips } = props
   const columns = [
     {
@@ -169,14 +178,14 @@ const Trips = (props) => {
     },
     props.trips ?{
       title: 'SO Price',
-      dataIndex: 'partner_price',
-      key: 'partner_price',
+      dataIndex: 'customer_price',
+      key: 'customer_price',
       width: '9%'
     } : {},
     props.trips ?{
       title: 'PO Price',
-      dataIndex: 'customer_price',
-      key: 'customer_price',
+      dataIndex: 'partner_price',
+      key: 'partner_price',
       width: '9%'
     }: {},
     props.trips ?{
@@ -199,12 +208,19 @@ const Trips = (props) => {
     } : {},
     props.delivered ?{
       title: 'Comment',
-      dataIndex: 'comment',
-      key: 'comment',
+      render: (text, record) => {
+        return (
+          <span>
+            <Tooltip title='Comment'>
+              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.previousComment)} />
+            </Tooltip>
+            </span>)
+      },
       width: '6%'
     } : {}
   ]
   return (
+    <>
     <Table
       columns={columns}
       dataSource={trips}
@@ -213,6 +229,13 @@ const Trips = (props) => {
       scroll={{ x: 1156 }}
       pagination={false}
     />
+    {object.commentVisible &&
+      <TripFeedBack
+        visible={object.commentVisible}
+        data={object.commentData}
+        onHide={handleHide}
+      />}
+   </>
   )
 }
 
