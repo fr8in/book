@@ -4,7 +4,7 @@ import fuelDetail from '../../../../mock/card/fuelCard'
 
 const PartnerFuelDetail = () => {
   return (
-    <Row gutter={10}>
+    <Row gutter={10} className='p10'>
       <Col xs={24}>
         <LabelWithData
           label='Card ID'

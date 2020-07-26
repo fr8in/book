@@ -1,4 +1,4 @@
-import { Switch } from 'antd'
+import { Switch, Tooltip } from 'antd'
 
 const PartnerStatus = (props) => {
   const onChange = (checked) => {
@@ -6,12 +6,14 @@ const PartnerStatus = (props) => {
   }
   const { status } = props
   return (
-    <Switch
-      onChange={onChange}
-      checked={status}
-      className={status ? 'block' : 'unblock'}
-      disabled={false}
-    />
+    <Tooltip title={status ? 'Unblock Wallet' : 'Block Wallet'}>
+      <Switch
+        onChange={onChange}
+        checked={status}
+        className={status ? 'block' : 'unblock'}
+        disabled={false}
+      />
+    </Tooltip>
   )
 }
 

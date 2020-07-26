@@ -249,15 +249,18 @@ a, .link {
 
 .addtruck {
   position: relative;
+  overflow: hidden;
   &::after {
-    position: absolute;
     content: '\002B';
-    color: #fff;
-    font-size: 14px;
+    position: absolute;
+    color: #1890ff;
+    font-size: 12px;
     font-weight: 600;
-    background-color: @primary;
-    border-radius: 5px;
-    left: 3px;
+    background-color: #fff;
+    border-radius: 15px;
+    right: -1px;
+    bottom: 0;
+    padding: 0px 4px;
   }
 }
 

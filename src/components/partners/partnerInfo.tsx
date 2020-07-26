@@ -1,48 +1,42 @@
-import {useState} from 'react'
-import { Row, Col } from 'antd'
-import LabelWithData from '../common/labelWithData'
+import { Row } from 'antd'
+import LabelAndData from '../common/labelAndData'
 import detail from '../../../mock/partner/partnerInfo'
 
 const PartnerInfo = (props) => {
-
   const { partnerInfo } = props
-  
-  console.log('partnerInfo',partnerInfo)
+
+  console.log('partnerInfo', partnerInfo)
 
   return (
     <Row gutter={8} className='mb10'>
-      <Col xs={24} sm={24} md={24}>
-        <LabelWithData
-          label='City'
-          data={partnerInfo.city.name}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Region'
-          data={detail.region}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='On Boarded By'
-          data={partnerInfo.onboarded_by.name}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Final Payment Date'
-          data={partnerInfo.final_payment_date}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Advance Percentage'
-          data={partnerInfo.partner_advance_percentage_id}
-          labelSpan={10}
-          dataSpan={14}
-        />
-      </Col>
+      <LabelAndData
+        label='Pan'
+        data={<label>{partnerInfo.pan}</label>}
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={12}
+      />
+      <LabelAndData
+        label='City'
+        data={<label>{partnerInfo.city.name}</label>}
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={12}
+      />
+      <LabelAndData
+        label='Region'
+        data={<label>{detail.region}</label>}
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={12}
+      />
+      <LabelAndData
+        label='On Boarded By'
+        data={<label>{partnerInfo.onboarded_by.name}</label>}
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={12}
+      />
     </Row>
   )
 }

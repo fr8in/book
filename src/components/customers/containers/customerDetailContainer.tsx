@@ -4,7 +4,7 @@ import {
   FileDoneOutlined,
   WalletOutlined,
   PlusOutlined,
-  FileTextOutlined,
+  MailOutlined,
   EyeOutlined,
   UploadOutlined
 } from '@ant-design/icons'
@@ -71,7 +71,7 @@ const CustomerDetailContainer = (props) => {
                     ? <Button shape='round' icon={<EyeOutlined />}>LR</Button>
                     : <Button type='primary' shape='round' icon={<UploadOutlined />}>LR</Button>}
                   <Tooltip title='Account Statement'>
-                    <Button icon={<FileTextOutlined />} shape='circle' onClick={() => onShow('transfer')} />
+                    <Button icon={<MailOutlined />} shape='circle' />
                   </Tooltip>
                   <Tooltip title='Transfer'>
                     <Button icon={<BankFilled />} shape='circle' onClick={() => onShow('transfer')} />

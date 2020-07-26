@@ -4,8 +4,8 @@ import DetailInfo from '../../../mock/partner/partnerDetailInfo'
 
 const PartnerDetail = (props) => {
   const { partnerDetail } = props
-  
-  console.log('partnerDetail',partnerDetail)
+
+  console.log('partnerDetail', partnerDetail)
   const onChange = (e) => {
     console.log(`checked = ${e.target.checked}`)
   }
@@ -95,12 +95,6 @@ const PartnerDetail = (props) => {
           dataSpan={14}
         />
         <LabelWithData
-          label='PAN'
-          data={<span>{partnerDetail.pan}</span>}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
           label=' GST'
           data={<span>{partnerDetail.gst}</span>}
           labelSpan={10}
@@ -109,6 +103,12 @@ const PartnerDetail = (props) => {
         <LabelWithData
           label='Mapped Customers '
           data={<Input placeholder='+ Add Customer' />}
+          labelSpan={10}
+          dataSpan={14}
+        />
+        <LabelWithData
+          label='Advance Percentage'
+          data={partnerDetail.partner_advance_percentage_id}
           labelSpan={10}
           dataSpan={14}
         />
