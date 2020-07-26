@@ -1,5 +1,5 @@
 import PageLayout from '../../components/layout/pageLayout'
-import ApprovalsContainer from '../../components/approvals/container/approvalsContainer'
+import ApprovalsContainer from '../../components/partners/approvals/container/approvalsContainer'
 
 const Approvals = () => {
   return (

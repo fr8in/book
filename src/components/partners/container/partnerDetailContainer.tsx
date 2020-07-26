@@ -1,6 +1,7 @@
 import Loading from '../../common/loading'
 import Link from 'next/link'
-import { Row, Col, Card, Tabs, Button } from 'antd'
+import { Row, Col, Card, Tabs, Button, Space, Tooltip } from 'antd'
+import DetailPageHeader from '../../common/detailPageHeader'
 import HeaderInfo from '../partner'
 import WalletStatus from '../walletStatus'
 import BasicDetail from '../partnerInfo'
@@ -14,20 +15,20 @@ import PartnerTruck from '../../trucks/trucksByPartner'
 import DetailInfo from '../partnerDetail'
 import Document from '../partnerDocument'
 import Comment from '../comment'
-import { PlusOutlined } from '@ant-design/icons'
+import { CarOutlined, WalletOutlined } from '@ant-design/icons'
 import TitleWithCount from '../../common/titleWithCount'
 import { useSubscription } from '@apollo/client'
-import { PARTNER_DETAIL_SUBSCRIPTION } from '../query/partnerDetailSubscription'
+import { PARTNER_DETAIL_SUBSCRIPTION } from './query/partnerDetailSubscription'
 const TabPane = Tabs.TabPane
 
-const trip_status_id = [2,3,4,5,6]
+const tripStatusId = [2, 3, 4, 5, 6]
+
 const PartnerDetailContainer = (props) => {
- 
   const { cardcode } = props
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,
     {
-      variables: { cardcode , trip_status_id }
+      variables: { cardcode, trip_status_id: tripStatusId }
     }
   )
 
@@ -50,17 +51,26 @@ const PartnerDetailContainer = (props) => {
               size='small'
               className='border-top-blue'
               title={
-                <HeaderInfo partner={partnerData}/>
+                <DetailPageHeader
+                  title={<HeaderInfo partner={partnerData} />}
+                  extra={
+                    <Space>
+                      <Tooltip title='Wallet Topup'>
+                        <Button shape='circle' icon={<WalletOutlined />} />
+                      </Tooltip>
+                      <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${'ST003579'}`}>
+                        <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />} />
+                      </Link>
+                      <WalletStatus cardcode={partnerData.cardcode} status={partnerData.wallet_block} />
+                    </Space>
+                  }
+                />
               }
-              extra={<WalletStatus cardcode={partnerData.cardcode} status={partnerData.wallet_block}/>}
             >
               <Row gutter={[10, 10]}>
                 <Col xs={24} sm={12} md={8}>
-                  <BasicDetail partnerInfo={partnerData}/>
+                  <BasicDetail partnerInfo={partnerData} />
                   <PartnerStatus />
-                  <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${'ST003579'}`}>
-                    <Button type='primary' icon={<PlusOutlined />}>Add Truck</Button>
-                  </Link>
                 </Col>
                 <Col xs={24} md={12} xl={8}>
                   <Barchart />
@@ -79,12 +89,12 @@ const PartnerDetailContainer = (props) => {
             <Card size='small' className='card-body-0 border-top-blue'>
               <Tabs defaultActiveKey='1' onChange={callback}>
                 <TabPane tab='Truck' key='1'>
-                  <PartnerTruck trucks ={trucks}/>
+                  <PartnerTruck trucks={trucks} />
                 </TabPane>
                 <TabPane tab='Detail' key='2'>
                   <Row gutter={10} className='p10'>
                     <Col xs={24} sm={12} md={12}>
-                      <DetailInfo partnerDetail={partnerData}/>
+                      <DetailInfo partnerDetail={partnerData} />
                     </Col>
                     <Col xs={24} sm={12} md={12}>
                       <Document />

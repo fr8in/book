@@ -247,6 +247,20 @@ a, .link {
   background: #fff;
 }
 
+.addtruck {
+  position: relative;
+  &::after {
+    position: absolute;
+    content: '\002B';
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    background-color: @primary;
+    border-radius: 5px;
+    left: 3px;
+  }
+}
+
 @media only screen and (max-width: 767px) {
   .stats {
     margin-bottom: 10px;

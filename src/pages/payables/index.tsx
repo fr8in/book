@@ -1,5 +1,5 @@
 import PageLayout from '../../components/layout/pageLayout'
-import PayablesContainer from '../../components/payables/container/payablesContainer'
+import PayablesContainer from '../../components/partners/payables/container/payablesContainer'
 
 const Payables = () => {
   return (
