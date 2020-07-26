@@ -18,8 +18,8 @@ const Truck = (props) => {
       <LabelAndData
         label='Partner'
         data={
-          <Link href='/partners/[id]' as={`/partners/${truckInfo.partner.name}`}>
-            <h3><a>{truckInfo.partner.name}</a></h3>
+          <Link href='/partners/[id]' as={`/partners/${truckInfo.partner.cardcode}`}>
+            <h4><a>{truckInfo.partner.name}</a></h4>
           </Link>
         }
         mdSpan={4}
