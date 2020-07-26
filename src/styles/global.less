@@ -265,19 +265,22 @@ a, .link {
 }
 
 .walletList {
-  > h4{
-    background-color: @light-bg;
-    margin-bottom: 0;
-    padding: 5px;
-  }
-  > .ant-row {
-    padding: 10px 0;
-    border-bottom: solid 1px @border-light;
-    p{
+  margin: -10px;
+  > div {
+    > h4{
+      background-color: @light-bg;
       margin-bottom: 0;
+      padding: 5px 10px;
     }
-    .creditAmount { color: @green; font-weight: 500; }
-    .debitAmount { color: @red; font-weight: 500;}
+    > .ant-row {
+      padding: 10px;
+      border-bottom: solid 1px @border-light;
+      p{
+        margin-bottom: 0;
+      }
+      .creditAmount { color: @green; font-weight: 500; }
+      .debitAmount { color: @red; font-weight: 500;}
+    }
   }
 }
 

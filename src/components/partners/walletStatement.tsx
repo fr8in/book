@@ -13,11 +13,11 @@ const WalletStatement = (props) => {
       visible={visible}
       width={360}
     >
-      <>
+      <div className='walletList'>
         {walletStatement.map((data, i) => {
           const transactionDetails = data.transactions
           return (
-            <div key={i} className='walletList'>
+            <div key={i}>
               <h4>{data.date}</h4>
               {transactionDetails && transactionDetails.length > 0
                 ? transactionDetails.map((transactionData, i) => {
@@ -40,7 +40,7 @@ const WalletStatement = (props) => {
             </div>
           )
         })}
-      </>
+      </div>
     </Drawer>
   )
 }
