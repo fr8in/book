@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client'
-import { Switch, Space } from 'antd'
+import { Switch } from 'antd'
 import { UPDATE_CUSTOMER_BLACKLIST_MUTATION } from './containers/query/updateCustomerBlacklistMutation'
 
 // This has to go to global
@@ -23,15 +23,12 @@ const Blacklist = ({ cardcode, statusId }) => {
   const blacklisted = statusId === customerStatus.Blacklisted
 
   return (
-    <Space>
-      <label>Blacklisted</label>
-      <Switch
-        onChange={onChange}
-        checked={blacklisted}
-        className={blacklisted ? 'block' : 'unblock'}
-        disabled={false}
-      />
-    </Space>
+    <Switch
+      onChange={onChange}
+      checked={blacklisted}
+      className={blacklisted ? 'block' : 'unblock'}
+      disabled={false}
+    />
   )
 }
 

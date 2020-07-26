@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { Row, Col, Checkbox, Space, Button } from 'antd'
-import { DownloadOutlined, UploadOutlined } from '@ant-design/icons'
+import { Row, Col, Checkbox } from 'antd'
 import InlineEdit from '../common/inlineEdit'
-import LabelWithData from '../common/labelWithData'
+import LabelAndData from '../common/labelAndData'
 
 import mockData from '../../../mock/customer/customerDetail'
 
@@ -24,96 +23,49 @@ const CustomerInfo = (props) => {
 
   return (
     <Row gutter={8}>
-      <Col xs={24} sm={24} md={12}>
-        <LabelWithData
-          label='PAN'
-          data={
-            <Space>
-              <span>{customerInfo.pan}</span>
-              {customerInfo.panUrl
-                ? <Button type='primary' shape='circle' icon={<DownloadOutlined />} size='small' />
-                : <Button shape='circle' icon={<UploadOutlined />} size='small' />}
-            </Space>
-          }
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='LR'
-          data={
-            <Space>
-              {customerInfo.lrUrl
-                ? <Button type='primary' shape='circle' icon={<DownloadOutlined />} size='small' />
-                : <Button shape='circle' icon={<UploadOutlined />} size='small' />}
-            </Space>
-          }
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='GST No'
-          data={<InlineEdit text={value.gst} objKey='gst' onSetText={onSubmit} />}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData label='BP Code' data={customerInfo.cardcode} labelSpan={10} dataSpan={14} />
-        <LabelWithData label='Virtual Account' data={customerInfo.virtual_account} labelSpan={10} dataSpan={14} />
-        <LabelWithData label='Mobile No' data={customerInfo.mobile} labelSpan={10} dataSpan={14} />
-        <LabelWithData
-          label='Payment Manager'
-          data={customerInfo.payment_manager_id}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData label='Receivable Days' data={mockData.receivableDays} labelSpan={10} dataSpan={14} />
-        <LabelWithData
-          label='OnBoarded By'
-          data={customerInfo.onboarded_by_id}
-          labelSpan={10}
-          dataSpan={14}
-        />
-      </Col>
-      <Col xs={24} sm={24} md={12}>
-        <LabelWithData
-          label='Company Type'
-          data={customerInfo.type_id}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Managed'
-          data={
-            <Checkbox
-              onChange={onChange}
-              checked={value.managed}
-              disabled={false}
-            >
+      <LabelAndData
+        label='Company Type'
+        data={customerInfo.type_id}
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={12}
+      />
+      <LabelAndData
+        label='Managed'
+        data={
+          <Checkbox
+            onChange={onChange}
+            checked={value.managed}
+            disabled={false}
+          >
                 Yes
-            </Checkbox>
-          }
-          labelSpan={10} dataSpan={14}
-        />
-        <LabelWithData
-          label='Advance %'
-          data={customerInfo.advance_percentage_id}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Exception Date'
-          data={customerInfo.exception_date}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Credit Limit'
-          data={<InlineEdit text={value.credit_limit} objKey='creditLimit' onSetText={onSubmit} />}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData label='Payment Pending' data={mockData.paymentPending} labelSpan={10} dataSpan={14} />
-        <LabelWithData label='System Mamul' data={mockData.systemMamul} labelSpan={10} dataSpan={14} />
-      </Col>
+          </Checkbox>
+        }
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={12}
+      />
+      <LabelAndData
+        label='Exception Date'
+        data={customerInfo.exception_date}
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={12}
+      />
+      <LabelAndData
+        label='Credit Limit'
+        data={<InlineEdit text={value.credit_limit} objKey='creditLimit' onSetText={onSubmit} />}
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={12}
+      />
+      <LabelAndData
+        label='Payment Pending'
+        data={mockData.paymentPending}
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={24}
+      />
     </Row>
   )
 }

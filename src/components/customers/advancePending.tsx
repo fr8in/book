@@ -85,7 +85,7 @@ const AdvancePending = () => {
       dataSource={finalPayment}
       rowKey={(record) => record.id}
       size='small'
-      scroll={{ x: 800, y: 400 }}
+      scroll={{ x: 800 }}
       pagination={false}
     />
   )

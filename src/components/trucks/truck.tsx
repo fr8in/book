@@ -18,7 +18,7 @@ const Truck = (props) => {
             <Row gutter={10}>
               <Col span={8}>
                 <LabelAndData
-                colSpan={6}
+                smSpan={6}
                 data={
                   <Link href='/partners/[id]' as={`/partners/${truckInfo.partner.name}`}>
                    <h1> <a>{truckInfo.partner.name}</a> </h1>
@@ -28,13 +28,13 @@ const Truck = (props) => {
               </Col>
               <Col span={8}>
              <LabelAndData
-                colSpan={12}
+                smSpan={12}
                 data={truckInfo.truck_no }
               />
              </Col>
              <Col span={8}>
              <LabelAndData
-                colSpan={12}
+                smSpan={12}
                 data={truckInfo.city.name }
               />
              </Col>
@@ -42,7 +42,7 @@ const Truck = (props) => {
              <Row gutter={10}>
              <Col span={8}>
              <LabelAndData
-                colSpan={12}
+                smSpan={12}
                 data= { 
                 <span  onClick={() => callNow(truckInfo.driver.mobile_no)} className='link'><Button type='link' icon={<PhoneOutlined />}/>{truckInfo.driver.mobile_no}</span>
               }
@@ -51,13 +51,13 @@ const Truck = (props) => {
              </Col>
              <Col span={8}>
              <LabelAndData
-                colSpan={12}
+                smSpan={12}
                 data={truckInfo.truck_type.value}
               />
              </Col>
              <Col span={8}>
              <LabelAndData
-                colSpan={12}
+                smSpan={12}
                 data={data.truck.tat }
               />
              </Col>
