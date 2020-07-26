@@ -12,6 +12,8 @@ import KycReject from "../../components/partners/partnerKycReject";
 import Comment from "../../../mock/partner/comment";
 import useShowHidewithRecord from "../../hooks/useShowHideWithRecord";
 import TripFeedBack from "../trips/tripFeedBack";
+import KycApproval from "../partners/kycApproval";
+
 const regionList = [
   { value: 1, text: "North" },
   { value: 2, text: "South-1" },
@@ -39,6 +41,8 @@ const PartnerKyc = () => {
     commentData: [],
     commentVisible: false,
     title: "",
+    approvalVisible: false,
+    approvalData: [],
   };
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial);
   const value = { reject: false };
@@ -195,6 +199,9 @@ const PartnerKyc = () => {
             shape="circle"
             className="btn-success"
             icon={<CheckOutlined />}
+            onClick={() =>
+              handleShow("approvalVisible", null, "approvalData", null)
+            }
           />
           <Button
             type="primary"
@@ -228,6 +235,13 @@ const PartnerKyc = () => {
         />
       )}
       {visible.reject && <KycReject visible={visible.reject} onHide={onHide} />}
+      {object.approvalVisible && (
+        <KycApproval
+          visible={object.approvalVisible}
+          onHide={handleHide}
+          data={object.approvalData}
+        />
+      )}
     </>
   );
 };
