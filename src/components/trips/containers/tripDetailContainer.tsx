@@ -1,6 +1,6 @@
 
 import { Row, Col, Card, Space, Tag, Tabs, Collapse } from 'antd'
-//import data from '../../../../mock/trip/tripDetail'
+// import data from '../../../../mock/trip/tripDetail'
 import TripInfo from '../tripInfo'
 import TripLr from '../tripLr'
 import TripTime from '../tripTime'
@@ -20,6 +20,7 @@ import CreditNoteTable from '../creditNoteTable'
 import Loading from '../../common/loading'
 import { useSubscription } from '@apollo/client'
 import { TRIP_DETAIL_SUBSCRIPTION } from './query/tripDetailSubscription'
+import DetailPageHeader from '../../common/detailPageHeader'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
@@ -35,7 +36,7 @@ const TripDetailContainer = (props) => {
   )
 
   if (loading) return <Loading />
-  console.log('TripDetailContainer Data',data)
+  console.log('TripDetailContainer Data', data)
   console.log('TripDetailContainer Error', error)
 
   const { trip } = data
@@ -44,19 +45,22 @@ const TripDetailContainer = (props) => {
   const title = (
     <h3>
       <span className='text-primary'>{tripInfo.id}</span>
-      <span>:&nbsp;{`${tripInfo.source.name} - ${tripInfo.destination.name}`}&nbsp;</span>
-      <small className='text-gray normal'>{tripInfo.truck.truck_type.value}</small> 
-     </h3>)
+      <span>&nbsp;{`${tripInfo.source.name} - ${tripInfo.destination.name}`}&nbsp;</span>
+      <small className='text-gray normal'>{tripInfo.truck.truck_type.value}</small>
+    </h3>)
   return (
     <Card
       size='small'
       className='border-top-blue'
-      title={title}
-      extra={
-        <Space>
-          <span>Status:</span>
-          <Tag className='status'>{tripInfo.trip_status.value}</Tag>
-        </Space>
+      title={
+        <DetailPageHeader
+          title={title}
+          extra={
+            <Space>
+              <Tag className='status'>{tripInfo.trip_status.value}</Tag>
+            </Space>
+          }
+        />
       }
     >
       <Row gutter={10}>

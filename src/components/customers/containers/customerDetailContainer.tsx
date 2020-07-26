@@ -55,7 +55,7 @@ const CustomerDetailContainer = (props) => {
 
   const { customer } = data
   const customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
-
+  console.log('customerInfo', customerInfo)
   return (
     <Row>
       <Col xs={24}>
@@ -83,7 +83,7 @@ const CustomerDetailContainer = (props) => {
                     <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('wallet')} />
                   </Tooltip>
                   <WalletBalance />
-                  <Blacklist cardcode={customerInfo.cardcode} statusId={customerInfo.status_id} />
+                  <Blacklist cardcode={customerInfo.cardcode} statusId={customerInfo.status && customerInfo.status.id} />
                 </Space>
               }
             />
