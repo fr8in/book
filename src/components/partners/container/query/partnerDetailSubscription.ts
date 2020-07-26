@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 export const PARTNER_DETAIL_SUBSCRIPTION = gql`
-  subscription partners($cardcode: String) {
+  subscription partners($cardcode: String,$trip_status_id:[Int!]) {
     partner(where: {cardcode: {_eq: $cardcode}}) {
             id
             name
@@ -30,6 +30,25 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
             emi
             dnd
             cibil
-          }
+            trucks {
+              truck_no
+              truck_type_id
+              city{
+                name
+              }
+              truck_status{
+                value
+              }        
+              trips(where: {trip_status_id: {_in: $trip_status_id}}) {
+                id
+                source{
+                  name
+                }
+                destination{
+                  name
+                }
+              }
+            }
+          }    
         }
-`;
+`

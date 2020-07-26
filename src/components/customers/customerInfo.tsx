@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { Row, Col, Checkbox } from 'antd'
+import { Row, Space, Button, Checkbox } from 'antd'
+import { DownloadOutlined, UploadOutlined } from '@ant-design/icons'
+import moment from 'moment'
 import InlineEdit from '../common/inlineEdit'
 import LabelAndData from '../common/labelAndData'
 
@@ -24,8 +26,22 @@ const CustomerInfo = (props) => {
   return (
     <Row gutter={8}>
       <LabelAndData
+        label='PAN'
+        data={
+          <Space>
+            <span>{customerInfo.pan}</span>
+            {customerInfo.panUrl
+              ? <Button type='primary' shape='circle' icon={<DownloadOutlined />} size='small' />
+              : <Button shape='circle' icon={<UploadOutlined />} size='small' />}
+          </Space>
+        }
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={12}
+      />
+      <LabelAndData
         label='Company Type'
-        data={customerInfo.type_id}
+        data={<label>{customerInfo.type_id}</label>}
         mdSpan={4}
         smSpan={8}
         xsSpan={12}
@@ -47,7 +63,7 @@ const CustomerInfo = (props) => {
       />
       <LabelAndData
         label='Exception Date'
-        data={customerInfo.exception_date}
+        data={<label>{mockData.exception_date && moment(mockData.exception_date).format('DD-MM-YYYY')}</label>}
         mdSpan={4}
         smSpan={8}
         xsSpan={12}
@@ -61,7 +77,7 @@ const CustomerInfo = (props) => {
       />
       <LabelAndData
         label='Payment Pending'
-        data={mockData.paymentPending}
+        data={<label>{mockData.paymentPending}</label>}
         mdSpan={4}
         smSpan={8}
         xsSpan={24}

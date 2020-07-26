@@ -15,7 +15,7 @@ const customerInfo = {
   companyType: 'Transporter',
   managed: 'Yes',
   advancePercentage: 90,
-  advanceException: 1594750087851,
+  exception_date: 1594750087851,
   finalPaymentException: 1594750087851,
   creditLimit: 50000,
   paymentPending: 0,

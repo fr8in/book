@@ -247,6 +247,43 @@ a, .link {
   background: #fff;
 }
 
+.addtruck {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: '\002B';
+    position: absolute;
+    color: #1890ff;
+    font-size: 12px;
+    font-weight: 600;
+    background-color: #fff;
+    border-radius: 15px;
+    right: -1px;
+    bottom: 0;
+    padding: 0px 4px;
+  }
+}
+
+.walletList {
+  margin: -10px;
+  > div {
+    > h4{
+      background-color: @light-bg;
+      margin-bottom: 0;
+      padding: 5px 10px;
+    }
+    > .ant-row {
+      padding: 10px;
+      border-bottom: solid 1px @border-light;
+      p{
+        margin-bottom: 0;
+      }
+      .creditAmount { color: @green; font-weight: 500; }
+      .debitAmount { color: @red; font-weight: 500;}
+    }
+  }
+}
+
 @media only screen and (max-width: 767px) {
   .stats {
     margin-bottom: 10px;

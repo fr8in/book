@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Space, Divider } from 'antd'
+import { Space } from 'antd'
 import { CheckCircleOutlined, CrownFilled } from '@ant-design/icons'
 import PartnerUsers from '../../components/partners/partnerUsers'
 import data from '../../../mock/partner/partner'
@@ -23,8 +23,6 @@ const PartnerInfo = (props) => {
         <CrownFilled style={{ color: data.membership ? '#FFD700' : '#C0C0C0', fontSize: '18px' }} />
         <CheckCircleOutlined style={{ color: data.kycStatus === 'Verified' ? '#28a745' : '#dc3545', fontSize: '18px' }} />
         <h2>{partner.name}</h2>
-        <Divider type='vertical' />
-        <h3>{data.code}</h3>
         <h3 className='link' onClick={() => showUsers(data)}>{data.number}</h3>
       </Space>
       {users.visible &&

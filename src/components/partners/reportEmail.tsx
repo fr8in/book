@@ -1,25 +1,22 @@
-import React from "react";
-import { Modal, Button,Input } from "antd";
+import React from 'react'
+import { Modal, Button, Input } from 'antd'
 
-  const ReportEmail = (props) => {
-    const { visible, onHide } = props
+const ReportEmail = (props) => {
+  const { visible, onHide } = props
 
-    return (
-      <> 
-       <Modal
-      title="Statement Email"
+  return (
+    <Modal
+      title='Account Statement'
       visible={visible}
       onCancel={onHide}
       footer={[
-        <Button > Close </Button>,
-      <Button type="primary"> Send Email </Button>
-       ]}
-      >
-         <Input placeholder='Your Email Address...' />
-        </Modal>
-      </>
-    );
-  }
+        <Button key='back'> Close </Button>,
+        <Button type='primary' key='send'> Send Email </Button>
+      ]}
+    >
+      <Input placeholder='Your Email Address...' />
+    </Modal>
+  )
+}
 
-
-export default ReportEmail;
+export default ReportEmail
