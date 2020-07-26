@@ -2,13 +2,13 @@ import React from "react";
 import {
   Modal,
   Button,
-  Input,
+  Row,
   Form,
   Select,
   Table,
-  Row,
+  Radio,
   Col,
-  Space,
+  Badge,
 } from "antd";
 import { DeleteTwoTone } from "@ant-design/icons";
 import TrafficMock from "../../../mock/card/cards";
@@ -26,6 +26,13 @@ const StatementMail = (props) => {
     {
       title: "BM.Traffic",
       dataIndex: "bmTraffic",
+      render: (text, record) => {
+        return (
+          <span>
+            <Radio>{text}</Radio>
+          </span>
+        );
+      },
     },
     {
       title: "Phone",
@@ -33,7 +40,7 @@ const StatementMail = (props) => {
     },
     {
       title: "Action",
-      render: () => <DeleteTwoTone />,
+      render: () => <DeleteTwoTone twoToneColor="#eb2f96" />,
     },
   ];
 
@@ -48,15 +55,25 @@ const StatementMail = (props) => {
       >
         <Form.Item>
           <Form.Item rules={[{ required: true }]}>
-            <Select>
-              <Option value="Not Found">Not Found</Option>
-            </Select>
+            <Row justify="start" className="m5">
+              <Col flex="350px">
+                <Select size="middle">
+                  <Option value="Not Found">Not Found</Option>
+                </Select>
+              </Col>
+              &nbsp;
+              <Col>
+                <Button
+                  key="submit"
+                  type="primary"
+                  size="middle"
+                  onClick={onSubmit}
+                >
+                  Add Traffic
+                </Button>
+              </Col>
+            </Row>
           </Form.Item>
-          <Col>
-            <Button key="submit" type="primary" size="small" onClick={onSubmit}>
-              Add Traffic
-            </Button>
-          </Col>
         </Form.Item>
 
         <Table
