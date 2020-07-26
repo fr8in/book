@@ -24,7 +24,7 @@ const PartnerInfo = (props) => {
         <CheckCircleOutlined style={{ color: data.kycStatus === 'Verified' ? '#28a745' : '#dc3545', fontSize: '18px' }} />
         <h2>{partner.name}</h2>
         <Divider type='vertical' />
-        <h3>{data.code}</h3>
+        <h3>{partner.cardcode}</h3>
         <h3 className='link' onClick={() => showUsers(data)}>{data.number}</h3>
       </Space>
       {users.visible &&
