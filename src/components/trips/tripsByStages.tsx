@@ -3,7 +3,7 @@ import { Table } from 'antd'
 import mock from '../../../mock/trip/tripsByStages'
 import Link from 'next/link'
 
-const Partners = () => {
+const Partners = (props) => {
   const columnsCurrent = [
     {
       title: 'ID',
@@ -34,7 +34,11 @@ const Partners = () => {
     {
       title: 'Status',
       dataIndex: 'status'
-    }
+    },
+    props.trips ? {
+      title: 'AVG KM/Day',
+      dataIndex: 'avg',
+    } : {},
 
   ]
   return (
