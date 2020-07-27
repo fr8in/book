@@ -40,7 +40,7 @@ const CustomerInfo = (props) => {
         xsSpan={12}
       />
       <LabelAndData
-        label='Company Type'
+        label='Type'
         data={<label>{customerInfo.type_id}</label>}
         mdSpan={4}
         smSpan={8}
@@ -62,21 +62,21 @@ const CustomerInfo = (props) => {
         xsSpan={12}
       />
       <LabelAndData
-        label='Exception Date'
+        label='Exception'
         data={<label>{mockData.exception_date && moment(mockData.exception_date).format('DD-MM-YYYY')}</label>}
         mdSpan={4}
         smSpan={8}
         xsSpan={12}
       />
       <LabelAndData
-        label='Credit Limit'
+        label='Limit'
         data={<InlineEdit text={value.credit_limit} objKey='creditLimit' onSetText={onSubmit} />}
         mdSpan={4}
         smSpan={8}
         xsSpan={12}
       />
       <LabelAndData
-        label='Payment Pending'
+        label='Pending'
         data={<label>{mockData.paymentPending}</label>}
         mdSpan={4}
         smSpan={8}

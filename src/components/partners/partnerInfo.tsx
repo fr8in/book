@@ -31,7 +31,7 @@ const PartnerInfo = (props) => {
         xsSpan={12}
       />
       <LabelAndData
-        label='On Boarded By'
+        label='On-Boarded'
         data={<label>{partnerInfo.onboarded_by.name}</label>}
         mdSpan={4}
         smSpan={8}

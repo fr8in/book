@@ -1,6 +1,6 @@
 import { Table, Button } from 'antd'
 import Link from 'next/link'
-//import mock from '../../../mock/partner/truckByPartner'
+// import mock from '../../../mock/partner/truckByPartner'
 
 const list = [
   { value: 1, text: 'All' },
@@ -23,14 +23,14 @@ const rowSelection = {
     console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
   },
   getCheckboxProps: record => ({
-    disabled: record.name === 'Disabled User', 
+    disabled: record.name === 'Disabled User',
     name: record.name
   })
 }
 
 const PartnerTruck = (props) => {
   const { trucks } = props
- 
+
   const columnsCurrent = [
     {
       title: 'Truck No',
@@ -38,7 +38,7 @@ const PartnerTruck = (props) => {
       render: (text, record) => {
         return (
           <Link href='/trucks/[id]' as={`/trucks/${record.truck_no}`}>
-            <a>{ record.truck_no}</a>
+            <a>{record.truck_no}</a>
           </Link>
         )
       }
@@ -53,49 +53,49 @@ const PartnerTruck = (props) => {
     {
       title: 'Trip ID',
       render: (text, record) => {
-     const id = record && record.trips[0] ? record.trips[0].id : null
+        const id = record && record.trips[0] ? record.trips[0].id : null
         return (
           <span>{
-            id && 
-            <Link href='/trips/[id]' as={`/trips/${id} `}>
-              <a>{id}</a>
-            </Link>
-            }
-            </span>
-          )
+            id &&
+              <Link href='/trips/[id]' as={`/trips/${id} `}>
+                <a>{id}</a>
+              </Link>
+          }
+          </span>
+        )
       }
     },
     {
       title: 'Trip',
-      render:(text,record)=>{
+      render: (text, record) => {
         const id = record && record.trips[0] ? record.trips[0].id : null
         const source = record && record.trips[0] && record.trips[0].source ? record.trips[0].source.name : null
         const destination = record && record.trips[0] && record.trips[0].destination ? record.trips[0].destination.name : null
-        return( 
+        return (
           <span>{
-            id ?  
-            <span>
-              {
-                source.slice(0,3)+ '-' + destination.slice(0,3)
-              }
-            </span>: (record.trucks_status.value === 7 || record.trucks_status.value === 8 || record.trucks_status.value === 11 ) ? 'NA' :
-            <Button type='link'>Assign</Button>        
-            }
-            </span>
+            id
+              ? <span>
+                {
+                  source.slice(0, 3) + '-' + destination.slice(0, 3)
+                }
+              </span> : (record.trucks_status.value === 1) ? <Button type='link'>Assing</Button> : 'NA'
+          }
+          </span>
         )
-     }
+      }
     },
     {
       title: 'City',
-      render:(text,record)=>{
-        return( record.city && record.city.name)
-      },
+      render: (text, record) => {
+        return (record.city && record.city.name)
+      }
 
     },
     {
       title: 'Status',
-      render:(text,record)=>{
-        return(record.truck_status && record.truck_status.value)
+      render: (text, record) => {
+        return (
+          record.truck_status && record.truck_status.value)
       },
       filters: list
     },
