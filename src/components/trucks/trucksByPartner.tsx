@@ -70,12 +70,10 @@ const PartnerTruck = (props) => {
         const destination = record && record.trips[0] && record.trips[0].destination ? record.trips[0].destination.name : null
         return (
           <span>{
-            id
-              ? <span>
-                {
-                  source.slice(0, 3) + '-' + destination.slice(0, 3)
-                }
-              </span> : (record.trucks_status.value === 1) ? <Button type='link'>Assing</Button> : 'NA'
+            id ? (
+              <span>
+                {source.slice(0, 3) + '-' + destination.slice(0, 3)}
+              </span>) : (record.truck_status.value === 1) ? <Button type='link'>Assing</Button> : 'NA'
           }
           </span>
         )
