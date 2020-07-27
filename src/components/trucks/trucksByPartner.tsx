@@ -1,6 +1,8 @@
 import { Table, Button } from 'antd'
 import Link from 'next/link'
 // import mock from '../../../mock/partner/truckByPartner'
+import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
+import CreatePo from '../trips/createPo'
 
 const list = [
   { value: 1, text: 'All' },
@@ -29,6 +31,13 @@ const rowSelection = {
 }
 
 const PartnerTruck = (props) => {
+  const initial = {
+    poData: [],
+    poVisible: false,
+    title: ''
+  }
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
+
   const { trucks } = props
 
   const columnsCurrent = [
@@ -78,7 +87,7 @@ const PartnerTruck = (props) => {
                 {
                   source.slice(0, 3) + '-' + destination.slice(0, 3)
                 }
-              </span> : (record.trucks_status.value === 1) ? <Button type='link'>Assing</Button> : 'NA'
+              </span> : (record.truck_status.value === 1) ? <Button type='link' onClick={() => handleShow('poVisible', record.partner, 'poData', record)}>Assign</Button> : 'NA'
           }
           </span>
         )
@@ -107,6 +116,7 @@ const PartnerTruck = (props) => {
     }
   ]
   return (
+    <>
     <Table
       rowSelection={{
         ...rowSelection
@@ -118,6 +128,14 @@ const PartnerTruck = (props) => {
       scroll={{ x: 1050, y: 400 }}
       pagination={false}
     />
+    {object.poVisible &&
+      <CreatePo
+        visible={object.poVisible}
+        data={object.poData}
+        onHide={handleHide}
+        title={object.title}
+      />}
+      </>
   )
 }
 
