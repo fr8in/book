@@ -6,12 +6,12 @@ import { EditTwoTone } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
 import CustomerPrice from '../trips/customerPrice'
 import data from '../../../mock/trip/tripDetail'
+
 const TripInfo = (props) => {
   const { tripInfo } = props
   const initial = { price: false }
   const { visible, onShow, onHide } = useShowHide(initial)
-  //const { data } = props
-  
+  // const { data } = props
   return (
     <Row>
       <Col xs={24}>
@@ -38,7 +38,7 @@ const TripInfo = (props) => {
               />
             </Row>
           </Col>
-           <Col flex='120px'>
+          <Col flex='120px'>
             <Row>
               <LabelAndData
                 smSpan={24}
@@ -50,8 +50,8 @@ const TripInfo = (props) => {
                 }
               />
             </Row>
-              </Col>
-        </Row> 
+          </Col>
+        </Row>
         <Divider />
         <Row>
           <Col sm={24} md={12}>
@@ -66,13 +66,12 @@ const TripInfo = (props) => {
             <LabelWithData label='To Pay' data={tripInfo.to_pay} labelSpan={10} />
             <LabelWithData label='Mamul' data={tripInfo.mamul} labelSpan={10} />
           </Col>
-          
           <Col sm={24} md={12}>
             <LabelWithData label='PO Date' data={tripInfo.po_date} labelSpan={10} />
             <LabelWithData label='Delay' data={data.trip.delay} labelSpan={10} />
             <LabelWithData label='Partner Price' data={tripInfo.partner_price} labelSpan={10} />
-            <LabelWithData label='Including loading' data={tripInfo.including_loading = false ? 'Yes' : 'No'} labelSpan={10} />
-            <LabelWithData label='Including Unloading' data={(tripInfo.including_unloading = false ? 'yes':'No')} labelSpan={10} />
+            <LabelWithData label='Including loading' data={tripInfo.including_loading ? 'Yes' : 'No'} labelSpan={10} />
+            <LabelWithData label='Including Unloading' data={tripInfo.including_unloading ? 'yes' : 'No'} labelSpan={10} />
           </Col>
         </Row>
       </Col>
