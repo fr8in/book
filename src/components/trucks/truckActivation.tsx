@@ -36,7 +36,7 @@ const TruckActivation = (props) => {
         title="Truck Activation"
         onOk={onSubmit}
         onCancel={onHide}
-        width="40%"
+        width="550px"
         footer={[
           <Button type="primary" key="submit" onClick={onSubmit}>
             Activate Truck
@@ -47,17 +47,17 @@ const TruckActivation = (props) => {
           <Form.Item>
             <Row className="labelFix">
               <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-                <h4>TruckNo:</h4>
+                <h4>{data.truckNo}</h4>
               </Col>
 
               <Col
                 xs={{ span: 24 }}
-                sm={{ span: 8 }}
+                sm={{ span: 12 }}
                 style={{
                   textAlign: "right",
                 }}
               >
-                <h4>Height:</h4>
+                <h4>Height:{data.height}-ft</h4>
               </Col>
             </Row>
             <Divider />
@@ -146,15 +146,16 @@ const TruckActivation = (props) => {
               </Col>
             </Row>
             <Row justify="center">
-              <Col xs={{ span: 24 }} sm={{ span: 8 }}>
+              <Col xs={{ span: 24 }} sm={{ span: 5 }} />
+              <Col xs={{ span: 24 }} sm={{ span: 14 }}>
                 <label>
                   New vehicle on-boarded
                   <br />
-                  Partner Name: <br />
-                  ft
+                  Partner Name:{data.partner}-{data.mobileNo} <br />
+                  {data.truckNo}-{data.truckType}-ft
                   <br />
                   Available In <br />
-                  On-boarded by
+                  On-boarded by-{data.email}
                 </label>
               </Col>
             </Row>

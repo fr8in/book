@@ -68,7 +68,12 @@ const TruckVerification = () => {
               className="btn-success"
               icon={<CheckOutlined />}
               onClick={() =>
-                handleShow("truckActivationVisible", null, null, null)
+                handleShow(
+                  "truckActivationVisible",
+                  null,
+                  "truckActivationData",
+                  record
+                )
               }
             />
             <Button
@@ -107,7 +112,7 @@ const TruckVerification = () => {
         <TruckActivation
           visible={object.truckActivationVisible}
           onHide={handleHide}
-          data={object.truckActivationVisible}
+          data={object.truckActivationData}
         />
       )}
     </>

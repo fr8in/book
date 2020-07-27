@@ -200,7 +200,7 @@ const PartnerKyc = () => {
             className="btn-success"
             icon={<CheckOutlined />}
             onClick={() =>
-              handleShow("approvalVisible", null, "approvalData", null)
+              handleShow("approvalVisible", null, "approvalData", record)
             }
           />
           <Button
