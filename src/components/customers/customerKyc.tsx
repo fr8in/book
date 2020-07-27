@@ -32,9 +32,9 @@ const CustomerKyc = (props) => {
           <Link href='customers/[id]' as={`customers/${record.cardcode}`}>
             {text && text.length > 14 ? (
               <Tooltip title={text}>
-                <a> {text.slice(0, 14) + '...'}</a>
+                <a>{text.slice(0, 14) + '...'}</a>
               </Tooltip>
-            ) : text}
+            ) : <a>{text}</a>}
           </Link>
         )
       }
