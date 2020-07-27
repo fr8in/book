@@ -45,7 +45,10 @@ const PartnerTruck = (props) => {
     },
     {
       title: 'Truck Type',
-      dataIndex: 'truck_type_id'
+      render:(text,record)=>{
+        return( record.truck_type && record.truck_type.value)
+      },
+
     },
     {
       title: 'Trip ID',
@@ -76,8 +79,7 @@ const PartnerTruck = (props) => {
                 source.slice(0,3)+ '-' + destination.slice(0,3)
               }
             </span>: (record.trucks_status.value === 7 || record.trucks_status.value === 8 || record.trucks_status.value === 11 ) ? 'NA' :
-            <Button type='link'>Assing</Button>
-            
+            <Button type='link'>Assign</Button>        
             }
             </span>
         )
@@ -93,9 +95,7 @@ const PartnerTruck = (props) => {
     {
       title: 'Status',
       render:(text,record)=>{
-
-        return(
-          record.truck_status && record.truck_status.value)
+        return(record.truck_status && record.truck_status.value)
       },
       filters: list
     },
