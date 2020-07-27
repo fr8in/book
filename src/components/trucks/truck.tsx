@@ -44,13 +44,6 @@ const Truck = (props) => {
         smSpan={8}
         xsSpan={12}
       />
-      <LabelAndData
-        label='TAT'
-        data={data.truck.tat}
-        mdSpan={4}
-        smSpan={8}
-        xsSpan={12}
-      />
     </Row>
   )
 }
