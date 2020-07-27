@@ -4,6 +4,7 @@ import mock from '../../../mock/trip/tripsByStages'
 import Link from 'next/link'
 
 const Partners = (props) => {
+  
   const columnsCurrent = [
     {
       title: 'ID',
@@ -27,6 +28,10 @@ const Partners = (props) => {
       title: 'Destination',
       dataIndex: 'city'
     },
+    props.trips ? {
+      title: 'Load Km',
+      dataIndex: 'load',
+    } : 
     {
       title: 'SourceIn',
       dataIndex: 'cityIn'
