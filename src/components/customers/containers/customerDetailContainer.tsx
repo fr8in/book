@@ -135,7 +135,7 @@ const CustomerDetailContainer = (props) => {
                     <Trips />
                   </TabPane>
                   <TabPane tab='Details' key='11'>
-                    <Row>
+                    <Row className='p10'>
                       <Col xs={24} sm={24} md={14}>
                         <CustomerDetails customerInfo={customerInfo} />
                       </Col>
