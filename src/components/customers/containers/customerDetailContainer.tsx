@@ -4,9 +4,7 @@ import {
   FileDoneOutlined,
   WalletOutlined,
   PlusOutlined,
-  MailOutlined,
-  EyeOutlined,
-  UploadOutlined
+  MailOutlined
 } from '@ant-design/icons'
 import useShowHide from '../../../hooks/useShowHide'
 // All components
@@ -64,19 +62,21 @@ const CustomerDetailContainer = (props) => {
           className='border-top-blue'
           title={
             <DetailPageHeader
-              title={<CustomerName cardcode={customerInfo.cardcode} name={customerInfo.name} />}
+              title={
+                <Space>
+                  <CustomerName cardcode={customerInfo.cardcode} name={customerInfo.name} />
+                  <h4>{customerInfo.cardcode}</h4>
+                </Space>
+              }
               extra={
                 <Space>
-                  {!customerInfo.lrUrl
-                    ? <Button shape='round' icon={<EyeOutlined />}>LR</Button>
-                    : <Button type='primary' shape='round' icon={<UploadOutlined />}>LR</Button>}
                   <Tooltip title='Account Statement'>
                     <Button icon={<MailOutlined />} shape='circle' />
                   </Tooltip>
                   <Tooltip title='Transfer'>
                     <Button icon={<BankFilled />} shape='circle' onClick={() => onShow('transfer')} />
                   </Tooltip>
-                  <Tooltip title='Rebate'>
+                  <Tooltip title='Excess'>
                     <Button icon={<FileDoneOutlined />} shape='circle' onClick={() => onShow('rebate')} />
                   </Tooltip>
                   <Tooltip title='Wallet Topup'>

@@ -1,8 +1,6 @@
 import { useState } from 'react'
-import { Row, Space, Button, Checkbox } from 'antd'
-import { DownloadOutlined, UploadOutlined } from '@ant-design/icons'
+import { Row, Checkbox } from 'antd'
 import moment from 'moment'
-import InlineEdit from '../common/inlineEdit'
 import LabelAndData from '../common/labelAndData'
 
 import mockData from '../../../mock/customer/customerDetail'
@@ -16,29 +14,12 @@ const CustomerInfo = (props) => {
   }
   const [value, setValue] = useState(initial)
 
-  const onSubmit = (objKey, text) => {
-    setValue({ ...value, [objKey]: text })
-  }
   const onChange = (e) => {
     setValue({ ...value, managed: e.target.checked })
   }
 
   return (
     <Row gutter={8}>
-      <LabelAndData
-        label='PAN'
-        data={
-          <Space>
-            <span>{customerInfo.pan}</span>
-            {customerInfo.panUrl
-              ? <Button type='primary' shape='circle' icon={<DownloadOutlined />} size='small' />
-              : <Button shape='circle' icon={<UploadOutlined />} size='small' />}
-          </Space>
-        }
-        mdSpan={4}
-        smSpan={8}
-        xsSpan={12}
-      />
       <LabelAndData
         label='Type'
         data={<label>{customerInfo.type_id}</label>}
@@ -69,11 +50,18 @@ const CustomerInfo = (props) => {
         xsSpan={12}
       />
       <LabelAndData
-        label='Limit'
-        data={<InlineEdit text={value.credit_limit} objKey='creditLimit' onSetText={onSubmit} />}
+        label='Payment Manager'
+        data={customerInfo.payment_manager_id}
         mdSpan={4}
         smSpan={8}
-        xsSpan={12}
+        xsSpan={24}
+      />
+      <LabelAndData
+        label='S.Mamul'
+        data={mockData.systemMamul}
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={24}
       />
       <LabelAndData
         label='Pending'
