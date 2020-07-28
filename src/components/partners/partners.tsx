@@ -1,4 +1,4 @@
-import { Table, Input} from 'antd'
+import { Table, Input,Tooltip} from 'antd'
 // import mock from '../../../mock/partner/partnerData'
 import Link from 'next/link'
 import {SearchOutlined } from '@ant-design/icons'
@@ -45,6 +45,13 @@ const Partners = (props) => {
       dataIndex: 'name',
       key:'name',
       width:'15',
+      render: (text, record) => {
+        return (
+          text ? (
+            <Tooltip title={text}><span>{text.slice(0, 15) + '...'}</span></Tooltip>
+          ) : null
+        )
+      },
             filterDropdown: (
                 <div > 
                     <Input placeholder="Search Partner Name" 

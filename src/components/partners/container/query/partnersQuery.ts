@@ -10,9 +10,5 @@ export const PARTNERS_QUERY = gql`
        value
       } 
     }
-  region{
-    id
-    name
-  }
 }
 `

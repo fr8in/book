@@ -6,19 +6,22 @@ import { UPDATE_CUSTOMER_NAME_MUTATION } from './containers/query/updateCustomer
 const CustomerName = (props) => {
   const { cardcode, name } = props
 
-  const [updateStatusId] = useMutation(UPDATE_CUSTOMER_NAME_MUTATION)
+  const [updateCustomerName] = useMutation(UPDATE_CUSTOMER_NAME_MUTATION)
 
   const onSubmit = (text, success, err) => {
     if (err) {
       message.error(err)
     } else {
-      updateStatusId({
+      updateCustomerName({
         variables: {
           cardcode,
           name: text
         }
+      }).then(data => {
+        if (data) message.success(success)
+      }).catch(error => {
+        message.success(error)
       })
-      message.success(success)
     }
   }
 
@@ -26,7 +29,6 @@ const CustomerName = (props) => {
     <InlineEdit
       text={name || 'No Name'}
       onSetText={onSubmit}
-      objKey='name'
     />
   )
 }

@@ -81,6 +81,7 @@ const StatementMail = (props) => {
           dataSource={TrafficMock}
           size="small"
           tableLayout="fixed"
+          pagination={false}
         />
       </Modal>
     </>

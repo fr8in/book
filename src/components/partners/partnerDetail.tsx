@@ -1,5 +1,4 @@
-import { Row, Col, Space, Checkbox, Tag } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
+import { Row, Col, Space } from 'antd'
 import LabelWithData from '../common/labelWithData'
 import DetailInfo from '../../../mock/partner/partnerDetailInfo'
 
@@ -7,37 +6,21 @@ const PartnerDetail = (props) => {
   const { partnerDetail } = props
 
   console.log('partnerDetail', partnerDetail)
-  const onChange = (e) => {
-    console.log(`checked = ${e.target.checked}`)
-  }
+
   return (
     <Row gutter={8}>
       <Col xs={24} sm={24} md={24}>
+        <LabelWithData
+          label='PAN'
+          data={partnerDetail.pan}
+          labelSpan={10}
+          dataSpan={14}
+        />
         <LabelWithData
           label='On Boarded Date'
           data={
             <Space>
               <span>{partnerDetail.onboarded_date}</span>
-            </Space>
-          }
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Email'
-          data={
-            <Space>
-              <span>{DetailInfo.mail}</span>
-            </Space>
-          }
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='No.Of Trucks'
-          data={
-            <Space>
-              <span>{DetailInfo.truck}</span>
             </Space>
           }
           labelSpan={10}
@@ -84,12 +67,6 @@ const PartnerDetail = (props) => {
           dataSpan={14}
         />
         <LabelWithData
-          label='EMI'
-          data={<Checkbox onChange={onChange} />}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
           label=' TDS %'
           data={<span>{DetailInfo.TDS}</span>}
           labelSpan={10}
@@ -98,16 +75,6 @@ const PartnerDetail = (props) => {
         <LabelWithData
           label=' GST'
           data={<span>{partnerDetail.gst}</span>}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Mapped Customers '
-          data={
-            <Tag style={{ borderStyle: 'dashed' }}>
-              <PlusOutlined /> Add Customer
-            </Tag>
-          }
           labelSpan={10}
           dataSpan={14}
         />

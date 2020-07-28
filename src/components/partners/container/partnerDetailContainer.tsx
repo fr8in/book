@@ -83,7 +83,7 @@ const PartnerDetailContainer = (props) => {
             />
           }
         >
-          <Row gutter={[10, 10]}>
+          <Row>
             <Col xs={24} sm={16} md={16}>
               <BasicDetail partnerInfo={partnerData} />
             </Col>
@@ -95,10 +95,7 @@ const PartnerDetailContainer = (props) => {
             <Col sm={24}>
               <Card size='small' className='card-body-0 border-top-blue'>
                 <Tabs defaultActiveKey='1' onChange={callback}>
-                  <TabPane tab={<TitleWithCount name='Truck' value={2} />} key='1'>
-                    <PartnerTruck trucks={trucks} />
-                  </TabPane>
-                  <TabPane tab='Detail' key='2'>
+                  <TabPane tab='Detail' key='1'>
                     <Row gutter={10} className='p10'>
                       <Col xs={24} sm={12} md={12}>
                         <DetailInfo partnerDetail={partnerData} />
@@ -127,6 +124,9 @@ const PartnerDetailContainer = (props) => {
                         </Card>
                       </Col>
                     </Row>
+                  </TabPane>
+                  <TabPane tab={<TitleWithCount name='Truck' value={2} />} key='2'>
+                    <PartnerTruck trucks={trucks} />
                   </TabPane>
                   <TabPane tab='Comment' key='3'>
                     <Comment />

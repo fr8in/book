@@ -10,15 +10,8 @@ const PartnerInfo = (props) => {
   return (
     <Row gutter={8} className='mb10'>
       <LabelAndData
-        label='Pan'
-        data={<label>{partnerInfo.pan}</label>}
-        mdSpan={4}
-        smSpan={8}
-        xsSpan={12}
-      />
-      <LabelAndData
         label='City'
-        data={<label>{partnerInfo.city.name}</label>}
+        data={<label>{partnerInfo.city && partnerInfo.city.name}</label>}
         mdSpan={4}
         smSpan={8}
         xsSpan={12}
@@ -32,7 +25,7 @@ const PartnerInfo = (props) => {
       />
       <LabelAndData
         label='On-Boarded'
-        data={<label>{partnerInfo.onboarded_by.name}</label>}
+        data={<label>{partnerInfo.onboarded_by && partnerInfo.onboarded_by.name}</label>}
         mdSpan={4}
         smSpan={8}
         xsSpan={12}
