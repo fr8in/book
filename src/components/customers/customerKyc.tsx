@@ -3,6 +3,7 @@ import { Table, Button, Space, Tooltip, Input } from 'antd'
 import { CloseOutlined, CheckOutlined, EyeOutlined, UploadOutlined } from '@ant-design/icons'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Link from 'next/link'
+import BranchCreation from '../customers/branchCreation'
 
 const CustomerKyc = (props) => {
   const { customers, status } = props
@@ -31,12 +32,12 @@ const CustomerKyc = (props) => {
       width: '12%',
       render: (text, record) => {
         const user = record.customerUsers[0] && record.customerUsers[0].name
-        return (
-          user && user.length > 14 ? (
-            <Tooltip title={user}>
-              <span> {user.slice(0, 14) + '...'}</span>
-            </Tooltip>
-          ) : user
+        return user && user.length > 14 ? (
+          <Tooltip title={user}>
+            <span> {user.slice(0, 14) + '...'}</span>
+          </Tooltip>
+        ) : (
+          user
         )
       }
     },
@@ -51,7 +52,9 @@ const CustomerKyc = (props) => {
               <Tooltip title={text}>
                 <a>{text.slice(0, 14) + '...'}</a>
               </Tooltip>
-            ) : <a>{text}</a>}
+            ) : (
+              <a>{text}</a>
+            )}
           </Link>
         )
       }
@@ -71,12 +74,12 @@ const CustomerKyc = (props) => {
       dataIndex: 'created_at',
       width: '9%',
       render: (text, record) => {
-        return (
-          text && text.length > 10 ? (
-            <Tooltip title={text}>
-              <span> {text.slice(0, 10) + '..'}</span>
-            </Tooltip>
-          ) : text
+        return text && text.length > 10 ? (
+          <Tooltip title={text}>
+            <span> {text.slice(0, 10) + '..'}</span>
+          </Tooltip>
+        ) : (
+          text
         )
       }
     },
@@ -110,7 +113,8 @@ const CustomerKyc = (props) => {
     {
       title: 'Adv %',
       width: '6%',
-      render: (text, record) => record.advancePercentage && record.advancePercentage.value
+      render: (text, record) =>
+        record.advancePercentage && record.advancePercentage.value
     },
     {
       title: 'Status',
@@ -124,29 +128,30 @@ const CustomerKyc = (props) => {
       render: (text, record) => {
         return (
           <Space>
-            {record.panNo
-              ? (
-                <Button
-                  type='primary'
-                  size='small'
-                  shape='circle'
-                  icon={<EyeOutlined />}
-                  onClick={() => console.log('View')}
-                />)
-              : (
-                <Button
-                  size='small'
-                  shape='circle'
-                  icon={<UploadOutlined />}
-                  onClick={() => console.log('Upload')}
-                />)}
+            {record.panNo ? (
+              <Button
+                type='primary'
+                size='small'
+                shape='circle'
+                icon={<EyeOutlined />}
+                onClick={() => console.log('View')}
+              />
+            ) : (
+              <Button
+                size='small'
+                shape='circle'
+                icon={<UploadOutlined />}
+                onClick={() => console.log('Upload')}
+              />
+            )}
             <Button
               type='primary'
               size='small'
               shape='circle'
               className='btn-success'
               icon={<CheckOutlined />}
-              onClick={() => handleShow(null, null, null, null)}
+              onClick={() =>
+                handleShow('createBranchVisible', null, null, null)}
             />
             <Button
               type='primary'
@@ -163,14 +168,23 @@ const CustomerKyc = (props) => {
   ]
 
   return (
-    <Table
-      columns={newCustomer}
-      dataSource={customers}
-      rowKey={record => record.cardcode}
-      size='small'
-      scroll={{ x: 960, y: 400 }}
-      pagination={false}
-    />
+    <>
+      <Table
+        columns={newCustomer}
+        dataSource={customers}
+        rowKey={(record) => record.cardcode}
+        size='small'
+        scroll={{ x: 960, y: 400 }}
+        pagination={false}
+      />
+      {object.createBranchVisible && (
+        <BranchCreation
+          visible={object.createBranchVisible}
+          onHide={handleHide}
+          data={object.createBranchData}
+        />
+      )}
+    </>
   )
 }
 
