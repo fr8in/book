@@ -1,12 +1,29 @@
-import { Table, Button, Space, Tooltip } from 'antd'
+import { useState } from 'react'
+import { Table, Button, Space, Tooltip, Input } from 'antd'
 import { CloseOutlined, CheckOutlined, EyeOutlined, UploadOutlined } from '@ant-design/icons'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Link from 'next/link'
 
 const CustomerKyc = (props) => {
   const { customers, status } = props
+  const customerStatus = status.map(data => {
+    return { value: data.id.toString(), text: data.value }
+  })
+
+  const mamulInitial = { mamul: null, selectedId: null }
+  const [defaultMamul, setDefaultMamul] = useState(mamulInitial)
+
   const initial = { visible: false, data: [], title: null }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+
+  const onMamul = (record, e) => {
+    const givenMamul = e.target.value
+    setDefaultMamul({
+      ...defaultMamul,
+      mamul: givenMamul,
+      selectedId: record.cardcode
+    })
+  }
 
   const newCustomer = [
     {
@@ -71,7 +88,24 @@ const CustomerKyc = (props) => {
     {
       title: 'De. Mamul',
       dataIndex: 'mamul',
-      width: '8%'
+      width: '8%',
+      render: (text, record) => {
+        const statusId = record.status && record.status.id
+        return (
+          <span>
+            {(statusId === 1 || statusId === 5) ? `${text || 0}`
+              : (statusId === 3 || statusId === 4) ? (
+                <Input
+                  type='number'
+                  min={0}
+                  value={defaultMamul.selectedId === record.cardcode ? defaultMamul.mamul : ''}
+                  defaultValue={defaultMamul.mamul}
+                  onChange={(e) => onMamul(record, e)}
+                  size='small'
+                />) : null}
+          </span>
+        )
+      }
     },
     {
       title: 'Adv %',
@@ -82,7 +116,7 @@ const CustomerKyc = (props) => {
       title: 'Status',
       render: (text, record) => record.status && record.status.value,
       width: '14%',
-      filters: status
+      filters: customerStatus
     },
     {
       title: 'Action',
