@@ -1,6 +1,8 @@
 import { Table, Button } from 'antd'
 import Link from 'next/link'
 // import mock from '../../../mock/partner/truckByPartner'
+import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
+import CreatePo from '../trips/createPo'
 
 const list = [
   { value: 1, text: 'All' },
@@ -29,6 +31,13 @@ const rowSelection = {
 }
 
 const PartnerTruck = (props) => {
+  const initial = {
+    poData: [],
+    poVisible: false,
+    title: ''
+  }
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
+
   const { trucks } = props
 
   const columnsCurrent = [
@@ -45,7 +54,10 @@ const PartnerTruck = (props) => {
     },
     {
       title: 'Truck Type',
-      dataIndex: 'truck_type_id'
+      render: (text, record) => {
+        return (record.truck_type && record.truck_type.value)
+      }
+
     },
     {
       title: 'Trip ID',
@@ -73,7 +85,8 @@ const PartnerTruck = (props) => {
             id ? (
               <span>
                 {source.slice(0, 3) + '-' + destination.slice(0, 3)}
-              </span>) : (record.truck_status.value === 1) ? <Button type='link'>Assing</Button> : 'NA'
+              </span>)
+              : (record.truck_status.value === 1) ? <Button type='link' onClick={() => handleShow('poVisible', record.partner, 'poData', record)}>Assign</Button> : 'NA'
           }
           </span>
         )
@@ -102,17 +115,26 @@ const PartnerTruck = (props) => {
     }
   ]
   return (
-    <Table
-      rowSelection={{
-        ...rowSelection
-      }}
-      columns={columnsCurrent}
-      dataSource={trucks}
-      rowKey={record => record.id}
-      size='middle'
-      scroll={{ x: 1050, y: 400 }}
-      pagination={false}
-    />
+    <>
+      <Table
+        rowSelection={{
+          ...rowSelection
+        }}
+        columns={columnsCurrent}
+        dataSource={trucks}
+        rowKey={record => record.id}
+        size='middle'
+        scroll={{ x: 1050, y: 400 }}
+        pagination={false}
+      />
+      {object.poVisible &&
+        <CreatePo
+          visible={object.poVisible}
+          data={object.poData}
+          onHide={handleHide}
+          title={object.title}
+        />}
+    </>
   )
 }
 

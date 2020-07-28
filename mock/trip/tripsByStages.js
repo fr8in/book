@@ -6,7 +6,9 @@ const TripsData = [
     source: 'Chennai',
     city: 'Bangalore',
     cityIn: 'Bangalore',
-    status: 'Active'
+    status: 'Active',
+    avg: '20km',
+    load: '2034'
   },
   {
     id: '2',
@@ -15,7 +17,9 @@ const TripsData = [
     source: 'Chennai',
     city: 'Bangalore',
     cityIn: 'Bangalore',
-    status: 'Active'
+    status: 'Active',
+    avg: '20km',
+    load: '2034'
   },
   {
     id: '3',
@@ -24,7 +28,9 @@ const TripsData = [
     source: 'Chennai',
     city: 'Bangalore',
     cityIn: 'Bangalore',
-    status: 'Active'
+    status: 'Active',
+    avg: '20km',
+    load: '2034'
   },
   {
     id: '4',
@@ -33,7 +39,9 @@ const TripsData = [
     source: 'Chennai',
     city: 'Bangalore',
     cityIn: 'Bangalore',
-    status: 'Active'
+    status: 'Active',
+    avg: '20km',
+    load: '2034'
   },
   {
     id: '5',
@@ -42,7 +50,9 @@ const TripsData = [
     source: 'Chennai',
     city: 'Bangalore',
     cityIn: 'Bangalore',
-    status: 'Active'
+    status: 'Active',
+    avg: '20km',
+    load: '2034'
   },
   {
     id: '6',
@@ -51,7 +61,9 @@ const TripsData = [
     source: 'Chennai',
     city: 'Bangalore',
     cityIn: 'Bangalore',
-    status: 'Active'
+    status: 'Active',
+    avg: '20km',
+    load: '2034'
   },
   {
     id: '7',
@@ -60,7 +72,9 @@ const TripsData = [
     source: 'Chennai',
     city: 'Bangalore',
     cityIn: 'Bangalore',
-    status: 'Active'
+    status: 'Active',
+    avg: '20km',
+    load: '2034'
   },
   {
     id: '8',
@@ -69,7 +83,9 @@ const TripsData = [
     source: 'Chennai',
     city: 'Bangalore',
     cityIn: 'Bangalore',
-    status: 'Active'
+    status: 'Active',
+    avg: '20km',
+    load: '2034'
   }
 ]
 export default TripsData

@@ -32,7 +32,9 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
             cibil
             trucks {
               truck_no
-              truck_type_id
+              truck_type{
+                value
+              }
               city{
                 name
               }

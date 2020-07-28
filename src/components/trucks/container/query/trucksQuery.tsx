@@ -1,27 +1,39 @@
 import { gql } from '@apollo/client'
 
 export const TRUCKS_QUERY = gql`
-  query trucks($offset: Int!, $limit: Int!) {
+  query trucks($offset: Int!, $limit: Int! , $trip_status_id:[Int!]) {
     truck(offset: $offset, limit: $limit) {
       truck_no
-      trips{
-        id
-      }
-      city{
-        name
-      }
-      
-      partner{
-        cardcode
-        name
-      }
-      driver{
-        mobile_no
-      }
-      truck_status{
+      truck_type_id
+      truck_type{
         value
       }
+      city {
+        name
+      }
+      truck_status {
+        id
+        value
+      }
+      partner {
+        name
+        partner_users {
+          id
+          mobile
+        }
+        cardcode
+      }
+      trips(where: {trip_status_id: {_in: $trip_status_id}}) {
+        id
+        source {
+          name
+        }
+        destination {
+          name
+        }
+      }
     }
+    
   }
       
 `
