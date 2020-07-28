@@ -67,7 +67,11 @@ const CustomerInfo = (props) => {
         />
         <LabelAndData
           label="S.Mamul"
-          data={mockData.systemMamul}
+          data={
+            <label onClick={() => handleShow("mamulVisible", null, null, null)}>
+              {mockData.systemMamul}
+            </label>
+          }
           mdSpan={4}
           smSpan={8}
           xsSpan={24}
