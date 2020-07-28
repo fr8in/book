@@ -14,6 +14,12 @@ export const PARTNERS_QUERY = gql`
       partner_status{
        value
       } 
+      partner_comments{
+        partner_id
+        description
+        created_at
+        created_by
+      }
     }
 }
 `

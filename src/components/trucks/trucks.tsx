@@ -96,7 +96,7 @@ const Trucks = (props) => {
                 {
                   source.slice(0, 3) + '-' + destination.slice(0, 3)
                 }
-              </span> : (record.trucks_status.value === 1) ? <Button type='link'>Assing</Button> : 'NA'
+              </span> : (record.truck_status.value === 1) ? <Button type='link'>Assing</Button> : 'NA'
           }
           </span>
         )

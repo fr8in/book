@@ -44,7 +44,7 @@ const PartnerDetail = (props) => {
         />
         <LabelWithData
           label='Bank'
-          data={<span>{partnerDetail.bank_id}</span>}
+          data={<span>{partnerDetail.bank.name}</span>}
           labelSpan={10}
           dataSpan={14}
         />

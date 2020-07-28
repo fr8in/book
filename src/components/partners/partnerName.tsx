@@ -6,23 +6,21 @@ import { UPDATE_PARTNER_NAME_MUTATION } from './container/query/upadatePartnerNa
 const PartnerName = (props) => {
   const { cardcode, name } = props
 
-  const [updatePartnerName] = useMutation(UPDATE_PARTNER_NAME_MUTATION)
+  const [updatePartnerName] = useMutation(
+      UPDATE_PARTNER_NAME_MUTATION,
+      {
+        onError (error) { message.error(error.toString()) }
+      }
+      )
 
-  const onSubmit = (text, success, err) => {
-    if (err) {
-      message.error(err)
-    } else {
+  const onSubmit = (text) => {
+    
         updatePartnerName({
         variables: {
           cardcode,
           name: text
         }
-      }).then(data => {
-        if (data) message.success(success)
-      }).catch(error => {
-        message.success(error)
       })
-    }
   }
 
   return (
