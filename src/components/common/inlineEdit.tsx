@@ -14,7 +14,7 @@ function InlineEdit (props) {
   const enter = useKeypress('Enter')
   const esc = useKeypress('Escape')
 
-  const { onSetText, text} = props
+  const { onSetText, text } = props
 
   // check to see if the user clicked outside of this component
   useOnClickOutside(wrapperRef, () => {
@@ -27,10 +27,10 @@ function InlineEdit (props) {
   const onEnter = useCallback(() => {
     if (enter) {
       if (inputValue) {
-        onSetText(inputValue, 'Update Successfully', null)
+        onSetText(inputValue)
         setIsInputActive(false)
       } else {
-        onSetText(inputValue, null, 'Enter Valid input')
+        onSetText(inputValue)
       }
     }
   }, [enter, inputValue, onSetText])
@@ -88,14 +88,11 @@ function InlineEdit (props) {
         // it's not quite right but gets it close
         style={{ minWidth: width }}
         value={inputValue}
-  
         onChange={handleInputChange}
         className={`inline-text-input ${
           isInputActive ? 'active' : 'hidden'
         }`}
       />
-
-
     </span>
   )
 }

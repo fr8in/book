@@ -6,8 +6,12 @@ import { UPDATE_CUSTOMER_NAME_MUTATION } from './containers/query/updateCustomer
 const CustomerName = (props) => {
   const { cardcode, name } = props
 
-  const [updateCustomerName] = useMutation(UPDATE_CUSTOMER_NAME_MUTATION,
-    { onError(error) { message.error(error.toString()) } })
+  const [updateCustomerName] = useMutation(
+    UPDATE_CUSTOMER_NAME_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) }
+    }
+  )
 
   const onSubmit = (text) => {
     updateCustomerName({
@@ -17,7 +21,6 @@ const CustomerName = (props) => {
       }
     })
   }
-
 
   return (
     <InlineEdit
