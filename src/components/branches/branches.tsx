@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Button, Tag } from "antd";
+import { Table, Tag } from "antd";
 import Branch from "../../../mock/branches/branches";
 import { EditTwoTone } from "@ant-design/icons";
 

@@ -1,6 +1,5 @@
-import { useState } from 'react'
 import { message, DatePicker } from 'antd'
-import { CloseCircleOutlined, EditOutlined } from '@ant-design/icons'
+import { CloseCircleTwoTone, EditTwoTone } from '@ant-design/icons'
 import moment from 'moment'
 import { UPDATE_CUSTOMER_EXCEPTION_MUTATION } from './containers/query/updateCustomerExceptionMutation'
 import { useMutation } from '@apollo/client'
@@ -15,7 +14,8 @@ const CustomerExceptionDate = (props) => {
   const [updateCustomerException] = useMutation(
     UPDATE_CUSTOMER_EXCEPTION_MUTATION,
     {
-      onError (error) { message.error(error.toString()) }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
   const onChange = (date, dateString) => {
@@ -35,8 +35,8 @@ const CustomerExceptionDate = (props) => {
     <div>
       {!visible.datePicker ? (
         <label>
-          {exceptionDate ? moment(exceptionDate).format(dateFormat) : '-'}
-          <EditOutlined onClick={() => onShow('datePicker')} />
+          {exceptionDate ? moment(exceptionDate).format(dateFormat) : '-'}{' '}
+          <EditTwoTone onClick={() => onShow('datePicker')} />
         </label>)
         : (
           <span>
@@ -47,8 +47,9 @@ const CustomerExceptionDate = (props) => {
               format={dateFormat}
               value={exceptionDate ? moment(exceptionDate, dateFormat) : moment()}
               onChange={onChange}
-            />
-            <CloseCircleOutlined onClick={onHide} />
+              size='small'
+            />{' '}
+            <CloseCircleTwoTone onClick={onHide} />
           </span>)}
     </div>
   )
