@@ -3,6 +3,7 @@ import { Space } from 'antd'
 import { CheckCircleOutlined, CrownFilled } from '@ant-design/icons'
 import PartnerUsers from '../../components/partners/partnerUsers'
 import data from '../../../mock/partner/partner'
+import PartnerName from './partnerName'
 
 const PartnerInfo = (props) => {
   const { partner } = props
@@ -20,9 +21,9 @@ const PartnerInfo = (props) => {
   return (
     <div>
       <Space align='baseline'>
-        <CrownFilled style={{ color: partner.membership ? '#FFD700' : '#C0C0C0', fontSize: '18px' }} />
-        <CheckCircleOutlined style={{ color: partner.kycStatus === 'Verified' ? '#28a745' : '#dc3545', fontSize: '18px' }} />
-        <h2>{partner.name}</h2>
+        <CrownFilled style={{ color: data.membership ? '#FFD700' : '#C0C0C0', fontSize: '18px' }} />
+        <CheckCircleOutlined style={{ color: data.kycStatus === 'Verified' ? '#28a745' : '#dc3545', fontSize: '18px' }} />
+       <PartnerName cardcode={partner.cardcode} name={partner.name} />
         <h3> {partner.cardcode} </h3>
         <h3 className='link' onClick={() => showUsers(data)}>{data.number}</h3>
       </Space>

@@ -6,6 +6,11 @@ export const PARTNERS_QUERY = gql`
       id
       name
       cardcode
+      pan
+      onboarded_by{
+        id
+        name
+      }
       partner_status{
        value
       } 

@@ -95,15 +95,14 @@ const PartnerKyc = (props) => {
     },
     {
       title: 'On Boarded By',
-      dataIndex: 'boardedBy',
       width: '10%',
       render: (text, record) => {
         return text && text.length > 12 ? (
-          <Tooltip title={text}>
-            <span> {text.slice(0, 12) + '...'}</span>
+          <Tooltip title={record.onboarded_by && record.onboarded_by.name}>
+            <span> {record.onboarded_by && record.onboarded_by.name.slice(0, 12) + '...'}</span>
           </Tooltip>
         ) : (
-          text
+          record.onboarded_by && record.onboarded_by.name
         )
       }
     },
@@ -144,7 +143,7 @@ const PartnerKyc = (props) => {
       width: '8%'
     },
     {
-      title: 'KYC Status',
+      title: 'Status',
       dataIndex: 'status',
       width: '9%',
       render: (text, record) => {
