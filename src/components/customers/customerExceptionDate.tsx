@@ -23,7 +23,7 @@ const CustomerExceptionDate = (props) => {
     updateCustomerException({
       variables: {
         cardcode,
-        exception_date: dateString.toString()
+        exception_date: dateString
       }
     })
     onHide()
