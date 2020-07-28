@@ -19,6 +19,22 @@ const customerInfo = {
   finalPaymentException: 1594750087851,
   creditLimit: 50000,
   paymentPending: 0,
-  systemMamul: 0
+  systemMamul: 800,
+  mamulData: [
+    {
+      rowName: 'sum',
+      billed: 0,
+      mamul: 0,
+      writeOff: 0,
+      bal: 0
+    },
+    {
+      rowName: 'Avg',
+      billed: 0,
+      mamul: 0,
+      writeOff: 0,
+      bal: 0
+    }
+  ]
 }
 export default customerInfo

@@ -97,7 +97,7 @@ const CustomerKyc = (props) => {
         return (
           <span>
             {(statusId === 1 || statusId === 5) ? `${text || 0}`
-              : (statusId === 3 || statusId === 4) ? (
+              : (statusId === 3 || statusId === 4 || statusId === 7) ? (
                 <Input
                   type='number'
                   min={0}
@@ -145,7 +145,7 @@ const CustomerKyc = (props) => {
                 onClick={() => console.log('Upload')}
               />
             )}
-            {(statusId === 3 || statusId === 4) &&
+            {(statusId === 3 || statusId === 4 || statusId === 7) &&
               <Space>
                 <Button
                   type='primary'

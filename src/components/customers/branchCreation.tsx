@@ -10,7 +10,7 @@ import {
 } from 'antd'
 
 const BranchCreation = (props) => {
-  const { visible, onHide, data, title } = props
+  const { visible, onHide, data } = props
 
   const onSubmit = () => {
     console.log('Traffic Added', data)

@@ -1,91 +1,78 @@
-import React from "react";
-import {
-  Modal,
-  Button,
-  Row,
-  Form,
-  Select,
-  Table,
-  Radio,
-  Col,
-  Badge,
-} from "antd";
+import React from 'react'
+import { Modal, Table } from 'antd'
 
-import Mamul from "../../../mock/customer/systemMamul";
-
-const { Option } = Select;
 const SystemMamul = (props) => {
-  const { visible, onHide, data, title } = props;
+  const { visible, onHide, data } = props
 
   const onSubmit = () => {
-    console.log("Traffic Added", data);
-    onHide();
-  };
+    console.log('Traffic Added', data)
+    onHide()
+  }
 
   const SystemMamul = [
     {
-      title: "",
-      dataIndex: "rowName",
-      width: "5%",
+      title: '',
+      dataIndex: 'rowName',
+      width: '5%'
     },
     {
-      title: "Billed",
-      dataIndex: "billed",
-      width: "8%",
+      title: 'Billed',
+      dataIndex: 'billed',
+      width: '8%'
     },
     {
-      title: "Mamul",
-      dataIndex: "mamul",
-      width: "9%",
+      title: 'Mamul',
+      dataIndex: 'mamul',
+      width: '9%'
     },
     {
-      title: "WriteOff",
-      dataIndex: "writeOff",
-      width: "10%",
+      title: 'WriteOff',
+      dataIndex: 'writeOff',
+      width: '10%'
     },
     {
-      title: "Balance[60-120]",
-      dataIndex: "bal",
-      width: "15%",
+      title: 'Balance[60-120]',
+      dataIndex: 'bal',
+      width: '15%'
     },
     {
-      title: "Balance[120-180]",
-      dataIndex: "bal",
-      width: "15%",
+      title: 'Balance[120-180]',
+      dataIndex: 'bal',
+      width: '15%'
     },
     {
-      title: "Balance[>180]",
-      dataIndex: "bal",
-      width: "13%",
+      title: 'Balance[>180]',
+      dataIndex: 'bal',
+      width: '13%'
     },
     {
-      title: "System Mamul",
-      dataIndex: "bal",
-      width: "12%",
-    },
-  ];
+      title: 'System Mamul',
+      dataIndex: 'bal',
+      width: '12%'
+    }
+  ]
 
   return (
     <>
       <Modal
         visible={visible}
-        title="System Mamul"
+        title='System Mamul'
         onOk={onSubmit}
-        width={"90%"}
+        width='90%'
         onCancel={onHide}
         footer={[]}
       >
         <Table
           columns={SystemMamul}
-          dataSource={Mamul}
+          dataSource={data}
           scroll={{ x: 1000, y: 200 }}
-          size="small"
+          size='small'
           pagination={false}
-          tableLayout="fixed"
+          tableLayout='fixed'
         />
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default SystemMamul;
+export default SystemMamul
