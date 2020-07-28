@@ -25,7 +25,7 @@ export const PARTNERS_QUERY = gql`
       partner_users(limit:1 , where:{is_admin:{_eq:true}}){
         mobile
       }
-      partner_comments(limit:10,order_by:{created_at:desc}){
+      partner_comments(limit:1,order_by:{created_at:desc}){
         partner_id
         description
         created_at

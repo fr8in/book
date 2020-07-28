@@ -200,7 +200,7 @@ const PartnerKyc = (props) => {
             <Button
               type='link'
               icon={<CommentOutlined />}
-              onClick={() => handleShow('commentVisible', null, 'commentData', record.partner_comments)}
+              onClick={() => handleShow('commentVisible', null, 'commentData', record.id)}
             />
           </Tooltip>
           <Button
@@ -239,7 +239,7 @@ const PartnerKyc = (props) => {
       {object.commentVisible && (
         <PartnerComment
           visible={object.commentVisible}
-          data={object.commentData}
+          partnerId={object.commentData}
           onHide={handleHide}
         />
       )}

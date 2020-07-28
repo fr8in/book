@@ -1,7 +1,23 @@
 import { Modal, Button, Row, Input, Col, Table } from 'antd'
+import { useQuery } from '@apollo/client'
+import { PARTNER_COMMENT_QUERY } from './container/query/partnersCommentQuery'
 
-const partnerComment = (props) => {
-  const { visible, data, onHide } = props
+
+
+const PartnerComment = (props) => {
+  const { visible, partnerId, onHide } = props
+  const { loading, error, data } = useQuery(
+    PARTNER_COMMENT_QUERY,
+    {
+      variables: {id:partnerId},
+      notifyOnNetworkStatusChange: true
+    }
+  )
+
+  if (loading) return null
+  console.log('PartnerComment error', error)
+  console.log('PartnerComment data', data.partner)
+  const { partner_comments } = data.partner[0] ? data.partner[0] : []
 
   const columns = [{
     title: 'Previous Comments',
@@ -36,7 +52,7 @@ const partnerComment = (props) => {
       </Row>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={partner_comments}
         rowKey={record => record.id}
         size='small'
         pagination={false}
@@ -44,4 +60,4 @@ const partnerComment = (props) => {
     </Modal>
   )
 }
-export default partnerComment
+export default PartnerComment
