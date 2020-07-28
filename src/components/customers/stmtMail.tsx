@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal, Button, Input } from "antd";
 
-const StatementMail = (props) => {
+const AccStatementMail = (props) => {
   const { visible, onHide } = props;
 
   const onSubmit = () => {
@@ -12,7 +12,7 @@ const StatementMail = (props) => {
   return (
     <Modal
       visible={visible}
-      title="DownPayment Statement"
+      title="Account Statement"
       onOk={onSubmit}
       onCancel={onHide}
       footer={[
@@ -29,4 +29,4 @@ const StatementMail = (props) => {
   );
 };
 
-export default StatementMail;
+export default AccStatementMail;

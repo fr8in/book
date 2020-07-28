@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons'
 import useShowHide from '../../../hooks/useShowHide'
 // All components
+import AccStmtMail from '../stmtMail'
 import Loading from '../../common/loading'
 import DetailPageHeader from '../../common/detailPageHeader'
 import CustomerName from '../customerName'
@@ -38,7 +39,13 @@ const { TabPane } = Tabs
 
 const CustomerDetailContainer = (props) => {
   const { cardcode } = props
-  const initial = { transfer: false, rebate: false, wallet: false, addUser: false, addBranch: false }
+  const initial = {
+    transfer: false,
+    rebate: false,
+    wallet: false,
+    addUser: false,
+    addBranch: false
+  }
   const { visible, onShow, onHide } = useShowHide(initial)
 
   const { loading, error, data } = useSubscription(
@@ -64,26 +71,48 @@ const CustomerDetailContainer = (props) => {
             <DetailPageHeader
               title={
                 <Space>
-                  <CustomerName cardcode={customerInfo.cardcode} name={customerInfo.name} />
+                  <CustomerName
+                    cardcode={customerInfo.cardcode}
+                    name={customerInfo.name}
+                  />
                   <h4>{customerInfo.cardcode}</h4>
                 </Space>
               }
               extra={
                 <Space>
                   <Tooltip title='Account Statement'>
-                    <Button icon={<MailOutlined />} shape='circle' />
+                    <Button
+                      icon={<MailOutlined />}
+                      shape='circle'
+                      onClick={() => onShow('showModal')}
+                    />
                   </Tooltip>
                   <Tooltip title='Transfer'>
-                    <Button icon={<BankFilled />} shape='circle' onClick={() => onShow('transfer')} />
+                    <Button
+                      icon={<BankFilled />}
+                      shape='circle'
+                      onClick={() => onShow('transfer')}
+                    />
                   </Tooltip>
                   <Tooltip title='Excess'>
-                    <Button icon={<FileDoneOutlined />} shape='circle' onClick={() => onShow('rebate')} />
+                    <Button
+                      icon={<FileDoneOutlined />}
+                      shape='circle'
+                      onClick={() => onShow('rebate')}
+                    />
                   </Tooltip>
                   <Tooltip title='Wallet Topup'>
-                    <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('wallet')} />
+                    <Button
+                      shape='circle'
+                      icon={<WalletOutlined />}
+                      onClick={() => onShow('wallet')}
+                    />
                   </Tooltip>
                   <WalletBalance />
-                  <Blacklist cardcode={customerInfo.cardcode} statusId={customerInfo.status && customerInfo.status.id} />
+                  <Blacklist
+                    cardcode={customerInfo.cardcode}
+                    statusId={customerInfo.status && customerInfo.status.id}
+                  />
                 </Space>
               }
             />
@@ -94,19 +123,34 @@ const CustomerDetailContainer = (props) => {
             <Col xs={24}>
               <Card size='small' className='card-body-0 border-top-blue'>
                 <Tabs defaultActiveKey='1'>
-                  <TabPane tab={<TitleWithCount name='Final' value={35} />} key='1'>
+                  <TabPane
+                    tab={<TitleWithCount name='Final' value={35} />}
+                    key='1'
+                  >
                     <FinalPaymentsPending />
                   </TabPane>
-                  <TabPane tab={<TitleWithCount name='Incoming' value={29} />} key='2'>
+                  <TabPane
+                    tab={<TitleWithCount name='Incoming' value={29} />}
+                    key='2'
+                  >
                     <IncomingPayments />
                   </TabPane>
-                  <TabPane tab={<TitleWithCount name='Advance Pending(O)' value={3} />} key='3'>
+                  <TabPane
+                    tab={<TitleWithCount name='Advance Pending(O)' value={3} />}
+                    key='3'
+                  >
                     <AdvancePending />
                   </TabPane>
-                  <TabPane tab={<TitleWithCount name='Advance Pending(C)' value={0} />} key='4'>
+                  <TabPane
+                    tab={<TitleWithCount name='Advance Pending(C)' value={0} />}
+                    key='4'
+                  >
                     <AdvancePending />
                   </TabPane>
-                  <TabPane tab={<TitleWithCount name='Invoice Pending' value={2} />} key='5'>
+                  <TabPane
+                    tab={<TitleWithCount name='Invoice Pending' value={2} />}
+                    key='5'
+                  >
                     <InvoicePending />
                   </TabPane>
                   <TabPane tab='Users' key='6'>
@@ -119,7 +163,10 @@ const CustomerDetailContainer = (props) => {
                   </TabPane>
                   <TabPane tab='Branch' key='7'>
                     <Row justify='end' className='m5'>
-                      <Button type='primary' onClick={() => onShow('addBranch')}>
+                      <Button
+                        type='primary'
+                        onClick={() => onShow('addBranch')}
+                      >
                         <PlusOutlined /> Add Branch
                       </Button>
                     </Row>
@@ -128,10 +175,16 @@ const CustomerDetailContainer = (props) => {
                   <TabPane tab='FR8 Branch' key='8'>
                     <Fr8Branch />
                   </TabPane>
-                  <TabPane tab={<TitleWithCount name='Ongoing' value={3} />} key='9'>
+                  <TabPane
+                    tab={<TitleWithCount name='Ongoing' value={3} />}
+                    key='9'
+                  >
                     <Trips />
                   </TabPane>
-                  <TabPane tab={<TitleWithCount name='Completed' value={65} />} key='10'>
+                  <TabPane
+                    tab={<TitleWithCount name='Completed' value={65} />}
+                    key='10'
+                  >
                     <Trips />
                   </TabPane>
                   <TabPane tab='Details' key='11'>
@@ -149,11 +202,24 @@ const CustomerDetailContainer = (props) => {
                 </Tabs>
               </Card>
             </Col>
-            {visible.addUser && <CustomerUser visible={visible.addUser} onHide={onHide} />}
-            {visible.addBranch && <CustomerBranch visible={visible.addBranch} onHide={onHide} />}
-            {visible.transfer && <Transfer visible={visible.transfer} onHide={onHide} />}
-            {visible.rebate && <Rebate visible={visible.rebate} onHide={onHide} />}
-            {visible.wallet && <WalletTopup visible={visible.wallet} onHide={onHide} />}
+            {visible.addUser && (
+              <CustomerUser visible={visible.addUser} onHide={onHide} />
+            )}
+            {visible.addBranch && (
+              <CustomerBranch visible={visible.addBranch} onHide={onHide} />
+            )}
+            {visible.transfer && (
+              <Transfer visible={visible.transfer} onHide={onHide} />
+            )}
+            {visible.rebate && (
+              <Rebate visible={visible.rebate} onHide={onHide} />
+            )}
+            {visible.wallet && (
+              <WalletTopup visible={visible.wallet} onHide={onHide} />
+            )}
+            {visible.showModal && (
+              <AccStmtMail visible={visible.showModal} onHide={onHide} />
+            )}
           </Row>
         </Card>
       </Col>
