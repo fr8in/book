@@ -1,7 +1,7 @@
 import React from 'react'
 import { Row, Button, Card } from 'antd'
 import Link from 'next/link'
-import Partners from '../partners'
+import PartnerKyc from '../partnerKyc'
 
 import { useQuery } from '@apollo/client'
 import { PARTNERS_QUERY } from './query/partnersQuery'
@@ -32,7 +32,7 @@ const partnerContainer = () => {
         </Link>
       </Row>
       <Card size='small' className='card-body-0 border-top-blue'>
-        <Partners partners={partner} />
+        <PartnerKyc partners={partner} />
       </Card>
     </div>
   )

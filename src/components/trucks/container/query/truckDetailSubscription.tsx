@@ -10,7 +10,6 @@ export const TRUCK_DETAIL_SUBSCRIPTION = gql`
         city{
           name
         }
-        
         partner{
           cardcode
           name

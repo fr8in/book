@@ -13,7 +13,6 @@ import {
   Checkbox,
 } from "antd";
 import { DeleteTwoTone, EyeTwoTone, UploadOutlined } from "@ant-design/icons";
-import Head from "next/head";
 
 const { Option } = Select;
 const KycApproval = (props) => {
@@ -45,16 +44,17 @@ const KycApproval = (props) => {
           <Row>
             <Col xs={{ span: 24 }} sm={{ span: 8 }}>
               <Form.Item name="Partner Name:" label="Partner Name:">
-                <h4></h4>
+                {data.name}
               </Form.Item>
             </Col>
-            <Col xs={{ span: 24 }} sm={{ span: 8 }}>
+            <Col flex="200px">
               <Form.Item name="Advance Percentage" label="Advance Percentage">
                 <Select placeholder="Select Percentage" allowClear>
                   <Option value="Not Found">Not Found</Option>
                 </Select>
               </Form.Item>
             </Col>
+            &nbsp;
             <Col xs={{ span: 24 }} sm={{ span: 8 }}>
               <Form.Item
                 name="On-Boarded By"
@@ -81,7 +81,7 @@ const KycApproval = (props) => {
               />
             </Col>
             <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-              <h4>PAN no:</h4>
+              <h4>{data.pan}</h4>
             </Col>
             <Col
               xs={{ span: 24 }}
@@ -114,7 +114,7 @@ const KycApproval = (props) => {
               />
             </Col>
             <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-              <h4>Acc no:</h4>
+              <h4>{data.accNo}</h4>
             </Col>
             <Col
               xs={{ span: 24 }}
@@ -239,6 +239,15 @@ const KycApproval = (props) => {
             </Col>
             <Col xs={{ span: 24 }} sm={{ span: 8 }}>
               <h4>Type</h4>
+            </Col>
+          </Row>
+          <Divider />
+          <Row>
+            <Col xs={{ span: 24 }} sm={{ span: 8 }}>
+              <h4>{data.truckNo}</h4>
+            </Col>
+            <Col xs={{ span: 24 }} sm={{ span: 8 }}>
+              <h4>{data.type}</h4>
             </Col>
           </Row>
         </Form>

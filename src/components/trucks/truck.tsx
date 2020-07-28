@@ -38,15 +38,8 @@ const Truck = (props) => {
         xsSpan={12}
       />
       <LabelAndData
-        label='Current City'
+        label='City'
         data={truckInfo.city.name}
-        mdSpan={4}
-        smSpan={8}
-        xsSpan={12}
-      />
-      <LabelAndData
-        label='TAT'
-        data={data.truck.tat}
         mdSpan={4}
         smSpan={8}
         xsSpan={12}

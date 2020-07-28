@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Table } from 'antd'
+import { Table,Button } from 'antd'
 import Link from 'next/link'
 import { EditTwoTone } from '@ant-design/icons'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
@@ -62,29 +62,43 @@ const Trucks = (props) => {
       dataIndex: 'truck_no',
       render: (text, record) => {
         return (
-          <Link href='trucks/[id]' as={`trucks/${record.truck_no}`}>
-            <a>{text}</a>
+          <Link href='trucks/[id]' as={`trucks/${record.truck_no}-${record.truck_type.value}`}>
+            <a>{record.truck_no}-{record.truck_type.value}</a>
           </Link>
         )
       }
     },
     {
-      title: 'Trip Id',
-      dataIndex: 'id',
+      title: 'Trip ID',
       render: (text, record) => {
+        const id = record && record.trips[0] ? record.trips[0].id : null
         return (
-          <Link href='trips/[id]' as={`trips/${record.id}`}>
-            <a>{text}</a>
-          </Link>
+          <span>{
+            id &&
+              <Link href='/trips/[id]' as={`/trips/${id} `}>
+                <a>{id}</a>
+              </Link>
+          }
+          </span>
         )
       }
     },
     {
       title: 'Trip',
-      dataIndex: 'trip',
       render: (text, record) => {
+        const id = record && record.trips[0] ? record.trips[0].id : null
+        const source = record && record.trips[0] && record.trips[0].source ? record.trips[0].source.name : null
+        const destination = record && record.trips[0] && record.trips[0].destination ? record.trips[0].destination.name : null
         return (
-          <span className='link' onClick={() => onShow('poModal')}>{text}</span>
+          <span>{
+            id
+              ? <span>
+                {
+                  source.slice(0, 3) + '-' + destination.slice(0, 3)
+                }
+              </span> : (record.trucks_status.value === 1) ? <Button type='link'>Assing</Button> : 'NA'
+          }
+          </span>
         )
       }
     },
@@ -101,10 +115,10 @@ const Trucks = (props) => {
     },
     {
       title: 'Phone No',
-      dataIndex: 'phone_no',
+      dataIndex: 'mobile',
       render: (text, record) => {
         return (
-          <span className='link' onClick={() => showUsers(record)}>{record.driver && record.driver.mobile_no}</span>
+          <span className='link' onClick={() => showUsers(record)}>{record.partner.partner_users && record.partner.partner_users.mobile}</span>
         )
       }
     },

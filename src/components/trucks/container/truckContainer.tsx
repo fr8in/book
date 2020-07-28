@@ -8,16 +8,19 @@ import Loading from '../../common/loading'
 
 const { Search } = Input
 
+ 
+
 export const trucksQueryVars = {
   offset: 0,
-  limit: 10
+  limit: 10,
+  trip_status_id: [2, 3, 4, 5, 6]
 }
 
 const TruckContainer = () => {
   const { loading, error, data } = useQuery(
     TRUCKS_QUERY,
     {
-      variables: trucksQueryVars,
+      variables: trucksQueryVars, 
       notifyOnNetworkStatusChange: true
     }
   )
