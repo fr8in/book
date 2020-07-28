@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import useKeypress from '../../hooks/useKeypress'
 import useOnClickOutside from '../../hooks/useOnClickOutside'
 import { EditOutlined } from '@ant-design/icons'
-
 function InlineEdit (props) {
   const [isInputActive, setIsInputActive] = useState(false)
   const [inputValue, setInputValue] = useState(props.text)
@@ -15,7 +14,7 @@ function InlineEdit (props) {
   const enter = useKeypress('Enter')
   const esc = useKeypress('Escape')
 
-  const { onSetText, text } = props
+  const { onSetText, text} = props
 
   // check to see if the user clicked outside of this component
   useOnClickOutside(wrapperRef, () => {
@@ -89,11 +88,14 @@ function InlineEdit (props) {
         // it's not quite right but gets it close
         style={{ minWidth: width }}
         value={inputValue}
+  
         onChange={handleInputChange}
         className={`inline-text-input ${
           isInputActive ? 'active' : 'hidden'
         }`}
       />
+
+
     </span>
   )
 }
