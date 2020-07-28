@@ -4,11 +4,13 @@ import { CloseCircleOutlined, EditOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import { UPDATE_CUSTOMER_EXCEPTION_MUTATION } from './containers/query/updateCustomerExceptionMutation'
 import { useMutation } from '@apollo/client'
+import useShowHide from '../../hooks/useShowHide'
 
 const CustomerExceptionDate = (props) => {
   const { exceptionDate, cardcode } = props
 
-  const [edit, setEdit] = useState(false)
+  const initial = { datePicker: false }
+  const { visible, onHide, onShow } = useShowHide(initial)
 
   const [updateCustomerException] = useMutation(
     UPDATE_CUSTOMER_EXCEPTION_MUTATION,
@@ -24,23 +26,17 @@ const CustomerExceptionDate = (props) => {
         exception_date: dateString.toString()
       }
     })
-    setEdit(false)
-  }
-
-  const handleShow = () => {
-    setEdit(true)
-  }
-  const handleClose = () => {
-    setEdit(false)
+    onHide()
   }
 
   const dateFormat = 'YYYY-MM-DD'
+
   return (
     <div>
-      {!edit ? (
+      {!visible.datePicker ? (
         <label>
           {exceptionDate ? moment(exceptionDate).format(dateFormat) : '-'}
-          <EditOutlined onClick={handleShow} />
+          <EditOutlined onClick={() => onShow('datePicker')} />
         </label>)
         : (
           <span>
@@ -49,10 +45,10 @@ const CustomerExceptionDate = (props) => {
               placeholder='Exception Date'
               disabled={false}
               format={dateFormat}
-              value={moment(exceptionDate, dateFormat)}
+              value={exceptionDate ? moment(exceptionDate, dateFormat) : moment()}
               onChange={onChange}
             />
-            <CloseCircleOutlined onClick={handleClose} />
+            <CloseCircleOutlined onClick={onHide} />
           </span>)}
     </div>
   )
