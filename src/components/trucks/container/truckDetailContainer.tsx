@@ -12,6 +12,7 @@ import { useSubscription } from '@apollo/client'
 import { TRUCK_DETAIL_SUBSCRIPTION } from './query/truckDetailSubscription'
 
 const TabPane = Tabs.TabPane
+const tripStatusId = [2, 3, 4, 5, 6]
 
 const TruckDetailContainer = (props) => {
   const { truckNo } = props
@@ -19,7 +20,7 @@ const TruckDetailContainer = (props) => {
   const { loading, error, data } = useSubscription(
     TRUCK_DETAIL_SUBSCRIPTION,
     {
-      variables: { truck_no: truckNo }
+      variables: { truck_no: truckNo,trip_status_id: tripStatusId  }
     }
   )
 
@@ -28,6 +29,8 @@ const TruckDetailContainer = (props) => {
 
   const { truck } = data
   const truckInfo = truck[0] ? truck[0] : { name: 'ID does not exist' }
+  const trips = truckInfo.trips
+  console.log('trips', trips)
 
   return (
     <div>
@@ -76,7 +79,7 @@ const TruckDetailContainer = (props) => {
                       </Row>
                     </TabPane>
                     <TabPane tab='Trips' key='2'>
-                      <TripDetail trips />
+                      <TripDetail trip trips={trips}/>
                     </TabPane>
                     <TabPane tab='Timeline' key='3'>
                       <Row>

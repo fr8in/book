@@ -96,7 +96,7 @@ const Trucks = (props) => {
                 {
                   source.slice(0, 3) + '-' + destination.slice(0, 3)
                 }
-              </span> : (record.trucks_status.value === 1) ? <Button type='link'>Assing</Button> : 'NA'
+              </span> : (record.truck_status.value === 1) ? <Button type='link'>Assing</Button> : 'NA'
           }
           </span>
         )
@@ -118,7 +118,7 @@ const Trucks = (props) => {
       dataIndex: 'mobile',
       render: (text, record) => {
         return (
-          <span className='link' onClick={() => showUsers(record)}>{record.partner.partner_users && record.partner.partner_users.mobile}</span>
+          <span className='link' onClick={() => showUsers(record)}>{record.partner && record.partner.partner_users && record.partner.partner_users.mobile}</span>
         )
       }
     },
