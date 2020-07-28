@@ -12,6 +12,7 @@ const Blacklist = ({ cardcode, statusId }) => {
   const [updateStatusId] = useMutation(UPDATE_CUSTOMER_BLACKLIST_MUTATION)
 
   const onChange = (checked) => {
+    // TODO error handling
     updateStatusId({
       variables: {
         cardcode,

@@ -1,16 +1,5 @@
 import React from "react";
-import {
-  Modal,
-  Button,
-  Row,
-  Form,
-  Select,
-  Table,
-  Radio,
-  Col,
-  Input,
-} from "antd";
-import { DeleteTwoTone } from "@ant-design/icons";
+import { Modal, Button, Row, Form, Select, Col, Input } from "antd";
 
 const regionList = [
   { value: "North" },
@@ -29,21 +18,11 @@ const cusType = [
 
 const { Option } = Select;
 const BranchCreation = (props) => {
-  const { visible, onHide, data, title } = props;
+  const { visible, onHide, data } = props;
 
   const onSubmit = () => {
     console.log("Traffic Added", data);
     onHide();
-  };
-  const styles = {
-    formCityLayout: {
-      labelCol: { span: 24 },
-      wrapperCol: { span: 22 },
-    },
-    formAddressLayout: {
-      labelCol: { span: 24 },
-      wrapperCol: { span: 23 },
-    },
   };
 
   return (
@@ -53,7 +32,7 @@ const BranchCreation = (props) => {
         title="Create Branch"
         onOk={onSubmit}
         onCancel={onHide}
-        style={{ top: 20 }}
+        bodyStyle={{ padding: 10 }}
         width={450}
         footer={[
           <Button key="back" onClick={onHide}>
@@ -69,14 +48,17 @@ const BranchCreation = (props) => {
             <Col xs={{ span: 24 }} sm={{ span: 12 }}>
               <Select size="middle" placeholder="Region" options={regionList} />
             </Col>
-            <Col xs={{ span: 24 }} sm={{ span: 12 }}>
-              <Input placeholder="Head Office" disabled={true} />
+            <Col xs={24} sm={12}>
+              <Form.Item>
+                <Input placeholder="Head Office" disabled />
+              </Form.Item>
             </Col>
           </Row>
-          &nbsp;
-          <Row>
-            <Col xs={{ span: 24 }} sm={{ span: 12 }}>
-              <Input placeholder="Name" />
+          <Row gutter={10}>
+            <Col xs={24} sm={12}>
+              <Form.Item>
+                <Input placeholder="Name" />
+              </Form.Item>
             </Col>
             &nbsp;
             <Col xs={{ span: 24 }} sm={{ span: 11 }}>
@@ -87,42 +69,61 @@ const BranchCreation = (props) => {
               />
             </Col>
           </Row>
-          &nbsp;
-          <Row>
-            <Col xs={{ span: 24 }} sm={{ span: 7 }}>
-              <Input placeholder="Building Number" />
+          <Row gutter={10}>
+            <Col xs={24} sm={8}>
+              <Form.Item>
+                <Input placeholder="Building Number" />
+              </Form.Item>
             </Col>
-            &nbsp;
-            <Col xs={{ span: 24 }} sm={{ span: 16 }}>
-              <Input placeholder="Address" />
-            </Col>
-          </Row>
-          &nbsp;
-          <Row>
-            <Col xs={{ span: 24 }} sm={{ span: 9 }}>
-              <Input />
-            </Col>
-            &nbsp;
-            <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-              <Input />
-            </Col>
-            &nbsp;
-            <Col xs={{ span: 24 }} sm={{ span: 6 }}>
-              <Input placeholder="Pincode" />
+            <Col xs={24} sm={16}>
+              <Form.Item>
+                <Input placeholder="Address" />
+              </Form.Item>
             </Col>
           </Row>
-          &nbsp;
-          <Row>
-            <Col xs={{ span: 24 }} sm={{ span: 12 }}>
-              <Select size="middle" placeholder="OnBoarded By" options={data} />
+          <Row gutter={10}>
+            <Col xs={24} sm={8}>
+              <Form.Item>
+                <Select
+                  size="middle"
+                  placeholder="Select City"
+                  options={data}
+                />
+              </Form.Item>
             </Col>
-
-            <Col xs={{ span: 24 }} sm={{ span: 12 }}>
-              <Select
-                size="middle"
-                placeholder="Select Payment Manager"
-                options={data}
-              />
+            <Col xs={24} sm={8}>
+              <Form.Item>
+                <Select
+                  size="middle"
+                  placeholder="Select State"
+                  options={data}
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={8}>
+              <Form.Item>
+                <Input placeholder="Pincode" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={10}>
+            <Col xs={24} sm={12}>
+              <Form.Item>
+                <Select
+                  size="middle"
+                  placeholder="OnBoarded By"
+                  options={data}
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={12}>
+              <Form.Item>
+                <Select
+                  size="middle"
+                  placeholder="Select Payment Manager"
+                  options={data}
+                />
+              </Form.Item>
             </Col>
           </Row>
         </Form>

@@ -18,6 +18,7 @@ export const CUSTOMERS_QUERY = gql`
         value
       }
       status {
+        id
         value
       }
     }
