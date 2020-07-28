@@ -8,6 +8,7 @@ import {
 import useShowHideWithRecord from "../../hooks/useShowHideWithRecord";
 import Link from "next/link";
 import BranchCreation from "../customers/branchCreation";
+import mock from "../../../mock/customer/systemMamul";
 
 const CustomerKyc = (props) => {
   const { customers, status } = props;
@@ -128,7 +129,7 @@ const CustomerKyc = (props) => {
               className="btn-success"
               icon={<CheckOutlined />}
               onClick={() =>
-                handleShow("createBranchVisible", null, null, null)
+                handleShow("createBranchVisible", null, null, record)
               }
             />
             <Button

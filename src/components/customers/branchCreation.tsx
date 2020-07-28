@@ -12,6 +12,21 @@ import {
 } from "antd";
 import { DeleteTwoTone } from "@ant-design/icons";
 
+const regionList = [
+  { value: "North" },
+  { value: "East" },
+  { value: "South" },
+  { value: "West" },
+  { value: "others" },
+];
+
+const cusType = [
+  { value: "Transporter" },
+  { value: "Broker" },
+  { value: "Shipper" },
+  { value: "Enterprice" },
+];
+
 const { Option } = Select;
 const BranchCreation = (props) => {
   const { visible, onHide, data, title } = props;
@@ -19,6 +34,16 @@ const BranchCreation = (props) => {
   const onSubmit = () => {
     console.log("Traffic Added", data);
     onHide();
+  };
+  const styles = {
+    formCityLayout: {
+      labelCol: { span: 24 },
+      wrapperCol: { span: 22 },
+    },
+    formAddressLayout: {
+      labelCol: { span: 24 },
+      wrapperCol: { span: 23 },
+    },
   };
 
   return (
@@ -42,7 +67,7 @@ const BranchCreation = (props) => {
         <Form>
           <Row>
             <Col xs={{ span: 24 }} sm={{ span: 12 }}>
-              <Select size="middle" placeholder="Region" options={data} />
+              <Select size="middle" placeholder="Region" options={regionList} />
             </Col>
             <Col xs={{ span: 24 }} sm={{ span: 12 }}>
               <Input placeholder="Head Office" disabled={true} />
@@ -54,11 +79,11 @@ const BranchCreation = (props) => {
               <Input placeholder="Name" />
             </Col>
             &nbsp;
-            <Col flex="140px">
+            <Col xs={{ span: 24 }} sm={{ span: 11 }}>
               <Select
                 size="middle"
                 placeholder="Customer Type ...."
-                options={data}
+                options={cusType}
               />
             </Col>
           </Row>
