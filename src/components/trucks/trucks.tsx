@@ -18,9 +18,12 @@ const statusList = [
 ]
 
 const Trucks = (props) => {
-  const { trucks } = props
-
+  const { trucks , status } = props
   console.log(props)
+
+  const truckStatus = status.map(data => {
+    return { value: data.id.toString(), text: data.value }
+  })
 
   const usersInitial = { users: [], name: '', visible: false }
   const [users, setUsers] = useState(usersInitial)
@@ -56,13 +59,15 @@ const Trucks = (props) => {
     setAvailability({ ...record, record: record, title: 'Breakdown', visible: true })
   }
 
+  
+
   const columns = [
     {
       title: 'Truck No',
       dataIndex: 'truck_no',
       render: (text, record) => {
         return (
-          <Link href='trucks/[id]' as={`trucks/${record.truck_no}-${record.truck_type.value}`}>
+          <Link href='trucks/[id]' as={`trucks/${record.truck_no}`}>
             <a>{record.truck_no}-{record.truck_type.value}</a>
           </Link>
         )
@@ -118,17 +123,15 @@ const Trucks = (props) => {
       dataIndex: 'mobile',
       render: (text, record) => {
         return (
-          <span className='link' onClick={() => showUsers(record)}>{record.partner.partner_users && record.partner.partner_users.mobile}</span>
+          <span className='link' onClick={() => showUsers(record)}>{record.partner && record.partner.partner_users && record.partner.partner_users.mobile}</span>
         )
       }
     },
     {
       title: 'Status',
       dataIndex: 'status',
-      filters: statusList,
-      render: (text, record) => {
-        return (record.truck_status && record.truck_status.value)
-      }
+      render: (text, record) => record.truck_status && record.truck_status.value,
+      filters: truckStatus
     },
     {
       title: 'City',

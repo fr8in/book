@@ -29,7 +29,7 @@ const TruckContainer = () => {
   console.log('TrucksContainer error', error)
 
   console.log('TrucksContainer data', data)
-  const { truck } = data
+  const { truck , truck_status} = data
   console.log('truck', truck)
 
   return (
@@ -45,7 +45,7 @@ const TruckContainer = () => {
       <Row>
         <Col sm={24}>
           <Card size='small' className='card-body-0'>
-            <Trucks trucks={truck} />
+            <Trucks trucks={truck} status={truck_status}/>
           </Card>
         </Col>
       </Row>

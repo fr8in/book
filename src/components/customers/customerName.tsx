@@ -9,7 +9,8 @@ const CustomerName = (props) => {
   const [updateCustomerName] = useMutation(
     UPDATE_CUSTOMER_NAME_MUTATION,
     {
-      onError (error) { message.error(error.toString()) }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Saved!!') }
     }
   )
 

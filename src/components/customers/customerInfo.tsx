@@ -5,6 +5,7 @@ import mockData from '../../../mock/customer/customerDetail'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import ManagedCustomer from './managedCustomer'
 import CustomerExceptionDate from './customerExceptionDate'
+import CustomerType from './customerType'
 
 const CustomerInfo = (props) => {
   const { customerInfo } = props
@@ -20,7 +21,7 @@ const CustomerInfo = (props) => {
       <Row gutter={8}>
         <LabelAndData
           label='Type'
-          data={<label>{customerInfo.type_id}</label>}
+          data={<CustomerType type={customerInfo.type_id} cardcode={customerInfo.cardcode} />}
           mdSpan={4}
           smSpan={8}
           xsSpan={12}
@@ -57,7 +58,6 @@ const CustomerInfo = (props) => {
           smSpan={8}
           xsSpan={24}
         />
-
         <LabelAndData
           label='Pending'
           data={<label>{mockData.paymentPending}</label>}

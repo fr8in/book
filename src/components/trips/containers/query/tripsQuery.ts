@@ -25,7 +25,12 @@ export const TRIPS_QUERY = gql`
       }
       partner_price
       customer_price
-      km     
+      km    
+      trip_comments{
+        description
+        created_by
+        created_at
+      } 
     }
   }  
   `
