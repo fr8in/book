@@ -95,15 +95,15 @@ const PartnerKyc = (props) => {
     },
     {
       title: 'On Boarded By',
-      dataIndex: 'boardedBy',
       width: '10%',
       render: (text, record) => {
-        return text && text.length > 12 ? (
-          <Tooltip title={text}>
-            <span> {text.slice(0, 12) + '...'}</span>
+        const onboarded_by =  record.onboarded_by && record.onboarded_by.name
+        return onboarded_by.length > 12 ? (
+          <Tooltip title={onboarded_by}>
+            <span> {onboarded_by.slice(0, 12) + '...'}</span>
           </Tooltip>
         ) : (
-          text
+          onboarded_by
         )
       }
     },
@@ -144,7 +144,7 @@ const PartnerKyc = (props) => {
       width: '8%'
     },
     {
-      title: 'KYC Status',
+      title: 'Status',
       dataIndex: 'status',
       width: '9%',
       render: (text, record) => {
@@ -160,15 +160,15 @@ const PartnerKyc = (props) => {
     },
     {
       title: 'Comment',
-      dataIndex: 'comment',
       width: '11%',
       render: (text, record) => {
-        return text && text.length > 12 ? (
-          <Tooltip title={text}>
-            <span> {text.slice(0, 12) + '...'}</span>
+        const comment = record && record.partner_comments && record.partner_comments.description
+        return comment && comment.length > 12 ? (
+          <Tooltip title={comment}>
+            <span> {comment.slice(0, 12) + '...'}</span>
           </Tooltip>
         ) : (
-          text
+          comment
         )
       }
     },
@@ -182,7 +182,7 @@ const PartnerKyc = (props) => {
             <Button
               type='link'
               icon={<CommentOutlined />}
-              onClick={() => handleShow('commentVisible', null, 'commentData', record.previousComment)}
+              onClick={() => handleShow('commentVisible', null, 'commentData', record.partner_comments)}
             />
           </Tooltip>
           <Button

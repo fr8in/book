@@ -5,16 +5,16 @@ const Tripcomment = (props) => {
 
   const columns = [{
     title: 'Previous Comments',
-    dataIndex: 'message',
-    key: 'message'
+    dataIndex: 'description',
+    key: 'description'
   },
   {
-    dataIndex: 'userName',
-    key: 'userName'
+    dataIndex: 'created_by',
+    key: 'created_by'
   },
   {
-    dataIndex: 'date',
-    key: 'date'
+    dataIndex: 'created_at',
+    key: 'created_at'
   }]
 
   return (

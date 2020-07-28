@@ -54,7 +54,7 @@ const TripsContainer = () => {
         }
       >
         <TabPane tab={<TitleWithCount name='Trips' />} key='1'>
-        <Trips trips={trip} />
+        <Trips trips={trip} tripsTable/>
         </TabPane>
         <TabPane tab={<TitleWithCount name='Delivered' value={1840} />} key='2'>
           <Trips trips={trip} delivered />
