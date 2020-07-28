@@ -1,17 +1,17 @@
 const SystemMamul = [
   {
-    rowName: "sum",
+    rowName: 'sum',
     billed: 0,
     mamul: 0,
     writeOff: 0,
-    bal: 0,
+    bal: 0
   },
   {
-    rowName: "Avg",
+    rowName: 'Avg',
     billed: 0,
     mamul: 0,
     writeOff: 0,
-    bal: 0,
-  },
-];
-export default SystemMamul;
+    bal: 0
+  }
+]
+export default SystemMamul
