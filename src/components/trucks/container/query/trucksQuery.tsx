@@ -12,7 +12,6 @@ export const TRUCKS_QUERY = gql`
         name
       }
       truck_status {
-        id
         value
       }
       partner {
@@ -32,6 +31,10 @@ export const TRUCKS_QUERY = gql`
           name
         }
       }
+    }
+    truck_status{
+      id 
+      value
     }
     
   }
