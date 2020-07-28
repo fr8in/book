@@ -29,8 +29,8 @@ const Truck = (props) => {
       <LabelAndData
         label='Partner No'
         data={
-          <span className='link' onClick={() => callNow(truckInfo.driver.mobile_no)}>
-            <PhoneOutlined /> {truckInfo.driver.mobile_no}
+          <span className='link' onClick={() => callNow(truckInfo.partner.partner_users.mobile)}>
+            <PhoneOutlined /> {truckInfo.partner.partner_users.mobile}
           </span>
         }
         mdSpan={4}

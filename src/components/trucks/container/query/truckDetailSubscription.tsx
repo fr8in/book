@@ -10,12 +10,13 @@ export const TRUCK_DETAIL_SUBSCRIPTION = gql`
         city{
           name
         }
-        partner{
-          cardcode
+        partner {
           name
-        }
-        driver{
-          mobile_no
+          partner_users {
+            id
+            mobile
+          }
+          cardcode
         }
         trips (where: {trip_status_id: {_in: $trip_status_id}}) {
           id

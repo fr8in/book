@@ -67,7 +67,7 @@ const Trucks = (props) => {
       dataIndex: 'truck_no',
       render: (text, record) => {
         return (
-          <Link href='trucks/[id]' as={`trucks/${record.truck_no}-${record.truck_type.value}`}>
+          <Link href='trucks/[id]' as={`trucks/${record.truck_no}`}>
             <a>{record.truck_no}-{record.truck_type.value}</a>
           </Link>
         )
