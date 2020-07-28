@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import useKeypress from '../../hooks/useKeypress'
 import useOnClickOutside from '../../hooks/useOnClickOutside'
 import { EditOutlined } from '@ant-design/icons'
-
 function InlineEdit (props) {
   const [isInputActive, setIsInputActive] = useState(false)
   const [inputValue, setInputValue] = useState(props.text)
@@ -28,10 +27,10 @@ function InlineEdit (props) {
   const onEnter = useCallback(() => {
     if (enter) {
       if (inputValue) {
-        onSetText(inputValue, 'Update Successfully', null)
+        onSetText(inputValue)
         setIsInputActive(false)
       } else {
-        onSetText(inputValue, null, 'Enter Valid input')
+        onSetText(inputValue)
       }
     }
   }, [enter, inputValue, onSetText])
