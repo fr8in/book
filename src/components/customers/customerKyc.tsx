@@ -89,7 +89,7 @@ const CustomerKyc = (props) => {
       width: '9%'
     },
     {
-      title: 'De. Mamul',
+      title: 'Mamul',
       dataIndex: 'mamul',
       width: '8%',
       render: (text, record) => {
@@ -126,6 +126,7 @@ const CustomerKyc = (props) => {
       title: 'Action',
       width: '10%',
       render: (text, record) => {
+        const statusId = record.status && record.status.id
         return (
           <Space>
             {record.panNo ? (
@@ -144,23 +145,26 @@ const CustomerKyc = (props) => {
                 onClick={() => console.log('Upload')}
               />
             )}
-            <Button
-              type='primary'
-              size='small'
-              shape='circle'
-              className='btn-success'
-              icon={<CheckOutlined />}
-              onClick={() =>
-                handleShow('createBranchVisible', null, null, null)}
-            />
-            <Button
-              type='primary'
-              size='small'
-              shape='circle'
-              danger
-              icon={<CloseOutlined />}
-              onClick={() => handleShow(null, null, null, null)}
-            />
+            {(statusId === 3 || statusId === 4) &&
+              <Space>
+                <Button
+                  type='primary'
+                  size='small'
+                  shape='circle'
+                  className='btn-success'
+                  icon={<CheckOutlined />}
+                  onClick={() =>
+                    handleShow('createBranchVisible', null, null, null)}
+                />
+                <Button
+                  type='primary'
+                  size='small'
+                  shape='circle'
+                  danger
+                  icon={<CloseOutlined />}
+                  onClick={() => handleShow(null, null, null, null)}
+                />
+              </Space>}
           </Space>
         )
       }

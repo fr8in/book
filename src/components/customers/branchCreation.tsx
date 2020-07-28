@@ -1,109 +1,114 @@
-import React from "react";
+import React from 'react'
 import {
   Modal,
   Button,
   Row,
   Form,
   Select,
-  Table,
-  Radio,
   Col,
-  Input,
-} from "antd";
-import { DeleteTwoTone } from "@ant-design/icons";
+  Input
+} from 'antd'
 
-const { Option } = Select;
 const BranchCreation = (props) => {
-  const { visible, onHide, data, title } = props;
+  const { visible, onHide, data, title } = props
 
   const onSubmit = () => {
-    console.log("Traffic Added", data);
-    onHide();
-  };
+    console.log('Traffic Added', data)
+    onHide()
+  }
 
   return (
     <>
       <Modal
         visible={visible}
-        title="Create Branch"
+        title='Create Branch'
         onOk={onSubmit}
         onCancel={onHide}
-        style={{ top: 20 }}
+        bodyStyle={{ padding: 10 }}
         width={450}
         footer={[
-          <Button key="back" onClick={onHide}>
-            Cancel
-          </Button>,
-          <Button type="primary" key="submit">
-            Create Branch & Approve
-          </Button>,
+          <Button key='back' onClick={onHide}>Cancel</Button>,
+          <Button type='primary' key='submit'>Create Branch & Approve</Button>
         ]}
       >
         <Form>
-          <Row>
-            <Col xs={{ span: 24 }} sm={{ span: 12 }}>
-              <Select size="middle" placeholder="Region" options={data} />
+          <Row gutter={10}>
+            <Col xs={24} sm={12}>
+              <Form.Item>
+                <Select size='middle' placeholder='Region' options={data} />
+              </Form.Item>
             </Col>
-            <Col xs={{ span: 24 }} sm={{ span: 12 }}>
-              <Input placeholder="Head Office" disabled={true} />
-            </Col>
-          </Row>
-          &nbsp;
-          <Row>
-            <Col xs={{ span: 24 }} sm={{ span: 12 }}>
-              <Input placeholder="Name" />
-            </Col>
-            &nbsp;
-            <Col flex="140px">
-              <Select
-                size="middle"
-                placeholder="Customer Type ...."
-                options={data}
-              />
+            <Col xs={24} sm={12}>
+              <Form.Item>
+                <Input placeholder='Head Office' disabled />
+              </Form.Item>
             </Col>
           </Row>
-          &nbsp;
-          <Row>
-            <Col xs={{ span: 24 }} sm={{ span: 7 }}>
-              <Input placeholder="Building Number" />
+          <Row gutter={10}>
+            <Col xs={24} sm={12}>
+              <Form.Item>
+                <Input placeholder='Name' />
+              </Form.Item>
             </Col>
-            &nbsp;
-            <Col xs={{ span: 24 }} sm={{ span: 16 }}>
-              <Input placeholder="Address" />
-            </Col>
-          </Row>
-          &nbsp;
-          <Row>
-            <Col xs={{ span: 24 }} sm={{ span: 9 }}>
-              <Input />
-            </Col>
-            &nbsp;
-            <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-              <Input />
-            </Col>
-            &nbsp;
-            <Col xs={{ span: 24 }} sm={{ span: 6 }}>
-              <Input placeholder="Pincode" />
+            <Col xs={24} sm={12}>
+              <Form.Item>
+                <Select
+                  size='middle'
+                  placeholder='Customer Type ....'
+                  options={data}
+                />
+              </Form.Item>
             </Col>
           </Row>
-          &nbsp;
-          <Row>
-            <Col xs={{ span: 24 }} sm={{ span: 12 }}>
-              <Select size="middle" placeholder="OnBoarded By" options={data} />
+          <Row gutter={10}>
+            <Col xs={24} sm={8}>
+              <Form.Item>
+                <Input placeholder='Building Number' />
+              </Form.Item>
             </Col>
-
-            <Col xs={{ span: 24 }} sm={{ span: 12 }}>
-              <Select
-                size="middle"
-                placeholder="Select Payment Manager"
-                options={data}
-              />
+            <Col xs={24} sm={16}>
+              <Form.Item>
+                <Input placeholder='Address' />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={10}>
+            <Col xs={24} sm={8}>
+              <Form.Item>
+                <Select size='middle' placeholder='Select City' options={data} />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={8}>
+              <Form.Item>
+                <Select size='middle' placeholder='Select State' options={data} />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={8}>
+              <Form.Item>
+                <Input placeholder='Pincode' />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={10}>
+            <Col xs={24} sm={12}>
+              <Form.Item>
+                <Select size='middle' placeholder='OnBoarded By' options={data} />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={12}>
+              <Form.Item>
+                <Select
+                  size='middle'
+                  placeholder='Select Payment Manager'
+                  options={data}
+                />
+              </Form.Item>
             </Col>
           </Row>
         </Form>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default BranchCreation;
+export default BranchCreation
