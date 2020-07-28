@@ -13,7 +13,10 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
             ifsc_code
             address
             pan
-            bank_id
+            bank{
+              id
+              name
+            }
             final_payment_date
             onboarded_by{
                 id
