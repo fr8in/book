@@ -176,19 +176,19 @@ const Trips = (props) => {
       width: '12%',
       filters: statusList
     },
-    props.trips ?{
+    props.tripsTable ?{
       title: 'SO Price',
       dataIndex: 'customer_price',
       key: 'customer_price',
       width: '9%'
     } : {},
-    props.trips ?{
+    props.tripsTable ?{
       title: 'PO Price',
       dataIndex: 'partner_price',
       key: 'partner_price',
       width: '9%'
     }: {},
-    props.trips ?{
+    props.tripsTable ?{
       title: 'Trip KM',
       dataIndex: 'km',
       key: 'km',
@@ -212,7 +212,7 @@ const Trips = (props) => {
         return (
           <span>
             <Tooltip title='Comment'>
-              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.previousComment)} />
+              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.trips_Comments)} />
             </Tooltip>
             </span>)
       },
