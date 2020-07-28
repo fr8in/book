@@ -33,6 +33,13 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
             emi
             dnd
             cibil
+           
+                tds_percentage {
+                  value
+                }
+                partner_advance_percentage {
+                  value
+                }
             trucks {
               truck_no
               truck_type{
