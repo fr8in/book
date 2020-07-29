@@ -6,6 +6,7 @@ import CreateBreakdown from '../../components/trucks/createBreakdown'
 import PartnerUsers from '../partners/partnerUsers'
 import useShowHide from '../../hooks/useShowHide'
 import CustomerPo from '../../components/trips/createPo'
+import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 
 const statusList = [
   { value: 1, text: 'Ordered' },
@@ -18,6 +19,14 @@ const statusList = [
 ]
 
 const Trucks = (props) => {
+  const iinitial = {
+    usersData: [],
+    usersVisible: false,
+    title: ''
+  }
+
+  const { object, handleHide, handleShow } = useShowHidewithRecord(iinitial)
+
   const { trucks , status } = props
   console.log(props)
 
@@ -25,9 +34,7 @@ const Trucks = (props) => {
     return { value: data.id.toString(), text: data.value }
   })
 
-  const usersInitial = { users: [], name: '', visible: false }
-  const [users, setUsers] = useState(usersInitial)
-
+ 
   const initial = { record: null, title: '', visible: false }
   const [availability, setAvailability] = useState(initial)
 
@@ -43,13 +50,7 @@ const Trucks = (props) => {
     })
   }
 
-  const usersClose = () => {
-    setUsers(usersInitial)
-  }
-
-  const showUsers = (record) => {
-    setUsers({ ...users, users: record.users, name: record.partner, visible: true })
-  }
+ 
 
   const breakdownClose = () => {
     setAvailability(initial)
@@ -122,8 +123,10 @@ const Trucks = (props) => {
       title: 'Phone No',
       dataIndex: 'mobile',
       render: (text, record) => {
+         const number = record.partner && record.partner.partner_users && record.partner.partner_users.length > 0 && 
+          record.partner.partner_users[0].mobile ? record.partner.partner_users[0].mobile : '-'
         return (
-          <span className='link' onClick={() => showUsers(record)}>{record.partner && record.partner.partner_users && record.partner.partner_users.mobile}</span>
+          <span className='link' onClick={() => handleShow('usersVisible', record.partner.name, 'usersData', record.partner.partner_users.mobile)}>{number}</span>
         )
       }
     },
@@ -157,12 +160,12 @@ const Trucks = (props) => {
         scroll={{ x: 1156 }}
         pagination={false}
       />
-      {users.visible &&
+       {object.usersVisible &&
         <PartnerUsers
-          visible={users.visible}
-          data={users.users}
-          onHide={usersClose}
-          name={users.name}
+          visible={object.usersVisible}
+          data={object.usersData}
+          onHide={handleHide}
+          title={object.title}
         />}
       {availability.visible &&
         <CreateBreakdown

@@ -16,8 +16,7 @@ export const TRUCKS_QUERY = gql`
       }
       partner {
         name
-        partner_users {
-          id
+        partner_users(limit:1 , where:{is_admin:{_eq:true}}){
           mobile
         }
         cardcode

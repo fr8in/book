@@ -21,6 +21,7 @@ export const TRUCK_DETAIL_SUBSCRIPTION = gql`
         trips (where: {trip_status_id: {_in: $trip_status_id}}) {
           id
           order_date
+          km
           source{
             name
           }

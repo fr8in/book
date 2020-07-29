@@ -26,6 +26,7 @@ const TruckDetailContainer = (props) => {
   )
 
   if (loading) return <Loading />
+  console.log('TruckDetailContainerData',data)
   console.log('TruckDetailContainer Error', error)
 
   const { truck } = data

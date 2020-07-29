@@ -39,8 +39,11 @@ const Partners = (props) => {
       }
     },
     props.trip ? {
-      title: 'Load Km',
-      dataIndex: 'load',
+      title: 'Km',
+      dataIndex: 'km',
+      render: (text, record) => {
+        return (record.km)
+      }
     } : 
     {
       title: 'SourceIn',
