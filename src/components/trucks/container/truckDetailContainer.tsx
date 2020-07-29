@@ -17,17 +17,18 @@ const tripStatusId = [2, 3, 4, 5, 6]
 
 const TruckDetailContainer = (props) => {
   const { truckNo } = props
+  console.log('truck Id', truckNo)
 
   const { loading, error, data } = useSubscription(
     TRUCK_DETAIL_SUBSCRIPTION,
     {
-      variables: { truck_no: truckNo,trip_status_id: tripStatusId  }
+      variables: { truck_no: truckNo, trip_status_id: tripStatusId }
     }
   )
 
   if (loading) return <Loading />
-  console.log('TruckDetailContainerData',data)
   console.log('TruckDetailContainer Error', error)
+  console.log('TruckDetailContainerData', data)
 
   const { truck } = data
   const truckInfo = truck[0] ? truck[0] : { name: 'ID does not exist' }
@@ -49,8 +50,9 @@ const TruckDetailContainer = (props) => {
                     <Divider type='vertical' />
                     <h4>
                       <TruckTruckType
-                    truck_no={truckInfo.truck_no}
-                    truck_type_id={truckInfo.truck_type_id} /> 
+                        truck_no={truckInfo.truck_no}
+                        truck_type_id={truckInfo.truck_type_id}
+                      />
                     </h4>
                   </Space>
                 }
@@ -85,7 +87,7 @@ const TruckDetailContainer = (props) => {
                       </Row>
                     </TabPane>
                     <TabPane tab='Trips' key='2'>
-                      <TripDetail trip trips={trips}/>
+                      <TripDetail trip trips={trips} />
                     </TabPane>
                     <TabPane tab='Timeline' key='3'>
                       <Row>
