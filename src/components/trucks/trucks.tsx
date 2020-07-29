@@ -1,31 +1,24 @@
-import { useState } from 'react'
 import { Table,Button } from 'antd'
 import Link from 'next/link'
 import { EditTwoTone } from '@ant-design/icons'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
 import PartnerUsers from '../partners/partnerUsers'
-import useShowHide from '../../hooks/useShowHide'
-import CustomerPo from '../../components/trips/createPo'
+import CreatePo from '../../components/trips/createPo'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 
-const statusList = [
-  { value: 1, text: 'Ordered' },
-  { value: 2, text: 'Assigned' },
-  { value: 3, text: 'Confirmed' },
-  { value: 4, text: 'Waiting for Loading' },
-  { value: 5, text: 'Intransit to Destination' },
-  { value: 6, text: 'Deactivated' },
-  { value: 7, text: 'Intransit halting' }
-]
 
 const Trucks = (props) => {
-  const iinitial = {
+  const initial = {
     usersData: [],
     usersVisible: false,
+    poData: [],
+    poVisible: false,
+    editVisible: false,
+    editData: [],
     title: ''
   }
 
-  const { object, handleHide, handleShow } = useShowHidewithRecord(iinitial)
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
   const { trucks , status } = props
   console.log(props)
@@ -35,11 +28,9 @@ const Trucks = (props) => {
   })
 
  
-  const initial = { record: null, title: '', visible: false }
-  const [availability, setAvailability] = useState(initial)
+ 
 
-  const poInitial = { poModal: false }
-  const { visible, onShow, onHide } = useShowHide(initial)
+  
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -49,18 +40,6 @@ const Trucks = (props) => {
       name: record.name
     })
   }
-
- 
-
-  const breakdownClose = () => {
-    setAvailability(initial)
-  }
-
-  const showBreadown = (record) => {
-    setAvailability({ ...record, record: record, title: 'Breakdown', visible: true })
-  }
-
-  
 
   const columns = [
     {
@@ -73,7 +52,7 @@ const Trucks = (props) => {
           </Link>
         )
       }
-    },
+    }, 
     {
       title: 'Trip ID',
       render: (text, record) => {
@@ -102,7 +81,7 @@ const Trucks = (props) => {
                 {
                   source.slice(0, 3) + '-' + destination.slice(0, 3)
                 }
-              </span> : (record.truck_status.id === 1) ? <Button type='link'>Assign</Button> : 'NA'
+              </span> : (record.truck_status.id === 1) ? <Button type='link'onClick={() => handleShow('poVisible', record.partner.name , 'poData', record.truck_no)}>Assign</Button> : 'NA'
           }
           </span>
         )
@@ -144,7 +123,7 @@ const Trucks = (props) => {
     },
     {
       title: '',
-      render: (text, record) => <EditTwoTone onClick={() => showBreadown(record)} />
+      render: (text, record) => <EditTwoTone onClick={() => handleShow('editVisible','Breakdown' , 'editData', record )} />
     }
   ]
   return (
@@ -167,14 +146,22 @@ const Trucks = (props) => {
           onHide={handleHide}
           title={object.title}
         />}
-      {availability.visible &&
+
+        {object.editVisible &&
         <CreateBreakdown
-          visible={availability.visible}
-          data={availability.record}
-          onHide={breakdownClose}
-          title={availability.title}
+          visible={object.editVisible}
+          data={object.editData}
+          onHide={handleHide}
+          title={object.title}
         />}
-      {visible.poModal && <CustomerPo visible={visible.poModal} onHide={() => onHide()} />}
+     
+       {object.poVisible &&
+        <CreatePo
+          visible={object.poVisible}
+          truck_no={object.poData}
+          onHide={handleHide}
+          title={object.title}
+        />}
     </>
   )
 }

@@ -3,8 +3,8 @@ import { createPO, customer } from '../../../mock/customer/createQuickPo'
 import Link from 'next/link'
 
 const CustomerPo = (props) => {
-  const { visible, onHide, data, title } = props
-  console.log('data', data)
+  const { visible, onHide, truck_no, title } = props
+  console.log('data', truck_no)
 
   const onSubmit = () => {
     console.log('Customer PO is Created!')
@@ -37,7 +37,7 @@ const CustomerPo = (props) => {
     >
       <Form layout='vertical' className='create-po'>
         <Link href='trucks/[id]' as={`trucks/${1}`}>
-          <a className='truckPO'>{data.truckNo}</a>
+          <a className='truckPO'>{truck_no}</a>
         </Link>
         <Row gutter={10}>
           <Col xs={24} sm={12}>
