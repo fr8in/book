@@ -55,7 +55,7 @@ const TripInfo = (props) => {
         <Divider />
         <Row>
           <Col sm={24} md={12}>
-            <LabelWithData label='Order Date' data={tripInfo.order_date} labelSpan={10} />
+            <LabelWithData label='Order Date' data={tripInfo.trip_prices.order_date} labelSpan={10} />
             <LabelWithData label='ETA' data={data.trip.ETA} labelSpan={10} />
             <LabelWithData
               label='Customer Price'
@@ -63,15 +63,15 @@ const TripInfo = (props) => {
               labelSpan={10}
             />
             <LabelWithData label='Cash' data={data.priceDetail.cash} labelSpan={10} />
-            <LabelWithData label='To Pay' data={tripInfo.to_pay} labelSpan={10} />
-            <LabelWithData label='Mamul' data={tripInfo.mamul} labelSpan={10} />
+            <LabelWithData label='To Pay' data={tripInfo.trip_prices.to_pay} labelSpan={10} />
+            <LabelWithData label='Mamul' data={tripInfo.trip_prices.mamul} labelSpan={10} />
           </Col>
           <Col sm={24} md={12}>
-            <LabelWithData label='PO Date' data={tripInfo.po_date} labelSpan={10} />
+            <LabelWithData label='PO Date' data={tripInfo.trip_prices.po_date} labelSpan={10} />
             <LabelWithData label='Delay' data={data.trip.delay} labelSpan={10} />
-            <LabelWithData label='Partner Price' data={tripInfo.partner_price} labelSpan={10} />
-            <LabelWithData label='Including loading' data={tripInfo.including_loading ? 'Yes' : 'No'} labelSpan={10} />
-            <LabelWithData label='Including Unloading' data={tripInfo.including_unloading ? 'yes' : 'No'} labelSpan={10} />
+            <LabelWithData label='Partner Price' data={tripInfo.trip_prices.partner_price} labelSpan={10} />
+            <LabelWithData label='Including loading' data={tripInfo.trip_prices.including_loading ? 'Yes' : 'No'} labelSpan={10} />
+            <LabelWithData label='Including Unloading' data={tripInfo.trip_prices.including_unloading ? 'yes' : 'No'} labelSpan={10} />
           </Col>
         </Row>
       </Col>

@@ -195,28 +195,36 @@ const Trips = (props) => {
       width: '11%'
     }:{},
     props.delivered ?{
-      title: 'O.Type',
-      dataIndex: 'order_type',
-      key: 'order_type',
-      width: '6%'
-    } : {},
-    props.delivered ?{
       title: 'Aging',
-      dataIndex: 'aging',
-      key: 'aging',
-      width: '6%'
+      dataIndex: 'tat',
+      key: 'tat',
+      width: '10%'
     } : {},
     props.delivered ?{
       title: 'Comment',
+      width: '11%',
       render: (text, record) => {
-        return (
+          const comment = record.trip_comments && record.trip_comments.length > 0 && 
+          record.trip_comments[0].description ? record.trip_comments[0].description : '-'
+          return comment && comment.length > 12 ? (
+            <Tooltip title={comment}>
+              <span> {comment.slice(0, 12) + '...'}</span>
+            </Tooltip>
+          ) : (
+            comment
+          )
+          }
+          } : {},
+   props.delivered ?{
+      render: (text, record) => {
+       return(
           <span>
             <Tooltip title='Comment'>
-              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.trips_Comments)} />
+              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.trip_comments)} />
             </Tooltip>
             </span>)
       },
-      width: '6%'
+      width: '2%'
     } : {}
   ]
   return (

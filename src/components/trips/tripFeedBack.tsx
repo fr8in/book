@@ -5,15 +5,15 @@ const Tripcomment = (props) => {
 
   const columns = [{
     title: 'Previous Comments',
-    dataIndex: 'message',
+    dataIndex: 'description',
     key: 'message'
   },
   {
-    dataIndex: 'userName',
+    dataIndex: 'created_by',
     key: 'userName'
   },
   {
-    dataIndex: 'date',
+    dataIndex: 'created_at',
     key: 'date'
   }]
 
