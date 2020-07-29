@@ -1,4 +1,5 @@
-import { Table, Button, Space, Tooltip } from 'antd'
+import { useState } from 'react'
+import { Table, Button, Space, Tooltip, Input } from 'antd'
 import {
   CloseOutlined,
   CheckOutlined,
@@ -20,6 +21,17 @@ const CustomerKyc = (props) => {
     createBranchData: []
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+  const mamulInitial = { mamul: null, selectedId: null }
+  const [defaultMamul, setDefaultMamul] = useState(mamulInitial)
+
+  const onMamul = (record, e) => {
+    const givenMamul = e.target.value
+    setDefaultMamul({
+      ...defaultMamul,
+      mamul: givenMamul,
+      selectedId: record.cardcode
+    })
+  }
 
   const newCustomer = [
     {
@@ -84,9 +96,26 @@ const CustomerKyc = (props) => {
       width: '9%'
     },
     {
-      title: 'De. Mamul',
+      title: 'Mamul',
       dataIndex: 'mamul',
-      width: '8%'
+      width: '8%',
+      render: (text, record) => {
+        const statusId = record.status && record.status.id
+        return (
+          <span>
+            {(statusId === 1 || statusId === 5) ? `${text || 0}`
+              : (statusId === 3 || statusId === 4) ? (
+                <Input
+                  type='number'
+                  min={0}
+                  value={defaultMamul.selectedId === record.cardcode ? defaultMamul.mamul : ''}
+                  defaultValue={defaultMamul.mamul}
+                  onChange={(e) => onMamul(record, e)}
+                  size='small'
+                />) : null}
+          </span>
+        )
+      }
     },
     {
       title: 'Adv %',
@@ -114,6 +143,7 @@ const CustomerKyc = (props) => {
       title: 'Action',
       width: '10%',
       render: (text, record) => {
+        const statusId = record.status && record.status.id
         return (
           <Space>
             {record.panNo ? (
@@ -132,23 +162,26 @@ const CustomerKyc = (props) => {
                 onClick={() => console.log('Upload')}
               />
             )}
-            <Button
-              type='primary'
-              size='small'
-              shape='circle'
-              className='btn-success'
-              icon={<CheckOutlined />}
-              onClick={() =>
-                handleShow('createBranchVisible', null, null, record)}
-            />
-            <Button
-              type='primary'
-              size='small'
-              shape='circle'
-              danger
-              icon={<CloseOutlined />}
-              onClick={() => handleShow(null, null, null, null)}
-            />
+            {(statusId === 3 || statusId === 4) &&
+              <Space>
+                <Button
+                  type='primary'
+                  size='small'
+                  shape='circle'
+                  className='btn-success'
+                  icon={<CheckOutlined />}
+                  onClick={() =>
+                    handleShow('createBranchVisible', null, null, record)}
+                />
+                <Button
+                  type='primary'
+                  size='small'
+                  shape='circle'
+                  danger
+                  icon={<CloseOutlined />}
+                  onClick={() => handleShow(null, null, null, null)}
+                />
+              </Space>}
           </Space>
         )
       }
