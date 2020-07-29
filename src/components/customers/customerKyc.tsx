@@ -8,6 +8,7 @@ import {
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Link from 'next/link'
 import BranchCreation from '../customers/branchCreation'
+import CustomerAdvancePercentage from './customerAdvancePercentage'
 
 const CustomerKyc = (props) => {
   const { customers, status, statusId } = props
@@ -23,7 +24,7 @@ const CustomerKyc = (props) => {
   const newCustomer = [
     {
       title: 'User Name',
-      width: '12%',
+      width: '11%',
       render: (text, record) => {
         const user = record.customerUsers[0] && record.customerUsers[0].name
         return user && user.length > 14 ? (
@@ -38,7 +39,7 @@ const CustomerKyc = (props) => {
     {
       title: 'Company Name',
       dataIndex: 'name',
-      width: '12%',
+      width: '11%',
       render: (text, record) => {
         return (
           <Link href='customers/[id]' as={`customers/${record.cardcode}`}>
@@ -56,7 +57,7 @@ const CustomerKyc = (props) => {
     {
       title: 'Mobile No',
       dataIndex: 'mobile',
-      width: '10%'
+      width: '8%'
     },
     {
       title: 'Type',
@@ -89,9 +90,18 @@ const CustomerKyc = (props) => {
     },
     {
       title: 'Adv %',
-      width: '6%',
-      render: (text, record) =>
-        record.advancePercentage && record.advancePercentage.value
+      width: '10%',
+      render: (text, record) => {
+        const advancePercentage = record.advancePercentage && record.advancePercentage.value
+        const advancePercentageId = record.advancePercentage && record.advancePercentage.Id
+        return (
+          <CustomerAdvancePercentage
+            advancePercentage={advancePercentage}
+            advancePercentageId={advancePercentageId}
+            cardcode={record.cardcode}
+          />
+        )
+      }
     },
     {
       title: 'Status',

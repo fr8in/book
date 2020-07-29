@@ -60,7 +60,7 @@ const CustomerDetailContainer = (props) => {
 
   const { customer } = data
   const customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
-  console.log('customerInfo', customerInfo)
+
   return (
     <Row>
       <Col xs={24}>

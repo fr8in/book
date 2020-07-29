@@ -7,7 +7,7 @@ import { CUSTOMERS_QUERY } from './query/customersQuery'
 import Loading from '../../common/loading'
 
 const CustomersContainer = () => {
-  const initialStatus = [3, 4]
+  const initialStatus = [1, 2, 3, 4]
   const [statusId, setStatusId] = useState(initialStatus)
 
   const customersQueryVars = {

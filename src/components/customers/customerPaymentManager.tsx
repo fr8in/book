@@ -1,15 +1,11 @@
-import { Select, message } from 'antd'
-import { CloseCircleTwoTone, EditTwoTone } from '@ant-design/icons'
+import { message } from 'antd'
 import { useQuery, useMutation } from '@apollo/client'
 import { ALL_EMPLOYEE } from '../branches/container/query/employeeQuery'
 import { UPDATE_CUSTOMER_PAYMENT_MANAGER_MUTATION } from './containers/query/updateCustomerPaymentManagerMutation'
-import useShowHide from '../../hooks/useShowHide'
+import InlineSelect from '../common/InlineSelect'
 
 const CustomerPaymentManager = (props) => {
   const { paymentManagerId, paymentManager, cardcode } = props
-
-  const initial = { selectType: false }
-  const { visible, onHide, onShow } = useShowHide(initial)
 
   const { loading, error, data } = useQuery(
     ALL_EMPLOYEE,
@@ -34,37 +30,23 @@ const CustomerPaymentManager = (props) => {
     return { value: data.id, label: data.email }
   })
 
-  const handleChange = (value) => {
-    console.log(`selected ${value}`)
+  const onChange = (value) => {
     updateCustomerTypeId({
       variables: {
         cardcode,
         payment_manager_id: value
       }
     })
-    onHide()
   }
 
   return (
-    <div>
-      {!visible.selectType ? (
-        <label>
-          {paymentManager}{' '}
-          <EditTwoTone onClick={() => onShow('selectType')} />
-        </label>)
-        : (
-          <span>
-            <Select
-              size='small'
-              style={{ width: 110 }}
-              placeholder='Select Type'
-              options={empList}
-              value={paymentManagerId}
-              onChange={handleChange}
-            />{' '}
-            <CloseCircleTwoTone onClick={onHide} />
-          </span>)}
-    </div>
+    <InlineSelect
+      label={paymentManager}
+      value={paymentManagerId}
+      options={empList}
+      handleChange={onChange}
+      style={{ width: 110 }}
+    />
   )
 }
 
