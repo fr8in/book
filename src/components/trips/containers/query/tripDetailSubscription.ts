@@ -27,13 +27,23 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       destination{
         name
       }
-      trip_prices{
-        to_pay
-        mamul
-        cash
-        customer_price
-        partner_price
-      }  
+      trip_status{
+        value
+      }
+      delay
+     eta
+     po_date
+    trip_prices(limit:1, where:{deleted_at:{_is_null:true}})
+    {
+      id
+      customer_price
+      partner_price
+      cash
+      to_pay
+      mamul
+      including_loading
+      including_unloading
+    }
     }
   }
 `

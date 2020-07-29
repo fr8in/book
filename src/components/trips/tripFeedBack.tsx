@@ -1,7 +1,22 @@
 import { Modal, Button, Row, Input, Col, Table } from 'antd'
+import { useQuery } from '@apollo/client'
+import { TRIP_COMMENT_QUERY } from './containers/query/tripCommentQuery'
 
 const Tripcomment = (props) => {
-  const { visible, data, onHide } = props
+  const { visible, trip_id, onHide } = props
+  const { loading, error, data } = useQuery(
+    TRIP_COMMENT_QUERY,
+    {
+      variables: {id:trip_id},
+      notifyOnNetworkStatusChange: true
+    }
+  )
+
+  if (loading) return null
+  console.log('tripComment error', error)
+  console.log('tripComment data', data.trip)
+  const { trip_comments } = data.trip[0] ? data.trip[0] : []
+
 
   const columns = [{
     title: 'Previous Comments',
@@ -36,7 +51,7 @@ const Tripcomment = (props) => {
       </Row>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={trip_comments}
         rowKey={record => record.id}
         size='small'
         pagination={false}

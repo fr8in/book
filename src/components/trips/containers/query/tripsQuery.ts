@@ -25,10 +25,16 @@ export const TRIPS_QUERY = gql`
       }
       km    
       tat
-      trip_comments(limit: 5, order_by: {created_at: desc}) {
+      trip_comments(limit:1, order_by: {created_at: desc}) {
         description
         created_by
         created_at
+      }
+      trip_prices(limit:1, where:{deleted_at:{_is_null:true}})
+      {
+        id
+        customer_price
+        partner_price
       }
     }
   }  

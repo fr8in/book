@@ -178,14 +178,17 @@ const Trips = (props) => {
     },
     props.tripsTable ?{
       title: 'SO Price',
-      dataIndex: 'customer_price',
-      key: 'customer_price',
+      render: (record) => { 
+        console.log()
+        return (record.trip_prices && record.trip_prices.length > 0 && record.trip_prices[0].customer_price) 
+        },
       width: '9%'
     } : {},
     props.tripsTable ?{
       title: 'PO Price',
-      dataIndex: 'partner_price',
-      key: 'partner_price',
+      render: (record) => { 
+        return (record.trip_prices && record.trip_prices.length > 0 && record.trip_prices[0].partner_price) 
+        },
       width: '9%'
     }: {},
     props.tripsTable ?{
@@ -220,7 +223,7 @@ const Trips = (props) => {
        return(
           <span>
             <Tooltip title='Comment'>
-              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.trip_comments)} />
+              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
             </Tooltip>
             </span>)
       },
@@ -240,7 +243,7 @@ const Trips = (props) => {
     {object.commentVisible &&
       <TripFeedBack
         visible={object.commentVisible}
-        data={object.commentData}
+        trip_id={object.commentData}
         onHide={handleHide}
       />}
    </>
