@@ -13,7 +13,10 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
             ifsc_code
             address
             pan
-            bank_id
+            bank{
+              id
+              name
+            }
             final_payment_date
             onboarded_by{
                 id
@@ -30,6 +33,13 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
             emi
             dnd
             cibil
+           
+                tds_percentage {
+                  value
+                }
+                partner_advance_percentage {
+                  value
+                }
             trucks {
               truck_no
               truck_type{

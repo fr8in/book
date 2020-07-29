@@ -9,7 +9,7 @@ import Link from 'next/link'
 import useShowHide from '../../hooks/useShowHide'
 import KycReject from '../../components/partners/partnerKycReject'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
-import TripFeedBack from '../trips/tripFeedBack'
+import PartnerComment from './partnerComment'
 import KycApproval from '../partners/kycApproval'
 
 const regionList = [
@@ -95,34 +95,44 @@ const PartnerKyc = (props) => {
     },
     {
       title: 'On Boarded By',
-      dataIndex: 'boardedBy',
       width: '10%',
       render: (text, record) => {
-        return text && text.length > 12 ? (
-          <Tooltip title={text}>
-            <span> {text.slice(0, 12) + '...'}</span>
+        const onboarded_by =  record.onboarded_by && record.onboarded_by.name
+        return onboarded_by.length > 12 ? (
+          <Tooltip title={onboarded_by}>
+            <span> {onboarded_by.slice(0, 12) + '...'}</span>
           </Tooltip>
         ) : (
-          text
+          onboarded_by
         )
       }
     },
     {
       title: 'Region',
-      dataIndex: 'region',
       width: '7%',
-      filters: regionList
+      filters: regionList,
+      render: (text, record) => {
+        const region = record.city && record.city.branch &&   
+        record.city.branch.region.name ? record.city.branch.region.name : '-'
+          return (region)
+        }
     },
     {
       title: 'Contact No',
-      dataIndex: 'number',
-      width: '9%'
+      width: '9%',
+      render: (text, record) => {
+        const number = record.partner_users && record.partner_users.length > 0 && 
+        record.partner_users[0].mobile ? record.partner_users[0].mobile : '-'
+          return (number)
+        }
+      
     },
     {
       title: 'Registered At',
-      dataIndex: 'date',
+      dataIndex: 'created_at',
       width: '10%',
       render: (text, record) => {
+        console.log('partners',partners)
         return text && text.length > 12 ? (
           <Tooltip title={text}>
             <span> {text.slice(0, 12) + '...'}</span>
@@ -134,9 +144,14 @@ const PartnerKyc = (props) => {
     },
     {
       title: 'Trucks',
-      dataIndex: 'count',
       width: '7%',
-      filters: truckCount
+      filters: truckCount,
+      render: (text, record) => {
+        const truckCount = record.trucks_aggregate && record.trucks_aggregate.aggregate &&
+          record.trucks_aggregate.aggregate.count ? 
+         record.trucks_aggregate.aggregate.count : '-'
+          return (truckCount)
+        }
     },
     {
       title: 'PAN',
@@ -144,7 +159,7 @@ const PartnerKyc = (props) => {
       width: '8%'
     },
     {
-      title: 'KYC Status',
+      title: 'Status',
       dataIndex: 'status',
       width: '9%',
       render: (text, record) => {
@@ -160,17 +175,20 @@ const PartnerKyc = (props) => {
     },
     {
       title: 'Comment',
-      dataIndex: 'comment',
       width: '11%',
       render: (text, record) => {
-        return text && text.length > 12 ? (
-          <Tooltip title={text}>
-            <span> {text.slice(0, 12) + '...'}</span>
-          </Tooltip>
-        ) : (
-          text
-        )
-      }
+        const comment = record.partner_comments && record.partner_comments.length > 0 && 
+        record.partner_comments[0].description ? record.partner_comments[0].description : '-'
+        console.log('partners',partners)
+          return comment && comment.length > 12 ? (
+            <Tooltip title={comment}>
+              <span> {comment.slice(0, 12) + '...'}</span>
+            </Tooltip>
+          ) : (
+            comment
+          )
+        }
+      
     },
     {
       title: 'Action',
@@ -182,7 +200,7 @@ const PartnerKyc = (props) => {
             <Button
               type='link'
               icon={<CommentOutlined />}
-              onClick={() => handleShow('commentVisible', null, 'commentData', record.previousComment)}
+              onClick={() => handleShow('commentVisible', null, 'commentData', record.id)}
             />
           </Tooltip>
           <Button
@@ -219,9 +237,9 @@ const PartnerKyc = (props) => {
         className='withAction'
       />
       {object.commentVisible && (
-        <TripFeedBack
+        <PartnerComment
           visible={object.commentVisible}
-          data={object.commentData}
+          partnerId={object.commentData}
           onHide={handleHide}
         />
       )}

@@ -4,7 +4,7 @@ import TruckDetailContainer from '../../components/trucks/container/truckDetailC
 const TruckDetail = (props) => {
     return (
     <PageLayout title={`Truck - ${props.id}`}>
-      <TruckDetailContainer />
+      <TruckDetailContainer truckNo={props.id} />
     </PageLayout>
   )
 }

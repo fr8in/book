@@ -4,33 +4,46 @@ import mock from '../../../mock/trip/tripsByStages'
 import Link from 'next/link'
 
 const Partners = (props) => {
+  const { trips } = props
   
   const columnsCurrent = [
     {
       title: 'ID',
-      dataIndex: 'code',
+      dataIndex: 'id',
       render: (text, record) => {
         return (
           <Link href='/trips/[id]' as={`/trips/${record.id} `}>
-            <a>{text}</a>
+            <a>{record.id}</a>
           </Link>)
       }
     },
     {
       title: 'OrderDate',
-      dataIndex: 'date'
+      dataIndex: 'order_date',
+      render: (text, record) => {
+        return (record.order_date)
+      }
     },
     {
       title: 'Source',
-      dataIndex: 'source'
+      dataIndex: 'source',
+      render: (text, record) => {
+        return (record.source.name)
+      }
     },
     {
       title: 'Destination',
-      dataIndex: 'city'
+      dataIndex: 'city',
+      render: (text, record) => {
+        return (record.destination.name)
+      }
     },
-    props.trips ? {
-      title: 'Load Km',
-      dataIndex: 'load',
+    props.trip ? {
+      title: 'Km',
+      dataIndex: 'km',
+      render: (text, record) => {
+        return (record.km)
+      }
     } : 
     {
       title: 'SourceIn',
@@ -38,9 +51,12 @@ const Partners = (props) => {
     },
     {
       title: 'Status',
-      dataIndex: 'status'
+      dataIndex: 'status',
+      render: (text, record) => {
+        return (record.trip_status.value)
+      }
     },
-    props.trips ? {
+    props.trip ? {
       title: 'AVG KM/Day',
       dataIndex: 'avg',
     } : {},
@@ -49,7 +65,7 @@ const Partners = (props) => {
   return (
     <Table
       columns={columnsCurrent}
-      dataSource={mock}
+      dataSource={trips}
       rowKey={record => record.id}
       size='middle'
       scroll={{ x: 900, y: 270 }}

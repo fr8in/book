@@ -7,27 +7,33 @@ import { Row, Col, Button, Card, Divider, Space, Tag, Tabs } from 'antd'
 import AssignTrip from '../assignTrip'
 import Loading from '../../common/loading'
 import DetailPageHeader from '../../common/detailPageHeader'
+import TruckTruckType from '../../../components/trucks/truckTruckType'
 
 import { useSubscription } from '@apollo/client'
 import { TRUCK_DETAIL_SUBSCRIPTION } from './query/truckDetailSubscription'
 
 const TabPane = Tabs.TabPane
+const tripStatusId = [2, 3, 4, 5, 6]
 
 const TruckDetailContainer = (props) => {
   const { truckNo } = props
+  console.log('truck Id', truckNo)
 
   const { loading, error, data } = useSubscription(
     TRUCK_DETAIL_SUBSCRIPTION,
     {
-      variables: { truck_no: truckNo }
+      variables: { truck_no: truckNo, trip_status_id: tripStatusId }
     }
   )
 
   if (loading) return <Loading />
   console.log('TruckDetailContainer Error', error)
+  console.log('TruckDetailContainerData', data)
 
   const { truck } = data
   const truckInfo = truck[0] ? truck[0] : { name: 'ID does not exist' }
+  const trips = truckInfo.trips
+  console.log('trips', trips)
 
   return (
     <div>
@@ -42,7 +48,12 @@ const TruckDetailContainer = (props) => {
                   <Space>
                     <h3>{truckInfo.truck_no}</h3>
                     <Divider type='vertical' />
-                    <h4>{truckInfo.truck_type.value}</h4>
+                    <h4>
+                      <TruckTruckType
+                        truck_no={truckInfo.truck_no}
+                        truck_type_id={truckInfo.truck_type_id}
+                      />
+                    </h4>
                   </Space>
                 }
                 extra={
@@ -76,7 +87,7 @@ const TruckDetailContainer = (props) => {
                       </Row>
                     </TabPane>
                     <TabPane tab='Trips' key='2'>
-                      <TripDetail trips />
+                      <TripDetail trip trips={trips} />
                     </TabPane>
                     <TabPane tab='Timeline' key='3'>
                       <Row>
