@@ -107,12 +107,6 @@ const PartnerTruck = (props) => {
       },
       filters: list
     },
-    {
-      title: 'Avg Km/day',
-      dataIndex: 'averageKm',
-      sorter: (a, b) => (a.averageKm > b.averageKm ? 1 : -1),
-      filters: status
-    }
   ]
   return (
     <>

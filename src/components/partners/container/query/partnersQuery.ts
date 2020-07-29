@@ -12,6 +12,9 @@ export const PARTNERS_QUERY = gql`
         name
       }
       created_at
+      partner_status{
+        value
+      }
       city {
         branch {
           region {

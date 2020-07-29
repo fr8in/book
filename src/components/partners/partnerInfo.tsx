@@ -18,7 +18,8 @@ const PartnerInfo = (props) => {
       />
       <LabelAndData
         label='Region'
-        data={<label>{detail.region}</label>}
+        data={<label>{partnerInfo.city && partnerInfo.city.branch &&
+           partnerInfo.city.branch.region && partnerInfo.city.branch.region.name }</label>}
         mdSpan={4}
         smSpan={8}
         xsSpan={12}

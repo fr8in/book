@@ -17,6 +17,9 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
               id
               name
             }
+            partner_users(limit:1 , where:{is_admin:{_eq:true}}){
+              mobile
+            }
             final_payment_date
             onboarded_by{
                 id
@@ -33,12 +36,25 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
             emi
             dnd
             cibil
-           
+            city {
+              branch {
+                region {
+                  name
+                }
+              }
+            }
                 tds_percentage {
                   value
                 }
                 partner_advance_percentage {
                   value
+                }
+                partner_memberships(limit: 1, where: {deleted_at: {_is_null: true}}) {
+                  id
+                  membership_type {
+                    id
+                    value
+                  }
                 }
             trucks {
               truck_no
