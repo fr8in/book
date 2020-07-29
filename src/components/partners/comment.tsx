@@ -1,5 +1,5 @@
 
-import {Row, Col, Table , Input, Button } from 'antd'
+import { Row, Col, Table, Input, Button } from 'antd'
 import Mock from '../../../mock/partner/comment'
 
 const Comment = () => {
@@ -7,28 +7,25 @@ const Comment = () => {
     {
       title: 'Comment',
       dataIndex: 'message',
-      width:'35'
+      width: '35'
     },
     {
       title: 'Created By',
       dataIndex: 'userName',
-      width:'35'
+      width: '35'
     },
     {
       title: 'Created On',
       dataIndex: 'date',
-      width:'30'
-    },
+      width: '30'
+    }
   ]
   return (
-   
-     <div>
-       <br />
-        <Row>
-         <Col span={8} ><Input placeholder="Please enter comments" /></Col> 
-         <Col offset={1}>  <Button type="primary">Submit</Button></Col>
-        </Row>
-       <br />
+    <div>
+      <Row className='p10' gutter={10}>
+        <Col xs={24} sm={18}><Input.TextArea placeholder='Please enter comments' /></Col>
+        <Col xs={4}><Button type='primary'>Submit</Button></Col>
+      </Row>
       <Table
         columns={columnsCurrent}
         dataSource={Mock}
@@ -37,8 +34,8 @@ const Comment = () => {
         scroll={{ x: 800, y: 400 }}
         pagination={false}
       />
-     </div>
-  
+    </div>
+
   )
 }
 

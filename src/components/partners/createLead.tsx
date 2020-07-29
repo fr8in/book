@@ -1,5 +1,5 @@
 
-import { Modal, Button, Input, Row, Col, Space, Select } from 'antd'
+import { Modal, Button, Input, Row, Col, Form, Select } from 'antd'
 import { OwnerName, SelectType } from '../../../mock/sourcing/createLead'
 
 const { TextArea } = Input
@@ -19,51 +19,53 @@ const CreateLead = (props) => {
     onHide()
   }
   return (
-    <div>
-      <Modal
-        title='Create Lead'
-        visible={visible}
-        onOk={onSubmit}
-        onCancel={onHide}
-        footer={[
-          <Button type='primary' key='back'> Submit </Button>
-        ]}
-      >
-        <Input placeholder='Company Name' />
-        <br />
-        <br />
-        <Input placeholder=' Name' />
-        <br />
-        <br />
-        <Row>
-          <Space>
-            <Col>
+    <Modal
+      title='Create Lead'
+      visible={visible}
+      onOk={onSubmit}
+      onCancel={onHide}
+      footer={[
+        <Button type='primary' key='back'> Submit </Button>
+      ]}
+    >
+      <Form layout='vertical'>
+        <Form.Item>
+          <Input placeholder='Company Name' />
+        </Form.Item>
+        <Form.Item>
+          <Input placeholder=' Name' />
+        </Form.Item>
+        <Row gutter={10}>
+          <Col xs={24} sm={12}>
+            <Form.Item>
               <Input placeholder='Phone' />
-            </Col>
-            <Col>
-              <Select defaultValue='' style={{ width: 200 }} allowClear>
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Form.Item>
+              <Select defaultValue='' allowClear>
                 <Option value=' '> </Option>
               </Select>
-            </Col>
-          </Space>
+            </Form.Item>
+          </Col>
         </Row>
-        <br />
-        <Row>
-          <Space>
-            <Col>
-              <Select defaultValue='Select Source' style={{ width: 200 }} onChange={handleChange} options={SelectType} />
-            </Col>
-            <Col>
-              <Select defaultValue='Select Owner' style={{ width: 200 }} onChange={handleChange} options={OwnerName} />
-
-            </Col>
-          </Space>
+        <Row gutter={10}>
+          <Col xs={24} sm={12}>
+            <Form.Item>
+              <Select defaultValue='Select Source' onChange={handleChange} options={SelectType} />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Form.Item>
+              <Select defaultValue='Select Owner' onChange={handleChange} options={OwnerName} />
+            </Form.Item>
+          </Col>
         </Row>
-        <br />
-        <TextArea placeholder='Comment' allowClear onChange={onChange} />
-
-      </Modal>
-    </div>
+        <Form.Item>
+          <TextArea placeholder='Comment' allowClear onChange={onChange} />
+        </Form.Item>
+      </Form>
+    </Modal>
   )
 }
 

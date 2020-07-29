@@ -11,12 +11,10 @@ import SendLoadingMemo from './sendLoadingMemo'
 import useShowHide from '../../hooks/useShowHide'
 import DeletePO from './deletePO'
 
-
 const TripTime = (props) => {
-  const tripTime = props
   const initial = { checkbox: false, mail: false, deletePO: false }
   const { visible, onShow, onHide } = useShowHide(initial)
- 
+
   return (
     <Card size='small' className='mt10'>
       <Row>
@@ -30,7 +28,7 @@ const TripTime = (props) => {
                     format='DD-MMM-YYYY HH:mm'
                     placeholder='Select Time'
                     style={{ width: '100%' }}
-                    disabled={false} 
+                    disabled={false}
                   />
                 </Form.Item>
               </Col>

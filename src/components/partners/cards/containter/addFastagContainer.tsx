@@ -2,7 +2,7 @@ import { Row, Col, Form, Input, Button, Select, Space, Card } from 'antd'
 
 const { Option } = Select
 
-const AddFastag = () => {
+const AddFastagContainer = () => {
   return (
     <Card size='small' title='Add FasTag' className='border-top-blue'>
       <Row justify='center'>
@@ -45,4 +45,4 @@ const AddFastag = () => {
   )
 }
 
-export default AddFastag
+export default AddFastagContainer

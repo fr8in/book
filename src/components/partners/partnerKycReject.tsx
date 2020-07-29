@@ -1,8 +1,8 @@
-import { Modal, Button,Input } from 'antd'
+import { Modal, Button, Input } from 'antd'
 
 const KycReject = (props) => {
   const { visible, onHide } = props
- 
+
   return (
     <>
       <Modal
@@ -14,10 +14,10 @@ const KycReject = (props) => {
           <Button key='submit' type='primary'>Ok</Button>
         ]}
       >
-        <Input placeholder='Enter Reject Reason'/>
+        <Input placeholder='Enter Reject Reason' />
       </Modal>
     </>
   )
 }
 
-export default KycReject;
+export default KycReject

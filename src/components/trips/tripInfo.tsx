@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { EditTwoTone } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
 import CustomerPrice from '../trips/customerPrice'
-import data from '../../../mock/trip/tripDetail'
+// import data from '../../../mock/trip/tripDetail'
 
 const TripInfo = (props) => {
   const { tripInfo } = props
@@ -70,8 +70,8 @@ const TripInfo = (props) => {
             <LabelWithData label='PO Date' data={tripInfo.po_date} labelSpan={10} />
             <LabelWithData label='Delay' data={tripInfo.delay} labelSpan={10} />
             <LabelWithData label='Partner Price' data={tripInfo.trip_prices[0].partner_price} labelSpan={10} />
-            <LabelWithData label='Including loading' data={tripInfo.trip_prices.including_loading =true? 'Yes' : 'No'} labelSpan={10} />
-            <LabelWithData label='Including Unloading' data={tripInfo.trip_prices.including_unloading =true? 'yes' : 'No'} labelSpan={10} />
+            <LabelWithData label='Including loading' data={tripInfo.trip_prices.including_loading === true ? 'Yes' : 'No'} labelSpan={10} />
+            <LabelWithData label='Including Unloading' data={tripInfo.trip_prices.including_unloading === true ? 'yes' : 'No'} labelSpan={10} />
           </Col>
         </Row>
       </Col>

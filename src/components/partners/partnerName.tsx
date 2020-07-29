@@ -7,20 +7,19 @@ const PartnerName = (props) => {
   const { cardcode, name } = props
 
   const [updatePartnerName] = useMutation(
-      UPDATE_PARTNER_NAME_MUTATION,
-      {
-        onError (error) { message.error(error.toString()) }
-      }
-      )
+    UPDATE_PARTNER_NAME_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) }
+    }
+  )
 
   const onSubmit = (text) => {
-    
-        updatePartnerName({
-        variables: {
-          cardcode,
-          name: text
-        }
-      })
+    updatePartnerName({
+      variables: {
+        cardcode,
+        name: text
+      }
+    })
   }
 
   return (

@@ -7,7 +7,7 @@ const Tripcomment = (props) => {
   const { loading, error, data } = useQuery(
     TRIP_COMMENT_QUERY,
     {
-      variables: {id:trip_id},
+      variables: { id: trip_id },
       notifyOnNetworkStatusChange: true
     }
   )
@@ -16,7 +16,6 @@ const Tripcomment = (props) => {
   console.log('tripComment error', error)
   console.log('tripComment data', data.trip)
   const { trip_comments } = data.trip[0] ? data.trip[0] : []
-
 
   const columns = [{
     title: 'Previous Comments',

@@ -2,7 +2,7 @@ import { Row, Col, Form, Input, Button, Select, Space, Card } from 'antd'
 
 const { Option } = Select
 
-const AddFuelCard = () => {
+const AddFuelCardContainer = () => {
   return (
     <Card size='small' title='Add Fuel Card' className='border-top-blue'>
       <Row justify='center'>
@@ -51,4 +51,4 @@ const AddFuelCard = () => {
   )
 }
 
-export default AddFuelCard
+export default AddFuelCardContainer
