@@ -2,14 +2,12 @@ import { Modal, Button, Row, Input, Col, Table } from 'antd'
 import { useQuery } from '@apollo/client'
 import { PARTNER_COMMENT_QUERY } from './container/query/partnersCommentQuery'
 
-
-
 const PartnerComment = (props) => {
   const { visible, partnerId, onHide } = props
   const { loading, error, data } = useQuery(
     PARTNER_COMMENT_QUERY,
     {
-      variables: {id:partnerId},
+      variables: { id: partnerId },
       notifyOnNetworkStatusChange: true
     }
   )

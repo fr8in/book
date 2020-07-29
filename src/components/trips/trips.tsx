@@ -1,12 +1,11 @@
-//import tripsData from '../../../mock/trip/tripsData'
-import { Table, Tooltip, Input,Button } from 'antd'
+// import tripsData from '../../../mock/trip/tripsData'
+import { Table, Tooltip, Input, Button } from 'antd'
 import Link from 'next/link'
-import { SearchOutlined,CommentOutlined } from '@ant-design/icons'
+import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import TripFeedBack from '../trips/tripFeedBack'
-//import loadData from '../../../mock/trucks/loadData'
+// import loadData from '../../../mock/trucks/loadData'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
-
 
 const statusList = [
   { value: 1, text: 'Delivered' },
@@ -129,7 +128,7 @@ const Trips = (props) => {
       title: 'Source',
       width: '8%',
       render: (text, record) => {
-        return  text > 12 ? (
+        return text > 12 ? (
           <Tooltip title={record.source.name}>
             <span>{record.source.name.slice(0, 9) + '...'}</span>
           </Tooltip>
@@ -170,72 +169,83 @@ const Trips = (props) => {
     },
     {
       title: 'Status',
-      render: (record) => { 
-        return (record.trip_status.value) 
-        },
+      render: (record) => {
+        return (record.trip_status.value)
+      },
       width: '12%',
       filters: statusList
     },
-    props.tripsTable ?{
+    props.tripsTable ? {
       title: 'SO Price',
-      dataIndex: 'customer_price',
-      key: 'customer_price',
+      render: (record) => {
+        console.log()
+        return (record.trip_prices && record.trip_prices.length > 0 && record.trip_prices[0].customer_price)
+      },
       width: '9%'
     } : {},
-    props.tripsTable ?{
+    props.tripsTable ? {
       title: 'PO Price',
-      dataIndex: 'partner_price',
-      key: 'partner_price',
+      render: (record) => {
+        return (record.trip_prices && record.trip_prices.length > 0 && record.trip_prices[0].partner_price)
+      },
       width: '9%'
     }: {},
-    props.tripsTable ?{
+    props.tripsTable ? {
       title: 'Trip KM',
       dataIndex: 'km',
       key: 'km',
       width: '11%'
     }:{},
-    props.delivered ?{
-      title: 'O.Type',
-      dataIndex: 'order_type',
-      key: 'order_type',
-      width: '6%'
-    } : {},
-    props.delivered ?{
+    props.delivered ? {
       title: 'Aging',
-      dataIndex: 'aging',
-      key: 'aging',
-      width: '6%'
+      dataIndex: 'tat',
+      key: 'tat',
+      width: '10%'
     } : {},
-    props.delivered ?{
+    props.delivered ? {
       title: 'Comment',
+      width: '11%',
+      render: (text, record) => {
+        const comment = record.trip_comments && record.trip_comments.length > 0 &&
+          record.trip_comments[0].description ? record.trip_comments[0].description : '-'
+        return comment && comment.length > 12 ? (
+          <Tooltip title={comment}>
+            <span> {comment.slice(0, 12) + '...'}</span>
+          </Tooltip>
+        ) : (
+          comment
+        )
+      }
+    } : {},
+    props.delivered ? {
       render: (text, record) => {
         return (
-          <span>
+         <span>
             <Tooltip title='Comment'>
-              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.trips_Comments)} />
+              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
             </Tooltip>
-            </span>)
+          </span>)
       },
-      width: '6%'
+      width: '2%'
     } : {}
   ]
   return (
     <>
-    <Table
-      columns={columns}
-      dataSource={trips}
-      rowKey={record => record.id}
-      size='small'
-      scroll={{ x: 1156 }}
-      pagination={false}
-    />
-    {object.commentVisible &&
+      <Table
+        columns={columns}
+        dataSource={trips}
+        rowKey={record => record.id}
+        size='small'
+        scroll={{ x: 1156 }}
+        pagination={false}
+      />
+      {object.commentVisible &&
       <TripFeedBack
         visible={object.commentVisible}
-        data={object.commentData}
+        trip_id={object.commentData}
         onHide={handleHide}
       />}
-   </>
+    </>
   )
 }
 

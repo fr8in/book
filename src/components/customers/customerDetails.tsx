@@ -10,7 +10,6 @@ const CustomerDetails = (props) => {
   const { customerInfo } = props
   const initial = {
     gst: customerInfo.gst,
-    credit_limit: customerInfo.credit_limit,
     managed: customerInfo.managed
   }
   const [value, setValue] = useState(initial)
@@ -59,7 +58,7 @@ const CustomerDetails = (props) => {
         <LabelWithData label='Mobile No' data={customerInfo.mobile} labelSpan={10} dataSpan={14} />
         <LabelWithData
           label='OnBoarded By'
-          data={customerInfo.onboarded_by_id}
+          data={customerInfo.approved_by_id}
           labelSpan={10}
           dataSpan={14}
         />
