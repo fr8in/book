@@ -22,7 +22,7 @@
     "@apollo/react-ssr": "^3.1.5",
     "@zeit/next-less": "^1.0.1",
     "@zeit/next-sass": "^1.0.1",
-    "antd": "^4.4.1",
+    "antd": "^4.5.1",
     "graphql": "^15.3.0",
     "moment": "^2.27.0",
     "next": "latest",

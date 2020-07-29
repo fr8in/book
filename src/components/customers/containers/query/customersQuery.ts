@@ -1,8 +1,16 @@
 import { gql } from '@apollo/client'
 
 export const CUSTOMERS_QUERY = gql`
-  query customers($offset: Int!, $limit: Int!) {
-    customer(offset: $offset, limit: $limit) {
+  query customers($offset: Int!, $limit: Int!, $statusId:[Int!]) {
+    customer(
+      offset: $offset, 
+      limit: $limit,
+      where: { 
+        status: {
+          id: {_in: $statusId}
+        } 
+      }
+    ) {
       cardcode
       customerUsers{
         id
@@ -22,7 +30,7 @@ export const CUSTOMERS_QUERY = gql`
         value
       }
     }
-    customer_status{
+    customer_status(order_by: {id:asc}){
       id
       value
     }
