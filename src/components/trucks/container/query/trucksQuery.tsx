@@ -5,6 +5,7 @@ export const TRUCKS_QUERY = gql`
     truck(offset: $offset, limit: $limit) {
       truck_no
       truck_type_id
+      truck_status_id
       truck_type{
         value
       }
@@ -12,6 +13,7 @@ export const TRUCKS_QUERY = gql`
         name
       }
       truck_status {
+        id
         value
       }
       partner {

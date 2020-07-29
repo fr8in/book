@@ -1,9 +1,25 @@
 
 import { Modal, Button, Row, Input, Col, Table, Popconfirm, Form } from 'antd'
 import { PhoneOutlined, DeleteOutlined } from '@ant-design/icons'
+import { useQuery } from '@apollo/client'
+import { PARTNER_USERS_QUERY } from './container/query/partnersUsersQuery'
+
 
 const PartnerUsers = (props) => {
-  const { title, visible, onHide } = props
+  const { visible, partnerId, onHide , title } = props
+  const { loading, error, data } = useQuery(
+    PARTNER_USERS_QUERY,
+    {
+      variables: {cardcode:partnerId},
+      notifyOnNetworkStatusChange: true
+    }
+  )
+
+  if (loading) return null
+  console.log('PartnerUsers error', error)
+  
+  const { partner_users } = data.partner[0] ? data.partner[0] : [] && data.partner_users[0] ? data.partner_users[0] : []
+
   const userDelete = (value) => {
     console.log('changed', value)
   }
@@ -14,8 +30,8 @@ const PartnerUsers = (props) => {
   const partnerUserColumn = [
     {
       title: 'Mobile No',
-      dataIndex: 'mobileNo',
-      key: 'mobileNo'
+      dataIndex: 'mobile',
+      key: 'mobile'
     },
     {
       title: 'Action',
@@ -47,7 +63,7 @@ const PartnerUsers = (props) => {
     >
       <Table
         columns={partnerUserColumn}
-        dataSource={props.data}
+        dataSource={partner_users}
         className='withAction'
         rowKey={record => record.id}
         size='small'
