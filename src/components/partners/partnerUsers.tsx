@@ -1,22 +1,54 @@
 
-import { Modal, Button, Row, Input, Col, Table, Popconfirm, Form } from 'antd'
+import { Modal, Button, Row, Input, Col, Table, Popconfirm, Form , message } from 'antd'
 import { PhoneOutlined, DeleteOutlined } from '@ant-design/icons'
-import { useQuery } from '@apollo/client'
+import React, { useState } from 'react'
+import { useQuery , useMutation} from '@apollo/client'
 import { PARTNER_USERS_QUERY } from './container/query/partnersUsersQuery'
+import {INSERT_PARTNER_USERS_MUTATION} from './container/query/insertPartnerUsersMutation'
 
 const PartnerUsers = (props) => {
-  const { visible, partnerId, onHide, title } = props
+  const { visible, partner, onHide, title ,mobile} = props
+  
+ console.log('partnerId',partner)
+  const [user, setUser] = useState('')
+
   const { loading, error, data } = useQuery(
     PARTNER_USERS_QUERY,
     {
-      variables: { cardcode: partnerId },
+      variables: {cardcode: partner.cardcode },
       notifyOnNetworkStatusChange: true
+    }
+  )
+
+  const [insertPartnerUser] = useMutation(
+    INSERT_PARTNER_USERS_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
 
   if (loading) return null
   console.log('PartnerUsers error', error)
 
+  const handleChange = (e) => {
+    setUser(e.target.value)
+  }
+  console.log('user',user)
+
+  const onAddUser = () => {
+    insertPartnerUser({
+      variables: {
+        partner_id : partner.id,
+       mobile :user,
+     is_admin :false,
+     email :`${mobile}.partner@fr8.in`,
+     name: ''
+   
+      }
+    })
+  }
+  
   const { partner_users } = data.partner[0] ? data.partner[0] : [] && data.partner_users[0] ? data.partner_users[0] : []
 
   const userDelete = (value) => {
@@ -71,11 +103,11 @@ const PartnerUsers = (props) => {
       <Row className='mt10' gutter={10}>
         <Col flex='auto'>
           <Form.Item>
-            <Input type='number' min={-10} max={10} placeholder='Enter Mobile Number' />
+            <Input type='number' value={user}  onChange={handleChange} min={-10} max={10} placeholder='Enter Mobile Number' />
           </Form.Item>
         </Col>
         <Col flex='90px'>
-          <Button type='primary'>Add User</Button>
+          <Button type='primary' onClick={onAddUser}>Add User</Button>
         </Col>
       </Row>
     </Modal>

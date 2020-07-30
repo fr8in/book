@@ -105,7 +105,7 @@ const Trucks = (props) => {
          const number = record.partner && record.partner.partner_users && record.partner.partner_users.length > 0 && 
           record.partner.partner_users[0].mobile ? record.partner.partner_users[0].mobile : '-'
         return (
-          <span className='link' onClick={() => handleShow('usersVisible', null , 'usersData', record.cardcode)}>{number}</span>
+          <span className='link' onClick={() => handleShow('usersVisible', null , 'usersData', record.partner)}>{number}</span>
         )
       }
     },
@@ -142,7 +142,7 @@ const Trucks = (props) => {
        {object.usersVisible &&
         <PartnerUsers
           visible={object.usersVisible}
-          partnerId={object.usersData}
+          partner={object.usersData}
           onHide={handleHide}
           title={object.title}
         />}
