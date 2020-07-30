@@ -290,6 +290,26 @@ a, .link {
   color: @light-gray;
   font-weight: normal;
 }
+.search {
+  position: relative;
+  .search-drop {
+    position: absolute;
+    top:0;
+    right:0;
+    z-index: 2;
+    border-radius: 0;
+    height: 36px;
+  }
+}
+.search-field {
+  padding: 5px;
+  background-color: @white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  input{
+    max-width: 100%;
+    width: 300px;
+  }
+}
 
 @media only screen and (max-width: 767px) {
   .stats {

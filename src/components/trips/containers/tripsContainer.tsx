@@ -32,7 +32,7 @@ const TripsContainer = () => {
   if (loading) return <Loading />
   console.log('TripsContainer error', error)
 
-  const {trip} = data
+  const { trip } = data
 
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
@@ -54,7 +54,7 @@ const TripsContainer = () => {
         }
       >
         <TabPane tab={<TitleWithCount name='Trips' />} key='1'>
-        <Trips trips={trip} tripsTable/>
+          <Trips trips={trip} tripsTable />
         </TabPane>
         <TabPane tab={<TitleWithCount name='Delivered' value={1840} />} key='2'>
           <Trips trips={trip} delivered />

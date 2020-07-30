@@ -8,8 +8,6 @@ import Loading from '../../common/loading'
 
 const { Search } = Input
 
- 
-
 export const trucksQueryVars = {
   offset: 0,
   limit: 10,
@@ -20,7 +18,7 @@ const TruckContainer = () => {
   const { loading, error, data } = useQuery(
     TRUCKS_QUERY,
     {
-      variables: trucksQueryVars, 
+      variables: trucksQueryVars,
       notifyOnNetworkStatusChange: true
     }
   )
@@ -29,7 +27,7 @@ const TruckContainer = () => {
   console.log('TrucksContainer error', error)
 
   console.log('TrucksContainer data', data)
-  const { truck , truck_status} = data
+  const { truck, truck_status } = data
   console.log('truck', truck)
 
   return (
@@ -45,7 +43,7 @@ const TruckContainer = () => {
       <Row>
         <Col sm={24}>
           <Card size='small' className='card-body-0'>
-            <Trucks trucks={truck} status={truck_status}/>
+            <Trucks trucks={truck} status={truck_status} />
           </Card>
         </Col>
       </Row>

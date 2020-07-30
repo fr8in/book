@@ -1,23 +1,12 @@
-import { useState } from 'react'
 import { Row, Col, Space, Button } from 'antd'
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons'
-import InlineEdit from '../common/inlineEdit'
 import LabelWithData from '../common/labelWithData'
 
 import mockData from '../../../mock/customer/customerDetail'
+import CustomerGst from './customerGst'
 
 const CustomerDetails = (props) => {
   const { customerInfo } = props
-  const initial = {
-    gst: customerInfo.gst,
-    credit_limit: customerInfo.credit_limit,
-    managed: customerInfo.managed
-  }
-  const [value, setValue] = useState(initial)
-
-  const onSubmit = (objKey, text) => {
-    setValue({ ...value, [objKey]: text })
-  }
 
   return (
     <Row gutter={8}>
@@ -37,7 +26,7 @@ const CustomerDetails = (props) => {
         />
         <LabelWithData
           label='GST No'
-          data={<InlineEdit text={value.gst ? value.gst : '-'} objKey='gst' onSetText={onSubmit} />}
+          data={<CustomerGst gst={customerInfo.gst} cardcode={customerInfo.cardcode} />}
           labelSpan={10}
           dataSpan={14}
         />
@@ -59,7 +48,7 @@ const CustomerDetails = (props) => {
         <LabelWithData label='Mobile No' data={customerInfo.mobile} labelSpan={10} dataSpan={14} />
         <LabelWithData
           label='OnBoarded By'
-          data={customerInfo.onboarded_by_id}
+          data={customerInfo.approved_by_id}
           labelSpan={10}
           dataSpan={14}
         />

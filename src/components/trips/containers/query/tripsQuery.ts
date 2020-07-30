@@ -23,14 +23,19 @@ export const TRIPS_QUERY = gql`
       trip_status{
         value
       }
-      partner_price
-      customer_price
       km    
-      trip_comments{
+      tat
+      trip_comments(limit:1, order_by: {created_at: desc}) {
         description
         created_by
         created_at
-      } 
+      }
+      trip_prices(limit:1, where:{deleted_at:{_is_null:true}})
+      {
+        id
+        customer_price
+        partner_price
+      }
     }
   }  
   `

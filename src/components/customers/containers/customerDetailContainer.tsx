@@ -60,7 +60,7 @@ const CustomerDetailContainer = (props) => {
 
   const { customer } = data
   const customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
-  console.log('customerInfo', customerInfo)
+
   return (
     <Row>
       <Col xs={24}>
@@ -189,13 +189,11 @@ const CustomerDetailContainer = (props) => {
                   </TabPane>
                   <TabPane tab='Details' key='11'>
                     <Row className='p10'>
-                      <Col xs={24} sm={24} md={14}>
+                      <Col xs={24} sm={24} md={12}>
                         <CustomerDetails customerInfo={customerInfo} />
                       </Col>
-                      <Col xs={24} sm={24} md={10}>
-                        <Card size='small' className='card-body-0'>
-                          <PendingPayments />
-                        </Card>
+                      <Col xs={24} sm={24} md={12}>
+                        <PendingPayments />
                       </Col>
                     </Row>
                   </TabPane>

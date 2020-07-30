@@ -1,4 +1,4 @@
-import { Drawer, Row, Col, Spin } from 'antd'
+import { Drawer, Row, Col } from 'antd'
 import { statement } from '../../../mock/partner/statement'
 
 const WalletStatement = (props) => {
