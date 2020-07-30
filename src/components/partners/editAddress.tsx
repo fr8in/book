@@ -24,10 +24,8 @@ const EditAddress = (props) => {
           <Col sm={20}><Input placeholder="Address" /></Col>
           <br />
           <Col sm={20}> <Select defaultValue="Place" style={{ width: 380 }} onChange={handleChange}></Select> </Col>
-          <br />
-          
-          <Col sm={20}> <Select defaultValue="Place" style={{ width: 380 }}  onChange={handleChange}></Select> </Col>
-          
+          <br />          
+          <Col sm={20}> <Select defaultValue="Place" style={{ width: 380 }}  onChange={handleChange}></Select> </Col>        
           <br />
           <Col sm={20}> <Input placeholder="Value" /> </Col>
       </Modal>
