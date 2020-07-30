@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Table, Button, Space, Tooltip, Input } from "antd";
+import { Table, Button, Space, Tooltip, Input, Popconfirm } from "antd";
 import {
   CloseOutlined,
   CheckOutlined,
@@ -182,14 +182,21 @@ const CustomerKyc = (props) => {
                     handleShow("createBranchVisible", null, null, record)
                   }
                 />
-                <Button
-                  type="primary"
-                  size="small"
-                  shape="circle"
-                  danger
-                  icon={<CloseOutlined />}
-                  onClick={() => handleShow(null, null, null, null)}
-                />
+                <Popconfirm
+                  title="Are you sure want to Reject the Customer?"
+                  okText="Yes"
+                  cancelText="No"
+                  onConfirm={() => console.log("Rejected!")}
+                >
+                  <Button
+                    type="primary"
+                    size="small"
+                    shape="circle"
+                    danger
+                    icon={<CloseOutlined />}
+                    onClick={() => handleShow(null, null, null, null)}
+                  />
+                </Popconfirm>
               </Space>
             )}
           </Space>
