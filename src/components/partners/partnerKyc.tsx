@@ -1,7 +1,6 @@
 import { Table, Tooltip, Button, Badge, Input, Space } from 'antd'
 import {
   CommentOutlined,
-  SearchOutlined,
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
@@ -58,19 +57,6 @@ const PartnerKyc = (props) => {
           </Link>
         )
       },
-      filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search Partner Code'
-            id='code'
-            name='code'
-            type='number'
-          />
-        </div>
-      ),
-      filterIcon: (filtered) => (
-        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-      )
     },
     {
       title: 'Partner',
@@ -84,14 +70,6 @@ const PartnerKyc = (props) => {
           </span>
         )
       },
-      filterDropdown: (
-        <div>
-          <Input placeholder='Search Partner Name' id='name' name='name' />
-        </div>
-      ),
-      filterIcon: (filtered) => (
-        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-      )
     },
     {
       title: 'On Boarded By',

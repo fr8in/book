@@ -2,7 +2,7 @@ import { message } from 'antd'
 import { useQuery, useMutation } from '@apollo/client'
 import { CUSTOMERS_TYPE_QUERY } from './containers/query/customersTypeQuery'
 import { UPDATE_CUSTOMER_TYPE_MUTATION } from './containers/query/updateCustomerTypeMutation'
-import InlineSelect from '../common/InlineSelect'
+import InlineSelect from '../common/inlineSelect'
 
 const CustomerType = (props) => {
   const { type, cardcode } = props

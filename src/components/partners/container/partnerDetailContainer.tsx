@@ -125,7 +125,8 @@ const PartnerDetailContainer = (props) => {
                       </Col>
                     </Row>
                   </TabPane>
-                  <TabPane tab={<TitleWithCount name='Truck' value={2} />} key='2'>
+                  <TabPane tab={<TitleWithCount name='Truck' value={ partner.trucks_aggregate && partner.trucks_aggregate.aggregate 
+                    && partner.trucks_aggregate.aggregate.count} />} key='2'>
                     <PartnerTruck trucks={trucks} />
                   </TabPane>
                   <TabPane tab='Comment' key='3'>

@@ -1,11 +1,11 @@
 import { message } from 'antd'
 import { useQuery, useMutation } from '@apollo/client'
 import { ALL_EMPLOYEE } from '../branches/container/query/employeeQuery'
-import { UPDATE_CUSTOMER_PAYMENT_MANAGER_MUTATION } from './containers/query/updateCustomerPaymentManagerMutation'
+import { UPDATE_PARTNER_ONBOARDED_BY_NAME_MUTATION } from './container/query/updateOnboardedByNameMutation'
 import InlineSelect from '../common/inlineSelect'
 
-const CustomerPaymentManager = (props) => {
-  const { paymentManagerId, paymentManager, cardcode } = props
+const OnBoardedBy = (props) => {
+  const { onboardedById, onboardedBy, cardcode } = props
 
   const { loading, error, data } = useQuery(
     ALL_EMPLOYEE,
@@ -14,8 +14,8 @@ const CustomerPaymentManager = (props) => {
     }
   )
 
-  const [updateCustomerTypeId] = useMutation(
-    UPDATE_CUSTOMER_PAYMENT_MANAGER_MUTATION,
+  const [UpdateOnBoardedByName] = useMutation(
+    UPDATE_PARTNER_ONBOARDED_BY_NAME_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
       onCompleted () { message.success('Updated!!') }
@@ -23,7 +23,7 @@ const CustomerPaymentManager = (props) => {
   )
 
   if (loading) return null
-  console.log('CustomerType error', error)
+  console.log('OnBoardedByName error', error)
 
   const { employee } = data
   const empList = employee.map(data => {
@@ -31,18 +31,18 @@ const CustomerPaymentManager = (props) => {
   })
 
   const onChange = (value) => {
-    updateCustomerTypeId({
+    UpdateOnBoardedByName({
       variables: {
         cardcode,
-        payment_manager_id: value
+        onboarded_by_id: value
       }
     })
   }
 
   return (
     <InlineSelect
-      label={paymentManager}
-      value={paymentManagerId}
+      label={onboardedBy}
+      value={onboardedById}
       options={empList}
       handleChange={onChange}
       style={{ width: 110 }}
@@ -50,4 +50,4 @@ const CustomerPaymentManager = (props) => {
   )
 }
 
-export default CustomerPaymentManager
+export default OnBoardedBy

@@ -21,9 +21,15 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
               mobile
             }
             final_payment_date
+            trucks_aggregate(where:{truck_status_id:{_neq:7}}){
+              aggregate{
+                count
+              }
+            }
             onboarded_by{
                 id
-                name
+                name              
+                email
               }
               city{
                 id
