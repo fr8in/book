@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Table, Button, Space, Tooltip, Input } from 'antd'
 import {
   CloseOutlined,
@@ -12,7 +12,7 @@ import BranchCreation from '../customers/branchCreation'
 import CustomerAdvancePercentage from './customerAdvancePercentage'
 
 const CustomerKyc = (props) => {
-  const { customers, status, statusId } = props
+  const { customers, status, statusId, onLoadMore, recordCount } = props
   const initial = {
     visible: false,
     data: [],
@@ -23,6 +23,21 @@ const CustomerKyc = (props) => {
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const mamulInitial = { mamul: null, selectedId: null }
   const [defaultMamul, setDefaultMamul] = useState(mamulInitial)
+
+  const recordsCheck = (recordCount - 1) > customers.length
+  useEffect(() => {
+    var tableContent = document.querySelector('.paginated .ant-table-body')
+    function handleScroll (e) {
+      const maxScroll = e.target.scrollHeight - e.target.clientHeight
+      const currentScroll = e.target.scrollTop
+      if ((currentScroll + 1 > maxScroll) && recordsCheck) {
+        return onLoadMore()
+      }
+    }
+    tableContent.addEventListener('scroll', handleScroll)
+    // to handle side effect should removeEventListener
+    return () => tableContent.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const onMamul = (record, e) => {
     const givenMamul = e.target.value
@@ -69,12 +84,12 @@ const CustomerKyc = (props) => {
     {
       title: 'Mobile No',
       dataIndex: 'mobile',
-      width: '8%'
+      width: '10%'
     },
     {
       title: 'Type',
       dataIndex: 'type_id',
-      width: '10%'
+      width: '8%'
     },
     {
       title: 'Reg Date',
@@ -195,8 +210,9 @@ const CustomerKyc = (props) => {
         dataSource={customers}
         rowKey={(record) => record.cardcode}
         size='small'
-        scroll={{ x: 960, y: 400 }}
+        scroll={{ x: 960, y: 550 }}
         pagination={false}
+        className='withIcon paginated'
       />
       {object.createBranchVisible && (
         <BranchCreation
