@@ -1,4 +1,5 @@
-import { Table, Button, Space, Tooltip, Popconfirm } from "antd";
+import { useState } from "react";
+import { Table, Button, Space, Tooltip, Input } from "antd";
 import {
   CloseOutlined,
   CheckOutlined,
@@ -8,6 +9,7 @@ import {
 import useShowHideWithRecord from "../../hooks/useShowHideWithRecord";
 import Link from "next/link";
 import BranchCreation from "../customers/branchCreation";
+import CustomerAdvancePercentage from "./customerAdvancePercentage";
 
 const CustomerKyc = (props) => {
   const { customers, status, statusId } = props;
@@ -19,11 +21,22 @@ const CustomerKyc = (props) => {
     createBranchData: [],
   };
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial);
+  const mamulInitial = { mamul: null, selectedId: null };
+  const [defaultMamul, setDefaultMamul] = useState(mamulInitial);
+
+  const onMamul = (record, e) => {
+    const givenMamul = e.target.value;
+    setDefaultMamul({
+      ...defaultMamul,
+      mamul: givenMamul,
+      selectedId: record.cardcode,
+    });
+  };
 
   const newCustomer = [
     {
       title: "User Name",
-      width: "12%",
+      width: "11%",
       render: (text, record) => {
         const user = record.customerUsers[0] && record.customerUsers[0].name;
         return user && user.length > 14 ? (
@@ -38,7 +51,7 @@ const CustomerKyc = (props) => {
     {
       title: "Company Name",
       dataIndex: "name",
-      width: "12%",
+      width: "11%",
       render: (text, record) => {
         return (
           <Link href="customers/[id]" as={`customers/${record.cardcode}`}>
@@ -56,7 +69,7 @@ const CustomerKyc = (props) => {
     {
       title: "Mobile No",
       dataIndex: "mobile",
-      width: "10%",
+      width: "8%",
     },
     {
       title: "Type",
@@ -83,15 +96,49 @@ const CustomerKyc = (props) => {
       width: "9%",
     },
     {
-      title: "De. Mamul",
+      title: "Mamul",
       dataIndex: "mamul",
       width: "8%",
+      render: (text, record) => {
+        const statusId = record.status && record.status.id;
+        return (
+          <span>
+            {statusId === 1 || statusId === 5 ? (
+              `${text || 0}`
+            ) : statusId === 3 || statusId === 4 ? (
+              <Input
+                type="number"
+                min={0}
+                value={
+                  defaultMamul.selectedId === record.cardcode
+                    ? defaultMamul.mamul
+                    : ""
+                }
+                defaultValue={defaultMamul.mamul}
+                onChange={(e) => onMamul(record, e)}
+                size="small"
+              />
+            ) : null}
+          </span>
+        );
+      },
     },
     {
       title: "Adv %",
-      width: "6%",
-      render: (text, record) =>
-        record.advancePercentage && record.advancePercentage.value,
+      width: "10%",
+      render: (text, record) => {
+        const advancePercentage =
+          record.advancePercentage && record.advancePercentage.value;
+        const advancePercentageId =
+          record.advancePercentage && record.advancePercentage.Id;
+        return (
+          <CustomerAdvancePercentage
+            advancePercentage={advancePercentage}
+            advancePercentageId={advancePercentageId}
+            cardcode={record.cardcode}
+          />
+        );
+      },
     },
     {
       title: "Status",
@@ -104,6 +151,7 @@ const CustomerKyc = (props) => {
       title: "Action",
       width: "10%",
       render: (text, record) => {
+        const statusId = record.status && record.status.id;
         return (
           <Space>
             {record.panNo ? (
@@ -122,31 +170,28 @@ const CustomerKyc = (props) => {
                 onClick={() => console.log("Upload")}
               />
             )}
-            <Button
-              type="primary"
-              size="small"
-              shape="circle"
-              className="btn-success"
-              icon={<CheckOutlined />}
-              onClick={() =>
-                handleShow("createBranchVisible", null, null, record)
-              }
-            />
-            <Popconfirm
-              title="Are you sure want to Reject the Customer?"
-              okText="Yes"
-              cancelText="No"
-              onConfirm={() => console.log("Rejected!")}
-            >
-              <Button
-                type="primary"
-                size="small"
-                shape="circle"
-                danger
-                icon={<CloseOutlined />}
-                onClick={() => handleShow(null, null, null, null)}
-              />
-            </Popconfirm>
+            {(statusId === 3 || statusId === 4) && (
+              <Space>
+                <Button
+                  type="primary"
+                  size="small"
+                  shape="circle"
+                  className="btn-success"
+                  icon={<CheckOutlined />}
+                  onClick={() =>
+                    handleShow("createBranchVisible", null, null, record)
+                  }
+                />
+                <Button
+                  type="primary"
+                  size="small"
+                  shape="circle"
+                  danger
+                  icon={<CloseOutlined />}
+                  onClick={() => handleShow(null, null, null, null)}
+                />
+              </Space>
+            )}
           </Space>
         );
       },
