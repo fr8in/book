@@ -14,14 +14,15 @@ const CustomersContainer = () => {
 
   const customersQueryVars = {
     offset: 0,
-    limit: 10,
+    limit: 20,
     statusId: statusId
   }
 
-  const { loading, error, data } = useQuery(
+  const { loading, error, data, fetchMore } = useQuery(
     CUSTOMERS_QUERY,
     {
       variables: customersQueryVars,
+      fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
   )
@@ -29,12 +30,26 @@ const CustomersContainer = () => {
   if (loading) return <Loading />
   console.log('CustomersContainer error', error)
 
-  const { customer, customer_status } = data
+  const { customer, customer_status, customer_aggregate } = data
+
+  const loadMore = () => fetchMore({
+    variables: {
+      offset: customer.length
+    },
+    updateQuery: (prev, { fetchMoreResult }) => {
+      console.log('prev', prev, 'fetchmore', fetchMoreResult)
+      if (!fetchMoreResult) return prev
+      return Object.assign({}, prev, {
+        customer: [...prev.customer, ...fetchMoreResult.customer]
+      })
+    }
+  })
 
   const removeLeadStatus = customer_status.filter(data => data.id !== 8)
   const customerStatusList = removeLeadStatus.map(data => {
     return { value: data.id, text: data.value }
   })
+  const recordCount = customer_aggregate.aggregate && customer_aggregate.aggregate.count
 
   const handleVisibleChange = flag => setDropVisible(flag)
   const searchField = (
@@ -60,9 +75,11 @@ const CustomersContainer = () => {
             <Button type='primary' icon={<SearchOutlined />} onClick={e => e.preventDefault()} />
           </Dropdown>
           <CustomerKyc
+            onLoadMore={loadMore}
             customers={customer}
             status={customerStatusList}
             statusId={statusId}
+            recordCount={recordCount}
           />
         </Card>
       </Col>

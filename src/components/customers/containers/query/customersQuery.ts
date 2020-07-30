@@ -30,6 +30,11 @@ export const CUSTOMERS_QUERY = gql`
         value
       }
     }
+    customer_aggregate {
+      aggregate {
+        count
+      }
+    }
     customer_status(order_by: {id:asc}){
       id
       value
