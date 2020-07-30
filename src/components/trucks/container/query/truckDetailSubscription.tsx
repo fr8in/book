@@ -12,8 +12,7 @@ export const TRUCK_DETAIL_SUBSCRIPTION = gql`
         }
         partner {
           name
-          partner_users {
-            id
+          partner_users(limit:1 , where:{is_admin:{_eq:true}}){
             mobile
           }
           cardcode
@@ -22,6 +21,7 @@ export const TRUCK_DETAIL_SUBSCRIPTION = gql`
           id
           order_date
           km
+          avg_km_day
           source{
             name
           }

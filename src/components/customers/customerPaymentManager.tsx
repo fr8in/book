@@ -2,7 +2,7 @@ import { message } from 'antd'
 import { useQuery, useMutation } from '@apollo/client'
 import { ALL_EMPLOYEE } from '../branches/container/query/employeeQuery'
 import { UPDATE_CUSTOMER_PAYMENT_MANAGER_MUTATION } from './containers/query/updateCustomerPaymentManagerMutation'
-import InlineSelect from '../common/InlineSelect'
+import InlineSelect from '../common/inlineSelect'
 
 const CustomerPaymentManager = (props) => {
   const { paymentManagerId, paymentManager, cardcode } = props

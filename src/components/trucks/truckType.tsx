@@ -1,15 +1,11 @@
-import { Select, message } from 'antd'
-import { CloseCircleTwoTone, EditTwoTone } from '@ant-design/icons'
+import { message } from 'antd'
 import { useQuery, useMutation } from '@apollo/client'
 import { TRUCKS_TYPE_QUERY } from './container/query/trucksTypeQuery'
 import { UPDATE_TRUCK_TYPE_MUTATION } from './container/query/updateTruckTypeMutation'
-import useShowHide from '../../hooks/useShowHide'
+import InlineSelect from '../common/inlineSelect'
 
 const TruckType = (props) => {
-  const { type, truck_no } = props
-
-  const initial = { selectType: false }
-  const { visible, onHide, onShow } = useShowHide(initial)
+  const { truckTypeId, truckType, truck_no } = props
 
   const { loading, error, data } = useQuery(
     TRUCKS_TYPE_QUERY,
@@ -30,41 +26,27 @@ const TruckType = (props) => {
   console.log('TruckType error', error)
 
   const { truck_type } = data
-  const typeList = truck_type.map(data => {
-    return { value: data.value, label: data.comment }
+  const truckList = truck_type.map(data => {
+    return { value: data.id, label: data.value }
   })
 
-  const handleChange = (value) => {
-    console.log(`selected ${value}`)
+  const onChange = (value) => {
     updateTruckTypeId({
       variables: {
         truck_no,
-       truck_type_id: value
+        truck_type_id: value
       }
     })
-    onHide()
   }
 
   return (
-    <div>
-      {!visible.selectType ? (
-        <label>
-          {type}{' '}
-          <EditTwoTone onClick={() => onShow('selectType')} />
-        </label>)
-        : (
-          <span>
-            <Select
-              size='small'
-              style={{ width: 110 }}
-              placeholder='Select Type'
-              options={typeList}
-              value={type}
-              onChange={handleChange}
-            />{' '}
-            <CloseCircleTwoTone onClick={onHide} />
-          </span>)}
-    </div>
+    <InlineSelect
+      label={truckType}
+      value={truckTypeId}
+      options={truckList}
+      handleChange={onChange}
+      style={{ width: 110 }}
+    />
   )
 }
 

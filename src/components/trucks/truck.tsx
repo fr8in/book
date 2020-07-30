@@ -13,6 +13,9 @@ const Truck = (props) => {
     window.location.href = 'tel:' + data
   }
 
+  const number = truckInfo.partner && truckInfo.partner.partner_users && truckInfo.partner.partner_users.length > 0 && 
+          truckInfo.partner.partner_users[0].mobile ? truckInfo.partner.partner_users[0].mobile : '-'
+
   return (
     <Row>
       <LabelAndData
@@ -29,8 +32,8 @@ const Truck = (props) => {
       <LabelAndData
         label='Partner No'
         data={
-          <span className='link' onClick={() => callNow(truckInfo.partner.partner_users.mobile)}>
-            <PhoneOutlined /> {truckInfo.partner.partner_users.mobile}
+          <span className='link' onClick={() => callNow(number)}>
+            <PhoneOutlined /> {number}
           </span>
         }
         mdSpan={4}
