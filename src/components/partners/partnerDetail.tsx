@@ -1,7 +1,7 @@
 import { Row, Col, Space } from 'antd'
 import LabelWithData from '../common/labelWithData'
 import DetailInfo from '../../../mock/partner/partnerDetailInfo'
-
+import AdvancePercentage from './partnerAdvancePercentage'
 const PartnerDetail = (props) => {
   const { partnerDetail } = props
 
@@ -81,9 +81,13 @@ const PartnerDetail = (props) => {
         />
         <LabelWithData
           label='Advance Percentage'
-          data={<span>{partnerDetail.partner_advance_percentage &&
-              partnerDetail.partner_advance_percentage.value ? 
-            partnerDetail.partner_advance_percentage.value : '-'}</span>}
+          data={
+            <AdvancePercentage
+            advance={partnerDetail.partner_advance_percentage && partnerDetail.partner_advance_percentage.value }
+            advanceId={partnerDetail.partner_advance_percentage && partnerDetail.partner_advance_percentage.id }
+            cardcode={partnerDetail.cardcode}
+          />
+          }
           labelSpan={10}
           dataSpan={14}
         />
