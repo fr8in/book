@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Space } from 'antd'
-import { CheckCircleOutlined, CrownFilled } from '@ant-design/icons'
+import { Space, Button } from 'antd'
+import { CheckCircleOutlined, CrownFilled ,UserOutlined} from '@ant-design/icons'
 import PartnerUsers from '../../components/partners/partnerUsers'
 import data from '../../../mock/partner/partner'
 import PartnerName from './partnerName'
@@ -28,7 +28,8 @@ const PartnerInfo = (props) => {
         <CheckCircleOutlined style={{ color: data.kycStatus === 'Verified' ? '#28a745' : '#dc3545', fontSize: '18px' }} />
         <PartnerName cardcode={partner.cardcode} name={partner.name} />
         <h3> {partner.cardcode} </h3>
-        <h3 className='link' onClick={() => showUsers(data)}>{number}</h3>
+        <h3>{number}</h3>
+        <Button shape='circle' icon={<UserOutlined />} onClick={() => showUsers(data)}/>
       </Space>
       {users.visible &&
         <PartnerUsers

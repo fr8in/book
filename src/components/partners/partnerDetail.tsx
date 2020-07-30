@@ -1,10 +1,23 @@
 import { Row, Col, Space } from 'antd'
+import {EditTwoTone} from '@ant-design/icons'
 import LabelWithData from '../common/labelWithData'
 import DetailInfo from '../../../mock/partner/partnerDetailInfo'
 import AdvancePercentage from './partnerAdvancePercentage'
-import PartnerBank from './partnerBankName'
+import detailInfo from '../../../mock/partner/partnerDetailInfo'
+import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
+import EditAddress from './editAddress'
+import EditBank from './editBank'
+
 const PartnerDetail = (props) => {
   const { partnerDetail } = props
+  const initial = {
+    address: [],
+    addressVisible: false,
+    bank: [],
+    bankVisible: false,
+    title: ''
+  }
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
   console.log('partnerDetail', partnerDetail)
 
@@ -31,7 +44,7 @@ const PartnerDetail = (props) => {
           label=' Address'
           data={
             <Space>
-              <span>{partnerDetail.address}</span>
+              <span>{partnerDetail.address}<EditTwoTone  onClick={() => handleShow('addressVisible', partnerDetail, 'address', partnerDetail.cardcode)}/></span>
             </Space>
           }
           labelSpan={10}
@@ -39,17 +52,13 @@ const PartnerDetail = (props) => {
         />
         <LabelWithData
           label='State'
-          data={<span>{DetailInfo.state}</span>}
+          data={<span>{detailInfo.state}</span>}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData
           label='Bank'
-          data={<span><PartnerBank
-            partnerBank={partnerDetail.bank && partnerDetail.bank.name}
-            partnerBankId={partnerDetail.bank && partnerDetail.bank.id}
-            cardcode={partnerDetail.cardcode}
-          /></span>}
+          data={<span>{partnerDetail.bank && partnerDetail.bank.name}<EditTwoTone  onClick={() => handleShow('bankVisible', partnerDetail, 'bank', partnerDetail.cardcode)}/></span>}
           labelSpan={10}
           dataSpan={14}
         />
@@ -96,6 +105,23 @@ const PartnerDetail = (props) => {
           labelSpan={10}
           dataSpan={14}
         />
+
+
+
+        {object.addressVisible &&
+        <EditAddress
+          visible={object.addressVisible}
+          data={object.address}
+          onHide={handleHide}
+          title={object.title}
+        />}
+        {object.bankVisible &&
+        <EditBank
+          visible={object.bankVisible}
+          data={object.bank}
+          onHide={handleHide}
+          title={object.title}
+        />}
       </Col>
     </Row>
 
