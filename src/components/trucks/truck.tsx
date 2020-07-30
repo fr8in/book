@@ -21,8 +21,8 @@ const Truck = (props) => {
       <LabelAndData
         label='Partner'
         data={
-          <Link href='/partners/[id]' as={`/partners/${truckInfo.partner.cardcode}`}>
-            <h4><a>{truckInfo.partner.name}</a></h4>
+          <Link href='/partners/[id]' as={`/partners/${truckInfo.partner && truckInfo.cardcode}`}>
+            <h4><a>{truckInfo.partner && truckInfo.partner.name}</a></h4>
           </Link>
         }
         mdSpan={4}
@@ -42,7 +42,7 @@ const Truck = (props) => {
       />
       <LabelAndData
         label='City'
-        data={truckInfo.city.name}
+        data={truckInfo.city && truckInfo.city.name}
         mdSpan={4}
         smSpan={8}
         xsSpan={12}

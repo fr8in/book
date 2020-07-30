@@ -8,6 +8,7 @@ import AssignTrip from '../assignTrip'
 import Loading from '../../common/loading'
 import DetailPageHeader from '../../common/detailPageHeader'
 import TruckType from '../../../components/trucks/truckType'
+import TruckNo from '../../../components/trucks/truckNo'
 
 import { useSubscription } from '@apollo/client'
 import { TRUCK_DETAIL_SUBSCRIPTION } from './query/truckDetailSubscription'
@@ -43,7 +44,12 @@ const TruckDetailContainer = (props) => {
         <DetailPageHeader
           title={
             <Space>
-              <h3>{truckInfo.truck_no}</h3>
+              <h3>
+              <TruckNo
+                    id={truckInfo.id}
+                    truck_no={truckInfo.truck_no}
+                  />
+              </h3>
               <Divider type='vertical' />
               <h4>
               <TruckType
