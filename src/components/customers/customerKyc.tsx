@@ -4,7 +4,8 @@ import {
   CloseOutlined,
   CheckOutlined,
   EyeOutlined,
-  UploadOutlined
+  UploadOutlined,
+  SearchOutlined
 } from '@ant-design/icons'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Link from 'next/link'
@@ -12,7 +13,7 @@ import BranchCreation from '../customers/branchCreation'
 import CustomerAdvancePercentage from './customerAdvancePercentage'
 
 const CustomerKyc = (props) => {
-  const { customers, status, statusId, onLoadMore, recordCount } = props
+  const { customers, status, filter, onLoadMore, recordCount, onFilter, onNameSearch, onMobileSearch } = props
   const initial = {
     visible: false,
     data: [],
@@ -48,6 +49,10 @@ const CustomerKyc = (props) => {
     })
   }
 
+  const handleName = (e) => {
+    onNameSearch(e.target.value)
+  }
+
   const newCustomer = [
     {
       title: 'User Name',
@@ -79,7 +84,17 @@ const CustomerKyc = (props) => {
             )}
           </Link>
         )
-      }
+      },
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search Customer'
+            value={filter.name}
+            onChange={handleName}
+          />
+        </div>
+      ),
+      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
     },
     {
       title: 'Mobile No',
@@ -151,7 +166,7 @@ const CustomerKyc = (props) => {
       title: 'Status',
       render: (text, record) => record.status && record.status.value,
       width: '14%',
-      defaultFilteredValue: statusId,
+      defaultFilteredValue: filter.statusId,
       filters: status
     },
     {
