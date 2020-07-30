@@ -5,11 +5,13 @@ import {
   DownloadOutlined,
   MailOutlined,
   DeleteOutlined,
+  SaveOutlined,
   CloseCircleOutlined
 } from '@ant-design/icons'
 import SendLoadingMemo from './sendLoadingMemo'
 import useShowHide from '../../hooks/useShowHide'
 import DeletePO from './deletePO'
+import DriverPhoneN0 from './driverPhoneNo'
 
 const TripTime = (props) => {
   const initial = { checkbox: false, mail: false, deletePO: false }
@@ -45,23 +47,7 @@ const TripTime = (props) => {
                   </Tooltip>
                 </Form.Item>
               </Col>
-              <Col xs={8}>
-                <Form.Item label='Driver Phone'>
-                  <Tooltip
-                    trigger={['hover']}
-                    title='Enter 10 digit mobile number starting with 6 to 9'
-                    placement='top'
-                    overlayClassName='numeric-input'
-                  >
-                    <Input
-                      id='driverNumber'
-                      placeholder='Enter Driver Number'
-                      maxLength={10}
-                      disabled={false}
-                    />
-                  </Tooltip>
-                </Form.Item>
-              </Col>
+              < DriverPhoneN0 />
             </Row>
             <Row gutter={10}>
               <Col xs={8}>
