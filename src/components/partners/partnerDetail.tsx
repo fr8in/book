@@ -7,6 +7,8 @@ import detailInfo from '../../../mock/partner/partnerDetailInfo'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import EditAddress from './editAddress'
 import EditBank from './editBank'
+import CibilScore from '../partners/partnerCibilScore'
+import Gst from '../../components/partners/partnerGst'
 
 const PartnerDetail = (props) => {
   const { partnerDetail } = props
@@ -76,7 +78,8 @@ const PartnerDetail = (props) => {
         />
         <LabelWithData
           label='Cibil Score '
-          data={<span>{partnerDetail.cibil}</span>}
+          data={<span><CibilScore cardcode={partnerDetail.cardcode} cibil={partnerDetail.cibil} />
+          </span>}
           labelSpan={10}
           dataSpan={14}
         />
@@ -89,7 +92,7 @@ const PartnerDetail = (props) => {
         />
         <LabelWithData
           label=' GST'
-          data={<span>{partnerDetail.gst}</span>}
+          data={<span><Gst cardcode={partnerDetail.cardcode} gst={partnerDetail.gst} /></span>}
           labelSpan={10}
           dataSpan={14}
         />

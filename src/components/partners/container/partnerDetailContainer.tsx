@@ -45,7 +45,7 @@ const PartnerDetailContainer = (props) => {
   if (loading) return <Loading />
   console.log('PartnerDetailContainer Error', error)
   console.log('PartnerDetailContainer Data', data)
-  const { partner } = data
+  const { partner, partner_comments } = data
   const partnerData = partner[0] ? partner[0] : { name: 'ID does not exist' }
   const trucks = partnerData.trucks
   console.log('trucks', trucks)
@@ -130,7 +130,7 @@ const PartnerDetailContainer = (props) => {
                     <PartnerTruck trucks={trucks} />
                   </TabPane>
                   <TabPane tab='Comment' key='3'>
-                    <Comment />
+                    <Comment partner = {partner_comments}/>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='On-going' value={5} />} key='4'>
                     <TripDetail />
