@@ -1,40 +1,66 @@
 
-import { Table } from 'antd'
-import pending from '../../../mock/customer/pendingPayments'
+import { Row, Col, Card, Tag, Table } from 'antd'
+import { totalPending, paymentBlock } from '../../../mock/customer/pendingPayments'
 
 const PendingPayments = () => {
-  const pendingPayments = [
+  const PaymentBlockIndicator = (
+    <div className='text-right'>
+      <Tag color={paymentBlock.paymentBlock ? '#dc3545' : '#28a745'}>{paymentBlock.paymentBlock ? 'Yes' : 'No'}</Tag>
+    </div>
+  )
+
+  const pendingPaymentColumn = [
     {
-      title: 'Pending Payments',
-      dataIndex: 'pendingPayments',
-      width: '35%'
+      title: 'Total',
+      dataIndex: 'pendingType',
+      width: '60%'
     },
     {
-      title: 'Advance',
-      dataIndex: 'advance',
-      width: '25%'
+      dataIndex: 'value',
+      width: '40%',
+      className: 'text-right'
+    }
+  ]
+  const PaymentBlockColumn = [
+    {
+      title: 'Payment Block',
+      dataIndex: 'pendingType',
+      width: '60%'
     },
     {
-      title: 'Invoice Pending',
-      dataIndex: 'invoicePending',
-      width: '25%'
-    },
-    {
-      title: 'Invoiced',
-      dataIndex: 'invoiced',
-      width: '15%'
+      title: PaymentBlockIndicator,
+      dataIndex: 'value',
+      width: '40%',
+      className: 'text-right'
     }
   ]
 
   return (
-    <Table
-      columns={pendingPayments}
-      dataSource={pending}
-      rowKey={(record) => record.id}
-      size='small'
-      pagination={false}
-      scroll={{ x: 400 }}
-    />
+    <Row gutter={10}>
+      <Col xs={24} sm={12}>
+        <Card size='small' className='card-body-0'>
+          <Table
+            columns={pendingPaymentColumn}
+            dataSource={totalPending}
+            rowKey={(record) => record.id}
+            size='small'
+            pagination={false}
+          />
+        </Card>
+      </Col>
+      <Col xs={24} sm={12}>
+        <Card size='small' className='card-body-0'>
+          <Table
+            columns={PaymentBlockColumn}
+            dataSource={paymentBlock.pending}
+            rowKey={(record) => record.id}
+            size='small'
+            pagination={false}
+          />
+        </Card>
+      </Col>
+    </Row>
+
   )
 }
 

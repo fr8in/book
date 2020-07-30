@@ -1,11 +1,11 @@
 import { Table, Row, Col, Button } from 'antd'
-import  customerPending from '../../../mock/trip/payment'
+import customerPending from '../../../mock/trip/payment'
 import EditModal from './AdvanceBookingEdit'
 import useShowHide from '../../hooks/useShowHide'
 
 const CustomerPayments = () => {
-  const initial = { edit:false}
-  const { visible, onShow,onHide } = useShowHide(initial)
+  const initial = { edit: false }
+  const { visible, onShow, onHide } = useShowHide(initial)
   const advancePaymentColumns = [{
     title: 'Type',
     dataIndex: 'type',
@@ -40,10 +40,9 @@ const CustomerPayments = () => {
     dataIndex: 'edit',
     render: (text, record) => (
       <span>
-        <Button type='primary' onClick={() => onShow('edit')} >
+        <Button type='primary' onClick={() => onShow('edit')}>
           Edit
-        </Button> 
-       
+        </Button>
       </span>
     )
   }]
@@ -78,17 +77,16 @@ const CustomerPayments = () => {
     dataIndex: 'edit',
     render: (text, record) => (
       <span>
-        <Button type='primary' onClick={() => onShow('edit')} >
+        <Button type='primary' onClick={() => onShow('edit')}>
           Edit
-        </Button> 
-        
+        </Button>
+
       </span>
     )
-    
+
   }
- 
-]
- 
+
+  ]
 
   const finalPaymentColumns = [{
     title: 'Type',
@@ -134,9 +132,9 @@ const CustomerPayments = () => {
     key: 'edit',
     render: (text, record) => (
       <span>
-       <Button type='primary' onClick={() => onShow('edit')} >
+        <Button type='primary' onClick={() => onShow('edit')}>
           Edit
-        </Button> 
+        </Button>
       </span>
     ),
     width: '4%'
@@ -150,7 +148,7 @@ const CustomerPayments = () => {
         </Row>
         <Table
           columns={advancePaymentColumns}
-          dataSource ={customerPending}
+          dataSource={customerPending}
           pagination={false}
           rowKey={record => record.id}
           scroll={{ x: 540 }}
@@ -163,7 +161,7 @@ const CustomerPayments = () => {
         </Row>
         <Table
           columns={invoicePendingColumns}
-           dataSource={customerPending}
+          dataSource={customerPending}
           rowKey={record => record.id}
           scroll={{ x: 540 }}
           pagination={false}
@@ -186,7 +184,7 @@ const CustomerPayments = () => {
       <div className='payableHead'>
         <h4 className='text-center'>100% payment received from customer</h4>
       </div>
-      {visible.edit && <EditModal  visible={visible.edit} onHide={onHide} />}
+      {visible.edit && <EditModal visible={visible.edit} onHide={onHide} />}
     </>
   )
 }

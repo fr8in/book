@@ -1,11 +1,11 @@
 
 import { Table } from 'antd'
-import mock from '../../../mock/trip/tripsByStages'
+// import mock from '../../../mock/trip/tripsByStages'
 import Link from 'next/link'
 
 const Partners = (props) => {
   const { trips } = props
-  
+
   const columnsCurrent = [
     {
       title: 'ID',
@@ -44,11 +44,11 @@ const Partners = (props) => {
       render: (text, record) => {
         return (record.km)
       }
-    } : 
-    {
-      title: 'SourceIn',
-      dataIndex: 'cityIn'
-    },
+    } 
+    : {
+        title: 'SourceIn',
+        dataIndex: 'cityIn'
+      },
     {
       title: 'Status',
       dataIndex: 'status',
@@ -58,8 +58,8 @@ const Partners = (props) => {
     },
     props.trip ? {
       title: 'AVG KM/Day',
-      dataIndex: 'avg',
-    } : {},
+      dataIndex: 'avg'
+    } : {}
 
   ]
   return (
