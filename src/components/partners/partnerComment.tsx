@@ -1,9 +1,12 @@
-import { Modal, Button, Row, Input, Col, Table } from 'antd'
-import { useQuery } from '@apollo/client'
-import { PARTNER_COMMENT_QUERY } from './container/query/partnersCommentQuery'
+import { Modal, Button, Row, Input, Col, Table, message } from 'antd'
+import { useQuery , useMutation} from '@apollo/client'
+import { PARTNER_COMMENT_QUERY } from './container/query/partnerCommentQuery'
+import { INSERT_PARTNER_COMMENT_MUTATION } from './container/query/updatePartnerCommentMutation'
+
 
 const PartnerComment = (props) => {
   const { visible, partnerId, onHide } = props
+  const { partner_id, created_by, description , topic } =props
   const { loading, error, data } = useQuery(
     PARTNER_COMMENT_QUERY,
     {
@@ -12,10 +15,30 @@ const PartnerComment = (props) => {
     }
   )
 
+  const [InsertComment] = useMutation(
+    INSERT_PARTNER_COMMENT_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
+
   if (loading) return null
   console.log('PartnerComment error', error)
   console.log('PartnerComment data', data.partner)
   const { partner_comments } = data.partner[0] ? data.partner[0] : []
+
+
+  const onChange = () => {
+    InsertComment({
+      variables: {
+        partner_id ,
+        created_by,
+        description ,
+        topic,
+      }
+    })
+  }
 
   const columns = [{
     title: 'Previous Comments',
@@ -45,7 +68,7 @@ const PartnerComment = (props) => {
           />
         </Col>
         <Col flex='80px'>
-          <Button type='primary'>Submit</Button>
+          <Button type='primary'  onChange={onChange} >Submit</Button>
         </Col>
       </Row>
       <Table
