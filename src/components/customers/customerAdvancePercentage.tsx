@@ -2,7 +2,7 @@ import { message } from 'antd'
 import { useQuery, useMutation } from '@apollo/client'
 import { CUSTOMERS_ADVANCE_PERCENTAGE_QUERY } from './containers/query/customersAdvancePercentageQuery'
 import { UPDATE_CUSTOMER_ADVANCE_MUTATION } from './containers/query/updateCustomeradvanceMutation'
-import InlineSelect from '../common/InlineSelect'
+import InlineSelect from '../common/inlineSelect'
 
 const CustomerAdvancePercentage = (props) => {
   const { advancePercentageId, advancePercentage, cardcode } = props

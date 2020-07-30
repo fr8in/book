@@ -65,6 +65,7 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
                 name
               }
               truck_status{
+                id
                 value
               }        
               trips(where: {trip_status_id: {_in: $trip_status_id}}) {
