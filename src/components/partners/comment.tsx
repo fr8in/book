@@ -30,7 +30,7 @@ const Comment = (props) => {
   if (loading) return null
   console.log('PartnerComment error', error)
   console.log('PartnerComment data', data)
-  const { partner_comments } = data ? data : []
+  const { partner_comments } = data.partner && data.partner[0] ? data.partner[0] : []
   const handleChange = (e) => {
     setUser(e.target.value)
   }
@@ -42,8 +42,7 @@ const Comment = (props) => {
         partner_id:partnerId ,
         created_by: "shilpa@fr8.in",
         description : user ,
-        topic: 'text',
-        created_at : '2020-07-30T20:30:11.287592+00:00'
+        topic: 'text'
       }
     })
   }

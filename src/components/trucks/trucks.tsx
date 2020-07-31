@@ -48,6 +48,7 @@ const Trucks = (props) => {
     },
     {
       title: 'Trip ID',
+      dataIndex: 'id',
       render: (text, record) => {
         const id = record && record.trips[0] ? record.trips[0].id : null
         return (
@@ -131,7 +132,7 @@ const Trucks = (props) => {
         size='small'
         scroll={{ x: 1156 }}
         pagination={false}
-        loding={loading}
+        loading={loading}
       />
       {object.usersVisible &&
         <PartnerUsers

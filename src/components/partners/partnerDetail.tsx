@@ -5,10 +5,11 @@ import DetailInfo from '../../../mock/partner/partnerDetailInfo'
 import AdvancePercentage from './partnerAdvancePercentage'
 import detailInfo from '../../../mock/partner/partnerDetailInfo'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
-import EditAddress from './editAddress'
-import EditBank from './editBank'
+import EditAddress from './partnerAddress'
+import EditBank from './partnerBank'
 import CibilScore from '../partners/partnerCibilScore'
 import Gst from '../../components/partners/partnerGst'
+import Pan from './partnerPan'
 
 const PartnerDetail = (props) => {
   const { partnerDetail } = props
@@ -28,7 +29,9 @@ const PartnerDetail = (props) => {
       <Col xs={24} sm={24} md={24}>
         <LabelWithData
           label='PAN'
-          data={partnerDetail.pan}
+          data={
+            <Pan cardcode={partnerDetail.cardcode} pan={partnerDetail.pan} />
+          }
           labelSpan={10}
           dataSpan={14}
         />
