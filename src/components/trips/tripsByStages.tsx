@@ -58,7 +58,10 @@ const Partners = (props) => {
     },
     props.trip ? {
       title: 'AVG KM/Day',
-      dataIndex: 'avg'
+      dataIndex: 'avg',
+      render: (text, record) => {
+        return (record.avg_km_day)
+      }
     } : {}
 
   ]

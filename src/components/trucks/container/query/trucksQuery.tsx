@@ -17,6 +17,7 @@ export const TRUCKS_QUERY = gql`
         value
       }
       partner {
+        id
         name
         partner_users(limit:1 , where:{is_admin:{_eq:true}}){
           mobile

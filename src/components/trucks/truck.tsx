@@ -13,13 +13,16 @@ const Truck = (props) => {
     window.location.href = 'tel:' + data
   }
 
+  const number = truckInfo.partner && truckInfo.partner.partner_users && truckInfo.partner.partner_users.length > 0 && 
+          truckInfo.partner.partner_users[0].mobile ? truckInfo.partner.partner_users[0].mobile : '-'
+
   return (
     <Row>
       <LabelAndData
         label='Partner'
         data={
-          <Link href='/partners/[id]' as={`/partners/${truckInfo.partner.cardcode}`}>
-            <h4><a>{truckInfo.partner.name}</a></h4>
+          <Link href='/partners/[id]' as={`/partners/${truckInfo.partner && truckInfo.cardcode}`}>
+            <h4><a>{truckInfo.partner && truckInfo.partner.name}</a></h4>
           </Link>
         }
         mdSpan={4}
@@ -29,8 +32,8 @@ const Truck = (props) => {
       <LabelAndData
         label='Partner No'
         data={
-          <span className='link' onClick={() => callNow(truckInfo.partner.partner_users.mobile)}>
-            <PhoneOutlined /> {truckInfo.partner.partner_users.mobile}
+          <span className='link' onClick={() => callNow(number)}>
+            <PhoneOutlined /> {number}
           </span>
         }
         mdSpan={4}
@@ -39,7 +42,7 @@ const Truck = (props) => {
       />
       <LabelAndData
         label='City'
-        data={truckInfo.city.name}
+        data={truckInfo.city && truckInfo.city.name}
         mdSpan={4}
         smSpan={8}
         xsSpan={12}

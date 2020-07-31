@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Table, Button, Space, Tooltip, Input } from 'antd'
+import { Table, Button, Space, Tooltip, Input, Popconfirm } from 'antd'
 import {
   CloseOutlined,
   CheckOutlined,
   EyeOutlined,
-  UploadOutlined
+  UploadOutlined,
+  SearchOutlined
 } from '@ant-design/icons'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Link from 'next/link'
@@ -12,7 +13,7 @@ import BranchCreation from '../customers/branchCreation'
 import CustomerAdvancePercentage from './customerAdvancePercentage'
 
 const CustomerKyc = (props) => {
-  const { customers, status, statusId, onLoadMore, recordCount } = props
+  const { customers, status, filter, onLoadMore, recordCount, onFilter, onNameSearch, onMobileSearch } = props
   const initial = {
     visible: false,
     data: [],
@@ -24,13 +25,13 @@ const CustomerKyc = (props) => {
   const mamulInitial = { mamul: null, selectedId: null }
   const [defaultMamul, setDefaultMamul] = useState(mamulInitial)
 
-  const recordsCheck = (recordCount - 1) > customers.length
+  const recordsCheck = recordCount - 1 > customers.length
   useEffect(() => {
     var tableContent = document.querySelector('.paginated .ant-table-body')
     function handleScroll (e) {
       const maxScroll = e.target.scrollHeight - e.target.clientHeight
       const currentScroll = e.target.scrollTop
-      if ((currentScroll + 1 > maxScroll) && recordsCheck) {
+      if (currentScroll + 1 > maxScroll && recordsCheck) {
         return onLoadMore()
       }
     }
@@ -46,6 +47,10 @@ const CustomerKyc = (props) => {
       mamul: givenMamul,
       selectedId: record.cardcode
     })
+  }
+
+  const handleName = (e) => {
+    onNameSearch(e.target.value)
   }
 
   const newCustomer = [
@@ -79,7 +84,17 @@ const CustomerKyc = (props) => {
             )}
           </Link>
         )
-      }
+      },
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search Customer'
+            value={filter.name}
+            onChange={handleName}
+          />
+        </div>
+      ),
+      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
     },
     {
       title: 'Mobile No',
@@ -118,16 +133,22 @@ const CustomerKyc = (props) => {
         const statusId = record.status && record.status.id
         return (
           <span>
-            {(statusId === 1 || statusId === 5) ? `${text || 0}`
-              : (statusId === 3 || statusId === 4) ? (
-                <Input
-                  type='number'
-                  min={0}
-                  value={defaultMamul.selectedId === record.cardcode ? defaultMamul.mamul : ''}
-                  defaultValue={defaultMamul.mamul}
-                  onChange={(e) => onMamul(record, e)}
-                  size='small'
-                />) : null}
+            {statusId === 1 || statusId === 5 ? (
+              `${text || 0}`
+            ) : statusId === 3 || statusId === 4 ? (
+              <Input
+                type='number'
+                min={0}
+                value={
+                  defaultMamul.selectedId === record.cardcode
+                    ? defaultMamul.mamul
+                    : ''
+                }
+                defaultValue={defaultMamul.mamul}
+                onChange={(e) => onMamul(record, e)}
+                size='small'
+              />
+            ) : null}
           </span>
         )
       }
@@ -136,8 +157,10 @@ const CustomerKyc = (props) => {
       title: 'Adv %',
       width: '10%',
       render: (text, record) => {
-        const advancePercentage = record.advancePercentage && record.advancePercentage.value
-        const advancePercentageId = record.advancePercentage && record.advancePercentage.Id
+        const advancePercentage =
+          record.advancePercentage && record.advancePercentage.value
+        const advancePercentageId =
+          record.advancePercentage && record.advancePercentage.Id
         return (
           <CustomerAdvancePercentage
             advancePercentage={advancePercentage}
@@ -151,7 +174,7 @@ const CustomerKyc = (props) => {
       title: 'Status',
       render: (text, record) => record.status && record.status.value,
       width: '14%',
-      defaultFilteredValue: statusId,
+      defaultFilteredValue: filter.statusId,
       filters: status
     },
     {
@@ -177,7 +200,7 @@ const CustomerKyc = (props) => {
                 onClick={() => console.log('Upload')}
               />
             )}
-            {(statusId === 3 || statusId === 4) &&
+            {(statusId === 3 || statusId === 4) && (
               <Space>
                 <Button
                   type='primary'
@@ -188,15 +211,23 @@ const CustomerKyc = (props) => {
                   onClick={() =>
                     handleShow('createBranchVisible', null, null, record)}
                 />
-                <Button
-                  type='primary'
-                  size='small'
-                  shape='circle'
-                  danger
-                  icon={<CloseOutlined />}
-                  onClick={() => handleShow(null, null, null, null)}
-                />
-              </Space>}
+                <Popconfirm
+                  title='Are you sure want to Reject the Customer?'
+                  okText='Yes'
+                  cancelText='No'
+                  onConfirm={() => console.log('Rejected!')}
+                >
+                  <Button
+                    type='primary'
+                    size='small'
+                    shape='circle'
+                    danger
+                    icon={<CloseOutlined />}
+                    onClick={() => handleShow(null, null, null, null)}
+                  />
+                </Popconfirm>
+              </Space>
+            )}
           </Space>
         )
       }

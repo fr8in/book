@@ -7,7 +7,8 @@ import { Row, Col, Button, Card, Divider, Space, Tag, Tabs } from 'antd'
 import AssignTrip from '../assignTrip'
 import Loading from '../../common/loading'
 import DetailPageHeader from '../../common/detailPageHeader'
-import TruckTruckType from '../../../components/trucks/truckTruckType'
+import TruckType from '../../../components/trucks/truckType'
+import TruckNo from '../../../components/trucks/truckNo'
 
 import { useSubscription } from '@apollo/client'
 import { TRUCK_DETAIL_SUBSCRIPTION } from './query/truckDetailSubscription'
@@ -43,13 +44,19 @@ const TruckDetailContainer = (props) => {
         <DetailPageHeader
           title={
             <Space>
-              <h3>{truckInfo.truck_no}</h3>
+              <h3>
+              <TruckNo
+                    id={truckInfo.id}
+                    truck_no={truckInfo.truck_no}
+                  />
+              </h3>
               <Divider type='vertical' />
               <h4>
-                <TruckTruckType
-                  truck_no={truckInfo.truck_no}
-                  truck_type_id={truckInfo.truck_type_id}
-                />
+              <TruckType
+              truckType={truckInfo.truck_type && truckInfo.truck_type.value}
+              truckTypeId={truckInfo.truck_type && truckInfo.truck_type.id}
+              truck_no={truckInfo.truck_no}
+            />
               </h4>
             </Space>
           }
