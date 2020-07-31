@@ -39,10 +39,11 @@ const SourceInDate = (props) => {
     <Form.Item name='source_in_date' label='Source In'>
       <DatePicker
         showTime
+        allowClear={false}
         format='DD-MM-YYYY HH:mm'
         placeholder='Select Time'
         style={{ width: '100%' }}
-        disabled={false}
+        disabled={!!source_in}
         value={source_in ? moment(source_in, dateFormat) : null}
         onChange={onSubmit}
       />
