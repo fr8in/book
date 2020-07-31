@@ -3,8 +3,9 @@ import useKeypress from '../../hooks/useKeypress'
 import useOnClickOutside from '../../hooks/useOnClickOutside'
 import { EditOutlined } from '@ant-design/icons'
 function InlineEdit (props) {
+  const { onSetText, text } = props
   const [isInputActive, setIsInputActive] = useState(false)
-  const [inputValue, setInputValue] = useState(props.text)
+  const [inputValue, setInputValue] = useState(text)
   const [width, setWidth] = useState(140)
 
   const wrapperRef = useRef(null)
@@ -13,8 +14,6 @@ function InlineEdit (props) {
 
   const enter = useKeypress('Enter')
   const esc = useKeypress('Escape')
-
-  const { onSetText, text } = props
 
   // check to see if the user clicked outside of this component
   useOnClickOutside(wrapperRef, () => {
