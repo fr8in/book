@@ -1,9 +1,13 @@
-import { Modal, Button, Row, Input, Col, Table } from 'antd'
-import { useQuery } from '@apollo/client'
-import { PARTNER_COMMENT_QUERY } from './container/query/partnersCommentQuery'
+import { Modal, Button, Row, Input, Col, Table, message } from 'antd'
+import { useQuery , useMutation} from '@apollo/client'
+import { PARTNER_COMMENT_QUERY } from './container/query/partnerCommentQuery'
+import { INSERT_PARTNER_COMMENT_MUTATION } from './container/query/updatePartnerCommentMutation'
+import React, { useState } from 'react'
 
 const PartnerComment = (props) => {
-  const { visible, partnerId, onHide } = props
+  const { visible, partnerId, onHide} = props
+  const [user, setUser] = useState('')
+
   const { loading, error, data } = useQuery(
     PARTNER_COMMENT_QUERY,
     {
@@ -12,10 +16,33 @@ const PartnerComment = (props) => {
     }
   )
 
+  const [InsertComment] = useMutation(
+    INSERT_PARTNER_COMMENT_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
+
   if (loading) return null
   console.log('PartnerComment error', error)
   console.log('PartnerComment data', data.partner)
   const { partner_comments } = data.partner[0] ? data.partner[0] : []
+  const handleChange = (e) => {
+    setUser(e.target.value)
+  }
+  console.log('user',user)
+
+  const onSubmit = () => {
+    InsertComment({
+      variables: {
+        partner_id:partnerId ,
+        created_by: "shilpa@fr8.in",
+        description : user ,
+        topic: 'text',
+      }
+    })
+  }
 
   const columns = [{
     title: 'Previous Comments',
@@ -40,12 +67,14 @@ const PartnerComment = (props) => {
       <Row gutter={10} className='mb10'>
         <Col flex='auto'>
           <Input.TextArea
-            name='comment'
+            value={user}
+            onChange={handleChange}
+            name='description'
             placeholder='Please Enter Comments......'
           />
         </Col>
         <Col flex='80px'>
-          <Button type='primary'>Submit</Button>
+          <Button type='primary' onClick={onSubmit} >Submit</Button>
         </Col>
       </Row>
       <Table

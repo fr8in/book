@@ -37,7 +37,6 @@ const PartnerTruck = (props) => {
     title: ''
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
-
   const { trucks } = props
 
   const columnsCurrent = [
@@ -82,11 +81,11 @@ const PartnerTruck = (props) => {
         const destination = record && record.trips[0] && record.trips[0].destination ? record.trips[0].destination.name : null
         return (
           <span>{
-            id ? (
+            id ? 
               <span>
                 {source.slice(0, 3) + '-' + destination.slice(0, 3)}
-              </span>)
-              : (record.truck_status.value === 1) ? <Button type='link' onClick={() => handleShow('poVisible', record.partner, 'poData', record)}>Assign</Button> : 'NA'
+              </span>
+              : (record.truck_status.id === 1) ? <Button type='link' onClick={() => handleShow('poVisible', record.partner, 'poData', record)}>Assign</Button> : 'NA'
           }
           </span>
         )
@@ -107,12 +106,6 @@ const PartnerTruck = (props) => {
       },
       filters: list
     },
-    {
-      title: 'Avg Km/day',
-      dataIndex: 'averageKm',
-      sorter: (a, b) => (a.averageKm > b.averageKm ? 1 : -1),
-      filters: status
-    }
   ]
   return (
     <>

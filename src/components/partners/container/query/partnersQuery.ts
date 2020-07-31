@@ -12,6 +12,9 @@ export const PARTNERS_QUERY = gql`
         name
       }
       created_at
+      partner_status{
+        value
+      }
       city {
         branch {
           region {
@@ -31,7 +34,7 @@ export const PARTNERS_QUERY = gql`
         created_at
         created_by
       }
-      trucks_aggregate(where:{truck_status_id:{_eq:3}}){
+      trucks_aggregate(where:{truck_status_id:{_neq:7}}){
         aggregate{
           count
         }

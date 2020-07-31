@@ -1,6 +1,6 @@
 import { Row } from 'antd'
 import LabelAndData from '../common/labelAndData'
-import detail from '../../../mock/partner/partnerInfo'
+import PartnerOnBoardedBy from './partnerOnboardedByName'
 
 const PartnerInfo = (props) => {
   const { partnerInfo } = props
@@ -18,14 +18,21 @@ const PartnerInfo = (props) => {
       />
       <LabelAndData
         label='Region'
-        data={<label>{detail.region}</label>}
+        data={<label>{partnerInfo.city && partnerInfo.city.branch &&
+           partnerInfo.city.branch.region && partnerInfo.city.branch.region.name }</label>}
         mdSpan={4}
         smSpan={8}
         xsSpan={12}
       />
       <LabelAndData
         label='On-Boarded'
-        data={<label>{partnerInfo.onboarded_by && partnerInfo.onboarded_by.name}</label>}
+        data={
+          <PartnerOnBoardedBy
+          onboardedBy={partnerInfo.onboarded_by && partnerInfo.onboarded_by.email}
+          onboardedById={partnerInfo.onboarded_by && partnerInfo.onboarded_by.id}
+          cardcode={partnerInfo.cardcode}
+        />
+        }
         mdSpan={4}
         smSpan={8}
         xsSpan={12}

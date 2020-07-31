@@ -1,7 +1,6 @@
 import { Table, Tooltip, Button, Badge, Input, Space } from 'antd'
 import {
   CommentOutlined,
-  SearchOutlined,
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
@@ -58,19 +57,6 @@ const PartnerKyc = (props) => {
           </Link>
         )
       },
-      filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search Partner Code'
-            id='code'
-            name='code'
-            type='number'
-          />
-        </div>
-      ),
-      filterIcon: (filtered) => (
-        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-      )
     },
     {
       title: 'Partner',
@@ -84,14 +70,6 @@ const PartnerKyc = (props) => {
           </span>
         )
       },
-      filterDropdown: (
-        <div>
-          <Input placeholder='Search Partner Name' id='name' name='name' />
-        </div>
-      ),
-      filterIcon: (filtered) => (
-        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-      )
     },
     {
       title: 'On Boarded By',
@@ -112,8 +90,7 @@ const PartnerKyc = (props) => {
       width: '7%',
       filters: regionList,
       render: (text, record) => {
-        const region = record.city && record.city.branch &&   
-        record.city.branch.region.name ? record.city.branch.region.name : '-'
+        const region = record.city && record.city.branch && record.city.branch.region.name   
           return (region)
         }
     },
@@ -132,7 +109,6 @@ const PartnerKyc = (props) => {
       dataIndex: 'created_at',
       width: '10%',
       render: (text, record) => {
-        console.log('partners',partners)
         return text && text.length > 12 ? (
           <Tooltip title={text}>
             <span> {text.slice(0, 12) + '...'}</span>
@@ -148,8 +124,7 @@ const PartnerKyc = (props) => {
       filters: truckCount,
       render: (text, record) => {
         const truckCount = record.trucks_aggregate && record.trucks_aggregate.aggregate &&
-          record.trucks_aggregate.aggregate.count ? 
-         record.trucks_aggregate.aggregate.count : '-'
+          record.trucks_aggregate.aggregate.count ? record.trucks_aggregate.aggregate.count : '-'       
           return (truckCount)
         }
     },
@@ -163,12 +138,13 @@ const PartnerKyc = (props) => {
       dataIndex: 'status',
       width: '9%',
       render: (text, record) => {
-        return text && text.length > 12 ? (
-          <Tooltip title={text}>
-            <span> {text.slice(0, 12) + '...'}</span>
+        const status = record.partner_status &&  record.partner_status.value       
+        return status.length > 12 ? (
+          <Tooltip title={status}>
+            <span> {status.slice(0, 12) + '...'}</span>
           </Tooltip>
         ) : (
-          text
+          status
         )
       },
       filters: kycStatusList
