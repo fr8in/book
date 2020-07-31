@@ -1,7 +1,6 @@
 
 import LabelAndData from '../common/labelAndData'
 import Link from 'next/link'
-import data from '../../../mock/trucks/truckDetail'
 import { Row } from 'antd'
 import { PhoneOutlined } from '@ant-design/icons'
 
@@ -13,7 +12,7 @@ const Truck = (props) => {
     window.location.href = 'tel:' + data
   }
 
-  const number = truckInfo.partner && truckInfo.partner.partner_users && truckInfo.partner.partner_users.length > 0 && 
+  const number = truckInfo.partner && truckInfo.partner.partner_users && truckInfo.partner.partner_users.length > 0 &&
           truckInfo.partner.partner_users[0].mobile ? truckInfo.partner.partner_users[0].mobile : '-'
 
   return (
@@ -21,7 +20,7 @@ const Truck = (props) => {
       <LabelAndData
         label='Partner'
         data={
-          <Link href='/partners/[id]' as={`/partners/${truckInfo.partner && truckInfo.cardcode}`}>
+          <Link href='/partners/[id]' as={`/partners/${truckInfo.partner && truckInfo.partner.cardcode}`}>
             <h4><a>{truckInfo.partner && truckInfo.partner.name}</a></h4>
           </Link>
         }

@@ -1,11 +1,10 @@
-import { Table,Button } from 'antd'
+import { Table, Button } from 'antd'
 import Link from 'next/link'
 import { EditTwoTone } from '@ant-design/icons'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
 import PartnerUsers from '../partners/partnerUsers'
 import CreatePo from '../../components/trips/createPo'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
-
 
 const Trucks = (props) => {
   const initial = {
@@ -17,20 +16,14 @@ const Trucks = (props) => {
     editData: [],
     title: ''
   }
-
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
-  const { trucks , status } = props
+  const { trucks, status, loading } = props
   console.log(props)
 
   const truckStatus = status.map(data => {
     return { value: data.id.toString(), text: data.value }
   })
-
- 
- 
-
-  
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -52,7 +45,7 @@ const Trucks = (props) => {
           </Link>
         )
       }
-    }, 
+    },
     {
       title: 'Trip ID',
       render: (text, record) => {
@@ -81,7 +74,7 @@ const Trucks = (props) => {
                 {
                   source.slice(0, 3) + '-' + destination.slice(0, 3)
                 }
-              </span> : (record.truck_status.id === 1) ? <Button type='link'onClick={() => handleShow('poVisible', record.partner.name , 'poData', record.truck_no)}>Assign</Button> : 'NA'
+              </span> : (record.truck_status.id === 1) ? <a className='link' onClick={() => handleShow('poVisible', record.partner.name, 'poData', record.truck_no)}>Assign</a> : 'NA'
           }
           </span>
         )
@@ -102,10 +95,10 @@ const Trucks = (props) => {
       title: 'Phone No',
       dataIndex: 'mobile',
       render: (text, record) => {
-         const number = record.partner && record.partner.partner_users && record.partner.partner_users.length > 0 && 
+        const number = record.partner && record.partner.partner_users && record.partner.partner_users.length > 0 &&
           record.partner.partner_users[0].mobile ? record.partner.partner_users[0].mobile : '-'
         return (
-          <span className='link' onClick={() => handleShow('usersVisible', null , 'usersData', record.partner)}>{number}</span>
+          <span className='link' onClick={() => handleShow('usersVisible', null, 'usersData', record.partner)}>{number}</span>
         )
       }
     },
@@ -123,7 +116,7 @@ const Trucks = (props) => {
     },
     {
       title: '',
-      render: (text, record) => <EditTwoTone onClick={() => handleShow('editVisible','Breakdown' , 'editData', record )} />
+      render: (text, record) => <EditTwoTone onClick={() => handleShow('editVisible', 'Breakdown', 'editData', record)} />
     }
   ]
   return (
@@ -138,8 +131,9 @@ const Trucks = (props) => {
         size='small'
         scroll={{ x: 1156 }}
         pagination={false}
+        loding={loading}
       />
-       {object.usersVisible &&
+      {object.usersVisible &&
         <PartnerUsers
           visible={object.usersVisible}
           partner={object.usersData}
@@ -147,15 +141,15 @@ const Trucks = (props) => {
           title={object.title}
         />}
 
-        {object.editVisible &&
+      {object.editVisible &&
         <CreateBreakdown
           visible={object.editVisible}
           data={object.editData}
           onHide={handleHide}
           title={object.title}
         />}
-     
-       {object.poVisible &&
+
+      {object.poVisible &&
         <CreatePo
           visible={object.poVisible}
           truck_no={object.poData}

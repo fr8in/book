@@ -9,7 +9,6 @@ import {
 import useShowHide from '../../../hooks/useShowHide'
 // All components
 import AccStmtMail from '../stmtMail'
-import Loading from '../../common/loading'
 import DetailPageHeader from '../../common/detailPageHeader'
 import CustomerName from '../customerName'
 import Blacklist from '../blacklist'
@@ -55,11 +54,12 @@ const CustomerDetailContainer = (props) => {
     }
   )
 
-  if (loading) return <Loading />
   console.log('CustomerDetailContainer Error', error)
-
-  const { customer } = data
-  const customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
+  var customerInfo = {}
+  if (!loading) {
+    const { customer } = data
+    customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
+  }
 
   return (
     <Row>
@@ -118,7 +118,7 @@ const CustomerDetailContainer = (props) => {
             />
           }
         >
-          <CustomerInfo customerInfo={customerInfo} />
+          <CustomerInfo customerInfo={customerInfo} loading={loading} />
           <Row gutter={10} className='mt10'>
             <Col xs={24}>
               <Card size='small' className='card-body-0 border-top-blue'>
