@@ -98,14 +98,6 @@ const PartnerTruck = (props) => {
       }
 
     },
-    {
-      title: 'Status',
-      render: (text, record) => {
-        return (
-          record.truck_status && record.truck_status.value)
-      },
-      filters: list
-    },
   ]
   return (
     <>

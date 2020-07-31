@@ -1,4 +1,4 @@
-import { Table, Tooltip, Button, Badge, Input, Space } from 'antd'
+import { Table, Tooltip, Button, Badge, Space, Modal } from 'antd'
 import {
   CommentOutlined,
   CheckOutlined,
@@ -8,10 +8,10 @@ import Link from 'next/link'
 import useShowHide from '../../hooks/useShowHide'
 import KycReject from '../../components/partners/partnerKycReject'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
-import PartnerComment from './partnerComment'
+import Comment from './comment'
 import KycApproval from '../partners/kycApproval'
 
-const regionList = [
+const region_list = [
   { value: 1, text: 'North' },
   { value: 2, text: 'South-1' },
   { value: 3, text: 'South-2' },
@@ -20,13 +20,13 @@ const regionList = [
   { value: 6, text: 'West-1' },
   { value: 7, text: 'West-2' }
 ]
-const kycStatusList = [
+const status_list = [
   { value: 1, text: 'Verification Pending' },
   { value: 2, text: 'Document Pending' },
   { value: 3, text: 'Rejected' },
   { value: 4, text: 'Re-Verification' }
 ]
-const truckCount = [
+const truck_count = [
   { value: 1, text: '0' },
   { value: 2, text: '1-5' },
   { value: 3, text: '>5' },
@@ -34,7 +34,7 @@ const truckCount = [
 ]
 
 const PartnerKyc = (props) => {
-  const { partners } = props
+  const { partners, loading } = props
   const initial = {
     commentData: [],
     commentVisible: false,
@@ -56,7 +56,7 @@ const PartnerKyc = (props) => {
             <a>{text}</a>
           </Link>
         )
-      },
+      }
     },
     {
       title: 'Partner',
@@ -69,13 +69,13 @@ const PartnerKyc = (props) => {
             <span>{text}</span>
           </span>
         )
-      },
+      }
     },
     {
       title: 'On Boarded By',
       width: '10%',
       render: (text, record) => {
-        const onboarded_by =  record.onboarded_by && record.onboarded_by.name
+        const onboarded_by = record.onboarded_by && record.onboarded_by.name
         return onboarded_by.length > 12 ? (
           <Tooltip title={onboarded_by}>
             <span> {onboarded_by.slice(0, 12) + '...'}</span>
@@ -88,21 +88,21 @@ const PartnerKyc = (props) => {
     {
       title: 'Region',
       width: '7%',
-      filters: regionList,
+      filters: region_list,
       render: (text, record) => {
-        const region = record.city && record.city.branch && record.city.branch.region.name   
-          return (region)
-        }
+        const region = record.city && record.city.branch && record.city.branch.region.name
+        return (region)
+      }
     },
     {
       title: 'Contact No',
       width: '9%',
       render: (text, record) => {
-        const number = record.partner_users && record.partner_users.length > 0 && 
+        const number = record.partner_users && record.partner_users.length > 0 &&
         record.partner_users[0].mobile ? record.partner_users[0].mobile : '-'
-          return (number)
-        }
-      
+        return (number)
+      }
+
     },
     {
       title: 'Registered At',
@@ -121,12 +121,12 @@ const PartnerKyc = (props) => {
     {
       title: 'Trucks',
       width: '7%',
-      filters: truckCount,
+      filters: truck_count,
       render: (text, record) => {
         const truckCount = record.trucks_aggregate && record.trucks_aggregate.aggregate &&
-          record.trucks_aggregate.aggregate.count ? record.trucks_aggregate.aggregate.count : '-'       
-          return (truckCount)
-        }
+          record.trucks_aggregate.aggregate.count ? record.trucks_aggregate.aggregate.count : '-'
+        return (truckCount)
+      }
     },
     {
       title: 'PAN',
@@ -138,7 +138,7 @@ const PartnerKyc = (props) => {
       dataIndex: 'status',
       width: '9%',
       render: (text, record) => {
-        const status = record.partner_status &&  record.partner_status.value       
+        const status = record.partner_status && record.partner_status.value
         return status.length > 12 ? (
           <Tooltip title={status}>
             <span> {status.slice(0, 12) + '...'}</span>
@@ -147,24 +147,24 @@ const PartnerKyc = (props) => {
           status
         )
       },
-      filters: kycStatusList
+      filters: status_list
     },
     {
       title: 'Comment',
       width: '11%',
       render: (text, record) => {
-        const comment = record.partner_comments && record.partner_comments.length > 0 && 
+        const comment = record.partner_comments && record.partner_comments.length > 0 &&
         record.partner_comments[0].description ? record.partner_comments[0].description : '-'
-        console.log('partners',partners)
-          return comment && comment.length > 12 ? (
-            <Tooltip title={comment}>
-              <span> {comment.slice(0, 12) + '...'}</span>
-            </Tooltip>
-          ) : (
-            comment
-          )
-        }
-      
+        console.log('partners', partners)
+        return comment && comment.length > 12 ? (
+          <Tooltip title={comment}>
+            <span> {comment.slice(0, 12) + '...'}</span>
+          </Tooltip>
+        ) : (
+          comment
+        )
+      }
+
     },
     {
       title: 'Action',
@@ -211,13 +211,17 @@ const PartnerKyc = (props) => {
         scroll={{ x: 1256 }}
         pagination={false}
         className='withAction'
+        loading={loading}
       />
       {object.commentVisible && (
-        <PartnerComment
+        <Modal
+          title='Comments'
           visible={object.commentVisible}
-          partnerId={object.commentData}
-          onHide={handleHide}
-        />
+          onCancel={handleHide}
+          bodyStyle={{ padding: 10 }}
+        >
+          <Comment partnerId={object.commentData} />
+        </Modal>
       )}
       {visible.reject && <KycReject visible={visible.reject} onHide={onHide} />}
       {object.approvalVisible && (

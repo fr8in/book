@@ -1,8 +1,18 @@
 import { message } from 'antd'
-import { useQuery, useMutation } from '@apollo/client'
+import { gql, useQuery, useMutation } from '@apollo/client'
 import { ALL_EMPLOYEE } from '../branches/container/query/employeeQuery'
-import { UPDATE_PARTNER_ONBOARDED_BY_NAME_MUTATION } from './container/query/updateOnboardedByNameMutation'
 import InlineSelect from '../common/inlineSelect'
+
+const UPDATE_PARTNER_ONBOARDED_BY_NAME_MUTATION = gql`
+mutation partner_onboarded_by_name($onboarded_by_id:Int,$cardcode:String) {
+update_partner(_set:{onboarded_by_id: $onboarded_by_id}, where:{cardcode: {_eq:$cardcode}}){
+    returning{
+      id
+      onboarded_by_id   
+    }
+  }
+}
+`
 
 const OnBoardedBy = (props) => {
   const { onboardedById, onboardedBy, cardcode } = props

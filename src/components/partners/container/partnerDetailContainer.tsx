@@ -45,13 +45,15 @@ const PartnerDetailContainer = (props) => {
   if (loading) return <Loading />
   console.log('PartnerDetailContainer Error', error)
   console.log('PartnerDetailContainer Data', data)
-  const { partner, partner_comments } = data
+  const { partner } = data
   const partnerData = partner[0] ? partner[0] : { name: 'ID does not exist' }
   const trucks = partnerData.trucks
   console.log('trucks', trucks)
   const callback = (key) => {
     console.log(key)
   }
+  const truck_count = partnerData.trucks_aggregate && partnerData.trucks_aggregate.aggregate && partnerData.trucks_aggregate.aggregate.count
+
   return (
     <Row>
       <Col xs={24}>
@@ -125,12 +127,21 @@ const PartnerDetailContainer = (props) => {
                       </Col>
                     </Row>
                   </TabPane>
-                  <TabPane tab={<TitleWithCount name='Truck' value={ partnerData.trucks_aggregate && partnerData.trucks_aggregate.aggregate 
-                    && partnerData.trucks_aggregate.aggregate.count} />} key='2'>
+                  <TabPane
+                    tab={
+                      <TitleWithCount
+                        name='Truck'
+                        value={truck_count}
+                      />
+                    }
+                    key='2'
+                  >
                     <PartnerTruck trucks={trucks} />
                   </TabPane>
                   <TabPane tab='Comment' key='3'>
-                    <Comment partner = {partner_comments}/>
+                    <div className='p10'>
+                      <Comment partnerId={partnerData.id} />
+                    </div>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='On-going' value={5} />} key='4'>
                     <TripDetail />
