@@ -7,10 +7,10 @@ import { PARTNER_USERS_QUERY } from './container/query/partnersUsersQuery'
 import {INSERT_PARTNER_USERS_MUTATION} from './container/query/insertPartnerUsersMutation'
 
 const PartnerUsers = (props) => {
-  const { visible, partner, onHide, title ,mobile} = props
+  const { visible, partner, onHide, title } = props
   
  console.log('partnerId',partner)
-  const [user, setUser] = useState('')
+  const [mobile, setMobile] = useState('')
 
   const { loading, error, data } = useQuery(
     PARTNER_USERS_QUERY,
@@ -32,17 +32,17 @@ const PartnerUsers = (props) => {
   console.log('PartnerUsers error', error)
 
   const handleChange = (e) => {
-    setUser(e.target.value)
+    setMobile(e.target.value)
   }
-  console.log('user',user)
+ 
 
   const onAddUser = () => {
     insertPartnerUser({
       variables: {
         partner_id : partner.id,
-       mobile :user,
-     is_admin :false,
-     email :`${mobile}.partner@fr8.in`,
+       mobile : mobile,
+       is_admin :false,
+       email :`${mobile}.partner@fr8.in`,
      name: ''
    
       }
@@ -103,7 +103,7 @@ const PartnerUsers = (props) => {
       <Row className='mt10' gutter={10}>
         <Col flex='auto'>
           <Form.Item>
-            <Input type='number' value={user}  onChange={handleChange} min={-10} max={10} placeholder='Enter Mobile Number' />
+            <Input type='number' value={mobile}  onChange={handleChange}  max={10} placeholder='Enter Mobile Number' />
           </Form.Item>
         </Col>
         <Col flex='90px'>

@@ -26,7 +26,6 @@ const PartnerComment = (props) => {
 
   if (loading) return null
   console.log('PartnerComment error', error)
-  console.log('PartnerComment data', data.partner)
   const { partner_comments } = data.partner[0] ? data.partner[0] : []
   const handleChange = (e) => {
     setUser(e.target.value)
