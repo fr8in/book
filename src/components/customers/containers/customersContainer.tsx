@@ -2,9 +2,51 @@ import { useState } from 'react'
 import { Row, Col, Card } from 'antd'
 import CustomerKyc from '../customerKyc'
 
-import { useQuery } from '@apollo/client'
-import { CUSTOMERS_QUERY } from './query/customersQuery'
-import Loading from '../../common/loading'
+import { gql, useQuery } from '@apollo/client'
+
+const CUSTOMERS_QUERY = gql`
+  query customers($offset: Int!, $limit: Int!, $statusId:[Int!], $name:String, $mobile:String) {
+    customer(
+      offset: $offset, 
+      limit: $limit,
+      where: { 
+        status: {
+          id: {_in: $statusId},
+        },
+        name: {_ilike: $name},
+        mobile: {_like: $mobile}
+      }
+    ) {
+      cardcode
+      customerUsers{
+        id
+        name
+      }
+      name
+      mobile
+      type_id
+      created_at
+      pan
+      advancePercentage{
+        id
+        value
+      }
+      status {
+        id
+        value
+      }
+    }
+    customer_aggregate {
+      aggregate {
+        count
+      }
+    }
+    customer_status(order_by: {id:asc}){
+      id
+      value
+    }
+  }
+`
 
 const CustomersContainer = () => {
   const initialFilter = { statusId: [1, 2, 3, 4], name: null, mobile: null }
@@ -27,10 +69,15 @@ const CustomersContainer = () => {
     }
   )
 
-  if (loading) return <Loading />
   console.log('CustomersContainer error', error)
-
-  const { customer, customer_status, customer_aggregate } = data
+  var customer = []
+  var customer_status = []
+  var customer_aggregate = 0
+  if (!loading) {
+    customer = data.customer
+    customer_status = data.customer_status
+    customer_aggregate = data.customer_aggregate
+  }
 
   const loadMore = () => fetchMore({
     variables: {
@@ -76,6 +123,7 @@ const CustomersContainer = () => {
             onFilter={onFilter}
             onNameSearch={onNameSearch}
             onMobileSearch={onMobileSearch}
+            loading={loading}
           />
         </Card>
       </Col>
