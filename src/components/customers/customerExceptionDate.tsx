@@ -43,7 +43,7 @@ const CustomerExceptionDate = (props) => {
             <DatePicker
               showToday={false}
               placeholder='Exception Date'
-              disabled={false}
+              disabledDate={(current) => current && current < moment().startOf('days')}
               format={dateFormat}
               value={exceptionDate ? moment(exceptionDate, dateFormat) : moment()}
               onChange={onChange}

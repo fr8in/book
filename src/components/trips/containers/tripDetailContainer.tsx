@@ -26,12 +26,12 @@ const { TabPane } = Tabs
 const { Panel } = Collapse
 
 const TripDetailContainer = (props) => {
-  const { id } = props
+  const { trip_id } = props
   console.log('tripId', props)
   const { loading, error, data } = useSubscription(
     TRIP_DETAIL_SUBSCRIPTION,
     {
-      variables: { id }
+      variables: { id: trip_id }
     }
   )
 
@@ -71,7 +71,7 @@ const TripDetailContainer = (props) => {
               <TripLr />
             </Panel>
           </Collapse>
-          <TripTime tripTime={tripInfo} />
+          <TripTime tripInfo={tripInfo} />
           <Collapse accordion className='small mt10'>
             <Panel header='Customer/Partner - Billing Comment' key='1'>
               <BillingComment />

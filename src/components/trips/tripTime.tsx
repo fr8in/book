@@ -10,10 +10,12 @@ import {
 import SendLoadingMemo from './sendLoadingMemo'
 import useShowHide from '../../hooks/useShowHide'
 import DeletePO from './deletePO'
-import DriverPhoneN0 from './driverPhoneNo'
-
+import DriverPhoneNo from './driverPhoneNo'
+import SourceInDate from './tripSourceIn'
 
 const TripTime = (props) => {
+  const { tripInfo } = props
+  console.log('tripInfo', tripInfo)
   const initial = { checkbox: false, mail: false, deletePO: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
@@ -24,15 +26,7 @@ const TripTime = (props) => {
           <Form layout='vertical'>
             <Row gutter={10}>
               <Col xs={8}>
-                <Form.Item label='Source In'>
-                  <DatePicker
-                    showTime
-                    format='DD-MMM-YYYY HH:mm'
-                    placeholder='Select Time'
-                    style={{ width: '100%' }}
-                    disabled={false}
-                  />
-                </Form.Item>
+                <SourceInDate source_in={tripInfo.source_in} id={tripInfo.id} />
               </Col>
               <Col xs={8}>
                 <Form.Item label='Source Out'>
@@ -47,7 +41,7 @@ const TripTime = (props) => {
                   </Tooltip>
                 </Form.Item>
               </Col>
-              < DriverPhoneN0 />
+              <DriverPhoneNo />
             </Row>
             <Row gutter={10}>
               <Col xs={8}>
