@@ -4,7 +4,7 @@ import { Table } from 'antd'
 import Link from 'next/link'
 
 const Partners = (props) => {
-  const { trips } = props
+  const { trips, loading } = props
 
   const columnsCurrent = [
     {
@@ -44,8 +44,8 @@ const Partners = (props) => {
       render: (text, record) => {
         return (record.km)
       }
-    } 
-    : {
+    }
+      : {
         title: 'SourceIn',
         dataIndex: 'cityIn'
       },
@@ -73,6 +73,7 @@ const Partners = (props) => {
       size='middle'
       scroll={{ x: 900, y: 270 }}
       pagination={false}
+      loading={loading}
     />
   )
 }

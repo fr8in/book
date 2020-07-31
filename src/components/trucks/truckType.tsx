@@ -1,8 +1,25 @@
 import { message } from 'antd'
-import { useQuery, useMutation } from '@apollo/client'
-import { TRUCKS_TYPE_QUERY } from './container/query/trucksTypeQuery'
-import { UPDATE_TRUCK_TYPE_MUTATION } from './container/query/updateTruckTypeMutation'
+import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
+
+const TRUCKS_TYPE_QUERY = gql`
+  query truckType{
+  truck_type{
+      id
+    value
+  }
+}
+`
+const UPDATE_TRUCK_TYPE_MUTATION = gql`
+mutation TruckTypeEdit($truck_type_id:Int,$truck_no:String) {
+    update_truck(_set:{truck_type_id: $truck_type_id}, where:{truck_no: {_eq:$truck_no}}) {
+      returning{
+        id
+        truck_type_id
+      }
+    }
+  }
+`
 
 const TruckType = (props) => {
   const { truckTypeId, truckType, truck_no } = props

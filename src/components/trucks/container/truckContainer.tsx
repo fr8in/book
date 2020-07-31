@@ -2,9 +2,50 @@
 import { Row, Col, Input, Card } from 'antd'
 import Trucks from '../trucks'
 
-import { useQuery } from '@apollo/client'
-import { TRUCKS_QUERY } from './query/trucksQuery'
-import Loading from '../../common/loading'
+import { gql, useQuery } from '@apollo/client'
+
+const TRUCKS_QUERY = gql`
+  query trucks($offset: Int!, $limit: Int! , $trip_status_id:[Int!]) {
+    truck(offset: $offset, limit: $limit) {
+      truck_no
+      truck_type_id
+      truck_status_id
+      truck_type{
+        value
+      }
+      city {
+        name
+      }
+      truck_status {
+        id
+        value
+      }
+      partner {
+        id
+        name
+        partner_users(limit:1 , where:{is_admin:{_eq:true}}){
+          mobile
+        }
+        cardcode
+      }
+      trips(where: {trip_status_id: {_in: $trip_status_id}}) {
+        id
+        source {
+          name
+        }
+        destination {
+          name
+        }
+      }
+    }
+    truck_status{
+      id 
+      value
+    }
+    
+  }
+      
+`
 
 const { Search } = Input
 
@@ -23,14 +64,14 @@ const TruckContainer = () => {
     }
   )
 
-  if (loading) return <Loading />
   console.log('TrucksContainer error', error)
-
-  console.log('TrucksContainer data', data)
-
-  const { truck, truck_status } = data
+  var truck = []
+  var truck_status = []
   
-  console.log('truck', truck)
+  if (!loading) {
+    truck = data.truck
+    truck_status = data.truck_status
+  }
 
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
@@ -45,7 +86,7 @@ const TruckContainer = () => {
       <Row>
         <Col sm={24}>
           <Card size='small' className='card-body-0'>
-            <Trucks trucks={truck} status={truck_status} />
+            <Trucks trucks={truck} status={truck_status} loading={loading} />
           </Card>
         </Col>
       </Row>
