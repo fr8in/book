@@ -26,7 +26,9 @@ const CustomerKyc = (props) => {
   const [defaultMamul, setDefaultMamul] = useState(mamulInitial)
 
   const recordsCheck = recordCount - 1 > customers.length
+  console.log('recordCount', recordCount, customers.length, recordsCheck)
   useEffect(() => {
+    console.log('refetch data', recordsCheck, recordCount)
     var tableContent = document.querySelector('.paginated .ant-table-body')
     function handleScroll (e) {
       const maxScroll = e.target.scrollHeight - e.target.clientHeight
@@ -38,7 +40,7 @@ const CustomerKyc = (props) => {
     tableContent.addEventListener('scroll', handleScroll)
     // to handle side effect should removeEventListener
     return () => tableContent.removeEventListener('scroll', handleScroll)
-  }, [])
+  })
 
   const onMamul = (record, e) => {
     const givenMamul = e.target.value

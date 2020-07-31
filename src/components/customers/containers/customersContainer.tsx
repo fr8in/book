@@ -74,10 +74,11 @@ const CustomersContainer = () => {
   var customer_status = []
   var customer_aggregate = 0
   if (!loading) {
-    customer = data.customer
-    customer_status = data.customer_status
-    customer_aggregate = data.customer_aggregate
+    customer = data && data.customer
+    customer_status = data && data.customer_status
+    customer_aggregate = data && data.customer_aggregate
   }
+  console.log('customer', customer)
 
   const loadMore = () => fetchMore({
     variables: {
@@ -97,7 +98,7 @@ const CustomersContainer = () => {
     return { value: data.id, text: data.value }
   })
   const recordCount = customer_aggregate.aggregate && customer_aggregate.aggregate.count
-
+  console.log('recordCount', recordCount)
   const onFilter = (value) => {
     setFilter({ ...filter, statusId: value })
   }
