@@ -1,4 +1,4 @@
-import { Table, Button } from 'antd'
+import { Table } from 'antd'
 import Link from 'next/link'
 import { EditTwoTone } from '@ant-design/icons'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
