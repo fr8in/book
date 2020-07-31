@@ -5,13 +5,50 @@ import Truck from '../truck'
 import Timeline from '../truckTimeline'
 import { Row, Col, Button, Card, Divider, Space, Tag, Tabs } from 'antd'
 import AssignTrip from '../assignTrip'
-import Loading from '../../common/loading'
 import DetailPageHeader from '../../common/detailPageHeader'
 import TruckType from '../../../components/trucks/truckType'
 import TruckNo from '../../../components/trucks/truckNo'
 
-import { useSubscription } from '@apollo/client'
-import { TRUCK_DETAIL_SUBSCRIPTION } from './query/truckDetailSubscription'
+import { gql, useSubscription } from '@apollo/client'
+
+const TRUCK_DETAIL_SUBSCRIPTION = gql`
+  subscription trucks($truck_no: String,$trip_status_id:[Int!]) {
+    truck(where: {truck_no: {_eq: $truck_no}}) {
+        id
+        truck_no
+        truck_type{
+          value
+        }
+        city{
+          name
+        }
+        partner {
+          id
+          name
+          partner_users(limit:1 , where:{is_admin:{_eq:true}}){
+            mobile
+          }
+          cardcode
+        }
+        trips (where: {trip_status_id: {_in: $trip_status_id}}) {
+          id
+          order_date
+          km
+          avg_km_day
+          source{
+            name
+          }
+          destination{
+            name
+          }
+          trip_status{
+            value
+          }
+        }
+        
+      }
+    }
+`
 
 const TabPane = Tabs.TabPane
 const tripStatusId = [2, 3, 4, 5, 6]
@@ -27,14 +64,13 @@ const TruckDetailContainer = (props) => {
     }
   )
 
-  if (loading) return <Loading />
   console.log('TruckDetailContainer Error', error)
-  console.log('TruckDetailContainerData', data)
 
-  const { truck } = data
-  const truckInfo = truck[0] ? truck[0] : { name: 'ID does not exist' }
-  const trips = truckInfo.trips
-  console.log('trips', trips)
+  var truckInfo = {}
+  if (!loading) {
+    const { truck } = data
+    truckInfo = truck[0] ? truck[0] : { name: 'ID does not exist' }
+  }
 
   return (
     <Card
@@ -45,18 +81,18 @@ const TruckDetailContainer = (props) => {
           title={
             <Space>
               <h3>
-              <TruckNo
-                    id={truckInfo.id}
-                    truck_no={truckInfo.truck_no}
-                  />
+                <TruckNo
+                  id={truckInfo.id}
+                  truck_no={truckInfo.truck_no}
+                />
               </h3>
               <Divider type='vertical' />
               <h4>
-              <TruckType
-              truckType={truckInfo.truck_type && truckInfo.truck_type.value}
-              truckTypeId={truckInfo.truck_type && truckInfo.truck_type.id}
-              truck_no={truckInfo.truck_no}
-            />
+                <TruckType
+                  truckType={truckInfo.truck_type && truckInfo.truck_type.value}
+                  truckTypeId={truckInfo.truck_type && truckInfo.truck_type.id}
+                  truck_no={truckInfo.truck_no}
+                />
               </h4>
             </Space>
           }
@@ -91,7 +127,7 @@ const TruckDetailContainer = (props) => {
                 </Row>
               </TabPane>
               <TabPane tab='Trips' key='2'>
-                <TripDetail trip trips={trips} />
+                <TripDetail trip trips={truckInfo.trips} loading={loading} />
               </TabPane>
               <TabPane tab='Timeline' key='3'>
                 <Row>
