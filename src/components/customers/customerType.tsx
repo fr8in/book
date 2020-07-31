@@ -7,26 +7,24 @@ import InlineSelect from '../common/inlineSelect'
 const CustomerType = (props) => {
   const { type, cardcode } = props
 
-  const { loading, error, data } = useQuery(
-    CUSTOMERS_TYPE_QUERY,
-    {
-      notifyOnNetworkStatusChange: true
-    }
-  )
+  const { loading, error, data } = useQuery(CUSTOMERS_TYPE_QUERY, {
+    notifyOnNetworkStatusChange: true
+  })
 
-  const [updateCustomerTypeId] = useMutation(
-    UPDATE_CUSTOMER_TYPE_MUTATION,
-    {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+  const [updateCustomerTypeId] = useMutation(UPDATE_CUSTOMER_TYPE_MUTATION, {
+    onError (error) {
+      message.error(error.toString())
+    },
+    onCompleted () {
+      message.success('Updated!!')
     }
-  )
+  })
 
   if (loading) return null
   console.log('CustomerType error', error)
 
   const { customer_type } = data
-  const typeList = customer_type.map(data => {
+  const typeList = customer_type.map((data) => {
     return { value: data.value, label: data.comment }
   })
 

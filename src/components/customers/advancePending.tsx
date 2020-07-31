@@ -1,94 +1,101 @@
-import { Table } from 'antd'
-import finalPayment from '../../../mock/customer/finalPayment'
-
+import { Table } from "antd";
+import finalPayment from "../../../mock/customer/finalPayment";
+import Link from "next/link";
 const statusList = [
-  { value: 1, text: 'Advance is Pending' },
-  { value: 11, text: 'Received Amount< Customer Advance %' }
-]
+  { value: 1, text: "Advance is Pending" },
+  { value: 11, text: "Received Amount< Customer Advance %" },
+];
 
 const AdvancePending = () => {
   const advancePending = [
     {
-      title: 'Load Id',
-      dataIndex: 'loadId',
+      title: "Load Id",
+      dataIndex: "loadId",
       sorter: (a, b) => (a.loadId > b.loadId ? 1 : -1),
-      width: '8%'
+      width: "8%",
+      render: (text, record) => {
+        return (
+          <Link href="/trips/[id]" as={`/trips/${record.id} `}>
+            <a>{text}</a>
+          </Link>
+        );
+      },
     },
     {
-      title: 'Order',
-      dataIndex: 'order',
+      title: "Order",
+      dataIndex: "order",
       sorter: (a, b) => (a.order > b.order ? 1 : -1),
-      width: '5%'
+      width: "5%",
     },
     {
-      title: 'Truck No',
-      dataIndex: 'truckNo',
+      title: "Truck No",
+      dataIndex: "truckNo",
       sorter: (a, b) => (a.truckNo > b.truckNo ? 1 : -1),
-      width: '7%'
+      width: "7%",
     },
     {
-      title: 'Source',
-      dataIndex: 'source',
-      width: '7%'
+      title: "Source",
+      dataIndex: "source",
+      width: "7%",
     },
     {
-      title: 'Destination',
-      dataIndex: 'destination',
-      width: '10%'
+      title: "Destination",
+      dataIndex: "destination",
+      width: "10%",
     },
     {
-      title: 'Type',
-      dataIndex: 'type',
-      width: '10%'
+      title: "Type",
+      dataIndex: "type",
+      width: "10%",
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
+      title: "Status",
+      dataIndex: "status",
       filters: statusList,
-      width: '12%'
+      width: "12%",
     },
     {
-      title: 'User Name',
-      dataIndex: 'userName',
+      title: "User Name",
+      dataIndex: "userName",
       sorter: (a, b) => (a.userName > b.userName ? 1 : -1),
-      width: '10%'
+      width: "10%",
     },
     {
-      title: 'Customer Price',
-      dataIndex: 'price',
+      title: "Customer Price",
+      dataIndex: "price",
       sorter: (a, b) => (a.price > b.price ? 1 : -1),
-      width: '11%'
+      width: "11%",
     },
     {
-      title: 'Received',
-      dataIndex: 'received',
+      title: "Received",
+      dataIndex: "received",
       sorter: (a, b) => (a.received > b.received ? 1 : -1),
-      width: '5%'
+      width: "5%",
     },
     {
-      title: 'Balance',
-      dataIndex: 'balance',
+      title: "Balance",
+      dataIndex: "balance",
       sorter: (a, b) => (a.balance > b.balance ? 1 : -1),
-      width: '5%'
+      width: "5%",
     },
     {
-      title: 'Aging',
-      dataIndex: 'aging',
+      title: "Aging",
+      dataIndex: "aging",
       sorter: (a, b) => (a.aging > b.aging ? 1 : -1),
-      width: '5%'
-    }
-  ]
+      width: "5%",
+    },
+  ];
 
   return (
     <Table
       columns={advancePending}
       dataSource={finalPayment}
       rowKey={(record) => record.id}
-      size='small'
+      size="small"
       scroll={{ x: 800 }}
       pagination={false}
     />
-  )
-}
+  );
+};
 
-export default AdvancePending
+export default AdvancePending;
