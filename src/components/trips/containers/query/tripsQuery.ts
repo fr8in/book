@@ -7,9 +7,11 @@ export const TRIPS_QUERY = gql`
       order_date
       customer {
         name
+        cardcode
       } 
       partner {
         name
+        cardcode
       }
       truck {
         truck_no
