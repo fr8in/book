@@ -6,6 +6,19 @@ import { useQuery , useMutation} from '@apollo/client'
 import { PARTNER_USERS_QUERY } from './container/query/partnersUsersQuery'
 import {INSERT_PARTNER_USERS_MUTATION} from './container/query/insertPartnerUsersMutation'
 
+import { gql } from '@apollo/client'
+
+export const DELETE_PARTNER_USER_MUTATION = gql`
+mutation PartnerUserDelete($id:Int) {
+  delete_partner_user( where: {id: {_eq:$id}}) {
+    returning {
+      id
+      mobile
+    }
+  }
+}
+`
+
 const PartnerUsers = (props) => {
   const { visible, partner, onHide, title } = props
   
@@ -22,6 +35,14 @@ const PartnerUsers = (props) => {
 
   const [insertPartnerUser] = useMutation(
     INSERT_PARTNER_USERS_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
+
+  const [deletePartnerUser] = useMutation(
+    DELETE_PARTNER_USER_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
       onCompleted () { message.success('Updated!!') }
@@ -48,12 +69,19 @@ const PartnerUsers = (props) => {
       }
     })
   }
+
+  
+
+const onDelete = (id) => { 
+  deletePartnerUser({
+  variables: {
+   id : id,
+  }
+})}
   
   const { partner_users } = data.partner[0] ? data.partner[0] : [] && data.partner_users[0] ? data.partner_users[0] : []
 
-  const userDelete = (value) => {
-    console.log('changed', value)
-  }
+  
   const callNow = record => {
     window.location.href = 'tel:' + record
   }
@@ -71,9 +99,10 @@ const PartnerUsers = (props) => {
       render: (record) => (
         <span>
           <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.mobileNo)} />
-          <Popconfirm title='Sure to delete?' onConfirm={() => userDelete(record)}>
-            <Button type='link' icon={<DeleteOutlined />} />
-          </Popconfirm>
+         {!record.is_admin && 
+          <Popconfirm title='Sure to delete?' onConfirm={()=> onDelete(record.id)} >
+            <Button type='link' danger icon={<DeleteOutlined />} />
+         </Popconfirm> }
         </span>
       )
     }
