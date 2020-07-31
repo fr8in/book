@@ -19,7 +19,8 @@ const SourceInDate = (props) => {
   const [updateSourceIn] = useMutation(
     UPDATE_TRIP_SOURCEIN_MUTATION,
     {
-      onError (error) { message.error(error.toString()) }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
 
@@ -33,14 +34,16 @@ const SourceInDate = (props) => {
     })
   }
 
-  const dateFormat = 'DD-MM-YYYY HH:mm'
+  const dateFormat = 'DD/MM/YY HH:mm'
+  const s_in = moment(source_in).format(dateFormat)
+  console.log('s_in', s_in)
 
   return (
     <Form.Item name='source_in_date' label='Source In'>
       <DatePicker
         showTime
         allowClear={false}
-        format='DD-MM-YYYY HH:mm'
+        format='YYYY-MM-DD HH:mm:ss'
         placeholder='Select Time'
         style={{ width: '100%' }}
         disabled={!!source_in}

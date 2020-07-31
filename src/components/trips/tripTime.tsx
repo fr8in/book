@@ -41,7 +41,9 @@ const TripTime = (props) => {
                   </Tooltip>
                 </Form.Item>
               </Col>
-              <DriverPhoneNo />
+              <Col xs={8}>
+                <DriverPhoneNo />
+              </Col>
             </Row>
             <Row gutter={10}>
               <Col xs={8}>
