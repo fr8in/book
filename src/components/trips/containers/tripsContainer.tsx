@@ -19,7 +19,7 @@ export const tripsQueryVars = {
 }
 
 const TripsContainer = () => {
-  const initial = { showModal: false }
+  const initial = { podModal: false,CustomerPod:false}
   const { visible, onShow, onHide } = useShowHide(initial)
   const { loading, error, data } = useQuery(
     TRIPS_QUERY,
@@ -33,7 +33,7 @@ const TripsContainer = () => {
     console.log('key', key)
     setTabKey(key)
   }
-
+  
   if (loading) return <Loading />
   console.log('TripsContainer error', error)
 
@@ -49,11 +49,11 @@ const TripsContainer = () => {
             {tabKey === '2' &&
               <Space>
                 <Button shape='circle' icon={<DownloadOutlined />} />
-                <Button type='primary' onClick={() => onShow('showModal')}>POD Receipt</Button>
+                <Button type='primary' onClick={() => onShow('podModal')}>POD Receipt</Button>
               </Space>}
             {tabKey === '4' &&
               <Space>
-                <Button type='primary' onClick={() => onShow('showModal')}>POD Dispatch</Button>
+                <Button type='primary' onClick={() => onShow('CustomerPod')}>POD Dispatch</Button>
               </Space>}
           </span>
         }
@@ -71,15 +71,15 @@ const TripsContainer = () => {
           <Trips trips={trip} delivered />
         </TabPane>
       </Tabs>
-      {visible.showModal && (
+      {visible.podModal && (
         <PartnerPodReceipt
-          visible={visible.showModal}
+          visible={visible.podModal}
           onHide={onHide}
         />
       )}
-      {visible.showModal && (
+      {visible.CustomerPod && (
         <CustomerPodReceipt
-          visible={visible.showModal}
+          visible={visible.CustomerPod}
           onHide={onHide}
         />
       )}

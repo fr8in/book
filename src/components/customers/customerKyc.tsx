@@ -13,7 +13,7 @@ import BranchCreation from '../customers/branchCreation'
 import CustomerAdvancePercentage from './customerAdvancePercentage'
 
 const CustomerKyc = (props) => {
-  const { customers, status, filter, onLoadMore, recordCount, onFilter, onNameSearch, onMobileSearch } = props
+  const { loading, customers, status, filter, onLoadMore, recordCount, onFilter, onNameSearch, onMobileSearch } = props
   const initial = {
     visible: false,
     data: [],
@@ -38,7 +38,7 @@ const CustomerKyc = (props) => {
     tableContent.addEventListener('scroll', handleScroll)
     // to handle side effect should removeEventListener
     return () => tableContent.removeEventListener('scroll', handleScroll)
-  }, [])
+  })
 
   const onMamul = (record, e) => {
     const givenMamul = e.target.value
@@ -244,6 +244,7 @@ const CustomerKyc = (props) => {
         scroll={{ x: 960, y: 550 }}
         pagination={false}
         className='withIcon paginated'
+        loading={loading}
       />
       {object.createBranchVisible && (
         <BranchCreation

@@ -1,4 +1,5 @@
-import {Modal,Input,Button,Form,Row,Col} from 'antd'
+import {Modal,Input,Button,Form,Row,Col, Select} from 'antd'
+
 
 const CustomerPod = (props) => {
     const { visible, onHide} = props
@@ -15,25 +16,24 @@ const CustomerPod = (props) => {
     >
       <Row gutter={10}>
           <Col xs={8}>
-            <Form.Item label>
-              <Input
-                placeholder='Internal'
-                disabled={false}
-              />
+            <Form.Item >
+             <Select
+                   
+             />
             </Form.Item>
           </Col>
           <Col xs={12}>
-            <Form.Item label>
+            <Form>
               <Input
                 placeholder='contact'
                 disabled={false}
               />
-            </Form.Item>
+            </Form>
           </Col>
           <Col xs={4}>
-            <Form.Item label>
+            <Form>
             <Button type='primary'>Submit</Button>
-            </Form.Item>
+            </Form>
           </Col>
         </Row>
         </Modal>
