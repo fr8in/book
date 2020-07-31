@@ -36,7 +36,15 @@ const CUSTOMERS_QUERY = gql`
         value
       }
     }
-    customer_aggregate {
+    customer_aggregate (
+      where: { 
+        status: {
+          id: {_in: $statusId},
+        },
+        name: {_ilike: $name},
+        mobile: {_like: $mobile}
+      }
+    ) {
       aggregate {
         count
       }
