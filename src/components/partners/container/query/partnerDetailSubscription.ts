@@ -13,11 +13,13 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
             ifsc_code
             address
             pan
+            
             bank{
               id
               name
             }
             partner_users(limit:1 , where:{is_admin:{_eq:true}}){
+              id
               mobile
             }
             final_payment_date
@@ -62,6 +64,10 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
                     value
                   }
                 }
+                partner_status{
+                  id
+                  value
+                 } 
             trucks {
               truck_no
               truck_type{
