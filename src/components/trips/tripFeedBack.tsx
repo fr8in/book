@@ -3,6 +3,8 @@ import { useQuery,useMutation } from '@apollo/client'
 import { TRIP_COMMENT_QUERY } from './containers/query/tripCommentQuery'
 import { INSERT_TRIP_COMMENT_MUTATION} from './containers/query/tripCommentMutation'
 import React,{useState} from 'react'
+import moment from 'moment'
+
 
 const Tripcomment = (props) => {
   const { visible, tripid, onHide } = props
@@ -53,7 +55,8 @@ const Tripcomment = (props) => {
     dataIndex: 'created_by'
   },
   {
-    dataIndex: 'created_at'
+    dataIndex: 'created_at',
+   
   }]
 
   return (
@@ -61,6 +64,7 @@ const Tripcomment = (props) => {
       title='Comments'
       visible={visible}
       onCancel={onHide}
+      width={700}
     >
       <Row gutter={10} className='mb10'>
         <Col flex='auto'>
