@@ -242,7 +242,7 @@ const Trips = (props) => {
       {object.commentVisible &&
       <TripFeedBack
         visible={object.commentVisible}
-        trip_id={object.commentData}
+        tripid={object.commentData}
         onHide={handleHide}
       />}
     </>

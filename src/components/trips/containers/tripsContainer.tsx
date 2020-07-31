@@ -3,6 +3,9 @@ import { Card, Tabs, Space, Button } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 import Trips from '../trips'
 import TitleWithCount from '../../common/titleWithCount'
+import PartnerPodReceipt from '../../partners/partnerPodReceipt'
+import useShowHide from '../../../hooks/useShowHide'
+import CustomerPodReceipt from '../../customers/customerPodReceipt'
 
 import { useQuery } from '@apollo/client'
 import { TRIPS_QUERY } from './query/tripsQuery'
@@ -16,6 +19,8 @@ export const tripsQueryVars = {
 }
 
 const TripsContainer = () => {
+  const initial = { showModal: false }
+  const { visible, onShow, onHide } = useShowHide(initial)
   const { loading, error, data } = useQuery(
     TRIPS_QUERY,
     {
@@ -44,11 +49,11 @@ const TripsContainer = () => {
             {tabKey === '2' &&
               <Space>
                 <Button shape='circle' icon={<DownloadOutlined />} />
-                <Button type='primary'>POD Receipt</Button>
+                <Button type='primary' onClick={() => onShow('showModal')}>POD Receipt</Button>
               </Space>}
             {tabKey === '4' &&
               <Space>
-                <Button type='primary'>POD Dispatch</Button>
+                <Button type='primary' onClick={() => onShow('showModal')}>POD Dispatch</Button>
               </Space>}
           </span>
         }
@@ -66,6 +71,18 @@ const TripsContainer = () => {
           <Trips trips={trip} delivered />
         </TabPane>
       </Tabs>
+      {visible.showModal && (
+        <PartnerPodReceipt
+          visible={visible.showModal}
+          onHide={onHide}
+        />
+      )}
+      {visible.showModal && (
+        <CustomerPodReceipt
+          visible={visible.showModal}
+          onHide={onHide}
+        />
+      )}
     </Card>
   )
 }
