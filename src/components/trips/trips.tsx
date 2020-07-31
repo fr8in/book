@@ -63,8 +63,9 @@ const Trips = (props) => {
     {
       title: 'Customer',
       render: (text, record) => {
+        const cardcode = record.customer && record.customer.cardcode
         return (
-          <Link href='/customers/[id]' as={`/customers/${record.customer.cardcode} `}>
+          <Link href='/customers/[id]' as={`/customers/${cardcode} `}>
             {record.customer.name && record.customer.name.length > 12
               ? <Tooltip title={record.customer.name}><a>{record.customer.name.slice(0, 12) + '...'}</a></Tooltip>
               : <a>{record.customer.name}</a>}
@@ -108,7 +109,7 @@ const Trips = (props) => {
       title: 'Truck',
       render: (text, record) => {
         return (
-          <Link href='/trucks/truck/[id]' as={`/trucks/truck/${record.truck_no} `}>
+          <Link href='/trucks/[id]' as={`/trucks/${record.truck.truck_no} `}>
             <a>{record.truck.truck_no}</a>
           </Link>)
       },
