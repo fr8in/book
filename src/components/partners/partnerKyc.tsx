@@ -1,4 +1,4 @@
-import { Table, Tooltip, Button, Badge, Space } from 'antd'
+import { Table, Tooltip, Button, Badge, Space, Modal } from 'antd'
 import {
   CommentOutlined,
   CheckOutlined,
@@ -8,7 +8,7 @@ import Link from 'next/link'
 import useShowHide from '../../hooks/useShowHide'
 import KycReject from '../../components/partners/partnerKycReject'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
-import PartnerComment from './partnerComment'
+import Comment from './comment'
 import KycApproval from '../partners/kycApproval'
 
 const region_list = [
@@ -214,11 +214,14 @@ const PartnerKyc = (props) => {
         loading={loading}
       />
       {object.commentVisible && (
-        <PartnerComment
+        <Modal
+          title='Comments'
           visible={object.commentVisible}
-          partnerId={object.commentData}
-          onHide={handleHide}
-        />
+          onCancel={handleHide}
+          bodyStyle={{ padding: 10 }}
+        >
+          <Comment partnerId={object.commentData} />
+        </Modal>
       )}
       {visible.reject && <KycReject visible={visible.reject} onHide={onHide} />}
       {object.approvalVisible && (

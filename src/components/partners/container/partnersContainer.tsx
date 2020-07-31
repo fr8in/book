@@ -1,10 +1,9 @@
 import React from 'react'
-import { Row, Button, Card } from 'antd'
+import { Button, Card } from 'antd'
 import Link from 'next/link'
 import PartnerKyc from '../partnerKyc'
 
 import { gql, useQuery } from '@apollo/client'
-import Loading from '../../common/loading'
 
 const PARTNERS_QUERY = gql`
   query partners($offset: Int!, $limit: Int!) {
@@ -69,16 +68,17 @@ const PartnerContainer = () => {
   }
 
   return (
-    <div>
-      <Row justify='end' className='m5'>
+    <Card
+      size='small'
+      extra={
         <Link href='partners/create-partner'>
           <Button type='primary'>Create Partner</Button>
         </Link>
-      </Row>
-      <Card size='small' className='card-body-0 border-top-blue'>
-        <PartnerKyc partners={partner} loading={loading} />
-      </Card>
-    </div>
+      }
+      className='card-body-0 border-top-blue'
+    >
+      <PartnerKyc partners={partner} loading={loading} />
+    </Card>
   )
 }
 export default PartnerContainer

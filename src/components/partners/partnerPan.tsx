@@ -1,15 +1,25 @@
-import { useMutation } from '@apollo/client'
+import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import InlineEdit from '../common/inlineEdit'
-import { UPDATE_PARTNER_PAN_MUTATION } from './container/query/updatePanNumberMutation'
 
+const UPDATE_PARTNER_PAN_MUTATION = gql`
+mutation PartnerPanEdit($pan:String,$cardcode:String) {
+  update_partner(_set: {pan: $pan}, where: {cardcode: {_eq: $cardcode}}) {
+    returning {
+      id
+      pan
+    }
+  }
+}
+`
 const PartnerPan = (props) => {
   const { cardcode, pan } = props
 
   const [updatePan] = useMutation(
-    UPDATE_PARTNER_PAN_MUTATION ,
+    UPDATE_PARTNER_PAN_MUTATION,
     {
-      onError (error) { message.error(error.toString()) }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
 
