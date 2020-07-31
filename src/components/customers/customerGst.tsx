@@ -1,8 +1,17 @@
-import { useMutation } from '@apollo/client'
+import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import InlineEdit from '../common/inlineEdit'
-import { UPDATE_CUSTOMER_GST_MUTATION } from './containers/query/updateCustomerGstMutation'
 
+const UPDATE_CUSTOMER_GST_MUTATION = gql`
+mutation CustomerGstEdit($gst:String,$cardcode:String) {
+  update_customer(_set: {gst: $gst}, where: {cardcode: {_eq: $cardcode}}) {
+    returning {
+      id
+      gst
+    }
+  }
+}
+`
 const CustomerGst = (props) => {
   const { cardcode, gst } = props
 

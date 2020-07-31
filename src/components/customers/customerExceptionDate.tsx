@@ -1,10 +1,19 @@
 import { message, DatePicker } from 'antd'
 import { CloseCircleTwoTone, EditTwoTone } from '@ant-design/icons'
 import moment from 'moment'
-import { UPDATE_CUSTOMER_EXCEPTION_MUTATION } from './containers/query/updateCustomerExceptionMutation'
-import { useMutation } from '@apollo/client'
+import { gql, useMutation } from '@apollo/client'
 import useShowHide from '../../hooks/useShowHide'
 
+const UPDATE_CUSTOMER_EXCEPTION_MUTATION = gql`
+mutation customerException($exception_date:date,$cardcode:String) {
+  update_customer(_set: {exception_date: $exception_date}, where: {cardcode: {_eq: $cardcode}}) {
+    returning {
+      id
+      managed
+    }
+  }
+}
+`
 const CustomerExceptionDate = (props) => {
   const { exceptionDate, cardcode } = props
 

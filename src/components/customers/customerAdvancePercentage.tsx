@@ -1,8 +1,25 @@
 import { message } from 'antd'
-import { useQuery, useMutation } from '@apollo/client'
-import { CUSTOMERS_ADVANCE_PERCENTAGE_QUERY } from './containers/query/customersAdvancePercentageQuery'
-import { UPDATE_CUSTOMER_ADVANCE_MUTATION } from './containers/query/updateCustomeradvanceMutation'
+import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
+
+const CUSTOMERS_ADVANCE_PERCENTAGE_QUERY = gql`
+  query customerAdvancePercentage{
+  customer_advance_percentage{
+    id
+    value
+  }
+}
+`
+const UPDATE_CUSTOMER_ADVANCE_MUTATION = gql`
+mutation CustomerAdvaceUpdate($advance_percentage_id:Int,$cardcode:String) {
+  update_customer(_set: {advance_percentage_id: $advance_percentage_id}, where: {cardcode: {_eq: $cardcode}}) {
+    returning {
+      id
+      advance_percentage_id
+    }
+  }
+}
+`
 
 const CustomerAdvancePercentage = (props) => {
   const { advancePercentageId, advancePercentage, cardcode } = props
