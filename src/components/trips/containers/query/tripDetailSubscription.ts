@@ -18,6 +18,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         }
       }
       source_in
+      source_out
       status_at
       destination_in
       destination_out

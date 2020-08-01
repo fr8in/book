@@ -12,6 +12,9 @@ import useShowHide from '../../hooks/useShowHide'
 import DeletePO from './deletePO'
 import DriverPhoneNo from './driverPhoneNo'
 import SourceInDate from './tripSourceIn'
+import SourceOutDate from './tripSourceOut'
+import DestinationInDate from './tripDestinationIn'
+import DestinationOutDate from './tripDestinationOut'
 
 const TripTime = (props) => {
   const { tripInfo } = props
@@ -29,17 +32,7 @@ const TripTime = (props) => {
                 <SourceInDate source_in={tripInfo.source_in} id={tripInfo.id} />
               </Col>
               <Col xs={8}>
-                <Form.Item label='Source Out'>
-                  <Tooltip title='Stop! Ask partner to upload LR'>
-                    <DatePicker
-                      showTime
-                      format='DD-MMM-YYYY HH:mm'
-                      placeholder='Select Time'
-                      style={{ width: '100%' }}
-                      disabled={false}
-                    />
-                  </Tooltip>
-                </Form.Item>
+              <SourceOutDate source_out={tripInfo.source_out} id={tripInfo.id} />
               </Col>
               <Col xs={8}>
                 <DriverPhoneNo />
@@ -47,26 +40,10 @@ const TripTime = (props) => {
             </Row>
             <Row gutter={10}>
               <Col xs={8}>
-                <Form.Item label='Destination In'>
-                  <DatePicker
-                    showTime
-                    format='DD-MMM-YYYY HH:mm'
-                    placeholder='Select Time'
-                    style={{ width: '100%' }}
-                    disabled={false}
-                  />
-                </Form.Item>
+              <DestinationInDate destination_in={tripInfo.destination_in} id={tripInfo.id} />
               </Col>
               <Col xs={8}>
-                <Form.Item label='Destination Out'>
-                  <DatePicker
-                    showTime
-                    format='DD-MMM-YYYY HH:mm'
-                    placeholder='Select Time'
-                    style={{ width: '100%' }}
-                    disabled={false}
-                  />
-                </Form.Item>
+              <DestinationOutDate destination_out={tripInfo.destination_out} id={tripInfo.id} />
               </Col>
               <Col xs={8}>
                 <Form.Item label='Loading Memo'>
