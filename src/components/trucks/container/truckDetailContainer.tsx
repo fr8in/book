@@ -132,7 +132,7 @@ const TruckDetailContainer = (props) => {
               <TabPane tab='Timeline' key='3'>
                 <Row>
                   <Col xs={24} className='p20'>
-                    <Timeline />
+                    <Timeline id={truckInfo.id}/>
                   </Col>
                 </Row>
               </TabPane>
