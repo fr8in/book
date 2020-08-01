@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Row, Col, Card } from 'antd'
-import CustomerKyc from '../customerKyc'
+import Customers from '../customers'
 
 import { gql, useQuery } from '@apollo/client'
 
@@ -18,7 +18,7 @@ const CUSTOMERS_QUERY = gql`
       }
     ) {
       cardcode
-      customerUsers{
+      customer_users{
         id
         name
       }
@@ -57,18 +57,18 @@ const CUSTOMERS_QUERY = gql`
 `
 
 const CustomersContainer = () => {
-  const initialFilter = { statusId: [1], name: null, mobile: null }
+  const initialFilter = { statusId: [3], name: null, mobile: null, offset: 0, limit: 10 }
   const [filter, setFilter] = useState(initialFilter)
 
   const customersQueryVars = {
-    offset: 0,
-    limit: 20,
+    offset: filter.offset,
+    limit: filter.limit,
     statusId: filter.statusId,
     name: filter.name ? `%${filter.name}%` : null,
     mobile: filter.mobile ? `%${filter.mobile}%` : null
   }
 
-  const { loading, error, data, fetchMore } = useQuery(
+  const { loading, error, data } = useQuery(
     CUSTOMERS_QUERY,
     {
       variables: customersQueryVars,
@@ -86,25 +86,13 @@ const CustomersContainer = () => {
     customer_status = data && data.customer_status
     customer_aggregate = data && data.customer_aggregate
   }
-  console.log('customer', customer)
 
-  const loadMore = () => fetchMore({
-    variables: {
-      offset: customer.length
-    },
-    updateQuery: (prev, { fetchMoreResult }) => {
-      console.log('prev', prev, 'fetchmore', fetchMoreResult)
-      if (!fetchMoreResult) return prev
-      return Object.assign({}, prev, {
-        customer: [...prev.customer, ...fetchMoreResult.customer]
-      })
-    }
-  })
+  const customer_status_list = customer_status.filter(data => data.id !== 8)
 
-  const customerStatusList = customer_status.filter(data => data.id !== 8)
+  const record_count = customer_aggregate.aggregate && customer_aggregate.aggregate.count
+  const total_page = Math.ceil(record_count / filter.limit)
 
-  const recordCount = customer_aggregate.aggregate && customer_aggregate.aggregate.count
-  console.log('recordCount', recordCount)
+  console.log('record_count', record_count)
   const onFilter = (value) => {
     setFilter({ ...filter, statusId: value })
   }
@@ -117,19 +105,24 @@ const CustomersContainer = () => {
     setFilter({ ...filter, mobile: value })
   }
 
+  const onPageChange = (value) => {
+    setFilter({ ...filter, offset: value })
+  }
+
   return (
     <Row>
       <Col sm={24}>
         <Card size='small' className='card-body-0 border-top-blue'>
-          <CustomerKyc
+          <Customers
             customers={customer}
-            status_list={customerStatusList}
-            onLoadMore={loadMore}
-            recordCount={recordCount}
+            customer_status_list={customer_status_list}
+            record_count={record_count}
+            total_page={total_page}
             filter={filter}
             onFilter={onFilter}
             onNameSearch={onNameSearch}
             onMobileSearch={onMobileSearch}
+            onPageChange={onPageChange}
             loading={loading}
           />
         </Card>

@@ -1,6 +1,6 @@
-import moment from 'moment'
 import { gql, useMutation } from '@apollo/client'
-import { message, DatePicker, Form, Button } from 'antd'
+import { message } from 'antd'
+import DateUpdater from '../common/dateUpdater'
 
 const UPDATE_TRIP_SOURCEIN_MUTATION = gql`
 mutation tripSourceIn($source_in:timestamptz,$id:Int) {
@@ -24,8 +24,7 @@ const SourceInDate = (props) => {
     }
   )
 
-  const onSubmit = (date, dateString) => {
-    console.log('fieldsValue', dateString)
+  const onSubmit = (dateString) => {
     updateSourceIn({
       variables: {
         id,
@@ -34,21 +33,13 @@ const SourceInDate = (props) => {
     })
   }
 
-  const dateFormat = 'DD/MM/YY HH:mm'
-
   return (
-    <Form.Item name='source_in_date' label='Source In'>
-      <DatePicker
-        showTime
-        allowClear={false}
-        format='YYYY-MM-DD HH:mm:ss'
-        placeholder='Select Time'
-        style={{ width: '100%' }}
-        disabled={!!source_in}
-        value={source_in ? moment(source_in, dateFormat) : null}
-        onChange={onSubmit}
-      />
-    </Form.Item>
+    <DateUpdater
+      name='source_in_date'
+      label='Source In'
+      dateValue={source_in}
+      onSubmit={onSubmit}
+    />
   )
 }
 

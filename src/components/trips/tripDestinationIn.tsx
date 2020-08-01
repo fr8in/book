@@ -1,6 +1,6 @@
-import moment from 'moment'
 import { gql, useMutation } from '@apollo/client'
-import { message, DatePicker, Form } from 'antd'
+import { message } from 'antd'
+import DateUpdater from '../common/dateUpdater'
 
 const UPDATE_TRIP_DESTINATIONIN_MUTATION = gql`
 mutation tripDestinationIn($destination_in:timestamptz,$id:Int) {
@@ -19,12 +19,12 @@ const DestinationInDate = (props) => {
   const [updateDestinationIn] = useMutation(
     UPDATE_TRIP_DESTINATIONIN_MUTATION,
     {
-      onError (error) { message.error(error.toString()) }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
 
-  const onSubmit = (date, dateString) => {
-    console.log('fieldsValue', dateString)
+  const onSubmit = (dateString) => {
     updateDestinationIn({
       variables: {
         id,
@@ -33,21 +33,13 @@ const DestinationInDate = (props) => {
     })
   }
 
-  const dateFormat = 'DD-MM-YYYY HH:mm'
-
   return (
-    <Form.Item name='destination_in_date' label='Destination In'>
-      <DatePicker
-        showTime
-        allowClear={false}
-        format='DD-MM-YYYY HH:mm'
-        placeholder='Select Time'
-        style={{ width: '100%' }}
-        disabled={!!destination_in}
-        value={destination_in ? moment(destination_in, dateFormat) : null}
-        onChange={onSubmit}
-      />
-    </Form.Item>
+    <DateUpdater
+      name='destination_in_date'
+      label='Destination In'
+      dateValue={destination_in}
+      onSubmit={onSubmit}
+    />
   )
 }
 
