@@ -1,4 +1,4 @@
-import { Row, Col, Card, Form, DatePicker, Tooltip, Input, Space, Button, Checkbox } from 'antd'
+import { Row, Col, Card, Form, Tooltip, Input, Space, Button, Checkbox } from 'antd'
 import {
   FilePdfOutlined,
   FileWordOutlined,
@@ -10,7 +10,7 @@ import {
 import SendLoadingMemo from './sendLoadingMemo'
 import useShowHide from '../../hooks/useShowHide'
 import DeletePO from './deletePO'
-import DriverPhoneNo from './driverPhoneNo'
+import Driver from './driver'
 import SourceInDate from './tripSourceIn'
 import SourceOutDate from './tripSourceOut'
 import DestinationInDate from './tripDestinationIn'
@@ -32,18 +32,18 @@ const TripTime = (props) => {
                 <SourceInDate source_in={tripInfo.source_in} id={tripInfo.id} />
               </Col>
               <Col xs={8}>
-              <SourceOutDate source_out={tripInfo.source_out} id={tripInfo.id} />
+                <SourceOutDate source_out={tripInfo.source_out} id={tripInfo.id} />
               </Col>
               <Col xs={8}>
-                <DriverPhoneNo />
+                <Driver tripInfo={tripInfo} />
               </Col>
             </Row>
             <Row gutter={10}>
               <Col xs={8}>
-              <DestinationInDate destination_in={tripInfo.destination_in} id={tripInfo.id} />
+                <DestinationInDate destination_in={tripInfo.destination_in} id={tripInfo.id} />
               </Col>
               <Col xs={8}>
-              <DestinationOutDate destination_out={tripInfo.destination_out} id={tripInfo.id} />
+                <DestinationOutDate destination_out={tripInfo.destination_out} id={tripInfo.id} />
               </Col>
               <Col xs={8}>
                 <Form.Item label='Loading Memo'>

@@ -31,20 +31,27 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       trip_status{
         value
       }
+      driver
+      partner {
+        drivers {
+          id
+          mobile
+        }
+      }
       delay
-     eta
-     po_date
-    trip_prices(limit:1, where:{deleted_at:{_is_null:true}})
-    {
-      id
-      customer_price
-      partner_price
-      cash
-      to_pay
-      mamul
-      including_loading
-      including_unloading
-    }
+      eta
+      po_date
+      trip_prices(limit:1, where:{deleted_at:{_is_null:true}})
+      {
+        id
+        customer_price
+        partner_price
+        cash
+        to_pay
+        mamul
+        including_loading
+        including_unloading
+      }
     }
   }
 `
