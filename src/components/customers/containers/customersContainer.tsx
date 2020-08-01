@@ -57,7 +57,7 @@ const CUSTOMERS_QUERY = gql`
 `
 
 const CustomersContainer = () => {
-  const initialFilter = { statusId: [1, 2, 3, 4], name: null, mobile: null }
+  const initialFilter = { statusId: [1], name: null, mobile: null }
   const [filter, setFilter] = useState(initialFilter)
 
   const customersQueryVars = {
@@ -101,10 +101,8 @@ const CustomersContainer = () => {
     }
   })
 
-  const removeLeadStatus = customer_status.filter(data => data.id !== 8)
-  const customerStatusList = removeLeadStatus.map(data => {
-    return { value: data.id, text: data.value }
-  })
+  const customerStatusList = customer_status.filter(data => data.id !== 8)
+
   const recordCount = customer_aggregate.aggregate && customer_aggregate.aggregate.count
   console.log('recordCount', recordCount)
   const onFilter = (value) => {
@@ -125,7 +123,7 @@ const CustomersContainer = () => {
         <Card size='small' className='card-body-0 border-top-blue'>
           <CustomerKyc
             customers={customer}
-            status={customerStatusList}
+            status_list={customerStatusList}
             onLoadMore={loadMore}
             recordCount={recordCount}
             filter={filter}

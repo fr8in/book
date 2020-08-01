@@ -1,6 +1,16 @@
 import { Checkbox, message } from 'antd'
-import { useMutation } from '@apollo/client'
-import { UPDATE_CUSTOMER_MANAGED_MUTATION } from './containers/query/updateCustomerManagedMutation'
+import { gql, useMutation } from '@apollo/client'
+
+const UPDATE_CUSTOMER_MANAGED_MUTATION = gql`
+mutation customerManaged($managed:Boolean,$cardcode:String) {
+  update_customer(_set: {managed: $managed}, where: {cardcode: {_eq: $cardcode}}) {
+    returning {
+      id
+      managed
+    }
+  }
+}
+`
 
 const ManagedCustomer = (props) => {
   const { cardcode, isManaged } = props
@@ -8,7 +18,8 @@ const ManagedCustomer = (props) => {
   const [customerManaged] = useMutation(
     UPDATE_CUSTOMER_MANAGED_MUTATION,
     {
-      onError (error) { message.error(error.toString()) }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
 

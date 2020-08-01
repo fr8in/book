@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Table, Button, Space, Tooltip, Input, Popconfirm } from 'antd'
+import { Table, Button, Space, Tooltip, Input, Popconfirm, Radio } from 'antd'
 import {
   CloseOutlined,
   CheckOutlined,
@@ -13,7 +13,7 @@ import BranchCreation from '../customers/branchCreation'
 import CustomerAdvancePercentage from './customerAdvancePercentage'
 
 const CustomerKyc = (props) => {
-  const { loading, customers, status, filter, onLoadMore, recordCount, onFilter, onNameSearch, onMobileSearch } = props
+  const { loading, customers, status_list, filter, onLoadMore, recordCount, onFilter, onNameSearch, onMobileSearch } = props
   const initial = {
     visible: false,
     data: [],
@@ -52,6 +52,14 @@ const CustomerKyc = (props) => {
   const handleName = (e) => {
     onNameSearch(e.target.value)
   }
+
+  const handleStatus = (e) => {
+    onFilter(e.target.value)
+  }
+
+  const customer_status = status_list.map(data => {
+    return { value: data.id, label: data.value }
+  })
 
   const newCustomer = [
     {
@@ -174,8 +182,17 @@ const CustomerKyc = (props) => {
       title: 'Status',
       render: (text, record) => record.status && record.status.value,
       width: '14%',
-      defaultFilteredValue: filter.statusId,
-      filters: status
+      filterDropdown: (
+        <Radio.Group
+          options={customer_status}
+          defaultValue={filter.statusId[0]}
+          onChange={handleStatus}
+          className='filter-drop-down'
+        />
+      )
+      //, filterMultiple: false,
+      // filters: customer_status,
+      // onFilter: (value, record) => record.status && record.status.value.indexOf(value) === 0
     },
     {
       title: 'Action',

@@ -17,12 +17,12 @@ const PartnerInfo = (props) => {
   const number = partner.partner_users[0] && partner.partner_users[0].mobile ? partner.partner_users[0].mobile : '-'
   return (
     <div>
-      <Space>
+      <Space align='center'>
         <CrownFilled style={{ color: membership ? '#FFD700' : '#C0C0C0', fontSize: '18px' }} />
         <CheckCircleOutlined style={{ color: partner.partner_status && partner.partner_status.id === 2 ? '#28a745' : '#dc3545', fontSize: '18px' }} />
         <PartnerName cardcode={partner.cardcode} name={partner.name} />
-        <h3> {partner.cardcode} </h3>
-        <h3><PartnerUser mobile={number} /></h3>
+        <h4>{partner.cardcode}</h4>
+        <h4><PartnerUser mobile={number} /></h4>
         <Button shape='circle' size='small' icon={<UserOutlined />} onClick={() => handleShow('visible', partner.name, 'partner', partner)} />
       </Space>
       {object.visible &&

@@ -23,7 +23,7 @@ const Trips = (props) => {
     commentVisible: false
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
-  const { trips } = props
+  const { trips, loading } = props
   const columns = [
     {
       title: 'ID',
@@ -190,13 +190,13 @@ const Trips = (props) => {
         return (record.trip_prices && record.trip_prices.length > 0 && record.trip_prices[0].partner_price)
       },
       width: '9%'
-    }: {},
+    } : {},
     props.tripsTable ? {
       title: 'Trip KM',
       dataIndex: 'km',
       key: 'km',
       width: '11%'
-    }:{},
+    } : {},
     props.delivered ? {
       title: 'Aging',
       dataIndex: 'tat',
@@ -221,7 +221,7 @@ const Trips = (props) => {
     props.delivered ? {
       render: (text, record) => {
         return (
-         <span>
+          <span>
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
             </Tooltip>
@@ -239,13 +239,14 @@ const Trips = (props) => {
         size='small'
         scroll={{ x: 1156 }}
         pagination={false}
+        loading={loading}
       />
       {object.commentVisible &&
-      <TripFeedBack
-        visible={object.commentVisible}
-        tripid={object.commentData}
-        onHide={handleHide}
-      />}
+        <TripFeedBack
+          visible={object.commentVisible}
+          tripid={object.commentData}
+          onHide={handleHide}
+        />}
     </>
   )
 }
