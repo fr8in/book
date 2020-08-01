@@ -20,13 +20,13 @@ const PARTNERS_QUERY = gql`
       partner_status{
         value
       }
-      city {
-        branch {
-          region {
-            name
-          }
-        }
-      }
+      # city {
+      #   branch {
+      #     region {
+      #       name
+      #     }
+      #   }
+      # }
       partner_status{
        value
       } 
