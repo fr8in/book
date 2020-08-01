@@ -1,7 +1,16 @@
-import { useMutation } from '@apollo/client'
+import { gql, useMutation } from '@apollo/client'
 import { Switch, Tooltip, message } from 'antd'
-import { UPDATE_CUSTOMER_BLACKLIST_MUTATION } from './containers/query/updateCustomerBlacklistMutation'
 
+const UPDATE_CUSTOMER_BLACKLIST_MUTATION = gql`
+mutation customerBlacklist($status_id:Int,$cardcode:String) {
+  update_customer(_set: {status_id: $status_id}, where: {cardcode: {_eq: $cardcode}}) {
+    returning {
+      id
+      status_id
+    }
+  }
+}
+`
 // This has to go to global
 const customerStatus = {
   Blacklisted: 6,
@@ -12,7 +21,8 @@ const Blacklist = ({ cardcode, statusId }) => {
   const [updateStatusId] = useMutation(
     UPDATE_CUSTOMER_BLACKLIST_MUTATION,
     {
-      onError (error) { message.error(error.toString()) }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
 

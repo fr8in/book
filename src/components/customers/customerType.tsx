@@ -1,8 +1,25 @@
 import { message } from 'antd'
-import { useQuery, useMutation } from '@apollo/client'
-import { CUSTOMERS_TYPE_QUERY } from './containers/query/customersTypeQuery'
-import { UPDATE_CUSTOMER_TYPE_MUTATION } from './containers/query/updateCustomerTypeMutation'
+import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
+
+const CUSTOMERS_TYPE_QUERY = gql`
+  query customerType{
+  customer_type{
+    value
+    comment
+  }
+}
+`
+const UPDATE_CUSTOMER_TYPE_MUTATION = gql`
+mutation customerException($type_id:customer_type_enum,$cardcode:String) {
+  update_customer(_set: {type_id: $type_id}, where: {cardcode: {_eq: $cardcode}}) {
+    returning {
+      id
+      type_id
+    }
+  }
+}
+`
 
 const CustomerType = (props) => {
   const { type, cardcode } = props
@@ -12,12 +29,8 @@ const CustomerType = (props) => {
   })
 
   const [updateCustomerTypeId] = useMutation(UPDATE_CUSTOMER_TYPE_MUTATION, {
-    onError (error) {
-      message.error(error.toString())
-    },
-    onCompleted () {
-      message.success('Updated!!')
-    }
+    onError (error) { message.error(error.toString()) },
+    onCompleted () { message.success('Updated!!') }
   })
 
   if (loading) return null

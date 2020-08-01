@@ -1,4 +1,4 @@
-import { Row, Col, Card, Form, DatePicker, Tooltip, Input, Space, Button, Checkbox } from 'antd'
+import { Row, Col, Card, Form, Tooltip, Input, Space, Button, Checkbox } from 'antd'
 import {
   FilePdfOutlined,
   FileWordOutlined,
@@ -10,10 +10,15 @@ import {
 import SendLoadingMemo from './sendLoadingMemo'
 import useShowHide from '../../hooks/useShowHide'
 import DeletePO from './deletePO'
-import DriverPhoneN0 from './driverPhoneNo'
-
+import Driver from './driver'
+import SourceInDate from './tripSourceIn'
+import SourceOutDate from './tripSourceOut'
+import DestinationInDate from './tripDestinationIn'
+import DestinationOutDate from './tripDestinationOut'
 
 const TripTime = (props) => {
+  const { tripInfo } = props
+  console.log('tripInfo', tripInfo)
   const initial = { checkbox: false, mail: false, deletePO: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
@@ -24,53 +29,21 @@ const TripTime = (props) => {
           <Form layout='vertical'>
             <Row gutter={10}>
               <Col xs={8}>
-                <Form.Item label='Source In'>
-                  <DatePicker
-                    showTime
-                    format='DD-MMM-YYYY HH:mm'
-                    placeholder='Select Time'
-                    style={{ width: '100%' }}
-                    disabled={false}
-                  />
-                </Form.Item>
+                <SourceInDate source_in={tripInfo.source_in} id={tripInfo.id} />
               </Col>
               <Col xs={8}>
-                <Form.Item label='Source Out'>
-                  <Tooltip title='Stop! Ask partner to upload LR'>
-                    <DatePicker
-                      showTime
-                      format='DD-MMM-YYYY HH:mm'
-                      placeholder='Select Time'
-                      style={{ width: '100%' }}
-                      disabled={false}
-                    />
-                  </Tooltip>
-                </Form.Item>
+                <SourceOutDate source_out={tripInfo.source_out} id={tripInfo.id} />
               </Col>
-              < DriverPhoneN0 />
+              <Col xs={8}>
+                <Driver tripInfo={tripInfo} />
+              </Col>
             </Row>
             <Row gutter={10}>
               <Col xs={8}>
-                <Form.Item label='Destination In'>
-                  <DatePicker
-                    showTime
-                    format='DD-MMM-YYYY HH:mm'
-                    placeholder='Select Time'
-                    style={{ width: '100%' }}
-                    disabled={false}
-                  />
-                </Form.Item>
+                <DestinationInDate destination_in={tripInfo.destination_in} id={tripInfo.id} />
               </Col>
               <Col xs={8}>
-                <Form.Item label='Destination Out'>
-                  <DatePicker
-                    showTime
-                    format='DD-MMM-YYYY HH:mm'
-                    placeholder='Select Time'
-                    style={{ width: '100%' }}
-                    disabled={false}
-                  />
-                </Form.Item>
+                <DestinationOutDate destination_out={tripInfo.destination_out} id={tripInfo.id} />
               </Col>
               <Col xs={8}>
                 <Form.Item label='Loading Memo'>

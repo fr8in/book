@@ -1,58 +1,46 @@
-import moment from 'moment'
-import { UPDATE_TRIP_SOURCEIN_MUTATION } from './containers/query/tripSourceInMutation'
-import { useMutation } from '@apollo/client'
-import useShowHide from '../../hooks/useShowHide'
-import { message, DatePicker, Button } from 'antd'
+import { gql, useMutation } from '@apollo/client'
+import { message } from 'antd'
+import DateUpdater from '../common/dateUpdater'
+
+const UPDATE_TRIP_SOURCEIN_MUTATION = gql`
+mutation tripSourceIn($source_in:timestamptz,$id:Int) {
+    update_trip(_set: {source_in:$source_in}, where: {id:{_eq:$id}}) {
+      returning {
+        id
+        source_in
+      }
+    }
+  }
+`
 
 const SourceInDate = (props) => {
-    const { sourcein, id } = props
-  
-    const initial = { datePicker: false }
-    const { visible, onHide, onShow } = useShowHide(initial)
-   
-    const [updateSourceIn] = useMutation(
-        UPDATE_TRIP_SOURCEIN_MUTATION,
-      {
-        onError (error) { message.error(error.toString()) },
-      }
-    )
+  const { source_in, id } = props
 
-    const onSubmit = (date, dateString) => {
-      console.log(dateString)
-      updateSourceIn({
-        variables: {
-          id ,
-          source_in: dateString
-        }
-      })
-      onHide()
+  const [updateSourceIn] = useMutation(
+    UPDATE_TRIP_SOURCEIN_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
-  
-    const dateFormat = 'DD-MMM-YYYY HH:mm'
-  
-    return (
-      <div>
-        {!visible.datePicker ? (
-          <label>
-            {sourcein ? moment(sourcein).format(dateFormat) : '-'}{' '}
-            
-          </label>)
-          : (
-            <span>
-              <DatePicker
-                placeholder='Source-In Date'
-                disabled={false}
-                format={dateFormat}
-                value={sourcein ? moment(sourcein, dateFormat) : moment()}
-                onChange={onSubmit} 
-                size='small'
-              />{' '}
-               <Button type='primary' >Ok</Button>
-            </span>)}
-           
-      </div>
-    )
+  )
+
+  const onSubmit = (dateString) => {
+    updateSourceIn({
+      variables: {
+        id,
+        source_in: dateString
+      }
+    })
   }
-  
-  export default SourceInDate
-  
+
+  return (
+    <DateUpdater
+      name='source_in_date'
+      label='Source In'
+      dateValue={source_in}
+      onSubmit={onSubmit}
+    />
+  )
+}
+
+export default SourceInDate
