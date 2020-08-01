@@ -57,7 +57,7 @@ const CUSTOMERS_QUERY = gql`
 `
 
 const CustomersContainer = () => {
-  const initialFilter = { statusId: [1], name: null, mobile: null, offset: 0, limit: 10 }
+  const initialFilter = { statusId: [3], name: null, mobile: null, offset: 0, limit: 10 }
   const [filter, setFilter] = useState(initialFilter)
 
   const customersQueryVars = {

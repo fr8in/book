@@ -52,6 +52,10 @@ const CustomerKyc = (props) => {
     onNameSearch(e.target.value)
   }
 
+  const handleMobile = (e) => {
+    onMobileSearch(e.target.value)
+  }
+
   const handleStatus = (e) => {
     onFilter(e.target.value)
   }
@@ -107,12 +111,22 @@ const CustomerKyc = (props) => {
           />
         </div>
       ),
-      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      filterIcon: () => <SearchOutlined style={{ color: filter.name ? '#1890ff' : undefined }} />
     },
     {
       title: 'Mobile No',
       dataIndex: 'mobile',
-      width: '10%'
+      width: '10%',
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search Customer'
+            value={filter.mobile}
+            onChange={handleMobile}
+          />
+        </div>
+      ),
+      filterIcon: () => <SearchOutlined style={{ color: filter.mobile ? '#1890ff' : undefined }} />
     },
     {
       title: 'Type',
