@@ -35,8 +35,6 @@ const SourceInDate = (props) => {
   }
 
   const dateFormat = 'DD/MM/YY HH:mm'
-  const s_in = moment(source_in).format(dateFormat)
-  console.log('s_in', s_in)
 
   return (
     <Form.Item name='source_in_date' label='Source In'>
