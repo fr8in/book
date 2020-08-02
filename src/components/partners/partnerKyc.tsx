@@ -1,4 +1,4 @@
-import { Table, Tooltip, Button, Badge, Space, Modal,Pagination } from 'antd'
+import { Table, Tooltip, Button, Badge, Space, Modal,Pagination,Radio } from 'antd'
 import {
   CommentOutlined,
   CheckOutlined,
@@ -35,7 +35,7 @@ const truck_count = [
 ]
 
 const PartnerKyc = (props) => {
-  const { partners, loading , onPageChange,filter,record_count,total_page,} = props
+  const { partners, loading , onPageChange,filter,record_count,total_page,onFilter,partner_status_list} = props
 
   const [currentPage, setCurrentPage] = useState(1)
   const initial = {
@@ -49,11 +49,19 @@ const PartnerKyc = (props) => {
   const value = { reject: false }
   const { visible, onShow, onHide } = useShowHide(value)
 
+  const handleStatus = (e) => {
+    onFilter(e.target.value)
+  }
+
   const pageChange = (page, pageSize) => {
     const newOffset = page * pageSize - filter.limit
     setCurrentPage(page)
     onPageChange(newOffset)
   }
+
+  const partner_status = partner_status_list.map(data => {
+    return { value: data.id, label: data.value }
+  })
 
   const columnsCurrent = [
     {
@@ -143,21 +151,37 @@ const PartnerKyc = (props) => {
       dataIndex: 'pan',
       width: '8%'
     },
+    // {
+    //   title: 'Status',
+    //   dataIndex: 'status',
+    //   width: '9%',
+    //   render: (text, record) => {
+    //     const status = record.partner_status && record.partner_status.value
+    //     return status.length > 12 ? (
+    //       <Tooltip title={status}>
+    //         <span> {status.slice(0, 12) + '...'}</span>
+    //       </Tooltip>
+    //     ) : (
+    //       status
+    //     )
+    //   },
+    //   filters: status_list
+    // },
     {
       title: 'Status',
-      dataIndex: 'status',
-      width: '9%',
-      render: (text, record) => {
-        const status = record.partner_status && record.partner_status.value
-        return status.length > 12 ? (
-          <Tooltip title={status}>
-            <span> {status.slice(0, 12) + '...'}</span>
-          </Tooltip>
-        ) : (
-          status
-        )
-      },
-      filters: status_list
+      render: (text, record) => record.partner_status && record.partner_status.value,
+      width: '14%',
+      filterDropdown: (
+        <Radio.Group
+          options={partner_status}
+          defaultValue={filter.partner_statusId[0]}
+          onChange={handleStatus}
+          className='filter-drop-down'
+        />
+      )
+      //, filterMultiple: false,
+      // filters: customer_status,
+      // onFilter: (value, record) => record.status && record.status.value.indexOf(value) === 0
     },
     {
       title: 'Comment',

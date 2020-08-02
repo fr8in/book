@@ -7,8 +7,8 @@ import { useState } from 'react'
 import { gql, useQuery } from '@apollo/client'
 
 const PARTNERS_QUERY = gql`
-  query partners($offset: Int!, $limit: Int!) {
-    partner(offset: $offset, limit: $limit) {
+  query partners($offset: Int!, $limit: Int!,$partner_statusId:[Int!]) {
+    partner(offset: $offset, limit: $limit,where:{partner_status:{id:{_in:$partner_statusId}}}) {
       id
       name
       cardcode
@@ -28,9 +28,6 @@ const PARTNERS_QUERY = gql`
       #     }
       #   }
       # }
-      partner_status{
-       value
-      } 
       partner_users(limit:1 , where:{is_admin:{_eq:true}}){
         mobile
       }
@@ -46,20 +43,26 @@ const PARTNERS_QUERY = gql`
         }
       }
     }
-    partner_aggregate{
+    partner_aggregate(where:{partner_status:{id:{_in:$partner_statusId}}})
+    {
       aggregate{
         count
       }
+    }
+    partner_status(order_by:{id:asc}){
+      id
+      value
     }
 }
 `
 
 const PartnerContainer = () => {
-  const initialFilter = { offset: 0, limit: 1 }
+  const initialFilter = { partner_statusId: [1],offset: 0, limit: 1 }
   const [filter, setFilter] = useState(initialFilter)
   const partnersQueryVars = {
     offset: filter.offset,
-    limit: filter.limit
+    limit: filter.limit,
+    partner_statusId: filter.partner_statusId
   }
 
   const { loading, error, data } = useQuery(
@@ -74,17 +77,26 @@ const PartnerContainer = () => {
 
   console.log('PartnersContainer error', error)
   var partner = []
+  var partner_status = []
   var partner_aggregate = 0
   if (!loading) {
     partner = data && data.partner
+    partner_status = data && data.partner_status
     partner_aggregate = data && data.partner_aggregate
   }
 console.log('partner_aggregate',partner_aggregate)
+
+const partner_status_list = partner_status.filter(data => data.id !== 8)
+
   const record_count = partner_aggregate && partner_aggregate.aggregate && partner_aggregate.aggregate.count
 
   const total_page = Math.ceil( record_count /filter.limit)
   console.log('record_count', record_count)
   
+  const onFilter = (value) => {
+    setFilter({ ...filter, partner_statusId: value })
+  }
+
   const onPageChange = (value) => {
     setFilter({ ...filter, offset: value })
   }
@@ -105,6 +117,8 @@ console.log('partner_aggregate',partner_aggregate)
       total_page={total_page}
       record_count={record_count} 
       filter={filter}
+      onFilter={onFilter}
+      partner_status_list={partner_status_list}
       />
     </Card>
   )
