@@ -1,4 +1,4 @@
-import { Table, Tooltip, Button, Badge, Space, Modal } from 'antd'
+import { Table, Tooltip, Button, Badge, Space, Modal,Pagination } from 'antd'
 import {
   CommentOutlined,
   CheckOutlined,
@@ -10,6 +10,7 @@ import KycReject from '../../components/partners/partnerKycReject'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from './comment'
 import KycApproval from '../partners/kycApproval'
+import { useState } from 'react'
 
 const region_list = [
   { value: 1, text: 'North' },
@@ -34,7 +35,9 @@ const truck_count = [
 ]
 
 const PartnerKyc = (props) => {
-  const { partners, loading } = props
+  const { partners, loading , onPageChange,filter,record_count,total_page,} = props
+
+  const [currentPage, setCurrentPage] = useState(1)
   const initial = {
     commentData: [],
     commentVisible: false,
@@ -45,6 +48,13 @@ const PartnerKyc = (props) => {
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
   const value = { reject: false }
   const { visible, onShow, onHide } = useShowHide(value)
+
+  const pageChange = (page, pageSize) => {
+    const newOffset = page * pageSize - filter.limit
+    setCurrentPage(page)
+    onPageChange(newOffset)
+  }
+
   const columnsCurrent = [
     {
       title: 'Partner Code',
@@ -231,6 +241,15 @@ const PartnerKyc = (props) => {
           data={object.approvalData}
         />
       )}
+      {!loading &&
+        <Pagination
+          size='small'
+          current={currentPage}
+          pageSize={filter.limit}
+          total={record_count}
+          onChange={pageChange}
+          className='text-right p10'
+        />}
     </>
   )
 }

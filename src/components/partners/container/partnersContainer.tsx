@@ -2,6 +2,7 @@ import React from 'react'
 import { Button, Card } from 'antd'
 import Link from 'next/link'
 import PartnerKyc from '../partnerKyc'
+import { useState } from 'react'
 
 import { gql, useQuery } from '@apollo/client'
 
@@ -45,26 +46,47 @@ const PARTNERS_QUERY = gql`
         }
       }
     }
+    partner_aggregate{
+      aggregate{
+        count
+      }
+    }
 }
 `
 
-export const partnersQueryVars = {
-  offset: 0,
-  limit: 10
-}
 const PartnerContainer = () => {
+  const initialFilter = { offset: 0, limit: 1 }
+  const [filter, setFilter] = useState(initialFilter)
+  const partnersQueryVars = {
+    offset: filter.offset,
+    limit: filter.limit
+  }
+
   const { loading, error, data } = useQuery(
     PARTNERS_QUERY,
     {
       variables: partnersQueryVars,
+      fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
   )
+  
 
   console.log('PartnersContainer error', error)
   var partner = []
+  var partner_aggregate = 0
   if (!loading) {
-    partner = data.partner
+    partner = data && data.partner
+    partner_aggregate = data && data.partner_aggregate
+  }
+console.log('partner_aggregate',partner_aggregate)
+  const record_count = partner_aggregate && partner_aggregate.aggregate && partner_aggregate.aggregate.count
+
+  const total_page = Math.ceil( record_count /filter.limit)
+  console.log('record_count', record_count)
+  
+  const onPageChange = (value) => {
+    setFilter({ ...filter, offset: value })
   }
 
   return (
@@ -77,7 +99,13 @@ const PartnerContainer = () => {
       }
       className='card-body-0 border-top-blue'
     >
-      <PartnerKyc partners={partner} loading={loading} />
+      <PartnerKyc partners={partner} 
+      loading={loading}
+      onPageChange={onPageChange}
+      total_page={total_page}
+      record_count={record_count} 
+      filter={filter}
+      />
     </Card>
   )
 }
