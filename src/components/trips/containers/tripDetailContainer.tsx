@@ -45,8 +45,8 @@ const TripDetailContainer = (props) => {
   const title = (
     <h3>
       <span className='text-primary'>{tripInfo.id}</span>
-      <span>&nbsp;{`${tripInfo.source.name} - ${tripInfo.destination.name}`}&nbsp;</span>
-      <small className='text-gray normal'>{tripInfo.truck.truck_type.value}</small>
+      <span>{` ${tripInfo.source && tripInfo.source.name} - ${tripInfo.source && tripInfo.destination.name} `}</span>
+      <small className='text-gray normal'>{tripInfo.truck && tripInfo.truck.truck_type && tripInfo.truck.truck_type.value}</small>
     </h3>)
   return (
     <Card
@@ -57,7 +57,7 @@ const TripDetailContainer = (props) => {
           title={title}
           extra={
             <Space>
-              <Tag className='status'>{tripInfo.trip_status.value}</Tag>
+              <Tag className='status'>{tripInfo.trip_status && tripInfo.trip_status.value}</Tag>
             </Space>
           }
         />
