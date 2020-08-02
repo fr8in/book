@@ -19,7 +19,6 @@ const Driver = (props) => {
   const [searchText, setSearchText] = useState('')
   const onSearch = (value) => {
       setSearchText(value.substring(0,10))
-      console.log('searchText',searchText)
   }
 
   const { partner, driver, id } = tripInfo
@@ -44,7 +43,6 @@ const Driver = (props) => {
   let drivers = []
   if (searchText && searchText.length >= 10) {
     drivers =[{ id: searchText, mobile: searchText }]
-    console.log("drivers",drivers)
   }
   else {
     drivers = partner?.drivers.filter(_driver => _driver.mobile.search(searchText) !== -1)

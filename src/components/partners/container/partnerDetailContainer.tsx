@@ -90,7 +90,7 @@ const PartnerDetailContainer = (props) => {
               <BasicDetail partnerInfo={partnerData} />
             </Col>
             <Col xs={24} sm={8} md={8}>
-              <PartnerStatus />
+              <PartnerStatus  partnerInfo = {partnerData}/>
             </Col>
           </Row>
           <Row>

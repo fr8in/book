@@ -1,6 +1,6 @@
-import moment from 'moment'
 import { gql, useMutation } from '@apollo/client'
-import { message, DatePicker, Form } from 'antd'
+import { message } from 'antd'
+import DateUpdater from '../common/dateUpdater'
 
 const UPDATE_TRIP_SOURCEOUT_MUTATION = gql`
 mutation tripSourceOut($source_out:timestamptz,$id:Int) {
@@ -15,16 +15,16 @@ mutation tripSourceOut($source_out:timestamptz,$id:Int) {
 
 const SourceOutDate = (props) => {
   const { source_out, id } = props
-
+  console.log('s-out', source_out)
   const [updateSourceOut] = useMutation(
     UPDATE_TRIP_SOURCEOUT_MUTATION,
     {
-      onError (error) { message.error(error.toString()) }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
 
-  const onSubmit = (date, dateString) => {
-    console.log('fieldsValue', dateString)
+  const onSubmit = (dateString) => {
     updateSourceOut({
       variables: {
         id,
@@ -33,21 +33,13 @@ const SourceOutDate = (props) => {
     })
   }
 
-  const dateFormat = 'DD-MM-YYYY HH:mm'
-
   return (
-    <Form.Item name='source_out_date' label='Source Out'>
-      <DatePicker
-        showTime
-        allowClear={false}
-        format='DD-MM-YYYY HH:mm'
-        placeholder='Select Time'
-        style={{ width: '100%' }}
-        disabled={!!source_out}
-        value={source_out ? moment(source_out, dateFormat) : null}
-        onChange={onSubmit}
-      />
-    </Form.Item>
+    <DateUpdater
+      name='source_out_date'
+      label='Source Out'
+      dateValue={source_out}
+      onSubmit={onSubmit}
+    />
   )
 }
 

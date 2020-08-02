@@ -1,5 +1,6 @@
 
 import { Modal, Button, Input, Form, Row, Col, Select } from 'antd'
+import CitySelect from '../common/citySelect'
 
 const Option = Select
 const CreateExcessLoad = (props) => {
@@ -37,20 +38,17 @@ const CreateExcessLoad = (props) => {
         </Row>
         <Row gutter={10}>
           <Col xs={12}>
-            <Form.Item label='Source'>
-              <Input
-                placeholder='Source'
-                disabled={false}
-              />
-            </Form.Item>
+            <CitySelect
+              label='Source'
+              onChange={() => console.log}
+            />
           </Col>
           <Col xs={12}>
-            <Form.Item label='Destination'>
-              <Input
-                placeholder='Destination'
-                disabled={false}
-              />
-            </Form.Item>
+            <CitySelect
+              label='Destination'
+              onChange={() => console.log}
+              disabled={false}
+            />
           </Col>
         </Row>
         <Row gutter={10}>

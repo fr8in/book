@@ -7,7 +7,8 @@ import CreateBreakdown from '../../components/trucks/createBreakdown'
 import useShowHide from '../../hooks/useShowHide'
 import { deviceHistory } from '../../../mock/trucks/deviceHistory'
 
-const truckTimeline = () => {
+const truckTimeline = (props) => {
+  const {id} = props
   const initial = { commment: false, breakdown: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   return (
@@ -106,7 +107,7 @@ const truckTimeline = () => {
             title='Add BreakDown or In-transit Halting'
             radioType
           />}
-        {visible.comment && <CommentModal visible={visible.comment} onHide={onHide} />}
+        {visible.comment && <CommentModal visible={visible.comment} onHide={onHide} id={id}/>}
       </div>
     </div>
   )
