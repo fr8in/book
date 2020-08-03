@@ -40,15 +40,15 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
                 name              
                 email
             }
-            city{
-                id
-                name
-                branch {
-                  region {
-                    name
-                  }
-                }
-           }  
+           # city{
+           #     id
+           #     name
+           #     branch {
+            #      region {
+             #       name
+             #     }
+             #   }
+          # }  
            tds_percentage {
               value
             }
@@ -71,9 +71,9 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
               truck_type{
                 value
               }
-              city{
-                name
-              }
+              #city{
+              #  name
+             # }
               truck_status{
                 id
                 value

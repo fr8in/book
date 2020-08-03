@@ -9,7 +9,7 @@ const fil = 'Screen Shot 2020-02-08 at 2.57.32 PM.png2020_07_26_18_50_31'
 const tripId = 2
 
 const FileUpload = (props) => {
-  const { type, trip_id, folder, file_type } = props
+  const { type, trip_id, folder, file_type, file_list } = props
   const [base64Str, setBase64Str] = useState(null)
   const [names, setNames] = useState(null)
   const [path, setPath] = useState(null)
@@ -52,7 +52,6 @@ const FileUpload = (props) => {
 
   const fileUpload = (name) => {
     setLoading(true)
-    console.log('file', name)
     const variables = { name: name, type: type, base64Str: base64Str, id: trip_id, folder: folder, fileType: file_type }
     s3FileUpload({
       variables: variables
@@ -135,15 +134,10 @@ const FileUpload = (props) => {
       <Col xs={24}>
         <Upload
           beforeUpload={onChange}
-          fileList={[
-            {
-              uid: -1,
-              name: fil,
-              status: 'done'
-            }
-          ]}
+          fileList={file_list}
           onPreview={(file) => download(file)}
           onRemove={(file) => remove(file)}
+          accept='image/jpeg, image/jpg, image/png'
         >
           <Button icon={<UploadOutlined />}>Select File</Button>
         </Upload>

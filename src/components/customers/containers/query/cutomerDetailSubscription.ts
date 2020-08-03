@@ -1,8 +1,8 @@
-import { gql } from '@apollo/client'
+import { gql } from "@apollo/client";
 
 export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
   subscription customers($cardcode: String) {
-    customer(where: {cardcode: {_eq: $cardcode}}) {
+    customer(where: { cardcode: { _eq: $cardcode } }) {
       id
       cardcode
       name
@@ -29,7 +29,22 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
       type {
         comment
         value
-      }      
+      }
+      customer_users {
+        name
+        mobile
+        email
+      }
+      customerBranches {
+        branch_name
+        name
+        address
+        state {
+          name
+        }
+        pincode
+        mobile
+      }
     }
   }
-`
+`;
