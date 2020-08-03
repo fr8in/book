@@ -47,7 +47,7 @@ const Partners = (props) => {
     }
       : {
         title: 'SourceIn',
-        dataIndex: 'cityIn'
+        dataIndex: 'source_in'
       },
     {
       title: 'Status',
