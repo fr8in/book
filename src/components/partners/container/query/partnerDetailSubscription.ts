@@ -13,7 +13,14 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
             ifsc_code
             address
             pan
-            
+            pin_code
+            onboarded_date
+            walletcode
+            wallet_block
+            emi
+            dnd
+            cibil
+            final_payment_date
             bank{
               id
               name
@@ -22,7 +29,7 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
               id
               mobile
             }
-            final_payment_date
+            
             trucks_aggregate(where:{truck_status_id:{_neq:7}}){
               aggregate{
                 count
@@ -32,50 +39,41 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
                 id
                 name              
                 email
-              }
-              city{
+            }
+           # city{
+           #     id
+           #     name
+           #     branch {
+            #      region {
+             #       name
+             #     }
+             #   }
+          # }  
+           tds_percentage {
+              value
+            }
+            partner_advance_percentage {
+              value
+            }
+            partner_memberships(limit: 1, where: {deleted_at: {_is_null: true}}) {
+              id
+              membership_type {
                 id
-                name
-              }
-            pin_code
-            onboarded_date
-            walletcode
-            wallet_block
-            emi
-            dnd
-            cibil
-            city {
-              branch {
-                region {
-                  name
-                }
+                value
               }
             }
-                tds_percentage {
-                  value
-                }
-                partner_advance_percentage {
-                  value
-                }
-                partner_memberships(limit: 1, where: {deleted_at: {_is_null: true}}) {
-                  id
-                  membership_type {
-                    id
-                    value
-                  }
-                }
-                partner_status{
-                  id
-                  value
-                 } 
+            partner_status{
+              id
+              value
+            } 
             trucks {
               truck_no
               truck_type{
                 value
               }
-              city{
-                name
-              }
+              #city{
+              #  name
+             # }
               truck_status{
                 id
                 value

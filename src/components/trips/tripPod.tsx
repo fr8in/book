@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Row, Col, Upload, Button } from 'antd'
-import { UploadOutlined } from '@ant-design/icons'
+import { Row, Col, Button } from 'antd'
 import BillingAndInvoiced from '../../components/trips/billingAndInvoiced'
 import data from '../../../mock/trip/tripDetail'
+import FileUpload from '../common/fileUpload'
 
-const TripPod = () => {
+const TripPod = (props) => {
+  const { trip_id } = props
   const usersInitial = { branch: '', visible: false }
   const [branch, setBranch] = useState(usersInitial)
   const closeBilling = () => {
@@ -18,22 +19,16 @@ const TripPod = () => {
       <Row>
         <Col xs={24}>
           <Row gutter={10}>
-            <Col flex='auto'>
-              <Upload>
-                <Button>
-                  <UploadOutlined /> Select File
-                </Button>
-              </Upload>
-              <Button
-                type='primary'
-                disabled
-                style={{ marginTop: 10 }}
-              >
-                {'Start Upload'}
-              </Button>
+            <Col xs={24} sm={14}>
+              <FileUpload
+                trip_id={trip_id}
+                type='trip'
+                folder='pod/'
+                file_type='pod'
+              />
             </Col>
-            <Col flex='145px'>
-              <Button type='primary' onClick={() => showBilling(data.customer)}>Billing & Invoice</Button>
+            <Col xs={24} sm={10} className='text-right'>
+              <Button type='primary' onClick={() => showBilling(data.customer)}>Billing</Button>
             </Col>
           </Row>
         </Col>

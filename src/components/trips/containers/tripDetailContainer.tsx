@@ -40,13 +40,13 @@ const TripDetailContainer = (props) => {
   console.log('TripDetailContainer Error', error)
 
   const { trip } = data
-  const tripInfo = trip[0] ? trip[0] : { name: 'ID does not exist' }
+  const trip_info = trip[0] ? trip[0] : { name: 'ID does not exist' }
 
   const title = (
     <h3>
-      <span className='text-primary'>{tripInfo.id}</span>
-      <span>&nbsp;{`${tripInfo.source.name} - ${tripInfo.destination.name}`}&nbsp;</span>
-      <small className='text-gray normal'>{tripInfo.truck.truck_type.value}</small>
+      <span className='text-primary'>{trip_info.id}</span>
+      <span>{` ${trip_info.source && trip_info.source.name} - ${trip_info.source && trip_info.destination.name} `}</span>
+      <small className='text-gray normal'>{trip_info.truck && trip_info.truck.truck_type && trip_info.truck.truck_type.value}</small>
     </h3>)
   return (
     <Card
@@ -57,7 +57,7 @@ const TripDetailContainer = (props) => {
           title={title}
           extra={
             <Space>
-              <Tag className='status'>{tripInfo.trip_status.value}</Tag>
+              <Tag className='status'>{trip_info.trip_status && trip_info.trip_status.value}</Tag>
             </Space>
           }
         />
@@ -65,13 +65,13 @@ const TripDetailContainer = (props) => {
     >
       <Row gutter={10}>
         <Col xs={24} sm={24} md={14}>
-          <TripInfo tripInfo={tripInfo} />
+          <TripInfo trip_info={trip_info} />
           <Collapse accordion className='small mt10'>
             <Panel header='Trip LR' key='1'>
               <TripLr />
             </Panel>
           </Collapse>
-          <TripTime tripInfo={tripInfo} />
+          <TripTime trip_info={trip_info} />
           <Collapse accordion className='small mt10'>
             <Panel header='Customer/Partner - Billing Comment' key='1'>
               <BillingComment />
@@ -83,7 +83,7 @@ const TripDetailContainer = (props) => {
             <TabPane tab='Billing' key='1'>
               <Collapse className='small' defaultActiveKey={['1']}>
                 <Panel header='Trip POD' key='1'>
-                  <TripPod />
+                  <TripPod trip_id={trip_info.id} />
                 </Panel>
               </Collapse>
               <Collapse accordion className='small box-0 mt10'>

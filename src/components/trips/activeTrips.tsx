@@ -2,11 +2,8 @@ import tripsData from '../../../mock/trip/tripsData'
 import { Table, Tooltip, Button } from 'antd'
 import Link from 'next/link'
 import { PhoneOutlined, CommentOutlined, WhatsAppOutlined } from '@ant-design/icons'
-import useShowHide from '../../hooks/useShowHide'
 
 const Trips = (props) => {
-  const initial = { comment: false }
-  const { visible, onShow, onHide } = useShowHide(initial)
   const callNow = record => {
     window.location.href = 'tel:' + record
   }
