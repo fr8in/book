@@ -9,7 +9,7 @@ import moment from 'moment'
 // import data from '../../../mock/trip/tripDetail'
 
 const TripInfo = (props) => {
-  const { tripInfo } = props
+  const { trip_info } = props
   const initial = { price: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   // const { data } = props
@@ -23,8 +23,8 @@ const TripInfo = (props) => {
                 smSpan={12}
                 label={<p className='mb0 b'>Customer</p>}
                 data={
-                  <Link href='/customers/[id]' as={`/customers/${tripInfo.customer && tripInfo.customer.cardcode}`}>
-                    <a>{tripInfo.customer && tripInfo.customer.name}</a>
+                  <Link href='/customers/[id]' as={`/customers/${trip_info.customer && trip_info.customer.cardcode}`}>
+                    <a>{trip_info.customer && trip_info.customer.name}</a>
                   </Link>
                 }
               />
@@ -32,8 +32,8 @@ const TripInfo = (props) => {
                 smSpan={12}
                 label={<p className='mb0 b'>Partner</p>}
                 data={
-                  <Link href='/partners/[id]' as={`/partners/${tripInfo.partner && tripInfo.partner.cardcode}`}>
-                    <a>{tripInfo.partner && tripInfo.partner.name}</a>
+                  <Link href='/partners/[id]' as={`/partners/${trip_info.partner && trip_info.partner.cardcode}`}>
+                    <a>{trip_info.partner && trip_info.partner.name}</a>
                   </Link>
                 }
               />
@@ -45,8 +45,8 @@ const TripInfo = (props) => {
                 smSpan={24}
                 label={<p className='mb0 b'>Truck No</p>}
                 data={
-                  <Link href='/trucks/[id]' as={`/truck/${tripInfo.truck && tripInfo.truck.truck_no}`}>
-                    <a>{tripInfo.truck && tripInfo.truck.truck_no}</a>
+                  <Link href='/trucks/[id]' as={`/truck/${trip_info.truck && trip_info.truck.truck_no}`}>
+                    <a>{trip_info.truck && trip_info.truck.truck_no}</a>
                   </Link>
                 }
               />
@@ -57,34 +57,34 @@ const TripInfo = (props) => {
         <Row>
           <Col sm={24} md={12}>
             <LabelWithData
-              label='Order Date' data={tripInfo.order_date ? (
-                moment(tripInfo.order_date).format('DD-MMM-YYYY hh:mm')
+              label='Order Date' data={trip_info.order_date ? (
+                moment(trip_info.order_date).format('DD-MMM-YYYY hh:mm')
               ) : ''} labelSpan={10}
             />
             <LabelWithData
-              label='ETA' data={tripInfo.eta ? (
-                moment(tripInfo.eta).format('DD-MMM-YYYY hh:mm')
+              label='ETA' data={trip_info.eta ? (
+                moment(trip_info.eta).format('DD-MMM-YYYY hh:mm')
               ) : ''} labelSpan={10}
             />
             <LabelWithData
               label='Customer Price'
-              data={<p>{tripInfo.trip_prices && tripInfo.trip_prices[0].customer_price} <EditTwoTone onClick={() => onShow('price')} /></p>}
+              data={<p>{trip_info.trip_prices && trip_info.trip_prices[0].customer_price} <EditTwoTone onClick={() => onShow('price')} /></p>}
               labelSpan={10}
             />
-            <LabelWithData label='Cash' data={tripInfo.trip_prices && tripInfo.trip_prices[0].cash} labelSpan={10} />
-            <LabelWithData label='To Pay' data={tripInfo.trip_prices && tripInfo.trip_prices[0].to_pay} labelSpan={10} />
-            <LabelWithData label='Mamul' data={tripInfo.trip_prices && tripInfo.trip_prices[0].mamul} labelSpan={10} />
+            <LabelWithData label='Cash' data={trip_info.trip_prices && trip_info.trip_prices[0].cash} labelSpan={10} />
+            <LabelWithData label='To Pay' data={trip_info.trip_prices && trip_info.trip_prices[0].to_pay} labelSpan={10} />
+            <LabelWithData label='Mamul' data={trip_info.trip_prices && trip_info.trip_prices[0].mamul} labelSpan={10} />
           </Col>
           <Col sm={24} md={12}>
             <LabelWithData
-              label='PO Date' data={tripInfo.po_date ? (
-                moment(tripInfo.po_date).format('DD-MMM-YYYY hh:mm')
+              label='PO Date' data={trip_info.po_date ? (
+                moment(trip_info.po_date).format('DD-MMM-YYYY hh:mm')
               ) : ''} labelSpan={10}
             />
-            <LabelWithData label='Delay' data={tripInfo.delay} labelSpan={10} />
-            <LabelWithData label='Partner Price' data={tripInfo.trip_prices && tripInfo.trip_prices[0].partner_price} labelSpan={10} />
-            <LabelWithData label='Including loading' data={tripInfo.trip_prices && tripInfo.trip_prices.including_loading === true ? 'Yes' : 'No'} labelSpan={10} />
-            <LabelWithData label='Including Unloading' data={tripInfo.trip_prices && tripInfo.trip_prices.including_unloading === true ? 'yes' : 'No'} labelSpan={10} />
+            <LabelWithData label='Delay' data={trip_info.delay} labelSpan={10} />
+            <LabelWithData label='Partner Price' data={trip_info.trip_prices && trip_info.trip_prices[0].partner_price} labelSpan={10} />
+            <LabelWithData label='Including loading' data={trip_info.trip_prices && trip_info.trip_prices.including_loading === true ? 'Yes' : 'No'} labelSpan={10} />
+            <LabelWithData label='Including Unloading' data={trip_info.trip_prices && trip_info.trip_prices.including_unloading === true ? 'yes' : 'No'} labelSpan={10} />
           </Col>
         </Row>
       </Col>

@@ -17,10 +17,20 @@ import DestinationInDate from './tripDestinationIn'
 import DestinationOutDate from './tripDestinationOut'
 
 const TripTime = (props) => {
-  const { tripInfo } = props
-  console.log('tripInfo', tripInfo)
+  const { trip_info } = props
+  console.log('trip_info', trip_info)
   const initial = { checkbox: false, mail: false, deletePO: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+
+  const authorized = true // TODO
+  const po_delete = (trip_info.trip_status &&
+                    trip_info.trip_status.value === 'Assigned' &&
+                    trip_info.trip_status.value === 'Confirmed' &&
+                    trip_info.trip_status.value === 'Reported at source') &&
+                    !trip_info.source_out
+  const process_advance = trip_info.source_in && !trip_info.source_out // &&  trip_info.loaded = 'No'
+  const remove_sout = trip_info.trip_status && trip_info.trip_status.value === 'Intransit' && authorized
+  const remove_dout = trip_info.trip_status && trip_info.trip_status.value === 'Delivered' && authorized
 
   return (
     <Card size='small' className='mt10'>
@@ -29,21 +39,21 @@ const TripTime = (props) => {
           <Form layout='vertical'>
             <Row gutter={10}>
               <Col xs={8}>
-                <SourceInDate source_in={tripInfo.source_in} id={tripInfo.id} />
+                <SourceInDate source_in={trip_info.source_in} id={trip_info.id} />
               </Col>
               <Col xs={8}>
-                <SourceOutDate source_out={tripInfo.source_out} id={tripInfo.id} />
+                <SourceOutDate source_out={trip_info.source_out} id={trip_info.id} />
               </Col>
               <Col xs={8}>
-                <Driver tripInfo={tripInfo} />
+                <Driver trip_info={trip_info} />
               </Col>
             </Row>
             <Row gutter={10}>
               <Col xs={8}>
-                <DestinationInDate destination_in={tripInfo.destination_in} id={tripInfo.id} />
+                <DestinationInDate destination_in={trip_info.destination_in} id={trip_info.id} />
               </Col>
               <Col xs={8}>
-                <DestinationOutDate destination_out={tripInfo.destination_out} id={tripInfo.id} />
+                <DestinationOutDate destination_out={trip_info.destination_out} id={trip_info.id} />
               </Col>
               <Col xs={8}>
                 <Form.Item label='Loading Memo'>
@@ -89,17 +99,18 @@ const TripTime = (props) => {
             <Row>
               <Col xs={16}>
                 <Space>
-                  <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>
-                  <Button type='primary'>Process Advance</Button>
-                  <Button danger icon={<CloseCircleOutlined />}>Sout</Button>
-                  <Button danger icon={<CloseCircleOutlined />}>Dout</Button>
+                  {po_delete &&
+                    <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>}
+                  {process_advance &&
+                    <Button type='primary'>Process Advance</Button>}
+                  {remove_sout &&
+                    <Button danger icon={<CloseCircleOutlined />}>Sout</Button>}
+                  {remove_dout &&
+                    <Button danger icon={<CloseCircleOutlined />}>Dout</Button>}
                 </Space>
               </Col>
               <Col xs={8} className='text-right'>
-                <Space>
-                  <Button>Cancel</Button>
-                  <Button type='primary'>Submit</Button>
-                </Space>
+                <Button type='primary'>Submit</Button>
               </Col>
             </Row>
           </Form>

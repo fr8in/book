@@ -1,7 +1,7 @@
-import { Table, Pagination } from "antd";
+import { Table, Pagination, Radio, Input } from "antd";
 import { useState } from "react";
 import Link from "next/link";
-import { EditTwoTone } from "@ant-design/icons";
+import { EditTwoTone, SearchOutlined } from "@ant-design/icons";
 import CreateBreakdown from "../../components/trucks/createBreakdown";
 import PartnerUsers from "../partners/partnerUsers";
 import CreatePo from "../../components/trips/createPo";
@@ -27,13 +27,13 @@ const Trucks = (props) => {
     record_count,
     total_page,
     onPageChange,
+    onNameSearch,
+    onTruckNoSearch,
     filter,
+    truck_status_list,
+    onFilter,
   } = props;
   console.log(props);
-
-  const truckStatus = status.map((data) => {
-    return { value: data.id.toString(), text: data.value };
-  });
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {},
@@ -49,6 +49,22 @@ const Trucks = (props) => {
     onPageChange(newOffset);
   };
 
+  const handleStatus = (e) => {
+    onFilter(e.target.value);
+  };
+
+  const handleName = (e) => {
+    onNameSearch(e.target.value);
+  };
+
+  const handleTruckNo = (e) => {
+    onTruckNoSearch(e.target.value);
+  };
+
+  const truck_status = truck_status_list.map((data) => {
+    return { value: data.id, label: data.value };
+  });
+
   const columns = [
     {
       title: "Truck No",
@@ -62,6 +78,20 @@ const Trucks = (props) => {
           </Link>
         );
       },
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder="Search TruckNo"
+            value={filter.truck_no}
+            onChange={handleTruckNo}
+          />
+        </div>
+      ),
+      filterIcon: () => (
+        <SearchOutlined
+          style={{ color: filter.mobile ? "#1890ff" : undefined }}
+        />
+      ),
     },
     {
       title: "Trip ID",
@@ -126,6 +156,21 @@ const Trucks = (props) => {
           </Link>
         );
       },
+
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder="Search Partner"
+            value={filter.name}
+            onChange={handleName}
+          />
+        </div>
+      ),
+      filterIcon: () => (
+        <SearchOutlined
+          style={{ color: filter.name ? "#1890ff" : undefined }}
+        />
+      ),
     },
     {
       title: "Phone No",
@@ -152,10 +197,17 @@ const Trucks = (props) => {
     },
     {
       title: "Status",
-      dataIndex: "status",
       render: (text, record) =>
         record.truck_status && record.truck_status.value,
-      filters: truckStatus,
+      width: "14%",
+      filterDropdown: (
+        <Radio.Group
+          options={truck_status}
+          defaultValue={filter.truck_statusId[0]}
+          onChange={handleStatus}
+          className="filter-drop-down"
+        />
+      ),
     },
     {
       title: "City",

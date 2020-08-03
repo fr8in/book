@@ -2,10 +2,10 @@
 import { Modal, Button, Row, Input, Col, Table, Popconfirm, Form, message } from 'antd'
 import { PhoneOutlined, DeleteOutlined } from '@ant-design/icons'
 import React, { useState } from 'react'
-import { useQuery, useMutation, gql } from '@apollo/client'
+import { useSubscription , useMutation, gql } from '@apollo/client'
 
-const PARTNER_USERS_QUERY = gql`
-query partnerUser($cardcode: String){
+const PARTNER_USERS_SUBSCRIPTION = gql`
+subscription partnerUser($cardcode: String){
   partner(where:{cardcode:{_eq:$cardcode}}){
     partner_users{
       id
@@ -50,11 +50,10 @@ const PartnerUsers = (props) => {
   console.log('partnerId', partner)
   const [mobile, setMobile] = useState('')
 
-  const { loading, error, data } = useQuery(
-    PARTNER_USERS_QUERY,
+  const { loading, error, data } = useSubscription(
+    PARTNER_USERS_SUBSCRIPTION,
     {
-      variables: { cardcode: partner.cardcode },
-      notifyOnNetworkStatusChange: true
+      variables: { cardcode: partner.cardcode }
     }
   )
 
