@@ -1,7 +1,7 @@
-import { Table, Pagination, Radio } from "antd";
+import { Table, Pagination, Radio, Input } from "antd";
 import { useState } from "react";
 import Link from "next/link";
-import { EditTwoTone } from "@ant-design/icons";
+import { EditTwoTone, SearchOutlined } from "@ant-design/icons";
 import CreateBreakdown from "../../components/trucks/createBreakdown";
 import PartnerUsers from "../partners/partnerUsers";
 import CreatePo from "../../components/trips/createPo";
@@ -27,6 +27,8 @@ const Trucks = (props) => {
     record_count,
     total_page,
     onPageChange,
+    onNameSearch,
+    onTruckNoSearch,
     filter,
     truck_status_list,
     onFilter,
@@ -51,6 +53,14 @@ const Trucks = (props) => {
     onFilter(e.target.value);
   };
 
+  const handleName = (e) => {
+    onNameSearch(e.target.value);
+  };
+
+  const handleTruckNo = (e) => {
+    onTruckNoSearch(e.target.value);
+  };
+
   const truck_status = truck_status_list.map((data) => {
     return { value: data.id, label: data.value };
   });
@@ -68,6 +78,20 @@ const Trucks = (props) => {
           </Link>
         );
       },
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder="Search TruckNo"
+            value={filter.truck_no}
+            onChange={handleTruckNo}
+          />
+        </div>
+      ),
+      filterIcon: () => (
+        <SearchOutlined
+          style={{ color: filter.mobile ? "#1890ff" : undefined }}
+        />
+      ),
     },
     {
       title: "Trip ID",
@@ -132,6 +156,21 @@ const Trucks = (props) => {
           </Link>
         );
       },
+
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder="Search Partner"
+            value={filter.name}
+            onChange={handleName}
+          />
+        </div>
+      ),
+      filterIcon: () => (
+        <SearchOutlined
+          style={{ color: filter.name ? "#1890ff" : undefined }}
+        />
+      ),
     },
     {
       title: "Phone No",

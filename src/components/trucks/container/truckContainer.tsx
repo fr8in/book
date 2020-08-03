@@ -10,11 +10,17 @@ const TRUCKS_QUERY = gql`
     $limit: Int!
     $trip_status_id: [Int!]
     $truck_statusId: [Int!]
+    $name: String
+    $truckno: String
   ) {
     truck(
       offset: $offset
       limit: $limit
-      where: { truck_status: { id: { _in: $truck_statusId } } }
+      where: {
+        truck_status: { id: { _in: $truck_statusId } }
+        partner: { name: { _ilike: $name } }
+        truck_no: { _ilike: $truckno }
+      }
     ) {
       truck_no
       truck_type_id
@@ -62,7 +68,13 @@ const TRUCKS_QUERY = gql`
 const { Search } = Input;
 
 const TruckContainer = () => {
-  const initialFilter = { truck_statusId: [1], offset: 0, limit: 2 };
+  const initialFilter = {
+    truck_statusId: [1],
+    name: null,
+    truckno: null,
+    offset: 0,
+    limit: 10,
+  };
   const [filter, setFilter] = useState(initialFilter);
 
   const trucksQueryVars = {
@@ -70,6 +82,8 @@ const TruckContainer = () => {
     limit: filter.limit,
     truck_statusId: filter.truck_statusId,
     trip_status_id: [2, 3, 4, 5, 6],
+    truckno: filter.truckno ? `%${filter.truckno}%` : null,
+    name: filter.name ? `%${filter.name}%` : null,
   };
 
   const { loading, error, data } = useQuery(TRUCKS_QUERY, {
@@ -106,6 +120,14 @@ const TruckContainer = () => {
     setFilter({ ...filter, offset: value });
   };
 
+  const onNameSearch = (value) => {
+    setFilter({ ...filter, name: value });
+  };
+
+  const onTruckNoSearch = (value) => {
+    setFilter({ ...filter, truckno: value });
+  };
+
   return (
     <Card size="small" className="card-body-0 border-top-blue">
       <Row justify="end" className="m5">
@@ -127,6 +149,8 @@ const TruckContainer = () => {
               filter={filter}
               onFilter={onFilter}
               onPageChange={onPageChange}
+              onNameSearch={onNameSearch}
+              onTruckNoSearch={onTruckNoSearch}
               record_count={record_count}
               total_page={total_page}
             />
