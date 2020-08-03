@@ -5,8 +5,17 @@ import { useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 
 const TRUCKS_QUERY = gql`
-  query trucks($offset: Int!, $limit: Int!, $trip_status_id: [Int!]) {
-    truck(offset: $offset, limit: $limit) {
+  query trucks(
+    $offset: Int!
+    $limit: Int!
+    $trip_status_id: [Int!]
+    $truck_statusId: [Int!]
+  ) {
+    truck(
+      offset: $offset
+      limit: $limit
+      where: { truck_status: { id: { _in: $truck_statusId } } }
+    ) {
       truck_no
       truck_type_id
       truck_status_id
@@ -38,11 +47,11 @@ const TRUCKS_QUERY = gql`
         }
       }
     }
-    truck_status {
+    truck_status(order_by: { id: asc }) {
       id
       value
     }
-    truck_aggregate {
+    truck_aggregate(where: { truck_status: { id: { _in: $truck_statusId } } }) {
       aggregate {
         count
       }
@@ -53,12 +62,13 @@ const TRUCKS_QUERY = gql`
 const { Search } = Input;
 
 const TruckContainer = () => {
-  const initialFilter = { offset: 0, limit: 2 };
+  const initialFilter = { truck_statusId: [1], offset: 0, limit: 2 };
   const [filter, setFilter] = useState(initialFilter);
 
   const trucksQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
+    truck_statusId: filter.truck_statusId,
     trip_status_id: [2, 3, 4, 5, 6],
   };
 
@@ -71,6 +81,7 @@ const TruckContainer = () => {
   console.log("TrucksContainer error", error);
   var truck = [];
   var truck_status = [];
+
   var truck_aggregate = 0;
 
   if (!loading) {
@@ -80,11 +91,16 @@ const TruckContainer = () => {
     truck_aggregate = data && data.truck_aggregate;
   }
 
+  const truck_status_list = truck_status.filter((data) => data.id !== 10);
+
   const record_count =
     truck_aggregate.aggregate && truck_aggregate.aggregate.count;
   const total_page = Math.ceil(record_count / filter.limit);
 
   console.log("record_count", record_count);
+  const onFilter = (value) => {
+    setFilter({ ...filter, truck_statusId: value });
+  };
 
   const onPageChange = (value) => {
     setFilter({ ...filter, offset: value });
@@ -105,9 +121,11 @@ const TruckContainer = () => {
           <Card size="small" className="card-body-0">
             <Trucks
               trucks={truck}
+              truck_status_list={truck_status_list}
               status={truck_status}
               loading={loading}
               filter={filter}
+              onFilter={onFilter}
               onPageChange={onPageChange}
               record_count={record_count}
               total_page={total_page}
