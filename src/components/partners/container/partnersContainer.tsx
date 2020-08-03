@@ -7,8 +7,8 @@ import { useState } from 'react'
 import { gql, useQuery } from '@apollo/client'
 
 const PARTNERS_QUERY = gql`
-  query partners($offset: Int!, $limit: Int!,$partner_statusId:[Int!]) {
-    partner(offset: $offset, limit: $limit,where:{partner_status:{id:{_in:$partner_statusId}}}) {
+  query partners($offset: Int!, $limit: Int!,$partner_statusId:[Int!], $name:String, $cardcode:String) {
+    partner(offset: $offset, limit: $limit,where:{partner_status:{id:{_in:$partner_statusId}}, name: {_ilike: $name}, cardcode: {_like: $cardcode}}) {
       id
       name
       cardcode
@@ -57,12 +57,14 @@ const PARTNERS_QUERY = gql`
 `
 
 const PartnerContainer = () => {
-  const initialFilter = { partner_statusId: [1],offset: 0, limit: 1 }
+  const initialFilter = { partner_statusId: [1],offset: 0, limit: 1, name: null, cardcode: null }
   const [filter, setFilter] = useState(initialFilter)
   const partnersQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
-    partner_statusId: filter.partner_statusId
+    partner_statusId: filter.partner_statusId,
+    name: filter.name ? `%${filter.name}%` : null,
+    cardcode: filter.cardcode ? `%${filter.cardcode}%` : null
   }
 
   const { loading, error, data } = useQuery(
@@ -101,6 +103,14 @@ const partner_status_list = partner_status.filter(data => data.id !== 8)
     setFilter({ ...filter, offset: value })
   }
 
+  const onNameSearch = (value) => {
+    setFilter({ ...filter, name: value })
+  }
+
+  const onCardCodeSearch = (value) => {
+    setFilter({ ...filter, cardcode: value })
+  }
+
   return (
     <Card
       size='small'
@@ -119,6 +129,8 @@ const partner_status_list = partner_status.filter(data => data.id !== 8)
       filter={filter}
       onFilter={onFilter}
       partner_status_list={partner_status_list}
+      onNameSearch={onNameSearch}
+      onCardCodeSearch={onCardCodeSearch}
       />
     </Card>
   )
