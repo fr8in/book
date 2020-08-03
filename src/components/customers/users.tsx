@@ -1,62 +1,67 @@
-import { Table, Button, Switch } from 'antd'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
-import userData from '../../../mock/customer/users'
+import { Table, Button, Switch } from "antd";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+//import userData from '../../../mock/customer/users'
 
-const Users = () => {
+const Users = (props) => {
+  const { customerUser, loading } = props;
+  console.log("customerUser", customerUser);
+
   const addUser = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      width: '15%'
+      title: "Name",
+      dataIndex: "name",
+      width: "15%",
+    },
+
+    {
+      title: "Mobile No",
+      dataIndex: "mobile",
+      width: "20%",
+    },
+
+    {
+      title: "Email",
+      dataIndex: "email",
+      width: "10%",
     },
     {
-      title: 'Mobile No',
-      dataIndex: 'mobileNo',
-      width: '20%'
+      title: "User Branch",
+      dataIndex: "branch_name",
+      width: "20%",
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      width: '10%'
+      title: "Operating City",
+      dataIndex: "operatingCity",
+      width: "10%",
     },
     {
-      title: 'User Branch',
-      dataIndex: 'userBranch',
-      width: '20%'
+      title: "Master",
+      render: (text, record) => <Switch defaultChecked />,
+      width: "10%",
     },
     {
-      title: 'Operating City',
-      dataIndex: 'operatingCity',
-      width: '10%'
-    },
-    {
-      title: 'Master',
-      render: (text, record) =>
-        <Switch defaultChecked />,
-      width: '10%'
-    },
-    {
-      title: 'Action',
+      title: "Action",
       render: (text, record) => (
-        <span className='actions'>
-          <Button type='link' icon={<DeleteOutlined />} />
-          <Button type='link' icon={<EditOutlined />} />
+        <span className="actions">
+          <Button type="link" icon={<DeleteOutlined />} />
+          <Button type="link" icon={<EditOutlined />} />
         </span>
       ),
-      width: '12%'
-    }
-  ]
+      width: "12%",
+    },
+  ];
 
   return (
     <Table
       columns={addUser}
-      dataSource={userData}
+      dataSource={customerUser}
       rowKey={(record) => record.id}
-      size='small'
+      size="small"
       scroll={{ x: 800 }}
       pagination={false}
+      loading={loading}
     />
-  )
-}
+  );
+};
 
-export default Users
+export default Users;
