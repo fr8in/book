@@ -83,7 +83,7 @@ const TripDetailContainer = (props) => {
             <TabPane tab='Billing' key='1'>
               <Collapse className='small' defaultActiveKey={['1']}>
                 <Panel header='Trip POD' key='1'>
-                  <TripPod />
+                  <TripPod trip_id={tripInfo.id} />
                 </Panel>
               </Collapse>
               <Collapse accordion className='small box-0 mt10'>
