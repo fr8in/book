@@ -45,8 +45,14 @@ const FileUpload = (props) => {
   const [s3FileUpload] = useMutation(
     FILE_UPLOAD_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError (error) {
+        message.error(error.toString())
+        setLoading(false)
+      },
+      onCompleted () {
+        message.success('Updated!!')
+        setLoading(false)
+      }
     }
   )
 
