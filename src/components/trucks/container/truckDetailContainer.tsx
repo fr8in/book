@@ -19,9 +19,9 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
         truck_type{
           value
         }
-        city{
-          name
-        }
+        #city{
+         # name
+       # }
         partner {
           id
           name
