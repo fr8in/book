@@ -58,6 +58,12 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         including_loading
         including_unloading
       }
+      trip_files{
+        id
+        type
+        file_path
+        folder
+      }
     }
   }
 `
