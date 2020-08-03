@@ -66,14 +66,28 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
               id
               value
             } 
+            trips{
+              id
+              order_date
+              source{
+                name
+              }
+              destination{
+                name
+              }
+              source_in
+              trip_status{
+                value
+              }
+          }
             trucks {
               truck_no
               truck_type{
                 value
               }
-              #city{
-              #  name
-             # }
+              city{
+                name
+              }
               truck_status{
                 id
                 value
