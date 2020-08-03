@@ -1,4 +1,4 @@
-import { Table, Pagination } from "antd";
+import { Table, Pagination, Radio } from "antd";
 import { useState } from "react";
 import Link from "next/link";
 import { EditTwoTone } from "@ant-design/icons";
@@ -28,12 +28,10 @@ const Trucks = (props) => {
     total_page,
     onPageChange,
     filter,
+    truck_status_list,
+    onFilter,
   } = props;
   console.log(props);
-
-  const truckStatus = status.map((data) => {
-    return { value: data.id.toString(), text: data.value };
-  });
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {},
@@ -48,6 +46,14 @@ const Trucks = (props) => {
     setCurrentPage(page);
     onPageChange(newOffset);
   };
+
+  const handleStatus = (e) => {
+    onFilter(e.target.value);
+  };
+
+  const truck_status = truck_status_list.map((data) => {
+    return { value: data.id, label: data.value };
+  });
 
   const columns = [
     {
@@ -152,10 +158,17 @@ const Trucks = (props) => {
     },
     {
       title: "Status",
-      dataIndex: "status",
       render: (text, record) =>
         record.truck_status && record.truck_status.value,
-      filters: truckStatus,
+      width: "14%",
+      filterDropdown: (
+        <Radio.Group
+          options={truck_status}
+          defaultValue={filter.truck_statusId[0]}
+          onChange={handleStatus}
+          className="filter-drop-down"
+        />
+      ),
     },
     {
       title: "City",
