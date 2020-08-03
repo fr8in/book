@@ -4,7 +4,8 @@ import BillingAndInvoiced from '../../components/trips/billingAndInvoiced'
 import data from '../../../mock/trip/tripDetail'
 import FileUpload from '../common/fileUpload'
 
-const TripPod = () => {
+const TripPod = (props) => {
+  const { trip_id } = props
   const usersInitial = { branch: '', visible: false }
   const [branch, setBranch] = useState(usersInitial)
   const closeBilling = () => {
@@ -20,7 +21,7 @@ const TripPod = () => {
           <Row gutter={10}>
             <Col xs={24} sm={14}>
               <FileUpload
-                trip_id={1}
+                trip_id={trip_id}
                 type='trip'
                 folder='pod/'
                 file_type='pod'

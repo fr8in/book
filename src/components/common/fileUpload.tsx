@@ -137,7 +137,7 @@ const FileUpload = (props) => {
           fileList={file_list}
           onPreview={(file) => download(file)}
           onRemove={(file) => remove(file)}
-          accept='image/jpeg, image/jpg, image/png'
+          accept='image/jpeg, image/jpg, image/png, application/pdf'
         >
           <Button icon={<UploadOutlined />}>Select File</Button>
         </Upload>
