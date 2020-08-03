@@ -1,5 +1,5 @@
 
-import { DatePicker, Button, Row, Col, Timeline, Form } from 'antd'
+import { DatePicker, Button, Row, Col, Timeline, Form, Space } from 'antd'
 import { SearchOutlined, CommentOutlined, SelectOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import CommentModal from '../../components/trucks/commentModal'
@@ -15,33 +15,14 @@ const truckTimeline = (props) => {
     <div>
       <Row>
         <Col xs={24} className='mb10'>
-          <Form layout='inline'>
-            <Form.Item>
-              <DatePicker
-                showTime
-                name='startSearchDate'
-                format='YYYY-MM-DD'
-                className='startSearchdate1'
-                placeholder='Start Date'
-              />
-            </Form.Item>
-            <Form.Item>
-              <DatePicker
-                showTime
-                name='endSearchDate'
-                format='YYYY-MM-DD'
-                className='endSearchdate1'
-                placeholder='End Date'
-              />
-            </Form.Item>
-            <Form.Item>
-              <Button
-                type='primary'
-                className='dateSearch1'
-                icon={<SearchOutlined />}
-              />
-            </Form.Item>
-          </Form>
+        
+        <Button.Group size='small'>
+        <Space>
+                       <Button size='small' icon={<CommentOutlined />} onClick={() => onShow('comment')} />
+                        <Button size='small'  icon={<SelectOutlined />} onClick={() => onShow('breakdown')} />
+                        </Space>
+            </Button.Group>
+           
         </Col>
       </Row>
       <div className='timeLine editPage'>
@@ -66,15 +47,7 @@ const truckTimeline = (props) => {
                           'YYYY-MM-DD HH:mm'
                         )}
                       </p>
-                      <Button.Group size='small'>
-                        {data.statusId !== 10 && data.statusId !== 11 ? (
-                          <Button size='small' icon={<SelectOutlined />} onClick={() => onShow('breakdown')} />
-                        ) : null}
-                        <Button size='small' icon={<CommentOutlined />} onClick={() => onShow('comment')} />
-                        {data.statusId === 10 || data.statusId === 11 ? (
-                          <Button size='small' id={`_${data.id}`} icon={<SelectOutlined />} onClick={() => onShow('breakdown')} />
-                        ) : null}
-                      </Button.Group>
+                     
 
                       {data.comment ? data.comment.map((comment, i) => (
                         <Row key={i}>
