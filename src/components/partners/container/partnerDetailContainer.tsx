@@ -48,6 +48,7 @@ const PartnerDetailContainer = (props) => {
   const { partner } = data
   const partnerData = partner[0] ? partner[0] : { name: 'ID does not exist' }
   const trucks = partnerData.trucks
+  console.log('partnerData', partnerData)
   console.log('trucks', trucks)
   const callback = (key) => {
     console.log(key)
@@ -144,16 +145,16 @@ const PartnerDetailContainer = (props) => {
                     </div>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='On-going' value={5} />} key='4'>
-                    <TripDetail />
+                    <TripDetail trips= {partnerData.trips}/>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='POD' value={null} />} key='5'>
-                    <TripDetail />
+                    <TripDetail trips= {partnerData.trips}/>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='Invoiced' value={0} />} key='6'>
-                    <TripDetail />
+                    <TripDetail trips= {partnerData.trips}/>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='Paid' value={14} />} key='7'>
-                    <TripDetail />
+                    <TripDetail trips= {partnerData.trips}/>
                   </TabPane>
                 </Tabs>
               </Card>

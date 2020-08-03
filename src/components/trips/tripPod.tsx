@@ -4,9 +4,21 @@ import BillingAndInvoiced from '../../components/trips/billingAndInvoiced'
 import data from '../../../mock/trip/tripDetail'
 import FileUpload from '../common/fileUpload'
 
-const TripPod = () => {
+const TripPod = (props) => {
+  const { trip_id, trip_info } = props
   const usersInitial = { branch: '', visible: false }
   const [branch, setBranch] = useState(usersInitial)
+  const pod_files = trip_info.trip_files.filter(file => file.type === 'pod')
+
+  const pod_file_list = pod_files.map((file, i) => {
+    return ({
+      uid: `${file.type}-${i}`,
+      name: file.file_path,
+      status: 'done'
+    })
+  })
+  console.log('pod_files', pod_file_list)
+
   const closeBilling = () => {
     setBranch(usersInitial)
   }
@@ -20,10 +32,11 @@ const TripPod = () => {
           <Row gutter={10}>
             <Col xs={24} sm={14}>
               <FileUpload
-                trip_id={1}
+                trip_id={trip_id}
                 type='trip'
                 folder='pod/'
                 file_type='pod'
+                file_list={pod_file_list}
               />
             </Col>
             <Col xs={24} sm={10} className='text-right'>

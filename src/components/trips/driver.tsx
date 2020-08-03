@@ -13,15 +13,15 @@ mutation updateTripDriver($trip_id:Int!,$driver:String) {
 }
 `
 const Driver = (props) => {
-  const { tripInfo } = props
-  if (!tripInfo.id) return null
+  const { trip_info } = props
+  if (!trip_info.id) return null
 
   const [searchText, setSearchText] = useState('')
   const onSearch = (value) => {
       setSearchText(value.substring(0,10))
   }
 
-  const { partner, driver, id } = tripInfo
+  const { partner, driver, id } = trip_info
 
   const [updateTripDriver] = useMutation(
     UPDATE_TRIP_DRIVER,

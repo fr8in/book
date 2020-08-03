@@ -3,22 +3,8 @@ import { useState } from 'react'
 import { Row, Col, Upload, Button, message } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
-// import fetch from 'isomorphic-fetch'
 
-const fil = 'Screen Shot 2020-02-08 at 2.57.32 PM.png2020_07_26_18_50_31'
-const tripId = 2
-
-const FileUpload = (props) => {
-  const { type, trip_id, folder, file_type, file_list } = props
-  const [base64Str, setBase64Str] = useState(null)
-  const [names, setNames] = useState(null)
-  const [path, setPath] = useState(null)
-  const [file, setFile] = useState(null)
-  const [loading, setLoading] = useState(false)
-
-  const disabledUpload = !file
-
-  const FILE_UPLOAD_MUTATION = gql`
+const FILE_UPLOAD_MUTATION = gql`
   mutation ($name: String, $type: String, $base64Str: String,$id: Int, $folder: String,$fileType: String ) {
     fileUpload(name: $name, type: $type, base64Str: $base64Str, id: $id, folder: $folder, fileType: $fileType) {
       file_path
@@ -26,7 +12,7 @@ const FileUpload = (props) => {
   }
 `
 
-  const FILE_DOWNLOAD_MUTATION = gql`
+const FILE_DOWNLOAD_MUTATION = gql`
   mutation ($name:String,$folder:String) {
     fileDownload(name: $name, folder: $folder) {
         url
@@ -34,7 +20,7 @@ const FileUpload = (props) => {
     }
   `
 
-  const FILE_DELETE_MUTATION = gql`
+const FILE_DELETE_MUTATION = gql`
     mutation($name:String,$id:Int,$type: String) {
     fileDelete(name: $name,id:$id, type:$type) {
         affected
@@ -42,26 +28,50 @@ const FileUpload = (props) => {
     }
     `
 
+const FileUpload = (props) => {
+  const { type, trip_id, folder, file_type, file_list } = props
+  const [base64Str, setBase64Str] = useState(null)
+  const [names, setNames] = useState(null)
+  const [file, setFile] = useState(null)
+  const [loading, setLoading] = useState(false)
+
   const [s3FileUpload] = useMutation(
     FILE_UPLOAD_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError (error) {
+        message.error(error.toString())
+        setLoading(false)
+      },
+      onCompleted () {
+        message.success('Updated!!')
+        setLoading(false)
+      }
     }
   )
 
-  const fileUpload = (name) => {
-    setLoading(true)
-    const variables = { name: name, type: type, base64Str: base64Str, id: trip_id, folder: folder, fileType: file_type }
-    s3FileUpload({
-      variables: variables
-    })
-  }
+  const [s3FilePreview] = useMutation(
+    FILE_DOWNLOAD_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted (data) {
+        const url = data && data.fileDownload && data.fileDownload.url
+        window.open(url, '_blank')
+      }
+    }
+  )
 
-  const onChange = (e) => {
+  const [s3FileDelete] = useMutation(
+    FILE_DELETE_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Deleted!!') }
+    }
+  )
+
+  const onChange = (file) => {
     const reader = new FileReader()
-    if (e) {
-      reader.readAsBinaryString(e)
+    if (file) {
+      reader.readAsBinaryString(file)
     }
     reader.onload = function () {
       // @ts-ignore
@@ -71,64 +81,33 @@ const FileUpload = (props) => {
     reader.onerror = function () {
       console.log('unable to parse file')
     }
-    setNames(e.name)
-    setFile(e.name)
+    setNames(file.name)
+    setFile(file.name)
     return false
+  }
+
+  const fileUpload = (name) => {
+    setLoading(true)
+    const variables = { name: name, type: type, base64Str: base64Str, id: trip_id, folder: folder, fileType: file_type }
+    s3FileUpload({
+      variables: variables
+    })
   }
 
   const download = (file) => {
     const variables = { name: file.name, folder: folder }
-    const url = 'http://prodcore.southeastasia.azurecontainer.io/v1/graphql'
-    const options = {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        query: FILE_DOWNLOAD_MUTATION,
-        variables: variables
-      })
-    }
-    fetch(url, options)
-      .then(res => res.json())
-      .then(res => {
-        if (res.errors) {
-          alert('Something went wrong')
-        } else {
-          setPath(res.data.fileDownload.url)
-          console.log('path', path)
-          window.open(res.data.fileDownload.url, '_blank')
-        }
-      })
+    s3FilePreview({
+      variables: variables
+    })
   }
 
   const remove = (file) => {
-    console.log(file)
-    const variables = { name: file.name, id: tripId, type: type }
-    const url = 'http://prodcore.southeastasia.azurecontainer.io/v1/graphql'
-    const options = {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        query: FILE_DELETE_MUTATION,
-        variables: variables
-      })
-    }
-    fetch(url, options)
-      .then(res => res.json())
-      .then(res => {
-        if (res.errors) {
-          alert('Something went wrong')
-        } else {
-          const affected = res.data.fileDelete.affected
-          if (affected) {
-            message.success('File deleted successfully')
-          }
-        }
-      })
+    const variables = { name: file.name, id: trip_id, type: type }
+    s3FileDelete({
+      variables: variables
+    })
   }
+
   return (
     <Row>
       <Col xs={24}>
@@ -137,16 +116,15 @@ const FileUpload = (props) => {
           fileList={file_list}
           onPreview={(file) => download(file)}
           onRemove={(file) => remove(file)}
-          accept='image/jpeg, image/jpg, image/png'
+          accept='image/*, application/pdf'
         >
           <Button icon={<UploadOutlined />}>Select File</Button>
         </Upload>
         <Button
           type='primary'
-          // disabled
           style={{ marginTop: 10 }}
           onClick={() => fileUpload(names)}
-          disabled={disabledUpload}
+          disabled={!file}
           loading={loading}
         >
           {loading ? 'uploading' : 'Start Upload'}

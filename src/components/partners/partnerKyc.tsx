@@ -1,8 +1,9 @@
-import { Table, Tooltip, Button, Badge, Space, Modal,Pagination,Radio } from 'antd'
+import { Table, Tooltip, Button, Badge, Space, Modal,Pagination,Radio,Input } from 'antd'
 import {
   CommentOutlined,
   CheckOutlined,
-  CloseOutlined
+  CloseOutlined,
+  SearchOutlined
 } from '@ant-design/icons'
 import Link from 'next/link'
 import useShowHide from '../../hooks/useShowHide'
@@ -21,12 +22,7 @@ const region_list = [
   { value: 6, text: 'West-1' },
   { value: 7, text: 'West-2' }
 ]
-const status_list = [
-  { value: 1, text: 'Verification Pending' },
-  { value: 2, text: 'Document Pending' },
-  { value: 3, text: 'Rejected' },
-  { value: 4, text: 'Re-Verification' }
-]
+
 const truck_count = [
   { value: 1, text: '0' },
   { value: 2, text: '1-5' },
@@ -35,7 +31,7 @@ const truck_count = [
 ]
 
 const PartnerKyc = (props) => {
-  const { partners, loading , onPageChange,filter,record_count,total_page,onFilter,partner_status_list} = props
+  const { partners, loading , onPageChange,filter,record_count,total_page,onFilter,partner_status_list,onNameSearch,onCardCodeSearch} = props
 
   const [currentPage, setCurrentPage] = useState(1)
   const initial = {
@@ -51,6 +47,14 @@ const PartnerKyc = (props) => {
 
   const handleStatus = (e) => {
     onFilter(e.target.value)
+  }
+
+  const handleName = (e) => {
+    onNameSearch(e.target.value)
+  }
+
+  const handleCardCode = (e) => {
+    onCardCodeSearch(e.target.value)
   }
 
   const pageChange = (page, pageSize) => {
@@ -74,8 +78,18 @@ const PartnerKyc = (props) => {
             <a>{text}</a>
           </Link>
         )
-      }
-    },
+      },
+    filterDropdown: (
+      <div>
+        <Input
+          placeholder='Search Partner'
+          value={filter.cardcode}
+          onChange={handleCardCode}
+        />
+      </div>
+    ),
+    filterIcon: () => <SearchOutlined style={{ color: filter.cardcode ? '#1890ff' : undefined }} />
+  },
     {
       title: 'Partner',
       dataIndex: 'name',
@@ -87,8 +101,18 @@ const PartnerKyc = (props) => {
             <span>{text}</span>
           </span>
         )
-      }
-    },
+      },
+    filterDropdown: (
+      <div>
+        <Input
+          placeholder='Search Partner'
+          value={filter.name}
+          onChange={handleName}
+        />
+      </div>
+    ),
+    filterIcon: () => <SearchOutlined style={{ color: filter.name ? '#1890ff' : undefined }} />
+  },
     {
       title: 'On Boarded By',
       width: '10%',
@@ -151,22 +175,6 @@ const PartnerKyc = (props) => {
       dataIndex: 'pan',
       width: '8%'
     },
-    // {
-    //   title: 'Status',
-    //   dataIndex: 'status',
-    //   width: '9%',
-    //   render: (text, record) => {
-    //     const status = record.partner_status && record.partner_status.value
-    //     return status.length > 12 ? (
-    //       <Tooltip title={status}>
-    //         <span> {status.slice(0, 12) + '...'}</span>
-    //       </Tooltip>
-    //     ) : (
-    //       status
-    //     )
-    //   },
-    //   filters: status_list
-    // },
     {
       title: 'Status',
       render: (text, record) => record.partner_status && record.partner_status.value,
@@ -179,9 +187,6 @@ const PartnerKyc = (props) => {
           className='filter-drop-down'
         />
       )
-      //, filterMultiple: false,
-      // filters: customer_status,
-      // onFilter: (value, record) => record.status && record.status.value.indexOf(value) === 0
     },
     {
       title: 'Comment',

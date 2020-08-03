@@ -21,7 +21,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
         }
         city{
           name
-        }
+         }
         partner {
           id
           name
