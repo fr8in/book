@@ -32,7 +32,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         truck_no
         truck_type{
           id
-          value
+          name
         }
       }
       source{

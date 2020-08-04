@@ -6,7 +6,7 @@ const TRUCKS_TYPE_QUERY = gql`
   query truckType{
   truck_type{
       id
-    value
+      name
   }
 }
 `
@@ -44,7 +44,7 @@ const TruckType = (props) => {
 
   const { truck_type } = data
   const truckList = truck_type.map(data => {
-    return { value: data.id, label: data.value }
+    return { value: data.id, label: data.name }
   })
 
   const onChange = (value) => {

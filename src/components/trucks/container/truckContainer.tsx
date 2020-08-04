@@ -26,7 +26,7 @@ const TRUCKS_QUERY = gql`
       truck_type_id
       truck_status_id
       truck_type {
-        value
+        name
       }
       #city {
       #  name

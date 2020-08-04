@@ -1,30 +1,16 @@
 
-import { DatePicker, Button, Row, Col, Timeline, Form, Space } from 'antd'
-import { SearchOutlined, CommentOutlined, SelectOutlined } from '@ant-design/icons'
+import {  Row, Col, Timeline} from 'antd'
 import moment from 'moment'
-import CommentModal from '../../components/trucks/commentModal'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
 import useShowHide from '../../hooks/useShowHide'
 import { deviceHistory } from '../../../mock/trucks/deviceHistory'
 
 const truckTimeline = (props) => {
-  const {id} = props
-  const initial = { commment: false, breakdown: false }
-  const { visible, onShow, onHide } = useShowHide(initial)
+ 
+  const initial = {  breakdown: false }
+  const { visible, onHide } = useShowHide(initial)
   return (
-    <div>
-      <Row>
-        <Col xs={24} className='mb10'>
-        
-        <Button.Group size='small'>
-        <Space>
-                       <Button size='small' icon={<CommentOutlined />} onClick={() => onShow('comment')} />
-                        <Button size='small'  icon={<SelectOutlined />} onClick={() => onShow('breakdown')} />
-                        </Space>
-            </Button.Group>
-           
-        </Col>
-      </Row>
+   
       <div className='timeLine editPage'>
         <Row gutter={16}>
           <Col xs={24}>
@@ -32,24 +18,14 @@ const truckTimeline = (props) => {
               ? deviceHistory.map((data, i) => {
                 return (
                   <Timeline key={i}>
-                    <Timeline.Item
-                      color={
-                        data.statusId === 10
-                          ? 'red'
-                          : data.statusId === 11
-                            ? 'orange'
-                            : data.statusId === 4 ? 'blue' : 'green'
-                      }
-                    >
-                      <p>{data.deviceStatusType.statusName}</p>
+                    <Timeline.Item>
+                       <p>{data.deviceStatusType.statusName}</p>
                       <p className='time'>
                         {moment(data.startDate).format(
                           'YYYY-MM-DD HH:mm'
                         )}
                       </p>
-                     
-
-                      {data.comment ? data.comment.map((comment, i) => (
+                    {data.comment ? data.comment.map((comment, i) => (
                         <Row key={i}>
                           <Col span={24}>
                             <span>{comment.comment}</span>
@@ -80,9 +56,9 @@ const truckTimeline = (props) => {
             title='Add BreakDown or In-transit Halting'
             radioType
           />}
-        {visible.comment && <CommentModal visible={visible.comment} onHide={onHide} id={id}/>}
+       
       </div>
-    </div>
+   
   )
 }
 
