@@ -45,7 +45,7 @@ const TripInfo = (props) => {
                 smSpan={24}
                 label={<p className='mb0 b'>Truck No</p>}
                 data={
-                  <Link href='/trucks/[id]' as={`/truck/${trip_info.truck && trip_info.truck.truck_no}`}>
+                  <Link href='/trucks/[id]' as={`/trucks/${trip_info.truck && trip_info.truck.truck_no}`}>
                     <a>{trip_info.truck && trip_info.truck.truck_no}</a>
                   </Link>
                 }

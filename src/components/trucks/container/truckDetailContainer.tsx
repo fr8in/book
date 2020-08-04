@@ -17,7 +17,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
         id
         truck_no
         truck_type{
-          value
+          name
         }
         city{
           name
@@ -89,7 +89,7 @@ const TruckDetailContainer = (props) => {
               <Divider type='vertical' />
               <h4>
                 <TruckType
-                  truckType={truckInfo.truck_type && truckInfo.truck_type.value}
+                  truckType={truckInfo.truck_type && truckInfo.truck_type.name}
                   truckTypeId={truckInfo.truck_type && truckInfo.truck_type.id}
                   truck_no={truckInfo.truck_no}
                 />
