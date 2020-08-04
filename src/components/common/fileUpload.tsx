@@ -1,6 +1,6 @@
 // import {useState}  from 'react'
 import { useState } from 'react'
-import { Row, Col, Upload, Button, message } from 'antd'
+import { Row, Col, Upload, Button, message, Modal } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 
@@ -21,8 +21,8 @@ const FILE_DOWNLOAD_MUTATION = gql`
   `
 
 const FILE_DELETE_MUTATION = gql`
-    mutation($name:String,$id:Int,$type: String) {
-    fileDelete(name: $name,id:$id, type:$type) {
+    mutation($name:String,$id:Int,$type: String, $fileType: String) {
+    fileDelete(name: $name,id:$id, type:$type, fileType: $fileType) {
         affected
         }
     }
@@ -34,6 +34,10 @@ const FileUpload = (props) => {
   const [names, setNames] = useState(null)
   const [file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
+  const previewInitial = { visible: false, image: '', title: '', ext: '' }
+  const [preview, setPreview] = useState(previewInitial)
+
+  const disabledUpload = !file
 
   const [s3FileUpload] = useMutation(
     FILE_UPLOAD_MUTATION,
@@ -45,6 +49,7 @@ const FileUpload = (props) => {
       onCompleted () {
         message.success('Updated!!')
         setLoading(false)
+        setFile(null)
       }
     }
   )
@@ -55,7 +60,16 @@ const FileUpload = (props) => {
       onError (error) { message.error(error.toString()) },
       onCompleted (data) {
         const url = data && data.fileDownload && data.fileDownload.url
-        window.open(url, '_blank')
+        if (preview.ext === 'pdf') {
+          window.open(url, '_blank')
+        } else {
+          setPreview({
+            ...preview,
+            image: url,
+            visible: true,
+            title: `${file_type.toUpperCase()} Preview`
+          })
+        }
       }
     }
   )
@@ -86,6 +100,8 @@ const FileUpload = (props) => {
     return false
   }
 
+  const handleCancel = () => setPreview(previewInitial)
+
   const fileUpload = (name) => {
     setLoading(true)
     const variables = { name: name, type: type, base64Str: base64Str, id: trip_id, folder: folder, fileType: file_type }
@@ -95,6 +111,9 @@ const FileUpload = (props) => {
   }
 
   const download = (file) => {
+    const ext = file.name.split(/[\s.]+/)
+    setPreview({ ...preview, ext: ext[ext.length - 1] })
+
     const variables = { name: file.name, folder: folder }
     s3FilePreview({
       variables: variables
@@ -102,7 +121,8 @@ const FileUpload = (props) => {
   }
 
   const remove = (file) => {
-    const variables = { name: file.name, id: trip_id, type: type }
+    console.log(file)
+    const variables = { name: file.name, id: trip_id, type: type, fileType: file_type }
     s3FileDelete({
       variables: variables
     })
@@ -122,14 +142,26 @@ const FileUpload = (props) => {
         </Upload>
         <Button
           type='primary'
+          // disabled
           style={{ marginTop: 10 }}
           onClick={() => fileUpload(names)}
-          disabled={!file}
+          disabled={disabledUpload}
           loading={loading}
         >
           {loading ? 'uploading' : 'Start Upload'}
         </Button>
       </Col>
+      {preview.visible &&
+        <Modal
+          visible={preview.visible}
+          title={preview.title}
+          footer={null}
+          onCancel={handleCancel}
+          bodyStyle={{ padding: 10 }}
+          width={800}
+        >
+          <img alt={file_type} style={{ width: '100%' }} src={preview.image} />
+        </Modal>}
     </Row>
   )
 }
