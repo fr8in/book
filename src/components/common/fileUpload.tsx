@@ -45,6 +45,7 @@ const FileUpload = (props) => {
       onCompleted () {
         message.success('Updated!!')
         setLoading(false)
+        setFile(null)
       }
     }
   )
