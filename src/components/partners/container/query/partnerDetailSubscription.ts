@@ -66,7 +66,7 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
               id
               value
             } 
-            trips{
+            trips (where: {trip_status_id: {_in: $trip_status_id}}){
               id
               order_date
               source{
@@ -79,7 +79,7 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
               trip_status{
                 value
               }
-          }
+            }
             trucks {
               truck_no
               truck_type{

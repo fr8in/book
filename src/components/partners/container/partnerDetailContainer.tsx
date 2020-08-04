@@ -1,3 +1,4 @@
+import {useState} from 'react'
 import Loading from '../../common/loading'
 import Link from 'next/link'
 import { Row, Col, Card, Tabs, Button, Space, Tooltip } from 'antd'
@@ -28,12 +29,31 @@ import ReportEmail from '../reportEmail'
 import WalletStatement from '../walletStatement'
 const TabPane = Tabs.TabPane
 
-const tripStatusId = [2, 3, 4, 5, 6]
+const on_going = [2, 3, 4, 5, 6, 8]
+const pod = [9, 10, 11]
+const invoiced = [12]
+const paid = [13, 14, 15] 
 
 const PartnerDetailContainer = (props) => {
   const initial = { topUp: false, reportMail: false, statememt: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+  const [tripStatusId, setTripStatusId ] = useState(on_going)
 
+  const onStatusChange = (key) => {
+    console.log('key',key)
+    if(key === '4') {
+      setTripStatusId (on_going) 
+    }
+    if(key === '5') {
+      setTripStatusId(pod)
+    }
+    if(key === '6') {
+      setTripStatusId(invoiced)
+    }
+    if(key === '7') {
+      setTripStatusId(paid)
+    }
+  } 
   const { cardcode } = props
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,
@@ -50,9 +70,7 @@ const PartnerDetailContainer = (props) => {
   const trucks = partnerData.trucks
   console.log('partnerData', partnerData)
   console.log('trucks', trucks)
-  const callback = (key) => {
-    console.log(key)
-  }
+ 
   const truck_count = partnerData.trucks_aggregate && partnerData.trucks_aggregate.aggregate && partnerData.trucks_aggregate.aggregate.count
 
   return (
@@ -97,7 +115,7 @@ const PartnerDetailContainer = (props) => {
           <Row>
             <Col sm={24}>
               <Card size='small' className='card-body-0 border-top-blue'>
-                <Tabs defaultActiveKey='1' onChange={callback}>
+                <Tabs defaultActiveKey='1' onChange={onStatusChange}>
                   <TabPane tab='Detail' key='1'>
                     <Row gutter={10} className='p10'>
                       <Col xs={24} sm={12} md={12}>
