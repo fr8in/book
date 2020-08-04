@@ -20,6 +20,7 @@ import TitleWithCount from '../../common/titleWithCount'
 import FasTags from '../cards/fasTags'
 import PartnerFuelDetail from '../cards/partnerFuelDetail'
 import WalletTopUp from '../walletTopup'
+import PaidContainer from '../container/paidContainer'
 import useShowHide from '../../../hooks/useShowHide'
 
 import { useSubscription } from '@apollo/client'
@@ -28,11 +29,10 @@ import ReportEmail from '../reportEmail'
 import WalletStatement from '../walletStatement'
 const TabPane = Tabs.TabPane
 
-const on_going = ["Assigned", "Confirmed", "Reported at source", "Intransit", "Reported at destination"]
+const on_going = ["Confirmed", "Reported at source", "Intransit", "Reported at destination"]
 const pod = ["Delivered"]
-const invoiced = ["Invoiced"]
+const invoiced = ["Invoiced","Recieved"]
 const paid = ["Paid", "Closed"] 
-
 const PartnerDetailContainer = (props) => {
   const initial = { topUp: false, reportMail: false, statememt: false }
   const { visible, onShow, onHide } = useShowHide(initial)
@@ -49,21 +49,18 @@ const PartnerDetailContainer = (props) => {
     if(key === '6') {
       setTripStatusId(invoiced)
     }
-    if(key === '7') {
-      setTripStatusId(paid)
-    }
-  } 
+  }
   const { cardcode } = props
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,
     {
       variables: { 
-        cardcode,
+        cardcode: cardcode,
         trip_status_value: tripStatusId, 
         ongoing: on_going,
         pod: pod,
         invoiced: invoiced,
-        paid: paid
+        paid:paid
         }
     }
   )
@@ -189,7 +186,7 @@ if (!loading) {
                     <TripDetail trips= {partnerData.trips} loading={loading}/>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='Paid' value={paid_count} />} key='7'>
-                    <TripDetail trips= {partnerData.trips} loading={loading}/>
+                    <PaidContainer />
                   </TabPane>
                 </Tabs>
               </Card>
