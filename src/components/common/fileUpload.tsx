@@ -151,16 +151,17 @@ const FileUpload = (props) => {
           {loading ? 'uploading' : 'Start Upload'}
         </Button>
       </Col>
-      <Modal
-        visible={preview.visible}
-        title={preview.title}
-        footer={null}
-        onCancel={handleCancel}
-        bodyStyle={{ padding: 10 }}
-        width={800}
-      >
-        <img alt={file_type} style={{ width: '100%' }} src={preview.image} />
-      </Modal>
+      {preview.visible &&
+        <Modal
+          visible={preview.visible}
+          title={preview.title}
+          footer={null}
+          onCancel={handleCancel}
+          bodyStyle={{ padding: 10 }}
+          width={800}
+        >
+          <img alt={file_type} style={{ width: '100%' }} src={preview.image} />
+        </Modal>}
     </Row>
   )
 }
