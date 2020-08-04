@@ -83,7 +83,7 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
             trucks {
               truck_no
               truck_type{
-                value
+                name
               }
               city{
                 name
