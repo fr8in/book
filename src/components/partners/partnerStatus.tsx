@@ -45,7 +45,6 @@ const [updateBlacklist] = useMutation(
     onCompleted () { message.success('Updated!!') }
   }
 )
-console.log('status',status)
 const blacklistChange = () => {
   updateBlacklist({
     variables: {
@@ -62,7 +61,6 @@ const [updateDeactivate] = useMutation(
     onCompleted () { message.success('Updated!!') }
   }
 )
-console.log('status',status)
 const deActivateChange = () => {
   updateDeactivate({
     variables: {
@@ -80,7 +78,6 @@ const [updateDnd] = useMutation(
     onCompleted () { message.success('Updated!!') }
   }
 )
-console.log('status',status)
 const dndChange = (e) => {
   updateDnd({
     variables: {

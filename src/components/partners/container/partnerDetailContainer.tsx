@@ -1,5 +1,4 @@
 import {useState} from 'react'
-import Loading from '../../common/loading'
 import Link from 'next/link'
 import { Row, Col, Card, Tabs, Button, Space, Tooltip } from 'antd'
 import { CarOutlined, WalletOutlined, FileTextOutlined, MailOutlined } from '@ant-design/icons'
@@ -62,17 +61,20 @@ const PartnerDetailContainer = (props) => {
     }
   )
 
-  if (loading) return <Loading />
   console.log('PartnerDetailContainer Error', error)
   console.log('PartnerDetailContainer Data', data)
+
+var partnerData = {};
+var trucks = {};
+var truck_count = 0
+if (!loading) {
   const { partner } = data
-  const partnerData = partner[0] ? partner[0] : { name: 'ID does not exist' }
-  const trucks = partnerData.trucks
+   partnerData = partner[0] ? partner[0] : { name: 'ID does not exist' }
+   trucks = partnerData.trucks
   console.log('partnerData', partnerData)
   console.log('trucks', trucks)
- 
-  const truck_count = partnerData.trucks_aggregate && partnerData.trucks_aggregate.aggregate && partnerData.trucks_aggregate.aggregate.count
-
+   truck_count = partnerData.trucks_aggregate && partnerData.trucks_aggregate.aggregate && partnerData.trucks_aggregate.aggregate.count
+}
   return (
     <Row>
       <Col xs={24}>
@@ -155,24 +157,24 @@ const PartnerDetailContainer = (props) => {
                     }
                     key='2'
                   >
-                    <PartnerTruck trucks={trucks} />
+                    <PartnerTruck trucks={trucks} loading={loading} />
                   </TabPane>
                   <TabPane tab='Comment' key='3'>
                     <div className='p10'>
-                      <Comment partnerId={partnerData.id} />
+                      <Comment partnerId={partnerData.id} loading={loading}/>
                     </div>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='On-going' value={5} />} key='4'>
-                    <TripDetail trips= {partnerData.trips}/>
+                    <TripDetail trips= {partnerData.trips} loading={loading}/>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='POD' value={null} />} key='5'>
-                    <TripDetail trips= {partnerData.trips}/>
+                    <TripDetail trips= {partnerData.trips} loading={loading}/>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='Invoiced' value={0} />} key='6'>
-                    <TripDetail trips= {partnerData.trips}/>
+                    <TripDetail trips= {partnerData.trips} loading={loading}/>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='Paid' value={14} />} key='7'>
-                    <TripDetail trips= {partnerData.trips}/>
+                    <TripDetail trips= {partnerData.trips} loading={loading}/>
                   </TabPane>
                 </Tabs>
               </Card>
