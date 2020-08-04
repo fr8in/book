@@ -20,6 +20,13 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
     truck(where: {truck_no: {_eq: $truck_no}}) {
         id
         truck_no
+        truck_comments{
+          id
+          topic
+          description
+          created_at
+          created_by_id
+        } 
         truck_type{
           name
         }
@@ -51,6 +58,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
         }
         
       }
+     
     }
 `
 
@@ -59,7 +67,6 @@ const tripStatusId = [2, 3, 4, 5, 6]
 
 const TruckDetailContainer = (props) => {
   const { truckNo } = props
-  const {id} = props
   const [subTabKey, setSubTabKey] = useState('1')
 
   const initial = { commment: false}
@@ -80,10 +87,16 @@ const TruckDetailContainer = (props) => {
   console.log('TruckDetailContainer Error', error)
 
   var truckInfo = {}
+
   if (!loading) {
     const { truck } = data
     truckInfo = truck[0] ? truck[0] : { name: 'ID does not exist' }
+   
   }
+
+  
+
+ 
 
   return (
     <Card
@@ -155,7 +168,7 @@ const TruckDetailContainer = (props) => {
               <TabPane tab='Timeline' key='3'>
                 <Row>
                   <Col xs={24} className='p20'>
-                    <Timeline id={truckInfo.id}/>
+                    <Timeline comments={truckInfo.truck_comments}/>
                   </Col>
                 </Row>
             
@@ -164,7 +177,7 @@ const TruckDetailContainer = (props) => {
           </Card>
         </Col>
       </Row>
-     {visible.comment && <CommentModal visible={visible.comment} onHide={onHide} id={id}/>}
+     {visible.comment && <CommentModal visible={visible.comment} onHide={onHide} id={truckInfo.id}/>}
 
     </Card>
   )
