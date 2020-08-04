@@ -32,7 +32,7 @@ const TripPod = (props) => {
           <Row gutter={10}>
             <Col xs={24} sm={14}>
               <FileUpload
-                trip_id={trip_id}
+                id={trip_id}
                 type='trip'
                 folder='pod/'
                 file_type='pod'

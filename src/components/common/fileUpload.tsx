@@ -29,7 +29,7 @@ const FILE_DELETE_MUTATION = gql`
     `
 
 const FileUpload = (props) => {
-  const { type, trip_id, folder, file_type, file_list } = props
+  const { type, id, folder, file_type, file_list } = props
   const [base64Str, setBase64Str] = useState(null)
   const [names, setNames] = useState(null)
   const [file, setFile] = useState(null)
@@ -104,7 +104,7 @@ const FileUpload = (props) => {
 
   const fileUpload = (name) => {
     setLoading(true)
-    const variables = { name: name, type: type, base64Str: base64Str, id: trip_id, folder: folder, fileType: file_type }
+    const variables = { name: name, type: type, base64Str: base64Str, id: id, folder: folder, fileType: file_type }
     s3FileUpload({
       variables: variables
     })
@@ -122,7 +122,7 @@ const FileUpload = (props) => {
 
   const remove = (file) => {
     console.log(file)
-    const variables = { name: file.name, id: trip_id, type: type, fileType: file_type }
+    const variables = { name: file.name, id: id, type: type, fileType: file_type }
     s3FileDelete({
       variables: variables
     })
