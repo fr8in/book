@@ -31,7 +31,8 @@ const TRIPS_QUERY = gql`
         count
       }
     }
-    trip(offset: $offset, limit: $limit, where: $where ) {
+    trip(offset: $offset, limit: $limit, where:$where)
+      {
       id
       order_date
       customer {
@@ -73,10 +74,15 @@ const TRIPS_QUERY = gql`
 const { TabPane } = Tabs
 
 const TripsContainer = () => {
+
+  const initialFilter = {
+    offset: 0,
+    limit: 3,  
+  };
+  const [filter, setFilter] = useState(initialFilter);
+
   const trip_where = {
     tabKey: '1',
-    offset: 0,
-    limit: 10,
     all_trip: null,
     where: null,
     delivered_trip: { _and: [{ trip_status: { value: { _eq: 'Delivered' } } }, { trip_pod_status: { value: { _neq: 'POD Verified' } } }] },
@@ -86,8 +92,8 @@ const TripsContainer = () => {
   const [vars, setVars] = useState(trip_where)
 
   const variables = {
-    offset: vars.offset,
-    limit: vars.limit,
+    offset: filter.offset,
+    limit: filter.limit,
     where: vars.where,
     all_trip: trip_where.all_trip,
     delivered_trip: trip_where.delivered_trip,
@@ -100,22 +106,24 @@ const TripsContainer = () => {
     TRIPS_QUERY,
     {
       variables: variables,
+      fetchPolicy: "cache-and-network",
       notifyOnNetworkStatusChange: true
     }
   )
 
-  const onTabChange = (key) => {
+  const onTabChange = (key,value) => {
+    setFilter(initialFilter)
     if (key === '1') {
-      setVars({ ...vars, where: null, tabKey: key })
+      setVars({ ...vars, where: null,tabKey: key })
     }
     if (key === '2') {
-      setVars({ ...vars, where: trip_where.delivered_trip, tabKey: key })
+      setVars({ ...vars, where: trip_where.delivered_trip,tabKey: key })
     }
     if (key === '3') {
-      setVars({ ...vars, where: trip_where.pod_verified_trip, tabKey: key })
+      setVars({ ...vars, where: trip_where.pod_verified_trip ,tabKey: key})
     }
     if (key === '4') {
-      setVars({ ...vars, where: trip_where.invoiced_trip, tabKey: key })
+      setVars({ ...vars, where: trip_where.invoiced_trip,tabKey: key})
     }
   }
 
@@ -125,6 +133,7 @@ const TripsContainer = () => {
   var delivered = 0
   var pod_verified = 0
   var invoiced = 0
+  var trip_count = 0;
 
   if (!loading) {
     trip = data.trip
@@ -132,6 +141,7 @@ const TripsContainer = () => {
     delivered = data.delivered
     pod_verified = data.pod_verified
     invoiced = data.invoiced
+    trip_count = data && data.trip_count;
   }
 
   const all_count = trip_count && trip_count.aggregate && trip_count.aggregate.count
@@ -139,10 +149,19 @@ const TripsContainer = () => {
   const pod_count = pod_verified && pod_verified.aggregate && pod_verified.aggregate.count
   const invoiced_count = invoiced && invoiced.aggregate && invoiced.aggregate.count
 
+  const record_count =
+  trip_count.aggregate && trip_count.aggregate.count;
+const total_page = Math.ceil(record_count / filter.limit);
+console.log("record_count", record_count);
+
+  const onPageChange = (value) => {
+    setFilter({ ...filter, offset: value });
+  };
+  
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
       <Tabs
-        defaultActiveKey='1'
+         defaultActiveKey='1'
         onChange={onTabChange}
         tabBarExtraContent={
           <span>
@@ -159,16 +178,36 @@ const TripsContainer = () => {
         }
       >
         <TabPane tab={<TitleWithCount name='Trips' value={all_count} />} key='1'>
-          <Trips trips={trip} loading={loading} tripsTable />
+          <Trips trips={trip} loading={loading} 
+          record_count={record_count}
+          total_page={total_page}
+          filter={filter}
+          onPageChange={onPageChange}
+          tripsTable />
         </TabPane>
         <TabPane tab={<TitleWithCount name='Delivered' value={delivered_count} />} key='2'>
-          <Trips trips={trip} loading={loading} delivered />
+          <Trips trips={trip} loading={loading} 
+          record_count={record_count}
+          total_page={total_page}
+          filter={filter}
+          onPageChange={onPageChange}
+          delivered />
         </TabPane>
         <TabPane tab={<TitleWithCount name='POD Verified' value={pod_count} />} key='3'>
-          <Trips trips={trip} loading={loading} delivered />
+          <Trips trips={trip} loading={loading} 
+          record_count={record_count}
+          total_page={total_page}
+          filter={filter}
+          onPageChange={onPageChange}
+          delivered />
         </TabPane>
         <TabPane tab={<TitleWithCount name='Invoiced' value={invoiced_count} />} key='4'>
-          <Trips trips={trip} loading={loading} delivered />
+          <Trips trips={trip} loading={loading} 
+          record_count={record_count}
+          total_page={total_page}
+          filter={filter}
+          onPageChange={onPageChange}
+          delivered />
         </TabPane>
       </Tabs>
       {visible.podModal && (
