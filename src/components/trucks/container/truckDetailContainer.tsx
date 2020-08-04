@@ -149,7 +149,7 @@ const TruckDetailContainer = (props) => {
                   <Col xs={24} className='p20'>
                     <TruckInfo />
                     <Divider />
-                    <Documents />
+                    <Documents truck_id = {truckInfo.id}/>
                     <Divider />
                     <div className='text-right'>
                       <Space>
