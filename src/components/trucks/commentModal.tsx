@@ -10,8 +10,8 @@ import { gql, useMutation } from '@apollo/client'
 
 
     const INSERT_TRUCK_COMMENT_MUTATION = gql`
-mutation TruckComment($description:String, $topic:String, $truck_id: Int, $created_by:String ) {
-  insert_truck_comment(objects: {description: $description, truck_id: $truck_id, topic: $topic, created_by: $created_by}) {
+mutation TruckComment($description:String, $topic:String, $truck_id: Int, $created_by_id:Int ) {
+  insert_truck_comment(objects: {description: $description, truck_id: $truck_id, topic: $topic, created_by_id: $created_by_id}) {
     returning {
       id
       description
@@ -41,7 +41,7 @@ const onSubmit = () => {
   insertComment({
     variables: {
       truck_id : id,
-      created_by: 'shilpa@fr8.in',
+      created_by_id: 1,
       description: userComment,
       topic: 'text'
     }

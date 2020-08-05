@@ -6,7 +6,7 @@ import useShowHide from '../../hooks/useShowHide'
 import { deviceHistory } from '../../../mock/trucks/deviceHistory'
 
 const truckTimeline = (props) => {
- 
+   const {comments} = props
   const initial = {  breakdown: false }
   const { visible, onHide } = useShowHide(initial)
   return (
@@ -14,39 +14,38 @@ const truckTimeline = (props) => {
       <div className='timeLine editPage'>
         <Row gutter={16}>
           <Col xs={24}>
-            {deviceHistory && deviceHistory.length > 0
-              ? deviceHistory.map((data, i) => {
+            {comments && comments.length > 0
+              ? comments.map((data, i) => {
                 return (
                   <Timeline key={i}>
                     <Timeline.Item>
-                       <p>{data.deviceStatusType.statusName}</p>
+                       <p>{data.topic}</p>
                       <p className='time'>
-                        {moment(data.startDate).format(
+                        {moment(data.created_at).format(
                           'YYYY-MM-DD HH:mm'
                         )}
                       </p>
-                    {data.comment ? data.comment.map((comment, i) => (
+                    
                         <Row key={i}>
                           <Col span={24}>
-                            <span>{comment.comment}</span>
+                            <span>{data.description}</span>
                             <span className='pull-right'>
-                              {comment.createdBy}
+                              {data.created_by_id}
                             </span>
                           </Col>
                           <Col span={24}>
                             <span className='pull-right'>
-                              {moment(comment.createdon).format(
+                              {moment(data.created_at).format(
                                 'YYYY-MM-DD HH:mm')}
                             </span>
                           </Col>
                         </Row>
-                      ))
-                        : null}
+                    
                     </Timeline.Item>
                   </Timeline>
-                )
-              })
-              : null}
+                 )
+                })
+                : null}
           </Col>
         </Row>
         {visible.breakdown &&
