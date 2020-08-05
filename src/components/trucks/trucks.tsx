@@ -220,7 +220,7 @@ const Trucks = (props) => {
       render: (text, record) => (
         <EditTwoTone
           onClick={() =>
-            handleShow("editVisible", "Breakdown", "editData", record)
+            handleShow("editVisible", "Breakdown", "editData", record.id )
           }
         />
       ),
@@ -262,7 +262,7 @@ const Trucks = (props) => {
       {object.editVisible && (
         <CreateBreakdown
           visible={object.editVisible}
-          data={object.editData}
+          truck_id={object.editData}
           onHide={handleHide}
           title={object.title}
         />

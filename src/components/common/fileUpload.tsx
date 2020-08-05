@@ -1,4 +1,3 @@
-// import {useState}  from 'react'
 import { useState } from 'react'
 import { Row, Col, Upload, Button, message, Modal } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'

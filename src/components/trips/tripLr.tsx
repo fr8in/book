@@ -1,7 +1,71 @@
-import { Row, Col, Select, Button, Checkbox, Space } from 'antd'
+import { Row, Col, Select, Button, Checkbox, Space, message } from 'antd'
 import { EyeOutlined, SaveOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons'
+import { gql, useMutation } from '@apollo/client'
+import FileUploadOnly from '../common/fileUploadOnly'
 
-const TripLr = () => {
+const UPDATE_LR_MUTATION = gql`
+mutation lrNumberUpdate ($lr: jsonb, $id: Int!){
+  update_trip(_set: {lr: $lr}, where: {id: {_eq: $id}}) {
+    returning {
+      id
+      lr
+    }
+  }
+}`
+
+const UPDATE_CUSTOMER_CONFIRMATION_MUTATION = gql`
+mutation updateCustomerConfirmation ($customer_confirmation: Boolean, $id: Int!){
+  update_trip(_set: {customer_confirmation: $customer_confirmation}, where: {id: {_eq: $id}}) {
+    returning {
+      id
+      customer_confirmation
+    }
+  }
+}`
+
+const TripLr = (props) => {
+  const { trip_info } = props
+
+  const [updateLrNumber] = useMutation(
+    UPDATE_LR_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
+  const [updateCustomerConfirmation] = useMutation(
+    UPDATE_CUSTOMER_CONFIRMATION_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
+
+  const handleChange = (value) => {
+    console.log(`Selected: ${value}`)
+    updateLrNumber({
+      variables: {
+        id: trip_info.id,
+        lr: value
+      }
+    })
+  }
+
+  const onCustomerConfirm = e => {
+    console.log('checked = ', e.target.checked)
+    updateCustomerConfirmation({
+      variables: {
+        id: trip_info.id,
+        customer_confirmation: e.target.checked
+      }
+    })
+  }
+
+  const disableLr = trip_info.trip_status && trip_info.trip_status.value === 'Invoiced' &&
+                    trip_info.trip_status.value === 'Paid' &&
+                    trip_info.trip_status.value === 'Received' &&
+                    trip_info.trip_status.value === 'Closed'
+
   return (
     <Row gutter={8}>
       <Col xs={24} sm={12}>
@@ -11,16 +75,27 @@ const TripLr = () => {
           maxTagCount={7}
           style={{ width: '100%' }}
           placeholder='Enter valid LR numbers'
-          disabled={false}
+          disabled={disableLr}
+          defaultValue={trip_info.lr || null}
+          onChange={handleChange}
         />
       </Col>
       <Col xs={24} sm={12}>
         <Space>
-          <Button type='primary' icon={<SaveOutlined />} />
-          <Button size='small' shape='circle' icon={<EyeOutlined />} />
-          <Button size='small' shape='circle' icon={<DeleteOutlined />} />
-          <Button size='small' shape='circle' icon={<UploadOutlined />} />
-          <Checkbox checked disabled={false}>Customer Confirmation</Checkbox>
+          <Button shape='circle' icon={<EyeOutlined />} />
+          <Button shape='circle' danger icon={<DeleteOutlined />} />
+          <FileUploadOnly
+            id={trip_info.id}
+            type='trip'
+            folder='pod/'
+            file_type='LR'
+          />
+          <Checkbox
+            checked={trip_info.customer_confirmation}
+            disabled={false}
+            onChange={onCustomerConfirm}
+          >Customer Confirmation
+          </Checkbox>
         </Space>
       </Col>
     </Row>

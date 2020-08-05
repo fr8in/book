@@ -13,7 +13,7 @@ import GlobalFilter from '../dashboard/globalFilter'
 import GlobalSearch from '../dashboard/globalSearch'
 import Ssh from '../dashboard/ssh'
 
-const Actions = () => {
+const Actions = (props) => {
   const initial = { filter: false, search: false, ssh: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
@@ -53,7 +53,7 @@ const Actions = () => {
           onClose={onHide}
           visible={visible.filter}
         >
-          <GlobalFilter />
+          <GlobalFilter {...props}/>
         </Drawer>}
 
       {visible.search &&

@@ -22,15 +22,17 @@ const TRUCKS_QUERY = gql`
         truck_no: { _ilike: $truckno }
       }
     ) {
+      id
       truck_no
+      available_at
       truck_type_id
       truck_status_id
       truck_type {
         name
       }
-      #city {
-      #  name
-      # }
+      city {
+       name
+      }
       truck_status {
         id
         value
@@ -104,7 +106,6 @@ const TruckContainer = () => {
 
     truck_aggregate = data && data.truck_aggregate;
   }
-
   const truck_status_list = truck_status.filter((data) => data.id !== 10);
 
   const record_count =

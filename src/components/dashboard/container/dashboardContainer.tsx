@@ -12,7 +12,8 @@ import CreateExcessLoad from '../../trips/createExcessLoad'
 
 const { TabPane } = Tabs
 
-const DashboardContainer = () => {
+const DashboardContainer = (props) => {
+  console.log(props)
   const initial = { excessLoad: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   return (
