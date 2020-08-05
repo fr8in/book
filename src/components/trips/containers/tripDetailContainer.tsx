@@ -141,7 +141,7 @@ const TripDetailContainer = (props) => {
               </Collapse>
             </TabPane>
             <TabPane tab='Timeline' key='3'>
-              <TripComment />
+              <TripComment trip_id={trip_info.id} comments={trip_info.trip_comments}/>
             </TabPane>
           </Tabs>
         </Col>
