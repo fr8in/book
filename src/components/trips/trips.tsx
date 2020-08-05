@@ -1,5 +1,5 @@
-// import tripsData from '../../../mock/trip/tripsData'
-import { Table, Tooltip, Input, Button } from 'antd'
+import { useState } from 'react'
+import { Table, Tooltip, Input, Button,Pagination } from 'antd'
 import Link from 'next/link'
 import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
 import moment from 'moment'
@@ -23,7 +23,16 @@ const Trips = (props) => {
     commentVisible: false
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
-  const { trips, loading } = props
+  const { trips, loading, record_count,total_page, onPageChange, filter } = props
+
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const pageChange = (page, pageSize) => {
+    const newOffset = page * pageSize - filter.limit
+    setCurrentPage(page)
+    onPageChange(newOffset)
+  }
+
   const columns = [
     {
       title: 'ID',
@@ -241,6 +250,15 @@ const Trips = (props) => {
         pagination={false}
         loading={loading}
       />
+      {!loading &&
+        <Pagination
+          size='small'
+          current={currentPage}
+          pageSize={filter.limit}
+          total={record_count}
+          onChange={pageChange}
+          className='text-right p10'
+        />}
       {object.commentVisible &&
         <TripFeedBack
           visible={object.commentVisible}
