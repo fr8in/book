@@ -1,8 +1,28 @@
 import { gql } from '@apollo/client'
 
 export const PARTNER_DETAIL_SUBSCRIPTION = gql`
-  subscription partners($cardcode: String,$trip_status_id:[Int!]) {
+  subscription partners($cardcode: String,$trip_status_value: [String!],$ongoing: [String!], $pod: [String!], $invoiced: [String!], $paid: [String!]) {
     partner(where: {cardcode: {_eq: $cardcode}}) {
+            ongoing: trips_aggregate(where: {trip_status: {value: {_in: $ongoing}}}) {
+              aggregate {
+                count
+              }
+            }
+            pod: trips_aggregate(where: {trip_status: {value: {_in: $pod}}}) {
+              aggregate {
+                count
+              }
+            }
+            invoiced: trips_aggregate(where: {trip_status: {value: {_in: $invoiced}}}) {
+              aggregate {
+                count
+              }
+            }
+            paid: trips_aggregate(where: {trip_status: {value: {_in: $paid}}}) {
+              aggregate {
+                count
+              }
+            }
             id
             name
             cardcode
@@ -66,7 +86,7 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
               id
               value
             } 
-            trips (where: {trip_status_id: {_in: $trip_status_id}}){
+            trips(where: {trip_status: { value: {_in: $trip_status_value}}}){
               id
               order_date
               source{
@@ -92,7 +112,7 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
                 id
                 value
               }        
-              trips(where: {trip_status_id: {_in: $trip_status_id}}) {
+              trips(where: {trip_status: {value: {_in: $trip_status_value}}}) {
                 id
                 source{
                   name
