@@ -68,7 +68,7 @@ const TripDetailContainer = (props) => {
           <TripInfo trip_info={trip_info} />
           <Collapse accordion className='small mt10'>
             <Panel header='Trip LR' key='1'>
-              <TripLr />
+              <TripLr trip_info={trip_info} />
             </Panel>
           </Collapse>
           <TripTime trip_info={trip_info} />
