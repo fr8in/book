@@ -1,68 +1,156 @@
-
+import { Row, Checkbox, Collapse, Typography, Spin } from 'antd'
+import { useQuery, gql } from '@apollo/client'
 import { useState } from 'react'
-import { Row, Checkbox, Collapse } from 'antd'
-import filterData from '../../../mock/globalFilter/filterData'
-import filterGroup from '../../../mock/globalFilter/filterGroup'
 const { Panel } = Collapse
 const CheckBoxGroup = Checkbox.Group
+const { Text } = Typography;
 
-const GlobalFilter = () => {
-  const [globalException, setGlobalException] = useState(false)
-  const callBack = () => {
-    console.log('callback clicked')
+const GLOBAL_FILTER = gql`
+query gloabl_filter($now: timestamptz, $regions:[Int!], $branches:[Int!], $cities:[Int!]) {
+  truck_type {
+    id
+    name
   }
-  const changeExeceptionStatus = () => {
-    setGlobalException(prev => !prev)
-  }
-  const getFiltersList = (data) => {
-    return data && data.length > 0 ? data.map(t => {
-      return {
-        label: <span>{t.filtername}{t.groupId !== 8 && <span className='filterCount'>{t.positiveTatCount + '/' + t.count}</span>}</span>,
-        value: t.filterId,
-        groupId: t.groupId
+  region {
+    id
+    name
+    branches(where:{_and: [ {region_id:{_in:$regions}} {id:{_in:$branches}}]}) {
+      branch_employees {
+        id
+        employee {
+          id
+          name
+        }
       }
-    }) : []
+      id
+      name
+      connected_cities: cities(where:{_and: [ {is_connected_city: {_eq: true}},{id:{_in:$cities}}]}) {
+        id
+        name
+        cities {
+          id
+          name
+          trucks_total: trucks_aggregate(where: {truck_status: {value: {_eq: "Waiting for load"}}}) {
+            aggregate {
+              count
+            }
+          }
+          trucks_current: trucks_aggregate(where: {_and: [{truck_status: {value: {_eq: "Waiting for load"}}}, {available_at: {_gte: $now}}]}) {
+            aggregate {
+              count
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`
+
+let region_options = []
+//2nd level branch_options 
+let branch_options = []
+//3rd level employee_options 
+let branch_employee_options = []
+//3rd level connected_city_options 
+let connected_city_options = []
+let truck_type_options = []
+const GlobalFilter = ({onFilter,initialFilter}) => {
+  // const initialFilter = {
+  //   now: new Date().toISOString(),
+  //   regions: null, branches: null, cities: null, managers: null, types: null
+  // };
+  const [filter, setFilter] = useState(initialFilter)
+  const [activeKey, setActiveyKey] = useState(['branch']);
+ 
+  const onRegionChange = (regions) => {
+    
+    setFilter({ ...filter, regions });
+     onFilter({ ...filter, regions })
+  }
+  const onBranchChange = (branches) => {
+    setFilter({ ...filter, branches });
+onFilter({ ...filter, branches })
+  }
+  const onCityChange = (cities) => {
+    setFilter({ ...filter, cities });
+onFilter({ ...filter, cities })
+  }
+  const onManagerChange = (managers) => {
+    setFilter({ ...filter, managers });
+onFilter({ ...filter, managers })
+  }
+  const onTypeChange = (types) => {
+    setFilter({ ...filter, types });
+onFilter({ ...filter, types })
+  }
+  const variables = {
+    now: filter.now,
+    regions: (filter.regions && filter.regions.length !== 0) ? filter.regions : null
+  }
+
+  const { loading, data } = useQuery(GLOBAL_FILTER, { variables })
+
+  if (!loading) {
+    region_options = []
+    //2nd level branch_options 
+    branch_options = []
+    //3rd level employee_options 
+    branch_employee_options = []
+    //3rd level connected_city_options 
+    connected_city_options = []
+    //truck_type_options = []
+    truck_type_options = data.truck_type.map(_truck_type => { return { label: _truck_type.name, value: _truck_type.id } })
+
+    const { region } = data
+    region.forEach(_region => {
+      let _region_trucks_total = 0
+      let _region_trucks_current = 0
+      _region.branches.forEach(_branch => {
+        let _branch_trucks_total = 0
+        let _branch_trucks_current = 0
+        _branch.branch_employees.forEach(_branch_employee => branch_employee_options.push({ label: _branch_employee.employee.name, value: _branch_employee.id }))
+        _branch.connected_cities.forEach(_connected_city => {
+          let _connected_city_trucks_total = 0
+          let _connected_city_trucks_current = 0
+          _connected_city.cities.forEach(_city => {
+            _region_trucks_total = _region_trucks_total + _city.trucks_total?.aggregate.count
+            _region_trucks_current = _region_trucks_current + _city.trucks_current?.aggregate.count
+            _branch_trucks_total = _branch_trucks_total + _city.trucks_total?.aggregate.count
+            _branch_trucks_current = _branch_trucks_current + _city.trucks_current?.aggregate.count
+            _connected_city_trucks_total = _connected_city_trucks_total + _city.trucks_total?.aggregate.count
+            _connected_city_trucks_current = _connected_city_trucks_current + _city.trucks_current?.aggregate.count
+          })
+          connected_city_options.push({ label: <span>{_connected_city.name + '    '}<Text disabled>{_connected_city_trucks_current + '/' + _connected_city_trucks_total}</Text></span>, value: _connected_city.id, })
+        })
+        branch_options.push({ label: <span>{_branch.name + '    '}<Text disabled>{_branch_trucks_current + '/' + _branch_trucks_total}</Text></span>, value: _branch.id, })
+      })
+      region_options.push({ label: <span>{_region.name + '    '}<Text disabled>{_region_trucks_current + '/' + _region_trucks_total}</Text></span>, value: _region.id, })
+    })
+    //const branch_options = data.region.map(_region => { return { label: _region.name, value: _region.id } })
   }
   return (
-    <Row>
-      <div>
-        <Checkbox name='Exception' onChange={changeExeceptionStatus} defaultChecked={globalException === true}>
-            Exception
-        </Checkbox>
-      </div>
-      <Collapse defaultActiveKey={['1']} onChange={callBack} className='global-filter'>
-        {filterData && filterData.length > 0 ? filterData.map(data => {
-          const nonZeroList = data.groupList && data.groupList.length > 0 ? data.groupList.filter(t => t.count > 0) : []
-          const zeroList = data.groupList && data.groupList.length > 0 ? data.groupList : []
-          const filtersList = getFiltersList(data.groupId === 2 || data.groupId === 7 ? nonZeroList : zeroList)
-          return (
-            <Panel
-              header={<span><b>{data.groupName}</b></span>}
-              key={data.groupId}
-              extra={<span className='clear' onClick={(e) => e.stopPropagation()}>CLEAR</span>}
-            >
-              <ul className='filterMenu'>
-                <li>
-                  {filtersList &&
-                    <CheckBoxGroup
-                      options={filtersList}
-                      onChange={callBack}
-                      value={data.groupId === 1 ? filterGroup[0].customerManagerFilter.filterId
-                        : data.groupId === 2 ? filterGroup[1].connectedCitiesFilter.filterId
-                          : data.groupId === 3 ? filterGroup[2].laneManagerFilter.filterId
-                            : data.groupId === 4 ? filterGroup[3].partnerFilter.filterId
-                              : data.groupId === 5 ? filterGroup[4].orderFilter.filterId
-                                : data.groupId === 6 ? filterGroup[5].truckTypeFilter.filterId
-                                  : data.groupId === 7 ? filterGroup[6].truckLaneFilter.filterId
-                                    : filterGroup[7].trafficManager.filterId}
-                    />}
-                </li>
-              </ul>
-            </Panel>
-          )
-        }) : []}
+    <Row >
+      <Collapse onChange={setActiveyKey} className='global-filter' defaultActiveKey={activeKey} >
+        <Panel header={<b>Region</b>} key={'region'} extra={<span className='clear' onClick={(e) => e.stopPropagation()}>CLEAR</span>}>
+          <ul className='filterMenu'><li><CheckBoxGroup defaultValue={filter.regions} options={region_options} onChange={onRegionChange} /></li></ul>
+        </Panel>
+        <Panel header={<b>Branch</b>} key={'branch'} extra={<span className='clear' onClick={(e) => e.stopPropagation()}>CLEAR</span>}>
+          <ul className='filterMenu'><li><CheckBoxGroup options={branch_options} onChange={onBranchChange} /></li></ul>
+        </Panel>
+        <Panel header={<b>City</b>} key={'city'} extra={<span className='clear' onClick={(e) => e.stopPropagation()}>CLEAR</span>}>
+          <ul className='filterMenu'><li><CheckBoxGroup defaultValue={filter.cities} options={connected_city_options} onChange={onCityChange} /></li></ul>
+        </Panel>
+        <Panel header={<b>Manager</b>} key={'manager'} extra={<span className='clear' onClick={(e) => e.stopPropagation()}>CLEAR</span>}>
+          <ul className='filterMenu'><li><CheckBoxGroup options={branch_employee_options} onChange={onManagerChange} /></li></ul>
+        </Panel>
+        <Panel header={<b>Type</b>} key={'type'} extra={<span className='clear' onClick={(e) => e.stopPropagation()}>CLEAR</span>}>
+          <ul className='filterMenu'><li><CheckBoxGroup options={truck_type_options} onChange={onTypeChange} /></li></ul>
+        </Panel>
+
       </Collapse>
     </Row>
+
   )
 }
 
