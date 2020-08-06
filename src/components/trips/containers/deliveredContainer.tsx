@@ -31,11 +31,12 @@ import { useState } from 'react'
        trip_status: { 
          id: { _in: filter.trip_statusId } },
        id:{_in:filter.id }, 
-      }
+       }
+       
        const variables = {
         offset: filter.offset,
         limit: filter.limit,
-        where: where
+        where: where,        
        }
 
     const { loading, error, data } = useQuery(

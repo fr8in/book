@@ -30,7 +30,7 @@ const TripsContainer = () => {
 
    const trip_where = {
     tabKey: '1',
-    all_trip:null,
+    all_trip:{_and: [{trip_status:{id: {_nin: [1,2,3,4,5,6,7,8]}}}]},
     where: null,
     delivered_trip: { _and: [{ trip_status: { name: { _eq: 'Delivered' } } }, { trip_pod_status: { name: { _neq: 'POD Verified' } } }] },
     pod_verified_trip: { _and: [{ trip_status: { name: { _eq: 'Delivered' } } }, { trip_pod_status: { name: { _eq: 'POD Verified' } } }] },
