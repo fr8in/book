@@ -38,7 +38,6 @@ const CustomerKyc = (props) => {
   const [defaultMamul, setDefaultMamul] = useState(mamulInitial)
   const [currentPage, setCurrentPage] = useState(1)
 
-
   const onMamul = (record, e) => {
     const givenMamul = e.target.value
     setDefaultMamul({
@@ -67,7 +66,7 @@ const CustomerKyc = (props) => {
   }
 
   const customer_status = customer_status_list.map(data => {
-    return { value: data.id, label: data.value }
+    return { value: data.id, label: data.name }
   })
 
   const newCustomer = [
@@ -185,7 +184,7 @@ const CustomerKyc = (props) => {
       width: '10%',
       render: (text, record) => {
         const advancePercentage =
-          record.advancePercentage && record.advancePercentage.value
+          record.advancePercentage && record.advancePercentage.name
         const advancePercentageId =
           record.advancePercentage && record.advancePercentage.Id
         return (
@@ -199,7 +198,7 @@ const CustomerKyc = (props) => {
     },
     {
       title: 'Status',
-      render: (text, record) => record.status && record.status.value,
+      render: (text, record) => record.status && record.status.name,
       width: '14%',
       filterDropdown: (
         <Radio.Group
@@ -209,9 +208,6 @@ const CustomerKyc = (props) => {
           className='filter-drop-down'
         />
       )
-      //, filterMultiple: false,
-      // filters: customer_status,
-      // onFilter: (value, record) => record.status && record.status.value.indexOf(value) === 0
     },
     {
       title: 'Action',

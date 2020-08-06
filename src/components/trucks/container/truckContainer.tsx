@@ -1,8 +1,8 @@
-import { Row, Col, Input, Card } from "antd";
-import Trucks from "../trucks";
-import { useState } from "react";
+import { Row, Col, Input, Card } from 'antd'
+import Trucks from '../trucks'
+import { useState } from 'react'
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery } from '@apollo/client'
 
 const TRUCKS_QUERY = gql`
   query trucks(
@@ -35,7 +35,7 @@ const TRUCKS_QUERY = gql`
       }
       truck_status {
         id
-        value
+        name
       }
       partner {
         id
@@ -57,7 +57,7 @@ const TRUCKS_QUERY = gql`
     }
     truck_status(order_by: { id: asc }) {
       id
-      value
+      name
     }
     truck_aggregate(where: { truck_status: { id: { _in: $truck_statusId } } }) {
       aggregate {
@@ -65,9 +65,9 @@ const TRUCKS_QUERY = gql`
       }
     }
   }
-`;
+`
 
-const { Search } = Input;
+const { Search } = Input
 
 const TruckContainer = () => {
   const initialFilter = {
@@ -75,9 +75,9 @@ const TruckContainer = () => {
     name: null,
     truckno: null,
     offset: 0,
-    limit: 10,
-  };
-  const [filter, setFilter] = useState(initialFilter);
+    limit: 10
+  }
+  const [filter, setFilter] = useState(initialFilter)
 
   const trucksQueryVars = {
     offset: filter.offset,
@@ -85,63 +85,55 @@ const TruckContainer = () => {
     truck_statusId: filter.truck_statusId,
     trip_status_id: [2, 3, 4, 5, 6],
     truckno: filter.truckno ? `%${filter.truckno}%` : null,
-    name: filter.name ? `%${filter.name}%` : null,
-  };
+    name: filter.name ? `%${filter.name}%` : null
+  }
 
   const { loading, error, data } = useQuery(TRUCKS_QUERY, {
     variables: trucksQueryVars,
-    fetchPolicy: "cache-and-network",
-    notifyOnNetworkStatusChange: true,
-  });
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  })
 
-  console.log("TrucksContainer error", error);
-  var truck = [];
-  var truck_status = [];
+  console.log('TrucksContainer error', error)
+  var truck = []
+  var truck_status = []
 
-  var truck_aggregate = 0;
+  var truck_aggregate = 0
 
   if (!loading) {
-    truck = data.truck;
-    truck_status = data.truck_status;
+    truck = data.truck
+    truck_status = data.truck_status
 
-    truck_aggregate = data && data.truck_aggregate;
+    truck_aggregate = data && data.truck_aggregate
   }
-  const truck_status_list = truck_status.filter((data) => data.id !== 10);
+  const truck_status_list = truck_status.filter((data) => data.id !== 10)
 
   const record_count =
-    truck_aggregate.aggregate && truck_aggregate.aggregate.count;
-  const total_page = Math.ceil(record_count / filter.limit);
+    truck_aggregate.aggregate && truck_aggregate.aggregate.count
+  const total_page = Math.ceil(record_count / filter.limit)
 
-  console.log("record_count", record_count);
+  console.log('record_count', record_count)
   const onFilter = (value) => {
-    setFilter({ ...filter, truck_statusId: value });
-  };
+    setFilter({ ...filter, truck_statusId: value })
+  }
 
   const onPageChange = (value) => {
-    setFilter({ ...filter, offset: value });
-  };
+    setFilter({ ...filter, offset: value })
+  }
 
   const onNameSearch = (value) => {
-    setFilter({ ...filter, name: value });
-  };
+    setFilter({ ...filter, name: value })
+  }
 
   const onTruckNoSearch = (value) => {
-    setFilter({ ...filter, truckno: value });
-  };
+    setFilter({ ...filter, truckno: value })
+  }
 
   return (
-    <Card size="small" className="card-body-0 border-top-blue">
-      <Row justify="end" className="m5">
-        <Col flex="180px">
-          <Search
-            placeholder="Search..."
-            onSearch={(value) => console.log(value)}
-          />
-        </Col>
-      </Row>
+    <Card size='small' className='card-body-0 border-top-blue'>
       <Row>
         <Col sm={24}>
-          <Card size="small" className="card-body-0">
+          <Card size='small' className='card-body-0'>
             <Trucks
               trucks={truck}
               truck_status_list={truck_status_list}
@@ -159,6 +151,6 @@ const TruckContainer = () => {
         </Col>
       </Row>
     </Card>
-  );
-};
-export default TruckContainer;
+  )
+}
+export default TruckContainer

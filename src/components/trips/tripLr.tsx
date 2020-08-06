@@ -65,10 +65,10 @@ const TripLr = (props) => {
 
   const lr_files = trip_info.trip_files.filter(file => file.type === 'LR')
 
-  const disableLr = trip_info.trip_status && trip_info.trip_status.value === 'Invoiced' &&
-                    trip_info.trip_status.value === 'Paid' &&
-                    trip_info.trip_status.value === 'Received' &&
-                    trip_info.trip_status.value === 'Closed'
+  const disableLr = trip_info.trip_status && trip_info.trip_status.name === 'Invoiced' &&
+                    trip_info.trip_status.name === 'Paid' &&
+                    trip_info.trip_status.name === 'Received' &&
+                    trip_info.trip_status.name === 'Closed'
   console.log('lr', lr_files)
   return (
     <Row gutter={8}>

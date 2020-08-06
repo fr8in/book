@@ -33,11 +33,11 @@ const CUSTOMERS_QUERY = gql`
       pan
       advancePercentage {
         id
-        value
+        name
       }
       status {
         id
-        value
+        name
       }
     }
     customer_aggregate(
@@ -53,7 +53,7 @@ const CUSTOMERS_QUERY = gql`
     }
     customer_status(order_by: { id: asc }) {
       id
-      value
+      name
     }
   }
 `
@@ -92,7 +92,7 @@ const CustomersContainer = () => {
     customer_aggregate = data && data.customer_aggregate
   }
 
-  const customer_status_list = customer_status.filter((data) => data.id !== 8)
+  const customer_status_list = customer_status && customer_status.filter((data) => data.id !== 8)
 
   const record_count =
     customer_aggregate.aggregate && customer_aggregate.aggregate.count

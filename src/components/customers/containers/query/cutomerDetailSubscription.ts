@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
   subscription customers($cardcode: String) {
@@ -16,7 +16,7 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
       virtual_account
       status {
         id
-        value
+        name
       }
       onboardedBy {
         id
@@ -28,7 +28,6 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
       }
       type {
         comment
-        value
       }
       customer_users {
         name
@@ -47,4 +46,4 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
       }
     }
   }
-`;
+`
