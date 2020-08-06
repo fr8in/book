@@ -35,7 +35,7 @@ const TRUCKS_QUERY = gql`
       }
       truck_status {
         id
-        value
+        name
       }
       partner {
         id
@@ -57,7 +57,7 @@ const TRUCKS_QUERY = gql`
     }
     truck_status(order_by: { id: asc }) {
       id
-      value
+      name
     }
     truck_aggregate(where: { truck_status: { id: { _in: $truck_statusId } } }) {
       aggregate {

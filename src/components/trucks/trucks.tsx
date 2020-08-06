@@ -62,7 +62,7 @@ const Trucks = (props) => {
   };
 
   const truck_status = truck_status_list.map((data) => {
-    return { value: data.id, label: data.value };
+    return { value: data.id, label: data.name };
   });
 
   const columns = [
@@ -198,7 +198,7 @@ const Trucks = (props) => {
     {
       title: "Status",
       render: (text, record) =>
-        record.truck_status && record.truck_status.value,
+        record.truck_status && record.truck_status.name,
       width: "14%",
       filterDropdown: (
         <Radio.Group
