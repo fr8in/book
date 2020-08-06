@@ -12,7 +12,7 @@ const FILE_UPLOAD_MUTATION = gql`
 `
 
 const FileUploadOnly = (props) => {
-  const { type, id, folder, file_type } = props
+  const { type, id, folder, file_type, disable } = props
   const [base64Str, setBase64Str] = useState(null)
 
   const [s3FileUpload] = useMutation(
@@ -23,20 +23,20 @@ const FileUploadOnly = (props) => {
       },
       onCompleted () {
         message.success('Updated!!')
+        setBase64Str(null)
       }
     }
   )
 
   const getBase64 = (file) => {
     console.log('file', file)
-    let baseStr = null
     const reader = new FileReader()
     if (file) {
       reader.readAsBinaryString(file)
     }
     reader.onload = function () {
       // @ts-ignore
-      baseStr = btoa(reader.result)
+      const baseStr = btoa(reader.result)
       setBase64Str(baseStr)
     }
     reader.onerror = function () {
@@ -48,9 +48,11 @@ const FileUploadOnly = (props) => {
   const fileUpload = (data) => {
     const file_name = data.file.name
     const variables = { name: file_name, type: type, base64Str: base64Str, id: id, folder: folder, fileType: file_type }
-    s3FileUpload({
-      variables: variables
-    })
+    setTimeout(() => {
+      s3FileUpload({
+        variables: variables
+      })
+    }, 2000)
   }
 
   return (
@@ -60,7 +62,7 @@ const FileUploadOnly = (props) => {
       fileList={[]}
       onChange={fileUpload}
     >
-      <Button shape='circle' type='primary' icon={<UploadOutlined />} />
+      <Button shape='circle' type='primary' icon={<UploadOutlined />} disabled={disable} />
     </Upload>
   )
 }
