@@ -26,7 +26,7 @@ const PartnerPan = (props) => {
   const onSubmit = (text) => {
     updatePan({
       variables: {
-        cardcode,
+        cardcode: cardcode,
         pan: text
       }
     })
