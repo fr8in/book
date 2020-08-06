@@ -87,6 +87,7 @@ if (!loading) {
    invoiced_count = partnerData.invoiced && partnerData.invoiced.aggregate && partnerData.invoiced.aggregate.count
    paid_count = partnerData.paid && partnerData.paid.aggregate && partnerData.paid.aggregate.count
 }
+
   return (
     <Row>
       <Col xs={24}>
@@ -186,7 +187,7 @@ if (!loading) {
                     <TripDetail trips= {partnerData.trips} loading={loading}/>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='Paid' value={paid_count} />} key='7'>
-                    <PaidContainer />
+                    <PaidContainer cardcode={cardcode} />
                   </TabPane>
                 </Tabs>
               </Card>

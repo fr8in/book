@@ -73,7 +73,7 @@ const Trucks = (props) => {
         return (
           <Link href="trucks/[id]" as={`trucks/${record.truck_no}`}>
             <a>
-              {record.truck_no}-{record.truck_type.value}
+              {record.truck_no}-{record.truck_type.name}
             </a>
           </Link>
         );

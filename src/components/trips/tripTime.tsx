@@ -80,13 +80,13 @@ const TripTime = (props) => {
 
   const authorized = true // TODO
   const po_delete = (trip_info.trip_status &&
-                    trip_info.trip_status.value === 'Assigned' &&
-                    trip_info.trip_status.value === 'Confirmed' &&
-                    trip_info.trip_status.value === 'Reported at source') &&
+                    trip_info.trip_status.name === 'Assigned' &&
+                    trip_info.trip_status.name === 'Confirmed' &&
+                    trip_info.trip_status.name === 'Reported at source') &&
                     !trip_info.source_out
   const process_advance = trip_info.source_in && !trip_info.source_out // &&  trip_info.loaded = 'No'
-  const remove_sout = trip_info.trip_status && trip_info.trip_status.value === 'Intransit' && authorized
-  const remove_dout = trip_info.trip_status && trip_info.trip_status.value === 'Delivered' && authorized
+  const remove_sout = trip_info.trip_status && trip_info.trip_status.name === 'Intransit' && authorized
+  const remove_dout = trip_info.trip_status && trip_info.trip_status.name === 'Delivered' && authorized
 
   return (
     <Card size='small' className='mt10'>
