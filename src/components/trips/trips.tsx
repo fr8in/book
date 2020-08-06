@@ -48,7 +48,7 @@ const Trips = (props) => {
   };
  
   const trip_status = trip_status_list.map((data) => {
-    return { value: data.id, label: data.value };
+    return { name: data.id, label: data.name };
   });
 
   const columns = [
@@ -200,7 +200,7 @@ const Trips = (props) => {
     {
       title: "Status",
       render: (text, record) =>
-        record.trip_status && record.trip_status.value,
+        record.trip_status && record.trip_status.name,
       width: "14%",
       filterDropdown: (
         <Radio.Group

@@ -139,8 +139,8 @@ console.log("record_count", record_count);
   const onTruckNoSearch = (value) => {
     setFilter({ ...filter, truckno: value });
   };
-  const onFilter = (value) => {
-    setFilter({ ...filter, trip_statusId: value });
+  const onFilter = (name) => {
+    setFilter({ ...filter, trip_statusId: name });
   };
   const onTripIdSearch = (value) => {
     setFilter({ ...filter, id: value });
