@@ -36,7 +36,6 @@ const TripDetailContainer = (props) => {
   )
 
   if (loading) return <Loading />
-  console.log('TripDetailContainer Data', data)
   console.log('TripDetailContainer Error', error)
 
   const { trip } = data
@@ -46,7 +45,7 @@ const TripDetailContainer = (props) => {
     <h3>
       <span className='text-primary'>{trip_info.id}</span>
       <span>{` ${trip_info.source && trip_info.source.name} - ${trip_info.source && trip_info.destination.name} `}</span>
-      <small className='text-gray normal'>{trip_info.truck && trip_info.truck.truck_type && trip_info.truck.truck_type.value}</small>
+      <small className='text-gray normal'>{trip_info.truck && trip_info.truck.truck_type && trip_info.truck.truck_type.name}</small>
     </h3>)
   return (
     <Card

@@ -2,6 +2,8 @@ import { Row, Col, Select, Button, Checkbox, Space, message } from 'antd'
 import { EyeOutlined, SaveOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 import FileUploadOnly from '../common/fileUploadOnly'
+import DeleteFile from '../common/deleteFile'
+import ViewFile from '../common/viewFile'
 
 const UPDATE_LR_MUTATION = gql`
 mutation lrNumberUpdate ($lr: jsonb, $id: Int!){
@@ -61,11 +63,13 @@ const TripLr = (props) => {
     })
   }
 
+  const lr_files = trip_info.trip_files.filter(file => file.type === 'LR')
+
   const disableLr = trip_info.trip_status && trip_info.trip_status.value === 'Invoiced' &&
                     trip_info.trip_status.value === 'Paid' &&
                     trip_info.trip_status.value === 'Received' &&
                     trip_info.trip_status.value === 'Closed'
-
+  console.log('lr', lr_files)
   return (
     <Row gutter={8}>
       <Col xs={24} sm={12}>
@@ -76,20 +80,35 @@ const TripLr = (props) => {
           style={{ width: '100%' }}
           placeholder='Enter valid LR numbers'
           disabled={disableLr}
-          defaultValue={trip_info.lr || null}
+          defaultValue={trip_info.lr || []}
           onChange={handleChange}
         />
       </Col>
       <Col xs={24} sm={12}>
         <Space>
-          <Button shape='circle' icon={<EyeOutlined />} />
-          <Button shape='circle' danger icon={<DeleteOutlined />} />
-          <FileUploadOnly
-            id={trip_info.id}
-            type='trip'
-            folder='pod/'
-            file_type='LR'
-          />
+          {lr_files && lr_files.length > 0 ? (
+            <Space>
+              <ViewFile
+                id={trip_info.id}
+                type='trip'
+                file_type='LR'
+                folder='pod/'
+                file_list={lr_files}
+              />
+              <DeleteFile
+                id={trip_info.id}
+                type='trip'
+                file_type='LR'
+                file_list={lr_files}
+              />
+            </Space>)
+            : (
+              <FileUploadOnly
+                id={trip_info.id}
+                type='trip'
+                folder='pod/'
+                file_type='LR'
+              />)}
           <Checkbox
             checked={trip_info.customer_confirmation}
             disabled={false}
