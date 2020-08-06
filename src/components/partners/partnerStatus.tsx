@@ -22,7 +22,7 @@ mutation PartnerBlacklist($partner_status_id:Int,$cardcode:String){
 }
 `
 const UPDATE_PARTNER_DE_ACTIVATE_MUTATION = gql`
-mutation PartnerBlacklist($partner_status_id:Int,$cardcode:String){
+mutation PartnerDeActivate($partner_status_id:Int,$cardcode:String){
   update_partner( _set: {partner_status_id: $partner_status_id}, where: {cardcode:{_eq: $cardcode}} 
   ){
     returning{
@@ -45,6 +45,7 @@ const [updateBlacklist] = useMutation(
     onCompleted () { message.success('Updated!!') }
   }
 )
+console.log('status',partnerInfo)
 const blacklistChange = () => {
   updateBlacklist({
     variables: {
@@ -61,6 +62,7 @@ const [updateDeactivate] = useMutation(
     onCompleted () { message.success('Updated!!') }
   }
 )
+console.log('status',partnerInfo)
 const deActivateChange = () => {
   updateDeactivate({
     variables: {
@@ -78,6 +80,7 @@ const [updateDnd] = useMutation(
     onCompleted () { message.success('Updated!!') }
   }
 )
+console.log('status',partnerInfo)
 const dndChange = (e) => {
   updateDnd({
     variables: {
