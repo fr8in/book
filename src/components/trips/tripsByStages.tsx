@@ -93,7 +93,7 @@ const Partners = (props) => {
       pagination={false}
       loading={loading}
     />
-    {!loading &&
+    {!loading &&  record_count &&
         <Pagination
           size='small'
           current={currentPage}

@@ -12,6 +12,7 @@ import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from './comment'
 import KycApproval from '../partners/kycApproval'
 import { useState } from 'react'
+import moment from 'moment'
 
 const region_list = [
   { value: 1, text: 'North' },
@@ -150,14 +151,8 @@ const PartnerKyc = (props) => {
       title: 'Registered At',
       dataIndex: 'created_at',
       width: '10%',
-      render: (text, record) => {
-        return text && text.length > 12 ? (
-          <Tooltip title={text}>
-            <span> {text.slice(0, 12) + '...'}</span>
-          </Tooltip>
-        ) : (
-          text
-        )
+      render:(text, record) => {
+        return text ? moment(text).format('DD-MMM-YY') : null
       }
     },
     {
