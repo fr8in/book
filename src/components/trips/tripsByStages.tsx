@@ -70,7 +70,7 @@ const Partners = (props) => {
       title: 'Status',
       dataIndex: 'status',
       render: (text, record) => {
-        return (record.trip_status.value)
+        return (record.trip_status.name)
       }
     },
     props.trip ? {

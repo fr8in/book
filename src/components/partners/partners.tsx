@@ -65,7 +65,7 @@ const PartnerKyc = (props) => {
   }
 
   const partner_status = partner_status_list && partner_status_list.map(data => {
-    return { value: data.id, label: data.value }
+    return { value: data.id, label: data.name }
   })
 
   const columnsCurrent = [
@@ -172,7 +172,7 @@ const PartnerKyc = (props) => {
     },
     {
       title: 'Status',
-      render: (text, record) => record.partner_status && record.partner_status.value,
+      render: (text, record) => record.partner_status && record.partner_status.name,
       width: '14%',
       filterDropdown: (
         <Radio.Group

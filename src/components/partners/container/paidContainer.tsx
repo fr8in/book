@@ -9,12 +9,12 @@ query partners($offset: Int, $limit: Int,$trip_status_value:[String!], $cardcode
   partner( where: {cardcode: {_eq: $cardcode}}){
     id
     cardcode
-    trips_aggregate(where: {trip_status: {value: {_in: $trip_status_value}}}) {
+    trips_aggregate(where: {trip_status: {name: {_in: $trip_status_value}}}) {
       aggregate {
         count
       }
     }
-    trips(offset: $offset, limit: $limit, where: {trip_status: {value: {_in: $trip_status_value}}}) {
+    trips(offset: $offset, limit: $limit, where: {trip_status: {name: {_in: $trip_status_value}}}) {
       id
       order_date
       source {
@@ -25,7 +25,7 @@ query partners($offset: Int, $limit: Int,$trip_status_value:[String!], $cardcode
       }
       source_in
       trip_status {
-        value
+        name
       }
     }
   }        
