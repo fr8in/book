@@ -5,8 +5,8 @@ import InlineSelect from '../common/inlineSelect'
 const CUSTOMERS_TYPE_QUERY = gql`
   query customerType{
   customer_type{
-    value
     comment
+    name
   }
 }
 `
@@ -38,7 +38,7 @@ const CustomerType = (props) => {
 
   const { customer_type } = data
   const typeList = customer_type.map((data) => {
-    return { value: data.value, label: data.comment }
+    return { value: data.comment, label: data.comment }
   })
 
   const handleChange = (value) => {
