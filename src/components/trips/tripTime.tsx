@@ -1,4 +1,4 @@
-import { Row, Col, Card, Form, Tooltip, Input, Space, Button, Checkbox } from 'antd'
+import { Row, Col, Card, Form, Tooltip, Input, Space, Button, Checkbox, message } from 'antd'
 import {
   FilePdfOutlined,
   FileWordOutlined,
@@ -15,12 +15,68 @@ import SourceInDate from './tripSourceIn'
 import SourceOutDate from './tripSourceOut'
 import DestinationInDate from './tripDestinationIn'
 import DestinationOutDate from './tripDestinationOut'
+import { gql, useMutation } from '@apollo/client'
+
+const REMOVE_SOUT_MUTATION = gql`
+mutation removeSouceOut($source_out:timestamptz,$id:Int!) {
+  update_trip(_set: {source_out: $source_out}, where: {id: {_eq: $id}}) {
+    returning {
+      id
+      source_out
+    }
+  }
+}
+`
+
+const REMOVE_DOUT_MUTATION = gql`
+mutation removeDestinationOut($destination_out:timestamptz,$id:Int!) {
+  update_trip(_set: {destination_out: $destination_out}, where: {id: {_eq: $id}}) {
+    returning {
+      id
+      destination_out
+    }
+  }
+}
+`
 
 const TripTime = (props) => {
   const { trip_info } = props
   console.log('trip_info', trip_info)
   const initial = { checkbox: false, mail: false, deletePO: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+
+  const [removeSout] = useMutation(
+    REMOVE_SOUT_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
+
+  const [removeDout] = useMutation(
+    REMOVE_DOUT_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
+
+  const onSoutRemove = () => {
+    removeSout({
+      variables: {
+        id: trip_info.id,
+        source_out: null
+      }
+    })
+  }
+  const onDoutRemove = () => {
+    removeDout({
+      variables: {
+        id: trip_info.id,
+        destination_out: null
+      }
+    })
+  }
 
   const authorized = true // TODO
   const po_delete = (trip_info.trip_status &&
@@ -104,9 +160,9 @@ const TripTime = (props) => {
                   {process_advance &&
                     <Button type='primary'>Process Advance</Button>}
                   {remove_sout &&
-                    <Button danger icon={<CloseCircleOutlined />}>Sout</Button>}
+                    <Button danger icon={<CloseCircleOutlined />} onClick={onSoutRemove}>Sout</Button>}
                   {remove_dout &&
-                    <Button danger icon={<CloseCircleOutlined />}>Dout</Button>}
+                    <Button danger icon={<CloseCircleOutlined />} onClick={onDoutRemove}>Dout</Button>}
                 </Space>
               </Col>
               <Col xs={8} className='text-right'>

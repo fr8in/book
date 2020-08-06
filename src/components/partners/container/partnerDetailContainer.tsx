@@ -1,5 +1,4 @@
 import {useState} from 'react'
-import Loading from '../../common/loading'
 import Link from 'next/link'
 import { Row, Col, Card, Tabs, Button, Space, Tooltip } from 'antd'
 import { CarOutlined, WalletOutlined, FileTextOutlined, MailOutlined } from '@ant-design/icons'
@@ -21,6 +20,7 @@ import TitleWithCount from '../../common/titleWithCount'
 import FasTags from '../cards/fasTags'
 import PartnerFuelDetail from '../cards/partnerFuelDetail'
 import WalletTopUp from '../walletTopup'
+import PaidContainer from '../container/paidContainer'
 import useShowHide from '../../../hooks/useShowHide'
 
 import { useSubscription } from '@apollo/client'
@@ -29,11 +29,10 @@ import ReportEmail from '../reportEmail'
 import WalletStatement from '../walletStatement'
 const TabPane = Tabs.TabPane
 
-const on_going = [2, 3, 4, 5, 6, 8]
-const pod = [9, 10, 11]
-const invoiced = [12]
-const paid = [13, 14, 15] 
-
+const on_going = ["Confirmed", "Reported at source", "Intransit", "Reported at destination"]
+const pod = ["Delivered"]
+const invoiced = ["Invoiced","Recieved"]
+const paid = ["Paid", "Closed"] 
 const PartnerDetailContainer = (props) => {
   const initial = { topUp: false, reportMail: false, statememt: false }
   const { visible, onShow, onHide } = useShowHide(initial)
@@ -50,28 +49,44 @@ const PartnerDetailContainer = (props) => {
     if(key === '6') {
       setTripStatusId(invoiced)
     }
-    if(key === '7') {
-      setTripStatusId(paid)
-    }
-  } 
+  }
   const { cardcode } = props
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,
     {
-      variables: { cardcode, trip_status_id: tripStatusId }
+      variables: { 
+        cardcode: cardcode,
+        trip_status_value: tripStatusId, 
+        ongoing: on_going,
+        pod: pod,
+        invoiced: invoiced,
+        paid:paid
+        }
     }
   )
 
-  if (loading) return <Loading />
   console.log('PartnerDetailContainer Error', error)
   console.log('PartnerDetailContainer Data', data)
+
+var partnerData = {};
+var trucks = {};
+var truck_count = 0
+var ongoing_count = 0
+var pod_count = 0
+var invoiced_count = 0
+var paid_count = 0
+if (!loading) {
   const { partner } = data
-  const partnerData = partner[0] ? partner[0] : { name: 'ID does not exist' }
-  const trucks = partnerData.trucks
+   partnerData = partner[0] ? partner[0] : { name: 'ID does not exist' }
+   trucks = partnerData.trucks
   console.log('partnerData', partnerData)
   console.log('trucks', trucks)
- 
-  const truck_count = partnerData.trucks_aggregate && partnerData.trucks_aggregate.aggregate && partnerData.trucks_aggregate.aggregate.count
+   truck_count = partnerData.trucks_aggregate && partnerData.trucks_aggregate.aggregate && partnerData.trucks_aggregate.aggregate.count
+   ongoing_count = partnerData.ongoing && partnerData.ongoing.aggregate && partnerData.ongoing.aggregate.count
+   pod_count = partnerData.pod && partnerData.pod.aggregate && partnerData.pod.aggregate.count
+   invoiced_count = partnerData.invoiced && partnerData.invoiced.aggregate && partnerData.invoiced.aggregate.count
+   paid_count = partnerData.paid && partnerData.paid.aggregate && partnerData.paid.aggregate.count
+}
 
   return (
     <Row>
@@ -155,24 +170,24 @@ const PartnerDetailContainer = (props) => {
                     }
                     key='2'
                   >
-                    <PartnerTruck trucks={trucks} />
+                    <PartnerTruck trucks={trucks} loading={loading} />
                   </TabPane>
                   <TabPane tab='Comment' key='3'>
                     <div className='p10'>
-                      <Comment partnerId={partnerData.id} />
+                      <Comment partnerId={partnerData.id} loading={loading}/>
                     </div>
                   </TabPane>
-                  <TabPane tab={<TitleWithCount name='On-going' value={5} />} key='4'>
-                    <TripDetail trips= {partnerData.trips}/>
+                  <TabPane tab={<TitleWithCount name='On-going' value={ongoing_count} />} key='4'>
+                    <TripDetail trips= {partnerData.trips} loading={loading}/>
                   </TabPane>
-                  <TabPane tab={<TitleWithCount name='POD' value={null} />} key='5'>
-                    <TripDetail trips= {partnerData.trips}/>
+                  <TabPane tab={<TitleWithCount name='POD' value={pod_count} />} key='5'>
+                    <TripDetail trips= {partnerData.trips} loading={loading}/>
                   </TabPane>
-                  <TabPane tab={<TitleWithCount name='Invoiced' value={0} />} key='6'>
-                    <TripDetail trips= {partnerData.trips}/>
+                  <TabPane tab={<TitleWithCount name='Invoiced' value={invoiced_count} />} key='6'>
+                    <TripDetail trips= {partnerData.trips} loading={loading}/>
                   </TabPane>
-                  <TabPane tab={<TitleWithCount name='Paid' value={14} />} key='7'>
-                    <TripDetail trips= {partnerData.trips}/>
+                  <TabPane tab={<TitleWithCount name='Paid' value={paid_count} />} key='7'>
+                    <PaidContainer cardcode={cardcode} />
                   </TabPane>
                 </Tabs>
               </Card>

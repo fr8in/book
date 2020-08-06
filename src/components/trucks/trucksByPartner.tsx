@@ -54,7 +54,7 @@ const PartnerTruck = (props) => {
     {
       title: 'Truck Type',
       render: (text, record) => {
-        return (record.truck_type && record.truck_type.value)
+        return (record.truck_type && record.truck_type.name)
       }
 
     },

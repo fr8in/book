@@ -1,4 +1,3 @@
-// import {useState}  from 'react'
 import { useState } from 'react'
 import { Row, Col, Upload, Button, message, Modal } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
@@ -29,15 +28,13 @@ const FILE_DELETE_MUTATION = gql`
     `
 
 const FileUpload = (props) => {
-  const { type, id, folder, file_type, file_list } = props
+  const { type, id, folder, file_type, file_list, disable } = props
   const [base64Str, setBase64Str] = useState(null)
   const [names, setNames] = useState(null)
   const [file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
   const previewInitial = { visible: false, image: '', title: '', ext: '' }
-  const [preview, setPreview] = useState(previewInitial)
-
-  const disabledUpload = !file
+  const [preview, setPreview] = useState(previewInitial) 
 
   const [s3FileUpload] = useMutation(
     FILE_UPLOAD_MUTATION,
@@ -50,6 +47,7 @@ const FileUpload = (props) => {
         message.success('Updated!!')
         setLoading(false)
         setFile(null)
+        setBase64Str(null)
       }
     }
   )
@@ -138,14 +136,14 @@ const FileUpload = (props) => {
           onRemove={(file) => remove(file)}
           accept='image/*, application/pdf'
         >
-          <Button icon={<UploadOutlined />}>Select File</Button>
+          <Button icon={<UploadOutlined />} disabled={disable}>Select File</Button>
         </Upload>
         <Button
           type='primary'
           // disabled
           style={{ marginTop: 10 }}
           onClick={() => fileUpload(names)}
-          disabled={disabledUpload}
+          disabled={!file}
           loading={loading}
         >
           {loading ? 'uploading' : 'Start Upload'}
@@ -158,6 +156,7 @@ const FileUpload = (props) => {
           footer={null}
           onCancel={handleCancel}
           bodyStyle={{ padding: 10 }}
+          style={{ top: 20 }}
           width={800}
         >
           <img alt={file_type} style={{ width: '100%' }} src={preview.image} />

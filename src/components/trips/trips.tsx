@@ -95,9 +95,9 @@ const Trips = (props) => {
         const cardcode = record.customer && record.customer.cardcode
         return (
           <Link href='/customers/[id]' as={`/customers/${cardcode} `}>
-            {record.customer.name && record.customer.name.length > 12
-              ? <Tooltip title={record.customer.name}><a>{record.customer.name.slice(0, 12) + '...'}</a></Tooltip>
-              : <a>{record.customer.name}</a>}
+            {record.customer && record.customer.name && record.customer.name.length > 12
+              ? <Tooltip title={record.customer && record.customer.name}><a>{record.customer.name.slice(0, 12) + '...'}</a></Tooltip>
+              : <a>{record.customer && record.customer.name}</a>}
           </Link>)
       },
       filterDropdown: (
@@ -116,10 +116,10 @@ const Trips = (props) => {
       title: 'Partner',
       render: (text, record) => {
         return (
-          <Link href='/partners/partner/[id]' as={`/partners/partner/${record.partner.cardcode} `}>
-            {record.partner.name && record.partner.name.length > 12
-              ? <Tooltip title={record.partner.name}><a>{record.partner.name.slice(0, 12) + '...'}</a></Tooltip>
-              : <a>{record.partner.name}</a>}
+          <Link href='/partners/partner/[id]' as={`/partners/partner/${record.partner && record.partner.cardcode} `}>
+            {record.partner && record.partner.name && record.partner.name.length > 12
+              ? <Tooltip title={record.partner && record.partner.name}><a>{record.partner && record.partner.name.slice(0, 12) + '...'}</a></Tooltip>
+              : <a>{record.partner && record.partner.name}</a>}
           </Link>)
       },
       filterDropdown: (
@@ -138,8 +138,8 @@ const Trips = (props) => {
       title: 'Truck',
       render: (text, record) => {
         return (
-          <Link href='/trucks/[id]' as={`/trucks/${record.truck.truck_no} `}>
-            <a>{record.truck.truck_no}</a>
+          <Link href='/trucks/[id]' as={`/trucks/${record.truck && record.truck.truck_no} `}>
+            <a>{record.truck && record.truck.truck_no}</a>
           </Link>)
       },
       filterDropdown: (

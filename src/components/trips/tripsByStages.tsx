@@ -1,11 +1,25 @@
-
-import { Table } from 'antd'
+import {useState} from 'react'
+import { Table,Pagination } from 'antd'
 // import mock from '../../../mock/trip/tripsByStages'
 import Link from 'next/link'
+import moment from 'moment'
 
 const Partners = (props) => {
-  const { trips, loading } = props
+  const { 
+    trips, 
+    loading,
+    filter,
+    record_count,
+    total_page,
+    onPageChange
+   } = props
+  const [currentPage, setCurrentPage] = useState(1)
 
+  const pageChange = (page, pageSize) => {
+    const newOffset = page * pageSize - filter.limit
+    setCurrentPage(page)
+    onPageChange(newOffset)
+  }
   const columnsCurrent = [
     {
       title: 'ID',
@@ -20,8 +34,8 @@ const Partners = (props) => {
     {
       title: 'OrderDate',
       dataIndex: 'order_date',
-      render: (text, record) => {
-        return (record.order_date)
+      render:(text, record) => {
+        return text ? moment(text).format('DD-MMM-YY') : null
       }
     },
     {
@@ -47,7 +61,10 @@ const Partners = (props) => {
     }
       : {
         title: 'SourceIn',
-        dataIndex: 'source_in'
+        dataIndex: 'source_in',
+        render:(text, record) => {
+          return text ? moment(text).format('DD-MMM-YY') : null
+        }
       },
     {
       title: 'Status',
@@ -66,6 +83,7 @@ const Partners = (props) => {
 
   ]
   return (
+    <>
     <Table
       columns={columnsCurrent}
       dataSource={trips}
@@ -75,6 +93,16 @@ const Partners = (props) => {
       pagination={false}
       loading={loading}
     />
+    {!loading &&
+        <Pagination
+          size='small'
+          current={currentPage}
+          pageSize={filter.limit}
+          total={record_count}
+          onChange={pageChange}
+          className='text-right p10'
+        />}
+    </>
   )
 }
 

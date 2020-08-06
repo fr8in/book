@@ -37,7 +37,7 @@ const SourceOutDate = (props) => {
     <DateUpdater
       name='source_out_date'
       label='Source Out'
-      dateValue={source_out}
+      dateValue={source_out || null}
       onSubmit={onSubmit}
     />
   )
