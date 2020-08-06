@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Tabs, Card, Space, Button } from 'antd'
-import PartnerKyc from '../../partners/partnerKyc'
 import PartnerLead from '../../partners/partnerLead'
 import TruckVerification from '../../trucks/truckVerification'
 import VasRequest from '../../partners/vasRequest'
@@ -52,7 +51,7 @@ const SourcingContainer = () => {
             onChange={subTabChange} type='card'
             tabBarExtraContent={
               <span>
-                {subTabKey === '3' &&
+                {subTabKey === '2' &&
                   <Space>
                     <Button type='primary' onClick={() => onShow('employeeList')}>Assign</Button>
                     <Button shape='circle' icon={<FilterOutlined />} onClick={() => onShow('filterList')} />
@@ -61,22 +60,17 @@ const SourcingContainer = () => {
               </span>
             }
           >
-            <TabPane tab='KYC Verification' key='1'>
-              <Card size='small' className='card-body-0'>
-                <PartnerKyc />
-              </Card>
-            </TabPane>
-            <TabPane tab='Truck Verification' key='2'>
+            <TabPane tab='Truck Verification' key='1'>
               <Card size='small' className='card-body-0'>
                 <TruckVerification />
               </Card>
             </TabPane>
-            <TabPane tab={<TitleWithCount name='Lead' value={120} />} key='3'>
+            <TabPane tab={<TitleWithCount name='Lead' value={120} />} key='2'>
               <Card size='small' className='card-body-0'>
                 <PartnerLead />
               </Card>
             </TabPane>
-            <TabPane tab='Vas Request' key='4'>
+            <TabPane tab='Vas Request' key='3'>
               <Card size='small' className='card-body-0'>
                 <VasRequest />
               </Card>

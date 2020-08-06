@@ -1,31 +1,93 @@
-import { Table, Input, Tooltip } from 'antd'
-// import mock from '../../../mock/partner/partnerData'
+import { Table, Tooltip, Button, Badge, Space, Modal, Pagination, Radio, Input } from 'antd'
+import {
+  CommentOutlined,
+  CheckOutlined,
+  CloseOutlined,
+  SearchOutlined
+} from '@ant-design/icons'
 import Link from 'next/link'
-import { SearchOutlined } from '@ant-design/icons'
-import useShowHide from '../../hooks/useShowHide'
+import KycReject from '../../components/partners/partnerKycReject'
+import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
+import Comment from './comment'
+import KycApproval from '../partners/kycApproval'
+import { useState } from 'react'
+import moment from 'moment'
 
-const statusList = [
-  { value: 1, text: 'Active' },
-  { value: 2, text: 'In-Active' }
+const region_list = [
+  { value: 1, text: 'North' },
+  { value: 2, text: 'South-1' },
+  { value: 3, text: 'South-2' },
+  { value: 4, text: 'East-1' },
+  { value: 5, text: 'East-2' },
+  { value: 6, text: 'West-1' },
+  { value: 7, text: 'West-2' }
 ]
 
-const Partners = (props) => {
-  const { partners, region } = props
-  console.log(props)
-  const initial = { partnerCodeSearch: false }
-  const { onShow } = useShowHide(initial)
+const truck_count = [
+  { value: 1, text: '0' },
+  { value: 2, text: '1-5' },
+  { value: 3, text: '>5' },
+  { value: 4, text: 'All' }
+]
+
+const PartnerKyc = (props) => {
+  const {
+     partners,
+     loading, 
+     onPageChange, 
+     filter, 
+     record_count, 
+     total_page, 
+     onFilter, 
+     partner_status_list, 
+     onNameSearch, 
+     onCardCodeSearch 
+    } = props
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const initial = {
+    commentData: [],
+    commentVisible: false,
+    title: '',
+    approvalVisible: false,
+    approvalData: [],
+    rejectVisible: false,
+    rejectData: []
+  }
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
+  const value = { reject: false }
+
+
+  const handleStatus = (e) => {
+    onFilter(e.target.value)
+  }
+
+  const handleName = (e) => {
+    onNameSearch(e.target.value)
+  }
+
+  const handleCardCode = (e) => {
+    onCardCodeSearch(e.target.value)
+  }
+
+  const pageChange = (page, pageSize) => {
+    const newOffset = page * pageSize - filter.limit
+    setCurrentPage(page)
+    onPageChange(newOffset)
+  }
+
+  const partner_status = partner_status_list && partner_status_list.map(data => {
+    return { value: data.id, label: data.name }
+  })
+
   const columnsCurrent = [
     {
       title: 'Partner Code',
       dataIndex: 'cardcode',
-      key: 'cardcode',
-      width: '7',
+      width: '10%',
       render: (text, record) => {
         return (
-          <Link
-            href='partners/[id]'
-            as={`partners/${record.cardcode}`}
-          >
+          <Link href='partners/[id]' as={`partners/${record.cardcode}`}>
             <a>{text}</a>
           </Link>
         )
@@ -33,105 +95,211 @@ const Partners = (props) => {
       filterDropdown: (
         <div>
           <Input
-            placeholder='Search Partner code'
-            id='partnerCode'
-            name='partnerCode'
-            type='number'
+            placeholder='Search Partner'
+            value={filter.cardcode}
+            onChange={handleCardCode}
           />
         </div>
       ),
-      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-      onFilterDropdownVisibleChange: () => onShow('partnerCodeSearch')
+      filterIcon: () => <SearchOutlined style={{ color: filter.cardcode ? '#1890ff' : undefined }} />
     },
     {
       title: 'Partner',
       dataIndex: 'name',
-      key: 'name',
-      width: '15',
+      width: '10%',
       render: (text, record) => {
         return (
-          text ? (
-            <Tooltip title={text}><span>{text.slice(0, 15) + '...'}</span></Tooltip>
-          ) : null
+          <span>
+            <Badge dot style={{ backgroundColor: '#28a745' }} />
+            <span>{text}</span>
+          </span>
         )
       },
       filterDropdown: (
         <div>
           <Input
-            placeholder='Search Partner Name'
-            id='name'
-            name='name'
+            placeholder='Search Partner'
+            value={filter.name}
+            onChange={handleName}
           />
         </div>
       ),
-      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-      onFilterDropdownVisibleChange: () => onShow('partnerNameSearch')
-
+      filterIcon: () => <SearchOutlined style={{ color: filter.name ? '#1890ff' : undefined }} />
+    },
+    {
+      title: 'On Boarded By',
+      width: '10%',
+      render: (text, record) => {
+        const onboarded_by = record.onboarded_by && record.onboarded_by.name
+        return onboarded_by.length > 12 ? (
+          <Tooltip title={onboarded_by}>
+            <span> {onboarded_by.slice(0, 12) + '...'}</span>
+          </Tooltip>
+        ) : (
+          onboarded_by
+        )
+      }
     },
     {
       title: 'Region',
-      dataIndex: 'regionName',
-      key: 'regionName',
-      width: '8',
-      filters: region
+      width: '7%',
+      filters: region_list,
+      render: (text, record) => {
+        const region = record.city && record.city.branch && record.city.branch.region.name
+        return (region)
+      }
     },
     {
       title: 'Contact No',
-      dataIndex: 'mobileNo',
-      key: 'mobileNo',
-      width: '10'
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-      width: '14'
-    },
-    {
-      title: 'Avg Km/day',
-      dataIndex: 'averageKm',
-      key: 'averageKm',
-      width: '9',
-      sorter: true
+      width: '9%',
+      render: (text, record) => {
+        const number = record.partner_users && record.partner_users.length > 0 &&
+        record.partner_users[0].mobile ? record.partner_users[0].mobile : '-'
+        return (number)
+      }
 
+    },
+    {
+      title: 'Registered At',
+      dataIndex: 'created_at',
+      width: '10%',
+      render:(text, record) => {
+        return text ? moment(text).format('DD-MMM-YY') : null
+      }
     },
     {
       title: 'Trucks',
-      dataIndex: 'truckCount',
-      key: 'truckCount',
-      width: '7'
+      width: '7%',
+      filters: truck_count,
+      render: (text, record) => {
+        const truckCount = record.trucks_aggregate && record.trucks_aggregate.aggregate &&
+          record.trucks_aggregate.aggregate.count ? record.trucks_aggregate.aggregate.count : '-'
+        return (truckCount)
+      }
     },
     {
-      title: 'Invoiced',
-      dataIndex: 'invoiceAmount',
-      key: 'invoiceAmount',
-      width: '9'
-    },
-    {
-      title: 'Invoice Pending',
-      dataIndex: 'invoicePendingAmount',
-      key: 'invoicePendingAmount',
-      width: '12'
+      title: 'PAN',
+      dataIndex: 'pan',
+      width: '8%'
     },
     {
       title: 'Status',
-      width: '9',
-      filters: statusList,
-      render: (record) => {
-        return (record.partner_status.value)
+      render: (text, record) => record.partner_status && record.partner_status.name,
+      width: '14%',
+      filterDropdown: (
+        <Radio.Group
+          options={partner_status}
+          defaultValue={filter.partner_statusId[0]}
+          onChange={handleStatus}
+          className='filter-drop-down'
+        />
+      )
+    },
+    {
+      title: 'Comment',
+      width: '11%',
+      render: (text, record) => {
+        const comment = record.partner_comments && record.partner_comments.length > 0 &&
+        record.partner_comments[0].description ? record.partner_comments[0].description : '-'
+        console.log('partners', partners)
+        return comment && comment.length > 12 ? (
+          <Tooltip title={comment}>
+            <span> {comment.slice(0, 12) + '...'}</span>
+          </Tooltip>
+        ) : (
+          comment
+        )
       }
+
+    },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      width: '9%',
+      render: (text, record) => (
+        <Space>
+          <Tooltip title='Comment'>
+            <Button
+              type='link'
+              icon={<CommentOutlined />}
+              onClick={() => handleShow('commentVisible', null, 'commentData', record.id)}
+            />
+          </Tooltip>
+          <Button
+            type='primary'
+            size='small'
+            shape='circle'
+            className='btn-success'
+            icon={<CheckOutlined />}
+            onClick={() =>
+              handleShow('approvalVisible', null, 'approvalData', record)}
+          />
+          <Button
+            type='primary'
+            size='small'
+            shape='circle'
+            danger
+            icon={<CloseOutlined />}
+            onClick={() => 
+              handleShow('rejectVisible', null, 'rejectData', record.id)}
+          />
+        </Space>
+      )
     }
   ]
+
   return (
-    <Table
-      columns={columnsCurrent}
-      dataSource={partners}
-      rowKey={record => record.id}
-      size='small'
-      scroll={{ x: 1156, y: 850 }}
-      pagination={false}
-    />
+    <>
+      <Table
+        columns={columnsCurrent}
+        dataSource={partners}
+        rowKey={(record) => record.id}
+        size='small'
+        scroll={{ x: 1256 }}
+        pagination={false}
+        className='withAction'
+        loading={loading}
+      />
+      {object.commentVisible && (
+        <Modal
+          title='Comments'
+          visible={object.commentVisible}
+          onCancel={handleHide}
+          bodyStyle={{ padding: 10 }}
+        >
+          <Comment partnerId={object.commentData} />
+        </Modal>
+      )}
+      {object.rejectVisible && ( 
+         <Modal
+         title='Reject Partner'
+         visible={object.rejectVisible}
+         onCancel={handleHide}
+         footer= {null}
+         
+       >
+        <KycReject partnerId={object.rejectData} />
+      </Modal>
+      )}
+      {object.approvalVisible && (
+        <KycApproval
+          visible={object.approvalVisible}
+          onHide={handleHide}
+          data={object.approvalData}
+        />
+      )}
+      {!loading &&
+        <Pagination
+          size='small'
+          current={currentPage}
+          pageSize={filter.limit}
+          total={record_count}
+          onChange={pageChange}
+          className='text-right p10'
+        />}
+    </>
   )
 }
 
-export default Partners
+export default PartnerKyc
+

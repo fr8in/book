@@ -6,7 +6,7 @@ const CUSTOMERS_ADVANCE_PERCENTAGE_QUERY = gql`
   query customerAdvancePercentage{
   customer_advance_percentage{
     id
-    value
+    name
   }
 }
 `
@@ -44,7 +44,7 @@ const CustomerAdvancePercentage = (props) => {
 
   const { customer_advance_percentage } = data
   const advancePercentageList = customer_advance_percentage.map(data => {
-    return { value: data.id, label: data.value }
+    return { value: data.id, label: data.name }
   })
 
   const handleChange = (value) => {

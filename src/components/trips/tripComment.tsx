@@ -1,9 +1,7 @@
-import {useState} from "react";
-import { Timeline, Row, Col, Input, Button, Card , message} from 'antd'
+import { useState } from 'react'
+import { Timeline, Row, Col, Input, Button, Card, message } from 'antd'
 import moment from 'moment'
-import data from '../../../mock/trip/tripComment'
 import { gql, useMutation } from '@apollo/client'
-
 
 const INSERT_TRIP_COMMENT_MUTATION = gql`
 mutation TripComment($description:String, $topic:String, $trip_id: Int, $created_by:String) {
@@ -18,11 +16,9 @@ mutation TripComment($description:String, $topic:String, $trip_id: Int, $created
 `
 
 const TripComment = (props) => {
-
-  const {trip_id,comments} = props
+  const { trip_id, comments } = props
 
   const [tripComment, setTripComment] = useState('')
-
 
   const [insertComment] = useMutation(
     INSERT_TRIP_COMMENT_MUTATION,
@@ -40,8 +36,8 @@ const TripComment = (props) => {
   const onSubmit = () => {
     insertComment({
       variables: {
-        trip_id :  trip_id,
-        created_by: "deva@fr8.in",
+        trip_id: trip_id,
+        created_by: 'deva@fr8.in',
         description: tripComment,
         topic: 'text'
       }

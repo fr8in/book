@@ -56,7 +56,7 @@ const TripDetailContainer = (props) => {
           title={title}
           extra={
             <Space>
-              <Tag className='status'>{trip_info.trip_status && trip_info.trip_status.value}</Tag>
+              <Tag className='status'>{trip_info.trip_status && trip_info.trip_status.name}</Tag>
             </Space>
           }
         />

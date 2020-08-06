@@ -62,7 +62,7 @@ const Trucks = (props) => {
   };
 
   const truck_status = truck_status_list.map((data) => {
-    return { value: data.id, label: data.value };
+    return { value: data.id, label: data.name };
   });
 
   const columns = [
@@ -73,7 +73,7 @@ const Trucks = (props) => {
         return (
           <Link href="trucks/[id]" as={`trucks/${record.truck_no}`}>
             <a>
-              {record.truck_no}-{record.truck_type.value}
+              {record.truck_no}-{record.truck_type.name}
             </a>
           </Link>
         );

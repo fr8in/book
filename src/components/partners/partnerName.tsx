@@ -26,7 +26,7 @@ const PartnerName = (props) => {
   const onSubmit = (text) => {
     updatePartnerName({
       variables: {
-        cardcode,
+        cardcode: cardcode,
         name: text
       }
     })
@@ -34,7 +34,7 @@ const PartnerName = (props) => {
 
   return (
     <InlineEdit
-      text={name || 'No Name'}
+      text={name || 'No Name' }
       onSetText={onSubmit}
     />
   )

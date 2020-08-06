@@ -1,14 +1,13 @@
-import React from 'react'
+import { useState } from 'react'
 import { Button, Card } from 'antd'
 import Link from 'next/link'
-import PartnerKyc from '../partnerKyc'
-import { useState } from 'react'
+import Partners from '../partners'
 
 import { gql, useQuery } from '@apollo/client'
 
 const PARTNERS_QUERY = gql`
   query partners($offset: Int!, $limit: Int!,$partner_statusId:[Int!], $name:String, $cardcode:String) {
-    partner(offset: $offset, limit: $limit,where:{partner_status:{id:{_in:$partner_statusId}}, name: {_ilike: $name}, cardcode: {_like: $cardcode}}) {
+    partner(offset: $offset, limit: $limit,where:{partner_status:{id:{_in:$partner_statusId}}, name: {_ilike: $name}, cardcode: {_ilike: $cardcode}}) {
       id
       name
       cardcode
@@ -19,7 +18,7 @@ const PARTNERS_QUERY = gql`
       }
       created_at
       partner_status{
-        value
+        name
       }
       # city {
       #   branch {
@@ -51,13 +50,13 @@ const PARTNERS_QUERY = gql`
     }
     partner_status(order_by:{id:asc}){
       id
-      value
+      name
     }
 }
 `
 
 const PartnerContainer = () => {
-  const initialFilter = { partner_statusId: [1],offset: 0, limit: 1, name: null, cardcode: null }
+  const initialFilter = { partner_statusId: [1], offset: 0, limit: 1, name: null, cardcode: null }
   const [filter, setFilter] = useState(initialFilter)
   const partnersQueryVars = {
     offset: filter.offset,
@@ -75,7 +74,6 @@ const PartnerContainer = () => {
       notifyOnNetworkStatusChange: true
     }
   )
-  
 
   console.log('PartnersContainer error', error)
   var partner = []
@@ -86,29 +84,29 @@ const PartnerContainer = () => {
     partner_status = data && data.partner_status
     partner_aggregate = data && data.partner_aggregate
   }
-console.log('partner_aggregate',partner_aggregate)
+  console.log('partner_aggregate', partner_aggregate)
 
-const partner_status_list = partner_status.filter(data => data.id !== 8)
+  const partner_status_list = partner_status.filter(data => data.id !== 8)
 
   const record_count = partner_aggregate && partner_aggregate.aggregate && partner_aggregate.aggregate.count
 
-  const total_page = Math.ceil( record_count /filter.limit)
+  const total_page = Math.ceil(record_count / filter.limit)
   console.log('record_count', record_count)
-  
-  const onFilter = (value) => {
-    setFilter({ ...filter, partner_statusId: value })
+
+  const onFilter = (name) => {
+    setFilter({ ...filter, partner_statusId: name })
   }
 
-  const onPageChange = (value) => {
-    setFilter({ ...filter, offset: value })
+  const onPageChange = (name) => {
+    setFilter({ ...filter, offset: name })
   }
 
-  const onNameSearch = (value) => {
-    setFilter({ ...filter, name: value })
+  const onNameSearch = (name) => {
+    setFilter({ ...filter, name: name })
   }
 
-  const onCardCodeSearch = (value) => {
-    setFilter({ ...filter, cardcode: value })
+  const onCardCodeSearch = (name) => {
+    setFilter({ ...filter, cardcode: name })
   }
 
   return (
@@ -121,16 +119,17 @@ const partner_status_list = partner_status.filter(data => data.id !== 8)
       }
       className='card-body-0 border-top-blue'
     >
-      <PartnerKyc partners={partner} 
-      loading={loading}
-      onPageChange={onPageChange}
-      total_page={total_page}
-      record_count={record_count} 
-      filter={filter}
-      onFilter={onFilter}
-      partner_status_list={partner_status_list}
-      onNameSearch={onNameSearch}
-      onCardCodeSearch={onCardCodeSearch}
+      <Partners
+        partners={partner}
+        loading={loading}
+        onPageChange={onPageChange}
+        total_page={total_page}
+        record_count={record_count}
+        filter={filter}
+        onFilter={onFilter}
+        partner_status_list={partner_status_list}
+        onNameSearch={onNameSearch}
+        onCardCodeSearch={onCardCodeSearch}
       />
     </Card>
   )
