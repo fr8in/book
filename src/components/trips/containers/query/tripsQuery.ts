@@ -22,11 +22,16 @@ query trips($offset: Int!, $limit: Int!,$id:[Int!], $trip_statusId: [Int!],$name
       count
     }
   }
-  trip_status(where: {id: {_in: [9, 10, 11,12,13,14,15]}}, order_by: {id: asc}) {
+  rows: trip_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  trip_status(where: {id: {_in: $trip_statusId}}, order_by: {id: asc}) {
     id
     name
   }
-  trip(offset: $offset, limit: $limit, where:$where)
+  trip(offset: $offset, limit: $limit, where:$where, order_by: { order_date: desc })
     {
     id
     order_date
