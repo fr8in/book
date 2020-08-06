@@ -6,7 +6,6 @@ import {
   SearchOutlined
 } from '@ant-design/icons'
 import Link from 'next/link'
-import useShowHide from '../../hooks/useShowHide'
 import KycReject from '../../components/partners/partnerKycReject'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from './comment'
@@ -32,7 +31,18 @@ const truck_count = [
 ]
 
 const PartnerKyc = (props) => {
-  const { partners, loading, onPageChange, filter, record_count, total_page, onFilter, partner_status_list, onNameSearch, onCardCodeSearch } = props
+  const {
+     partners,
+     loading, 
+     onPageChange, 
+     filter, 
+     record_count, 
+     total_page, 
+     onFilter, 
+     partner_status_list, 
+     onNameSearch, 
+     onCardCodeSearch 
+    } = props
 
   const [currentPage, setCurrentPage] = useState(1)
   const initial = {
@@ -40,11 +50,13 @@ const PartnerKyc = (props) => {
     commentVisible: false,
     title: '',
     approvalVisible: false,
-    approvalData: []
+    approvalData: [],
+    rejectVisible: false,
+    rejectData: []
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
   const value = { reject: false }
-  const { visible, onShow, onHide } = useShowHide(value)
+
 
   const handleStatus = (e) => {
     onFilter(e.target.value)
@@ -228,7 +240,8 @@ const PartnerKyc = (props) => {
             shape='circle'
             danger
             icon={<CloseOutlined />}
-            onClick={() => onShow('reject')}
+            onClick={() => 
+              handleShow('rejectVisible', null, 'rejectData', record.id)}
           />
         </Space>
       )
@@ -257,7 +270,17 @@ const PartnerKyc = (props) => {
           <Comment partnerId={object.commentData} />
         </Modal>
       )}
-      {visible.reject && <KycReject visible={visible.reject} onHide={onHide} />}
+      {object.rejectVisible && ( 
+         <Modal
+         title='Reject Partner'
+         visible={object.rejectVisible}
+         onCancel={handleHide}
+         footer= {null}
+         
+       >
+        <KycReject partnerId={object.rejectData} />
+      </Modal>
+      )}
       {object.approvalVisible && (
         <KycApproval
           visible={object.approvalVisible}
@@ -279,3 +302,4 @@ const PartnerKyc = (props) => {
 }
 
 export default PartnerKyc
+
