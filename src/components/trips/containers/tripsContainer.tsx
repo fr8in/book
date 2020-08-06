@@ -6,97 +6,59 @@ import TitleWithCount from '../../common/titleWithCount'
 import PartnerPodReceipt from '../../partners/partnerPodReceipt'
 import useShowHide from '../../../hooks/useShowHide'
 import CustomerPodReceipt from '../../customers/customerPodReceipt'
+import {useQuery } from '@apollo/client'
+import {TRIPS_QUERY} from './query/tripsQuery'
+import  DeliveredContainer  from '../containers/deliveredContainer'
+import PodVerifiedContainer from '../containers/podVerifiedContainer'
+import InvoicedContainer from '../containers/invoicedContainer'
 
-import { gql, useQuery } from '@apollo/client'
-
-const TRIPS_QUERY = gql`
-  query trips($offset: Int!, $limit: Int!, $where: trip_bool_exp, $all_trip: trip_bool_exp, $delivered_trip: trip_bool_exp, $pod_verified_trip: trip_bool_exp, $invoiced_trip: trip_bool_exp){
-    trip_count: trip_aggregate(where: $all_trip) {
-      aggregate {
-        count
-      }
-    }
-    delivered: trip_aggregate(where: $delivered_trip) {
-      aggregate {
-        count
-      }
-    }
-    pod_verified: trip_aggregate(where:$pod_verified_trip ) {
-      aggregate {
-        count
-      }
-    }
-    invoiced: trip_aggregate(where: $invoiced_trip) {
-      aggregate {
-        count
-      }
-    }
-    trip(offset: $offset, limit: $limit, where:$where)
-      {
-      id
-      order_date
-      customer {
-        name
-        cardcode
-      } 
-      partner {
-        name
-        cardcode
-      }
-      truck {
-        truck_no
-      }
-      source {
-        name
-      }
-      destination {
-        name
-      }
-      trip_status{
-        value
-      }
-      km    
-      tat
-      trip_comments(limit:1, order_by: {created_at: desc}) {
-        description
-        created_by
-        created_at
-      }
-      trip_prices(limit:1, where:{deleted_at:{_is_null:true}})
-      {
-        id
-        customer_price
-        partner_price
-      }
-    }
-  }  
-  `
 const { TabPane } = Tabs
 
 const TripsContainer = () => {
-
   const initialFilter = {
     offset: 0,
     limit: 3,  
+    name:null,
+    customername:null,
+    sourcename:null,
+    destinationname:null,
+    truckno: null,
+    trip_statusId: [9,10,11,12,13,14,15],
+    id:null
   };
   const [filter, setFilter] = useState(initialFilter);
 
-  const trip_where = {
+   const trip_where = {
     tabKey: '1',
-    all_trip: null,
+    all_trip:null,
     where: null,
-    delivered_trip: { _and: [{ trip_status: { value: { _eq: 'Delivered' } } }, { trip_pod_status: { value: { _neq: 'POD Verified' } } }] },
-    pod_verified_trip: { _and: [{ trip_status: { value: { _eq: 'Delivered' } } }, { trip_pod_status: { value: { _eq: 'POD Verified' } } }] },
-    invoiced_trip: { _and: [{ trip_status: { value: { _eq: 'Invoiced' } } }, { trip_pod_status: { value: { _neq: 'POD Dispatched' } } }] }
+    delivered_trip: { _and: [{ trip_status: { name: { _eq: 'Delivered' } } }, { trip_pod_status: { name: { _neq: 'POD Verified' } } }] },
+    pod_verified_trip: { _and: [{ trip_status: { name: { _eq: 'Delivered' } } }, { trip_pod_status: { name: { _eq: 'POD Verified' } } }] },
+    invoiced_trip: { _and: [{ trip_status: { name: { _eq: 'Invoiced' } } }, { trip_pod_status: { name: { _neq: 'POD Dispatched' } } }] }
   }
-  const [vars, setVars] = useState(trip_where)
+   const [vars, setVars] = useState(trip_where)
+  const where ={
+    partner: {
+       name: { _ilike: filter.name ? `%${filter.name}%` : null } 
+      },
+  customer: { 
+    name: { _ilike: filter.customername ? `%${filter.customername}%` : null } },
+  source: { 
+    name: { _ilike: filter.sourcename ? `%${filter.sourcename}%` : null } },
+  destination: { 
+    name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } },
+   truck: {
+     truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null }} ,
+   trip_status: { 
+     id: { _in: filter.trip_statusId } },
+   id:{_in:filter.id }, }
 
   const variables = {
     offset: filter.offset,
     limit: filter.limit,
-    where: vars.where,
+    where: where,
     all_trip: trip_where.all_trip,
-    delivered_trip: trip_where.delivered_trip,
+     delivered_trip: trip_where.delivered_trip,
     pod_verified_trip: trip_where.pod_verified_trip,
     invoiced_trip: trip_where.invoiced_trip
   }
@@ -111,10 +73,10 @@ const TripsContainer = () => {
     }
   )
 
-  const onTabChange = (key,value) => {
-    setFilter(initialFilter)
+  const onTabChange = (key) => {
+     setFilter(initialFilter)
     if (key === '1') {
-      setVars({ ...vars, where: null,tabKey: key })
+      setVars({ ...vars, where: trip_where.all_trip,tabKey: key})
     }
     if (key === '2') {
       setVars({ ...vars, where: trip_where.delivered_trip,tabKey: key })
@@ -125,29 +87,34 @@ const TripsContainer = () => {
     if (key === '4') {
       setVars({ ...vars, where: trip_where.invoiced_trip,tabKey: key})
     }
-  }
+    }
 
   console.log('TripsContainer error', error)
+  console.log('data',data)
   var trip = []
   var trip_count = 0
   var delivered = 0
   var pod_verified = 0
   var invoiced = 0
   var trip_count = 0;
+  var trip_status = [];
 
   if (!loading) {
-    trip = data.trip
-    trip_count = data.trip_count
-    delivered = data.delivered
-    pod_verified = data.pod_verified
-    invoiced = data.invoiced
-    trip_count = data && data.trip_count;
+    trip = data && data.trip
+    trip_count = data && data.trip_count
+    delivered = data && data.delivered
+    pod_verified = data && data.pod_verified
+    invoiced = data && data.invoiced
+    trip_count = data && data && data.trip_count;
+    trip_status = data && data.trip_status;
   }
 
   const all_count = trip_count && trip_count.aggregate && trip_count.aggregate.count
   const delivered_count = delivered && delivered.aggregate && delivered.aggregate.count
   const pod_count = pod_verified && pod_verified.aggregate && pod_verified.aggregate.count
   const invoiced_count = invoiced && invoiced.aggregate && invoiced.aggregate.count
+
+  const trip_status_list = trip_status.filter((data) => data.id !== 16);
 
   const record_count =
   trip_count.aggregate && trip_count.aggregate.count;
@@ -157,12 +124,34 @@ console.log("record_count", record_count);
   const onPageChange = (value) => {
     setFilter({ ...filter, offset: value });
   };
+  const onPartnerNameSearch = (value) => {
+    setFilter({ ...filter, name: value });
+  };
+  const onCustomerNameSearch = (value) => {
+    setFilter({ ...filter, customername: value });
+  };
+  const onSourceNameSearch = (value) => {
+    setFilter({ ...filter, sourcename: value });
+  };
+  const onDestinationNameSearch = (value) => {
+    setFilter({ ...filter, destinationname: value });
+  };
+  const onTruckNoSearch = (value) => {
+    setFilter({ ...filter, truckno: value });
+  };
+  const onFilter = (value) => {
+    setFilter({ ...filter, trip_statusId: value });
+  };
+  const onTripIdSearch = (value) => {
+    setFilter({ ...filter, id: value });
+  };
+ 
   
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
       <Tabs
          defaultActiveKey='1'
-        onChange={onTabChange}
+         onChange={onTabChange}
         tabBarExtraContent={
           <span>
             {vars.tabKey === '2' &&
@@ -183,31 +172,24 @@ console.log("record_count", record_count);
           total_page={total_page}
           filter={filter}
           onPageChange={onPageChange}
+          onPartnerNameSearch={onPartnerNameSearch}
+          onCustomerNameSearch={onCustomerNameSearch}
+          onSourceNameSearch={onSourceNameSearch}
+          onDestinationNameSearch={onDestinationNameSearch}
+          onTruckNoSearch={onTruckNoSearch}
+          onTripIdSearch={onTripIdSearch}
+          trip_status_list={trip_status_list}
+          onFilter={onFilter}
           tripsTable />
         </TabPane>
-        <TabPane tab={<TitleWithCount name='Delivered' value={delivered_count} />} key='2'>
-          <Trips trips={trip} loading={loading} 
-          record_count={record_count}
-          total_page={total_page}
-          filter={filter}
-          onPageChange={onPageChange}
-          delivered />
+        <TabPane tab={<TitleWithCount name='Delivered'  value={delivered_count} />} key='2'>
+          <DeliveredContainer  />
         </TabPane>
-        <TabPane tab={<TitleWithCount name='POD Verified' value={pod_count} />} key='3'>
-          <Trips trips={trip} loading={loading} 
-          record_count={record_count}
-          total_page={total_page}
-          filter={filter}
-          onPageChange={onPageChange}
-          delivered />
+        <TabPane tab={<TitleWithCount name='POD Verified'  value={pod_count}/>} key='3'>
+          <PodVerifiedContainer  />
         </TabPane>
-        <TabPane tab={<TitleWithCount name='Invoiced' value={invoiced_count} />} key='4'>
-          <Trips trips={trip} loading={loading} 
-          record_count={record_count}
-          total_page={total_page}
-          filter={filter}
-          onPageChange={onPageChange}
-          delivered />
+        <TabPane tab={<TitleWithCount name='Invoiced'  value={invoiced_count}/>} key='4'>
+          <InvoicedContainer />
         </TabPane>
       </Tabs>
       {visible.podModal && (
@@ -224,6 +206,7 @@ console.log("record_count", record_count);
       )}
     </Card>
   )
+
 }
 
 export default TripsContainer

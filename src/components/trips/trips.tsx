@@ -1,21 +1,10 @@
 import { useState } from 'react'
-import { Table, Tooltip, Input, Button,Pagination } from 'antd'
+import { Table, Tooltip, Input, Button,Pagination,Radio} from 'antd'
 import Link from 'next/link'
 import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import TripFeedBack from '../trips/tripFeedBack'
-// import loadData from '../../../mock/trucks/loadData'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
-
-const statusList = [
-  { value: 1, text: 'Delivered' },
-  { value: 11, text: 'Approval Pending' },
-  { value: 12, text: 'POD Verified' },
-  { value: 13, text: 'Invoiced' },
-  { value: 20, text: 'Paid' },
-  { value: 21, text: 'Received' },
-  { value: 22, text: 'Closed' }
-]
 
 const Trips = (props) => {
   const initial = {
@@ -23,7 +12,9 @@ const Trips = (props) => {
     commentVisible: false
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
-  const { trips, loading, record_count,total_page, onPageChange, filter } = props
+  const { trips, loading, record_count,total_page,sorter,
+     onPageChange, filter, onPartnerNameSearch,onCustomerNameSearch,trip_status_list,
+     onFilter,onSourceNameSearch,onDestinationNameSearch ,onTruckNoSearch,onTripIdSearch} = props
 
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -32,6 +23,33 @@ const Trips = (props) => {
     setCurrentPage(page)
     onPageChange(newOffset)
   }
+
+  const handlePartnerName = (e) => {
+    onPartnerNameSearch(e.target.value)
+  }
+
+  const handleCustomerName = (e) => {
+    onCustomerNameSearch(e.target.value)
+  }
+  const handleSourceName = (e) => {
+    onSourceNameSearch(e.target.value)
+  }
+  const handleDestinationName = (e) => {
+    onDestinationNameSearch(e.target.value)
+  }
+  const handleTruckNo = (e) => {
+    onTruckNoSearch(e.target.value);
+  }
+  const handleStatus = (e) => {
+    onFilter(e.target.value);
+  };
+  const handleTripId = (e) => {
+    onTripIdSearch(e.target.value);
+  };
+ 
+  const trip_status = trip_status_list.map((data) => {
+    return { value: data.id, label: data.value };
+  });
 
   const columns = [
     {
@@ -49,9 +67,8 @@ const Trips = (props) => {
         <div>
           <Input
             placeholder='Search TripId'
-            id='id'
-            name='id'
-            type='number'
+            value={filter.id}
+            onChange={handleTripId}
           />
         </div>
       ),
@@ -68,6 +85,9 @@ const Trips = (props) => {
       },
       sorter: (a, b) => (a.order_date > b.order_date ? 1 : -1),
       width: '6%'
+      // sorter: (
+      //       order: 'descend',
+      //       columnKey: 'order_date' )
     },
     {
       title: 'Customer',
@@ -84,8 +104,8 @@ const Trips = (props) => {
         <div>
           <Input
             placeholder='Search Customer Name'
-            id='customer.name'
-            name='customer.name'
+            value={filter.customername}
+            onChange={handleCustomerName}
           />
         </div>
       ),
@@ -106,8 +126,8 @@ const Trips = (props) => {
         <div>
           <Input
             placeholder='Search Partner Name'
-            id='partner.name'
-            name='partner.name'
+            value={filter.name}
+            onChange={handlePartnerName}
           />
         </div>
       ),
@@ -126,8 +146,8 @@ const Trips = (props) => {
         <div>
           <Input
             placeholder='Search Truck'
-            id='truck_no'
-            name='truck_no'
+            value={filter.truck_no}
+            onChange={handleTruckNo}
           />
         </div>
       ),
@@ -148,8 +168,8 @@ const Trips = (props) => {
         <div>
           <Input
             placeholder='Search Source City'
-            id='name'
-            name='name'
+            value={filter.Sourcename}
+            onChange={handleSourceName}
           />
         </div>
       ),
@@ -170,20 +190,26 @@ const Trips = (props) => {
         <div>
           <Input
             placeholder='Search Destination City'
-            id='name'
-            name='name'
+            value={filter.Destinationname}
+            onChange={handleDestinationName}
           />
         </div>
       ),
       filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
     },
     {
-      title: 'Status',
-      render: (record) => {
-        return (record.trip_status.value)
-      },
-      width: '12%',
-      filters: statusList
+      title: "Status",
+      render: (text, record) =>
+        record.trip_status && record.trip_status.value,
+      width: "14%",
+      filterDropdown: (
+        <Radio.Group
+          options={trip_status}
+          defaultValue={filter.trip_statusId[0]}
+          onChange={handleStatus}
+          className="filter-drop-down"
+        />
+      ),
     },
     props.tripsTable ? {
       title: 'SO Price',
