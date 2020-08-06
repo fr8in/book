@@ -17,6 +17,13 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       unloaded_private_godown
       lr
       customer_confirmation
+      trip_comments{
+        id
+        description
+        topic
+        created_by
+        created_at
+      }
       customer{
         cardcode
         name

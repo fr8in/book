@@ -1,7 +1,12 @@
 
-import { Row, Col, Button, Form } from 'antd'
-import { UploadOutlined } from '@ant-design/icons'
-export default function truckDocuments () {
+import { Row, Col, Form } from 'antd'
+import FileUpload from '../common/fileUpload'
+
+ 
+  const truckDocuments = (props) => {
+
+const {truck_id} = props
+
   return (
     <div>
       <Form layout='vertical'>
@@ -13,13 +18,14 @@ export default function truckDocuments () {
                 name='PAN'
                 rules={[{ required: true, message: 'PAN is required field!' }]}
               >
-                <Button icon={<UploadOutlined />}>
-            Select File
-                </Button>
+                 <FileUpload
+                id={truck_id}
+                type='truck'
+                folder='pan/'
+                file_type='pan'
+                //file_list={pod_file_list}
+              />
               </Form.Item>
-            </Row>
-            <Row>
-              <Button disabled>  Start Upload </Button>
             </Row>
           </Col>
 
@@ -28,14 +34,14 @@ export default function truckDocuments () {
               <Form.Item
                 label='Cheque/PassBook'
               >
-                <Button icon={<UploadOutlined />}>
-            Select File
-                </Button>
+                 <FileUpload
+                id={truck_id}
+                type='truck'
+                folder='Cheque/PassBook/'
+                file_type='Cheque/PassBook'
+                //file_list={pod_file_list}
+              />
               </Form.Item>
-            </Row>
-
-            <Row>
-              <Button disabled> Start Upload </Button>
             </Row>
           </Col>
 
@@ -44,27 +50,28 @@ export default function truckDocuments () {
               <Form.Item
                 label='TDS'
               >
-                <Button icon={<UploadOutlined />}>
-            Select File
-                </Button>
+               <FileUpload
+                id={truck_id}
+                type='truck'
+                folder='TDS/'
+                file_type='TDS'
+                //file_list={pod_file_list}
+              />
               </Form.Item>
-            </Row>
-
-            <Row>
-              <Button disabled> Start Upload </Button>
             </Row>
           </Col>
 
           <Col span={6}>
             <Row>
               <Form.Item label='EMI'>
-                <Button icon={<UploadOutlined />}>
-            Select File
-                </Button>
+              <FileUpload
+                id={truck_id}
+                type='truck'
+                folder='EMI/'
+                file_type='EMI'
+                //file_list={pod_file_list}
+              />
               </Form.Item>
-            </Row>
-            <Row>
-              <Button disabled>Start Upload</Button>
             </Row>
           </Col>
         </Row>
@@ -79,14 +86,14 @@ export default function truckDocuments () {
                 name='RC'
                 rules={[{ required: true, message: 'RC is required field!' }]}
               >
-                <Button icon={<UploadOutlined />}>
-            Select File
-                </Button>
+                <FileUpload
+                id={truck_id}
+                type='truck'
+                folder='RC/'
+                file_type='RC'
+                //file_list={pod_file_list}
+              />
               </Form.Item>
-            </Row>
-
-            <Row>
-              <Button disabled> Start Upload </Button>
             </Row>
           </Col>
 
@@ -97,14 +104,14 @@ export default function truckDocuments () {
                 name='Vaahan'
                 rules={[{ required: true, message: 'Vaahan Screen is required field!' }]}
               >
-                <Button icon={<UploadOutlined />}>
-            Select File
-                </Button>
+                 <FileUpload
+                id={truck_id}
+                type='truck'
+                folder='Vaahan/'
+                file_type='Vaahan'
+                //file_list={pod_file_list}
+              />
               </Form.Item>
-            </Row>
-
-            <Row>
-              <Button disabled> Start Upload </Button>
             </Row>
           </Col>
 
@@ -113,14 +120,14 @@ export default function truckDocuments () {
               <Form.Item
                 label='Insurance'
               >
-                <Button icon={<UploadOutlined />}>
-            Select File
-                </Button>
+                <FileUpload
+                id={truck_id}
+                type='truck'
+                folder='Insurance/'
+                file_type='Insurance'
+                //file_list={pod_file_list}
+              />
               </Form.Item>
-            </Row>
-
-            <Row>
-              <Button disabled> Start Upload </Button>
             </Row>
           </Col>
 
@@ -129,13 +136,14 @@ export default function truckDocuments () {
               <Form.Item
                 label='Permit'
               >
-                <Button icon={<UploadOutlined />}>
-            Select File
-                </Button>
+                <FileUpload
+                id={truck_id}
+                type='truck'
+                folder='Permit/'
+                file_type='Permit'
+                //file_list={pod_file_list}
+              />
               </Form.Item>
-            </Row>
-            <Row>
-              <Button disabled> Start Upload </Button>
             </Row>
           </Col>
         </Row>
@@ -143,3 +151,5 @@ export default function truckDocuments () {
     </div>
   )
 }
+
+export default truckDocuments
