@@ -1,6 +1,6 @@
 import { Modal, Button, Row, Col, DatePicker, Select, Input, Form, Radio , message} from 'antd'
 import { useMutation, gql } from '@apollo/client'
-import DateUpdater from '../common/dateUpdater'
+
 
 const INSERT_UPDATE_CREATE_BREAKDOWN_MUTATION = gql`
 mutation truck_available($truck_id:Int,$topic:String,$created_by_id:Int,$description:String,$id:Int!,$available_at:timestamptz,$city_id:Int) {
