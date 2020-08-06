@@ -72,7 +72,6 @@ const deActivateChange = () => {
   })
 }
 
-
 const [updateDnd] = useMutation(
   UPDATE_PARTNER_DND_MUTATION,
   {
@@ -94,17 +93,18 @@ const partner_status_id =  partnerInfo.partner_status &&  partnerInfo.partner_st
     <Row>
       <Col xs={8}>
           <Checkbox 
+            //checked={partnerInfo.partner_status_id}
             disabled={!admin && partner_status_id === 4 ? true : false} 
             onChange={blacklistChange}
-            >
+          >
             BlackList
           </Checkbox>
       </Col>
       <Col xs={9}>
-        <Checkbox 
+          <Checkbox 
               disabled={ partner_status_id === 4 ? true : false } 
               onChange={deActivateChange}
-              >
+          >
              De-activate
           </Checkbox>
           </Col>

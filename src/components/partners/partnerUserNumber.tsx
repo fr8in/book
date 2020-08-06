@@ -26,7 +26,7 @@ const PartnerUserNumber = (props) => {
   const onSubmit = (text) => {
     updateUserNumber({
       variables: {
-        id,
+        id: id,
         mobile: text
       }
     })
@@ -34,7 +34,7 @@ const PartnerUserNumber = (props) => {
 
   return (
     <InlineEdit
-      text={mobile || 'No UserNumber'}
+      text={mobile || 'No Number'}
       onSetText={onSubmit}
     />
   )

@@ -26,7 +26,7 @@ const PartnerCibilScore = (props) => {
   const onSubmit = (text) => {
     updateCibilScore({
       variables: {
-        cardcode,
+        cardcode: cardcode,
         cibil: text
       }
     })
