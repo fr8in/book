@@ -37,10 +37,17 @@ const TripsTracking = (props) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
   const onSelectChange = (selectedRowKeys, selectedRows) => {
-    const tripList = selectedRows && selectedRows.length > 0 ? selectedRows.map(row => row.id) : []
+    const trip_list = selectedRows && selectedRows.length > 0 ? selectedRows.map(row => row.id) : []
     setSelectedRowKeys(selectedRowKeys)
-    setSelectedTrips(tripList)
+    setSelectedTrips(trip_list)
   }
+  const onRemoveTag = (removed) => {
+    const trip_list = selectedTrips.filter(t_id => t_id !== removed)
+    const selectedRows = selectedRowKeys.filter(selectedRowKeys => selectedRowKeys !== removed)
+    setSelectedRowKeys(selectedRows)
+    setSelectedTrips(trip_list)
+  }
+
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange
@@ -285,28 +292,27 @@ const TripsTracking = (props) => {
         pagination={false}
         loading={loading}
       />
-      {!loading && record_count
-        ? (
-          <Pagination
-            size='small'
-            current={currentPage}
-            pageSize={filter.limit}
-            total={record_count}
-            onChange={pageChange}
-            className='text-right p10'
-          />) : null}
+      {!loading && record_count ? (
+        <Pagination
+          size='small'
+          current={currentPage}
+          pageSize={filter.limit}
+          total={record_count}
+          onChange={pageChange}
+          className='text-right p10'
+        />) : null}
       {object.commentVisible &&
         <TripFeedBack
           visible={object.commentVisible}
           tripid={object.commentData}
           onHide={handleHide}
         />}
-
       {visible.pod_receipt && (
         <PartnerPodReceipt
           visible={visible.pod_receipt}
           onHide={onHide}
           trip_ids={selectedTrips}
+          onRemoveTag={onRemoveTag}
         />
       )}
       {visible.pod_dispatch && (

@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { Modal, Input, Button, Form, Row, Col, Select } from 'antd'
+import { Modal, Input, Button, Form, Select, Tag } from 'antd'
 import { gql } from '@apollo/client'
 
 const POD_RECEIPT_MUTATION = gql`
-mutation trip_pod_receipt($id: Int!, $by_hand_id: Int,$created_by_id: Int, $docket: String, $courier_id: Int, $trip_pod_status_id: Int){
-insert_trip_pod_receipt(objects:{by_hand_id:$by_hand_id,created_by_id:$created_by_id,docket: $docket,courier_id: $courier_id}) {
+mutation trip_pod_receipt($objects: [trip_pod_receipt_insert_input!]!) {
+insert_trip_pod_receipt(objects: $objects) {
   returning {
       id
     }
@@ -14,9 +14,10 @@ insert_trip_pod_receipt(objects:{by_hand_id:$by_hand_id,created_by_id:$created_b
     trip_pod_status_id
   }
 }
+# {by_hand_id:$by_hand_id,created_by_id:$created_by_id,docket: $docket,courier_id: $courier_id}
 `
 const PartnerPodReceipt = (props) => {
-  const { visible, onHide } = props
+  const { visible, onHide, trip_ids, onRemoveTag } = props
   const listType = [{ label: 'Internal', value: '1' }, { label: 'Courier', value: '2' }]
 
   const [selectValue, setSelectValue] = useState('1')
@@ -40,13 +41,29 @@ const PartnerPodReceipt = (props) => {
             onChange={onChange}
           />
         </Form.Item>
-        {selectValue === '1'
-          ? <Input
+        {selectValue === '1' ? (
+          <Input
             placeholder='contact'
             disabled={false}
-          />
+          />)
           : ''}
-
+        {trip_ids && trip_ids.length > 0
+          ? trip_ids.map((data, i) => {
+            return (
+              <Tag
+                key={i}
+                style={{
+                  backgroundColor: '#007dfe',
+                  marginBottom: 2,
+                  color: 'white'
+                }}
+                closable={data !== 0} onClose={() => onRemoveTag(data)}
+              >
+                {data}
+              </Tag>
+            )
+          }
+          ) : <div />}
       </Form>
     </Modal>
   )
