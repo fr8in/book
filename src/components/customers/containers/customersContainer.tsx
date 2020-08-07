@@ -28,7 +28,7 @@ const CUSTOMERS_QUERY = gql`
       }
       name
       mobile
-      type_id
+      customer_type_id
       created_at
       pan
       advancePercentage {
@@ -95,7 +95,7 @@ const CustomersContainer = () => {
   const customer_status_list = customer_status && customer_status.filter((data) => data.id !== 8)
 
   const record_count =
-    customer_aggregate.aggregate && customer_aggregate.aggregate.count
+  customer_aggregate && customer_aggregate.aggregate && customer_aggregate.aggregate.count
   const total_page = Math.ceil(record_count / filter.limit)
 
   console.log('record_count', record_count)
