@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import { Row, Col, Card } from 'antd'
-import Customers from '../customers'
+import { useState } from "react";
+import { Row, Col, Card } from "antd";
+import Customers from "../customers";
 
-import { gql, useQuery } from '@apollo/client'
+import { gql, useQuery } from "@apollo/client";
 
 const CUSTOMERS_QUERY = gql`
   query customers(
@@ -21,6 +21,7 @@ const CUSTOMERS_QUERY = gql`
         name: { _ilike: $name }
       }
     ) {
+      id
       cardcode
       customer_users {
         id
@@ -56,7 +57,7 @@ const CUSTOMERS_QUERY = gql`
       name
     }
   }
-`
+`;
 
 const CustomersContainer = () => {
   const initialFilter = {
@@ -64,61 +65,62 @@ const CustomersContainer = () => {
     name: null,
     mobile: null,
     offset: 0,
-    limit: 10
-  }
-  const [filter, setFilter] = useState(initialFilter)
+    limit: 10,
+  };
+  const [filter, setFilter] = useState(initialFilter);
 
   const customersQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
     statusId: filter.statusId,
     name: filter.name ? `%${filter.name}%` : null,
-    mobile: filter.mobile ? `%${filter.mobile}%` : null
-  }
+    mobile: filter.mobile ? `%${filter.mobile}%` : null,
+  };
 
   const { loading, error, data } = useQuery(CUSTOMERS_QUERY, {
     variables: customersQueryVars,
-    fetchPolicy: 'cache-and-network',
-    notifyOnNetworkStatusChange: true
-  })
+    fetchPolicy: "cache-and-network",
+    notifyOnNetworkStatusChange: true,
+  });
 
-  console.log('CustomersContainer error', error)
-  var customer = []
-  var customer_status = []
-  var customer_aggregate = 0
+  console.log("CustomersContainer error", error);
+  var customer = [];
+  var customer_status = [];
+  var customer_aggregate = 0;
   if (!loading) {
-    customer = data && data.customer
-    customer_status = data && data.customer_status
-    customer_aggregate = data && data.customer_aggregate
+    customer = data && data.customer;
+    customer_status = data && data.customer_status;
+    customer_aggregate = data && data.customer_aggregate;
   }
 
-  const customer_status_list = customer_status && customer_status.filter((data) => data.id !== 8)
+  const customer_status_list =
+    customer_status && customer_status.filter((data) => data.id !== 8);
 
   const record_count =
-    customer_aggregate.aggregate && customer_aggregate.aggregate.count
-  const total_page = Math.ceil(record_count / filter.limit)
+    customer_aggregate.aggregate && customer_aggregate.aggregate.count;
+  const total_page = Math.ceil(record_count / filter.limit);
 
-  console.log('record_count', record_count)
+  console.log("record_count", record_count);
   const onFilter = (value) => {
-    setFilter({ ...filter, statusId: value })
-  }
+    setFilter({ ...filter, statusId: value });
+  };
 
   const onNameSearch = (value) => {
-    setFilter({ ...filter, name: value })
-  }
+    setFilter({ ...filter, name: value });
+  };
 
   const onMobileSearch = (value) => {
-    setFilter({ ...filter, mobile: value })
-  }
+    setFilter({ ...filter, mobile: value });
+  };
 
   const onPageChange = (value) => {
-    setFilter({ ...filter, offset: value })
-  }
+    setFilter({ ...filter, offset: value });
+  };
 
   return (
     <Row>
       <Col sm={24}>
-        <Card size='small' className='card-body-0 border-top-blue'>
+        <Card size="small" className="card-body-0 border-top-blue">
           <Customers
             customers={customer}
             customer_status_list={customer_status_list}
@@ -134,7 +136,7 @@ const CustomersContainer = () => {
         </Card>
       </Col>
     </Row>
-  )
-}
+  );
+};
 
-export default CustomersContainer
+export default CustomersContainer;
