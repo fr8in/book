@@ -198,7 +198,7 @@ const Trucks = (props) => {
     {
       title: "Status",
       render: (text, record) =>
-        record.truck_status && record.truck_status.value,
+        record.truck_status && record.truck_status.name,
       width: "14%",
       filterDropdown: (
         <Radio.Group
