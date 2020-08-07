@@ -53,7 +53,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
             name
           }
           trip_status{
-            value
+            name
           }
         }
         
