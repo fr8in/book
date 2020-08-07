@@ -12,7 +12,6 @@ mutation PartnerGstEdit($gst:String,$cardcode:String) {
   }
 }
 `
-
 const PartnerGst = (props) => {
   const { cardcode, gst } = props
 
@@ -27,7 +26,7 @@ const PartnerGst = (props) => {
   const onSubmit = (text) => {
     updateGst({
       variables: {
-        cardcode,
+        cardcode: cardcode,
         gst: text
       }
     })

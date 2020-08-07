@@ -88,8 +88,8 @@ const PartnerDetail = (props) => {
         />
         <LabelWithData
           label=' TDS %'
-          data={<span>{partnerDetail.tds_percentage &&  partnerDetail.tds_percentage.value ? 
-            partnerDetail.tds_percentage.value : '-'}</span>}
+          data={<span>{partnerDetail.tds_percentage &&  partnerDetail.tds_percentage.name ? 
+            partnerDetail.tds_percentage.name : '-'}</span>}
           labelSpan={10}
           dataSpan={14}
         />
@@ -103,7 +103,7 @@ const PartnerDetail = (props) => {
           label='Advance Percentage'
           data={
             <AdvancePercentage
-            advance={partnerDetail.partner_advance_percentage && partnerDetail.partner_advance_percentage.value }
+            advance={partnerDetail.partner_advance_percentage && partnerDetail.partner_advance_percentage.name }
             advanceId={partnerDetail.partner_advance_percentage && partnerDetail.partner_advance_percentage.id }
             cardcode={partnerDetail.cardcode}
           />

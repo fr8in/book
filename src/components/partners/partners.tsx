@@ -6,12 +6,12 @@ import {
   SearchOutlined
 } from '@ant-design/icons'
 import Link from 'next/link'
-import useShowHide from '../../hooks/useShowHide'
 import KycReject from '../../components/partners/partnerKycReject'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from './comment'
 import KycApproval from '../partners/kycApproval'
 import { useState } from 'react'
+import moment from 'moment'
 
 const region_list = [
   { value: 1, text: 'North' },
@@ -31,7 +31,18 @@ const truck_count = [
 ]
 
 const PartnerKyc = (props) => {
-  const { partners, loading, onPageChange, filter, record_count, total_page, onFilter, partner_status_list, onNameSearch, onCardCodeSearch } = props
+  const {
+     partners,
+     loading, 
+     onPageChange, 
+     filter, 
+     record_count, 
+     total_page, 
+     onFilter, 
+     partner_status_list, 
+     onNameSearch, 
+     onCardCodeSearch 
+    } = props
 
   const [currentPage, setCurrentPage] = useState(1)
   const initial = {
@@ -39,11 +50,13 @@ const PartnerKyc = (props) => {
     commentVisible: false,
     title: '',
     approvalVisible: false,
-    approvalData: []
+    approvalData: [],
+    rejectVisible: false,
+    rejectData: []
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
   const value = { reject: false }
-  const { visible, onShow, onHide } = useShowHide(value)
+
 
   const handleStatus = (e) => {
     onFilter(e.target.value)
@@ -64,7 +77,7 @@ const PartnerKyc = (props) => {
   }
 
   const partner_status = partner_status_list && partner_status_list.map(data => {
-    return { value: data.id, label: data.value }
+    return { value: data.id, label: data.name }
   })
 
   const columnsCurrent = [
@@ -150,14 +163,8 @@ const PartnerKyc = (props) => {
       title: 'Registered At',
       dataIndex: 'created_at',
       width: '10%',
-      render: (text, record) => {
-        return text && text.length > 12 ? (
-          <Tooltip title={text}>
-            <span> {text.slice(0, 12) + '...'}</span>
-          </Tooltip>
-        ) : (
-          text
-        )
+      render:(text, record) => {
+        return text ? moment(text).format('DD-MMM-YY') : null
       }
     },
     {
@@ -177,7 +184,7 @@ const PartnerKyc = (props) => {
     },
     {
       title: 'Status',
-      render: (text, record) => record.partner_status && record.partner_status.value,
+      render: (text, record) => record.partner_status && record.partner_status.name,
       width: '14%',
       filterDropdown: (
         <Radio.Group
@@ -233,7 +240,8 @@ const PartnerKyc = (props) => {
             shape='circle'
             danger
             icon={<CloseOutlined />}
-            onClick={() => onShow('reject')}
+            onClick={() => 
+              handleShow('rejectVisible', null, 'rejectData', record.id)}
           />
         </Space>
       )
@@ -262,7 +270,17 @@ const PartnerKyc = (props) => {
           <Comment partnerId={object.commentData} />
         </Modal>
       )}
-      {visible.reject && <KycReject visible={visible.reject} onHide={onHide} />}
+      {object.rejectVisible && ( 
+         <Modal
+         title='Reject Partner'
+         visible={object.rejectVisible}
+         onCancel={handleHide}
+         footer= {null}
+         
+       >
+        <KycReject partnerId={object.rejectData} />
+      </Modal>
+      )}
       {object.approvalVisible && (
         <KycApproval
           visible={object.approvalVisible}
@@ -284,3 +302,4 @@ const PartnerKyc = (props) => {
 }
 
 export default PartnerKyc
+
