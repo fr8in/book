@@ -24,6 +24,7 @@
     "@zeit/next-sass": "^1.0.1",
     "antd": "^4.5.1",
     "graphql": "^15.3.0",
+    "lodash": "^4.17.19",
     "moment": "^2.27.0",
     "next": "latest",
     "prop-types": "^15.7.2",

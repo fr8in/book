@@ -1,10 +1,17 @@
 import { useState } from 'react'
-import { Table, Tooltip, Input, Pagination, Checkbox } from 'antd'
+import { Table, Tooltip, Input, Pagination, Checkbox, Button } from 'antd'
 import Link from 'next/link'
 import moment from 'moment'
-import { SearchOutlined } from '@ant-design/icons'
+import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
+import TripFeedBack from '../trips/tripFeedBack'
+import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 
-const Trips = (props) => {
+const TripsTracking = (props) => {
+  const initial = {
+    commentData: [],
+    commentVisible: false
+  }
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
   const {
     trips,
     loading,
@@ -28,6 +35,7 @@ const Trips = (props) => {
     setCurrentPage(page)
     onPageChange(newOffset)
   }
+
   const handlePartnerName = (e) => {
     onPartnerNameSearch(e.target.value)
     setCurrentPage(1)
@@ -216,25 +224,36 @@ const Trips = (props) => {
       )
     },
     {
-      title: 'SO Price',
-      render: (record) => {
-        console.log()
-        return (record.trip_prices && record.trip_prices.length > 0 && record.trip_prices[0].customer_price)
-      },
+      title: 'Aging',
+      dataIndex: 'tat',
+      key: 'tat',
       width: '8%'
     },
     {
-      title: 'PO Price',
-      render: (record) => {
-        return (record.trip_prices && record.trip_prices.length > 0 && record.trip_prices[0].partner_price)
-      },
-      width: '8%'
+      title: 'Comment',
+      width: '12%',
+      render: (text, record) => {
+        const comment = record.trip_comments && record.trip_comments.length > 0 &&
+          record.trip_comments[0].description ? record.trip_comments[0].description : '-'
+        return comment && comment.length > 12 ? (
+          <Tooltip title={comment}>
+            <span> {comment.slice(0, 12) + '...'}</span>
+          </Tooltip>
+        ) : (
+          comment
+        )
+      }
     },
     {
-      title: 'Trip KM',
-      dataIndex: 'km',
-      key: 'km',
-      width: '8%'
+      render: (text, record) => {
+        return (
+          <span>
+            <Tooltip title='Comment'>
+              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
+            </Tooltip>
+          </span>)
+      },
+      width: '4%'
     }
   ]
   return (
@@ -258,8 +277,14 @@ const Trips = (props) => {
             onChange={pageChange}
             className='text-right p10'
           />) : null}
+      {object.commentVisible &&
+        <TripFeedBack
+          visible={object.commentVisible}
+          tripid={object.commentData}
+          onHide={handleHide}
+        />}
     </>
   )
 }
 
-export default Trips
+export default TripsTracking
