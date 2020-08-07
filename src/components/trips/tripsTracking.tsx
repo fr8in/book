@@ -5,8 +5,11 @@ import moment from 'moment'
 import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
 import TripFeedBack from '../trips/tripFeedBack'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
+import PartnerPodReceipt from '../partners/partnerPodReceipt'
+import CustomerPodReceipt from '../customers/customerPodReceipt'
 
 const TripsTracking = (props) => {
+  const { visible, onHide } = props
   const initial = {
     commentData: [],
     commentVisible: false
@@ -29,6 +32,19 @@ const TripsTracking = (props) => {
   } = props
 
   const [currentPage, setCurrentPage] = useState(1)
+
+  const [selectedTrips, setSelectedTrips] = useState([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+
+  const onSelectChange = (selectedRowKeys, selectedRows) => {
+    const tripList = selectedRows && selectedRows.length > 0 ? selectedRows.map(row => row.id) : []
+    setSelectedRowKeys(selectedRowKeys)
+    setSelectedTrips(tripList)
+  }
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange
+  }
 
   const pageChange = (page, pageSize) => {
     const newOffset = page * pageSize - filter.limit
@@ -256,12 +272,14 @@ const TripsTracking = (props) => {
       width: '4%'
     }
   ]
+
   return (
     <>
       <Table
         columns={columns}
         dataSource={trips}
         rowKey={record => record.id}
+        rowSelection={rowSelection}
         size='small'
         scroll={{ x: 1156 }}
         pagination={false}
@@ -283,6 +301,20 @@ const TripsTracking = (props) => {
           tripid={object.commentData}
           onHide={handleHide}
         />}
+
+      {visible.pod_receipt && (
+        <PartnerPodReceipt
+          visible={visible.pod_receipt}
+          onHide={onHide}
+          trip_ids={selectedTrips}
+        />
+      )}
+      {visible.pod_dispatch && (
+        <CustomerPodReceipt
+          visible={visible.pod_dispatch}
+          onHide={onHide}
+        />
+      )}
     </>
   )
 }
