@@ -56,7 +56,7 @@ const TripDetailContainer = (props) => {
           title={title}
           extra={
             <Space>
-              <Tag className='status'>{trip_info.trip_status && trip_info.trip_status.value}</Tag>
+              <Tag className='status'>{trip_info.trip_status && trip_info.trip_status.name}</Tag>
             </Space>
           }
         />
@@ -70,10 +70,10 @@ const TripDetailContainer = (props) => {
               <TripLr trip_info={trip_info} />
             </Panel>
           </Collapse>
-          <TripTime trip_info={trip_info} />
+          <TripTime trip_info={trip_info} trip_id={trip_info.id}/>
           <Collapse accordion className='small mt10'>
             <Panel header='Customer/Partner - Billing Comment' key='1'>
-              <BillingComment />
+              <BillingComment trip_id={trip_info.id} />
             </Panel>
           </Collapse>
         </Col>

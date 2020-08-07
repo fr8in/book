@@ -54,7 +54,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       }
       trip_status{
         id
-        value
+        name
       }
       trip_prices(limit:1, where:{deleted_at:{_is_null:true}})
       {
@@ -63,6 +63,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         partner_price
         cash
         to_pay
+        comment
         mamul
         including_loading
         including_unloading
