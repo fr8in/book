@@ -7,19 +7,20 @@ import get from 'lodash/get'
 const DeliveredContainer = () => {
   const initialFilter = {
     offset: 0,
-    limit: 3,
+    limit: 10,
     partnername: null,
     customername: null,
     sourcename: null,
     destinationname: null,
     truckno: null,
-    trip_statusId: [9, 10],
+    trip_statusName: ['Delivered'],
     id: null
   }
   const [filter, setFilter] = useState(initialFilter)
 
   const where = {
-    _and: [{ trip_status: { id: { _in: filter.trip_statusId } } }, { trip_pod_status: { name: { _neq: 'POD Verified' } } }],
+    _and: [{ trip_status: { name: { _in: filter.trip_statusName && filter.trip_statusName.length > 0 ? filter.trip_statusName : initialFilter.trip_statusName } } },
+      { trip_pod_status: { name: { _neq: 'POD Verified' } } }],
     id: { _in: filter.id ? filter.id : null },
     partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
     customer: { name: { _ilike: filter.customername ? `%${filter.customername}%` : null } },
@@ -32,7 +33,7 @@ const DeliveredContainer = () => {
     offset: filter.offset,
     limit: filter.limit,
     where: where,
-    trip_statusId: initialFilter.trip_statusId
+    trip_statusName: initialFilter.trip_statusName
   }
 
   const { loading, error, data } = useQuery(
@@ -60,25 +61,25 @@ const DeliveredContainer = () => {
     setFilter({ ...filter, offset: value })
   }
   const onPartnerNameSearch = (value) => {
-    setFilter({ ...filter, partnername: value })
+    setFilter({ ...filter, partnername: value, offset: 0 })
   }
   const onCustomerNameSearch = (value) => {
-    setFilter({ ...filter, customername: value })
+    setFilter({ ...filter, customername: value, offset: 0 })
   }
   const onSourceNameSearch = (value) => {
-    setFilter({ ...filter, sourcename: value })
+    setFilter({ ...filter, sourcename: value, offset: 0 })
   }
   const onDestinationNameSearch = (value) => {
-    setFilter({ ...filter, destinationname: value })
+    setFilter({ ...filter, destinationname: value, offset: 0 })
   }
   const onTruckNoSearch = (value) => {
-    setFilter({ ...filter, truckno: value })
+    setFilter({ ...filter, truckno: value, offset: 0 })
   }
   const onFilter = (value) => {
-    setFilter({ ...filter, trip_statusId: value })
+    setFilter({ ...filter, trip_statusName: value, offset: 0 })
   }
   const onTripIdSearch = (value) => {
-    setFilter({ ...filter, id: value })
+    setFilter({ ...filter, id: value, offset: 0 })
   }
   return (
     <TripsTracking

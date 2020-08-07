@@ -38,28 +38,35 @@ const TripsTracking = (props) => {
 
   const handlePartnerName = (e) => {
     onPartnerNameSearch(e.target.value)
+    setCurrentPage(1)
   }
   const handleCustomerName = (e) => {
     onCustomerNameSearch(e.target.value)
+    setCurrentPage(1)
   }
   const handleSourceName = (e) => {
     onSourceNameSearch(e.target.value)
+    setCurrentPage(1)
   }
   const handleDestinationName = (e) => {
     onDestinationNameSearch(e.target.value)
+    setCurrentPage(1)
   }
   const handleTruckNo = (e) => {
     onTruckNoSearch(e.target.value)
+    setCurrentPage(1)
   }
   const handleStatus = (checked) => {
     onFilter(checked)
+    setCurrentPage(1)
   }
   const handleTripId = (e) => {
     onTripIdSearch(e.target.value)
+    setCurrentPage(1)
   }
 
   const trip_status = trip_status_list.map((data) => {
-    return { value: data.id, label: data.name }
+    return { value: data.name, label: data.name }
   })
 
   const columns = [
@@ -210,7 +217,7 @@ const TripsTracking = (props) => {
       filterDropdown: (
         <Checkbox.Group
           options={trip_status}
-          defaultValue={filter.trip_statusId}
+          defaultValue={filter.trip_statusName}
           onChange={handleStatus}
           className='filter-drop-down'
         />
