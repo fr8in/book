@@ -150,7 +150,7 @@ const TruckDetailContainer = (props) => {
               <TabPane tab='Details' key='1'>
                 <Row>
                   <Col xs={24} className='p20'>
-                    <TruckInfo truck_info = {truckInfo} />
+                    <TruckInfo truck_info = {truckInfo} id={truckInfo.id}/>
                     <Divider />
                     <Documents truck_id = {truckInfo.id}/>
                     <Divider />
