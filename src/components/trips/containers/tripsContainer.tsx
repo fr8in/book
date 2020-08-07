@@ -7,8 +7,6 @@ import { TRIPS_QUERY } from './query/tripsQuery'
 import useShowHide from '../../../hooks/useShowHide'
 import Trips from '../trips'
 import TitleWithCount from '../../common/titleWithCount'
-import PartnerPodReceipt from '../../partners/partnerPodReceipt'
-import CustomerPodReceipt from '../../customers/customerPodReceipt'
 import DeliveredContainer from '../containers/deliveredContainer'
 import PodVerifiedContainer from '../containers/podVerifiedContainer'
 import InvoicedContainer from '../containers/invoicedContainer'
@@ -153,27 +151,15 @@ const TripsContainer = () => {
           />
         </TabPane>
         <TabPane tab={<TitleWithCount name='Delivered' value={delivered_count} />} key='2'>
-          <DeliveredContainer />
+          <DeliveredContainer visible={visible} onHide={onHide} />
         </TabPane>
         <TabPane tab={<TitleWithCount name='POD Verified' value={pod_count} />} key='3'>
           <PodVerifiedContainer />
         </TabPane>
         <TabPane tab={<TitleWithCount name='Invoiced' value={invoiced_count} />} key='4'>
-          <InvoicedContainer />
+          <InvoicedContainer visible={visible} onHide={onHide} />
         </TabPane>
       </Tabs>
-      {visible.pod_receipt && (
-        <PartnerPodReceipt
-          visible={visible.pod_receipt}
-          onHide={onHide}
-        />
-      )}
-      {visible.pod_dispatch && (
-        <CustomerPodReceipt
-          visible={visible.pod_dispatch}
-          onHide={onHide}
-        />
-      )}
     </Card>
   )
 }
