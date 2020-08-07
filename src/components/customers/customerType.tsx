@@ -5,17 +5,17 @@ import InlineSelect from '../common/inlineSelect'
 const CUSTOMERS_TYPE_QUERY = gql`
   query customerType{
   customer_type{
-    comment
+    id
     name
   }
 }
 `
 const UPDATE_CUSTOMER_TYPE_MUTATION = gql`
 mutation customerException($type_id:customer_type_enum,$cardcode:String) {
-  update_customer(_set: {type_id: $type_id}, where: {cardcode: {_eq: $cardcode}}) {
+  update_customer(_set: {customer_type_id: $type_id}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id
-      type_id
+      customer_type_id
     }
   }
 }

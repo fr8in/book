@@ -66,9 +66,9 @@ const GlobalSearch = (props) => {
       bodyStyle={{ padding: 0 }}
     >
       {loading ? <Loading /> : no_data ? (
-        <p className='loading text-gray'>
+        <div className='hv-center text-gray'>
           {search && search.length >= 3 ? 'No Result' : <div className='text-center'>Search...<p>Min three char required</p></div>}
-        </p>) : ''}
+        </div>) : ''}
       {customer && customer.length > 0 &&
         <span>
           <h4 className='search-title'>Customer</h4>

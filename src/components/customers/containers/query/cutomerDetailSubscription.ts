@@ -12,7 +12,7 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
       gst
       managed
       pan
-      type_id
+      customer_type_id
       virtual_account
       status {
         id
@@ -26,8 +26,9 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         id
         email
       }
-      type {
-        comment
+      customer_type {
+        id
+        name
       }
       customer_users {
         name
