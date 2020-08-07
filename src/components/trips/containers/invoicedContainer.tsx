@@ -4,7 +4,7 @@ import { TRIPS_QUERY } from './query/tripsQuery'
 import { useState } from 'react'
 import get from 'lodash/get'
 
-const DeliveredContainer = () => {
+const DeliveredContainer = (props) => {
   const initialFilter = {
     offset: 0,
     limit: 10,
