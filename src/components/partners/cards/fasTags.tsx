@@ -9,37 +9,10 @@ import {
   StopOutlined,
   SearchOutlined
 } from '@ant-design/icons'
-import Cards from '../../../../mock/card/cards'
-import { gql, useSubscription } from '@apollo/client'
+//import Cards from '../../../../mock/card/cards'
 
-export const FASTAG_SUBSCRIPTION = gql`
-subscription partner_fastag_tag {
-  fastag_tag
-  {
-    id
-    tagId
-    deviceId
-    companyId    
-    truck {
-      id
-      truck_no
-    }
-    partner {
-      id
-      cardcode
-      name
-    }
-    balance
-    tag_status {
-      id
-      status
-    }
-  }
-}
-`
-
-const FasTags = () => {
- 
+const FasTags = (props) => {
+ const { fastag }= props
   const initial = {
     suspendVisible: false,
     reversalVisible: false,
@@ -48,20 +21,6 @@ const FasTags = () => {
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
  
-  const { loading, error, data } = useSubscription(
-    FASTAG_SUBSCRIPTION
-  )
-
-  console.log('PartnerDetailContainer Error', error)
-  console.log('PartnerDetailContainer Data', data)
-
-  
-  var fastag = []
-  if (!loading) {
-    fastag = data.fastag_tag      
-  }
-  
- console.log('fastag_tag',fastag)
  
  const onChange = (checked) => {
   console.log(`switch to ${checked}`)
@@ -71,13 +30,12 @@ const FasTags = () => {
       title: 'Tag Id',
       dataIndex: 'tagId',
       key: 'tagId',
-      width: '18%',
+      width: '17%',
     },
     {
       title: 'Truck No',
-      //dataIndex: 'truckNo',
       key: 'truckNo',
-      width: '10%',
+      width: '9%',
       render: (text, record) => {
         const truckNo = record.truck && record.truck.truck_no
         return (
@@ -89,24 +47,22 @@ const FasTags = () => {
     },
     {
       title: 'ST Code',
-     // dataIndex: 'stCode',
       key: 'stCode',
       width: '8%',
-      render: (text, record) => record.partner && record.partner.cardcode,
+      render: (text, record) => {
+        const partner_id = record.partner && record.partner.cardcode
+        return (
+          <Link href='partners/[id]' as={`partners/${partner_id}`}>
+            <a>{partner_id}</a>
+          </Link>
+        )
+      }
     },
     {
       title: 'Partner',
-      //dataIndex: 'partner',
       key: 'partner',
       width: '12%',
-      render: (text, record) => {
-        const partner_name = record.partner && record.partner.name
-        return (
-          <Link href='partners/[id]' as={`partners/${partner_name}`}>
-            <a>{partner_name}</a>
-          </Link>
-        )
-      },
+      render: (text, record) => record.partner && record.partner.name,
       filterDropdown: (
         <div>
           <Input placeholder='Search' id='partner' name='partner' type='number' />
@@ -120,12 +76,12 @@ const FasTags = () => {
       title: 'Tag Bal',
       dataIndex: 'balance',
       sorter: (a, b) => (a.tagBal > b.tagBal ? 1 : -1),
-      width: '9%'
+      width: '8%'
     },
     {
       title: 'T.Status',
       render: (text, record) => record.tag_status && record.tag_status.status,
-      width: '8%'
+      width: '11%'
     },
 
     {
