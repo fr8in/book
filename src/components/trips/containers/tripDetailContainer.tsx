@@ -70,10 +70,10 @@ const TripDetailContainer = (props) => {
               <TripLr trip_info={trip_info} />
             </Panel>
           </Collapse>
-          <TripTime trip_info={trip_info} />
+          <TripTime trip_info={trip_info} trip_id={trip_info.id}/>
           <Collapse accordion className='small mt10'>
             <Panel header='Customer/Partner - Billing Comment' key='1'>
-              <BillingComment />
+              <BillingComment trip_id={trip_info.id} />
             </Panel>
           </Collapse>
         </Col>
