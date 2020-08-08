@@ -9,14 +9,37 @@ import {
   StopOutlined,
   SearchOutlined
 } from '@ant-design/icons'
-
 import Cards from '../../../../mock/card/cards'
+import { gql, useSubscription } from '@apollo/client'
 
-const onChange = (checked) => {
-  console.log(`switch to ${checked}`)
+export const FASTAG_SUBSCRIPTION = gql`
+subscription partner_fastag_tag {
+  fastag_tag
+  {
+    id
+    tagId
+    deviceId
+    companyId    
+    truck {
+      id
+      truck_no
+    }
+    partner {
+      id
+      cardcode
+      name
+    }
+    balance
+    tag_status {
+      id
+      status
+    }
+  }
 }
+`
 
 const FasTags = () => {
+ 
   const initial = {
     suspendVisible: false,
     reversalVisible: false,
@@ -24,42 +47,63 @@ const FasTags = () => {
     reversalData: []
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+ 
+  const { loading, error, data } = useSubscription(
+    FASTAG_SUBSCRIPTION
+  )
 
+  console.log('PartnerDetailContainer Error', error)
+  console.log('PartnerDetailContainer Data', data)
+
+  
+  var fastag = []
+  if (!loading) {
+    fastag = data.fastag_tag      
+  }
+  
+ console.log('fastag_tag',fastag)
+ 
+ const onChange = (checked) => {
+  console.log(`switch to ${checked}`)
+}
   const CardsFastag = [
     {
       title: 'Tag Id',
       dataIndex: 'tagId',
       key: 'tagId',
-      width: '17%'
+      width: '18%',
     },
     {
       title: 'Truck No',
-      dataIndex: 'truckNo',
+      //dataIndex: 'truckNo',
       key: 'truckNo',
-      width: '9%',
+      width: '10%',
       render: (text, record) => {
+        const truckNo = record.truck && record.truck.truck_no
         return (
-          <Link href='trucks/[id]' as={`trucks/${record.id}`}>
-            <a>{text}</a>
+          <Link href='trucks/[id]' as={`trucks/${truckNo}`}>
+            <a>{truckNo}</a>
           </Link>
         )
       }
     },
     {
       title: 'ST Code',
-      dataIndex: 'stCode',
+     // dataIndex: 'stCode',
       key: 'stCode',
-      width: '8%'
+      width: '8%',
+      render: (text, record) => record.partner && record.partner.cardcode,
     },
     {
       title: 'Partner',
-      dataIndex: 'partner',
+      //dataIndex: 'partner',
       key: 'partner',
-      width: '11%',
+      width: '12%',
       render: (text, record) => {
+        const partner_name = record.partner && record.partner.name
         return (
-          <Link href='partners/[id]' as={`partners/${record.id}`}>
-            <a>{text}</a>
+          <Link href='partners/[id]' as={`partners/${partner_name}`}>
+            <a>{partner_name}</a>
           </Link>
         )
       },
@@ -73,32 +117,27 @@ const FasTags = () => {
       )
     },
     {
-      title: 'Partner State',
-      dataIndex: 'partnerStates',
-      width: '10%'
-    },
-    {
       title: 'Tag Bal',
-      dataIndex: 'tagBal',
+      dataIndex: 'balance',
       sorter: (a, b) => (a.tagBal > b.tagBal ? 1 : -1),
-      width: '8%'
+      width: '9%'
     },
     {
       title: 'T.Status',
-      dataIndex: 'tStatus',
-      width: '6%'
+      render: (text, record) => record.tag_status && record.tag_status.status,
+      width: '8%'
     },
 
     {
       title: 'C.Status',
       dataIndex: 'cStatus',
-      width: '6%',
+      width: '8%',
       render: () => <Switch size='small' defaultChecked onChange={onChange} />
     },
     {
       title: 'Reverse',
       dataIndex: 'Reverse',
-      width: '7%',
+      width: '8%',
       render: (text, record) => (
         <Button
           size='small'
@@ -117,7 +156,7 @@ const FasTags = () => {
           <DownloadOutlined />
         </Button>
       ),
-      width: '7%',
+      width: '8%',
       render: (text, record) => (
         <Button
           size='small'
@@ -135,7 +174,7 @@ const FasTags = () => {
     <>
       <Table
         columns={CardsFastag}
-        dataSource={Cards}
+        dataSource={fastag}
         rowKey={(record) => record.tagId}
         size='small'
         scroll={{ x: 1156, y: 400 }}
