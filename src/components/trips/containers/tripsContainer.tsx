@@ -151,13 +151,13 @@ const TripsContainer = () => {
           />
         </TabPane>
         <TabPane tab={<TitleWithCount name='Delivered' value={delivered_count} />} key='2'>
-          <DeliveredContainer visible={visible} onHide={onHide} />
+          <DeliveredContainer visible_receipt={visible.pod_receipt} onHide={onHide} />
         </TabPane>
         <TabPane tab={<TitleWithCount name='POD Verified' value={pod_count} />} key='3'>
           <PodVerifiedContainer />
         </TabPane>
         <TabPane tab={<TitleWithCount name='Invoiced' value={invoiced_count} />} key='4'>
-          <InvoicedContainer visible={visible} onHide={onHide} />
+          <InvoicedContainer visible_dispatch={visible.pod_dispatch} onHide={onHide} />
         </TabPane>
       </Tabs>
     </Card>
