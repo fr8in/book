@@ -122,7 +122,7 @@ const PodReceiptAndDispatch = (props) => {
   const empObjects = trip_ids && trip_ids.length > 0 ? trip_ids.map(id => {
     return {
       trip_id: id,
-      created_by_id: 1,
+      created_by_id: 1, // TODO USER ID GET from AUTH
       by_hand_id: podData.emp_id
     }
   }) : null
@@ -130,7 +130,7 @@ const PodReceiptAndDispatch = (props) => {
   const docketObjects = trip_ids && trip_ids.length > 0 ? trip_ids.map(id => {
     return {
       trip_id: id,
-      created_by_id: 1,
+      created_by_id: 1, // TODO USER ID GET from AUTH
       docket: podData.docket,
       courier_id: podData.courier
     }
