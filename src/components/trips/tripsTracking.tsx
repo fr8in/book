@@ -6,8 +6,6 @@ import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
 import TripFeedBack from '../trips/tripFeedBack'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import PodReceiptAndDispatch from '../trips/podReceiptAndDispatch'
-import PartnerPodReceipt from '../partners/partnerPodReceipt'
-import CustomerPodReceipt from '../customers/customerPodReceipt'
 
 const TripsTracking = (props) => {
   const initial = {
