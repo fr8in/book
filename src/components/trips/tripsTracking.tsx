@@ -5,11 +5,11 @@ import moment from 'moment'
 import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
 import TripFeedBack from '../trips/tripFeedBack'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
+import PodReceiptAndDispatch from '../trips/podReceiptAndDispatch'
 import PartnerPodReceipt from '../partners/partnerPodReceipt'
 import CustomerPodReceipt from '../customers/customerPodReceipt'
 
 const TripsTracking = (props) => {
-  const { visible, onHide } = props
   const initial = {
     commentData: [],
     commentVisible: false
@@ -28,7 +28,11 @@ const TripsTracking = (props) => {
     onSourceNameSearch,
     onDestinationNameSearch,
     onTruckNoSearch,
-    onTripIdSearch
+    onTripIdSearch,
+    visible_receipt,
+    visible_dispatch,
+    onHide,
+    verified
   } = props
 
   const [currentPage, setCurrentPage] = useState(1)
@@ -286,7 +290,7 @@ const TripsTracking = (props) => {
         columns={columns}
         dataSource={trips}
         rowKey={record => record.id}
-        rowSelection={rowSelection}
+        rowSelection={!verified ? rowSelection : null}
         size='small'
         scroll={{ x: 1156 }}
         pagination={false}
@@ -307,18 +311,21 @@ const TripsTracking = (props) => {
           tripid={object.commentData}
           onHide={handleHide}
         />}
-      {visible.pod_receipt && (
-        <PartnerPodReceipt
-          visible={visible.pod_receipt}
+      {visible_receipt && (
+        <PodReceiptAndDispatch
+          visible={visible_receipt}
           onHide={onHide}
           trip_ids={selectedTrips}
           onRemoveTag={onRemoveTag}
         />
       )}
-      {visible.pod_dispatch && (
-        <CustomerPodReceipt
-          visible={visible.pod_dispatch}
+      {visible_dispatch && (
+        <PodReceiptAndDispatch
+          visible={visible_dispatch}
           onHide={onHide}
+          trip_ids={selectedTrips}
+          onRemoveTag={onRemoveTag}
+          podDispatch
         />
       )}
     </>
