@@ -11,8 +11,14 @@ import { gql, useQuery } from '@apollo/client'
 
 
 const TRUCKS_QUERY = gql`
-query trucks {
-    truck( where: {truck_status: {name: {_in: ["Breakdown","Deactivated"],}}}) {
+query trucks(
+  $offset: Int!
+  $limit: Int!){
+    truck(
+      offset: $offset
+      limit: $limit
+       where: {truck_status: {name: {_in: ["Breakdown","Deactivated"],}}}) {
+      id
       truck_no
       truck_status {
         id
@@ -38,42 +44,60 @@ const status = [
 ];
 
 const TruckVerification = (props) => {
- 
   
-  
-  
-
-
   const initial = {
-    reject: false,
+    offset: 0,
+    limit: 2,
     truckActivationVisible: false,
     truckActivationData: [],
+    truckRejectVisible: false,
+    truckRejectData: []
   };
 
-  const { visible, onShow, onHide } = useShowHide(initial);
+  const [filter, setFilter] = useState(initial)
+  const [currentPage, setCurrentPage] = useState(1)
+
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial);
 
+  const truckQueryVars = {
+    offset: filter.offset,
+    limit: filter.limit,
+  }
 
   const { loading, error, data } = useQuery(TRUCKS_QUERY, {
-    
+   variables: truckQueryVars,
+      fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true
   })
 
   console.log('TrucksVerification error', error)
 
   var truck = []
- 
+  var truck_aggregate = 0;
   
   if (!loading) {
   truck = data && data.truck
-  
+  truck_aggregate = data && data.truck_aggregate;
+  }
+
+  const record_count =
+    truck_aggregate &&
+    truck_aggregate.aggregate &&
+    truck_aggregate.aggregate.count;
+
+  const onPageChange = (value) => {
+    setFilter({ ...filter, offset: value })
   }
 
  
- 
 
-  
-  const columnsCurrent = [
+  const pageChange = (page, pageSize) => {
+    const newOffset = page * pageSize - filter.limit
+    setCurrentPage(page)
+    onPageChange(newOffset)
+  }
+
+   const columnsCurrent = [
     {
       title: "Truck No",
       dataIndex: "truck_no",
@@ -132,7 +156,7 @@ const TruckVerification = (props) => {
                   "truckActivationVisible",
                   null,
                   "truckActivationData",
-                  record
+                  record.id
                 )
               }
             />
@@ -142,7 +166,14 @@ const TruckVerification = (props) => {
               shape="circle"
               danger
               icon={<CloseOutlined />}
-              onClick={() => onShow("reject")}
+              onClick={() =>
+                handleShow(
+                  "truckRejectVisible",
+                  "Reject Truck",
+                  "truckRejectData",
+                  record.id
+                )
+              }
             />
           </Space>
         );
@@ -166,15 +197,28 @@ const TruckVerification = (props) => {
         className="withAction"
        
       />
-      
-      {visible.reject && (
-        <TruckReject visible={visible.reject} onHide={onHide} />
-      )}
+      {!loading && record_count
+        ? (
+          <Pagination
+            size='small'
+            current={currentPage}
+            pageSize={filter.limit}
+            total={record_count}
+            onChange={pageChange}
+            className='text-right p10'
+          />) : null}
       {object.truckActivationVisible && (
         <TruckActivation
           visible={object.truckActivationVisible}
           onHide={handleHide}
           data={object.truckActivationData}
+        />
+      )}
+       {object.truckRejectVisible && (
+        <TruckReject
+          visible={object.truckRejectVisible}
+          onHide={handleHide}
+          truck_id={object.truckRejectData}
         />
       )}
     </>
