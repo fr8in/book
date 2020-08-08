@@ -1,10 +1,20 @@
 import { useState } from 'react'
-import { Table, Tooltip, Input, Pagination, Checkbox } from 'antd'
+import { Table, Tooltip, Input, Pagination, Checkbox, Button } from 'antd'
 import Link from 'next/link'
 import moment from 'moment'
-import { SearchOutlined } from '@ant-design/icons'
+import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
+import TripFeedBack from '../trips/tripFeedBack'
+import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
+import PartnerPodReceipt from '../partners/partnerPodReceipt'
+import CustomerPodReceipt from '../customers/customerPodReceipt'
 
-const Trips = (props) => {
+const TripsTracking = (props) => {
+  const { visible, onHide } = props
+  const initial = {
+    commentData: [],
+    commentVisible: false
+  }
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
   const {
     trips,
     loading,
@@ -23,11 +33,32 @@ const Trips = (props) => {
 
   const [currentPage, setCurrentPage] = useState(1)
 
+  const [selectedTrips, setSelectedTrips] = useState([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+
+  const onSelectChange = (selectedRowKeys, selectedRows) => {
+    const trip_list = selectedRows && selectedRows.length > 0 ? selectedRows.map(row => row.id) : []
+    setSelectedRowKeys(selectedRowKeys)
+    setSelectedTrips(trip_list)
+  }
+  const onRemoveTag = (removed) => {
+    const trip_list = selectedTrips.filter(t_id => t_id !== removed)
+    const selectedRows = selectedRowKeys.filter(selectedRowKeys => selectedRowKeys !== removed)
+    setSelectedRowKeys(selectedRows)
+    setSelectedTrips(trip_list)
+  }
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange
+  }
+
   const pageChange = (page, pageSize) => {
     const newOffset = page * pageSize - filter.limit
     setCurrentPage(page)
     onPageChange(newOffset)
   }
+
   const handlePartnerName = (e) => {
     onPartnerNameSearch(e.target.value)
     setCurrentPage(1)
@@ -216,50 +247,82 @@ const Trips = (props) => {
       )
     },
     {
-      title: 'SO Price',
-      render: (record) => {
-        console.log()
-        return (record.trip_prices && record.trip_prices.length > 0 && record.trip_prices[0].customer_price)
-      },
+      title: 'Aging',
+      dataIndex: 'tat',
+      key: 'tat',
       width: '8%'
     },
     {
-      title: 'PO Price',
-      render: (record) => {
-        return (record.trip_prices && record.trip_prices.length > 0 && record.trip_prices[0].partner_price)
-      },
-      width: '8%'
+      title: 'Comment',
+      width: '12%',
+      render: (text, record) => {
+        const comment = record.trip_comments && record.trip_comments.length > 0 &&
+          record.trip_comments[0].description ? record.trip_comments[0].description : '-'
+        return comment && comment.length > 12 ? (
+          <Tooltip title={comment}>
+            <span> {comment.slice(0, 12) + '...'}</span>
+          </Tooltip>
+        ) : (
+          comment
+        )
+      }
     },
     {
-      title: 'Trip KM',
-      dataIndex: 'km',
-      key: 'km',
-      width: '8%'
+      render: (text, record) => {
+        return (
+          <span>
+            <Tooltip title='Comment'>
+              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
+            </Tooltip>
+          </span>)
+      },
+      width: '4%'
     }
   ]
+
   return (
     <>
       <Table
         columns={columns}
         dataSource={trips}
         rowKey={record => record.id}
+        rowSelection={rowSelection}
         size='small'
         scroll={{ x: 1156 }}
         pagination={false}
         loading={loading}
       />
-      {!loading && record_count
-        ? (
-          <Pagination
-            size='small'
-            current={currentPage}
-            pageSize={filter.limit}
-            total={record_count}
-            onChange={pageChange}
-            className='text-right p10'
-          />) : null}
+      {!loading && record_count ? (
+        <Pagination
+          size='small'
+          current={currentPage}
+          pageSize={filter.limit}
+          total={record_count}
+          onChange={pageChange}
+          className='text-right p10'
+        />) : null}
+      {object.commentVisible &&
+        <TripFeedBack
+          visible={object.commentVisible}
+          tripid={object.commentData}
+          onHide={handleHide}
+        />}
+      {visible.pod_receipt && (
+        <PartnerPodReceipt
+          visible={visible.pod_receipt}
+          onHide={onHide}
+          trip_ids={selectedTrips}
+          onRemoveTag={onRemoveTag}
+        />
+      )}
+      {visible.pod_dispatch && (
+        <CustomerPodReceipt
+          visible={visible.pod_dispatch}
+          onHide={onHide}
+        />
+      )}
     </>
   )
 }
 
-export default Trips
+export default TripsTracking

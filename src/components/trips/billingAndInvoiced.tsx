@@ -12,6 +12,7 @@ subscription customerBilling($cardcode: String!, $id: Int!) {
     trips(where: {id: {_eq: $id}}){
       id
       gst
+      hsn
       customer_branch{
         id
         branch_name
@@ -113,7 +114,7 @@ const BillingAndInvoiced = (props) => {
               <Form.Item
                 label='HSN Number'
               >
-                <Input placeholder='HSN Number' />
+                <Input  placeholder='HSN Number' />
               </Form.Item>
             </Col>
           </Row>

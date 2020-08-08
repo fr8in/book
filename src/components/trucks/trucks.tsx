@@ -73,7 +73,7 @@ const Trucks = (props) => {
         return (
           <Link href="trucks/[id]" as={`trucks/${record.truck_no}`}>
             <a>
-              {record.truck_no}-{record.truck_type.name}
+              {record.truck_no}-{record.truck_type && record.truck_type.name}
             </a>
           </Link>
         );
@@ -198,7 +198,7 @@ const Trucks = (props) => {
     {
       title: "Status",
       render: (text, record) =>
-        record.truck_status && record.truck_status.value,
+        record.truck_status && record.truck_status.name,
       width: "14%",
       filterDropdown: (
         <Radio.Group

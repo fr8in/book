@@ -1,20 +1,44 @@
-import { useState } from 'react'
-import { Table, Button, Space, Tooltip, Input, Popconfirm, Radio, Pagination } from 'antd'
+import { useState } from "react";
+import {
+  Table,
+  Button,
+  Space,
+  Tooltip,
+  Input,
+  Popconfirm,
+  Radio,
+  Pagination,
+  message,
+} from "antd";
 import {
   CloseOutlined,
   CheckOutlined,
   EyeOutlined,
   UploadOutlined,
-  SearchOutlined
-} from '@ant-design/icons'
-import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
-import Link from 'next/link'
-import BranchCreation from '../customers/branchCreation'
-import CustomerAdvancePercentage from './customerAdvancePercentage'
+  SearchOutlined,
+} from "@ant-design/icons";
+import useShowHideWithRecord from "../../hooks/useShowHideWithRecord";
+import Link from "next/link";
+import BranchCreation from "../customers/branchCreation";
+import CustomerAdvancePercentage from "./customerAdvancePercentage";
+import { gql, useMutation } from "@apollo/client";
+
+const CUSTOMER_REJECT_MUTATION = gql`
+  mutation customerReject($status_id: Int, $id: Int!) {
+    update_customer_by_pk(
+      pk_columns: { id: $id }
+      _set: { status_id: $status_id }
+    ) {
+      id
+      name
+    }
+  }
+`;
 
 const CustomerKyc = (props) => {
   const {
     loading,
+    id,
     customers,
     customer_status_list,
     filter,
@@ -23,248 +47,275 @@ const CustomerKyc = (props) => {
     onFilter,
     onNameSearch,
     onMobileSearch,
-    onPageChange
-  } = props
+    onPageChange,
+  } = props;
 
   const initial = {
     visible: false,
     data: [],
     title: null,
     createBranchVisible: false,
-    createBranchData: []
-  }
-  const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
-  const mamulInitial = { mamul: null, selectedId: null }
-  const [defaultMamul, setDefaultMamul] = useState(mamulInitial)
-  const [currentPage, setCurrentPage] = useState(1)
+    createBranchData: [],
+  };
+  const { object, handleHide, handleShow } = useShowHideWithRecord(initial);
+  const mamulInitial = { mamul: null, selectedId: null };
+  const [defaultMamul, setDefaultMamul] = useState(mamulInitial);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const onMamul = (record, e) => {
-    const givenMamul = e.target.value
+    const givenMamul = e.target.value;
     setDefaultMamul({
       ...defaultMamul,
       mamul: givenMamul,
-      selectedId: record.cardcode
-    })
-  }
+      selectedId: record.cardcode,
+    });
+  };
 
   const handleName = (e) => {
-    onNameSearch(e.target.value)
-  }
+    onNameSearch(e.target.value);
+  };
 
   const handleMobile = (e) => {
-    onMobileSearch(e.target.value)
-  }
+    onMobileSearch(e.target.value);
+  };
 
   const handleStatus = (e) => {
-    onFilter(e.target.value)
-  }
+    onFilter(e.target.value);
+  };
 
   const pageChange = (page, pageSize) => {
-    const newOffset = page * pageSize - filter.limit
-    setCurrentPage(page)
-    onPageChange(newOffset)
-  }
+    const newOffset = page * pageSize - filter.limit;
+    setCurrentPage(page);
+    onPageChange(newOffset);
+  };
 
-  const customer_status = customer_status_list.map(data => {
-    return { value: data.id, label: data.name }
-  })
+  const customer_status = customer_status_list.map((data) => {
+    return { value: data.id, label: data.name };
+  });
+
+  const [insertComment] = useMutation(CUSTOMER_REJECT_MUTATION, {
+    onError(error) {
+      message.error(error.toString());
+    },
+    onCompleted() {
+      message.success("Updated!!");
+    },
+  });
+
+  const onSubmit = (id) => {
+    insertComment({
+      variables: {
+        status_id: 7,
+        id: id,
+      },
+    });
+    console.log("customers");
+  };
 
   const newCustomer = [
     {
-      title: 'User Name',
-      width: '11%',
+      title: "User Name",
+      width: "11%",
       render: (text, record) => {
-        const user = record.customer_users[0] && record.customer_users[0].name
+        const user = record.customer_users[0] && record.customer_users[0].name;
         return user && user.length > 14 ? (
           <Tooltip title={user}>
-            <span> {user.slice(0, 14) + '...'}</span>
+            <span> {user.slice(0, 14) + "..."}</span>
           </Tooltip>
         ) : (
           user
-        )
-      }
+        );
+      },
     },
     {
-      title: 'Company Name',
-      dataIndex: 'name',
-      width: '11%',
+      title: "Company Name",
+      dataIndex: "name",
+      width: "11%",
       render: (text, record) => {
         return (
-          <Link href='customers/[id]' as={`customers/${record.cardcode}`}>
+          <Link href="customers/[id]" as={`customers/${record.cardcode}`}>
             {text && text.length > 14 ? (
               <Tooltip title={text}>
-                <a>{text.slice(0, 14) + '...'}</a>
+                <a>{text.slice(0, 14) + "..."}</a>
               </Tooltip>
             ) : (
               <a>{text}</a>
             )}
           </Link>
-        )
+        );
       },
       filterDropdown: (
         <div>
           <Input
-            placeholder='Search Customer'
+            placeholder="Search Customer"
             value={filter.name}
             onChange={handleName}
           />
         </div>
       ),
-      filterIcon: () => <SearchOutlined style={{ color: filter.name ? '#1890ff' : undefined }} />
+      filterIcon: () => (
+        <SearchOutlined
+          style={{ color: filter.name ? "#1890ff" : undefined }}
+        />
+      ),
     },
     {
-      title: 'Mobile No',
-      dataIndex: 'mobile',
-      width: '10%',
+      title: "Mobile No",
+      dataIndex: "mobile",
+      width: "10%",
       filterDropdown: (
         <div>
           <Input
-            placeholder='Search Customer'
+            placeholder="Search Customer"
             value={filter.mobile}
             onChange={handleMobile}
           />
         </div>
       ),
-      filterIcon: () => <SearchOutlined style={{ color: filter.mobile ? '#1890ff' : undefined }} />
+      filterIcon: () => (
+        <SearchOutlined
+          style={{ color: filter.mobile ? "#1890ff" : undefined }}
+        />
+      ),
     },
     {
-      title: 'Type',
-      dataIndex: 'type_id',
-      width: '8%'
+      title: "Type",
+      dataIndex: "type_id",
+      width: "8%",
     },
     {
-      title: 'Reg Date',
-      dataIndex: 'created_at',
-      width: '9%',
+      title: "Reg Date",
+      dataIndex: "created_at",
+      width: "9%",
       render: (text, record) => {
         return text && text.length > 10 ? (
           <Tooltip title={text}>
-            <span> {text.slice(0, 10) + '..'}</span>
+            <span> {text.slice(0, 10) + ".."}</span>
           </Tooltip>
         ) : (
           text
-        )
-      }
+        );
+      },
     },
     {
-      title: 'PAN',
-      dataIndex: 'pan',
-      width: '9%'
+      title: "PAN",
+      dataIndex: "pan",
+      width: "9%",
     },
     {
-      title: 'Mamul',
-      dataIndex: 'mamul',
-      width: '8%',
+      title: "Mamul",
+      dataIndex: "mamul",
+      width: "8%",
       render: (text, record) => {
-        const statusId = record.status && record.status.id
+        const statusId = record.status && record.status.id;
         return (
           <span>
             {statusId === 1 || statusId === 5 ? (
               `${text || 0}`
             ) : statusId === 3 || statusId === 4 ? (
               <Input
-                type='number'
+                type="number"
                 min={0}
                 value={
                   defaultMamul.selectedId === record.cardcode
                     ? defaultMamul.mamul
-                    : ''
+                    : ""
                 }
                 defaultValue={defaultMamul.mamul}
                 onChange={(e) => onMamul(record, e)}
-                size='small'
+                size="small"
               />
             ) : null}
           </span>
-        )
-      }
+        );
+      },
     },
     {
-      title: 'Adv %',
-      width: '10%',
+      title: "Adv %",
+      width: "10%",
       render: (text, record) => {
         const advancePercentage =
-          record.advancePercentage && record.advancePercentage.name
+          record.advancePercentage && record.advancePercentage.name;
         const advancePercentageId =
-          record.advancePercentage && record.advancePercentage.Id
+          record.advancePercentage && record.advancePercentage.Id;
         return (
           <CustomerAdvancePercentage
             advancePercentage={advancePercentage}
             advancePercentageId={advancePercentageId}
             cardcode={record.cardcode}
           />
-        )
-      }
+        );
+      },
     },
     {
-      title: 'Status',
+      title: "Status",
       render: (text, record) => record.status && record.status.name,
-      width: '14%',
+      width: "14%",
       filterDropdown: (
         <Radio.Group
           options={customer_status}
           defaultValue={filter.statusId[0]}
           onChange={handleStatus}
-          className='filter-drop-down'
+          className="filter-drop-down"
         />
-      )
+      ),
     },
     {
-      title: 'Action',
-      width: '10%',
+      title: "Action",
+      width: "10%",
       render: (text, record) => {
-        const statusId = record.status && record.status.id
+        const statusId = record.status && record.status.id;
         return (
           <Space>
             {record.panNo ? (
               <Button
-                type='primary'
-                size='small'
-                shape='circle'
+                type="primary"
+                size="small"
+                shape="circle"
                 icon={<EyeOutlined />}
-                onClick={() => console.log('View')}
+                onClick={() => console.log("View")}
               />
             ) : (
               <Button
-                size='small'
-                shape='circle'
+                size="small"
+                shape="circle"
                 icon={<UploadOutlined />}
-                onClick={() => console.log('Upload')}
+                onClick={() => console.log("Upload")}
               />
             )}
             {(statusId === 3 || statusId === 4) && (
               <Space>
                 <Button
-                  type='primary'
-                  size='small'
-                  shape='circle'
-                  className='btn-success'
+                  type="primary"
+                  size="small"
+                  shape="circle"
+                  className="btn-success"
                   icon={<CheckOutlined />}
                   onClick={() =>
-                    handleShow('createBranchVisible', null, null, record)}
+                    handleShow("createBranchVisible", null, null, record)
+                  }
                 />
                 <Popconfirm
-                  title='Are you sure want to Reject the Customer?'
-                  okText='Yes'
-                  cancelText='No'
-                  onConfirm={() => console.log('Rejected!')}
+                  title="Are you sure want to Reject the Customer?"
+                  okText="Yes"
+                  cancelText="No"
+                  onConfirm={() => onSubmit(record.id)}
                 >
                   <Button
-                    type='primary'
-                    size='small'
-                    shape='circle'
+                    type="primary"
+                    size="small"
+                    shape="circle"
                     danger
                     icon={<CloseOutlined />}
-                    onClick={() => handleShow(null, null, null, null)}
                   />
                 </Popconfirm>
               </Space>
             )}
           </Space>
-        )
-      }
-    }
-  ]
+        );
+      },
+    },
+  ];
 
   return (
     <>
@@ -272,21 +323,22 @@ const CustomerKyc = (props) => {
         columns={newCustomer}
         dataSource={customers}
         rowKey={(record) => record.cardcode}
-        size='small'
+        size="small"
         scroll={{ x: 960, y: 550 }}
-        className='withIcon paginated'
+        className="withIcon paginated"
         loading={loading}
         pagination={false}
       />
-      {!loading &&
+      {!loading && (
         <Pagination
-          size='small'
+          size="small"
           current={currentPage}
           pageSize={filter.limit}
           total={record_count}
           onChange={pageChange}
-          className='text-right p10'
-        />}
+          className="text-right p10"
+        />
+      )}
       {object.createBranchVisible && (
         <BranchCreation
           visible={object.createBranchVisible}
@@ -295,7 +347,7 @@ const CustomerKyc = (props) => {
         />
       )}
     </>
-  )
-}
+  );
+};
 
-export default CustomerKyc
+export default CustomerKyc;
