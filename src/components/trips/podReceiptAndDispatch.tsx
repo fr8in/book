@@ -45,8 +45,8 @@ const ALL_EMP_AND_COURIER = gql`
   }
 }
 `
-const PartnerPodReceipt = (props) => {
-  const { visible, onHide, trip_ids, onRemoveTag } = props
+const PodReceiptAndDispatch = (props) => {
+  const { visible, onHide, trip_ids, onRemoveTag, podDispatch } = props
   const listType = [{ label: 'Internal', value: '1' }, { label: 'Courier', value: '2' }]
 
   const [selectValue, setSelectValue] = useState('1')
@@ -114,6 +114,7 @@ const PartnerPodReceipt = (props) => {
   }
 
   const onClose = () => {
+    onRemoveTag(null)
     setPodData(initialData)
     onHide()
   }
@@ -140,7 +141,7 @@ const PartnerPodReceipt = (props) => {
       variables: {
         objects: empObjects,
         emp_id: podData.emp_id,
-        pod_status_id: 1
+        pod_status_id: podDispatch ? 2 : 1
       }
     })
   }
@@ -150,14 +151,14 @@ const PartnerPodReceipt = (props) => {
       variables: {
         objects: docketObjects,
         docket: podData.docket,
-        pod_status_id: 1
+        pod_status_id: podDispatch ? 2 : 1
       }
     })
   }
   const isTripSelected = trip_ids && trip_ids.length > 0
   return (
     <Modal
-      title='Partner Pod Receipt'
+      title={podDispatch ? 'Customer Pod Receipt' : 'Partner Pod Receipt'}
       visible={visible}
       onCancel={onClose}
       footer={[
@@ -220,4 +221,4 @@ const PartnerPodReceipt = (props) => {
     </Modal>
   )
 }
-export default PartnerPodReceipt
+export default PodReceiptAndDispatch
