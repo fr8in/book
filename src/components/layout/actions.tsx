@@ -52,8 +52,9 @@ const Actions = (props) => {
           closable={false}
           onClose={onHide}
           visible={visible.filter}
+          bodyStyle={{ padding: 0 }}
         >
-          <GlobalFilter {...props}/>
+          <GlobalFilter {...props} />
         </Drawer>}
 
       {visible.search &&
