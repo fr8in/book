@@ -42,9 +42,9 @@ const KycReject = (props) => {
         partner_id: partnerId,
         created_by: 'shilpa',
         description: userComment,
-        topic: 'text',
+        topic: 'Kyc Rejected',
         partner_status_id: 3,
-        id:1
+        id:partnerId
       }
     })
   }

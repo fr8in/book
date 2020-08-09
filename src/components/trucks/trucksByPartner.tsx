@@ -79,13 +79,14 @@ const PartnerTruck = (props) => {
         const id = record && record.trips[0] ? record.trips[0].id : null
         const source = record && record.trips[0] && record.trips[0].source ? record.trips[0].source.name : null
         const destination = record && record.trips[0] && record.trips[0].destination ? record.trips[0].destination.name : null
+        const status = record.truck_status &&  record.truck_status.id 
         return (
           <span>{
             id ? 
               <span>
                 {source.slice(0, 3) + '-' + destination.slice(0, 3)}
               </span>
-              : (record.truck_status.id === 1) ? <Button type='link' onClick={() => handleShow('poVisible', record.partner, 'poData', record)}>Assign</Button> : 'NA'
+              : (status === 1) ? <Button type='link' onClick={() => handleShow('poVisible', record.partner, 'poData', record)}>Assign</Button> : 'NA'
           }
           </span>
         )

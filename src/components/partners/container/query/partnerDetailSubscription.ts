@@ -1,8 +1,24 @@
 import { gql } from '@apollo/client'
 
 export const PARTNER_DETAIL_SUBSCRIPTION = gql`
-subscription partners($cardcode: String,$trip_status_value: [String!],$ongoing: [String!], $pod: [String!], $invoiced: [String!], $paid: [String!]) {
-  partner(where: {cardcode: {_eq: $cardcode}}) {
+subscription partners($cardcode: String,$partner_id:bigint,$trip_status_value: [String!],$ongoing: [String!], $pod: [String!], $invoiced: [String!], $paid: [String!]) {
+  partner(where: {cardcode: {_eq: $cardcode}})
+         {
+          fastags (where: {id:{_eq:$partner_id}}) {
+            tagId
+            truck {
+              truck_no
+            }
+            partner {
+              cardcode
+              name
+            }
+            balance
+            tag_status {
+              id
+              status
+            }
+          }
           ongoing: trips_aggregate(where: {trip_status: {name: {_in: $ongoing}}}) {
             aggregate {
               count
