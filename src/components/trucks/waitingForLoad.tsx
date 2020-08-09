@@ -1,4 +1,3 @@
-import loadData from '../../../mock/trucks/loadData'
 import { Table, Tooltip, Badge, Button, Input } from 'antd'
 import Link from 'next/link'
 import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled, SearchOutlined } from '@ant-design/icons'
@@ -7,7 +6,8 @@ import PartnerUsers from '../partners/partnerUsers'
 import TripFeedBack from '../trips/tripFeedBack'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 
-const WaitingForLoad = () => {
+const WaitingForLoad = (props) => {
+  const { trucks, loading } = props
   const initial = {
     usersData: [],
     usersVisible: false,
@@ -26,19 +26,15 @@ const WaitingForLoad = () => {
   const columns = [
     {
       title: 'Truck No',
-      dataIndex: 'truckNo',
+      dataIndex: 'truck_no',
       width: '14%',
-      sorter: (a, b) => (a.truckNo > b.truckNo ? 1 : -1),
-      className: 'pl10',
+      sorter: (a, b) => (a.truck_no > b.truck_no ? 1 : -1),
       render: (text, record) => {
+        const truck_type = record.truck_type && record.truck_type.name
         return (
-          <span>
-            {record.statusId === 7 &&
-              <Badge dot style={{ backgroundColor: ('#007dfe') }} />}
-            <Link href='/trucks/truck/[id]' as={`/trucks/truck/${record.id} `}>
-              <a>{text}</a>
-            </Link>
-          </span>
+          <Link href='/trucks/[id]' as={`/trucks/${text} `}>
+            <a>{text + ' - ' + truck_type}</a>
+          </Link>
         )
       },
       filterDropdown: (
@@ -54,20 +50,22 @@ const WaitingForLoad = () => {
     },
     {
       title: 'Partner',
-      dataIndex: 'partner',
       width: '12%',
       sorter: (a, b) => (a.partner > b.partner ? 1 : -1),
       render: (text, record) => {
+        const partner = record.partner && record.partner.name
+        const noOfLoadsTaken = 1 // TODO
+        const partnerEngagementPercent = 30 // TODO
         return (
           <span>
             <Badge dot style={{ backgroundColor: (record.partnerMembershipId === 0 ? '#FFD700' : '#C0C0C0') }} />
             <Link href='/partners/partner/[id]' as={`/partners/partner/${record.partnerId} `}>
               <a>{text && text.length > 20
                 ? (
-                  <Tooltip title={`${text}, ${record.noOfLoadsTaken}, ${record.partnerEngagementPercent}%`}>
-                    <span>{`${text.slice(0, 20)}...`}</span>
+                  <Tooltip title={`${partner}, ${noOfLoadsTaken}, ${partnerEngagementPercent}%`}>
+                    <span>{`${partner.slice(0, 20)}...`}</span>
                   </Tooltip>)
-                : text}
+                : partner}
               </a>
             </Link>
           </span>
@@ -76,19 +74,24 @@ const WaitingForLoad = () => {
     },
     {
       title: 'Partner No',
-      dataIndex: 'partnerNo',
       width: '10%',
       render: (text, record) => {
+        const mobile = record.partner && record.partner.partner_users && record.partner.partner_users.length > 0 ? record.partner.partner_users[0].mobile : null
+        const partner = record.partner && record.partner.name
+        const cardcode = record.partner && record.partner.cardcode
         return (
-          <span className='link' onClick={() => handleShow('usersVisible', record.partner, 'usersData', record.users)}>{text}</span>
+          <span className='link' onClick={() => handleShow('usersVisible', partner, 'usersData', cardcode)}>{mobile}</span>
         )
       }
     },
     {
       title: 'City',
-      dataIndex: 'city',
       width: '14%',
-      sorter: (a, b) => (a.city > b.city ? 1 : -1)
+      sorter: (a, b) => (a.city > b.city ? 1 : -1),
+      render: (text, record) => {
+        const city = record.city && record.city.name
+        return city
+      }
     },
     {
       title: 'TAT',
@@ -98,7 +101,13 @@ const WaitingForLoad = () => {
     },
     {
       title: 'Comment',
-      dataIndex: 'comment',
+      render: (text, record) => {
+        const comment = record.truck_comments && record.truck_comments.length > 0 ? record.truck_comments[0].description : null
+        return (
+          comment ? <Tooltip title={comment}><span>{comment.slice(0, 12) + '...'}</span></Tooltip>
+            : null
+        )
+      },
       width: '27%'
     },
     {
@@ -128,12 +137,13 @@ const WaitingForLoad = () => {
     <>
       <Table
         columns={columns}
-        dataSource={loadData}
+        dataSource={trucks}
         className='withAction'
         rowKey={record => record.id}
         size='small'
         scroll={{ x: 1156 }}
         pagination={false}
+        loading={loading}
       />
       {object.usersVisible &&
         <PartnerUsers
