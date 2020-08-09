@@ -1,4 +1,4 @@
-import { Row, Col, Radio, Card, Input, Form, Button, Select } from 'antd'
+import { Row, Col, Radio, Card, Input, Form, Button, Select,Space } from 'antd'
 
 const RadioGroup = Radio.Group
 
@@ -171,17 +171,6 @@ const PartnerProfile = () => {
           </Col>
           <Col xs={24} sm={5}>
             <Form.Item
-              label='Region'
-              name='Region'
-              rules={[{ required: true, message: 'Region is required field!' }]}
-            >
-              <Select>
-                <Select.Option value='Region'> </Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={5}>
-            <Form.Item
               label='City'
               name='City'
               rules={[{ required: true, message: 'City is required field!' }]}
@@ -202,21 +191,15 @@ const PartnerProfile = () => {
               </Select>
             </Form.Item>
           </Col>
-          <Col xs={24} sm={4}>
-            <Form.Item
-              label='Lane Manager'
-            >
-              <Select>
-                <Select.Option value='Lane Manager'> </Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
         </Row>
       </Card>
+     
       <Row justify='end'>
         <Col xs={24} className='text-right'>
+        <Space>
           <Button>Cancel</Button>
           <Button type='primary' htmlType='submit'>Submit</Button>
+          </Space>
         </Col>
       </Row>
     </Form>

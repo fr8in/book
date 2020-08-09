@@ -50,12 +50,13 @@ const PartnerDetailContainer = (props) => {
       setTripStatusId(invoiced)
     }
   }
-  const { cardcode } = props
+  const { cardcode, partner_id } = props
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,
     {
       variables: { 
         cardcode: cardcode,
+        partner_id : partner_id,
         trip_status_value: tripStatusId, 
         ongoing: on_going,
         pod: pod,
@@ -70,17 +71,22 @@ const PartnerDetailContainer = (props) => {
 
 var partnerData = {};
 var trucks = {};
+var trips = {};
 var truck_count = 0
 var ongoing_count = 0
 var pod_count = 0
 var invoiced_count = 0
 var paid_count = 0
+var fas_tag = {};
 if (!loading) {
   const { partner } = data
    partnerData = partner[0] ? partner[0] : { name: 'ID does not exist' }
    trucks = partnerData.trucks
+   trips = partnerData.trips
+   fas_tag = partnerData.fastags
   console.log('partnerData', partnerData)
   console.log('trucks', trucks)
+  console.log('fas_tag',fas_tag)
    truck_count = partnerData.trucks_aggregate && partnerData.trucks_aggregate.aggregate && partnerData.trucks_aggregate.aggregate.count
    ongoing_count = partnerData.ongoing && partnerData.ongoing.aggregate && partnerData.ongoing.aggregate.count
    pod_count = partnerData.pod && partnerData.pod.aggregate && partnerData.pod.aggregate.count
@@ -154,7 +160,7 @@ if (!loading) {
                               <PartnerFuelDetail />
                             </TabPane>
                             <TabPane tab='FasTag' key='5'>
-                              <FasTags />
+                              <FasTags  fastag = {fas_tag}/>
                             </TabPane>
                           </Tabs>
                         </Card>
@@ -178,13 +184,13 @@ if (!loading) {
                     </div>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='On-going' value={ongoing_count} />} key='4'>
-                    <TripDetail trips= {partnerData.trips} loading={loading}/>
+                    <TripDetail trips= {trips} loading={loading}/>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='POD' value={pod_count} />} key='5'>
-                    <TripDetail trips= {partnerData.trips} loading={loading}/>
+                    <TripDetail trips= {trips} loading={loading}/>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='Invoiced' value={invoiced_count} />} key='6'>
-                    <TripDetail trips= {partnerData.trips} loading={loading}/>
+                    <TripDetail trips= {trips} loading={loading}/>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='Paid' value={paid_count} />} key='7'>
                     <PaidContainer cardcode={cardcode} />
