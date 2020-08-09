@@ -29,6 +29,7 @@ const address = partnerDetail.address && partnerDetail.address.address
 const city = partnerDetail.address && partnerDetail.address.city
 const state = partnerDetail.address && partnerDetail.address.state
 const pincode = partnerDetail.address && partnerDetail.address.pincode
+const partner_address =no && no.concat(address,city,state,pincode)
   return (
     <Row gutter={8}>
       <Col xs={24} sm={24} md={24}>
@@ -54,7 +55,7 @@ const pincode = partnerDetail.address && partnerDetail.address.pincode
           label=' Address'
           data={
             <Space>
-              <span>{no.concat(address,city,state,pincode)}
+              <span>{partner_address}
               <EditTwoTone  onClick={() => handleShow('addressVisible', partnerDetail, 'address', partnerDetail.cardcode)}/></span>
             </Space>
           }
