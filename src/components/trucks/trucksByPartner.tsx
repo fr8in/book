@@ -86,7 +86,7 @@ const PartnerTruck = (props) => {
               <span>
                 {source.slice(0, 3) + '-' + destination.slice(0, 3)}
               </span>
-              : (status === 1) ? <Button type='link' onClick={() => handleShow('poVisible', record.partner, 'poData', record)}>Assign</Button> : 'NA'
+              : (status === 1) ? <a type='link' onClick={() => handleShow('poVisible', record.partner, 'poData', record)}>Assign</a> : 'NA'
           }
           </span>
         )
