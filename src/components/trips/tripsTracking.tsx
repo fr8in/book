@@ -5,6 +5,7 @@ import moment from 'moment'
 import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
 import TripFeedBack from '../trips/tripFeedBack'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
+import PodReceiptAndDispatch from '../trips/podReceiptAndDispatch'
 
 const TripsTracking = (props) => {
   const initial = {
@@ -25,10 +26,34 @@ const TripsTracking = (props) => {
     onSourceNameSearch,
     onDestinationNameSearch,
     onTruckNoSearch,
-    onTripIdSearch
+    onTripIdSearch,
+    visible_receipt,
+    visible_dispatch,
+    onHide,
+    verified
   } = props
 
   const [currentPage, setCurrentPage] = useState(1)
+
+  const [selectedTrips, setSelectedTrips] = useState([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+
+  const onSelectChange = (selectedRowKeys, selectedRows) => {
+    const trip_list = selectedRows && selectedRows.length > 0 ? selectedRows.map(row => row.id) : []
+    setSelectedRowKeys(selectedRowKeys)
+    setSelectedTrips(trip_list)
+  }
+  const onRemoveTag = (removed) => {
+    const trip_list = selectedTrips.filter(t_id => t_id !== removed)
+    const selectedRows = selectedRowKeys.filter(selectedRowKeys => selectedRowKeys !== removed)
+    setSelectedRowKeys(selectedRows)
+    setSelectedTrips(trip_list)
+  }
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange
+  }
 
   const pageChange = (page, pageSize) => {
     const newOffset = page * pageSize - filter.limit
@@ -38,28 +63,35 @@ const TripsTracking = (props) => {
 
   const handlePartnerName = (e) => {
     onPartnerNameSearch(e.target.value)
+    setCurrentPage(1)
   }
   const handleCustomerName = (e) => {
     onCustomerNameSearch(e.target.value)
+    setCurrentPage(1)
   }
   const handleSourceName = (e) => {
     onSourceNameSearch(e.target.value)
+    setCurrentPage(1)
   }
   const handleDestinationName = (e) => {
     onDestinationNameSearch(e.target.value)
+    setCurrentPage(1)
   }
   const handleTruckNo = (e) => {
     onTruckNoSearch(e.target.value)
+    setCurrentPage(1)
   }
   const handleStatus = (checked) => {
     onFilter(checked)
+    setCurrentPage(1)
   }
   const handleTripId = (e) => {
     onTripIdSearch(e.target.value)
+    setCurrentPage(1)
   }
 
   const trip_status = trip_status_list.map((data) => {
-    return { value: data.id, label: data.name }
+    return { value: data.name, label: data.name }
   })
 
   const columns = [
@@ -210,7 +242,7 @@ const TripsTracking = (props) => {
       filterDropdown: (
         <Checkbox.Group
           options={trip_status}
-          defaultValue={filter.trip_statusId}
+          defaultValue={filter.trip_statusName}
           onChange={handleStatus}
           className='filter-drop-down'
         />
@@ -249,33 +281,51 @@ const TripsTracking = (props) => {
       width: '4%'
     }
   ]
+
   return (
     <>
       <Table
         columns={columns}
         dataSource={trips}
         rowKey={record => record.id}
+        rowSelection={!verified ? rowSelection : null}
         size='small'
         scroll={{ x: 1156 }}
         pagination={false}
         loading={loading}
       />
-      {!loading && record_count
-        ? (
-          <Pagination
-            size='small'
-            current={currentPage}
-            pageSize={filter.limit}
-            total={record_count}
-            onChange={pageChange}
-            className='text-right p10'
-          />) : null}
+      {!loading && record_count ? (
+        <Pagination
+          size='small'
+          current={currentPage}
+          pageSize={filter.limit}
+          total={record_count}
+          onChange={pageChange}
+          className='text-right p10'
+        />) : null}
       {object.commentVisible &&
         <TripFeedBack
           visible={object.commentVisible}
           tripid={object.commentData}
           onHide={handleHide}
         />}
+      {visible_receipt && (
+        <PodReceiptAndDispatch
+          visible={visible_receipt}
+          onHide={onHide}
+          trip_ids={selectedTrips}
+          onRemoveTag={onRemoveTag}
+        />
+      )}
+      {visible_dispatch && (
+        <PodReceiptAndDispatch
+          visible={visible_dispatch}
+          onHide={onHide}
+          trip_ids={selectedTrips}
+          onRemoveTag={onRemoveTag}
+          podDispatch
+        />
+      )}
     </>
   )
 }

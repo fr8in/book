@@ -1,7 +1,21 @@
 import { gql } from '@apollo/client'
 
 export const TRIPS_QUERY = gql`
-query trips($offset: Int!, $limit: Int!,$id:[Int!], $trip_statusId: [Int!],$name: String, $customername:String,$sourcename:String,$destinationname:String ,$truckno:String,$where: trip_bool_exp, $all_trip: trip_bool_exp, $delivered_trip: trip_bool_exp, $pod_verified_trip: trip_bool_exp, $invoiced_trip: trip_bool_exp){
+query trips(
+  $offset: Int!, 
+  $limit: Int!,
+  $id:[Int!], 
+  $trip_statusName: [String!],
+  $name: String, 
+  $customername:String,
+  $sourcename:String,
+  $destinationname:String,
+  $truckno:String,
+  $where: trip_bool_exp,
+  $all_trip: trip_bool_exp,
+  $delivered_trip: trip_bool_exp,
+  $pod_verified_trip: trip_bool_exp,
+  $invoiced_trip: trip_bool_exp){
   trip_count: trip_aggregate(where: $all_trip) {
     aggregate {
       count
@@ -27,7 +41,7 @@ query trips($offset: Int!, $limit: Int!,$id:[Int!], $trip_statusId: [Int!],$name
       count
     }
   }
-  trip_status(where: {id: {_in: $trip_statusId}}, order_by: {id: asc}) {
+  trip_status(where: {name: {_in: $trip_statusName}}, order_by: {id: asc}) {
     id
     name
   }

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import FasTags from '../fasTags'
+import FasTags from '../containter/fasTagsContainer'
 import FuelCards from '../fuelCards'
 
 import Link from 'next/link'

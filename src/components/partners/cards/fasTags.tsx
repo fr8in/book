@@ -9,14 +9,10 @@ import {
   StopOutlined,
   SearchOutlined
 } from '@ant-design/icons'
+//import Cards from '../../../../mock/card/cards'
 
-import Cards from '../../../../mock/card/cards'
-
-const onChange = (checked) => {
-  console.log(`switch to ${checked}`)
-}
-
-const FasTags = () => {
+const FasTags = (props) => {
+ const { fastag }= props
   const initial = {
     suspendVisible: false,
     reversalVisible: false,
@@ -24,45 +20,49 @@ const FasTags = () => {
     reversalData: []
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
-
+ 
+ 
+ const onChange = (checked) => {
+  console.log(`switch to ${checked}`)
+}
   const CardsFastag = [
     {
       title: 'Tag Id',
       dataIndex: 'tagId',
       key: 'tagId',
-      width: '17%'
+      width: '17%',
     },
     {
       title: 'Truck No',
-      dataIndex: 'truckNo',
       key: 'truckNo',
       width: '9%',
       render: (text, record) => {
+        const truckNo = record.truck && record.truck.truck_no
         return (
-          <Link href='trucks/[id]' as={`trucks/${record.id}`}>
-            <a>{text}</a>
+          <Link href='trucks/[id]' as={`trucks/${truckNo}`}>
+            <a>{truckNo}</a>
           </Link>
         )
       }
     },
     {
       title: 'ST Code',
-      dataIndex: 'stCode',
       key: 'stCode',
-      width: '8%'
+      width: '8%',
+      render: (text, record) => {
+        const partner_id = record.partner && record.partner.cardcode
+        return (
+          <Link href='partners/[id]' as={`partners/${partner_id}`}>
+            <a>{partner_id}</a>
+          </Link>
+        )
+      }
     },
     {
       title: 'Partner',
-      dataIndex: 'partner',
       key: 'partner',
-      width: '11%',
-      render: (text, record) => {
-        return (
-          <Link href='partners/[id]' as={`partners/${record.id}`}>
-            <a>{text}</a>
-          </Link>
-        )
-      },
+      width: '12%',
+      render: (text, record) => record.partner && record.partner.name,
       filterDropdown: (
         <div>
           <Input placeholder='Search' id='partner' name='partner' type='number' />
@@ -73,32 +73,27 @@ const FasTags = () => {
       )
     },
     {
-      title: 'Partner State',
-      dataIndex: 'partnerStates',
-      width: '10%'
-    },
-    {
       title: 'Tag Bal',
-      dataIndex: 'tagBal',
+      dataIndex: 'balance',
       sorter: (a, b) => (a.tagBal > b.tagBal ? 1 : -1),
       width: '8%'
     },
     {
       title: 'T.Status',
-      dataIndex: 'tStatus',
-      width: '6%'
+      render: (text, record) => record.tag_status && record.tag_status.status,
+      width: '11%'
     },
 
     {
       title: 'C.Status',
       dataIndex: 'cStatus',
-      width: '6%',
+      width: '8%',
       render: () => <Switch size='small' defaultChecked onChange={onChange} />
     },
     {
       title: 'Reverse',
       dataIndex: 'Reverse',
-      width: '7%',
+      width: '8%',
       render: (text, record) => (
         <Button
           size='small'
@@ -117,7 +112,7 @@ const FasTags = () => {
           <DownloadOutlined />
         </Button>
       ),
-      width: '7%',
+      width: '8%',
       render: (text, record) => (
         <Button
           size='small'
@@ -135,7 +130,7 @@ const FasTags = () => {
     <>
       <Table
         columns={CardsFastag}
-        dataSource={Cards}
+        dataSource={fastag}
         rowKey={(record) => record.tagId}
         size='small'
         scroll={{ x: 1156, y: 400 }}

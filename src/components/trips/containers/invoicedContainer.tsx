@@ -4,22 +4,22 @@ import { TRIPS_QUERY } from './query/tripsQuery'
 import { useState } from 'react'
 import get from 'lodash/get'
 
-const DeliveredContainer = () => {
+const DeliveredContainer = (props) => {
   const initialFilter = {
     offset: 0,
-    limit: 3,
+    limit: 10,
     partnername: null,
     customername: null,
     sourcename: null,
     destinationname: null,
     truckno: null,
-    trip_statusId: [12, 13, 14, 15],
-    id: null
+    id: null,
+    trip_statusName: ['Invoiced', 'Paid', 'Received', 'Closed']
   }
   const [filter, setFilter] = useState(initialFilter)
 
   const where = {
-    _and: [{ trip_status: { id: { _in: [12, 13, 14, 15] } } }, { trip_pod_status: { name: { _neq: 'POD Dispatched' } } }],
+    _and: [{ trip_status: { name: { _in: filter.trip_statusName && filter.trip_statusName.length > 0 ? filter.trip_statusName : initialFilter.trip_statusName } } }, { trip_pod_status: { name: { _neq: 'POD Dispatched' } } }],
     id: { _in: filter.id ? filter.id : null },
     partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
     customer: { name: { _ilike: filter.customername ? `%${filter.customername}%` : null } },
@@ -32,7 +32,7 @@ const DeliveredContainer = () => {
     offset: filter.offset,
     limit: filter.limit,
     where: where,
-    trip_statusId: initialFilter.trip_statusId
+    trip_statusName: initialFilter.trip_statusName
   }
 
   const { loading, error, data } = useQuery(
@@ -75,7 +75,7 @@ const DeliveredContainer = () => {
     setFilter({ ...filter, truckno: value })
   }
   const onFilter = (value) => {
-    setFilter({ ...filter, trip_statusId: value })
+    setFilter({ ...filter, trip_statusName: value })
   }
   const onTripIdSearch = (value) => {
     setFilter({ ...filter, id: value })
@@ -94,7 +94,7 @@ const DeliveredContainer = () => {
       onTripIdSearch={onTripIdSearch}
       trip_status_list={trip_status}
       onFilter={onFilter}
-      delivered
+      {...props}
     />
   )
 }

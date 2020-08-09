@@ -20,6 +20,9 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
     truck(where: {truck_no: {_eq: $truck_no}}) {
         id
         truck_no
+        length
+        breadth
+        height
         truck_comments{
           id
           topic
@@ -147,16 +150,21 @@ const TruckDetailContainer = (props) => {
               <TabPane tab='Details' key='1'>
                 <Row>
                   <Col xs={24} className='p20'>
-                    <TruckInfo />
+                    <TruckInfo truck_info = {truckInfo} id={truckInfo.id}/>
                     <Divider />
                     <Documents truck_id = {truckInfo.id}/>
                     <Divider />
-                    <div className='text-right'>
-                      <Space>
+                    <Row>
+                <Col span={8} >  
+                 <Button size= "small" danger>De-Activate</Button> 
+                  </Col>
+                  <Col span={8} offset={8} style={{textAlign: "right"}}>
+                         <Space>
                         <Button type='primary' htmlType='submit'>Submit</Button>
                         <Button>Cancel</Button>
                       </Space>
-                    </div>
+                   </Col>
+                 </Row>
                   </Col>
                 </Row>
               </TabPane>

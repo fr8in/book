@@ -63,6 +63,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         partner_price
         cash
         to_pay
+        comment
         mamul
         including_loading
         including_unloading

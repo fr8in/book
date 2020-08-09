@@ -2,7 +2,7 @@ import { Spin } from 'antd'
 
 const Loading = () => {
   return (
-    <div className='loading'>
+    <div className='hv-center'>
       <Spin />
     </div>
   )

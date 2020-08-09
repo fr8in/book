@@ -131,7 +131,7 @@ const PartnerKyc = (props) => {
       width: '10%',
       render: (text, record) => {
         const onboarded_by = record.onboarded_by && record.onboarded_by.name
-        return onboarded_by.length > 12 ? (
+        return onboarded_by && onboarded_by.length > 12 ? (
           <Tooltip title={onboarded_by}>
             <span> {onboarded_by.slice(0, 12) + '...'}</span>
           </Tooltip>
