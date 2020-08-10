@@ -18,7 +18,7 @@ query trucks(
     truck(
       offset: $offset
       limit: $limit
-       where: {truck_status: {name: {_in: ["Breakdown","Deactivated"],}}}) {
+       where: {truck_status: {name: {_in:$truck_statusName}}}) {
       id
       truck_no
       truck_status {
@@ -31,12 +31,12 @@ query trucks(
         name
       }
     }
-    truck_aggregate(  where: {truck_status: {name: {_in: ["Breakdown","Deactivated"],}}}){
+    truck_aggregate(  where: {truck_status: {name: {_in: ["Verification Pending","Rejected"],}}}){
       aggregate{
         count
      }
     }
-    truck_status(where: {name: {_in: $truck_statusName}}, order_by: {id: asc}) {
+    truck_status(where:{name: {_in: ["Verification Pending","Rejected"]}}, order_by: {id: asc}) {
       id
       name
     }
@@ -53,7 +53,7 @@ const TruckVerification = (props) => {
     truckActivationData: [],
     truckRejectVisible: false,
     truckRejectData: [],
-    truck_statusName: ['Deactivated', 'Breakdown']
+    truck_statusName: ['Verification Pending']
   };
 
   const [filter, setFilter] = useState(initial)
@@ -64,7 +64,7 @@ const TruckVerification = (props) => {
   const truckQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
-    truck_statusName: initial.truck_statusName
+    truck_statusName: filter.truck_statusName
   }
 
   const { loading, error, data } = useQuery(TRUCKS_QUERY, {
@@ -92,6 +92,12 @@ const TruckVerification = (props) => {
 
     console.log("record_count",record_count)
 
+    const trucksStatus = truck_status.map((data) => {
+      return { value: data.name, label: data.name }
+    })
+
+    console.log("truckStatus",trucksStatus)
+
   const onPageChange = (value) => {
     setFilter({ ...filter, offset: value })
   }
@@ -111,13 +117,7 @@ const TruckVerification = (props) => {
     setCurrentPage(1)
   }
 
-  const trucksStatus = truck_status.map((data) => {
-    return { value: data.name, label: data.name }
-  })
-
-  console.log("truckStatus",trucksStatus)
-
-   const columnsCurrent = [
+    const columnsCurrent = [
     {
       title: "Truck No",
       dataIndex: "truck_no",
