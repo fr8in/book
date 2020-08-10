@@ -11,8 +11,7 @@ mutation insertTripPrice($trip_id:Int,$customer_price:Float,$customer_advance_pe
     bank: $bank, 
     cash: $cash, 
     to_pay: $to_pay,
-    comment: $comment,
-    customer_advance_percentage:$customer_advance_percentage,
+    comment: $comment
     partner_price: $partner_price
   }){
     returning{
@@ -48,13 +47,13 @@ const CustomerPrice = (props) => {
     insertTripPrice({
       variables: {
         trip_id: trip_id,
-        customer_price: form.customer_Price,
-        mamul: form.mamul,
-        bank: form.bank,
-        cash: form.cash,
-        to_pay: form.to_pay,
+        customer_price: parseInt(form.customer_price, 10),
+        mamul: parseInt(form.mamul, 10),
+        bank: parseInt(form.bank, 10),
+        cash: parseInt(form.cash, 10),
+        to_pay: parseInt(form.to_pay, 10),
         comment: form.comment,
-        partner_price: form.partner_price
+        partner_price: parseInt(partner_price, 10)
       }
     })
   }
