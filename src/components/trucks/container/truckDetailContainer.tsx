@@ -4,7 +4,7 @@ import Documents from '../truckDocuments'
 import TripDetail from '../../trips/tripsByStages'
 import Truck from '../truck'
 import Timeline from '../truckTimeline'
-import { Row, Col, Button, Card, Divider, Space, Tag, Tabs } from 'antd'
+import { Row, Col, Button, Card, Divider, Space, Tag, Tabs , message } from 'antd'
 import {  CommentOutlined } from '@ant-design/icons'
 import AssignTrip from '../assignTrip'
 import DetailPageHeader from '../../common/detailPageHeader'
@@ -13,7 +13,7 @@ import TruckNo from '../../../components/trucks/truckNo'
 import useShowHide from '../../../hooks/useShowHide'
 import CommentModal from '../../../components/trucks/commentModal'
 
-import { gql, useSubscription } from '@apollo/client'
+import { gql, useSubscription ,useMutation} from '@apollo/client'
 
 const TRUCK_DETAIL_SUBSCRIPTION = gql`
   subscription trucks($truck_no: String,$trip_status_id:[Int!]) {
@@ -23,6 +23,10 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
         length
         breadth
         height
+        truck_status{
+          id
+          name
+        }
         truck_comments{
           id
           topic
@@ -65,15 +69,34 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
     }
 `
 
+const INSERT_TRUCK_REJECT_MUTATION = gql`
+mutation truckReject ( $truck_status_id:Int,$id:Int! ){
+  update_truck_by_pk(pk_columns: {id: $id}, _set: {truck_status_id:$truck_status_id}) {
+    id
+  }
+}
+`
+
+
+
 const TabPane = Tabs.TabPane
 const tripStatusId = [2, 3, 4, 5, 6]
 
 const TruckDetailContainer = (props) => {
   const { truckNo } = props
+  const  admin = true
   const [subTabKey, setSubTabKey] = useState('1')
 
   const initial = { commment: false}
   const { visible, onShow, onHide } = useShowHide(initial)
+
+  const [updateStatus] = useMutation(
+    INSERT_TRUCK_REJECT_MUTATION,
+    {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
+    }
+  )
 
   const subTabChange = (key) => {
     setSubTabKey(key)
@@ -94,12 +117,22 @@ const TruckDetailContainer = (props) => {
   if (!loading) {
     const { truck } = data
     truckInfo = truck[0] ? truck[0] : { name: 'ID does not exist' }
-   
+  }
+
+  const status_check = truckInfo && truckInfo.truck_status && truckInfo.truck_status.name === 'Deactivated'
+
+  const onSubmit = (status_check) => {
+    console.log("truck_id",truckInfo.id)
+    updateStatus({
+      variables: {
+        truck_status_id: status_check ? 1 : 7,
+        id:truckInfo.id
+      }
+    })
   }
 
   
-
- 
+  
 
   return (
     <Card
@@ -128,7 +161,7 @@ const TruckDetailContainer = (props) => {
           extra={
             <Space>
               <AssignTrip />
-              <Tag className='status'>Waiting for load</Tag>
+              <Tag className='status'>{truckInfo && truckInfo.truck_status && truckInfo.truck_status.name}</Tag>
             </Space>
           }
         />
@@ -156,8 +189,9 @@ const TruckDetailContainer = (props) => {
                     <Divider />
                     <Row>
                 <Col span={8} >  
-                 <Button size= "small" danger>De-Activate</Button> 
-                  </Col>
+               <Button size= "small" danger={admin && !status_check} onClick={()=>onSubmit(status_check)}>  {status_check ? 'Re-Activate' :  'De-Activate' } </Button> 
+                
+                </Col>
                   <Col span={8} offset={8} style={{textAlign: "right"}}>
                          <Space>
                         <Button type='primary' htmlType='submit'>Submit</Button>
