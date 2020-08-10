@@ -50,6 +50,11 @@ const BillingAndInvoiced = (props) => {
 
   const { customer } = data
   // const trip_info = trip[0] ? trip[0] : { name: 'ID does not exist' }
+  const trip=data.trips
+ console.log('trips',trip)
+  const hsn =customer  && customer.trips && customer.trips.hsn
+   const gst =customer  && customer.trips && customer.trips.gst
+ 
 
   const handleChange = (value) => {
     console.log(`selected ${value}`)
@@ -70,8 +75,8 @@ const BillingAndInvoiced = (props) => {
               <Input placeholder='Email Address' />
             </Col>
             <Col flex='180'>
-              <Button> Close </Button>
-              <Button type='primary'> Send Email </Button>
+              <Button type='primary' > Send Email </Button>
+              <Button > Close </Button>
             </Col>
           </Row>
         ]}
@@ -81,6 +86,7 @@ const BillingAndInvoiced = (props) => {
             <Col sm={12}>
               <Form.Item
                 label='Users'
+                initialValue={trip_id.customer_users}
               >
                 <Select defaultValue='Select Users' onChange={handleChange} />
               </Form.Item>
@@ -90,6 +96,7 @@ const BillingAndInvoiced = (props) => {
             <Col sm={12}>
               <Form.Item
                 label='Branch Address'
+                initialValue={trip_id.customer_branch}
               >
                 <Input placeholder='Address' />
               </Form.Item>
@@ -97,6 +104,7 @@ const BillingAndInvoiced = (props) => {
             <Col sm={12}>
               <Form.Item
                 label='Contact Number'
+                initialValue={trip_id.customer_users && trip_id.customer_users.mobile}
               >
                 <Input placeholder='Contact Number' />
               </Form.Item>
@@ -106,15 +114,17 @@ const BillingAndInvoiced = (props) => {
             <Col sm={12}>
               <Form.Item
                 label='GST Number'
+                initialValue={trip_id.gst}
               >
-                <Input placeholder='GST Number' />
+                <Input placeholder={gst}/>
               </Form.Item>
             </Col>
             <Col sm={12}>
               <Form.Item
                 label='HSN Number'
+                initialValue={trip_id.hsn}
               >
-                <Input  placeholder='HSN Number' />
+                <Input  placeholder={hsn} />
               </Form.Item>
             </Col>
           </Row>

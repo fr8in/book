@@ -24,6 +24,12 @@ const PartnerDetail = (props) => {
 
   console.log('partnerDetail', partnerDetail)
 
+const no = partnerDetail.address && partnerDetail.address.no
+const address = partnerDetail.address && partnerDetail.address.address
+const city = partnerDetail.address && partnerDetail.address.city
+const state = partnerDetail.address && partnerDetail.address.state
+const pincode = partnerDetail.address && partnerDetail.address.pincode
+const partner_address =no && no.concat(address,city,state,pincode)
   return (
     <Row gutter={8}>
       <Col xs={24} sm={24} md={24}>
@@ -49,7 +55,8 @@ const PartnerDetail = (props) => {
           label=' Address'
           data={
             <Space>
-              <span>{partnerDetail.address}<EditTwoTone  onClick={() => handleShow('addressVisible', partnerDetail, 'address', partnerDetail.cardcode)}/></span>
+              <span>{partner_address}
+              <EditTwoTone  onClick={() => handleShow('addressVisible', partnerDetail, 'address', partnerDetail.cardcode)}/></span>
             </Space>
           }
           labelSpan={10}
@@ -63,7 +70,8 @@ const PartnerDetail = (props) => {
         />
         <LabelWithData
           label='Bank'
-          data={<span>{partnerDetail.bank && partnerDetail.bank.name}<EditTwoTone  onClick={() => handleShow('bankVisible', partnerDetail, 'bank', partnerDetail.cardcode)}/></span>}
+          data={<span>{partnerDetail.bank && partnerDetail.bank.name}
+          <EditTwoTone  onClick={() => handleShow('bankVisible', partnerDetail, 'bank', partnerDetail.cardcode)}/></span>}
           labelSpan={10}
           dataSpan={14}
         />
@@ -117,14 +125,14 @@ const PartnerDetail = (props) => {
         {object.addressVisible &&
         <EditAddress
           visible={object.addressVisible}
-          data={object.address}
+          cardcode={object.address}
           onHide={handleHide}
           title={object.title}
         />}
         {object.bankVisible &&
         <EditBank
           visible={object.bankVisible}
-          data={object.bank}
+          cardcode={object.bank}
           onHide={handleHide}
           title={object.title}
         />}
