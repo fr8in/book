@@ -1,7 +1,6 @@
 
 import { Row, Col, Form, Input, Button ,message} from 'antd'
 import { gql, useMutation } from '@apollo/client'
-import {useState} from "react";
 
 
 const UPDATE_TRUCK_INFO_MUTATION = gql`
@@ -20,9 +19,8 @@ mutation TruckInfo($length:Int,$breadth:Int,$height:Int,$id:Int) {
 const TruckInfo = (props) => {
   const {truck_info,id} = props
 
-  const [length, setlength] = useState('')
-  const [breadth, setbreadth] = useState('')
-  const [height, setheight] = useState('')
+console.log('truck_info',truck_info)
+ 
 
   const [updateTruckInfo] = useMutation(
     UPDATE_TRUCK_INFO_MUTATION,
@@ -32,38 +30,30 @@ const TruckInfo = (props) => {
     }
   )
 
-  const lengthChange = (e) => {
-    setlength(e.target.value)
-  }
+ 
 
-  const breadthChange = (e) => {
-    setbreadth(e.target.value)
-  }
-
-  const heightChange = (e) => {
-    setheight(e.target.value)
-  }
-
-  const onSubmit = () => {
-   console.log("id",id)
+  const onDimensionSubmit = (form) => {
+   console.log("form",form)
    updateTruckInfo({
     variables: {
       id : id,
-    length : length ,
-    breadth : breadth,
-    height : height,
+    length :  parseInt(form.length , 10),
+    breadth : parseInt(form.breadth , 10),
+    height : parseInt(form.height , 10),
     }
   })
   }
   
   return (
-    <Form layout='vertical'>
-      <Row gutter={10}>
-        <Col span={5}>
-        
+   <div>
+    
+     
+    <Form layout='vertical' onFinish={onDimensionSubmit}>
+    <Row gutter={10}>
+        <Col span={5} >
           <Form.Item
             label='Length(Ft)'
-            name='Length(Ft)'
+            name='length'
             rules={[{ required: true, message: 'Length(Ft) is required field' }]}  
             initialValue={truck_info.length}
           >
@@ -71,14 +61,13 @@ const TruckInfo = (props) => {
               type='number'
               placeholder='Length(Ft)'
               disabled={false}
-            onChange={lengthChange}
             />
           </Form.Item>
         </Col>
         <Col span={5}>
           <Form.Item
             label='Breadth(Ft)'
-            name='Breadth(Ft)'
+            name='breadth'
             rules={[{ required: true, message: 'Breadth(Ft) is required field' }]}
             initialValue={truck_info.breadth}
           >
@@ -86,29 +75,36 @@ const TruckInfo = (props) => {
               type='number'
               placeholder='Breadth(Ft)'
               disabled={false}
-              onChange={breadthChange}
+            
             />
           </Form.Item>
         </Col>
         <Col span={5}>
           <Form.Item
             label='Height(Ft)'
-            name='Height(Ft)'
+            name='height'
             rules={[{ required: true, message: 'Height(Ft) is required field' }]}
             initialValue={truck_info.height }
           >
             <Input placeholder='Height(Ft)'
              type='number'
               disabled={false}
-              onChange={heightChange}
+            
               />
           </Form.Item>
         </Col>
         <Col span={3}>
           <Form.Item label='save' name='save' className='hideLabel'>
-        <Button  type="primary" onClick={onSubmit}> Save </Button>
+        <Button  type="primary" htmlType='submit'> Save </Button>
         </Form.Item>
         </Col>
+        </Row>
+        </Form>
+      
+     
+       
+         
+        <Form  layout='vertical'>
         <Col span={6}>
           <Form.Item
             label='Driver'
@@ -118,9 +114,10 @@ const TruckInfo = (props) => {
             <Input placeholder='Driver Number' />
           </Form.Item>
         </Col>
-      </Row>
     </Form>
    
+   
+    </div>
   )
 }
 
