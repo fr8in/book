@@ -68,6 +68,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         mamul
         including_loading
         including_unloading
+        customer_advance_percentage
       }
       trip_files{
         id

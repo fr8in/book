@@ -8,12 +8,12 @@ import CustomerPrice from '../trips/customerPrice'
 import moment from 'moment'
 
 const TripInfo = (props) => {
-  const { trip_info,trip_price,trip_id } = props
+  const { trip_info, trip_price, trip_id } = props
   const initial = { price: false }
   const { visible, onShow, onHide } = useShowHide(initial)
-    // const { data } = props
-  
- console.log('trip_price',trip_price)
+  // const { data } = props
+
+  console.log('trip_price', trip_price)
   return (
     <Row>
       <Col xs={24}>
@@ -69,7 +69,7 @@ const TripInfo = (props) => {
             />
             <LabelWithData
               label='Customer Price'
-              data={<p>{trip_info.trip_prices && trip_info.trip_prices[0].customer_price} <EditTwoTone onClick={() => onShow('price')}  /></p>}
+              data={<p>{trip_info.trip_prices && trip_info.trip_prices[0].customer_price} <EditTwoTone onClick={() => onShow('price')} /></p>}
               labelSpan={10}
             />
             <LabelWithData label='Cash' data={trip_info.trip_prices && trip_info.trip_prices[0].cash} labelSpan={10} />
@@ -89,7 +89,7 @@ const TripInfo = (props) => {
           </Col>
         </Row>
       </Col>
-      {visible.price && <CustomerPrice visible={visible.price} onHide={onHide} trip_price={trip_price} trip_id={trip_id} />}
+      {visible.price && <CustomerPrice visible={visible.price} onHide={onHide} trip_price={trip_price || {}} trip_id={trip_id} />}
     </Row>
   )
 }
