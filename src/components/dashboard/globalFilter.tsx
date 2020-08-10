@@ -58,10 +58,6 @@ let connected_city_options = []
 let truck_type_options = []
 
 const GlobalFilter = ({onFilter,initialFilter}) => {
-  // const initialFilter = {
-  //   now: new Date().toISOString(),
-  //   regions: null, branches: null, cities: null, managers: null, types: null
-  // };
   const [filter, setFilter] = useState(initialFilter)
   const [activeKey, setActiveyKey] = useState(['branch']);
  
