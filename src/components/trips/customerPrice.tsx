@@ -1,6 +1,6 @@
-import { Modal, Button, Row, Col, Form, Input,message } from 'antd'
+import { Modal, Button, Row, Col, Form, Input, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
-import {useState} from "react";
+import { useState } from 'react'
 
 const CUSTOMER_MUTATION = gql`
 mutation insertTripPrice($trip_id:Int,$customer_price:Float,$customer_advance_percentage:Int,$mamul:Float,$bank:Float,$cash:Float,$to_pay:Float,$comment:String,$partner_price:Float){
@@ -23,155 +23,136 @@ mutation insertTripPrice($trip_id:Int,$customer_price:Float,$customer_advance_pe
 `
 
 const CustomerPrice = (props) => {
+  const { visible, onHide, trip_id, trip_price } = props
+  const trip_price_data = trip_price[0] ? trip_price[0] : {}
 
-  const { visible, onHide,trip_price ,trip_id} = props
-  
-  console.log('trip_price',trip_price)
-
-  const [Customer_Price, setCustomer_Price] = useState('')
-  const [Mamul, setMamul] = useState('')
-  const [Bank, setBank] = useState('')
-  const [Cash, setCash] = useState('')
-  const [ToPay, setToPay] = useState('')
-  const [Comment, setComment] = useState('')
-  
-  const handlecustomerPrice = (e) => {
-    setCustomer_Price(e.target.value)
+  const initial = {
+    customer_price: trip_price_data.customer_price,
+    mamul: trip_price_data.mamul
   }
-  console.log('Customer_Price', Customer_Price)
-
-  const handlemamul = (e) => {
-    setMamul(e.target.value)
-  }
-  console.log('Mamul', Mamul)
-
-  const handlebank = (e) => {
-    setBank(e.target.value)
-  }
-  console.log('Bank', Bank)
-
-  const handlecash = (e) => {
-    setCash(e.target.value)
-  }
-  console.log('Cash', Cash)
-  const handletoPay = (e) => {
-    setToPay(e.target.value)
-  }
-  console.log('ToPay', ToPay)
-  const handlecomment = (e) => {
-    setComment(e.target.value)
-  }
-  console.log('Comment', Comment)
+  const [priceCalc, setPriceCalc] = useState(initial)
 
   const [insertTripPrice] = useMutation(
     CUSTOMER_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () {
+        message.success('Updated!!')
+        onHide()
+      }
     }
   )
 
-  const Customer = () => {
-    console.log('trip_id',trip_id)
+  const onCustomerPriceSubmit = (form) => {
+    console.log('inside form submit', form)
     insertTripPrice({
       variables: {
-        trip_id:trip_id,
-        customer_price:Customer_Price, 
-        mamul: Mamul, 
-        bank:Bank, 
-        cash: Cash, 
-        to_pay: ToPay,
-        comment: Comment,
-        partner_price: trip_price.partner_price,
-        customer_advance_percentage:trip_price.customer_advance_percentage
+        trip_id: trip_id,
+        customer_price: form.customer_Price,
+        mamul: form.mamul,
+        bank: form.bank,
+        cash: form.cash,
+        to_pay: form.to_pay,
+        comment: form.comment,
+        partner_price: form.partner_price
       }
     })
   }
 
-  const changePrice = Math.ceil((trip_price.customer_price/100) *trip_price.customer_advance_percentage)
-  const advance = Math.ceil(trip_price.customer_price-changePrice)
+  const onCustomerPriceChange = (e) => {
+    setPriceCalc({ ...priceCalc, customer_price: e.target.value })
+  }
+  const onMamulChange = (e) => {
+    setPriceCalc({ ...priceCalc, mamul: e.target.value })
+  }
+
+  const advancewithMamul = Math.ceil((priceCalc.customer_price / 100) * trip_price_data.customer_advance_percentage)
+  const advance = advancewithMamul - priceCalc.mamul
+  const partner_price = priceCalc.customer_price - priceCalc.mamul
 
   return (
-    
-      <Modal
-        title={`Customer Price Change - Advance (${trip_price.customer_advance_percentage}%): ${advance}`}
-        visible={visible}
-        onCancel={onHide}
-        footer={[
-          <Button key='back'>Cancel</Button>,
-          <Button type='primary'  onClick={Customer} key='update'>Update</Button>
-        ]}
-      >
-        <Form layout='vertical'>
-          <Row gutter={10}>
-            <Col sm={12}>
-              <Form.Item
-                label='Customer Price'
-                name='Customer Price'
-                rules={[{ required: true, message: 'Customer Price is required field!' }]}
-                initialValue={trip_price.customer_price}
-              >
-                <Input onChange={handlecustomerPrice} />
-              </Form.Item>
-            </Col>
-            <Col sm={12}>
-              <Form.Item
-                label='Mamul Charge'
-                initialValue={trip_price.mamul}
-              >
-                <Input onChange={handlemamul} />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={10}>
-            <Col sm={8}>
-              <Form.Item
-                label='Bank'
-                name='Bank'
-                rules={[{ required: true, message: 'Bank value is required field!' }]}
-                initialValue={trip_price.bank}
-              >
-                <Input  onChange={handlebank}/>
-              </Form.Item>
-            </Col>
-            <Col sm={8}>
-              <Form.Item
-                label='Cash'
-                name='Cash'
-                rules={[{ required: true, message: 'Cash is required field!' }]}
-                initialValue={trip_price.cash}
-              >
-                <Input  onChange={handlecash}/>
-              </Form.Item>
-            </Col>
-            <Col sm={8}>
-              <Form.Item
-                label='To-Pay'
-                name='To-Pay'
-                rules={[{ required: true, message: 'To-Pay is required field!' }]}
-                initialValue={trip_price.to_pay}
-              >
-                <Input onChange={handletoPay} />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={10}>
-            <Col sm={24}>
-              <Form.Item
-                label='Comment'
-                name='Comment'
-                rules={[{ required: true, message: 'Comment value is required field!' }]}
-              >
-                <Input placeholder='Comment' onChange={handlecomment} />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <h4>  Partner Price : {trip_price.partner_price} </h4>
-          </Row>
-        </Form>
-      </Modal>
-   
+    <Modal
+      title={`Customer Price Change - Advance (${trip_price_data.customer_advance_percentage}%): ${advance}`}
+      visible={visible}
+      onCancel={onHide}
+      footer={[]}
+    >
+      <Form layout='vertical' onFinish={onCustomerPriceSubmit}>
+        <Row gutter={10}>
+          <Col sm={12}>
+            <Form.Item
+              label='Customer Price'
+              name='customer_price'
+              rules={[{ required: true, message: 'Customer Price is required field!' }]}
+              initialValue={trip_price_data.customer_price}
+            >
+              <Input placeholder='Customer Price' onChange={onCustomerPriceChange} />
+            </Form.Item>
+          </Col>
+          <Col sm={12}>
+            <Form.Item
+              label='Mamul Charge'
+              name='mamul'
+              initialValue={trip_price_data.mamul}
+            >
+              <Input placeholder='Mamul' onChange={onMamulChange} />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={10}>
+          <Col sm={8}>
+            <Form.Item
+              label='Bank'
+              name='bank'
+              rules={[{ required: true, message: 'Bank value is required field!' }]}
+              initialValue={trip_price_data.bank}
+            >
+              <Input placeholder='Bank' />
+            </Form.Item>
+          </Col>
+          <Col sm={8}>
+            <Form.Item
+              label='Cash'
+              name='cash'
+              rules={[{ required: true, message: 'Cash is required field!' }]}
+              initialValue={trip_price_data.cash}
+            >
+              <Input placeholder='Cash' />
+            </Form.Item>
+          </Col>
+          <Col sm={8}>
+            <Form.Item
+              label='To-Pay'
+              name='to_pay'
+              rules={[{ required: true, message: 'To-Pay is required field!' }]}
+              initialValue={trip_price_data.to_pay || 0}
+            >
+              <Input placeholder='To-pay' />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={10}>
+          <Col sm={24}>
+            <Form.Item
+              label='Comment'
+              name='comment'
+              rules={[{ required: true, message: 'Comment value is required field!' }]}
+            >
+              <Input placeholder='Comment' />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col flex='auto'>
+            <h4>Partner Price: {partner_price}</h4>
+          </Col>
+          <Col flex='100px' className='text-right'>
+            <Button type='primary' htmlType='submit'>Update</Button>
+          </Col>
+        </Row>
+      </Form>
+    </Modal>
+
   )
 }
 
