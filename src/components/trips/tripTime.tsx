@@ -18,7 +18,7 @@ import DestinationInDate from './tripDestinationIn'
 import DestinationOutDate from './tripDestinationOut'
 import { gql, useMutation } from '@apollo/client'
 import {useState} from "react";
-import { object } from 'prop-types'
+
 
 const REMOVE_SOUT_MUTATION = gql`
 mutation removeSouceOut($source_out:timestamptz,$id:Int!) {

@@ -3,7 +3,7 @@ import useShowHide from '../../hooks/useShowHide'
 import { Modal } from 'antd'
 
 const data = [
-  { count: 240.9, name: 'Trucks' },
+  { count: 856, name: 'Trucks' },
   { count: 461, name: 'Partners' },
   { count: 1607, name: 'Orders' }
 ]

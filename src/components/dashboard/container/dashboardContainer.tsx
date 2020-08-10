@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Row, Col, Card, Tabs, Button, Space } from 'antd'
 import Trips from '../../trips/activeTrips'
 import WaitingForLoad from '../../trucks/waitingForLoad'
@@ -9,13 +10,66 @@ import ExcessLoad from '../../trips/excessLoad'
 import TitleWithCount from '../../common/titleWithCount'
 import useShowHide from '../../../hooks/useShowHide'
 import CreateExcessLoad from '../../trips/createExcessLoad'
+import DASHBOAD_QUERY from './query/dashboardQuery'
+import { useSubscription } from '@apollo/client'
+import _ from 'lodash'
 
 const { TabPane } = Tabs
 
 const DashboardContainer = (props) => {
-  console.log(props)
+  const { filters } = props
+  console.log(filters)
   const initial = { excessLoad: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+
+  const initialVars = { tabKey: '2', trip_status: 'Reported at destination' }
+  const [vars, setVars] = useState(initialVars)
+
+  const variables = {
+    regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
+    branches: (filters.branches && filters.branches > 0) ? filters.branches : null,
+    cities: (filters.cities && filters.cities > 0) ? filters.cities : null,
+    trip_status: vars.trip_status ? vars.trip_status : null
+  }
+  const { loading, data, error } = useSubscription(DASHBOAD_QUERY, { variables })
+  console.log('dashboard error', error)
+
+  let trucks = []
+  let trips = []
+  if (!loading) {
+    const newData = { data }
+    trips = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('trips').value()
+    trucks = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('trucks').value()
+  }
+
+  const onTabChange = (key) => {
+    setVars({ ...vars, tabKey: key })
+    if (key === '1') {
+      setVars({ ...vars, trip_status: 'Reported at destination' })
+    }
+    if (key === '3') {
+      setVars({ ...vars, trip_status: 'Assigned' })
+    }
+    if (key === '4') {
+      setVars({ ...vars, trip_status: 'Confirmed' })
+    }
+    if (key === '5') {
+      setVars({ ...vars, trip_status: 'Reported at source' })
+    }
+    if (key === '6') {
+      setVars({ ...vars, trip_status: 'Intransit' })
+    }
+    if (key === '7') {
+      setVars({ ...vars, trip_status: 'Intransit' })
+    }
+    if (key === '8') {
+      setVars({ ...vars, trip_status: 'Reported at destination' })
+    }
+    if (key === '10') {
+      setVars({ ...vars, trip_status: 'Delivery onhold' })
+    }
+  }
+  console.log('dashboard', trips, trucks)
   return (
     <Row>
       <Col xs={24}>
@@ -41,7 +95,8 @@ const DashboardContainer = (props) => {
           <Col xs={24} sm={24}>
             <Card size='small' className='card-body-0 border-top-blue'>
               <Tabs
-                defaultActiveKey='1'
+                onChange={onTabChange}
+                defaultActiveKey='2'
                 tabBarExtraContent={
                   <Space>
                     <Button size='small' shape='circle' type='primary' className='btn-success' icon={<WhatsAppOutlined />} />
@@ -49,35 +104,35 @@ const DashboardContainer = (props) => {
                   </Space>
                 }
               >
-                <TabPane tab={<TitleWithCount name='Unloading' value={20} />} key='2'>
-                  <Trips />
+                <TabPane tab={<TitleWithCount name='Unloading' value={20} />} key='1'>
+                  <Trips trips={trips} loading={loading} />
                 </TabPane>
-                <TabPane tab={<TitleWithCount name='WF.Load' value={200} />} key='1'>
-                  <WaitingForLoad />
+                <TabPane tab={<TitleWithCount name='WF.Load' value={200} />} key='2'>
+                  <WaitingForLoad trucks={trucks} loading={loading} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Assigned' value={57} />} key='3'>
-                  <Trips />
+                  <Trips trips={trips} loading={loading} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Confirmed' value={57} />} key='4'>
-                  <Trips />
+                  <Trips trips={trips} loading={loading} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Loading' value={5} />} key='5'>
-                  <Trips />
+                  <Trips trips={trips} loading={loading} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Intransit' value={36} />} key='6'>
-                  <Trips intransit />
+                  <Trips trips={trips} loading={loading} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Intransit(D)' value={57} />} key='7'>
-                  <Trips intransit />
+                  <Trips trips={trips} loading={loading} />
                 </TabPane>
                 <TabPane tab='Unloading(D)' key='8'>
-                  <Trips />
+                  <Trips trips={trips} loading={loading} />
                 </TabPane>
                 <TabPane tab='Loads' key='9'>
                   <ExcessLoad />
                 </TabPane>
                 <TabPane tab='Hold' key='10'>
-                  <Trips />
+                  <Trips trips={trips} loading={loading} />
                 </TabPane>
               </Tabs>
             </Card>
