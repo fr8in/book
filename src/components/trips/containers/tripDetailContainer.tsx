@@ -64,7 +64,7 @@ const TripDetailContainer = (props) => {
     >
       <Row gutter={10}>
         <Col xs={24} sm={24} md={14}>
-          <TripInfo trip_info={trip_info} />
+          <TripInfo trip_info={trip_info} trip_price={trip_info.trip_prices} trip_id={trip_info.id}/>
           <Collapse accordion className='small mt10'>
             <Panel header='Trip LR' key='1'>
               <TripLr trip_info={trip_info} />
