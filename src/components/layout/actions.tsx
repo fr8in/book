@@ -1,4 +1,5 @@
-import { Col, Button, Menu, Dropdown, Drawer, Space } from 'antd'
+import { useState } from 'react'
+import { Col, Button, Menu, Dropdown, Drawer, Space, Checkbox, Collapse, Typography } from 'antd'
 import {
   UserOutlined,
   SearchOutlined,
@@ -12,10 +13,109 @@ import useShowHide from '../../hooks/useShowHide'
 import GlobalFilter from '../dashboard/globalFilter'
 import GlobalSearch from '../dashboard/globalSearch'
 import Ssh from '../dashboard/ssh'
+import { useQuery, gql } from '@apollo/client'
+import _ from 'lodash'
+
+const { Panel } = Collapse
+const CheckBoxGroup = Checkbox.Group
+const { Text } = Typography
+
+const GLOBAL_FILTER = gql`
+query gloabl_filter($now: timestamptz, $regions:[Int!], $branches:[Int!], $cities:[Int!]) {
+  truck_type {
+    id
+    name
+  }
+  region {
+    id
+    name
+    branches(where:{_and: [ {region_id:{_in:$regions}} {id:{_in:$branches}}]}) {
+      branch_employees {
+        id
+        employee {
+          id
+          name
+        }
+      }
+      id
+      name
+      connected_cities: cities(where:{_and: [ {is_connected_city: {_eq: true}},{id:{_in:$cities}}]}) {
+        id
+        name
+        cities {
+          id
+          name
+          trucks_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for load"}}}) {
+            aggregate {
+              count
+            }
+          }
+          trucks_current: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for load"}}}, {available_at: {_gte: $now}}]}) {
+            aggregate {
+              count
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`
 
 const Actions = (props) => {
+  const { onFilter, initialFilter } = props
   const initial = { filter: false, search: false, ssh: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+
+  const [filter, setFilter] = useState(initialFilter)
+
+  const variables = {
+    now: initialFilter.now,
+    regions: (initialFilter.regions && initialFilter.regions.length !== 0) ? initialFilter.regions : null
+  }
+  const { loading, data, error } = useQuery(GLOBAL_FILTER, { variables })
+
+  let region_arr = []
+  // 2nd level branch_options
+  const branch_options = []
+  // 3rd level employee_options
+  const branch_employee_options = []
+  // 4th level connected_city_options
+  const connected_city_options = []
+  const truck_type_options = []
+
+  if (!loading) {
+    const newData = { data }
+    region_arr = _.chain(newData).flatMap('region').value()
+  }
+
+  const region_options = region_arr.map((data, i) => {
+    return {
+      data // todo inprogress
+    }
+  })
+
+  console.log('region_options', region_options)
+  const onRegionChange = (regions) => {
+    setFilter({ ...filter, regions })
+    onFilter({ ...filter, regions })
+  }
+  const onBranchChange = (branches) => {
+    setFilter({ ...filter, branches })
+    onFilter({ ...filter, branches })
+  }
+  const onCityChange = (cities) => {
+    setFilter({ ...filter, cities })
+    onFilter({ ...filter, cities })
+  }
+  const onManagerChange = (managers) => {
+    setFilter({ ...filter, managers })
+    onFilter({ ...filter, managers })
+  }
+  const onTypeChange = (types) => {
+    setFilter({ ...filter, types })
+    onFilter({ ...filter, types })
+  }
 
   const user = (
     <Menu>
