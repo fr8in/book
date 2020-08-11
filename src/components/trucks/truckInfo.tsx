@@ -33,7 +33,7 @@ console.log('truck_info',truck_info)
  
 
   const onDimensionSubmit = (form) => {
-   console.log("form",form)
+   
    updateTruckInfo({
     variables: {
       id : id,
@@ -42,6 +42,7 @@ console.log('truck_info',truck_info)
     height : parseInt(form.height , 10),
     }
   })
+  console.log('form',form)
   }
   
   return (
