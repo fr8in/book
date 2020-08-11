@@ -23,10 +23,9 @@ partner_aggregate(where: {partner_status: {name: {_in: ["Lead","Registered"]}}})
 }
 }
 `
-
 const TabPane = Tabs.TabPane
-
 const SourcingContainer = () => {
+
   const [mainTabKey, setMainTabKey] = useState('1')
   const [subTabKey, setSubTabKey] = useState('1')
   const initial = { createLead: false, employeeList: false, filterList: false }

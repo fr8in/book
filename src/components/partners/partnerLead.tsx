@@ -1,4 +1,4 @@
-import { Table, Input, Switch, Popconfirm, Button, Tooltip, message,Pagination,Checkbox } from 'antd'
+import { Table, Input, Switch, Popconfirm, Button, Tooltip, message,Pagination,Checkbox,Modal } from 'antd'
 import {
   EditTwoTone,
   CommentOutlined,
@@ -9,7 +9,7 @@ import useShowHide from '../../hooks/useShowHide'
 import {useState} from 'react'
 import EmployeeList from '../branches/fr8EmpolyeeList'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
-import Comment from '../../components/trips/tripFeedBack'
+import Comment from '../../components/partners/comment'
 import { gql, useQuery, useMutation } from '@apollo/client'
 
 
@@ -49,6 +49,10 @@ query(
     id
     name
   }
+  channel(order_by: {id: asc}){
+    id
+    name
+  }
 }
 `
 const PARTNER_LEAD_REJECT_MUTATION = gql`
@@ -62,12 +66,7 @@ mutation partner_lead_reject($partner_status_id:Int,$id:Int! ){
   }
 }
 `
-const source = [
-  { value: 1, text: 'DIRECT' },
-  { value: 2, text: 'SOCIAL MEDIA' },
-  { value: 3, text: 'REFERRAL' },
-  { value: 4, text: 'APP' }
-]
+
 const comment = [{ value: 1, text: 'No Comment' }]
 
 const PartnerKyc = () => {
@@ -102,10 +101,14 @@ const PartnerKyc = () => {
   var partner = []
   var partner_aggregate = 0;
   var partner_status = [];
+  var channel = [];
+  var id ={}
   if (!loading) {
     partner = data && data.partner
     partner_aggregate = data && data.partner_aggregate
     partner_status = data && data.partner_status
+    channel = data && data.channel
+    id = data && data.id
   }
 
 console.log('partnerLead',partner)
@@ -118,6 +121,9 @@ partner_aggregate.aggregate.count;
 console.log("record_count",record_count)
 
 const partners_status = partner_status.map((data) => {
+  return { value: data.name, label: data.name }
+})
+const channels = channel.map((data) => {
   return { value: data.name, label: data.name }
 })
 
@@ -238,10 +244,18 @@ const onSubmit = (id) => {
     {
       title: 'Channel',
       dataIndex: 'source',
+      filterDropdown: (
+        <Checkbox.Group
+          options={channels}
+          //defaultValue={filter.partner_status_name}
+          onChange={handleStatus}
+          className='filter-drop-down'
+        />
+      ),
       render: (text, record) => {
         return record.channel && record.channel.name;
       },
-      filters: source
+      
     },
     {
       title: 'Status',
@@ -286,7 +300,7 @@ const onSubmit = (id) => {
                   'commentVisible',
                   null,
                   'commentData',
-                  record.previousComment
+                  record.id
                 )}
             />
           </Tooltip>
@@ -332,12 +346,17 @@ const onSubmit = (id) => {
             onChange={pageChange}
             className='text-right p10'
           />) : null}
-      {object.commentVisible && (
-        <Comment
+      
+
+{object.commentVisible && (
+        <Modal
+          title='Comments'
           visible={object.commentVisible}
-          data={object.commentData}
-          onHide={handleHide}
-        />
+          onCancel={handleHide}
+          bodyStyle={{ padding: 10 }}
+        >
+          <Comment partnerId={object.commentData} />
+        </Modal>
       )}
       {visible.employeeList && (
         <EmployeeList visible={visible.employeeList} onHide={onHide} />
