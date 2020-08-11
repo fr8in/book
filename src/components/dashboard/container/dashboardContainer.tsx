@@ -18,7 +18,7 @@ const { TabPane } = Tabs
 
 const DashboardContainer = (props) => {
   const { filters } = props
-  console.log(filters)
+
   const initial = { excessLoad: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
@@ -44,29 +44,34 @@ const DashboardContainer = (props) => {
 
   const onTabChange = (key) => {
     setVars({ ...vars, tabKey: key })
-    if (key === '1') {
-      setVars({ ...vars, trip_status: 'Reported at destination' })
-    }
-    if (key === '3') {
-      setVars({ ...vars, trip_status: 'Assigned' })
-    }
-    if (key === '4') {
-      setVars({ ...vars, trip_status: 'Confirmed' })
-    }
-    if (key === '5') {
-      setVars({ ...vars, trip_status: 'Reported at source' })
-    }
-    if (key === '6') {
-      setVars({ ...vars, trip_status: 'Intransit' })
-    }
-    if (key === '7') {
-      setVars({ ...vars, trip_status: 'Intransit' })
-    }
-    if (key === '8') {
-      setVars({ ...vars, trip_status: 'Reported at destination' })
-    }
-    if (key === '10') {
-      setVars({ ...vars, trip_status: 'Delivery onhold' })
+    switch (key) {
+      case '1':
+        setVars({ ...vars, trip_status: initialVars.trip_status })
+        break
+      case '3':
+        setVars({ ...vars, trip_status: 'Assigned' })
+        break
+      case '4':
+        setVars({ ...vars, trip_status: 'Confirmed' })
+        break
+      case '5':
+        setVars({ ...vars, trip_status: 'Reported at source' })
+        break
+      case '6':
+        setVars({ ...vars, trip_status: 'Intransit' })
+        break
+      case '7':
+        setVars({ ...vars, trip_status: 'Intransit' })
+        break
+      case '8':
+        setVars({ ...vars, trip_status: 'Reported at destination' })
+        break
+      case '10':
+        setVars({ ...vars, trip_status: 'Delivery onhold' })
+        break
+      default:
+        setVars({ ...vars, trip_status: initialVars.trip_status })
+        break
     }
   }
   console.log('dashboard', trips, trucks)
