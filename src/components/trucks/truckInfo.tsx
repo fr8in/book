@@ -4,7 +4,7 @@ import { gql, useMutation } from '@apollo/client'
 import Loading from '../common/loading'
 
 const UPDATE_TRUCK_INFO_MUTATION = gql`
-mutation TruckInfo($length:Int,$breadth:Int,$height:Int,$id:Int) {
+mutation TruckInfo($length:Int,$breadth:Int,$height:Int,$id:Int!) {
   update_truck(_set: {length:$length,breadth:$breadth,height:$height}, where: {id: {_eq:$id }}){
     returning{
       id
@@ -33,17 +33,12 @@ const TruckInfo = (props) => {
     updateTruckInfo({
       variables: {
         id: id,
-        length: parseInt(form.length, 10),
-        breadth: parseInt(form.breadth, 10),
-        height: parseInt(form.height, 10)
+        length: parseFloat(form.length),
+        breadth: parseFloat(form.breadth),
+        height: parseFloat(form.height)
       }
     })
   }
-
-  const length = truck_info && truck_info.length ? truck_info.length : null
-  const breadth = truck_info && truck_info.breadth ? truck_info.breadth : null
-  const height = truck_info && truck_info.height ? truck_info.height : null
-  console.log('length_breadth_height', length, breadth, height)
 
   return (
     <>
@@ -57,7 +52,7 @@ const TruckInfo = (props) => {
                     label='Length(Ft)'
                     name='length'
                     rules={[{ required: true, message: 'Length(Ft) is required field' }]}
-                    initialValue={length}
+                    initialValue={truck_info.length}
                   >
                     <Input type='number' placeholder='Length(Ft)' disabled={false} />
                   </Form.Item>
@@ -67,7 +62,7 @@ const TruckInfo = (props) => {
                     label='Breadth(Ft)'
                     name='breadth'
                     rules={[{ required: true, message: 'Breadth(Ft) is required field' }]}
-                    initialValue={breadth}
+                    initialValue={truck_info.breadth}
                   >
                     <Input
                       type='number'
@@ -81,7 +76,7 @@ const TruckInfo = (props) => {
                     label='Height(Ft)'
                     name='height'
                     rules={[{ required: true, message: 'Height(Ft) is required field' }]}
-                    initialValue={height}
+                    initialValue={truck_info.height}
                   >
                     <Input
                       placeholder='Height(Ft)'
@@ -92,20 +87,22 @@ const TruckInfo = (props) => {
                 </Col>
                 <Col span={6}>
                   <Form.Item label='save' name='save' className='hideLabel'>
-                    <Button type='primary' htmlType='submit'> Save </Button>
+                    <Button type='primary' htmlType='submit'>Save</Button>
                   </Form.Item>
                 </Col>
               </Row>
             </Form>
           </Col>
           <Col span={4}>
-            <Form.Item
-              label='Driver'
-              name='Driver'
-              rules={[{ required: true, message: 'Driver Number is required field' }]}
-            >
-              <Input placeholder='Driver Number' />
-            </Form.Item>
+            <Form>
+              <Form.Item
+                label='Driver'
+                name='Driver'
+                rules={[{ required: true, message: 'Driver Number is required field' }]}
+              >
+                <Input placeholder='Driver Number' />
+              </Form.Item>
+            </Form>
           </Col>
         </Row>) : <Loading />}
     </>

@@ -68,6 +68,8 @@ subscription dashboard_trips_truks($now: timestamptz,$regions: [Int!], $branches
           }
           trips(where: {trip_status: {name: {_eq: $trip_status}}}) {
             id
+            delay
+            eta
             customer {
               cardcode
               name
