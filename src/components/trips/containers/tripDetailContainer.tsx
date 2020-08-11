@@ -16,8 +16,6 @@ import Receivables from '../receivables'
 import CustomerPayments from '../customerPayments'
 import CreditNote from '../creditNote'
 import CreditNoteTable from '../creditNoteTable'
-
-import Loading from '../../common/loading'
 import { useSubscription } from '@apollo/client'
 import { TRIP_DETAIL_SUBSCRIPTION } from './query/tripDetailSubscription'
 import DetailPageHeader from '../../common/detailPageHeader'
@@ -34,11 +32,11 @@ const TripDetailContainer = (props) => {
       variables: { id: trip_id }
     }
   )
-
-  if (loading) return <Loading />
+  var trip = []
+  if (!loading) {
+    trip = data.trip
+  }
   console.log('TripDetailContainer Error', error)
-
-  const { trip } = data
   const trip_info = trip[0] ? trip[0] : { name: 'ID does not exist' }
 
   const title = (
@@ -64,16 +62,16 @@ const TripDetailContainer = (props) => {
     >
       <Row gutter={10}>
         <Col xs={24} sm={24} md={14}>
-          <TripInfo trip_info={trip_info} />
+          <TripInfo trip_info={trip_info} trip_price={trip_info && trip_info.trip_prices} trip_id={trip_info.id}/>
           <Collapse accordion className='small mt10'>
             <Panel header='Trip LR' key='1'>
               <TripLr trip_info={trip_info} />
             </Panel>
           </Collapse>
-          <TripTime trip_info={trip_info} />
+          <TripTime trip_info={trip_info} trip_id={trip_info.id}/>
           <Collapse accordion className='small mt10'>
             <Panel header='Customer/Partner - Billing Comment' key='1'>
-              <BillingComment />
+              <BillingComment trip_id={trip_info.id} />
             </Panel>
           </Collapse>
         </Col>

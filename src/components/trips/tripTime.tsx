@@ -10,12 +10,15 @@ import {
 import SendLoadingMemo from './sendLoadingMemo'
 import useShowHide from '../../hooks/useShowHide'
 import DeletePO from './deletePO'
+import GodownReceipt from './godownReceipt'
 import Driver from './driver'
 import SourceInDate from './tripSourceIn'
 import SourceOutDate from './tripSourceOut'
 import DestinationInDate from './tripDestinationIn'
 import DestinationOutDate from './tripDestinationOut'
 import { gql, useMutation } from '@apollo/client'
+import {useState} from "react";
+
 
 const REMOVE_SOUT_MUTATION = gql`
 mutation removeSouceOut($source_out:timestamptz,$id:Int!) {
@@ -38,12 +41,36 @@ mutation removeDestinationOut($destination_out:timestamptz,$id:Int!) {
   }
 }
 `
+const TO_PAY_MUTATION = gql`
+mutation insertToPay($to_pay: Float, $comment: String, $trip_id: Int!) {
+  insert_trip_price(objects: {to_pay: $to_pay, comment:$comment, trip_id: $trip_id}) {
+    returning {
+      to_pay
+      comment
+    }
+  }
+}
+`
 
 const TripTime = (props) => {
-  const { trip_info } = props
+
+  const [Comment, setComment] = useState('')
+  const [Topay, setToPay] = useState('')
+
+  const { trip_info,trip_id} = props
   console.log('trip_info', trip_info)
-  const initial = { checkbox: false, mail: false, deletePO: false }
+  const initial = { checkbox: false, mail: false, deletePO: false,godownReceipt:false }
   const { visible, onShow, onHide } = useShowHide(initial)
+
+  const handleChange = (e) => {
+    setComment(e.target.value)
+  }
+  console.log('Comment', Comment)
+
+  const toPay = (e) => {
+    setToPay(e.target.value)
+  }
+  console.log('Topay', Topay)
 
   const [removeSout] = useMutation(
     REMOVE_SOUT_MUTATION,
@@ -55,6 +82,14 @@ const TripTime = (props) => {
 
   const [removeDout] = useMutation(
     REMOVE_DOUT_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
+
+  const [insertTopay] = useMutation(
+    TO_PAY_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
       onCompleted () { message.success('Updated!!') }
@@ -74,6 +109,15 @@ const TripTime = (props) => {
       variables: {
         id: trip_info.id,
         destination_out: null
+      }
+    })
+  }
+  const getToPay = () => {
+    insertTopay({
+      variables: {
+        to_pay: Topay,
+        comment:Comment ,
+        trip_id: trip_info.id
       }
     })
   }
@@ -129,22 +173,24 @@ const TripTime = (props) => {
                     placeholder='To Pay Amount'
                     type='number'
                     disabled={false}
+                    onChange={toPay}
                   />
                 </Form.Item>
               </Col>
               <Col xs={16}>
                 <Form.Item label='To-Pay Comment'>
                   <Input
-                    id='toPayComment'
+                    id='comment'
                     placeholder='To Pay Comment'
                     disabled={false}
+                    onChange={handleChange}
                   />
                 </Form.Item>
               </Col>
             </Row>
             <Row className='mb15'>
               <Col xs={20}>
-                <Checkbox checked disabled={false}>Unloaded at private godown</Checkbox>
+                <Checkbox disabled={false}  onClick={() => onShow('godownReceipt')}>Unloaded at private godown</Checkbox>
               </Col>
               <Col xs={4} className='text-right'>
                 <Tooltip title='Warehouse Receipt'>
@@ -166,7 +212,7 @@ const TripTime = (props) => {
                 </Space>
               </Col>
               <Col xs={8} className='text-right'>
-                <Button type='primary'>Submit</Button>
+                <Button type='primary'  onClick={getToPay}>Submit</Button>
               </Col>
             </Row>
           </Form>
@@ -174,6 +220,7 @@ const TripTime = (props) => {
       </Row>
       {visible.mail && <SendLoadingMemo visible={visible.mail} onHide={onHide} />}
       {visible.deletePO && <DeletePO visible={visible.deletePO} onHide={onHide} />}
+      {visible.godownReceipt && <GodownReceipt visible={visible.godownReceipt} trip_id={trip_info.id} onHide={onHide} />}
     </Card>
 
   )

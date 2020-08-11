@@ -95,7 +95,6 @@ const DeliveredContainer = (props) => {
       onTripIdSearch={onTripIdSearch}
       trip_status_list={trip_status}
       onFilter={onFilter}
-      delivered
       {...props}
     />
   )

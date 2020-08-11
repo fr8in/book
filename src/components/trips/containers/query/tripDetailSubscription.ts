@@ -63,9 +63,12 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         partner_price
         cash
         to_pay
+        comment
+        bank
         mamul
         including_loading
         including_unloading
+        customer_advance_percentage
       }
       trip_files{
         id

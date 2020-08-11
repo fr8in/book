@@ -4,6 +4,7 @@ import { useState } from 'react'
 const { Panel } = Collapse
 const CheckBoxGroup = Checkbox.Group
 const { Text } = Typography;
+import _ from 'lodash'
 
 const GLOBAL_FILTER = gql`
 query gloabl_filter($now: timestamptz, $regions:[Int!], $branches:[Int!], $cities:[Int!]) {
@@ -30,12 +31,12 @@ query gloabl_filter($now: timestamptz, $regions:[Int!], $branches:[Int!], $citie
         cities {
           id
           name
-          trucks_total: trucks_aggregate(where: {truck_status: {value: {_eq: "Waiting for load"}}}) {
+          trucks_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for load"}}}) {
             aggregate {
               count
             }
           }
-          trucks_current: trucks_aggregate(where: {_and: [{truck_status: {value: {_eq: "Waiting for load"}}}, {available_at: {_gte: $now}}]}) {
+          trucks_current: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for load"}}}, {available_at: {_gte: $now}}]}) {
             aggregate {
               count
             }
@@ -52,37 +53,33 @@ let region_options = []
 let branch_options = []
 //3rd level employee_options 
 let branch_employee_options = []
-//3rd level connected_city_options 
+//4th level connected_city_options 
 let connected_city_options = []
 let truck_type_options = []
+
 const GlobalFilter = ({onFilter,initialFilter}) => {
-  // const initialFilter = {
-  //   now: new Date().toISOString(),
-  //   regions: null, branches: null, cities: null, managers: null, types: null
-  // };
   const [filter, setFilter] = useState(initialFilter)
   const [activeKey, setActiveyKey] = useState(['branch']);
  
   const onRegionChange = (regions) => {
-    
     setFilter({ ...filter, regions });
-     onFilter({ ...filter, regions })
+    onFilter({ ...filter, regions })
   }
   const onBranchChange = (branches) => {
     setFilter({ ...filter, branches });
-onFilter({ ...filter, branches })
+    onFilter({ ...filter, branches })
   }
   const onCityChange = (cities) => {
     setFilter({ ...filter, cities });
-onFilter({ ...filter, cities })
+    onFilter({ ...filter, cities })
   }
   const onManagerChange = (managers) => {
     setFilter({ ...filter, managers });
-onFilter({ ...filter, managers })
+    onFilter({ ...filter, managers })
   }
   const onTypeChange = (types) => {
     setFilter({ ...filter, types });
-onFilter({ ...filter, types })
+    onFilter({ ...filter, types })
   }
   const variables = {
     now: filter.now,
@@ -90,7 +87,6 @@ onFilter({ ...filter, types })
   }
 
   const { loading, data } = useQuery(GLOBAL_FILTER, { variables })
-
   if (!loading) {
     region_options = []
     //2nd level branch_options 
@@ -103,6 +99,7 @@ onFilter({ ...filter, types })
     truck_type_options = data.truck_type.map(_truck_type => { return { label: _truck_type.name, value: _truck_type.id } })
 
     const { region } = data
+
     region.forEach(_region => {
       let _region_trucks_total = 0
       let _region_trucks_current = 0
@@ -129,6 +126,7 @@ onFilter({ ...filter, types })
     })
     //const branch_options = data.region.map(_region => { return { label: _region.name, value: _region.id } })
   }
+  
   return (
     <Row >
       <Collapse onChange={setActiveyKey} className='global-filter' defaultActiveKey={activeKey} >
@@ -147,10 +145,8 @@ onFilter({ ...filter, types })
         <Panel header={<b>Type</b>} key={'type'} extra={<span className='clear' onClick={(e) => e.stopPropagation()}>CLEAR</span>}>
           <ul className='filterMenu'><li><CheckBoxGroup options={truck_type_options} onChange={onTypeChange} /></li></ul>
         </Panel>
-
       </Collapse>
     </Row>
-
   )
 }
 

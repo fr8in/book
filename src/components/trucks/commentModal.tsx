@@ -2,14 +2,7 @@ import {useState} from "react";
 import { Modal, Button, Input, message } from "antd";
 import { gql, useMutation } from '@apollo/client'
 
-
-  const CommentModal = (props) => {
-    const { visible, onHide , id} = props
-    
-    const [userComment, setUserComment] = useState('')
-
-
-    const INSERT_TRUCK_COMMENT_MUTATION = gql`
+const INSERT_TRUCK_COMMENT_MUTATION = gql`
 mutation TruckComment($description:String, $topic:String, $truck_id: Int, $created_by_id:Int ) {
   insert_truck_comment(objects: {description: $description, truck_id: $truck_id, topic: $topic, created_by_id: $created_by_id}) {
     returning {
@@ -20,6 +13,10 @@ mutation TruckComment($description:String, $topic:String, $truck_id: Int, $creat
   }
 }
 `
+  const CommentModal = (props) => {
+    const { visible, onHide , id} = props
+    
+    const [userComment, setUserComment] = useState('')
 
 const [insertComment] = useMutation(
   INSERT_TRUCK_COMMENT_MUTATION,

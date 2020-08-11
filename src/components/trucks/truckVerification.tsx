@@ -1,4 +1,5 @@
-import { Table, Button, Space } from "antd";
+import { useState } from 'react'
+import { Table, Button, Space ,Pagination,Checkbox} from "antd";
 import mock from "../../../mock/partner/sourcingMock";
 import Link from "next/link";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
@@ -6,27 +7,124 @@ import useShowHide from "../../hooks/useShowHide";
 import TruckReject from "../../components/trucks/truckReject";
 import TruckActivation from "../trucks/truckActivation";
 import useShowHideWithRecord from "../../hooks/useShowHideWithRecord";
+import { gql, useQuery } from '@apollo/client'
 
-const status = [
-  { value: 1, text: "Verification Pending" },
-  { value: 2, text: "Rejected" },
-];
-const TruckVerification = () => {
+
+const TRUCKS_QUERY = gql`
+query trucks(
+  $offset: Int!
+  $limit: Int!
+  $truck_statusName: [String!]){
+    truck(
+      offset: $offset
+      limit: $limit
+       where: {truck_status: {name: {_in:$truck_statusName}}}) {
+      id
+      truck_no
+      truck_status {
+        id
+        name
+      }
+      partner {
+        id
+        cardcode
+        name
+      }
+    }
+    truck_aggregate(  where: {truck_status: {name: {_in: ["Verification Pending","Rejected"],}}}){
+      aggregate{
+        count
+     }
+    }
+    truck_status(where:{name: {_in: ["Verification Pending","Rejected"]}}, order_by: {id: asc}) {
+      id
+      name
+    }
+  }
+  
+`
+
+const TruckVerification = (props) => {
+  
   const initial = {
-    reject: false,
+    offset: 0,
+    limit: 2,
     truckActivationVisible: false,
     truckActivationData: [],
+    truckRejectVisible: false,
+    truckRejectData: [],
+    truck_statusName: ['Verification Pending']
   };
-  const { visible, onShow, onHide } = useShowHide(initial);
+
+  const [filter, setFilter] = useState(initial)
+  const [currentPage, setCurrentPage] = useState(1)
+
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial);
-  const columnsCurrent = [
+
+  const truckQueryVars = {
+    offset: filter.offset,
+    limit: filter.limit,
+    truck_statusName: filter.truck_statusName
+  }
+
+  const { loading, error, data } = useQuery(TRUCKS_QUERY, {
+   variables: truckQueryVars,
+      fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  })
+
+  console.log('TrucksVerification error', error)
+
+  var truck = []
+  var truck_aggregate = 0;
+  var truck_status = [];
+  
+  if (!loading) {
+  truck = data && data.truck
+  truck_aggregate = data && data.truck_aggregate;
+  truck_status = data && data.truck_status;
+  }
+
+  const record_count =
+    truck_aggregate &&
+    truck_aggregate.aggregate &&
+    truck_aggregate.aggregate.count;
+
+    console.log("record_count",record_count)
+
+    const trucksStatus = truck_status.map((data) => {
+      return { value: data.name, label: data.name }
+    })
+
+    console.log("truckStatus",trucksStatus)
+
+  const onPageChange = (value) => {
+    setFilter({ ...filter, offset: value })
+  }
+
+  const onFilter = (value) => {
+    setFilter({ ...filter, truck_statusName: value, offset: 0 })
+  }
+
+  const pageChange = (page, pageSize) => {
+    const newOffset = page * pageSize - filter.limit
+    setCurrentPage(page)
+    onPageChange(newOffset)
+  }
+
+  const handleStatus = (checked) => {
+    onFilter(checked)
+    setCurrentPage(1)
+  }
+
+    const columnsCurrent = [
     {
       title: "Truck No",
-      dataIndex: "truckNo",
+      dataIndex: "truck_no",
       render: (text, record) => {
         return (
-          <Link href="trucks/[id]" as={`trucks/${record.id}`}>
-            <a>{text}</a>
+          <Link href="trucks/[id]" as={`trucks/${record.truck_no}`}>
+            <a>{record.truck_no}</a>
           </Link>
         );
       },
@@ -37,8 +135,8 @@ const TruckVerification = () => {
       dataIndex: "code",
       render: (text, record) => {
         return (
-          <Link href="partners/[id]" as={`partners/${record.id}`}>
-            <a>{text}</a>
+          <Link href="partners/[id]" as={`partners/${record.partner && record.partner.cardcode}`}>
+            <a>{record.partner && record.partner.cardcode}</a>
           </Link>
         );
       },
@@ -48,12 +146,25 @@ const TruckVerification = () => {
       title: "Partner",
       dataIndex: "partner",
       width: "18%",
+      render: (text, record) => {
+        return record.partner && record.partner.name;
+      },
     },
     {
       title: "Truck Status",
       dataIndex: "status",
-      filters: status,
       width: "17%",
+      filterDropdown: (
+        <Checkbox.Group
+          options={trucksStatus}
+          defaultValue={filter.truck_statusName}
+          onChange={handleStatus}
+          className='filter-drop-down'
+        />
+      ),
+      render: (text, record) => {
+        return record.truck_status && record.truck_status.name;
+      },
     },
     {
       title: "Action",
@@ -72,7 +183,7 @@ const TruckVerification = () => {
                   "truckActivationVisible",
                   null,
                   "truckActivationData",
-                  record
+                  record.id
                 )
               }
             />
@@ -82,7 +193,14 @@ const TruckVerification = () => {
               shape="circle"
               danger
               icon={<CloseOutlined />}
-              onClick={() => onShow("reject")}
+              onClick={() =>
+                handleShow(
+                  "truckRejectVisible",
+                  "Reject Truck",
+                  "truckRejectData",
+                  record.id
+                )
+              }
             />
           </Space>
         );
@@ -98,21 +216,36 @@ const TruckVerification = () => {
     <>
       <Table
         columns={columnsCurrent}
-        dataSource={mock}
+        dataSource={truck}
         rowKey={(record) => record.id}
         size="middle"
         scroll={{ x: 1150 }}
         pagination={false}
         className="withAction"
+       
       />
-      {visible.reject && (
-        <TruckReject visible={visible.reject} onHide={onHide} />
-      )}
+      {!loading && record_count
+        ? (
+          <Pagination
+            size='small'
+            current={currentPage}
+            pageSize={filter.limit}
+            total={record_count}
+            onChange={pageChange}
+            className='text-right p10'
+          />) : null}
       {object.truckActivationVisible && (
         <TruckActivation
           visible={object.truckActivationVisible}
           onHide={handleHide}
           data={object.truckActivationData}
+        />
+      )}
+       {object.truckRejectVisible && (
+        <TruckReject
+          visible={object.truckRejectVisible}
+          onHide={handleHide}
+          truck_id={object.truckRejectData}
         />
       )}
     </>

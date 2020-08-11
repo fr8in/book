@@ -3,6 +3,7 @@ import LabelAndData from '../common/labelAndData'
 
 const InvoiceDetail = () => {
   return (
+    <>
     <Row>
       <LabelAndData
         label={<p className='mb0 b'>{`Partner (AP: ${20023314})`}</p>}
@@ -12,8 +13,12 @@ const InvoiceDetail = () => {
         label={<p className='mb0 b'>{`Customer (AR: ${20003976})`}</p>}
         data={<Button danger>AR cancel</Button>}
       />
-
     </Row>
+    <br />
+    <Row>
+        <h4>Comment : </h4>
+    </Row>
+    </>
   )
 }
 

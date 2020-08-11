@@ -1,9 +1,9 @@
-import tripsData from '../../../mock/trip/tripsData'
 import { Table, Tooltip, Button } from 'antd'
 import Link from 'next/link'
 import { PhoneOutlined, CommentOutlined, WhatsAppOutlined } from '@ant-design/icons'
 
 const Trips = (props) => {
+  const { trips, loading } = props
   const callNow = record => {
     window.location.href = 'tel:' + record
   }
@@ -23,18 +23,19 @@ const Trips = (props) => {
     },
     {
       title: 'Customer',
-      dataIndex: 'customer',
       render: (text, record) => {
+        const cardcode = record.customer && record.customer.cardcode
+        const name = record.customer && record.customer.name
         return (
-          <Link href='/customers/[id]' as={`/customers/${record.customerId} `}>
-            {text && text.length > 12
-              ? <Tooltip title={text}><a>{text.slice(0, 12) + '...'}</a></Tooltip>
-              : <a>{text}</a>}
+          <Link href='/customers/[id]' as={`/customers/${cardcode} `}>
+            {name && name.length > 12
+              ? <Tooltip title={name}><a>{name.slice(0, 12) + '...'}</a></Tooltip>
+              : <a>{name}</a>}
           </Link>)
       },
       sorter: (a, b) =>
-        (a.customerName ? a.customerName.toLowerCase() : '') >
-          (b.customerName ? b.customerName.toLowerCase() : '')
+        (a.name ? a.name.toLowerCase() : '') >
+          (b.name ? b.name.toLowerCase() : '')
           ? 1
           : -1,
       width: '10%'
@@ -43,46 +44,49 @@ const Trips = (props) => {
       title: 'Partner',
       dataIndex: 'partner',
       render: (text, record) => {
+        const cardcode = record.partner && record.partner.cardcode
+        const name = record.partner && record.partner.name
         return (
-          <Link href='/partners/partner/[id]' as={`/partners/partner/${record.partnerId} `}>
-            {text && text.length > 12
-              ? <Tooltip title={text}><a>{text.slice(0, 12) + '...'}</a></Tooltip>
-              : <a>{text}</a>}
+          <Link href='/partners/[id]' as={`/partners/${cardcode} `}>
+            {name && name.length > 12
+              ? <Tooltip title={name}><a>{name.slice(0, 12) + '...'}</a></Tooltip>
+              : <a>{name}</a>}
           </Link>)
       },
       sorter: (a, b) =>
-        (a.partner ? a.partner.toLowerCase() : '') >
-          (b.partner ? b.partner.toLowerCase() : '')
+        (a.name ? a.name.toLowerCase() : '') >
+          (b.name ? b.name.toLowerCase() : '')
           ? 1
           : -1,
       width: '10%'
     },
     {
       title: 'Driver No',
-      dataIndex: 'driverNo',
+      dataIndex: 'driver',
       render: (text, record) => {
         return (
-          <span onClick={() => callNow(record.driverNo)} className='link'>{record.driverNo}</span>
+          text ? <span onClick={() => callNow(text)} className='link'>{text}</span> : null
         )
       },
       width: props.intransit ? '8%' : '9%'
     },
     {
       title: 'Truck',
-      dataIndex: 'truck',
       render: (text, record) => {
+        const truck_no = record.truck && record.truck.truck_no
+        const truck_type = record.truck && record.truck.truck_type && record.truck.truck_type.name
         return (
-          <Link href='/trucks/truck/[id]' as={`/trucks/truck/${record.truckId} `}>
-            <a>{text}</a>
+          <Link href='/trucks/truck/[id]' as={`/trucks/truck/${truck_no} `}>
+            <a>{truck_no + ' - ' + truck_type}</a>
           </Link>)
       },
       width: props.intransit ? '12%' : '14%'
     },
     {
       title: 'Source',
-      dataIndex: 'source',
       render: (text, record) => {
-        return text && text > 10 ? text.slice(0, 10) + '...' : text
+        const source = record.source && record.source.name
+        return source && source > 10 ? source.slice(0, 10) + '...' : source
       },
       sorter: (a, b) =>
         (a.source ? a.source.toLowerCase() : '') >
@@ -93,9 +97,9 @@ const Trips = (props) => {
     },
     {
       title: 'Destination',
-      dataIndex: 'destination',
       render: (text, record) => {
-        return text && text.length > 10 ? text.slice(0, 10) + '...' : text
+        const destination = record.destination && record.destination.name
+        return destination && destination.length > 10 ? destination.slice(0, 10) + '...' : destination
       },
       sorter: (a, b) =>
         (a.destination ? a.destination.toLowerCase() : '') >
@@ -106,12 +110,12 @@ const Trips = (props) => {
     },
     {
       title: 'TAT',
-      dataIndex: 'deviceTat',
+      dataIndex: 'tat',
       sorter: (a, b) =>
-        (a.deviceTat ? a.deviceTat : 0) -
-          (b.deviceTat ? b.deviceTat : 0),
+        (a.tat ? a.tat : 0) -
+          (b.tat ? b.tat : 0),
       render: (text, record) => {
-        return text && text ? text.toFixed(2) : 0
+        return text && text ? text : 0
       },
       width: '4%'
     },
@@ -129,12 +133,11 @@ const Trips = (props) => {
     } : {},
     {
       title: 'Comment',
-      dataIndex: 'comment',
       render: (text, record) => {
+        const comment = record.trip_comments && record.trip_comments.length > 0 ? record.trip_comments[0].description : null
         return (
-          text ? (
-            <Tooltip title={text}><span>{text.slice(0, 18) + '...'}</span></Tooltip>
-          ) : null
+          comment ? <Tooltip title={comment}><span>{comment.slice(0, 12) + '...'}</span></Tooltip>
+            : null
         )
       },
       width: props.intransit ? '11%' : '17%'
@@ -162,12 +165,13 @@ const Trips = (props) => {
   return (
     <Table
       columns={columns}
-      dataSource={tripsData}
+      dataSource={trips}
       className='withAction'
       rowKey={record => record.id}
       size='small'
       scroll={{ x: 1156 }}
       pagination={false}
+      loading={loading}
     />
   )
 }
