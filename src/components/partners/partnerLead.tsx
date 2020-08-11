@@ -1,4 +1,4 @@
-import { Table, Input, Switch, Popconfirm, Button, Tooltip } from 'antd'
+import { Table, Input, Switch, Popconfirm, Button, Tooltip, message } from 'antd'
 import {
   EditTwoTone,
   CommentOutlined,
@@ -10,7 +10,42 @@ import mock from '../../../mock/customer/sourcingMock'
 import EmployeeList from '../branches/fr8EmpolyeeList'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from '../../components/trips/tripFeedBack'
+import { gql, useQuery, useMutation } from '@apollo/client'
 
+
+const PARTNERS_QUERY = gql`
+query($partner_status_name:[String!]){
+  partner(where:{partner_status:{name:{_in:["Lead","Registered","Rejected"]}}}){
+    id
+    name
+    cardcode
+    partner_users{
+      mobile
+    }
+    city{
+      name
+    }
+    channel{
+      id
+      name
+    }
+    partner_status{
+      name
+    }
+  }
+}
+`
+const PARTNER_LEAD_REJECT_MUTATION = gql`
+mutation partner_lead_reject($partner_status_id:Int,$id:Int! ){
+  update_partner_by_pk(
+      pk_columns: { id: $id }
+      _set: { partner_status_id: $partner_status_id }
+    ) {
+  id
+    name
+  }
+}
+`
 const source = [
   { value: 1, text: 'DIRECT' },
   { value: 2, text: 'SOCIAL MEDIA' },
@@ -30,6 +65,47 @@ const PartnerKyc = () => {
   const initial = { comment: false, employeeList: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+
+
+  const partnerQueryVars = { 
+    partner_status_name: initial.partner_status_name
+  }
+
+  const { loading, error, data } = useQuery(PARTNERS_QUERY, {
+   variables: partnerQueryVars,
+      fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  })
+
+  console.log('partnerLead error', error)
+
+  var partner = []
+ 
+  
+  if (!loading) {
+    partner = data && data.partner
+  }
+
+console.log('partnerLead',partner)
+
+const [insertComment] = useMutation(PARTNER_LEAD_REJECT_MUTATION, {
+  onError(error) {
+    message.error(error.toString());
+  },
+  onCompleted() {
+    message.success("Updated!!");
+  },
+});
+
+const onSubmit = (id) => {
+  insertComment({
+    variables: {
+      partner_status_id: 3,
+      id: id,
+    },
+  });
+  console.log("customers");
+};
   const onChange = (e) => {
     console.log(`checked = ${e.target.checked}`)
   }
@@ -54,7 +130,10 @@ const PartnerKyc = () => {
     },
     {
       title: 'Phone',
-      dataIndex: 'number',
+      //dataIndex: 'number',
+      render: (text, record) => {
+        return record.partner_users[0] && record.partner_users[0].mobile;
+      },
       filterDropdown: (
         <div>
           <Input
@@ -72,6 +151,9 @@ const PartnerKyc = () => {
     {
       title: 'City',
       dataIndex: 'cityName',
+      render: (text, record) => {
+        return record.city && record.city.name;
+      },
       filterDropdown: (
         <div>
           <Input placeholder='Search City Name' id='cityName' name='cityName' />
@@ -102,14 +184,20 @@ const PartnerKyc = () => {
       )
     },
     {
-      title: 'Source',
+      title: 'Channel',
       dataIndex: 'source',
+      render: (text, record) => {
+        return record.channel && record.channel.name;
+      },
       filters: source
     },
     {
       title: 'Status',
-      dataIndex: 'status',
-      filters: status
+      //dataIndex: 'status',
+      filters: status,
+      render: (text, record) => {
+        return record.partner_status && record.partner_status.name;
+      },
     },
     {
       title: 'Last Comment',
@@ -148,7 +236,7 @@ const PartnerKyc = () => {
             title='Are you sure want to Reject the lead?'
             okText='Yes'
             cancelText='No'
-            onConfirm={() => console.log('Rejected!')}
+            onConfirm={() => onSubmit(record.id)}
           >
             <Button
               type='primary'
@@ -169,7 +257,7 @@ const PartnerKyc = () => {
           ...rowSelection
         }}
         columns={columnsCurrent}
-        dataSource={mock}
+        dataSource={partner}
         rowKey={(record) => record.id}
         size='small'
         scroll={{ x: 1156 }}

@@ -25,7 +25,6 @@ mutation partner_create($name: String, $email: String, $cibil: Int, $address: js
       pan: $pan_no, 
       cibil: $cibil, 
       address: $address, 
-      pin_code: $pin_code, 
       account_number: $account_number,
       ifsc_code: $ifsc_code,
       partner_users:
@@ -86,15 +85,14 @@ const PartnerProfile = () => {
 
 
   const onPartnerChange =(form) =>{
+    console.log('inside form submit', form)
     const address={
       no:form.no,
       address:form.address,
       city:form.city,
       state:form.state,
       pin_code:form.pin_code
-    }
-
-    
+    }   
     updatePartnerAddress({
       variables: {
         name: form.name,
@@ -112,9 +110,7 @@ const PartnerProfile = () => {
         city_id: form.city,
         onboarded_by_id: form.on_boarded_by
       }
-    })
-    console.log
-    console.log('inside form submit', form)
+    })   
    }
 
   return (

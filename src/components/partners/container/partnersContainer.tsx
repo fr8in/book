@@ -56,7 +56,7 @@ const PARTNERS_QUERY = gql`
 `
 
 const PartnerContainer = () => {
-  const initialFilter = { partner_statusId: [1], offset: 0, limit: 1, name: null, cardcode: null }
+  const initialFilter = { partner_statusId: [6], offset: 0, limit: 10, name: null, cardcode: null }
   const [filter, setFilter] = useState(initialFilter)
   const partnersQueryVars = {
     offset: filter.offset,
