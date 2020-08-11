@@ -1,4 +1,4 @@
-import { Table, Input, Switch, Popconfirm, Button, Tooltip, message } from 'antd'
+import { Table, Input, Switch, Popconfirm, Button, Tooltip, message,Pagination,Checkbox } from 'antd'
 import {
   EditTwoTone,
   CommentOutlined,
@@ -6,7 +6,7 @@ import {
   SearchOutlined
 } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
-import mock from '../../../mock/customer/sourcingMock'
+import {useState} from 'react'
 import EmployeeList from '../branches/fr8EmpolyeeList'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from '../../components/trips/tripFeedBack'
@@ -14,8 +14,15 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 
 
 const PARTNERS_QUERY = gql`
-query($partner_status_name:[String!]){
-  partner(where:{partner_status:{name:{_in:["Lead","Registered","Rejected"]}}}){
+query(
+  $offset: Int!
+  $limit: Int!
+  $partner_status_name:[String!]
+  ){
+  partner(
+    offset: $offset
+    limit: $limit
+    where:{partner_status:{name:{_in:$partner_status_name}}}){
     id
     name
     cardcode
@@ -32,6 +39,15 @@ query($partner_status_name:[String!]){
     partner_status{
       name
     }
+  }
+  partner_aggregate(where: {partner_status: {name: {_in: ["Lead","Registered","Rejected"]}}}) {
+    aggregate {
+      count
+    }
+  }
+  partner_status(where:{name: {_in: ["Lead","Registered","Rejected"]}}, order_by: {id: asc}) {
+    id
+    name
   }
 }
 `
@@ -52,23 +68,27 @@ const source = [
   { value: 3, text: 'REFERRAL' },
   { value: 4, text: 'APP' }
 ]
-
-const status = [
-  { value: 1, text: 'OPEN' },
-  { value: 2, text: 'ON-BOARDED' },
-  { value: 3, text: 'REJECTED' }
-]
-
 const comment = [{ value: 1, text: 'No Comment' }]
 
 const PartnerKyc = () => {
-  const initial = { comment: false, employeeList: false }
+  const initial = {
+     comment: false,
+      employeeList: false,
+      offset: 0,
+      limit: 10,
+      partner_status_name:['Lead','Registered']
+    }
+
+    const [filter, setFilter] = useState(initial)
+    const [currentPage, setCurrentPage] = useState(1)
+
   const { visible, onShow, onHide } = useShowHide(initial)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
-
   const partnerQueryVars = { 
-    partner_status_name: initial.partner_status_name
+    offset: filter.offset,
+    limit: filter.limit,
+    partner_status_name: filter.partner_status_name
   }
 
   const { loading, error, data } = useQuery(PARTNERS_QUERY, {
@@ -80,14 +100,46 @@ const PartnerKyc = () => {
   console.log('partnerLead error', error)
 
   var partner = []
- 
-  
+  var partner_aggregate = 0;
+  var partner_status = [];
   if (!loading) {
     partner = data && data.partner
+    partner_aggregate = data && data.partner_aggregate
+    partner_status = data && data.partner_status
   }
 
 console.log('partnerLead',partner)
 
+const record_count =
+partner_aggregate &&
+partner_aggregate.aggregate &&
+partner_aggregate.aggregate.count;
+
+console.log("record_count",record_count)
+
+const partners_status = partner_status.map((data) => {
+  return { value: data.name, label: data.name }
+})
+
+console.log("truckStatus",partners_status)
+
+const onPageChange = (value) => {
+  setFilter({ ...filter, offset: value })
+}
+const onFilter = (value) => {
+  setFilter({ ...filter, partner_status_name: value, offset: 0 })
+}
+
+const pageChange = (page, pageSize) => {
+  const newOffset = page * pageSize - filter.limit
+  setCurrentPage(page)
+  onPageChange(newOffset)
+}
+
+const handleStatus = (checked) => {
+  onFilter(checked)
+  setCurrentPage(1)
+}
 const [insertComment] = useMutation(PARTNER_LEAD_REJECT_MUTATION, {
   onError(error) {
     message.error(error.toString());
@@ -193,8 +245,14 @@ const onSubmit = (id) => {
     },
     {
       title: 'Status',
-      //dataIndex: 'status',
-      filters: status,
+      filterDropdown: (
+        <Checkbox.Group
+          options={partners_status}
+          defaultValue={filter.partner_status_name}
+          onChange={handleStatus}
+          className='filter-drop-down'
+        />
+      ),
       render: (text, record) => {
         return record.partner_status && record.partner_status.name;
       },
@@ -264,6 +322,16 @@ const onSubmit = (id) => {
         pagination={false}
         className='withAction'
       />
+       {!loading && record_count
+        ? (
+          <Pagination
+            size='small'
+            current={currentPage}
+            pageSize={filter.limit}
+            total={record_count}
+            onChange={pageChange}
+            className='text-right p10'
+          />) : null}
       {object.commentVisible && (
         <Comment
           visible={object.commentVisible}
