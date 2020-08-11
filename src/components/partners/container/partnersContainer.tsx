@@ -20,13 +20,13 @@ const PARTNERS_QUERY = gql`
       partner_status{
         name
       }
-      # city {
-      #   branch {
-      #     region {
-      #       name
-      #     }
-      #   }
-      # }
+       city {
+         branch {
+           region {
+             name
+           }
+         }
+       }
       partner_users(limit:1 , where:{is_admin:{_eq:true}}){
         mobile
       }
