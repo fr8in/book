@@ -12,21 +12,105 @@ import {
   Input,
   Divider,
   Space,
+  message,
 } from "antd";
 import { EyeTwoTone } from "@ant-design/icons";
 import { DatePicker } from "antd";
+import { gql, useQuery ,useMutation} from '@apollo/client'
+
+const TRUCKS_QUERY = gql`
+query trucks($truck_id : Int){
+  truck_type {
+    id
+    name
+  }
+  
+  truck(where: {id: {_eq: $truck_id}}) {
+    height
+    truck_no
+    partner {
+      cardcode
+      name
+      partner_users(limit:1 , where:{is_admin:{_eq:true}}){
+        mobile
+      }
+      onboarded_by {
+        id
+        name
+        email
+      }
+    }
+  }
+  city {
+    id
+    name
+  }
+}
+`
+
+const UPDATE_TRUCK_ACTIVATION_MUTATION = gql`
+mutation TruckActivation($available_at:String,$id:Int,$city_id:Int,$truck_type_id:Int,$partner_id:Int) {
+  update_truck(_set: {available_at: $available_at, city_id:$city_id, truck_type_id:$truck_type_id, partner_id: $partner_id}, where: {id: {_eq: $id}}) {
+    returning {
+      id
+    }
+  }
+}
+
+`
 
 function onChange(date, dateString) {
   console.log(date, dateString);
 }
 
-const { Option } = Select;
+
 const TruckActivation = (props) => {
-  const { visible, onHide, data, title } = props;
+  const { visible, onHide, truck_id, title } = props;
+
+ 
+
+  const { loading, error, data } = useQuery(
+    TRUCKS_QUERY,
+    {
+      variables:  {truck_id : truck_id},
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
+  )
+  console.log('TrucksActivation error', error)
+
+  const [updateTruckActivation] = useMutation(
+    UPDATE_TRUCK_ACTIVATION_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Saved!!') }
+    }
+  )
+
+  var truck_type = [];
+  var city = [];
+  
+  var truck_info = {}
+  
+  if (!loading) {
+     city = data && data.city
+     truck_type = data && data.truck_type
+     const { truck } = data
+     truck_info = truck[0] ? truck[0] : { name: 'ID does not exist' }
+  }
+  const truck_data = truck_info && truck_info.truck_no
+ const onboarded_by  = truck_info && truck_info.partner && truck_info.partner.onboarded_by && truck_info.partner.onboarded_by.name
+ const partner_mobile = truck_info && truck_info.partner && truck_info.partner.partner_users && truck_info.partner.partner_users.mobile
+
+  const cityList = city.map((data) => {
+    return { value: data.id, label: data.name }
+  })
+  const typeList = truck_type.map((data) => {
+    return { value: data.id, label: data.name }
+  })
 
   const onSubmit = () => {
-    console.log("Traffic Added", data);
-    onHide();
+    console.log("Traffic Added", truck_id);
   };
 
   return (
@@ -47,7 +131,7 @@ const TruckActivation = (props) => {
           <Form.Item>
             <Row className="labelFix">
               <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-                <h4>{data.truckNo}</h4>
+                <h4>{truck_data}</h4>
               </Col>
 
               <Col
@@ -57,7 +141,7 @@ const TruckActivation = (props) => {
                   textAlign: "right",
                 }}
               >
-                <h4>Height:{data.height}-ft</h4>
+                <h4>Height:{truck_info.height}-ft</h4>
               </Col>
             </Row>
             <Divider />
@@ -69,8 +153,8 @@ const TruckActivation = (props) => {
                   rules={[{ required: true }]}
                   style={{ width: "70%" }}
                 >
-                  <Select placeholder="Select TruckType" allowClear>
-                    <Option value="Not Found">Not Found</Option>
+                  <Select options={typeList} placeholder="Select TruckType" allowClear>
+                   
                   </Select>
                 </Form.Item>
               </Col>
@@ -128,8 +212,8 @@ const TruckActivation = (props) => {
             </Row>
             <Row className="labelFix">
               <Col flex="150px">
-                <Form.Item label="On-Boarded By" name="On-Boarded By">
-                  <Input placeholder="On-BoardedBy" />
+                <Form.Item label="On-Boarded By" name="onboarded_by" >
+                  <Input value={onboarded_by} placeholder="On-BoardedBy" />
                 </Form.Item>
               </Col>
               &nbsp;
@@ -139,8 +223,8 @@ const TruckActivation = (props) => {
                   name="Available City"
                   rules={[{ required: true }]}
                 >
-                  <Select placeholder="Select AvailableCity" allowClear>
-                    <Option value="Not Found">Not Found</Option>
+                  <Select options={cityList} placeholder="Select AvailableCity" allowClear>
+                   
                   </Select>
                 </Form.Item>
               </Col>
@@ -151,11 +235,11 @@ const TruckActivation = (props) => {
                 <label>
                   New vehicle on-boarded
                   <br />
-                  Partner Name:{data.partner}-{data.mobileNo} <br />
-                  {data.truckNo}-{data.truckType}-ft
+                  Partner Name:{truck_info && truck_info.partner && truck_info.partner.name}-{partner_mobile } <br />
+                  {truck_info.truck_no}-{truck_info && truck_info.truck_type && truck_info.truck_type.name}-ft
                   <br />
                   Available In <br />
-                  On-boarded by-{data.email}
+                  On-boarded by-{onboarded_by}
                 </label>
               </Col>
             </Row>
