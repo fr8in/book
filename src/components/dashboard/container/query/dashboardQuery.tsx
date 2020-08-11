@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 // dashboard_trips_truks
 const DASHBOAD_QUERY = gql`
-subscription dashboard_trips_truks($regions: [Int!], $branches: [Int!], $cities: [Int!], $where:trip_bool_exp ) {
+subscription dashboard_trips_truks($regions: [Int!], $branches: [Int!], $cities: [Int!], $trip_status: String ) {
   region {
     id
     name
@@ -61,7 +61,7 @@ subscription dashboard_trips_truks($regions: [Int!], $branches: [Int!], $cities:
               count
             }
           }
-          trips(where: $where) {
+          trips(where: {trip_status: {name: {_eq: $trip_status}}}) {
             id
             customer {
               cardcode

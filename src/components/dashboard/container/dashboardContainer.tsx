@@ -22,17 +22,14 @@ const DashboardContainer = (props) => {
   const initial = { excessLoad: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
-  const initialVars = {
-    tabKey: '2',
-    where: { trip_status: { name: { _eq: 'Reported at destination' } }, source: { id: { _in: filters.cities } }, destination: { id: { _in: null } } }
-  }
+  const initialVars = { tabKey: '2', trip_status: 'Reported at destination' }
   const [vars, setVars] = useState(initialVars)
 
   const variables = {
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
     branches: (filters.branches && filters.branches > 0) ? filters.branches : null,
     cities: (filters.cities && filters.cities > 0) ? filters.cities : null,
-    where: vars.where
+    trip_status: vars.trip_status ? vars.trip_status : null
   }
   const { loading, data, error } = useSubscription(DASHBOAD_QUERY, { variables })
   console.log('dashboard error', error)
@@ -47,29 +44,34 @@ const DashboardContainer = (props) => {
 
   const onTabChange = (key) => {
     setVars({ ...vars, tabKey: key })
-    if (key === '1') {
-      setVars({ ...vars, where: initialVars.where })
-    }
-    if (key === '3') {
-      setVars({ ...vars, where: { trip_status: { name: { _eq: 'Assigned' } }, source: { id: { _in: filters.cities } }, destination: { id: { _in: null } } } })
-    }
-    if (key === '4') {
-      setVars({ ...vars, where: { trip_status: { name: { _eq: 'Confirmed' } }, source: { id: { _in: filters.cities } }, destination: { id: { _in: null } } } })
-    }
-    if (key === '5') {
-      setVars({ ...vars, where: { trip_status: { name: { _eq: 'Reported at source' } }, source: { id: { _in: filters.cities } }, destination: { id: { _in: null } } } })
-    }
-    if (key === '6') {
-      setVars({ ...vars, where: { trip_status: { name: { _eq: 'Intransit' } }, source: { id: { _in: filters.cities } }, destination: { id: { _in: null } } } })
-    }
-    if (key === '7') {
-      setVars({ ...vars, where: { trip_status: { name: { _eq: 'Intransit' } }, source: { id: { _in: null } }, destination: { id: { _in: filters.cities } } } })
-    }
-    if (key === '8') {
-      setVars({ ...vars, where: { trip_status: { name: { _eq: 'Reported at destination' } }, source: { id: { _in: null } }, destination: { id: { _in: filters.cities } } } })
-    }
-    if (key === '10') {
-      setVars({ ...vars, where: { trip_status: { name: { _eq: 'Delivery onhold' } }, source: { id: { _in: filters.cities } }, destination: { id: { _in: null } } } })
+    switch (key) {
+      case '1':
+        setVars({ ...vars, trip_status: initialVars.trip_status })
+        break
+      case '3':
+        setVars({ ...vars, trip_status: 'Assigned' })
+        break
+      case '4':
+        setVars({ ...vars, trip_status: 'Confirmed' })
+        break
+      case '5':
+        setVars({ ...vars, trip_status: 'Reported at source' })
+        break
+      case '6':
+        setVars({ ...vars, trip_status: 'Intransit' })
+        break
+      case '7':
+        setVars({ ...vars, trip_status: 'Intransit' })
+        break
+      case '8':
+        setVars({ ...vars, trip_status: 'Reported at destination' })
+        break
+      case '10':
+        setVars({ ...vars, trip_status: 'Delivery onhold' })
+        break
+      default:
+        setVars({ ...vars, trip_status: initialVars.trip_status })
+        break
     }
   }
   console.log('dashboard', trips, trucks)
