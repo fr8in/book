@@ -1,7 +1,6 @@
 import { Row, Col, Space } from 'antd'
 import {EditTwoTone} from '@ant-design/icons'
 import LabelWithData from '../common/labelWithData'
-import DetailInfo from '../../../mock/partner/partnerDetailInfo'
 import AdvancePercentage from './partnerAdvancePercentage'
 import detailInfo from '../../../mock/partner/partnerDetailInfo'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
@@ -10,7 +9,7 @@ import EditBank from './partnerBank'
 import CibilScore from '../partners/partnerCibilScore'
 import Gst from '../../components/partners/partnerGst'
 import Pan from './partnerPan'
-
+import _ from 'lodash'
 const PartnerDetail = (props) => {
   const { partnerDetail } = props
   const initial = {
@@ -23,13 +22,14 @@ const PartnerDetail = (props) => {
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
   console.log('partnerDetail', partnerDetail)
-
-const no = partnerDetail.address && partnerDetail.address.no
-const address = partnerDetail.address && partnerDetail.address.address
-const city = partnerDetail.address && partnerDetail.address.city
-const state = partnerDetail.address && partnerDetail.address.state
-const pincode = partnerDetail.address && partnerDetail.address.pincode
-const partner_address =no && no.concat(address,city,state,pincode)
+const address = partnerDetail && partnerDetail.address
+const partner_address = address === null || _.isEmpty(address) ? null  : 
+        `${address.no ? address.no : null},
+         ${address.address ? address.address : null},
+         ${address.city ? address.city : null},
+         ${address.state ? address.state : null},
+         ${address.pincode ? address.pincode : null}`
+         
   return (
     <Row gutter={8}>
       <Col xs={24} sm={24} md={24}>

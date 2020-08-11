@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 // dashboard_trips_truks
 const DASHBOAD_QUERY = gql`
-subscription dashboard_trips_truks($regions: [Int!], $branches: [Int!], $cities: [Int!], $trip_status: String ) {
+subscription dashboard_trips_truks($now: timestamptz,$regions: [Int!], $branches: [Int!], $cities: [Int!], $trip_status: String ) {
   region {
     id
     name
@@ -21,42 +21,47 @@ subscription dashboard_trips_truks($regions: [Int!], $branches: [Int!], $cities:
         cities {
           id
           name
-          unloading: trips_aggregate(where: {trip_status: {name: {_eq: "Reported at destination"}}, source: {id: {_in: $cities}}}) {
+          unloading: trips_aggregate(where: {trip_status: {name: {_eq: "Reported at destination"}}}) {
             aggregate {
               count
             }
           }
-          assigned: trips_aggregate(where: {trip_status: {name: {_eq: "Assigned"}}, source: {id: {_in: $cities}}}) {
+          assigned: trips_aggregate(where: {trip_status: {name: {_eq: "Assigned"}}}) {
             aggregate {
               count
             }
           }
-          confirmed: trips_aggregate(where: {trip_status: {name: {_eq: "Confirmed"}}, source: {id: {_in: $cities}}}) {
+          confirmed: trips_aggregate(where: {trip_status: {name: {_eq: "Confirmed"}}}) {
             aggregate {
               count
             }
           }
-          loading: trips_aggregate(where: {trip_status: {name: {_eq: "Reported at source"}}, source: {id: {_in: $cities}}}) {
+          loading: trips_aggregate(where: {trip_status: {name: {_eq: "Reported at source"}}}) {
             aggregate {
               count
             }
           }
-          intransit: trips_aggregate(where: {trip_status: {name: {_eq: "Intransit"}}, source: {id: {_in: $cities}}}) {
+          intransit: trips_aggregate(where: {trip_status: {name: {_eq: "Intransit"}}}) {
             aggregate {
               count
             }
           }
-          intransit_d: trips_aggregate(where: {trip_status: {name: {_eq: "Intransit"}}, destination: {id: {_in: $cities}}}) {
+          intransit_d: tripsByDestination_aggregate(where: {trip_status: {name: {_eq: "Intransit"}}}){
+            aggregate{
+              count
+            }
+          }
+          unloading_d: tripsByDestination_aggregate(where: {trip_status: {name: {_eq: "Reported at destination"}}}){
+            aggregate{
+              count
+            }
+          }
+          excess: trips_aggregate(where: {trip_status: {name: {_eq: "Waiting for truck"}}}) {
             aggregate {
               count
             }
           }
-          unloading_d: trips_aggregate(where: {trip_status: {name: {_eq: "Reported at destination"}}, destination: {id: {_in: $cities}}}) {
-            aggregate {
-              count
-            }
-          }
-          hold: trips_aggregate(where: {trip_status: {name: {_eq: "Delivery onhold"}}, source: {id: {_in: $cities}}}) {
+          hold: trips_aggregate(where: {trip_status: {name: {_eq: "Delivery onhold"}}}) {
             aggregate {
               count
             }
@@ -92,6 +97,16 @@ subscription dashboard_trips_truks($regions: [Int!], $branches: [Int!], $cities:
             tat
             trip_comments(limit: 1, order_by: {created_at: desc}) {
               description
+            }
+          }
+          trucks_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for load"}}}) {
+            aggregate {
+              count
+            }
+          }
+          trucks_current: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for load"}}}, {available_at: {_gte: $now}}]}) {
+            aggregate {
+              count
             }
           }
           trucks(where: {truck_status: {name: {_in: ["Waiting for load"]}}}) {
