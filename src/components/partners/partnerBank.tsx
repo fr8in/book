@@ -4,11 +4,11 @@ import { gql, useMutation } from '@apollo/client'
 import { useState } from 'react'
 
 const UPDATE_PARTNER_BANK_MUTATION = gql`
-mutation partnerBankEdit ($account_number:String,$ifsc_code:String,$name:String,$cardcode:String){
+mutation partnerBankEdit ($account_number:String,$ifsc_code:String,$acconnt_holder:String,$cardcode:String){
   update_partner(_set:{
     account_number: $account_number,
     ifsc_code: $ifsc_code,
-    name:$name},
+    acconnt_holder:$acconnt_holder},
     where: {cardcode:{_eq:$cardcode}}){
     returning{
       id
@@ -20,7 +20,7 @@ mutation partnerBankEdit ($account_number:String,$ifsc_code:String,$name:String,
 const EditBank = (props) => {
 
   const { visible, onHide, cardcode } = props
-  const [name, setname] = useState('')
+  const [acconnt_holder, setacconnt_holder] = useState('')
   const [account_number, setaccount_number] = useState('')
   const [ifsc_code, setifsc_code] = useState('')
   const [updatePartnerBank] = useMutation(
@@ -32,7 +32,7 @@ const EditBank = (props) => {
   )
 
   const nameChange = (e) => {
-    setname(e.target.value)
+    setacconnt_holder(e.target.value)
   }
   const account_numberChange = (e) => {
     setaccount_number(e.target.value)
@@ -46,7 +46,7 @@ const EditBank = (props) => {
         cardcode:cardcode,
         account_number:account_number,
         ifsc_code:ifsc_code,
-        name:name
+        acconnt_holder: acconnt_holder
       }
     })
   }
