@@ -1,4 +1,4 @@
-import { Table, Input, Switch, Popconfirm, Button, Tooltip } from 'antd'
+import { Table, Input, Switch, Popconfirm, Button, Tooltip, message,Pagination,Checkbox,Modal } from 'antd'
 import {
   EditTwoTone,
   CommentOutlined,
@@ -6,30 +6,164 @@ import {
   SearchOutlined
 } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
-import mock from '../../../mock/customer/sourcingMock'
+import {useState} from 'react'
 import EmployeeList from '../branches/fr8EmpolyeeList'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
-import Comment from '../../components/trips/tripFeedBack'
+import Comment from '../../components/partners/comment'
+import { gql, useQuery, useMutation } from '@apollo/client'
 
-const source = [
-  { value: 1, text: 'DIRECT' },
-  { value: 2, text: 'SOCIAL MEDIA' },
-  { value: 3, text: 'REFERRAL' },
-  { value: 4, text: 'APP' }
-]
 
-const status = [
-  { value: 1, text: 'OPEN' },
-  { value: 2, text: 'ON-BOARDED' },
-  { value: 3, text: 'REJECTED' }
-]
+const PARTNERS_QUERY = gql`
+query(
+  $offset: Int!
+  $limit: Int!
+  $partner_status_name:[String!]
+  ){
+  partner(
+    offset: $offset
+    limit: $limit
+    where:{partner_status:{name:{_in:$partner_status_name}}}){
+    id
+    name
+    cardcode
+    partner_users{
+      mobile
+    }
+    city{
+      name
+    }
+    channel{
+      id
+      name
+    }
+    partner_status{
+      name
+    }
+  }
+  partner_aggregate(where: {partner_status: {name: {_in: ["Lead","Registered","Rejected"]}}}) {
+    aggregate {
+      count
+    }
+  }
+  partner_status(where:{name: {_in: ["Lead","Registered","Rejected"]}}, order_by: {id: asc}) {
+    id
+    name
+  }
+  channel(order_by: {id: asc}){
+    id
+    name
+  }
+}
+`
+const PARTNER_LEAD_REJECT_MUTATION = gql`
+mutation partner_lead_reject($partner_status_id:Int,$id:Int! ){
+  update_partner_by_pk(
+      pk_columns: { id: $id }
+      _set: { partner_status_id: $partner_status_id }
+    ) {
+  id
+    name
+  }
+}
+`
 
 const comment = [{ value: 1, text: 'No Comment' }]
 
 const PartnerKyc = () => {
-  const initial = { comment: false, employeeList: false }
+  const initial = {
+     comment: false,
+      employeeList: false,
+      offset: 0,
+      limit: 10,
+      partner_status_name:['Lead','Registered']
+    }
+
+    const [filter, setFilter] = useState(initial)
+    const [currentPage, setCurrentPage] = useState(1)
+
   const { visible, onShow, onHide } = useShowHide(initial)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+
+  const partnerQueryVars = { 
+    offset: filter.offset,
+    limit: filter.limit,
+    partner_status_name: filter.partner_status_name
+  }
+
+  const { loading, error, data } = useQuery(PARTNERS_QUERY, {
+   variables: partnerQueryVars,
+      fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  })
+
+  console.log('partnerLead error', error)
+
+  var partner = []
+  var partner_aggregate = 0;
+  var partner_status = [];
+  var channel = [];
+  var id ={}
+  if (!loading) {
+    partner = data && data.partner
+    partner_aggregate = data && data.partner_aggregate
+    partner_status = data && data.partner_status
+    channel = data && data.channel
+    id = data && data.id
+  }
+
+console.log('partnerLead',partner)
+
+const record_count =
+partner_aggregate &&
+partner_aggregate.aggregate &&
+partner_aggregate.aggregate.count;
+
+console.log("record_count",record_count)
+
+const partners_status = partner_status.map((data) => {
+  return { value: data.name, label: data.name }
+})
+const channels = channel.map((data) => {
+  return { value: data.name, label: data.name }
+})
+
+console.log("truckStatus",partners_status)
+
+const onPageChange = (value) => {
+  setFilter({ ...filter, offset: value })
+}
+const onFilter = (value) => {
+  setFilter({ ...filter, partner_status_name: value, offset: 0 })
+}
+
+const pageChange = (page, pageSize) => {
+  const newOffset = page * pageSize - filter.limit
+  setCurrentPage(page)
+  onPageChange(newOffset)
+}
+
+const handleStatus = (checked) => {
+  onFilter(checked)
+  setCurrentPage(1)
+}
+const [insertComment] = useMutation(PARTNER_LEAD_REJECT_MUTATION, {
+  onError(error) {
+    message.error(error.toString());
+  },
+  onCompleted() {
+    message.success("Updated!!");
+  },
+});
+
+const onSubmit = (id) => {
+  insertComment({
+    variables: {
+      partner_status_id: 3,
+      id: id,
+    },
+  });
+  console.log("customers");
+};
   const onChange = (e) => {
     console.log(`checked = ${e.target.checked}`)
   }
@@ -54,7 +188,10 @@ const PartnerKyc = () => {
     },
     {
       title: 'Phone',
-      dataIndex: 'number',
+      //dataIndex: 'number',
+      render: (text, record) => {
+        return record.partner_users[0] && record.partner_users[0].mobile;
+      },
       filterDropdown: (
         <div>
           <Input
@@ -72,6 +209,9 @@ const PartnerKyc = () => {
     {
       title: 'City',
       dataIndex: 'cityName',
+      render: (text, record) => {
+        return record.city && record.city.name;
+      },
       filterDropdown: (
         <div>
           <Input placeholder='Search City Name' id='cityName' name='cityName' />
@@ -102,14 +242,34 @@ const PartnerKyc = () => {
       )
     },
     {
-      title: 'Source',
+      title: 'Channel',
       dataIndex: 'source',
-      filters: source
+      filterDropdown: (
+        <Checkbox.Group
+          options={channels}
+          //defaultValue={filter.partner_status_name}
+          onChange={handleStatus}
+          className='filter-drop-down'
+        />
+      ),
+      render: (text, record) => {
+        return record.channel && record.channel.name;
+      },
+      
     },
     {
       title: 'Status',
-      dataIndex: 'status',
-      filters: status
+      filterDropdown: (
+        <Checkbox.Group
+          options={partners_status}
+          defaultValue={filter.partner_status_name}
+          onChange={handleStatus}
+          className='filter-drop-down'
+        />
+      ),
+      render: (text, record) => {
+        return record.partner_status && record.partner_status.name;
+      },
     },
     {
       title: 'Last Comment',
@@ -140,7 +300,7 @@ const PartnerKyc = () => {
                   'commentVisible',
                   null,
                   'commentData',
-                  record.previousComment
+                  record.id
                 )}
             />
           </Tooltip>
@@ -148,7 +308,7 @@ const PartnerKyc = () => {
             title='Are you sure want to Reject the lead?'
             okText='Yes'
             cancelText='No'
-            onConfirm={() => console.log('Rejected!')}
+            onConfirm={() => onSubmit(record.id)}
           >
             <Button
               type='primary'
@@ -169,19 +329,34 @@ const PartnerKyc = () => {
           ...rowSelection
         }}
         columns={columnsCurrent}
-        dataSource={mock}
+        dataSource={partner}
         rowKey={(record) => record.id}
         size='small'
         scroll={{ x: 1156 }}
         pagination={false}
         className='withAction'
       />
-      {object.commentVisible && (
-        <Comment
+       {!loading && record_count
+        ? (
+          <Pagination
+            size='small'
+            current={currentPage}
+            pageSize={filter.limit}
+            total={record_count}
+            onChange={pageChange}
+            className='text-right p10'
+          />) : null}
+      
+
+{object.commentVisible && (
+        <Modal
+          title='Comments'
           visible={object.commentVisible}
-          data={object.commentData}
-          onHide={handleHide}
-        />
+          onCancel={handleHide}
+          bodyStyle={{ padding: 10 }}
+        >
+          <Comment partnerId={object.commentData} />
+        </Modal>
       )}
       {visible.employeeList && (
         <EmployeeList visible={visible.employeeList} onHide={onHide} />

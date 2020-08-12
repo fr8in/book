@@ -1,6 +1,7 @@
 import { Table, Tooltip, Button } from 'antd'
 import Link from 'next/link'
 import { PhoneOutlined, CommentOutlined, WhatsAppOutlined } from '@ant-design/icons'
+import moment from 'moment'
 
 const Trips = (props) => {
   const { trips, loading } = props
@@ -128,8 +129,9 @@ const Trips = (props) => {
     props.intransit ? {
       title: 'ETA',
       dataIndex: 'eta',
-      width: '5%',
-      sorter: (a, b) => (a.eta > b.eta ? 1 : -1)
+      width: '6%',
+      sorter: (a, b) => (a.eta > b.eta ? 1 : -1),
+      render: (text, record) => text ? moment(text).format('DD-MMM') : null
     } : {},
     {
       title: 'Comment',
@@ -140,7 +142,7 @@ const Trips = (props) => {
             : null
         )
       },
-      width: props.intransit ? '11%' : '17%'
+      width: props.intransit ? '10%' : '17%'
     },
     {
       title: 'Action',
@@ -159,7 +161,7 @@ const Trips = (props) => {
           </span>
         </span>
       ),
-      width: '11%'
+      width: props.intransit ? '10%' : '11%'
     }
   ]
   return (

@@ -5,23 +5,23 @@ import { Row } from 'antd'
 import { PhoneOutlined } from '@ant-design/icons'
 
 const Truck = (props) => {
-  const { truckInfo } = props
+  const { truck_info } = props
   console.log('id', props)
 
   const callNow = data => {
     window.location.href = 'tel:' + data
   }
 
-  const number = truckInfo.partner && truckInfo.partner.partner_users && truckInfo.partner.partner_users.length > 0 &&
-          truckInfo.partner.partner_users[0].mobile ? truckInfo.partner.partner_users[0].mobile : '-'
+  const number = truck_info.partner && truck_info.partner.partner_users && truck_info.partner.partner_users.length > 0 &&
+          truck_info.partner.partner_users[0].mobile ? truck_info.partner.partner_users[0].mobile : '-'
 
   return (
     <Row>
       <LabelAndData
         label='Partner'
         data={
-          <Link href='/partners/[id]' as={`/partners/${truckInfo.partner && truckInfo.partner.cardcode}`}>
-            <h4><a>{truckInfo.partner && truckInfo.partner.name}</a></h4>
+          <Link href='/partners/[id]' as={`/partners/${truck_info.partner && truck_info.partner.cardcode}`}>
+            <h4><a>{truck_info.partner && truck_info.partner.name}</a></h4>
           </Link>
         }
         mdSpan={4}
@@ -41,7 +41,7 @@ const Truck = (props) => {
       />
       <LabelAndData
         label='City'
-        data={truckInfo.city && truckInfo.city.name}
+        data={truck_info.city && truck_info.city.name}
         mdSpan={4}
         smSpan={8}
         xsSpan={12}

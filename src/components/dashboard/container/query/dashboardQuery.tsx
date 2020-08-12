@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 // dashboard_trips_truks
 const DASHBOAD_QUERY = gql`
-subscription dashboard_trips_truks($regions: [Int!], $branches: [Int!], $cities: [Int!], $trip_status: String) {
+subscription dashboard_trips_truks($now: timestamptz,$regions: [Int!], $branches: [Int!], $cities: [Int!], $trip_status: String ) {
   region {
     id
     name
@@ -46,12 +46,17 @@ subscription dashboard_trips_truks($regions: [Int!], $branches: [Int!], $cities:
               count
             }
           }
-          intransit_d: trips_aggregate(where: {trip_status: {name: {_eq: "Intransit"}}}) {
-            aggregate {
+          intransit_d: tripsByDestination_aggregate(where: {trip_status: {name: {_eq: "Intransit"}}}){
+            aggregate{
               count
             }
           }
-          unloading_d: trips_aggregate(where: {trip_status: {name: {_eq: "Reported at destination"}}}) {
+          unloading_d: tripsByDestination_aggregate(where: {trip_status: {name: {_eq: "Reported at destination"}}}){
+            aggregate{
+              count
+            }
+          }
+          excess: trips_aggregate(where: {trip_status: {name: {_eq: "Waiting for truck"}}}) {
             aggregate {
               count
             }
@@ -63,6 +68,8 @@ subscription dashboard_trips_truks($regions: [Int!], $branches: [Int!], $cities:
           }
           trips(where: {trip_status: {name: {_eq: $trip_status}}}) {
             id
+            delay
+            eta
             customer {
               cardcode
               name
@@ -82,14 +89,26 @@ subscription dashboard_trips_truks($regions: [Int!], $branches: [Int!], $cities:
               }
             }
             source {
+              id
               name
             }
             destination {
+              id
               name
             }
             tat
             trip_comments(limit: 1, order_by: {created_at: desc}) {
               description
+            }
+          }
+          trucks_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for load"}}}) {
+            aggregate {
+              count
+            }
+          }
+          trucks_current: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for load"}}}, {available_at: {_gte: $now}}]}) {
+            aggregate {
+              count
             }
           }
           trucks(where: {truck_status: {name: {_in: ["Waiting for load"]}}}) {

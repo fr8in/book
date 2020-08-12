@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
   subscription customers($cardcode: String) {
@@ -42,9 +42,38 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         state {
           name
         }
+        city {
+          name
+        }
         pincode
         mobile
       }
+
+      trips {
+        id
+        order_date
+        customer {
+          customer_users {
+            name
+          }
+        }
+        trip_status {
+          name
+        }
+        source {
+          name
+        }
+        destination {
+          name
+        }
+        truck {
+          truck_no
+          length
+          truck_type {
+            name
+          }
+        }
+      }
     }
   }
-`
+`;

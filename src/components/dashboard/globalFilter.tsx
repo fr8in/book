@@ -58,12 +58,8 @@ let connected_city_options = []
 let truck_type_options = []
 
 const GlobalFilter = ({onFilter,initialFilter}) => {
-  // const initialFilter = {
-  //   now: new Date().toISOString(),
-  //   regions: null, branches: null, cities: null, managers: null, types: null
-  // };
   const [filter, setFilter] = useState(initialFilter)
-  const [activeKey, setActiveyKey] = useState(['branch']);
+  // const [activeKey, setActiveyKey] = useState(['branch']);
  
   const onRegionChange = (regions) => {
     setFilter({ ...filter, regions });
@@ -133,7 +129,7 @@ const GlobalFilter = ({onFilter,initialFilter}) => {
   
   return (
     <Row >
-      <Collapse onChange={setActiveyKey} className='global-filter' defaultActiveKey={activeKey} >
+      <Collapse className='global-filter' defaultActiveKey={['branch']} >
         <Panel header={<b>Region</b>} key={'region'} extra={<span className='clear' onClick={(e) => e.stopPropagation()}>CLEAR</span>}>
           <ul className='filterMenu'><li><CheckBoxGroup defaultValue={filter.regions} options={region_options} onChange={onRegionChange} /></li></ul>
         </Panel>

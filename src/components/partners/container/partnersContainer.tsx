@@ -20,13 +20,13 @@ const PARTNERS_QUERY = gql`
       partner_status{
         name
       }
-      # city {
-      #   branch {
-      #     region {
-      #       name
-      #     }
-      #   }
-      # }
+       city {
+         branch {
+           region {
+             name
+           }
+         }
+       }
       partner_users(limit:1 , where:{is_admin:{_eq:true}}){
         mobile
       }
@@ -48,7 +48,7 @@ const PARTNERS_QUERY = gql`
         count
       }
     }
-    partner_status(order_by:{id:asc}){
+    partner_status(where:{name: {_nin: ["Lead","Registered","Rejected"]}},order_by:{id:asc}){
       id
       name
     }
@@ -56,7 +56,7 @@ const PARTNERS_QUERY = gql`
 `
 
 const PartnerContainer = () => {
-  const initialFilter = { partner_statusId: [1], offset: 0, limit: 1, name: null, cardcode: null }
+  const initialFilter = { partner_statusId: [6], offset: 0, limit: 10, name: null, cardcode: null }
   const [filter, setFilter] = useState(initialFilter)
   const partnersQueryVars = {
     offset: filter.offset,

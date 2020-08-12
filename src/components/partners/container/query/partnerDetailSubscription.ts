@@ -76,15 +76,15 @@ subscription partners($cardcode: String,$partner_id:bigint,$trip_status_value: [
               name
               email
           }
-         # city{
-         #     id
-         #     name
-         #     branch {
-          #      region {
-           #       name
-           #     }
-           #   }
-        # }  
+          city{
+              id
+              name
+              branch {
+                region {
+                  name
+                }
+              }
+         }  
          tds_percentage {
             name
           }

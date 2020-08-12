@@ -1,11 +1,12 @@
 import { Table } from "antd";
-import finalPayment from "../../../mock/customer/finalPayment";
+//import finalPayment from "../../../mock/customer/finalPayment";
 import Link from "next/link";
-const InvoicePending = () => {
+const InvoicePending = (props) => {
+  const { invoice_Pending } = props;
   const invoicePending = [
     {
       title: "Load Id",
-      dataIndex: "loadId",
+      dataIndex: "id",
       sorter: (a, b) => (a.loadId > b.loadId ? 1 : -1),
       width: "10%",
       render: (text, record) => {
@@ -20,34 +21,28 @@ const InvoicePending = () => {
       title: "Source",
       dataIndex: "source",
       width: "10%",
+      render: (text, record) => record.source && record.source.name,
     },
     {
       title: "Destination",
       dataIndex: "destination",
       width: "10%",
+      render: (text, record) => record.destination && record.destination.name,
     },
     {
       title: "Truck No",
       dataIndex: "truckNo",
       width: "10%",
+      render: (text, record) => record.truck && record.truck.truck_no,
     },
     {
       title: "Type",
       dataIndex: "type",
       width: "10%",
+      render: (text, record) =>
+        record.truck.truck_type && record.truck.truck_type.name,
     },
-    {
-      title: "Customer Name",
-      dataIndex: "customerName",
-      width: "15%",
-      render: (text, record) => {
-        return (
-          <Link href="customers/[id]" as={`customers/${record.cardcode}`}>
-            <a>{text}</a>
-          </Link>
-        );
-      },
-    },
+
     {
       title: "SO Price",
       dataIndex: "soPrice",
@@ -71,7 +66,7 @@ const InvoicePending = () => {
   return (
     <Table
       columns={invoicePending}
-      dataSource={finalPayment}
+      dataSource={invoice_Pending}
       rowKey={(record) => record.id}
       size="small"
       scroll={{ x: 800 }}
