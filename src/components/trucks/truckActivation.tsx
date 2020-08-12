@@ -13,7 +13,6 @@ import {
   Divider,
   Space,
   message,
-  Tag
 } from "antd";
 import { EyeTwoTone } from "@ant-design/icons";
 import { DatePicker } from "antd";
@@ -218,7 +217,7 @@ console.log('onboarded_by',onboarded_by)
                 <Form.Item label="On-Boarded By" name="onboarded_by" initialValue={onboarded_by}>
                   <Input placeholder="On-Boarded By" />
                 </Form.Item>
-                <Tag>onboarded_by</Tag>
+               
               </Col>
               &nbsp;
               <Col xs={{ span: 24 }} sm={{ span: 12 }}>
@@ -248,8 +247,8 @@ console.log('onboarded_by',onboarded_by)
               </Col>
             </Row>
           </Form.Item>
-          <Row>
-          <Button type="primary" key="submit" htmlType='submit' style={{textAlign:'right'}} >
+          <Row justify='end'>
+          <Button type="primary" key="submit" htmlType='submit'  >
             Activate Truck
           </Button>
           </Row>
