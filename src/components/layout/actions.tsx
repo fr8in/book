@@ -61,6 +61,7 @@ query gloabl_filter($now: timestamptz, $regions:[Int!], $branches:[Int!], $citie
   }
 }
 `
+const Extra =(props)=> <span className='clear' onClick={props.onClear}>CLEAR</span>
 
 const Actions = (props) => {
   const { onFilter, initialFilter } = props
@@ -75,48 +76,58 @@ const Actions = (props) => {
   }
   const { loading, data, error } = useQuery(GLOBAL_FILTER, { variables })
 
-  let region_arr = []
-  // 2nd level branch_options
-  const branch_options = []
-  // 3rd level employee_options
-  const branch_employee_options = []
-  // 4th level connected_city_options
-  const connected_city_options = []
-  const truck_type_options = []
+  console.log('Actions error', error)
+  let region_options = []
+  //2nd level branch_options 
+  let branch_options = []
+  //3rd level employee_options 
+  let branch_employee_options = []
+  //4th level connected_city_options 
+  let connected_city_options = []
+  let truck_type_options = []
 
   if (!loading) {
-    const newData = { data }
-    region_arr = _.chain(newData).flatMap('region').value()
+    truck_type_options = data.truck_type.map(_truck_type => { return { label: _truck_type.name, value: _truck_type.id } })
+
+    const { region } = data
+
+    region.forEach(_region => {
+      let _region_trucks_total = 0
+      let _region_trucks_current = 0
+      _region.branches.forEach(_branch => {
+        let _branch_trucks_total = 0
+        let _branch_trucks_current = 0
+        _branch.branch_employees.forEach(_branch_employee => branch_employee_options.push({ label: _branch_employee.employee.name, value: _branch_employee.id }))
+        _branch.connected_cities.forEach(_connected_city => {
+          let _connected_city_trucks_total = 0
+          let _connected_city_trucks_current = 0
+          _connected_city.cities.forEach(_city => {
+            _region_trucks_total = _region_trucks_total + _city.trucks_total?.aggregate.count
+            _region_trucks_current = _region_trucks_current + _city.trucks_current?.aggregate.count
+            _branch_trucks_total = _branch_trucks_total + _city.trucks_total?.aggregate.count
+            _branch_trucks_current = _branch_trucks_current + _city.trucks_current?.aggregate.count
+            _connected_city_trucks_total = _connected_city_trucks_total + _city.trucks_total?.aggregate.count
+            _connected_city_trucks_current = _connected_city_trucks_current + _city.trucks_current?.aggregate.count
+          })
+          connected_city_options.push({ label: <span>{_connected_city.name + '    '}<Text disabled>{_connected_city_trucks_current + '/' + _connected_city_trucks_total}</Text></span>, value: _connected_city.id, })
+        })
+        branch_options.push({ label: <span>{_branch.name + '    '}<Text disabled>{_branch_trucks_current + '/' + _branch_trucks_total}</Text></span>, value: _branch.id, })
+      })
+      region_options.push({ label: <span>{_region.name + '    '}<Text disabled>{_region_trucks_current + '/' + _region_trucks_total}</Text></span>, value: _region.id, })
+    })
   }
 
-  const region_options = region_arr.map((data, i) => {
-    return {
-      data // todo inprogress
-    }
-  })
-
-  console.log('region_options', region_options)
-  const onRegionChange = (regions) => {
-    setFilter({ ...filter, regions })
-    onFilter({ ...filter, regions })
-  }
-  const onBranchChange = (branches) => {
-    setFilter({ ...filter, branches })
-    onFilter({ ...filter, branches })
-  }
-  const onCityChange = (cities) => {
-    setFilter({ ...filter, cities })
-    onFilter({ ...filter, cities })
-  }
-  const onManagerChange = (managers) => {
-    setFilter({ ...filter, managers })
-    onFilter({ ...filter, managers })
-  }
-  const onTypeChange = (types) => {
-    setFilter({ ...filter, types })
-    onFilter({ ...filter, types })
+  const onCheckBoxChange = (value, name) => {
+    setFilter({ ...filter, [name]: value })
+    onFilter({ ...filter, [name]: value })
   }
 
+  const onClear = (e, name) => {
+    e.stopPropagation()
+    setFilter({ ...filter, [name]: null })
+    onFilter({ ...filter, [name]: null })
+  }
+ 
   const user = (
     <Menu>
       <Menu.Item key='0'>
@@ -154,7 +165,38 @@ const Actions = (props) => {
           visible={visible.filter}
           bodyStyle={{ padding: 0 }}
         >
-          <GlobalFilter {...props} />
+          <Collapse className='global-filter' defaultActiveKey={['branch']}>
+            <Panel 
+              header={<b>Region</b>} key='region' 
+              extra={filter.regions && filter.regions.length > 0 ? <Extra onClear={(e) => onClear(e, 'regions')} /> : ''}
+            >
+              <CheckBoxGroup value={filter.regions} options={region_options} onChange={(value) => onCheckBoxChange(value, 'regions')} />
+            </Panel>
+            <Panel 
+              header={<b>Branch</b>} key="branch" 
+              extra={filter.branches && filter.branches.length > 0 ? <Extra onClear={(e) => onClear(e, 'branches')}/> : ''}
+            >
+              <CheckBoxGroup options={branch_options} value={filter.branches} onChange={(value) => onCheckBoxChange(value, 'branches')} />
+            </Panel>
+            <Panel 
+              header={<b>City</b>} key="city" 
+              extra={filter.cities && filter.cities.length > 0 ? <Extra onClear={(e) => onClear(e, 'cities')} /> : ''}
+            >
+              <CheckBoxGroup value={filter.cities} options={connected_city_options} onChange={(value) => onCheckBoxChange(value, 'cities')} />
+            </Panel>
+            <Panel 
+              header={<b>Manager</b>} key="manager" 
+              extra={filter.managers && filter.managers.length > 0 ? <Extra onClear={(e) => onClear(e, 'managers')} /> : ''}
+            >
+              <CheckBoxGroup options={branch_employee_options} value={filter.managers} onChange={(value) => onCheckBoxChange(value, 'managers')} />
+            </Panel>
+            <Panel 
+              header={<b>Type</b>} key="type" 
+              extra={filter.types && filter.types.length > 0 ? <Extra onClear={(e) => onClear(e, 'types')} /> : ''}
+            >
+              <CheckBoxGroup options={truck_type_options} value={filter.types} onChange={(value) => onCheckBoxChange(value, 'types')} />
+            </Panel>
+          </Collapse>
         </Drawer>}
 
       {visible.search &&
