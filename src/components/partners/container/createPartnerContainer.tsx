@@ -1,22 +1,7 @@
 import { Row, Col, Card, Input, Form, Button, Select,Space,message } from 'antd'
 import { gql, useMutation,useQuery } from '@apollo/client'
 
-const PARTNERS_QUERY = gql`
-query create_partner{
-  employee{
-    id
-    email
-  }
-  partner_advance_percentage{
-    id
-    name
-  }
-  city{
-    id
-    name    
-  }
-}
-`
+
 const INSERT_PARTNER_MUTATION = gql`
 mutation partner_create($name: String, $email: String, $cibil: Int, $address: jsonb, $pin_code: Int, $account_number: String, $ifsc_code: String, $mobile: String, $pan_no: String, $contact_name: String, $acconnt_holder: String, $partner_status_id:Int,$city_id:Int,$partner_advance_percentage_id:Int,$onboarded_by_id:Int) {
   insert_partner(
@@ -45,6 +30,26 @@ mutation partner_create($name: String, $email: String, $cibil: Int, $address: js
   }
 }
 `
+
+ const PARTNERS_QUERY = gql`
+    query create_partner{
+      employee{
+        id
+        email
+      }
+      partner_advance_percentage{
+        id
+        name
+      }
+      city{
+        id
+        name    
+      }
+    }
+ `
+
+
+
 const PartnerProfile = () => {
  
   const [updatePartnerAddress] = useMutation(

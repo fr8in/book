@@ -20,11 +20,16 @@ query(
   $limit: Int!
   $partner_status_name:[String!]
   $channel_name:[String!]
+  $mobile: String
   ){
   partner(
     offset: $offset
     limit: $limit
-    where:{partner_status:{name:{_in:$partner_status_name}},channel: {name: {_in:$channel_name}}}){
+    where:{
+      partner_users:{mobile:{ _like: $mobile}},
+      partner_status:{name:{_in:$partner_status_name}},
+      channel: {name: {_in:$channel_name}}}
+      ){
     id
     name
     cardcode
@@ -47,7 +52,9 @@ query(
       description
     }
   }
-  partner_aggregate(where: {partner_status: {name: {_in: ["Lead","Registered","Rejected"]}}}) {
+  partner_aggregate(where: 
+    {partner_status: {name: {_in: ["Lead","Registered","Rejected"]}}}
+    ) {
     aggregate {
       count
     }
@@ -82,6 +89,7 @@ const PartnerKyc = () => {
       employeeList: false,
       offset: 0,
       limit: 10,
+      mobile: null,
       partner_status_name:['Lead','Registered'],
       channel_name:["Direct","Social Media","Referral","App"]
     }
@@ -96,7 +104,8 @@ const PartnerKyc = () => {
     offset: filter.offset,
     limit: filter.limit,
     partner_status_name: filter.partner_status_name,
-    channel_name:filter.channel_name
+    channel_name:filter.channel_name,
+    mobile: filter.mobile ? `%${filter.mobile}%` : null
   }
 
   const { loading, error, data } = useQuery(PARTNERS_QUERY, {
@@ -149,6 +158,9 @@ const onFilter = (value) => {
 const onChannelFilter = (value) => {
   setFilter({ ...filter, channel_name: value, offset: 0 })
 }
+const onMobileSearch = (value) => {
+  setFilter({ ...filter, mobile: value })
+};
 
 
 const pageChange = (page, pageSize) => {
@@ -166,7 +178,9 @@ const handleChannelStatus = (checked) => {
   onChannelFilter(checked)
   setCurrentPage(1)
 }
-
+const handleMobile = (e) => {
+  onMobileSearch(e.target.value);
+};
 const [insertComment] = useMutation(PARTNER_LEAD_REJECT_MUTATION, {
   onError(error) {
     message.error(error.toString());
@@ -222,6 +236,8 @@ const onSubmit = (id) => {
             id='number'
             name='number'
             type='number'
+             value={filter.mobile}
+           onChange={handleMobile}
           />
         </div>
       ),
@@ -381,6 +397,7 @@ const onSubmit = (id) => {
         size='small'
         scroll={{ x: 1156 }}
         pagination={false}
+        //onMobileSearch={onMobileSearch}
         className='withAction'
       />
       {!loading && record_count
