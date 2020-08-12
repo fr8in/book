@@ -49,8 +49,8 @@ query trucks($truck_id : Int){
 `
 
 const UPDATE_TRUCK_ACTIVATION_MUTATION = gql`
-mutation TruckActivation($available_at:String,$id:Int,$city_id:Int,$truck_type_id:Int,$partner_id:Int) {
-  update_truck(_set: {available_at: $available_at, city_id:$city_id, truck_type_id:$truck_type_id, partner_id: $partner_id}, where: {id: {_eq: $id}}) {
+mutation TruckActivation($available_at:timestamptz,$id:Int,$city_id:Int,$truck_type_id:Int,$truck_status_id:Int) {
+  update_truck(_set: {available_at: $available_at, city_id:$city_id, truck_type_id:$truck_type_id,truck_status_id:$truck_status_id}, where: {id: {_eq: $id}}) {
     returning {
       id
     }
@@ -109,25 +109,32 @@ const TruckActivation = (props) => {
     return { value: data.id, label: data.name }
   })
 
-  const onSubmit = () => {
+  const onTruckActivationSubmit = (form) => {
     console.log("Traffic Added", truck_id);
+    updateTruckActivation({
+      variables: {
+        id: truck_id,
+        truck_status_id: 1,
+        available_at: form.available_at,
+        city_id: parseInt(form.city_id, 10),
+        truck_type_id: parseInt(form.truck_type_id, 10)
+      }
+    })
   };
 
   return (
     <>
+     
       <Modal
         visible={visible}
         title="Truck Activation"
-        onOk={onSubmit}
         onCancel={onHide}
         width="550px"
         footer={[
-          <Button type="primary" key="submit" onClick={onSubmit}>
-            Activate Truck
-          </Button>,
+          null
         ]}
       >
-        <Form layout="vertical">
+        <Form layout="vertical" onFinish={onTruckActivationSubmit}>
           <Form.Item>
             <Row className="labelFix">
               <Col xs={{ span: 24 }} sm={{ span: 8 }}>
@@ -149,7 +156,7 @@ const TruckActivation = (props) => {
               <Col xs={{ span: 24 }} sm={{ span: 8 }}>
                 <Form.Item
                   label="Truck Type"
-                  name="Truck Type"
+                  name="truck_type_id"
                   rules={[{ required: true }]}
                   style={{ width: "70%" }}
                 >
@@ -160,9 +167,7 @@ const TruckActivation = (props) => {
               </Col>
 
               <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-                <Form.Item label="RC" name="RC" className="hideLabel">
                   <h4>RC</h4>
-                </Form.Item>
               </Col>
               <Col
                 xs={{ span: 24 }}
@@ -171,27 +176,24 @@ const TruckActivation = (props) => {
                   textAlign: "right",
                 }}
               >
-                <Form.Item label="doc" name="doc" className="hideLabel">
+                
                   <Button
                     type="primary"
                     shape="circle"
                     size="middle"
                     icon={<EyeTwoTone />}
                   />
-                </Form.Item>
               </Col>
             </Row>
             <Row className="labelFix">
               <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-                <Form.Item label="Available From" name="Available From">
+                <Form.Item label="Available From" name="available_at">
                   <DatePicker onChange={onChange} />
                 </Form.Item>
               </Col>
 
               <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-                <Form.Item label="screed" name="screen" className="hideLabel">
                   <h4>Vaahan Screen</h4>
-                </Form.Item>
               </Col>
               <Col
                 xs={{ span: 24 }}
@@ -200,27 +202,25 @@ const TruckActivation = (props) => {
                   textAlign: "right",
                 }}
               >
-                <Form.Item label="doc" name="doc" className="hideLabel">
                   <Button
                     type="primary"
                     shape="circle"
                     size="middle"
                     icon={<EyeTwoTone />}
                   />
-                </Form.Item>
               </Col>
             </Row>
             <Row className="labelFix">
               <Col flex="150px">
-                <Form.Item label="On-Boarded By" name="onboarded_by" >
-                  <Input value={onboarded_by} placeholder="On-BoardedBy" />
+                <Form.Item label="On-Boarded By" name="On-Boarded By" >
+                  <Input value={onboarded_by} placeholder="On-Boarded By" />
                 </Form.Item>
               </Col>
               &nbsp;
               <Col xs={{ span: 24 }} sm={{ span: 12 }}>
                 <Form.Item
                   label="Available City"
-                  name="Available City"
+                  name="city_id"
                   rules={[{ required: true }]}
                 >
                   <Select options={cityList} placeholder="Select AvailableCity" allowClear>
@@ -244,8 +244,14 @@ const TruckActivation = (props) => {
               </Col>
             </Row>
           </Form.Item>
+          <Row>
+          <Button type="primary" key="submit" htmlType='submit' style={{textAlign:'right'}} >
+            Activate Truck
+          </Button>
+          </Row>
         </Form>
       </Modal>
+     
     </>
   );
 };
