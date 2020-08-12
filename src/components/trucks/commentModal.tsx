@@ -14,7 +14,8 @@ mutation TruckComment($description:String, $topic:String, $truck_id: Int, $creat
 }
 `
   const CommentModal = (props) => {
-    const { visible, onHide , id} = props
+    const { visible, onHide , id ,truck_status} = props
+    console.log('truck_status',truck_status)
     
     const [userComment, setUserComment] = useState('')
 
@@ -40,7 +41,7 @@ const onSubmit = () => {
       truck_id : id,
       created_by_id: 1,
       description: userComment,
-      topic: 'text'
+      topic: truck_status
     }
   })
 }

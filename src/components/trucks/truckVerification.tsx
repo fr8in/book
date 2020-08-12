@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Table, Button, Space ,Pagination,Checkbox} from "antd";
+import { Table, Button, Space ,Pagination,Checkbox,Tooltip} from "antd";
 import Link from "next/link";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import TruckReject from "../../components/trucks/truckReject";
@@ -19,6 +19,13 @@ query trucks(
        where: {truck_status: {name: {_in:$truck_statusName}}}) {
       id
       truck_no
+      truck_comments(limit:1,order_by:{created_at:desc}){
+        id
+        topic
+        description
+        created_at
+        created_by_id
+      }
       truck_status {
         id
         name
@@ -46,7 +53,7 @@ const TruckVerification = (props) => {
   
   const initial = {
     offset: 0,
-    limit: 2,
+    limit: 10,
     truckActivationVisible: false,
     truckActivationData: [],
     truckRejectVisible: false,
@@ -76,12 +83,15 @@ const TruckVerification = (props) => {
   var truck = []
   var truck_aggregate = 0;
   var truck_status = [];
-  
+  var truck_info = {}
   if (!loading) {
   truck = data && data.truck
   truck_aggregate = data && data.truck_aggregate;
   truck_status = data && data.truck_status;
+  truck_info = truck[0] ? truck[0] : { name: 'ID does not exist' }
   }
+
+const truck_status_name = truck_info && truck_info.truck_status && truck_info.truck_status.name
 
   const record_count =
     truck_aggregate &&
@@ -89,6 +99,7 @@ const TruckVerification = (props) => {
     truck_aggregate.aggregate.count;
 
     console.log("record_count",record_count)
+
 
     const trucksStatus = truck_status.map((data) => {
       return { value: data.name, label: data.name }
@@ -196,7 +207,7 @@ const TruckVerification = (props) => {
                   "truckRejectVisible",
                   "Reject Truck",
                   "truckRejectData",
-                  record.id
+                  record.id 
                 )
               }
             />
@@ -204,11 +215,23 @@ const TruckVerification = (props) => {
         );
       },
     },
+    truck_status_name === "Rejected" ?
     {
       title: "Reject Reason",
       dataIndex: "reason",
       width: "35%",
-    },
+      render: (text, record) => {
+        const comment = record.truck_comments && record.truck_comments.length > 0 &&
+        record.truck_comments[0].description ? record.truck_comments[0].description : '-'
+        return comment && comment.length > 12 ? (
+          <Tooltip title={comment}>
+            <span> {comment.slice(0, 12) + '...'}</span>
+          </Tooltip>
+        ) : (
+          comment
+        )
+      }
+    } : {}
   ];
   return (
     <>
