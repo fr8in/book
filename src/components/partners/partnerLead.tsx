@@ -12,6 +12,7 @@ import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from '../../components/partners/comment'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import moment from 'moment'
+import PartnerLeadCity from '../partners/partnerLeadCity'
 
 const PARTNERS_QUERY = gql`
 query(
@@ -31,6 +32,7 @@ query(
       mobile
     }
     city{
+      id
       name
     }
     channel{
@@ -116,9 +118,10 @@ const PartnerKyc = () => {
     partner_aggregate = data && data.partner_aggregate
     partner_status = data && data.partner_status
     channel = data && data.channel
-    id = data && data.id
+    id = partner && partner.id
   }
-
+  
+console.log('id',id)
 console.log('partnerLead',partner)
 console.log('channel',channel)
 const record_count =
@@ -228,10 +231,19 @@ const onSubmit = (id) => {
     },
     {
       title: 'City',
-      dataIndex: 'cityName',
       width:'9%',
       render: (text, record) => {
-        return record.city && record.city.name;
+        const leadCity =
+        record.city && record.city.name;
+      const leadCityId =
+      record.city && record.city.id;
+        return (
+          <PartnerLeadCity
+            leadCity={leadCity}
+            leadCityId={leadCityId}
+            id={record.id}
+          />
+        );
       },
       filterDropdown: (
         <div>
