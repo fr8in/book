@@ -1,35 +1,38 @@
-import { Table } from 'antd'
-import branchData from '../../../mock/customer/branch'
+import { Table } from "antd";
+import branchData from "../../../mock/customer/branch";
 
 const Fr8Branch = () => {
   const fr8Branch = [
     {
-      title: 'Branch Name',
-      dataIndex: 'branchName',
-      width: '35%'
+      title: "Branch Name",
+      dataIndex: "name",
+      width: "35%",
+      render: (text, record) => record.branch && record.branch.name,
     },
     {
-      title: 'Orders',
-      dataIndex: 'orders',
-      width: '35%'
+      title: "Orders",
+      dataIndex: "order",
+      width: "35%",
+      render: (text, record) => record.branch && record.branch.order,
     },
     {
-      title: 'Traffic',
-      dataIndex: 'traffic',
-      width: '30%'
-    }
-  ]
+      title: "Traffic",
+      dataIndex: "traffic",
+      width: "30%",
+    },
+  ];
 
   return (
     <Table
       columns={fr8Branch}
       dataSource={branchData}
       rowKey={(record) => record.id}
-      size='small'
+      size="small"
       scroll={{ x: 800 }}
       pagination={false}
+      //loading={loading}
     />
-  )
-}
+  );
+};
 
-export default Fr8Branch
+export default Fr8Branch;
