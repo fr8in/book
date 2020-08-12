@@ -1,7 +1,6 @@
 import { Modal, Button, Row, Col, Form, Input,message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
-import {useState} from "react";
 
 const PRIVATE_GODWON_MUTATION = gql`
 mutation updatePrivateGodown($id: Int!, $private_godown_address: jsonb) {
@@ -19,37 +18,6 @@ const CheckBoxModal = (props) => {
 
   console.log('trip_info', trip_id)
 
-  const [BuildingNO, setBuildingNO] = useState('')
-  const [Address, setAddress] = useState('')
-  const [City, setCity] = useState('')
-  const [Pincode, setPincode] = useState('')
-  const [State, setState] = useState('')
-
-  const handlebuildingNo = (e) => {
-    setBuildingNO(e.target.value)
-  }
-  console.log('BuildingNO', BuildingNO)
-
-  const handleaddress = (e) => {
-    setAddress(e.target.value)
-  }
-  console.log('Address', Address)
-
-  const handlecity = (e) => {
-    setCity(e.target.value)
-  }
-  console.log('City', City)
-
-  const handlepincode = (e) => {
-    setPincode(e.target.value)
-  }
-  console.log('Pincode', Pincode)
-
-  const handlestate = (e) => {
-    setState(e.target.value)
-  }
-  console.log('State', State)
-
   const [insertTopay] = useMutation(
     PRIVATE_GODWON_MUTATION,
     {
@@ -58,55 +26,55 @@ const CheckBoxModal = (props) => {
     }
   )
 
-  const privateGodown = () => {
-    console.log('trip_id',trip_id)
+  const onPrivateGodown = (form) => {
+    console.log('form',form)
+    const private_godown_address={
+      building_no:form.building_no,
+      address:form.address,
+      city:form.city,
+      state:form.state,
+      pin_code:form.pin_code
+    }
     insertTopay({
       variables: {
-        "id": trip_id,
-        "private_godown_address": {"building_no": BuildingNO, "address": Address, "city": City, "pincode": Pincode, "state": State}
-      }
+        id: trip_id,
+        private_godown_address: private_godown_address
+      }  
     })
   }
-
+ 
   return (
     <>
       <Modal
         title="Unloaded at private godown"
         visible={visible}
         onCancel={onHide}
-        footer={[
-          <Button key="back" >
-            Cancel
-          </Button>,
-          <Button key="Update" onClick={privateGodown} type="primary">
-            Save
-          </Button>,
-        ]}
+        footer={null}
       >
-        <Form layout='vertical'>
-          <Row gutter={10}>
 
-            <Col sm={20}>
-              <Form.Item
-                label="Godown Receipt"
-                name="Godown Receipt"
-                rules={[{ required: true }]}
-              >
-                <Button>
-                  <UploadOutlined />
-                </Button>
-              </Form.Item>
-            </Col>
-          </Row>
+     <Row gutter={10}>
+     <Col sm={20}>
+       <Form.Item
+          label="Godown Receipt"
+          name="Godown Receipt"
+          rules={[{ required: true }]}
+       >
+         <Button>
+            <UploadOutlined />
+        </Button>
+       </Form.Item>
+        </Col>
+        </Row>
+        <Form layout='vertical' onFinish={onPrivateGodown}>
           <Row>
             <Col sm={20}>
               <Form.Item
                 label="Building Number"
-                name="Building Number"
+                name=" building_no"
                 rules={[{ required: true, message: 'Building Number is required field!' }]}
                 
               >
-                <Input placeholder="Building Number" onChange={handlebuildingNo} />
+                <Input placeholder="Building Number"  />
               </Form.Item>
             </Col>
           </Row>
@@ -114,10 +82,10 @@ const CheckBoxModal = (props) => {
             <Col sm={20}>
               <Form.Item
                 label="Address"
-                name="Address"
+                name="address"
                 rules={[{ required: true, message: 'Address is required field!' }]}
               >
-                <Input placeholder="Address" onChange={handleaddress}/>
+                <Input placeholder="Address" />
               </Form.Item>
             </Col>
           </Row>
@@ -125,10 +93,10 @@ const CheckBoxModal = (props) => {
             <Col sm={20}>
               <Form.Item
                 label="Pin Code"
-                name="Pin Code"
+                name="pin_code"
                 rules={[{ required: true, message: 'Pin Code is required field!' }]}
               >
-                <Input placeholder="Pin Code" onChange={handlepincode} />
+                <Input placeholder="Pin Code"  />
               </Form.Item>
             </Col>
           </Row>
@@ -136,10 +104,10 @@ const CheckBoxModal = (props) => {
             <Col sm={20}>
               <Form.Item
                 label="City"
-                name="City"
+                name="city"
                 rules={[{ required: true, message: 'City is required field!' }]}
               >
-                <Input placeholder="City" onChange={handlecity}/>
+                <Input placeholder="City"/>
               </Form.Item>
             </Col>
           </Row>
@@ -147,12 +115,20 @@ const CheckBoxModal = (props) => {
             <Col sm={20}>
               <Form.Item
                 label="State"
-                name="State"
+                name="state"
                 rules={[{ required: true, message: 'State is required field!' }]}
               >
-                <Input placeholder="State" onChange={handlestate}/>
+                <Input placeholder="State" />
               </Form.Item>
             </Col>
+          </Row>
+          <Row  justify='end'>
+          <Button key="Update" htmlType='submit' type="primary">
+            Save
+          </Button>,
+          <Button key='back'>
+           Cancel
+          </Button>
           </Row>
         </Form>
       </Modal>
