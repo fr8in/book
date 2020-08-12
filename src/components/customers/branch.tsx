@@ -16,11 +16,7 @@ const Branch = (props) => {
       dataIndex: "name",
       width: "10%",
     },
-    {
-      title: "Building Number",
-      dataIndex: "buildingNo",
-      width: "10%",
-    },
+
     {
       title: "Address",
       dataIndex: "address",
@@ -30,6 +26,7 @@ const Branch = (props) => {
       title: "City",
       dataIndex: "city",
       width: "10%",
+      render: (text, record) => record.city && record.city.name,
     },
     {
       title: "State",

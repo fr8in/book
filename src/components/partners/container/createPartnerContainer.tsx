@@ -74,13 +74,13 @@ const PartnerProfile = () => {
   }
  
   const advancePercentageList = partner_advance_percentage.map((data) => {
-    return { value: data.id, label: data.email }
+    return { value: data.id, label: data.name }
   })
   const cityList = city.map((data) => {
     return { value: data.id, label: data.name }
   })
   const employeeList = employee.map((data) => {
-    return { value: data.id, label: data.name }
+    return { value: data.id, label: data.email }
   })
 
 

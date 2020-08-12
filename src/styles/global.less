@@ -48,29 +48,25 @@ a, .link {
 }
 .global-filter {
   border: 0;
-  border-top: 1px solid #d9d9d9;
+  border-top: 1px solid @border-light;
   width: 100%;
   .clear{
     float: right;
     font-size: 10px;
-    line-height: 22px;
-    background: #ececec;
+    line-height: 20px;
+    background:@primary;
+    color: @white;
     padding: 0 5px;
     border-radius: 12px;
     box-shadow: inset 0 1px 0 rgba(0,0,0,0.2);
   }
-  .filterMenu {
-    padding: 0;
-    list-style: none;
-    margin-bottom: 0;
-    .ant-checkbox-group { width:100% }
-    .ant-checkbox-group-item {
-      display: block;
-      line-height: 24px;
-      .filterCount {
-        padding-left: 10px;
-        color: lighten(@gray, 30%);
-      }
+  .ant-checkbox-group { width:100% }
+  .ant-checkbox-group-item {
+    display: block;
+    line-height: 24px;
+    .filterCount {
+      padding-left: 10px;
+      color: lighten(@gray, 30%);
     }
   }
 }

@@ -48,7 +48,7 @@ const PARTNERS_QUERY = gql`
         count
       }
     }
-    partner_status(order_by:{id:asc}){
+    partner_status(where:{name: {_nin: ["Lead","Registered","Rejected"]}},order_by:{id:asc}){
       id
       name
     }

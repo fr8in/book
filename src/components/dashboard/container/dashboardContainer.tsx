@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Row, Col, Card, Tabs, Button, Space } from 'antd'
 import Trips from '../../trips/activeTrips'
+import TripsByDestination from '../../trips/tripsByDestination'
 import WaitingForLoad from '../../trucks/waitingForLoad'
 import Orders from '../../reports/orders'
 import Revenue from '../../reports/revenue'
@@ -170,13 +171,13 @@ const DashboardContainer = (props) => {
                   <Trips trips={trips} loading={loading} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Intransit' value={intransit_count} />} key='6'>
-                  <Trips trips={trips} loading={loading} />
+                  <Trips trips={trips} loading={loading} intransit />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Intransit(D)' value={intransit_d_count} />} key='7'>
-                  <Trips trips={trips} loading={loading} />
+                  <TripsByDestination filters={filters} trip_status={vars.trip_status} intransit />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Unloading(D)' value={unloading_d_count} />} key='8'>
-                  <Trips trips={trips} loading={loading} />
+                  <TripsByDestination filters={filters} trip_status={vars.trip_status} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Loads' value={excess_count} />} key='9'>
                   <ExcessLoad />
