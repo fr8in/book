@@ -61,7 +61,7 @@ query gloabl_filter($now: timestamptz, $regions:[Int!], $branches:[Int!], $citie
   }
 }
 `
-const Extra =(props)=> <span className='clear' onClick={props.onClear}>CLEAR</span>
+const Clear =(props)=> <span className='clear' onClick={props.onClear}>CLEAR</span>
 
 const Actions = (props) => {
   const { onFilter, initialFilter } = props
@@ -168,31 +168,31 @@ const Actions = (props) => {
           <Collapse className='global-filter' defaultActiveKey={['branch']}>
             <Panel 
               header={<b>Region</b>} key='region' 
-              extra={filter.regions && filter.regions.length > 0 ? <Extra onClear={(e) => onClear(e, 'regions')} /> : ''}
+              extra={filter.regions && filter.regions.length > 0 ? <Clear onClear={(e) => onClear(e, 'regions')} /> : ''}
             >
               <CheckBoxGroup value={filter.regions} options={region_options} onChange={(value) => onCheckBoxChange(value, 'regions')} />
             </Panel>
             <Panel 
               header={<b>Branch</b>} key="branch" 
-              extra={filter.branches && filter.branches.length > 0 ? <Extra onClear={(e) => onClear(e, 'branches')}/> : ''}
+              extra={filter.branches && filter.branches.length > 0 ? <Clear onClear={(e) => onClear(e, 'branches')}/> : ''}
             >
               <CheckBoxGroup options={branch_options} value={filter.branches} onChange={(value) => onCheckBoxChange(value, 'branches')} />
             </Panel>
             <Panel 
               header={<b>City</b>} key="city" 
-              extra={filter.cities && filter.cities.length > 0 ? <Extra onClear={(e) => onClear(e, 'cities')} /> : ''}
+              extra={filter.cities && filter.cities.length > 0 ? <Clear onClear={(e) => onClear(e, 'cities')} /> : ''}
             >
               <CheckBoxGroup value={filter.cities} options={connected_city_options} onChange={(value) => onCheckBoxChange(value, 'cities')} />
             </Panel>
             <Panel 
               header={<b>Manager</b>} key="manager" 
-              extra={filter.managers && filter.managers.length > 0 ? <Extra onClear={(e) => onClear(e, 'managers')} /> : ''}
+              extra={filter.managers && filter.managers.length > 0 ? <Clear onClear={(e) => onClear(e, 'managers')} /> : ''}
             >
               <CheckBoxGroup options={branch_employee_options} value={filter.managers} onChange={(value) => onCheckBoxChange(value, 'managers')} />
             </Panel>
             <Panel 
               header={<b>Type</b>} key="type" 
-              extra={filter.types && filter.types.length > 0 ? <Extra onClear={(e) => onClear(e, 'types')} /> : ''}
+              extra={filter.types && filter.types.length > 0 ? <Clear onClear={(e) => onClear(e, 'types')} /> : ''}
             >
               <CheckBoxGroup options={truck_type_options} value={filter.types} onChange={(value) => onCheckBoxChange(value, 'types')} />
             </Panel>
