@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import { Table, Button, Space ,Pagination,Checkbox} from "antd";
-import mock from "../../../mock/partner/sourcingMock";
 import Link from "next/link";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import useShowHide from "../../hooks/useShowHide";
 import TruckReject from "../../components/trucks/truckReject";
 import TruckActivation from "../trucks/truckActivation";
 import useShowHideWithRecord from "../../hooks/useShowHideWithRecord";
@@ -238,7 +236,7 @@ const TruckVerification = (props) => {
         <TruckActivation
           visible={object.truckActivationVisible}
           onHide={handleHide}
-          data={object.truckActivationData}
+          truck_id={object.truckActivationData}
         />
       )}
        {object.truckRejectVisible && (
