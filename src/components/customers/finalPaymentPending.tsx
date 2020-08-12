@@ -1,12 +1,15 @@
 import { Table } from "antd";
-import finalPayment from "../../../mock/customer/finalPayment";
+//import finalPayment from "../../../mock/customer/finalPayment";
 import Link from "next/link";
 
-const FinalPaymentsPending = () => {
+const FinalPaymentsPending = (props) => {
+  const { finalPayment } = props;
+  console.log("finalPayment", finalPayment);
+
   const finalPaymentsPending = [
     {
       title: "LoadId",
-      dataIndex: "loadId",
+      dataIndex: "id",
       sorter: (a, b) => (a.loadId > b.loadId ? 1 : -1),
       width: "6%",
       render: (text, record) => {
@@ -18,35 +21,32 @@ const FinalPaymentsPending = () => {
       },
     },
     {
-      title: "Item Name",
-      dataIndex: "itemName",
-      sorter: (a, b) => (a.itemName > b.itemName ? 1 : -1),
-      width: "24%",
+      title: "Source",
+      dataIndex: "source",
+      width: "10%",
+      render: (text, record) => record.source && record.source.name,
+    },
+    {
+      title: "Destination",
+      dataIndex: "destination",
+      width: "10%",
+      render: (text, record) => record.destination && record.destination.name,
     },
     {
       title: "Truck No",
-      dataIndex: "truckNo",
+      dataIndex: "truck_no",
       sorter: (a, b) => (a.truckN0 > b.truckNo ? 1 : -1),
       width: "10%",
+      render: (text, record) => record.truck && record.truck.truck_no,
     },
     {
       title: "Type",
       dataIndex: "type",
       width: "15%",
+      render: (text, record) =>
+        record.truck.truck_type && record.truck.truck_type.name,
     },
-    {
-      title: "Customer Name",
-      dataIndex: "customerName",
-      sorter: (a, b) => (a.customerName > b.customerName ? 1 : -1),
-      width: "15%",
-      render: (text, record) => {
-        return (
-          <Link href="customers/[id]" as={`customers/${record.cardcode}`}>
-            <a>{text}</a>
-          </Link>
-        );
-      },
-    },
+
     {
       title: "SO Price",
       dataIndex: "soPrice",
