@@ -12,7 +12,7 @@ import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from '../../components/partners/comment'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import moment from 'moment'
-import PartnerLeadCity from '../partners/partnerLeadCity'
+
 
 const PARTNERS_QUERY = gql`
 query(
@@ -233,17 +233,7 @@ const onSubmit = (id) => {
       title: 'City',
       width:'9%',
       render: (text, record) => {
-        const leadCity =
-        record.city && record.city.name;
-      const leadCityId =
-      record.city && record.city.id;
-        return (
-          <PartnerLeadCity
-            leadCity={leadCity}
-            leadCityId={leadCityId}
-            id={record.id}
-          />
-        );
+        return record.city && record.city.name;
       },
       filterDropdown: (
         <div>
