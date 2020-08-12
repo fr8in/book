@@ -220,7 +220,16 @@ const onSubmit = (id) => {
     {
       title: 'Name',
       dataIndex: 'name',
-      width:'9%'
+      width:'9%',
+      render: (text, record) => {
+        return record.name.length > 10 ? (
+          <Tooltip title={record.name}>
+            <span> {record.name.slice(0, 10) + '...'}</span>
+          </Tooltip>
+        ) : (
+          record.name
+        )
+      }
     },
     {
       title: 'Phone',
