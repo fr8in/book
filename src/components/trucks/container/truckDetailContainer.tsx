@@ -214,7 +214,7 @@ const TruckDetailContainer = (props) => {
           </Card>
         </Col>
       </Row>
-      {visible.comment && <CommentModal visible={visible.comment} onHide={onHide} id={truck_info.id} />}
+      {visible.comment && <CommentModal visible={visible.comment} onHide={onHide} id={truck_info.id} truck_status={truck_info && truck_info.truck_status && truck_info.truck_status.name}/>}
 
     </Card>
   )

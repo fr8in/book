@@ -13,6 +13,7 @@ import {
   Divider,
   Space,
   message,
+  Tag
 } from "antd";
 import { EyeTwoTone } from "@ant-design/icons";
 import { DatePicker } from "antd";
@@ -89,7 +90,7 @@ const TruckActivation = (props) => {
 
   var truck_type = [];
   var city = [];
-  
+  var onboarded_by = ''
   var truck_info = {}
   
   if (!loading) {
@@ -97,9 +98,11 @@ const TruckActivation = (props) => {
      truck_type = data && data.truck_type
      const { truck } = data
      truck_info = truck[0] ? truck[0] : { name: 'ID does not exist' }
+     onboarded_by  = truck_info && truck_info.partner && truck_info.partner.onboarded_by && truck_info.partner.onboarded_by.email
   }
+console.log('onboarded_by',onboarded_by)
+
   const truck_data = truck_info && truck_info.truck_no
- const onboarded_by  = truck_info && truck_info.partner && truck_info.partner.onboarded_by && truck_info.partner.onboarded_by.name
  const partner_mobile = truck_info && truck_info.partner && truck_info.partner.partner_users && truck_info.partner.partner_users.mobile
 
   const cityList = city.map((data) => {
@@ -212,9 +215,10 @@ const TruckActivation = (props) => {
             </Row>
             <Row className="labelFix">
               <Col flex="150px">
-                <Form.Item label="On-Boarded By" name="On-Boarded By" >
-                  <Input value={onboarded_by} placeholder="On-Boarded By" />
+                <Form.Item label="On-Boarded By" name="onboarded_by" initialValue={onboarded_by}>
+                  <Input placeholder="On-Boarded By" />
                 </Form.Item>
+                <Tag>onboarded_by</Tag>
               </Col>
               &nbsp;
               <Col xs={{ span: 24 }} sm={{ span: 12 }}>
