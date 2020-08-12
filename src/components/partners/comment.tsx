@@ -7,6 +7,9 @@ import moment from 'moment'
 const PARTNER_COMMENT_QUERY = gql`
   query partnerComment($id: Int!){
     partner(where:{id:{_eq:$id}}) {
+      partner_status{
+        name
+      }
       partner_comments(limit:5,order_by:{created_at:desc}){
         id
         description
@@ -30,6 +33,7 @@ const Comment = (props) => {
   const { partnerId } = props
   const [userComment, setUserComment] = useState('')
 
+
   const { loading, error, data } = useQuery(
     PARTNER_COMMENT_QUERY,
     {
@@ -49,19 +53,21 @@ const Comment = (props) => {
   if (loading) return null
   console.log('PartnerComment error', error)
   console.log('PartnerComment data', data)
+  const partner_status_name =  data.partner &&  data.partner[0].partner_status && data.partner[0].partner_status.name 
   const { partner_comments } = data.partner && data.partner[0] ? data.partner[0] : []
   const handleChange = (e) => {
     setUserComment(e.target.value)
   }
+  console.log('partner_comments',partner_comments)
   console.log('userComment', userComment)
-
+  console.log('partner_status_name',partner_status_name)
   const onSubmit = () => {
     insertComment({
       variables: {
         partner_id: partnerId,
         created_by: 'shilpa@fr8.in',
         description: userComment,
-        topic: 'text'
+        topic:partner_status_name
       }
     })
   }
