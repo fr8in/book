@@ -181,22 +181,22 @@ const TruckActivation = (props) => {
                 </Col>
               </Row>
               <Row>
-                <Col xs={24} sm={{ span: 12, offset: 12 }}>
+                <Col xs={24} sm={12}>
                   <div>New vehicle on-boarded</div>
                   <div>
-                    Partner Name:{truck_info && truck_info.partner && truck_info.partner.name} - {partner_mobile}
+                    Partner Name: {truck_info && truck_info.partner && truck_info.partner.name} - {partner_mobile}
                     {truck_info.truck_no}-{truck_info && truck_info.truck_type && truck_info.truck_type.name}-ft
                   </div>
                   <div>Available In: {moment(truck_info.available_at).format('DD-MMM-YY')} </div>
                   <div>On-boarded by: {onboarded_by}</div>
                 </Col>
+                <Col xs={24} sm={12} className='text-right'>
+                  <Button type='primary' key='submit' htmlType='submit'>
+                      Activate Truck
+                  </Button>
+                </Col>
               </Row>
             </Form.Item>
-            <Row justify='end'>
-              <Button type='primary' key='submit' htmlType='submit'>
-            Activate Truck
-              </Button>
-            </Row>
           </Form>)}
       </Modal>
     </>
