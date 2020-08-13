@@ -1,6 +1,5 @@
-import { Modal, Select } from 'antd'
-import EmailList from '../../../mock/sourcing/employeeList'
-import { gql, useQuery } from '@apollo/client'
+import { Modal, Select,message } from 'antd'
+import { gql, useQuery,useMutation } from '@apollo/client'
 
 
 const PARTNERS_QUERY = gql`
@@ -11,17 +10,18 @@ query create_partner{
   }
 }
 `
+const UPDATE_OWNER_MUTATION = gql`
+mutation update_owner($id:Int,$onboarded_by_id:Int) {
+  update_partner(_set: {onboarded_by_id: $onboarded_by_id}, where: {id: {_eq: $id}}) {
+    returning {
+      id
+    }
+  }
+}
+`
 
 const EmployeeList = (props) => {
-  const { visible, onHide } = props
-
-  const handleChange = (value) => {
-    console.log(`selected ${value}`)
-  }
-  const onSubmit = () => {
-    console.log('data Transfered!')
-    onHide()
-  }
+  const { visible, onHide,partner_id } = props
 
   const { loading, error, data } = useQuery(
     PARTNERS_QUERY,
@@ -31,21 +31,37 @@ const EmployeeList = (props) => {
     }
   )
   console.log('CreatePartnersContainer error', error)
+  const [updateOwner] = useMutation(
+    UPDATE_OWNER_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
+ 
   var employee = [];
   if (!loading) {
      employee = data && data.employee
   }
   const employeeList = employee.map((data) => {
-    return { value: data.email, label: data.email }
+    return { value: data.id, label: data.email }
   })
+  const onSubmit = (value) => {
+    updateOwner({
+      variables:{
+        id:partner_id,
+        onboarded_by_id: value
+      }
+    })
+  }
 
   return (
     <Modal
       visible={visible}
       onOk={onSubmit}
       onCancel={onHide}
-    >
-      <Select defaultValue='Owner' style={{ width: 300 }} onChange={handleChange} options={employeeList} />
+    >   
+      <Select defaultValue='Owner' style={{ width: 300 }} options={employeeList} />
     </Modal>
   )
 }

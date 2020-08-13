@@ -21,7 +21,7 @@ const PARTNER_COMMENT_QUERY = gql`
 `
 const INSERT_PARTNER_COMMENT_MUTATION = gql`
   mutation PartnerComment($description:String, $topic:String, $partner_id: Int, $created_by:String ) {
-    insert_partner_comment(objects: {description: $description, partner_id: $partner_id, topic: $topic, created_by: "shilpa@fr8.in"}) {
+    insert_partner_comment(objects: {description: $description, partner_id: $partner_id, topic: $topic, created_by:$created_by}) {
       returning {
         description
         partner_id

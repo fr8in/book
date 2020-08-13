@@ -1,4 +1,4 @@
-
+import {useState} from 'react'
 import { Modal, Button, Input, Row, Col, Form, Select,message } from 'antd'
 import { gql, useMutation,useQuery } from '@apollo/client'
 const { TextArea } = Input
@@ -11,22 +11,34 @@ mutation partner_lead_create(
   $contact_name: String,
   $partner_status_id: Int,
   $channel_id:Int,
-  $onboarded_by_id:Int) 
+  $description:String,
+  $onboarded_by_id:Int,
+  $topic:String,
+  $created_by:String) 
   {
   insert_partner(
     objects: {
       name: $name,
+      partner_comments: 
+      {data: 
+        [{description: $description,
+         topic: $topic,
+         created_by: $created_by}]
+      }
       partner_users:
-       {data: { 
-         mobile: $mobile,
-         name: $contact_name}
-        },
+      {data: { 
+        mobile: $mobile,
+        name: $contact_name}
+      },
       partner_status_id: $partner_status_id,
       channel_id:$channel_id,
       onboarded_by_id: $onboarded_by_id}
     ) {
     returning {
       id
+      partner_comments{
+        topic
+      }
     }
   }
 }
@@ -45,11 +57,13 @@ query create_partner_lead{
 `
 
 const CreateLead = (props) => {
+
+  const [userComment, setUserComment] = useState('')
   function handleChange (value) {
     console.log(`selected ${value}`)
   }
-  const onChange = e => {
-    console.log(e)
+  const handleCommentChange = (e) => {
+    setUserComment(e.target.value)
   }
   const { visible, onHide } = props
 
@@ -74,10 +88,12 @@ const CreateLead = (props) => {
   
   var channel = [];
   var employee = [];
+  
   if (!loading) {
     
      channel = data.channel
      employee = data.employee
+     
   }
  
   const channelList = channel.map((data) => {
@@ -96,7 +112,10 @@ const CreateLead = (props) => {
         mobile: form.mobile,
         partner_status_id: 8,
         channel_id: form.channel,
-        onboarded_by_id:form.employee
+        onboarded_by_id:form.employee,
+        created_by: 'karthi@fr8.in',
+        description: userComment,
+        topic:'Lead'
       }
     })   
    }
@@ -152,7 +171,10 @@ const CreateLead = (props) => {
           </Col>
         </Row>
         <Form.Item>
-          <TextArea placeholder='Comment' allowClear onChange={onChange} />        
+          <TextArea
+          value={userComment}
+          onChange={handleCommentChange}
+          placeholder='Comment' allowClear  />        
         </Form.Item>
         <Row justify='end'>
         <Button type='primary' key='back' htmlType='submit'> Submit </Button>
