@@ -16,7 +16,7 @@ mutation TripComment($description:String, $topic:String, $trip_id: Int, $created
 `
 
 const TripComment = (props) => {
-  const { trip_id, comments } = props
+  const { trip_id, comments,trip_status } = props
 
   const [tripComment, setTripComment] = useState('')
 
@@ -39,7 +39,7 @@ const TripComment = (props) => {
         trip_id: trip_id,
         created_by: 'deva@fr8.in',
         description: tripComment,
-        topic: 'text'
+        topic: trip_status
       }
     })
   }
