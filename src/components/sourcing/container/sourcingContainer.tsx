@@ -14,6 +14,7 @@ import { UserAddOutlined, FilterOutlined, PlusOutlined } from '@ant-design/icons
 import EmployeeList from '../../branches/fr8EmpolyeeList'
 import { gql, useQuery } from '@apollo/client'
 
+
 const SOURCING_QUERY = gql`
 query{
 partner_aggregate(where: {partner_status: {name: {_in: ["Lead","Registered"]}}}) {
@@ -31,8 +32,13 @@ const SourcingContainer = () => {
   const initial = { createLead: false, employeeList: false, filterList: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
+  const waiting_for_load = ['Waiting for load']
+  const breakdown = ["Breakdown"]
+  const [truck_status, settruck_status] = useState(waiting_for_load)
+
   const { loading, error, data } = useQuery(
-    SOURCING_QUERY
+    SOURCING_QUERY, 
+    
   )
 
   console.log('sourcingContainer Error', error)
@@ -41,9 +47,11 @@ const SourcingContainer = () => {
   
   var partner_aggregate = 0;
   var lead_count = 0;
+  
   if (!loading) {
   partner_aggregate = data && data.partner_aggregate;
   lead_count = partner_aggregate && partner_aggregate.aggregate && partner_aggregate.aggregate.count 
+ 
   }
 
 console.log('partner_aggregate', partner_aggregate)
@@ -51,14 +59,29 @@ console.log('partner_aggregate', partner_aggregate)
 
   const mainTabChange = (key) => {
     setMainTabKey(key)
+    settruck_status
+    switch (key) {
+      case '3':
+        settruck_status(waiting_for_load)
+        break
+      case '4':
+        settruck_status(breakdown)
+        break
+      default:
+        settruck_status(waiting_for_load)
+        break
+    }
   }
   const subTabChange = (key) => {
     setSubTabKey(key)
   }
+
+  
   return (
     <Card size='small' className='border-top-blue card-pt0'>
       <Tabs
         onChange={mainTabChange}
+        
         tabBarExtraContent={
           <span>
             {mainTabKey === '2' &&
@@ -112,12 +135,12 @@ console.log('partner_aggregate', partner_aggregate)
         </TabPane>
         <TabPane tab={<TitleWithCount name='Waiting for Load' value={671} />} key='3'>
           <Card size='small' className='card-body-0'>
-            <Breakdown />
+            <Breakdown truck_status={waiting_for_load} loading={loading}/>
           </Card>
         </TabPane>
         <TabPane tab={<TitleWithCount name='Breakdown' value={65} />} key='4'>
           <Card size='small' className='card-body-0'>
-            <Breakdown />
+            <Breakdown truck_status={breakdown} loading={loading}/>
           </Card>
         </TabPane>
         <TabPane tab='Announcement' key='5'>
