@@ -31,7 +31,8 @@ const DashboardContainer = (props) => {
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
     branches: (filters.branches && filters.branches > 0) ? filters.branches : null,
     cities: (filters.cities && filters.cities > 0) ? filters.cities : null,
-    trip_status: vars.trip_status ? vars.trip_status : null
+    trip_status: vars.trip_status ? vars.trip_status : null,
+    truck_type: (filters.types && filters.types > 0) ? filters.types : null
   }
   const { loading, data, error } = useSubscription(DASHBOAD_QUERY, { variables })
   console.log('dashboard error', error)

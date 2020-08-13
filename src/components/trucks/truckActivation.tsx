@@ -1,22 +1,20 @@
-import React from "react";
 import {
   Modal,
   Button,
   Row,
   Form,
   Select,
-  Table,
-  Radio,
   Col,
-  Badge,
   Input,
   Divider,
-  Space,
   message,
-} from "antd";
-import { EyeTwoTone } from "@ant-design/icons";
-import { DatePicker } from "antd";
-import { gql, useQuery ,useMutation} from '@apollo/client'
+  DatePicker
+} from 'antd'
+import { EyeTwoTone } from '@ant-design/icons'
+import moment from 'moment'
+import { gql, useQuery, useMutation } from '@apollo/client'
+import CitySelect from '../common/citySelect'
+import Loading from '../common/loading'
 
 const TRUCKS_QUERY = gql`
 query trucks($truck_id : Int){
@@ -24,10 +22,14 @@ query trucks($truck_id : Int){
     id
     name
   }
-  
   truck(where: {id: {_eq: $truck_id}}) {
     height
     truck_no
+    truck_type{
+      id
+      name
+    }
+    available_at
     partner {
       cardcode
       name
@@ -41,10 +43,6 @@ query trucks($truck_id : Int){
       }
     }
   }
-  city {
-    id
-    name
-  }
 }
 `
 
@@ -56,23 +54,19 @@ mutation TruckActivation($available_at:timestamptz,$id:Int,$city_id:Int,$truck_t
     }
   }
 }
-
 `
 
-function onChange(date, dateString) {
-  console.log(date, dateString);
+const onChange = (date, dateString) => {
+  console.log(date, dateString)
 }
 
-
 const TruckActivation = (props) => {
-  const { visible, onHide, truck_id, title } = props;
-
- 
+  const { visible, onHide, truck_id, title } = props
 
   const { loading, error, data } = useQuery(
     TRUCKS_QUERY,
     {
-      variables:  {truck_id : truck_id},
+      variables: { truck_id: truck_id },
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
@@ -87,32 +81,24 @@ const TruckActivation = (props) => {
     }
   )
 
-  var truck_type = [];
-  var city = [];
-  var onboarded_by = ''
+  var truck_type = []
   var truck_info = {}
-  
+
   if (!loading) {
-     city = data && data.city
-     truck_type = data && data.truck_type
-     const { truck } = data
-     truck_info = truck[0] ? truck[0] : { name: 'ID does not exist' }
-     onboarded_by  = truck_info && truck_info.partner && truck_info.partner.onboarded_by && truck_info.partner.onboarded_by.email
+    truck_type = data && data.truck_type
+    const { truck } = data
+    truck_info = truck[0] ? truck[0] : { name: 'ID does not exist' }
   }
-console.log('onboarded_by',onboarded_by)
+  const onboarded_by = truck_info && truck_info.partner && truck_info.partner.onboarded_by && truck_info.partner.onboarded_by.email
+  console.log('onboarded_by', onboarded_by)
+  const partner_mobile = truck_info && truck_info.partner && truck_info.partner.partner_users && truck_info.partner.partner_users.mobile
 
-  const truck_data = truck_info && truck_info.truck_no
- const partner_mobile = truck_info && truck_info.partner && truck_info.partner.partner_users && truck_info.partner.partner_users.mobile
-
-  const cityList = city.map((data) => {
-    return { value: data.id, label: data.name }
-  })
   const typeList = truck_type.map((data) => {
     return { value: data.id, label: data.name }
   })
 
   const onTruckActivationSubmit = (form) => {
-    console.log("Traffic Added", truck_id);
+    console.log('Traffic Added', truck_id)
     updateTruckActivation({
       variables: {
         id: truck_id,
@@ -122,141 +108,99 @@ console.log('onboarded_by',onboarded_by)
         truck_type_id: parseInt(form.truck_type_id, 10)
       }
     })
-  };
+  }
 
   return (
     <>
-     
       <Modal
         visible={visible}
-        title="Truck Activation"
+        title='Truck Activation'
         onCancel={onHide}
-        width="550px"
-        footer={[
-          null
-        ]}
+        width='550px'
+        footer={[]}
       >
-        <Form layout="vertical" onFinish={onTruckActivationSubmit}>
-          <Form.Item>
-            <Row className="labelFix">
-              <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-                <h4>{truck_data}</h4>
-              </Col>
-
-              <Col
-                xs={{ span: 24 }}
-                sm={{ span: 12 }}
-                style={{
-                  textAlign: "right",
-                }}
-              >
-                <h4>Height:{truck_info.height}-ft</h4>
-              </Col>
-            </Row>
-            <Divider />
-            <Row className="labelFix">
-              <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-                <Form.Item
-                  label="Truck Type"
-                  name="truck_type_id"
-                  rules={[{ required: true }]}
-                  style={{ width: "70%" }}
-                >
-                  <Select options={typeList} placeholder="Select TruckType" allowClear>
-                   
-                  </Select>
-                </Form.Item>
-              </Col>
-
-              <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-                  <h4>RC</h4>
-              </Col>
-              <Col
-                xs={{ span: 24 }}
-                sm={{ span: 8 }}
-                style={{
-                  textAlign: "right",
-                }}
-              >
-                
-                  <Button
-                    type="primary"
-                    shape="circle"
-                    size="middle"
-                    icon={<EyeTwoTone />}
-                  />
-              </Col>
-            </Row>
-            <Row className="labelFix">
-              <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-                <Form.Item label="Available From" name="available_at">
-                  <DatePicker onChange={onChange} />
-                </Form.Item>
-              </Col>
-
-              <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-                  <h4>Vaahan Screen</h4>
-              </Col>
-              <Col
-                xs={{ span: 24 }}
-                sm={{ span: 8 }}
-                style={{
-                  textAlign: "right",
-                }}
-              >
-                  <Button
-                    type="primary"
-                    shape="circle"
-                    size="middle"
-                    icon={<EyeTwoTone />}
-                  />
-              </Col>
-            </Row>
-            <Row className="labelFix">
-              <Col flex="150px">
-                <Form.Item label="On-Boarded By" name="onboarded_by" initialValue={onboarded_by}>
-                  <Input placeholder="On-Boarded By" />
-                </Form.Item>
-               
-              </Col>
-              &nbsp;
-              <Col xs={{ span: 24 }} sm={{ span: 12 }}>
-                <Form.Item
-                  label="Available City"
-                  name="city_id"
-                  rules={[{ required: true }]}
-                >
-                  <Select options={cityList} placeholder="Select AvailableCity" allowClear>
-                   
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row justify="center">
-              <Col xs={{ span: 24 }} sm={{ span: 5 }} />
-              <Col xs={{ span: 24 }} sm={{ span: 14 }}>
-                <label>
-                  New vehicle on-boarded
-                  <br />
-                  Partner Name:{truck_info && truck_info.partner && truck_info.partner.name}-{partner_mobile } <br />
-                  {truck_info.truck_no}-{truck_info && truck_info.truck_type && truck_info.truck_type.name}-ft
-                  <br />
-                  Available In <br />
-                  On-boarded by-{onboarded_by}
-                </label>
-              </Col>
-            </Row>
-          </Form.Item>
-          <Row justify='end'>
-          <Button type="primary" key="submit" htmlType='submit'  >
-            Activate Truck
-          </Button>
-          </Row>
-        </Form>
+        {loading ? <Loading /> : (
+          <Form layout='vertical' onFinish={onTruckActivationSubmit}>
+            <Form.Item>
+              <Row>
+                <Col xs={24} sm={12}>
+                  <h4>{truck_info.truck_no}</h4>
+                </Col>
+                <Col xs={24} sm={12} style={{ textAlign: 'right' }}>
+                  <h4>Height:{truck_info.height}-ft</h4>
+                </Col>
+              </Row>
+              <Divider />
+              <Row gutter={20}>
+                <Col xs={24} sm={12}>
+                  <Form.Item
+                    label='Truck Type'
+                    name='truck_type_id'
+                    rules={[{ required: true }]}
+                    initialValue={truck_info.truck_type && truck_info.truck_type.name}
+                  >
+                    <Select options={typeList} placeholder='Select TruckType' allowClear />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={12}>
+                  <Form.Item label='RC'>
+                    <Button
+                      type='primary'
+                      shape='circle'
+                      size='middle'
+                      icon={<EyeTwoTone />}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={20}>
+                <Col xs={24} sm={12}>
+                  <Form.Item label='Available From' name='available_at' initialValue={moment(truck_info.available_at, 'YYYY-MM-DD')}>
+                    <DatePicker onChange={onChange} style={{ width: '100%' }} />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={12}>
+                  <Form.Item label='Vaahan Screen'>
+                    <Button
+                      type='primary'
+                      shape='circle'
+                      size='middle'
+                      icon={<EyeTwoTone />}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={20}>
+                <Col xs={24} sm={12}>
+                  <Form.Item label='On-Boarded By' name='onboarded_by' initialValue={onboarded_by}>
+                    <Input placeholder='On-Boarded By' disabled />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={12}>
+                  <CitySelect label='Available City' />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={24} sm={12}>
+                  <div>New vehicle on-boarded</div>
+                  <div>
+                    Partner Name: {truck_info && truck_info.partner && truck_info.partner.name} - {partner_mobile}
+                    {truck_info.truck_no}-{truck_info && truck_info.truck_type && truck_info.truck_type.name}-ft
+                  </div>
+                  <div>Available In: {moment(truck_info.available_at).format('DD-MMM-YY')} </div>
+                  <div>On-boarded by: {onboarded_by}</div>
+                </Col>
+                <Col xs={24} sm={12} className='text-right'>
+                  <Button type='primary' key='submit' htmlType='submit'>
+                      Activate Truck
+                  </Button>
+                </Col>
+              </Row>
+            </Form.Item>
+          </Form>)}
       </Modal>
-     
     </>
-  );
-};
+  )
+}
 
-export default TruckActivation;
+export default TruckActivation
