@@ -22,6 +22,17 @@ partner_aggregate(where: {partner_status: {name: {_in: ["Lead","Registered"]}}})
     count
   }
 }
+  waiting_for_load: truck_aggregate(where: {truck_status: {name: {_eq: "Waiting for load"}}}) {
+     aggregate {
+       count
+     }
+   }
+   breakdown: truck_aggregate(where: {truck_status: {name: {_eq: "Breakdown"}}}) {
+     aggregate {
+       count
+     }
+   }
+ 
 }
 `
 const TabPane = Tabs.TabPane
@@ -47,15 +58,23 @@ const SourcingContainer = () => {
   
   var partner_aggregate = 0;
   var lead_count = 0;
-  
+  var truck_aggregate={};
+  var waiting_for_load_count=0
+  var breakdown_count=0;
+
   if (!loading) {
   partner_aggregate = data && data.partner_aggregate;
   lead_count = partner_aggregate && partner_aggregate.aggregate && partner_aggregate.aggregate.count 
- 
+  truck_aggregate = data && data.truck_aggregate;
+  waiting_for_load_count = truck_aggregate && truck_aggregate.aggregate && truck_aggregate.aggregate.count 
+  breakdown_count = truck_aggregate && truck_aggregate.aggregate && truck_aggregate.aggregate.count 
   }
 
 console.log('partner_aggregate', partner_aggregate)
+console.log('truck_aggregate', truck_aggregate)
  console.log('lead_count',lead_count)
+ console.log('waiting_for_load_count',waiting_for_load_count)
+ console.log('breakdown_count',breakdown_count)
 
   const mainTabChange = (key) => {
     setMainTabKey(key)
@@ -133,12 +152,12 @@ console.log('partner_aggregate', partner_aggregate)
             <CustomerLead />
           </Card>
         </TabPane>
-        <TabPane tab={<TitleWithCount name='Waiting for Load' value={671} />} key='3'>
+        <TabPane tab={<TitleWithCount name='Waiting for Load' value={waiting_for_load_count} />} key='3'>
           <Card size='small' className='card-body-0'>
             <Breakdown truck_status={waiting_for_load} loading={loading}/>
           </Card>
         </TabPane>
-        <TabPane tab={<TitleWithCount name='Breakdown' value={65} />} key='4'>
+        <TabPane tab={<TitleWithCount name='Breakdown' value={breakdown_count} />} key='4'>
           <Card size='small' className='card-body-0'>
             <Breakdown truck_status={breakdown} loading={loading}/>
           </Card>
