@@ -11,6 +11,7 @@ import EmployeeList from '../branches/fr8EmpolyeeList'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from '../../components/partners/comment'
 import { gql, useQuery, useMutation } from '@apollo/client'
+import moment from 'moment'
 
 
 const PARTNERS_QUERY = gql`
@@ -18,11 +19,17 @@ query(
   $offset: Int!
   $limit: Int!
   $partner_status_name:[String!]
+  $channel_name:[String!]
+  $mobile: String
   ){
   partner(
     offset: $offset
     limit: $limit
-    where:{partner_status:{name:{_in:$partner_status_name}}}){
+    where:{
+      partner_users:{mobile:{ _like: $mobile}},
+      partner_status:{name:{_in:$partner_status_name}},
+      channel: {name: {_in:$channel_name}}}
+      ){
     id
     name
     cardcode
@@ -30,6 +37,7 @@ query(
       mobile
     }
     city{
+      id
       name
     }
     channel{
@@ -39,8 +47,14 @@ query(
     partner_status{
       name
     }
+    partner_comments {
+      created_at
+      description
+    }
   }
-  partner_aggregate(where: {partner_status: {name: {_in: ["Lead","Registered","Rejected"]}}}) {
+  partner_aggregate(where: 
+    {partner_status: {name: {_in: ["Lead","Registered","Rejected"]}}}
+    ) {
     aggregate {
       count
     }
@@ -49,7 +63,7 @@ query(
     id
     name
   }
-  channel(order_by: {id: asc}){
+  channel {
     id
     name
   }
@@ -75,7 +89,9 @@ const PartnerKyc = () => {
       employeeList: false,
       offset: 0,
       limit: 10,
-      partner_status_name:['Lead','Registered']
+      mobile: null,
+      partner_status_name:['Lead','Registered'],
+      channel_name:["Direct","Social Media","Referral","App"]
     }
 
     const [filter, setFilter] = useState(initial)
@@ -87,7 +103,9 @@ const PartnerKyc = () => {
   const partnerQueryVars = { 
     offset: filter.offset,
     limit: filter.limit,
-    partner_status_name: filter.partner_status_name
+    partner_status_name: filter.partner_status_name,
+    channel_name:filter.channel_name,
+    mobile: filter.mobile ? `%${filter.mobile}%` : null
   }
 
   const { loading, error, data } = useQuery(PARTNERS_QUERY, {
@@ -97,22 +115,24 @@ const PartnerKyc = () => {
   })
 
   console.log('partnerLead error', error)
+  console.log('partnerLead data', data)
 
   var partner = []
   var partner_aggregate = 0;
   var partner_status = [];
   var channel = [];
-  var id ={}
+  var id = {}
   if (!loading) {
     partner = data && data.partner
     partner_aggregate = data && data.partner_aggregate
     partner_status = data && data.partner_status
     channel = data && data.channel
-    id = data && data.id
+    id = partner && partner.id
   }
-
+  
+console.log('id',id)
 console.log('partnerLead',partner)
-
+console.log('channel',channel)
 const record_count =
 partner_aggregate &&
 partner_aggregate.aggregate &&
@@ -127,7 +147,6 @@ const channels = channel.map((data) => {
   return { value: data.name, label: data.name }
 })
 
-console.log("truckStatus",partners_status)
 
 const onPageChange = (value) => {
   setFilter({ ...filter, offset: value })
@@ -135,6 +154,14 @@ const onPageChange = (value) => {
 const onFilter = (value) => {
   setFilter({ ...filter, partner_status_name: value, offset: 0 })
 }
+
+const onChannelFilter = (value) => {
+  setFilter({ ...filter, channel_name: value, offset: 0 })
+}
+const onMobileSearch = (value) => {
+  setFilter({ ...filter, mobile: value })
+};
+
 
 const pageChange = (page, pageSize) => {
   const newOffset = page * pageSize - filter.limit
@@ -146,6 +173,14 @@ const handleStatus = (checked) => {
   onFilter(checked)
   setCurrentPage(1)
 }
+
+const handleChannelStatus = (checked) => {
+  onChannelFilter(checked)
+  setCurrentPage(1)
+}
+const handleMobile = (e) => {
+  onMobileSearch(e.target.value);
+};
 const [insertComment] = useMutation(PARTNER_LEAD_REJECT_MUTATION, {
   onError(error) {
     message.error(error.toString());
@@ -184,11 +219,22 @@ const onSubmit = (id) => {
   const columnsCurrent = [
     {
       title: 'Name',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      width:'9%',
+      render: (text, record) => {
+        return record.name.length > 10 ? (
+          <Tooltip title={record.name}>
+            <span> {record.name.slice(0, 10) + '...'}</span>
+          </Tooltip>
+        ) : (
+          record.name
+        )
+      }
     },
     {
       title: 'Phone',
-      //dataIndex: 'number',
+      dataIndex: 'number',
+      width:'9%',
       render: (text, record) => {
         return record.partner_users[0] && record.partner_users[0].mobile;
       },
@@ -199,6 +245,8 @@ const onSubmit = (id) => {
             id='number'
             name='number'
             type='number'
+             value={filter.mobile}
+           onChange={handleMobile}
           />
         </div>
       ),
@@ -208,7 +256,7 @@ const onSubmit = (id) => {
     },
     {
       title: 'City',
-      dataIndex: 'cityName',
+      width:'9%',
       render: (text, record) => {
         return record.city && record.city.name;
       },
@@ -224,6 +272,7 @@ const onSubmit = (id) => {
     {
       title: 'Owner',
       dataIndex: 'owner',
+      width:'10%',
       render: (text, record) => {
         return (
           <div>
@@ -244,11 +293,12 @@ const onSubmit = (id) => {
     {
       title: 'Channel',
       dataIndex: 'source',
+      width:'12%',
       filterDropdown: (
         <Checkbox.Group
           options={channels}
-          //defaultValue={filter.partner_status_name}
-          onChange={handleStatus}
+          defaultValue={filter.channel_name}
+          onChange={handleChannelStatus}
           className='filter-drop-down'
         />
       ),
@@ -259,6 +309,7 @@ const onSubmit = (id) => {
     },
     {
       title: 'Status',
+      width:'12%',
       filterDropdown: (
         <Checkbox.Group
           options={partners_status}
@@ -274,21 +325,42 @@ const onSubmit = (id) => {
     {
       title: 'Last Comment',
       dataIndex: 'comment',
+      width:'13%',     
+      render: (text, record) => {
+        const comment = record.partner_comments && record.partner_comments.length > 0 &&
+        record.partner_comments[0].description ? record.partner_comments[0].description : '-'
+        return comment && comment.length > 20 ? (
+          <Tooltip title={comment}>
+            <span> {comment.slice(0, 20) + '...'}</span>
+          </Tooltip>
+        ) : (
+          comment
+        )
+      }
+      ,
       filters: comment
     },
     {
       title: 'Created Date',
       dataIndex: 'date',
+      width:'12%',
+      render: (text, record) => {
+        const create_date = record.partner_comments && record.partner_comments.length > 0 &&
+        record.partner_comments[0].created_at ? record.partner_comments[0].created_at : '-'
+        return create_date ? moment(create_date).format('DD-MMM-YY') : null
+      },
       sorter: (a, b) => (a.date > b.date ? 1 : -1)
     },
     {
       title: 'Priority',
       dataIndex: 'priority',
+      width:'8%',
       render: (text, record) => <Switch onChange={onChange} />
     },
     {
       title: 'Action',
       dataIndex: 'action',
+      width:'8%',
       render: (text, record) => (
         <span className='actions'>
           <Tooltip title='Comment'>
@@ -334,9 +406,10 @@ const onSubmit = (id) => {
         size='small'
         scroll={{ x: 1156 }}
         pagination={false}
+        //onMobileSearch={onMobileSearch}
         className='withAction'
       />
-       {!loading && record_count
+      {!loading && record_count
         ? (
           <Pagination
             size='small'
@@ -345,10 +418,9 @@ const onSubmit = (id) => {
             total={record_count}
             onChange={pageChange}
             className='text-right p10'
-          />) : null}
-      
-
-{object.commentVisible && (
+          />) : null
+      }
+      {object.commentVisible && (
         <Modal
           title='Comments'
           visible={object.commentVisible}
@@ -356,11 +428,11 @@ const onSubmit = (id) => {
           bodyStyle={{ padding: 10 }}
         >
           <Comment partnerId={object.commentData} />
-        </Modal>
-      )}
+        </Modal> )
+      }
       {visible.employeeList && (
-        <EmployeeList visible={visible.employeeList} onHide={onHide} />
-      )}
+        <EmployeeList visible={visible.employeeList} onHide={onHide} /> )
+      }
     </>
   )
 }

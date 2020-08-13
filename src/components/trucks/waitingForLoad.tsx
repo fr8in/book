@@ -56,10 +56,11 @@ const WaitingForLoad = (props) => {
         const partner = record.partner && record.partner.name
         const noOfLoadsTaken = 1 // TODO
         const partnerEngagementPercent = 30 // TODO
+        const membership_id = record.partner && record.partner.partner_memberships && record.partner.partner_memberships.membership_type_id
         return (
           <span>
-            <Badge dot style={{ backgroundColor: (record.partnerMembershipId === 0 ? '#FFD700' : '#C0C0C0') }} />
-            <Link href='/partners/partner/[id]' as={`/partners/partner/${record.partnerId} `}>
+            <Badge dot style={{ backgroundColor: (membership_id === 1 ? '#FFD700' : '#C0C0C0') }} />
+            <Link href='/partners/[id]' as={`/partners/${record.partner && record.partner.cardcode} `}>
               <a>{text && text.length > 20
                 ? (
                   <Tooltip title={`${partner}, ${noOfLoadsTaken}, ${partnerEngagementPercent}%`}>
@@ -78,9 +79,8 @@ const WaitingForLoad = (props) => {
       render: (text, record) => {
         const mobile = record.partner && record.partner.partner_users && record.partner.partner_users.length > 0 ? record.partner.partner_users[0].mobile : null
         const partner = record.partner && record.partner.name
-        const cardcode = record.partner && record.partner.cardcode
         return (
-          <span className='link' onClick={() => handleShow('usersVisible', partner, 'usersData', cardcode)}>{mobile}</span>
+          <span className='link' onClick={() => handleShow('usersVisible', partner, 'usersData', record.partner)}>{mobile}</span>
         )
       }
     },
@@ -148,7 +148,7 @@ const WaitingForLoad = (props) => {
       {object.usersVisible &&
         <PartnerUsers
           visible={object.usersVisible}
-          data={object.usersData}
+          partner={object.usersData}
           onHide={handleHide}
           title={object.title}
         />}
