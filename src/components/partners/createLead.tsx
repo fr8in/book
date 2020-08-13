@@ -10,7 +10,8 @@ mutation partner_lead_create(
   $mobile: String,
   $contact_name: String,
   $partner_status_id: Int,
-  $channel_id:Int) 
+  $channel_id:Int,
+  $onboarded_by_id:Int) 
   {
   insert_partner(
     objects: {
@@ -21,7 +22,8 @@ mutation partner_lead_create(
          name: $contact_name}
         },
       partner_status_id: $partner_status_id,
-      channel_id:$channel_id}
+      channel_id:$channel_id,
+      onboarded_by_id: $onboarded_by_id}
     ) {
     returning {
       id
@@ -37,7 +39,7 @@ query create_partner_lead{
   }
   employee{
     id
-    name
+    email
   }
 }
 `
@@ -94,6 +96,7 @@ const CreateLead = (props) => {
         mobile: form.mobile,
         partner_status_id: 8,
         channel_id: form.channel,
+        onboarded_by_id:form.employee
       }
     })   
    }
@@ -141,7 +144,9 @@ const CreateLead = (props) => {
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
-            <Form.Item>
+            <Form.Item
+            name='employee'
+            >
               <Select defaultValue='Select Owner' onChange={handleChange} options={employeeList} />
             </Form.Item>
           </Col>

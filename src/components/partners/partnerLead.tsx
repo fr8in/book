@@ -33,6 +33,10 @@ query(
     id
     name
     cardcode
+    onboarded_by{
+      id
+      email
+    }
     partner_users{
       mobile
     }
@@ -274,9 +278,10 @@ const onSubmit = (id) => {
       dataIndex: 'owner',
       width:'10%',
       render: (text, record) => {
+        const owner = record.onboarded_by && record.onboarded_by.email
         return (
           <div>
-            <span>{text}&nbsp;</span>
+            <span>{owner}&nbsp;</span>
             <EditTwoTone onClick={() => onShow('employeeList')} />
           </div>
         )
