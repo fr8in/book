@@ -120,7 +120,7 @@ const TripTime = (props) => {
 
   const toPayValue= trip_info && trip_info.trip_prices && trip_info.trip_prices.length > 0 && trip_info.trip_prices[0].to_pay > 0  ? true : false
   console.log('checking',toPayValue)
-  const toPayCheck= trip_info && trip_info.trip_prices && trip_info.trip_prices.length > 0 && trip_info.trip_prices[0].to_pay === 0 || 'Null' ? true : false
+  const toPayCheck= trip_info && trip_info.trip_prices && trip_info.trip_prices.length > 0 && trip_info.trip_prices[0].to_pay === 0  ? true : false
   console.log('toPayCheck',toPayCheck)
 
   return (
