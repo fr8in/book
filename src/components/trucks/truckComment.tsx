@@ -13,7 +13,7 @@ mutation TruckComment($description:String, $topic:String, $truck_id: Int, $creat
   }
 }
 `
-const CommentModal = (props) => {
+const TruckComment = (props) => {
   const { visible, onHide, id, truck_status } = props
   console.log('truck_status', truck_status)
 
@@ -62,4 +62,4 @@ const CommentModal = (props) => {
   )
 }
 
-export default CommentModal
+export default TruckComment

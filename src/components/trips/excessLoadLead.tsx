@@ -1,5 +1,5 @@
-import { Table, Tooltip, Button, Input, Space } from 'antd'
-import { CheckOutlined, DeleteOutlined, WhatsAppOutlined } from '@ant-design/icons'
+import { Table, Tooltip, Button, Select, Space } from 'antd'
+import { RocketFilled, DeleteOutlined, WhatsAppOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import moment from 'moment'
 
@@ -9,7 +9,7 @@ const ExcessLoadLead = (props) => {
     title: 'Partner Name',
     dataIndex: 'partner',
     key: 'partner',
-    width: '20%',
+    width: '30%',
     render: (text, record) => {
       const cardcode = record.partner && record.partner.cardcode
       const name = record.partner && record.partner.name
@@ -36,21 +36,19 @@ const ExcessLoadLead = (props) => {
     title: 'Action',
     render: (text, record) => (
       <Space>
-        <Input
+        <Select
           placeholder='Select Truck'
         />
-        <Button type='link' icon={<CheckOutlined />} />
+        <Button type='link' icon={<RocketFilled />} />
         <Tooltip title='Delete'>
-          <Button type='link' icon={<DeleteOutlined />} />
+          <Button type='link' danger icon={<DeleteOutlined />} />
         </Tooltip>
-        <span>
-          <Tooltip title='Double Click to Copy Text'>
-            <Button type='link' icon={<WhatsAppOutlined />} />
-          </Tooltip>
-        </span>
+        {/* <Tooltip title='Double Click to Copy Text'>
+          <Button type='link' icon={<WhatsAppOutlined />} />
+        </Tooltip> */}
       </Space>
     ),
-    width: '40%'
+    width: '30%'
   }
   ]
 

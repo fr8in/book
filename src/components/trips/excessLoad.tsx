@@ -1,6 +1,6 @@
 import { Table, Tooltip, Button, Modal, message } from 'antd'
 import Link from 'next/link'
-import { RocketFilled, CloseCircleOutlined, CopyOutlined } from '@ant-design/icons'
+import { RocketFilled, DeleteOutlined, CopyOutlined } from '@ant-design/icons'
 import ExcessLoadLead from './excessLoadLead'
 import { gql, useSubscription, useMutation } from '@apollo/client'
 import _ from 'lodash'
@@ -193,7 +193,7 @@ const ExcessLoad = (props) => {
       render: (text, record) => (
         <span className='actions'>
           <Tooltip title='Cancel'>
-            <Button type='link' icon={<CloseCircleOutlined />} onClick={() => handleShow('cancel_visible', null, 'record', record.id)} />
+            <Button type='link' danger icon={<DeleteOutlined />} onClick={() => handleShow('cancel_visible', null, 'record', record.id)} />
           </Tooltip>
           {/* <Tooltip title='Double Click to Copy Text'>
             <Button type='link' disabled icon={<CopyOutlined />} onClick={() => console.log('copy')} />
