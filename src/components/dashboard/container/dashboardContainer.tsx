@@ -32,7 +32,8 @@ const DashboardContainer = (props) => {
     branches: (filters.branches && filters.branches > 0) ? filters.branches : null,
     cities: (filters.cities && filters.cities > 0) ? filters.cities : null,
     trip_status: vars.trip_status ? vars.trip_status : null,
-    truck_type: (filters.types && filters.types > 0) ? filters.types : null
+    truck_type: (filters.types && filters.types > 0) ? filters.types : null,
+    managers: (filters.managers && filters.managers > 0) ? filters.managers : null
   }
   const { loading, data, error } = useSubscription(DASHBOAD_QUERY, { variables })
   console.log('dashboard error', error)
@@ -114,6 +115,9 @@ const DashboardContainer = (props) => {
       case '8':
         setVars({ ...vars, trip_status: 'Reported at destination' })
         break
+      case '9':
+        setVars({ ...vars, trip_status: 'Waiting for truck' })
+        break
       case '10':
         setVars({ ...vars, trip_status: 'Delivery onhold' })
         break
@@ -181,7 +185,7 @@ const DashboardContainer = (props) => {
                   <TripsByDestination filters={filters} trip_status={vars.trip_status} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Loads' value={excess_count} />} key='9'>
-                  <ExcessLoad />
+                  <ExcessLoad trip_status={vars.trip_status} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Hold' value={hold_count} />} key='10'>
                   <Trips trips={trips} loading={loading} />
