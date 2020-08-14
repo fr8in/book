@@ -71,10 +71,12 @@ subscription dashboard_trips_truks($now: timestamptz,$regions: [Int!], $branches
             delay
             eta
             customer {
+              id
               cardcode
               name
             }
             partner {
+              id
               cardcode
               name
               partner_users(where: {is_admin: {_eq: true}}) {
@@ -118,6 +120,7 @@ subscription dashboard_trips_truks($now: timestamptz,$regions: [Int!], $branches
               name
             }
             partner {
+              id
               cardcode
               name
               partner_memberships {

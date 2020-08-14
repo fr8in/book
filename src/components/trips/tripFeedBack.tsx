@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Modal, Button, Row, Input, Col, Table, message } from 'antd'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { gql, useSubscription, useMutation } from '@apollo/client'
 import moment from 'moment'
 
 const TRIP_COMMENT_QUERY = gql`
-  query tripComment($id: Int!){
+  subscription tripComment($id: Int!){
     trip(where:{id:{_eq:$id}}) {
       trip_comments(limit:5,order_by:{created_at:desc}){
         id
@@ -31,11 +31,10 @@ const Tripcomment = (props) => {
   const { visible, tripid, onHide } = props
 
   const [user, setUser] = useState('')
-  const { loading, error, data } = useQuery(
+  const { loading, error, data } = useSubscription(
     TRIP_COMMENT_QUERY,
     {
-      variables: { id: tripid },
-      notifyOnNetworkStatusChange: true
+      variables: { id: tripid }
     }
   )
 
@@ -88,6 +87,9 @@ const Tripcomment = (props) => {
       visible={visible}
       onCancel={onHide}
       width={700}
+      footer={[
+        <Button onClick={onHide} key='back'>Close</Button>
+      ]}
     >
       <Row gutter={10} className='mb10'>
         <Col flex='auto'>
