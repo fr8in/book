@@ -1,6 +1,6 @@
 import { Modal, Select,message } from 'antd'
 import { gql, useQuery,useMutation } from '@apollo/client'
-
+import { useState } from 'react'
 
 const PARTNERS_QUERY = gql`
 query create_partner{
@@ -21,8 +21,10 @@ mutation update_owner($id:Int,$onboarded_by_id:Int) {
 `
 
 const EmployeeList = (props) => {
-  const { visible, onHide,partner_id } = props
-
+  const { visible, onHide,partner } = props
+const onboarded_by = partner && partner.onboarded_by && partner.onboarded_by.email
+const [employees, setEmployees] = useState('')
+console.log('onboarded_by',onboarded_by)
   const { loading, error, data } = useQuery(
     PARTNERS_QUERY,
     {
@@ -46,22 +48,26 @@ const EmployeeList = (props) => {
   const employeeList = employee.map((data) => {
     return { value: data.id, label: data.email }
   })
-  const onSubmit = (value) => {
+  
+  const employeeChange = (value) => {
+    setEmployees(value)
+  }
+  const onSubmit = () => {
     updateOwner({
       variables:{
-        id:partner_id,
-        onboarded_by_id: value
+        id:partner.id,
+        onboarded_by_id: employees
       }
-    })
+    }) 
   }
-
+ 
   return (
     <Modal
       visible={visible}
       onOk={onSubmit}
       onCancel={onHide}
     >   
-      <Select defaultValue='Owner' style={{ width: 300 }} options={employeeList} />
+      <Select value={employees} onChange={employeeChange} style={{ width: 300 }} options={employeeList} />
     </Modal>
   )
 }

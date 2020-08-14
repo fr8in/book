@@ -284,7 +284,7 @@ const onSubmit = (id) => {
           <div>
             <span>{owner}&nbsp;</span>
             <EditTwoTone  onClick={() =>
-            handleShow("ownerVisible", null, "ownerData", record.id )
+            handleShow("ownerVisible", null, "ownerData", record )
           } />
           </div>
         )
@@ -441,7 +441,7 @@ const onSubmit = (id) => {
       {object.ownerVisible && (
         <EmployeeList
           visible={object.ownerVisible}
-          partner_id={object.ownerData}
+          partner={object.ownerData}
           onHide={handleHide}
         />
       )}
