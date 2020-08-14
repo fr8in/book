@@ -7,7 +7,6 @@ import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 
 const PartnerInfo = (props) => {
   const { partner } = props
-  console.log('partner', partner)
   const usersInitial = { partner: [], title: '', visible: false }
   const { object, handleHide, handleShow } = useShowHidewithRecord(usersInitial)
 

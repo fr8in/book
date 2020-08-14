@@ -1,7 +1,6 @@
-import { Modal, Button, Input, Row, Col, Form, Space, message } from 'antd'
+import { Modal, Button, Input, Row, Form, Space, message } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
-import { useState } from 'react'
 
 const UPDATE_PARTNER_ADDRESS_MUTATION = gql`
 mutation address_update($address:jsonb, $cardcode:String){
@@ -23,8 +22,6 @@ const EditAddress = (props) => {
       onCompleted() { message.success('Updated!!') }
     }
   )
-
-  
 
   const onAddressSubmit = (form) =>{
     console.log('inside form submit', form)

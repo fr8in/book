@@ -118,6 +118,11 @@ const TripTime = (props) => {
   const remove_sout = trip_info.trip_status && trip_info.trip_status.name === 'Intransit' && authorized
   const remove_dout = trip_info.trip_status && trip_info.trip_status.name === 'Delivered' && authorized
 
+  const toPayValue= trip_info && trip_info.trip_prices && trip_info.trip_prices.length > 0 && trip_info.trip_prices[0].to_pay > 0  ? true : false
+  console.log('checking',toPayValue)
+  const toPayCheck= trip_info && trip_info.trip_prices && trip_info.trip_prices.length > 0 && trip_info.trip_prices[0].to_pay === 0  ? true : false
+  console.log('toPayCheck',toPayCheck)
+
   return (
     <Card size='small' className='mt10'>
       <Row>
@@ -158,8 +163,8 @@ const TripTime = (props) => {
                     id='toPay'
                     placeholder='To Pay Amount'
                     type='number'
-                    disabled={trip_info && trip_info.trip_price && trip_info.trip_price.to_pay === 0 ? true:false }
-                    required={trip_info && trip_info.trip_price && trip_info.trip_price.to_pay > 0}
+                    disabled={toPayCheck}
+                    required={toPayValue}
                   />
                 </Form.Item>
               </Col>
@@ -168,7 +173,8 @@ const TripTime = (props) => {
                   <Input
                     id='comment'
                     placeholder='To Pay Comment'
-                    disabled={false}
+                    disabled={toPayCheck}
+                    required={toPayValue}
                   />
                 </Form.Item>
               </Col>
@@ -197,7 +203,7 @@ const TripTime = (props) => {
                 </Space>
               </Col>
               <Col xs={8} className='text-right'>
-                <Button type='primary'  htmlType='submit' >Submit</Button>
+                <Button type='primary'  htmlType='submit'  disabled={toPayCheck}  >Submit</Button>
               </Col>
             </Row>
           </Form>

@@ -5,13 +5,13 @@ import TripDetail from '../../trips/tripsByStages'
 import Truck from '../truck'
 import Timeline from '../truckTimeline'
 import { Row, Col, Button, Card, Divider, Space, Tag, Tabs, message } from 'antd'
-import { CommentOutlined } from '@ant-design/icons'
-import AssignTrip from '../assignTrip'
+import { CommentOutlined, SnippetsOutlined } from '@ant-design/icons'
+import CreatePo from '../../trips/createPo'
 import DetailPageHeader from '../../common/detailPageHeader'
-import TruckType from '../../../components/trucks/truckType'
-import TruckNo from '../../../components/trucks/truckNo'
+import TruckType from '../../trucks/truckType'
+import TruckNo from '../../trucks/truckNo'
 import useShowHide from '../../../hooks/useShowHide'
-import CommentModal from '../../../components/trucks/commentModal'
+import TruckComment from '../../trucks/truckComment'
 
 import { gql, useSubscription, useMutation } from '@apollo/client'
 
@@ -85,7 +85,7 @@ const TruckDetailContainer = (props) => {
   const admin = true
   const [subTabKey, setSubTabKey] = useState('1')
 
-  const initial = { commment: false }
+  const initial = { commment: false, poModal: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
   const [updateStatus] = useMutation(
@@ -155,7 +155,7 @@ const TruckDetailContainer = (props) => {
           }
           extra={
             <Space>
-              <AssignTrip />
+              <Button type='primary' shape='circle' onClick={() => onShow('poModal')} icon={<SnippetsOutlined />} />
               <Tag className='status'>{truck_info && truck_info.truck_status && truck_info.truck_status.name}</Tag>
             </Space>
           }
@@ -214,8 +214,8 @@ const TruckDetailContainer = (props) => {
           </Card>
         </Col>
       </Row>
-      {visible.comment && <CommentModal visible={visible.comment} onHide={onHide} id={truck_info.id} truck_status={truck_info && truck_info.truck_status && truck_info.truck_status.name}/>}
-
+      {visible.comment && <TruckComment visible={visible.comment} onHide={onHide} id={truck_info.id} truck_status={truck_info && truck_info.truck_status && truck_info.truck_status.name}/>}
+      {visible.poModal && <CreatePo visible={visible.poModal} onHide={() => onHide()} />}
     </Card>
   )
 }

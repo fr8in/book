@@ -1,5 +1,6 @@
-import { Modal, Button, Row, Col, DatePicker, Select, Input, Form, Radio , message} from 'antd'
+import { Modal, Button, Row, Col, DatePicker, Select, Input, Form, Radio , message,Table} from 'antd'
 import { useMutation, gql } from '@apollo/client'
+import moment from 'moment'
 
 
 const INSERT_UPDATE_CREATE_BREAKDOWN_MUTATION = gql`
@@ -47,9 +48,44 @@ const CreateBreakdown = (props) => {
     console.log(`selected ${value}`)
   }
 
+
+
+  const columnsCurrent = [
+    {
+      title: 'Available Date',
+      dataIndex: 'description',
+      width: '20%'
+    },
+    {
+      title: 'City',
+      dataIndex: 'description',
+      width: '10%'
+    },
+    {
+      title: 'Comment',
+      dataIndex: 'description',
+      width: '30%'
+    },
+    {
+      title: 'Created By',
+      dataIndex: 'created_by',
+      width: '20%'
+    },
+    {
+      title: 'Created On',
+      dataIndex: 'created_at',
+      width: '20%',
+      render:(text, record) => {
+        return text ? moment(text).format('DD-MMM-YY') : null
+      }
+    }
+  ]
+
   return (
+    <div>
     <Modal
       title={props.title}
+      width={700}
       visible={visible}
       onOk={onSubmit}
       onCancel={onHide}
@@ -99,7 +135,18 @@ const CreateBreakdown = (props) => {
           </Col>
         </Row>
       </Form>
+      <br/>
+      {props.title === 'Availability - TAT:0' && (
+    <Table
+        columns={columnsCurrent}
+        rowKey={record => record.id}
+        size='small'
+        scroll={{ x: 500, y: 400 }}
+        pagination={false}
+      /> )}
     </Modal>
+    
+  </div>
   )
 }
 

@@ -1,4 +1,3 @@
-
 import { Table, Checkbox } from 'antd'
 import mock from '../../../mock/partner/announcement'
 

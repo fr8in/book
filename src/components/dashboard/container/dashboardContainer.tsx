@@ -185,7 +185,7 @@ const DashboardContainer = (props) => {
                   <TripsByDestination filters={filters} trip_status={vars.trip_status} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Loads' value={excess_count} />} key='9'>
-                  <ExcessLoad trip_status={vars.trip_status} />
+                  <ExcessLoad trip_status={vars.trip_status} filters={filters} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Hold' value={hold_count} />} key='10'>
                   <Trips trips={trips} loading={loading} />

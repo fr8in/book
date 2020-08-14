@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Modal, Button, Row, Input, Col, Table, message } from 'antd'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { gql, useSubscription, useMutation } from '@apollo/client'
 import moment from 'moment'
 
 const TRIP_COMMENT_QUERY = gql`
-  query tripComment($id: Int!){
+  subscription tripComment($id: Int!){
     trip(where:{id:{_eq:$id}}) {
       trip_comments(limit:5,order_by:{created_at:desc}){
         id
@@ -30,12 +30,11 @@ mutation TripComment($description:String, $topic:String, $trip_id: Int, $created
 const Tripcomment = (props) => {
   const { visible, tripid, onHide } = props
 
-  const [user, setUser] = useState('')
-  const { loading, error, data } = useQuery(
+  const [userComment, setUserComment] = useState('')
+  const { loading, error, data } = useSubscription(
     TRIP_COMMENT_QUERY,
     {
-      variables: { id: tripid },
-      notifyOnNetworkStatusChange: true
+      variables: { id: tripid }
     }
   )
 
@@ -43,16 +42,19 @@ const Tripcomment = (props) => {
     INSERT_TRIP_COMMENT_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () {
+        message.success('Updated!!')
+        setUserComment('')
+        onHide()
+      }
     }
   )
 
   if (loading) return null
   console.log('tripComment error', error)
-  console.log('tripComment data', data.trip)
 
   const handleChange = (e) => {
-    setUser(e.target.value)
+    setUserComment(e.target.value)
   }
 
   const onSubmit = () => {
@@ -60,7 +62,7 @@ const Tripcomment = (props) => {
       variables: {
         trip_id: tripid,
         created_by: 'babu@Fr8Branch.in',
-        description: user,
+        description: userComment,
         topic: 'text'
       }
     })
@@ -88,11 +90,14 @@ const Tripcomment = (props) => {
       visible={visible}
       onCancel={onHide}
       width={700}
+      footer={[
+        <Button onClick={onHide} key='back'>Close</Button>
+      ]}
     >
       <Row gutter={10} className='mb10'>
         <Col flex='auto'>
           <Input.TextArea
-            value={user}
+            value={userComment}
             onChange={handleChange}
             name='comment'
             placeholder='Please Enter Comments......'
