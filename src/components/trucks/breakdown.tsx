@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Table,Pagination } from 'antd'
 import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
+import useShowHidewithRecord from "../../hooks/useShowHideWithRecord";
+import CreateBreakdown from './createBreakdown';
 
 const TRUCK_BREAKDOWN_QUERY = gql`
 query ($truck_status_name: [String!], $offset: Int!, $limit: Int!) {
@@ -36,12 +38,15 @@ const Breakdown = (props) => {
   const initial = {
     offset: 0,
     limit: 10,
+    cityVisible: false,
+    cityData: [],
+    title: "",
   }
 
   const [filter, setFilter] = useState(initial)
   const [currentPage, setCurrentPage] = useState(1)
 
-  
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial);
 
  
 const {truck_status} = props
@@ -113,7 +118,17 @@ const {truck_status} = props
       dataIndex: 'city',
       width:'30%',
       render: (text, record) => {
-        return record.city && record.city.name;
+        // return record.city && record.city.name;
+        return(
+          <span
+            className="link"
+            onClick={() =>
+              handleShow("cityVisible", 'Availability - TAT:0', "cityData", record.city && record.city.name)
+            }
+          >
+            {record.city && record.city.name}
+          </span>
+        );
       },
         
     },
@@ -139,7 +154,17 @@ const {truck_status} = props
             onChange={pageChange}
             className='text-right p10'
           />) : null}
+           {object.cityVisible && (
+        <CreateBreakdown
+          visible={object.cityVisible}
+          partner={object.cityData}
+          onHide={handleHide}
+          title={object.title}
+        />
+      )}
+
            </>
+
   )
 }
 
