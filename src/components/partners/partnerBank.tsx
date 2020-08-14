@@ -1,14 +1,14 @@
-import { Modal, Button, Input,Col ,message} from 'antd'
+import {  Modal, Button, Input, Row, Col, Form, Space,message} from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 import { useState } from 'react'
 
 const UPDATE_PARTNER_BANK_MUTATION = gql`
-mutation partnerBankEdit ($account_number:String,$ifsc_code:String,$name:String,$cardcode:String){
+mutation partnerBankEdit ($account_number:String,$ifsc_code:String,$acconnt_holder:String,$cardcode:String){
   update_partner(_set:{
     account_number: $account_number,
     ifsc_code: $ifsc_code,
-    name:$name},
+    acconnt_holder:$acconnt_holder},
     where: {cardcode:{_eq:$cardcode}}){
     returning{
       id
@@ -20,9 +20,7 @@ mutation partnerBankEdit ($account_number:String,$ifsc_code:String,$name:String,
 const EditBank = (props) => {
 
   const { visible, onHide, cardcode } = props
-  const [name, setname] = useState('')
-  const [account_number, setaccount_number] = useState('')
-  const [ifsc_code, setifsc_code] = useState('')
+
   const [updatePartnerBank] = useMutation(
     UPDATE_PARTNER_BANK_MUTATION,
     {
@@ -30,44 +28,46 @@ const EditBank = (props) => {
       onCompleted () { message.success('Updated!!') }
     }
   )
-
-  const nameChange = (e) => {
-    setname(e.target.value)
-  }
-  const account_numberChange = (e) => {
-    setaccount_number(e.target.value)
-  }
-  const ifsc_codeChange = (e) => {
-    setifsc_code(e.target.value)
-  }
-  const onSubmit = () => {
+  const onBankSubmit = (form) => {
     updatePartnerBank({
       variables: {
         cardcode:cardcode,
-        account_number:account_number,
-        ifsc_code:ifsc_code,
-        name:name
+        account_number:form.account_number,
+        ifsc_code:form.ifsc_code,
+        acconnt_holder: form.acconnt_holder
       }
     })
   }
-  
-  
+
   return (
     <>
       <Modal
         title='Edit Bank'
         visible={visible}
         onCancel={onHide}
-        footer={[
-          <Button type='primary'icon={<LeftOutlined/>} > Back </Button>,
-          <Button  type='primary' onClick={onSubmit}> Save </Button>
-        ]}
+        footer={null}
       >
-       <Col sm={20}><Input onChange={nameChange} placeholder="Name" /></Col>
-       <br />
-       <Col sm={20}><Input onChange={account_numberChange} placeholder="Account Number" /></Col>
-       <br />
-       <Col sm={20}><Input onChange={ifsc_codeChange} placeholder="IFSC Code" /></Col>    
+        <Form layout='vertical' onFinish={onBankSubmit}>
+        <Form.Item
+           name='acconnt_holder'>  
+          <Input placeholder='Name'  />
+        </Form.Item>
+        <Form.Item
+        name='account_number'>
+          <Input placeholder=' Account Number' />
+        </Form.Item>
+        <Form.Item
+        name='ifsc_code'>
+          <Input placeholder=' IFSC Code' />
+        </Form.Item>
+
+        <Row justify='end'>
+          <Space>
+        <Button type='primary'icon={<LeftOutlined/>} > Back </Button>
+        <Button type='primary' key='back' htmlType='submit'> Save </Button>
+        </Space>
+        </Row>
+      </Form> 
       </Modal>
     </>
   )

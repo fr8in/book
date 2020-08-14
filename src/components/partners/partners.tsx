@@ -201,7 +201,6 @@ const PartnerKyc = (props) => {
       render: (text, record) => {
         const comment = record.partner_comments && record.partner_comments.length > 0 &&
         record.partner_comments[0].description ? record.partner_comments[0].description : '-'
-        console.log('partners', partners)
         return comment && comment.length > 12 ? (
           <Tooltip title={comment}>
             <span> {comment.slice(0, 12) + '...'}</span>

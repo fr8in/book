@@ -1,11 +1,11 @@
 import { gql } from '@apollo/client'
 // dashboard_trips_truks
 const DASHBOAD_QUERY = gql`
-subscription dashboard_trips_truks($regions: [Int!], $branches: [Int!], $cities: [Int!], $trip_status: String) {
-  region {
+subscription dashboard_trips_truks($now: timestamptz,$regions: [Int!], $branches: [Int!], $cities: [Int!], $trip_status: String, $truck_type: [Int!], $managers: [Int!] ) {
+  region(where: {id: {_in: $regions}}) {
     id
     name
-    branches(where: {_and: [{region_id: {_in: $regions}}, {id: {_in: $branches}}]}) {
+    branches(where: {id: {_in: $branches}}) {
       branch_employees {
         id
         employee {
@@ -46,12 +46,17 @@ subscription dashboard_trips_truks($regions: [Int!], $branches: [Int!], $cities:
               count
             }
           }
-          intransit_d: trips_aggregate(where: {trip_status: {name: {_eq: "Intransit"}}}) {
-            aggregate {
+          intransit_d: tripsByDestination_aggregate(where: {trip_status: {name: {_eq: "Intransit"}}}){
+            aggregate{
               count
             }
           }
-          unloading_d: trips_aggregate(where: {trip_status: {name: {_eq: "Reported at destination"}}}) {
+          unloading_d: tripsByDestination_aggregate(where: {trip_status: {name: {_eq: "Reported at destination"}}}){
+            aggregate{
+              count
+            }
+          }
+          excess: trips_aggregate(where: {trip_status: {name: {_eq: "Waiting for truck"}}}) {
             aggregate {
               count
             }
@@ -61,8 +66,10 @@ subscription dashboard_trips_truks($regions: [Int!], $branches: [Int!], $cities:
               count
             }
           }
-          trips(where: {trip_status: {name: {_eq: $trip_status}}}) {
+          trips(where: {trip_status: {name: {_eq: $trip_status}}, truck_type:{id: {_in:$truck_type}}, created_by: {_in: $managers}}) {
             id
+            delay
+            eta
             customer {
               cardcode
               name
@@ -82,14 +89,26 @@ subscription dashboard_trips_truks($regions: [Int!], $branches: [Int!], $cities:
               }
             }
             source {
+              id
               name
             }
             destination {
+              id
               name
             }
             tat
             trip_comments(limit: 1, order_by: {created_at: desc}) {
               description
+            }
+          }
+          trucks_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for load"}}}) {
+            aggregate {
+              count
+            }
+          }
+          trucks_current: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for load"}}}, {available_at: {_gte: $now}}]}) {
+            aggregate {
+              count
             }
           }
           trucks(where: {truck_status: {name: {_in: ["Waiting for load"]}}}) {

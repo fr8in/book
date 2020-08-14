@@ -41,8 +41,8 @@ const TruckReject = (props) => {
         created_by_id: 1,
         description: rejectComment,
         topic: 'text',
-        truck_status_id: 7,
-        id:1
+        truck_status_id: 13,
+        id:truck_id
       }
     })
   }

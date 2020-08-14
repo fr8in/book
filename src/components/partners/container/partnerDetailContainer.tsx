@@ -203,7 +203,7 @@ if (!loading) {
       </Col>
       {visible.topUp && <WalletTopUp visible={visible.topUp} onHide={onHide} />}
       {visible.reportMail && <ReportEmail visible={visible.reportMail} onHide={onHide} />}
-      {visible.statement && <WalletStatement visible={visible.statement} onHide={onHide} />}
+      {visible.statement && <WalletStatement visible={visible.statement} onHide={onHide} cardcode={partnerData.cardcode} />}
     </Row>
   )
 }
