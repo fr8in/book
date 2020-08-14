@@ -180,7 +180,7 @@ if (!loading) {
                   </TabPane>
                   <TabPane tab='Comment' key='3'>
                     <div className='p10'>
-                      <Comment partnerId={partnerData.id} loading={loading}/>
+                      <Comment partner_id={partnerData.id} loading={loading}/>
                     </div>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='On-going' value={ongoing_count} />} key='4'>

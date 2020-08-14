@@ -47,7 +47,7 @@ mutation PartnerUserDelete($id:Int) {
 const PartnerUsers = (props) => {
   const { visible, partner, onHide, title } = props
 
-  console.log('partnerId', partner)
+  console.log('partner_id', partner)
   const [mobile, setMobile] = useState('')
 
   const { loading, error, data } = useSubscription(

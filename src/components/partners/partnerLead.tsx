@@ -5,89 +5,86 @@ import {
   CloseOutlined,
   SearchOutlined
 } from '@ant-design/icons'
-import useShowHide from '../../hooks/useShowHide'
 import { useState } from 'react'
+import moment from 'moment'
+import { gql, useQuery, useMutation } from '@apollo/client'
 import EmployeeList from '../branches/fr8EmpolyeeList'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from '../../components/partners/comment'
-import { gql, useQuery, useMutation } from '@apollo/client'
-import moment from 'moment'
 
 
-const PARTNERS_QUERY = gql`
-query(
-  $offset: Int!
-  $limit: Int!
-  $partner_status_name:[String!]
-  $channel_name:[String!]
-  $mobile: String
-  ){
-  partner(
-    offset: $offset
-    limit: $limit
-    order_by: 
-    {lead_priority: desc_nulls_last},
-    where:{
-      partner_users:{mobile:{ _like: $mobile}},
-      partner_status:{name:{_in:$partner_status_name}},
-      channel: {name: {_in:$channel_name}}}
-      ){
-    id
-    name
-    lead_priority
-    onboarded_by{
+const PARTNERS_LEAD_QUERY = gql`
+  query(
+    $offset: Int!
+    $limit: Int!
+    $partner_status_name:[String!]
+    $channel_name:[String!]
+    $mobile: String
+    ){
+    partner(
+      offset: $offset
+      limit: $limit
+      order_by: 
+      {lead_priority: desc_nulls_last},
+      where:{
+        partner_users:{mobile:{ _like: $mobile}},
+        partner_status:{name:{_in:$partner_status_name}},
+        channel: {name: {_in:$channel_name}}}
+        ){
       id
-      email
+      name
+      lead_priority
+      onboarded_by{
+        id
+        email
+      }
+      partner_users{
+        mobile
+      }
+      city{
+        id
+        name
+      }
+      channel{
+        id
+        name
+      }
+      partner_status{
+        name
+      }
+      partner_comments {
+        created_at
+        description
+      }
     }
-    partner_users{
-      mobile
+    partner_aggregate(where: {partner_status: {name: {_in: ["Lead","Registered","Rejected"]}}}) {
+      aggregate {
+        count
+      }
     }
-    city{
+    partner_status(where:{name: {_in: ["Lead","Registered","Rejected"]}}, order_by: {id: asc}) {
       id
       name
     }
-    channel{
+    channel {
       id
       name
     }
-    partner_status{
+  }
+  `
+const LEAD_REJECT_MUTATION = gql`
+  mutation partner_lead_reject($partner_status_id:Int,$id:Int! ){
+    update_partner_by_pk(
+        pk_columns: { id: $id }
+        _set: { partner_status_id: $partner_status_id }) 
+    {
+      id
       name
     }
-    partner_comments {
-      created_at
-      description
-    }
   }
-  partner_aggregate(where: 
-    {partner_status: {name: {_in: ["Lead","Registered","Rejected"]}}}
-    ) {
-    aggregate {
-      count
-    }
-  }
-  partner_status(where:{name: {_in: ["Lead","Registered","Rejected"]}}, order_by: {id: asc}) {
-    id
-    name
-  }
-  channel {
-    id
-    name
-  }
-}
 `
-const PARTNER_LEAD_REJECT_MUTATION = gql`
-mutation partner_lead_reject($partner_status_id:Int,$id:Int! ){
-  update_partner_by_pk(
-      pk_columns: { id: $id }
-      _set: { partner_status_id: $partner_status_id }
-    ) {
-  id
-    name
-  }
-}
-`
-const UPDATE_PARTNER_PRIORITY_STATUS_MUTATION = gql`
-mutation partnerPriorityStatus($lead_priority: Boolean, $id: Int) {
+const UPDATE_LEAD_PRIORITY_STATUS_MUTATION = gql`
+mutation lead_priority_status($lead_priority: Boolean, $id: Int) {
   update_partner(_set: {lead_priority: $lead_priority}, where: {id: {_eq: $id}}) {
     returning {
       id
@@ -96,10 +93,9 @@ mutation partnerPriorityStatus($lead_priority: Boolean, $id: Int) {
   }
 }
 `
-
 const comment = [{ value: 1, text: 'No Comment' }]
 
-const PartnerKyc = () => {
+const PartnerLead = () => {
   const initial = {
     comment: false,
     employeeList: false,
@@ -114,7 +110,6 @@ const PartnerKyc = () => {
 
   const [filter, setFilter] = useState(initial)
   const [currentPage, setCurrentPage] = useState(1)
-
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
   const partnerQueryVars = {
@@ -126,35 +121,71 @@ const PartnerKyc = () => {
   }
 
   const { loading, error, data } = useQuery(
-    PARTNERS_QUERY, {
+    PARTNERS_LEAD_QUERY, {
     variables: partnerQueryVars,
     fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true
   })
-
   console.log('partnerLead error', error)
   console.log('partnerLead data', data)
+
+
+  const [insertComment] = useMutation(
+    LEAD_REJECT_MUTATION, {
+    onError(error) {
+      message.error(error.toString());
+    },
+    onCompleted() {
+      message.success("Updated!!");
+    },
+  });
+  const onSubmit = (id) => {
+    insertComment({
+      variables: {
+        partner_status_id: 3,
+        id: id,
+      },
+    });
+  };
+
+
+  const [updateStatusId] = useMutation(
+    UPDATE_LEAD_PRIORITY_STATUS_MUTATION,
+    {
+      onError(error) {
+        message.error(error.toString())
+      },
+      onCompleted() {
+        message.success('Updated!!')
+      }
+    })
+  const onChange = (checked, id) => {
+    updateStatusId({
+      variables: {
+        id: id,
+        lead_priority: checked
+      }
+    })
+    console.log('id priority', id)
+  }
 
   var partners = []
   var partner_aggregate = 0;
   var partner_status = [];
   var channel = [];
-  
 
   if (!loading) {
-    partners = data && data.partner  
+    partners = data && data.partner
     partner_aggregate = data && data.partner_aggregate
     partner_status = data && data.partner_status
     channel = data && data.channel
-
   }
-
   console.log('channel', channel)
+
   const record_count =
     partner_aggregate &&
     partner_aggregate.aggregate &&
     partner_aggregate.aggregate.count;
-
   console.log("record_count", record_count)
 
   const partners_status = partner_status.map((data) => {
@@ -168,6 +199,7 @@ const PartnerKyc = () => {
   const onPageChange = (value) => {
     setFilter({ ...filter, offset: value })
   }
+
   const onFilter = (value) => {
     setFilter({ ...filter, partner_status_name: value, offset: 0 })
   }
@@ -178,7 +210,6 @@ const PartnerKyc = () => {
   const onMobileSearch = (value) => {
     setFilter({ ...filter, mobile: value })
   };
-
 
   const pageChange = (page, pageSize) => {
     const newOffset = page * pageSize - filter.limit
@@ -195,45 +226,10 @@ const PartnerKyc = () => {
     onChannelFilter(checked)
     setCurrentPage(1)
   }
+
   const handleMobile = (e) => {
     onMobileSearch(e.target.value);
   };
-  const [insertComment] = useMutation(PARTNER_LEAD_REJECT_MUTATION, {
-    onError(error) {
-      message.error(error.toString());
-    },
-    onCompleted() {
-      message.success("Updated!!");
-    },
-  });
-
-  const onSubmit = (id) => {
-    insertComment({
-      variables: {
-        partner_status_id: 3,
-        id: id,
-      },
-    });
-    console.log("customers");
-  };
-  const [updateStatusId] = useMutation(
-    UPDATE_PARTNER_PRIORITY_STATUS_MUTATION,
-    {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
-    }
-  )
-
-
-  const onChange = (checked, id) => {
-    updateStatusId({
-      variables: {
-        id:id,
-        lead_priority: checked
-      }
-    })  
-    console.log('id priority',id)
-  }
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -249,16 +245,15 @@ const PartnerKyc = () => {
     })
   }
 
-
   const columnsCurrent = [
     {
       title: 'Name',
       dataIndex: 'name',
       width: '9%',
       render: (text, record) => {
-        return record.name.length > 10 ? (
+        return record.name.length > 12 ? (
           <Tooltip title={record.name}>
-            <span> {record.name.slice(0, 10) + '...'}</span>
+            <span> {record.name.slice(0, 12) + '...'}</span>
           </Tooltip>
         ) : (
             record.name
@@ -342,7 +337,6 @@ const PartnerKyc = () => {
       render: (text, record) => {
         return record.channel && record.channel.name;
       },
-
     },
     {
       title: 'Status',
@@ -373,8 +367,7 @@ const PartnerKyc = () => {
         ) : (
             comment
           )
-      }
-      ,
+      },
       filters: comment
     },
     {
@@ -384,7 +377,7 @@ const PartnerKyc = () => {
       render: (text, record) => {
         const create_date = record.partner_comments && record.partner_comments.length > 0 &&
           record.partner_comments[0].created_at ? record.partner_comments[0].created_at : '-'
-        return create_date ? moment(create_date).format('DD-MMM-YY') : null
+        return (create_date ? moment(create_date).format('DD-MMM-YY') : null)
       },
       sorter: (a, b) => (a.date > b.date ? 1 : -1)
     },
@@ -392,7 +385,7 @@ const PartnerKyc = () => {
       title: 'Priority',
       dataIndex: 'lead_priority',
       width: '8%',
-      render: (text, record) => <Switch onChange={(checked)=>onChange(checked, record.id)} checked={text} />
+      render: (text, record) => <Switch onChange={(checked) => onChange(checked, record.id)} checked={text} />
     },
     {
       title: 'Action',
@@ -405,12 +398,7 @@ const PartnerKyc = () => {
               type='link'
               icon={<CommentOutlined />}
               onClick={() =>
-                handleShow(
-                  'commentVisible',
-                  null,
-                  'commentData',
-                  record.id
-                )}
+                handleShow('commentVisible', null,'commentData',record.id)}
             />
           </Tooltip>
           <Popconfirm
@@ -464,7 +452,7 @@ const PartnerKyc = () => {
           onCancel={handleHide}
           bodyStyle={{ padding: 10 }}
         >
-          <Comment partnerId={object.commentData} />
+          <Comment partner_id={object.commentData} />
         </Modal>)
       }
       {object.ownerVisible && (
@@ -478,4 +466,4 @@ const PartnerKyc = () => {
   )
 }
 
-export default PartnerKyc
+export default PartnerLead

@@ -266,7 +266,7 @@ const PartnerKyc = (props) => {
           onCancel={handleHide}
           bodyStyle={{ padding: 10 }}
         >
-          <Comment partnerId={object.commentData} />
+          <Comment partner_id={object.commentData} />
         </Modal>
       )}
       {object.rejectVisible && ( 
@@ -277,7 +277,7 @@ const PartnerKyc = (props) => {
          footer= {null}
          
        >
-        <KycReject partnerId={object.rejectData} />
+        <KycReject partner_id={object.rejectData} />
       </Modal>
       )}
       {object.approvalVisible && (

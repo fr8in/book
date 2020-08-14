@@ -1,7 +1,6 @@
 import {useState} from 'react'
 import { Modal, Button, Input, Row, Col, Form, Select,message } from 'antd'
 import { gql, useMutation,useQuery } from '@apollo/client'
-const { TextArea } = Input
 const { Option } = Select
 
 const PARTNERS_LEAD_QUERY = gql`
@@ -171,7 +170,7 @@ const CreateLead = (props) => {
           </Col>
         </Row>
         <Form.Item>
-          <TextArea
+          <Input.TextArea
           value={userComment}
           onChange={handleCommentChange}
           placeholder='Comment' allowClear  />        
