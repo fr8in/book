@@ -1,7 +1,7 @@
-import { Modal, Button, Input,Col,message } from 'antd'
+import { Modal, Button, Input, Row, Col, Form, Space, message } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
-import {useState} from 'react'
+import { useState } from 'react'
 
 const UPDATE_PARTNER_ADDRESS_MUTATION = gql`
 mutation address_update($address:jsonb, $cardcode:String){
@@ -15,71 +15,66 @@ mutation address_update($address:jsonb, $cardcode:String){
 `
 const EditAddress = (props) => {
   const { visible, onHide, cardcode } = props
-  const initialAddress ={ 
-    no:null,
-    address:null,
-    city:null,
-    state: null,
-    pincode:null
-  }
-  const [address,setAddress] =useState(initialAddress)
+  
   const [updatePartnerAddress] = useMutation(
     UPDATE_PARTNER_ADDRESS_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
 
-  const onBuildingNoChange = (e) => {
-    setAddress({ ...address, no: e.target.value });
-  };
+  
 
-  const onAddressChange = (e) => {
-    setAddress({ ...address, address: e.target.value });
-  };
-
-  const onCityChange = (e) => {
-    setAddress({ ...address, city: e.target.value });
-  };
-
-  const onStateChange = (e) => {
-    setAddress({ ...address, state: e.target.value });
-  };
-  const onPincodeChange = (e) => {
-    setAddress({ ...address, pincode: e.target.value });
-  };
-
-  const onSubmit = () => {
+  const onAddressSubmit = (form) =>{
+    console.log('inside form submit', form)
+    const address={
+      no:form.no,
+      address:form.address,
+      city:form.city,
+      state:form.state,
+      pin_code:form.pin_code
+    }   
     updatePartnerAddress({
       variables: {
-        cardcode:cardcode,
-        address:address
+        cardcode: cardcode,
+        address: address
       }
     })
   }
-  console.log('cardcode',cardcode)
-  
+  console.log('cardcode', cardcode)
+
   return (
     <>
       <Modal
         title='Edit Address'
         visible={visible}
         onCancel={onHide}
-        footer={[
-          <Button type='primary'icon={<LeftOutlined/>} > Back </Button>,
-          <Button  type='primary' onClick={onSubmit}> Save </Button>
-        ]}
+        footer={null}
       >
-          <Col sm={20}><Input onChange={onBuildingNoChange} placeholder="Building Number" /></Col>
-          <br />
-          <Col sm={20}><Input onChange={onAddressChange} placeholder="Address" /></Col>
-          <br />
-          <Col sm={20}> <Input onChange={onCityChange} placeholder="City" /> </Col>
-          <br />          
-          <Col sm={20}> <Input onChange={onStateChange} placeholder="State" /> </Col>        
-          <br />
-          <Col sm={20}> <Input onChange={onPincodeChange} placeholder="Pin Code" /> </Col>
+        <Form layout='vertical' onFinish={onAddressSubmit}>
+          <Form.Item   name='no'>
+            <Input placeholder='Building Number' />
+          </Form.Item>
+          <Form.Item   name='address'>
+            <Input placeholder='Address' />
+          </Form.Item>
+          <Form.Item   name='city'>
+            <Input placeholder='City' />
+          </Form.Item>
+          <Form.Item   name='state'>
+            <Input placeholder='State' />
+          </Form.Item>
+          <Form.Item   name='pin_code'>
+            <Input placeholder='Pin Code' />
+          </Form.Item>
+          <Row justify='end'>
+            <Space>
+              <Button type='primary' icon={<LeftOutlined />} > Back </Button>
+              <Button type='primary' key='back' htmlType='submit'> Save </Button>
+            </Space>
+          </Row>
+        </Form>
       </Modal>
     </>
   )

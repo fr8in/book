@@ -32,7 +32,10 @@ query(
       ){
     id
     name
-    cardcode
+    onboarded_by{
+      id
+      email
+    }
     partner_users{
       mobile
     }
@@ -87,6 +90,8 @@ const PartnerKyc = () => {
   const initial = {
      comment: false,
       employeeList: false,
+      ownerVisible: false,
+      ownerData: [],
       offset: 0,
       limit: 10,
       mobile: null,
@@ -97,10 +102,9 @@ const PartnerKyc = () => {
     const [filter, setFilter] = useState(initial)
     const [currentPage, setCurrentPage] = useState(1)
 
-  const { visible, onShow, onHide } = useShowHide(initial)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
-  const partnerQueryVars = { 
+  const partnerQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
     partner_status_name: filter.partner_status_name,
@@ -121,17 +125,18 @@ const PartnerKyc = () => {
   var partner_aggregate = 0;
   var partner_status = [];
   var channel = [];
-  var id = {}
+  var partner_info = {}
   if (!loading) {
-    partner = data && data.partner
+   partner = data && data.partner
+   partner_info = partner[0] ? partner[0] : { name: 'ID does not exist' }
     partner_aggregate = data && data.partner_aggregate
     partner_status = data && data.partner_status
     channel = data && data.channel
-    id = partner && partner.id
+    
   }
-  
+
+ const id = partner_info && partner_info.id 
 console.log('id',id)
-console.log('partnerLead',partner)
 console.log('channel',channel)
 const record_count =
 partner_aggregate &&
@@ -274,10 +279,13 @@ const onSubmit = (id) => {
       dataIndex: 'owner',
       width:'10%',
       render: (text, record) => {
+        const owner = record.onboarded_by && record.onboarded_by.email
         return (
           <div>
-            <span>{text}&nbsp;</span>
-            <EditTwoTone onClick={() => onShow('employeeList')} />
+            <span>{owner}&nbsp;</span>
+            <EditTwoTone  onClick={() =>
+            handleShow("ownerVisible", null, "ownerData", record )
+          } />
           </div>
         )
       },
@@ -430,9 +438,13 @@ const onSubmit = (id) => {
           <Comment partnerId={object.commentData} />
         </Modal> )
       }
-      {visible.employeeList && (
-        <EmployeeList visible={visible.employeeList} onHide={onHide} /> )
-      }
+      {object.ownerVisible && (
+        <EmployeeList
+          visible={object.ownerVisible}
+          partner={object.ownerData}
+          onHide={handleHide}
+        />
+      )}
     </>
   )
 }
