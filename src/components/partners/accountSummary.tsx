@@ -1,4 +1,3 @@
-
 import { Card } from 'antd'
 import LabelData from '../../components/common/labelData'
 

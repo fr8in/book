@@ -112,7 +112,7 @@ const partner_address = address === null || _.isEmpty(address) ? null  :
           data={
             <AdvancePercentage
             advance={partnerDetail.partner_advance_percentage && partnerDetail.partner_advance_percentage.name }
-            advanceId={partnerDetail.partner_advance_percentage && partnerDetail.partner_advance_percentage.id }
+            advance_id={partnerDetail.partner_advance_percentage && partnerDetail.partner_advance_percentage.id }
             cardcode={partnerDetail.cardcode}
           />
           }

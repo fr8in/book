@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import { Row, Col, Table, Input, Button, message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
@@ -30,14 +29,14 @@ const INSERT_PARTNER_COMMENT_MUTATION = gql`
   }
 `
 const Comment = (props) => {
-  const { partnerId } = props
-  const [userComment, setUserComment] = useState('')
 
+  const { partner_id } = props
+  const [userComment, setUserComment] = useState('')
 
   const { loading, error, data } = useQuery(
     PARTNER_COMMENT_QUERY,
     {
-      variables: { id: partnerId },
+      variables: { id: partner_id },
       notifyOnNetworkStatusChange: true
     }
   )
@@ -49,22 +48,24 @@ const Comment = (props) => {
       onCompleted () { message.success('Updated!!') }
     }
   )
-
-  if (loading) return null
   console.log('PartnerComment error', error)
   console.log('PartnerComment data', data)
+
+  if (loading) return null
   const partner_status_name =  data.partner &&  data.partner[0].partner_status && data.partner[0].partner_status.name 
   const { partner_comments } = data.partner && data.partner[0] ? data.partner[0] : []
+  
+  console.log('partner_comments',partner_comments)
+  console.log('partner_status_name',partner_status_name)
+
   const handleChange = (e) => {
     setUserComment(e.target.value)
   }
-  console.log('partner_comments',partner_comments)
-  console.log('userComment', userComment)
-  console.log('partner_status_name',partner_status_name)
+
   const onSubmit = () => {
     insertComment({
       variables: {
-        partner_id: partnerId,
+        partner_id: partner_id,
         created_by: 'shilpa@fr8.in',
         description: userComment,
         topic:partner_status_name
@@ -113,7 +114,6 @@ const Comment = (props) => {
         pagination={false}
       />
     </div>
-
   )
 }
 

@@ -19,11 +19,11 @@ mutation partnerKycReject ($description:String, $topic:String, $partner_id: Int,
 }
 `
 const KycReject = (props) => {
-  const { partnerId } = props
+  const { partner_id } = props
   const { visible, onHide } = props
   const [userComment, setUserComment] = useState('')
 
-  console.log('partnerId', partnerId)
+  console.log('partner_id', partner_id)
   const [insertComment] = useMutation(
     INSERT_PARTNER_REJECT_MUTATION,
     {
@@ -39,12 +39,12 @@ const KycReject = (props) => {
   const onSubmit = () => {
     insertComment({
       variables: {
-        partner_id: partnerId,
+        partner_id: partner_id,
         created_by: 'shilpa',
         description: userComment,
         topic: 'Kyc Rejected',
         partner_status_id: 3,
-        id:partnerId
+        id:partner_id
       }
     })
   }
