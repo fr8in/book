@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import { Row, Col, Table, Input, Button, message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
@@ -30,9 +29,9 @@ const INSERT_PARTNER_COMMENT_MUTATION = gql`
   }
 `
 const Comment = (props) => {
+
   const { partnerId } = props
   const [userComment, setUserComment] = useState('')
-
 
   const { loading, error, data } = useQuery(
     PARTNER_COMMENT_QUERY,
@@ -55,12 +54,15 @@ const Comment = (props) => {
   console.log('PartnerComment data', data)
   const partner_status_name =  data.partner &&  data.partner[0].partner_status && data.partner[0].partner_status.name 
   const { partner_comments } = data.partner && data.partner[0] ? data.partner[0] : []
-  const handleChange = (e) => {
-    setUserComment(e.target.value)
-  }
+  
   console.log('partner_comments',partner_comments)
   console.log('userComment', userComment)
   console.log('partner_status_name',partner_status_name)
+
+  const handleChange = (e) => {
+    setUserComment(e.target.value)
+  }
+  
   const onSubmit = () => {
     insertComment({
       variables: {

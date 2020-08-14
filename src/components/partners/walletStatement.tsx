@@ -85,7 +85,7 @@ const { loading, error, data } = useQuery(
                       </Col>
                       <Col span={6} className='text-right'>
                         <span className={transactionData.trans_type === 'Credit' ? 'creditAmount' : 'debitAmount'}>
-                          {`${transactionData.trans_type === 'Credit' } ₹${transactionData.amount}`}
+                          {`₹${transactionData.amount}`}
                         </span>
                       </Col>
                     </Row>
