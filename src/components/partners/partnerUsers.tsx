@@ -1,7 +1,6 @@
 
 import { Modal, Button, Row, Input, Col, Table, Popconfirm, Form, message } from 'antd'
 import { PhoneOutlined, DeleteOutlined } from '@ant-design/icons'
-import React, { useState } from 'react'
 import { useSubscription, useMutation, gql } from '@apollo/client'
 
 const PARTNER_USERS_SUBSCRIPTION = gql`
