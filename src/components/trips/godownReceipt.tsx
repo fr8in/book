@@ -1,4 +1,4 @@
-import { Modal, Button, Row, Col, Form, Input,message } from 'antd';
+import { Modal, Button, Row, Col, Form, Input, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 
@@ -14,35 +14,35 @@ mutation updatePrivateGodown($id: Int!, $private_godown_address: jsonb) {
 `
 
 const CheckBoxModal = (props) => {
-  const { visible, onHide ,trip_id } = props
+  const { visible, onHide, trip_id } = props
 
   console.log('trip_info', trip_id)
 
   const [insertTopay] = useMutation(
     PRIVATE_GODWON_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
 
   const onPrivateGodown = (form) => {
-    console.log('form',form)
-    const private_godown_address={
-      building_no:form.building_no,
-      address:form.address,
-      city:form.city,
-      state:form.state,
-      pin_code:form.pin_code
+    console.log('form', form)
+    const private_godown_address = {
+      no: form.no,
+      address: form.address,
+      city: form.city,
+      state: form.state,
+      pin_code: form.pin_code
     }
     insertTopay({
       variables: {
         id: trip_id,
         private_godown_address: private_godown_address
-      }  
+      }
     })
   }
- 
+
   return (
     <>
       <Modal
@@ -51,30 +51,22 @@ const CheckBoxModal = (props) => {
         onCancel={onHide}
         footer={null}
       >
-
-     <Row gutter={10}>
-     <Col sm={20}>
-       <Form.Item
-          label="Godown Receipt"
-          name="Godown Receipt"
-          rules={[{ required: true }]}
-       >
-         <Button>
-            <UploadOutlined />
-        </Button>
-       </Form.Item>
-        </Col>
-        </Row>
         <Form layout='vertical' onFinish={onPrivateGodown}>
+          <div>
+            <h4>Godown Receipt</h4>
+            <Button>
+              <UploadOutlined />
+            </Button>
+          </div>
           <Row>
             <Col sm={20}>
               <Form.Item
                 label="Building Number"
-                name=" building_no"
+                name="no"
                 rules={[{ required: true, message: 'Building Number is required field!' }]}
-                
+
               >
-                <Input placeholder="Building Number"  />
+                <Input placeholder="Building Number" />
               </Form.Item>
             </Col>
           </Row>
@@ -96,7 +88,7 @@ const CheckBoxModal = (props) => {
                 name="pin_code"
                 rules={[{ required: true, message: 'Pin Code is required field!' }]}
               >
-                <Input placeholder="Pin Code"  />
+                <Input placeholder="Pin Code" />
               </Form.Item>
             </Col>
           </Row>
@@ -107,7 +99,7 @@ const CheckBoxModal = (props) => {
                 name="city"
                 rules={[{ required: true, message: 'City is required field!' }]}
               >
-                <Input placeholder="City"/>
+                <Input placeholder="City" />
               </Form.Item>
             </Col>
           </Row>
@@ -122,12 +114,12 @@ const CheckBoxModal = (props) => {
               </Form.Item>
             </Col>
           </Row>
-          <Row  justify='end'>
-          <Button key="Update" htmlType='submit' type="primary">
-            Save
+          <Row justify='end'>
+            <Button key="Update" htmlType='submit' type="primary">
+              Save
           </Button>,
           <Button key='back'>
-           Cancel
+              Cancel
           </Button>
           </Row>
         </Form>
