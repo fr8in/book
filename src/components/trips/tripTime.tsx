@@ -17,8 +17,6 @@ import SourceOutDate from './tripSourceOut'
 import DestinationInDate from './tripDestinationIn'
 import DestinationOutDate from './tripDestinationOut'
 import { gql, useMutation } from '@apollo/client'
-import {useState} from "react";
-
 
 const REMOVE_SOUT_MUTATION = gql`
 mutation removeSouceOut($source_out:timestamptz,$id:Int!) {
@@ -54,23 +52,10 @@ mutation insertToPay($to_pay: Float, $comment: String, $trip_id: Int!) {
 
 const TripTime = (props) => {
 
-  const [Comment, setComment] = useState('')
-  const [Topay, setToPay] = useState('')
-
   const { trip_info,trip_id} = props
   console.log('trip_info', trip_info)
   const initial = { checkbox: false, mail: false, deletePO: false,godownReceipt:false }
   const { visible, onShow, onHide } = useShowHide(initial)
-
-  const handleChange = (e) => {
-    setComment(e.target.value)
-  }
-  console.log('Comment', Comment)
-
-  const toPay = (e) => {
-    setToPay(e.target.value)
-  }
-  console.log('Topay', Topay)
 
   const [removeSout] = useMutation(
     REMOVE_SOUT_MUTATION,
@@ -112,11 +97,12 @@ const TripTime = (props) => {
       }
     })
   }
-  const getToPay = () => {
+  const getToPay = (form) => {
+    console.log('form', form)
     insertTopay({
       variables: {
-        to_pay: Topay,
-        comment:Comment ,
+        to_pay: form.to_pay,
+        comment:form.comment ,
         trip_id: trip_info.id
       }
     })
@@ -132,11 +118,16 @@ const TripTime = (props) => {
   const remove_sout = trip_info.trip_status && trip_info.trip_status.name === 'Intransit' && authorized
   const remove_dout = trip_info.trip_status && trip_info.trip_status.name === 'Delivered' && authorized
 
+  const toPayValue= trip_info && trip_info.trip_prices && trip_info.trip_prices.length > 0 && trip_info.trip_prices[0].to_pay > 0  ? true : false
+  console.log('checking',toPayValue)
+  const toPayCheck= trip_info && trip_info.trip_prices && trip_info.trip_prices.length > 0 && trip_info.trip_prices[0].to_pay === 0  ? true : false
+  console.log('toPayCheck',toPayCheck)
+
   return (
     <Card size='small' className='mt10'>
       <Row>
         <Col xs={24}>
-          <Form layout='vertical'>
+          <Form layout='vertical' onFinish={getToPay}>
             <Row gutter={10}>
               <Col xs={8}>
                 <SourceInDate source_in={trip_info.source_in} id={trip_info.id} />
@@ -167,23 +158,23 @@ const TripTime = (props) => {
             </Row>
             <Row gutter={10}>
               <Col xs={8}>
-                <Form.Item label='To-Pay Amount'>
+                <Form.Item label='To-Pay Amount' name='to_pay'>
                   <Input
                     id='toPay'
                     placeholder='To Pay Amount'
                     type='number'
-                    disabled={false}
-                    onChange={toPay}
+                    disabled={toPayCheck}
+                    required={toPayValue}
                   />
                 </Form.Item>
               </Col>
               <Col xs={16}>
-                <Form.Item label='To-Pay Comment'>
+                <Form.Item label='To-Pay Comment' name='comment'>
                   <Input
                     id='comment'
                     placeholder='To Pay Comment'
-                    disabled={false}
-                    onChange={handleChange}
+                    disabled={toPayCheck}
+                    required={toPayValue}
                   />
                 </Form.Item>
               </Col>
@@ -212,7 +203,7 @@ const TripTime = (props) => {
                 </Space>
               </Col>
               <Col xs={8} className='text-right'>
-                <Button type='primary'  onClick={getToPay}>Submit</Button>
+                <Button type='primary'  htmlType='submit'  disabled={toPayCheck}  >Submit</Button>
               </Col>
             </Row>
           </Form>

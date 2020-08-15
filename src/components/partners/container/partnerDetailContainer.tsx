@@ -180,7 +180,7 @@ if (!loading) {
                   </TabPane>
                   <TabPane tab='Comment' key='3'>
                     <div className='p10'>
-                      <Comment partnerId={partnerData.id} loading={loading}/>
+                      <Comment partner_id={partnerData.id} loading={loading}/>
                     </div>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='On-going' value={ongoing_count} />} key='4'>
@@ -203,7 +203,7 @@ if (!loading) {
       </Col>
       {visible.topUp && <WalletTopUp visible={visible.topUp} onHide={onHide} />}
       {visible.reportMail && <ReportEmail visible={visible.reportMail} onHide={onHide} />}
-      {visible.statement && <WalletStatement visible={visible.statement} onHide={onHide} />}
+      {visible.statement && <WalletStatement visible={visible.statement} onHide={onHide} cardcode={partnerData.cardcode} />}
     </Row>
   )
 }

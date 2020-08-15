@@ -1,65 +1,67 @@
-
+import {useState} from 'react'
 import { Modal, Button, Input, Row, Col, Form, Select,message } from 'antd'
 import { gql, useMutation,useQuery } from '@apollo/client'
-const { TextArea } = Input
 const { Option } = Select
 
-const INSERT_PARTNER_LEAD_MUTATION = gql`
-mutation partner_lead_create(
-  $name: String,
-  $mobile: String,
-  $contact_name: String,
-  $partner_status_id: Int,
-  $channel_id:Int) 
-  {
-  insert_partner(
-    objects: {
-      name: $name,
-      partner_users:
-       {data: { 
-         mobile: $mobile,
-         name: $contact_name}
-        },
-      partner_status_id: $partner_status_id,
-      channel_id:$channel_id}
-    ) {
-    returning {
+const PARTNERS_LEAD_QUERY = gql`
+  query create_partner_lead{
+    channel{
       id
+      name
+    }
+    employee{
+      id
+      email
     }
   }
-}
 `
-const PARTNERS_LEAD_QUERY = gql`
-query create_partner_lead{
-  channel{
-    id
-    name
+
+const INSERT_PARTNER_LEAD_MUTATION = gql`
+  mutation partner_lead_create(
+    $name: String,
+    $mobile: String,
+    $contact_name: String,
+    $partner_status_id: Int,
+    $channel_id:Int,
+    $description:String,
+    $onboarded_by_id:Int,
+    $topic:String,
+    $created_by:String) 
+    {
+    insert_partner(
+      objects: {
+        name: $name,
+        partner_comments: 
+        {data: 
+          [{description: $description,
+          topic: $topic,
+          created_by: $created_by}]
+        }
+        partner_users:
+        {data: { 
+          mobile: $mobile,
+          name: $contact_name}
+        },
+        partner_status_id: $partner_status_id,
+        channel_id:$channel_id,
+        onboarded_by_id: $onboarded_by_id}
+      ) {
+      returning {
+        id
+        partner_comments{
+          topic
+        }
+      }
+    }
   }
-  employee{
-    id
-    name
-  }
-}
 `
+
 
 const CreateLead = (props) => {
-  function handleChange (value) {
-    console.log(`selected ${value}`)
-  }
-  const onChange = e => {
-    console.log(e)
-  }
-  const { visible, onHide } = props
 
-  const [updatePartnerLeadAddress] = useMutation(
-    INSERT_PARTNER_LEAD_MUTATION,
-    {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
-    }
-  )
+  const { visible, onHide } = props
+  const [userComment, setUserComment] = useState('')
  
-  
   const { loading, error, data } = useQuery(
     PARTNERS_LEAD_QUERY,
     {
@@ -69,13 +71,22 @@ const CreateLead = (props) => {
   )
   console.log('CreatePartnersLeadContainer error', error)
 
+  const [updatePartnerLeadAddress] = useMutation(
+    INSERT_PARTNER_LEAD_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
   
   var channel = [];
   var employee = [];
+  
   if (!loading) {
     
      channel = data.channel
      employee = data.employee
+     
   }
  
   const channelList = channel.map((data) => {
@@ -84,6 +95,12 @@ const CreateLead = (props) => {
   const employeeList = employee.map((data) => {
     return { value: data.id, label: data.email }
   })
+  function handleChange (value) {
+    console.log(`selected ${value}`)
+  }
+  const handleCommentChange = (e) => {
+    setUserComment(e.target.value)
+  }
 
   const onPartnerLeadChange =(form) =>{
     console.log('inside form submit', form)
@@ -94,6 +111,10 @@ const CreateLead = (props) => {
         mobile: form.mobile,
         partner_status_id: 8,
         channel_id: form.channel,
+        onboarded_by_id:form.employee,
+        created_by: 'karthi@fr8.in',
+        description: userComment,
+        topic:'Lead'
       }
     })   
    }
@@ -141,13 +162,18 @@ const CreateLead = (props) => {
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
-            <Form.Item>
+            <Form.Item
+            name='employee'
+            >
               <Select defaultValue='Select Owner' onChange={handleChange} options={employeeList} />
             </Form.Item>
           </Col>
         </Row>
         <Form.Item>
-          <TextArea placeholder='Comment' allowClear onChange={onChange} />        
+          <Input.TextArea
+          value={userComment}
+          onChange={handleCommentChange}
+          placeholder='Comment' allowClear  />        
         </Form.Item>
         <Row justify='end'>
         <Button type='primary' key='back' htmlType='submit'> Submit </Button>

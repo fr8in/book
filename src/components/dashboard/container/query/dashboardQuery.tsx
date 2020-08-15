@@ -1,11 +1,11 @@
 import { gql } from '@apollo/client'
 // dashboard_trips_truks
 const DASHBOAD_QUERY = gql`
-subscription dashboard_trips_truks($now: timestamptz,$regions: [Int!], $branches: [Int!], $cities: [Int!], $trip_status: String, $truck_type: [Int!] ) {
-  region {
+subscription dashboard_trips_truks($now: timestamptz,$regions: [Int!], $branches: [Int!], $cities: [Int!], $trip_status: String, $truck_type: [Int!], $managers: [Int!] ) {
+  region(where: {id: {_in: $regions}}) {
     id
     name
-    branches(where: {_and: [{region_id: {_in: $regions}}, {id: {_in: $branches}}]}) {
+    branches(where: {id: {_in: $branches}}) {
       branch_employees {
         id
         employee {
@@ -66,15 +66,17 @@ subscription dashboard_trips_truks($now: timestamptz,$regions: [Int!], $branches
               count
             }
           }
-          trips(where: {trip_status: {name: {_eq: $trip_status}}, truck_type:{id: {_in:$truck_type}}}) {
+          trips(where: {trip_status: {name: {_eq: $trip_status}}, truck_type:{id: {_in:$truck_type}}, created_by: {_in: $managers}}) {
             id
             delay
             eta
             customer {
+              id
               cardcode
               name
             }
             partner {
+              id
               cardcode
               name
               partner_users(where: {is_admin: {_eq: true}}) {
@@ -118,6 +120,7 @@ subscription dashboard_trips_truks($now: timestamptz,$regions: [Int!], $branches
               name
             }
             partner {
+              id
               cardcode
               name
               partner_memberships {

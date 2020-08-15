@@ -21,7 +21,7 @@ mutation partnerAdvancePercentage($partner_advance_percentage_id:Int,$cardcode:S
 }
 `
 const AdvancePercentage = (props) => {
-  const { advanceId, advance, cardcode } = props
+  const { advance_id, advance, cardcode } = props
 
   const { loading, error, data } = useQuery(
     PARTNER_ADVANCE_PERCENTAGE_QUERY,
@@ -37,11 +37,11 @@ const AdvancePercentage = (props) => {
       onCompleted () { message.success('Updated!!') }
     }
   )
-
-  if (loading) return null
   console.log('advancePercentage error', error)
 
+  if (loading) return null
   const { partner_advance_percentage } = data
+  
   const advancePercentage = partner_advance_percentage.map(data => {
     return { value: data.id, label: data.name }
   })
@@ -58,7 +58,7 @@ const AdvancePercentage = (props) => {
   return (
     <InlineSelect
       label={advance}
-      value={advanceId}
+      value={advance_id}
       options={advancePercentage}
       handleChange={onChange}
       style={{ width: 110 }}

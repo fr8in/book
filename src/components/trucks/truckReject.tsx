@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Modal, Button,Input , message} from 'antd'
+import { Modal, Button, Input, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 
 const INSERT_TRUCK_REJECT_MUTATION = gql`
@@ -14,18 +14,16 @@ mutation truckReject ($description:String, $topic:String, $truck_id: Int, $creat
   }
 }
 `
-
 const TruckReject = (props) => {
-  const { visible, onHide ,truck_id } = props
+  const { visible, onHide, truck_id } = props
 
   const [rejectComment, setRejectComment] = useState('')
 
-  
   const [insertComment] = useMutation(
     INSERT_TRUCK_REJECT_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
   const handleChange = (e) => {
@@ -34,7 +32,6 @@ const TruckReject = (props) => {
   console.log('rejectComment', rejectComment)
 
   const onSubmit = () => {
-    console.log("truck_id",truck_id)
     insertComment({
       variables: {
         truck_id: truck_id,
@@ -42,11 +39,11 @@ const TruckReject = (props) => {
         description: rejectComment,
         topic: 'text',
         truck_status_id: 13,
-        id:truck_id
+        id: truck_id
       }
     })
   }
- 
+
   return (
     <>
       <Modal
@@ -58,7 +55,7 @@ const TruckReject = (props) => {
           <Button key='submit' type='primary' onClick={onSubmit}>Ok</Button>
         ]}
       >
-        <Input placeholder='Enter Reject Reason'  onChange={handleChange}/>
+        <Input placeholder='Enter Reject Reason' onChange={handleChange} />
       </Modal>
     </>
   )

@@ -2,9 +2,18 @@ import { Table, Tooltip, Button } from 'antd'
 import Link from 'next/link'
 import { PhoneOutlined, CommentOutlined, WhatsAppOutlined } from '@ant-design/icons'
 import moment from 'moment'
+import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
+import TripFeedBack from '../trips/tripFeedBack'
 
 const Trips = (props) => {
   const { trips, loading } = props
+
+  const initial = {
+    commentData: [],
+    commentVisible: false
+  }
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
+
   const callNow = record => {
     window.location.href = 'tel:' + record
   }
@@ -34,11 +43,6 @@ const Trips = (props) => {
               : <a>{name}</a>}
           </Link>)
       },
-      sorter: (a, b) =>
-        (a.name ? a.name.toLowerCase() : '') >
-          (b.name ? b.name.toLowerCase() : '')
-          ? 1
-          : -1,
       width: '10%'
     },
     {
@@ -54,11 +58,6 @@ const Trips = (props) => {
               : <a>{name}</a>}
           </Link>)
       },
-      sorter: (a, b) =>
-        (a.name ? a.name.toLowerCase() : '') >
-          (b.name ? b.name.toLowerCase() : '')
-          ? 1
-          : -1,
       width: '10%'
     },
     {
@@ -89,11 +88,6 @@ const Trips = (props) => {
         const source = record.source && record.source.name
         return source && source > 10 ? source.slice(0, 10) + '...' : source
       },
-      sorter: (a, b) =>
-        (a.source ? a.source.toLowerCase() : '') >
-          (b.source ? b.source.toLowerCase() : '')
-          ? 1
-          : -1,
       width: '8%'
     },
     {
@@ -102,11 +96,6 @@ const Trips = (props) => {
         const destination = record.destination && record.destination.name
         return destination && destination.length > 10 ? destination.slice(0, 10) + '...' : destination
       },
-      sorter: (a, b) =>
-        (a.destination ? a.destination.toLowerCase() : '') >
-          (b.destination ? b.destination.toLowerCase() : '')
-          ? 1
-          : -1,
       width: '9%'
     },
     {
@@ -147,34 +136,40 @@ const Trips = (props) => {
     {
       title: 'Action',
       render: (text, record) => (
-        <span className='actions'>
+        <span>
           <Tooltip title={record.driverPhoneNo}>
             <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.driverPhoneNo)} />
           </Tooltip>
           <Tooltip title='Comment'>
-            <Button type='link' icon={<CommentOutlined />} onClick={() => onShow('comment')} />
+            <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
           </Tooltip>
-          <span>
-            <Tooltip title='click to copy message'>
-              <Button type='link' icon={<WhatsAppOutlined />} />
-            </Tooltip>
-          </span>
+          {/* <Tooltip title='click to copy message'>
+            <Button type='link' icon={<WhatsAppOutlined />} />
+          </Tooltip> */}
         </span>
       ),
       width: props.intransit ? '10%' : '11%'
     }
   ]
   return (
-    <Table
-      columns={columns}
-      dataSource={trips}
-      className='withAction'
-      rowKey={record => record.id}
-      size='small'
-      scroll={{ x: 1156 }}
-      pagination={false}
-      loading={loading}
-    />
+    <>
+      <Table
+        columns={columns}
+        dataSource={trips}
+        className='withAction'
+        rowKey={record => record.id}
+        size='small'
+        scroll={{ x: 1156 }}
+        pagination={false}
+        loading={loading}
+      />
+      {object.commentVisible &&
+        <TripFeedBack
+          visible={object.commentVisible}
+          tripid={object.commentData}
+          onHide={handleHide}
+        />}
+    </>
   )
 }
 
