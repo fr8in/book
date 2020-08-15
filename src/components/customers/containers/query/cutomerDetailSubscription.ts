@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
-  subscription customers($cardcode: String) {
+  subscription customers($cardcode: String, $trip_status: [String!]) {
     customer(where: { cardcode: { _eq: $cardcode } }) {
       id
       cardcode
@@ -49,7 +49,7 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         mobile
       }
 
-      trips {
+      trips(where: { trip_status: { name: { _in: $trip_status } } }) {
         id
         order_date
         customer {
