@@ -155,6 +155,7 @@ const Breakdown = (props) => {
           partner={object.cityData}
           onHide={handleHide}
           title={object.title}
+          comments
         />
       )}
 

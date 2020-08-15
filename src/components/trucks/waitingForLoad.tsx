@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled, SearchOutlined } from '@ant-design/icons'
 import CreatePo from '../trips/createPo'
 import PartnerUsers from '../partners/partnerUsers'
-import TripFeedBack from '../trips/tripFeedBack'
+import TruckComment from '../trucks/truckComment'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 
 const WaitingForLoad = (props) => {
@@ -154,9 +154,9 @@ const WaitingForLoad = (props) => {
         />}
 
       {object.commentVisible &&
-        <TripFeedBack
+        <TruckComment
           visible={object.commentVisible}
-          data={object.commentData}
+          id={object.commentData}
           onHide={handleHide}
         />}
 
