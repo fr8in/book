@@ -3,7 +3,7 @@ import { createPO, customer } from '../../../mock/customer/createQuickPo'
 import Link from 'next/link'
 
 const CustomerPo = (props) => {
-  const { visible, onHide, data, title } = props
+  const { visible, onHide, truck_no, title } = props
   console.log('data', truck_no)
 
   const onSubmit = () => {
