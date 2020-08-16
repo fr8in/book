@@ -48,7 +48,9 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         pincode
         mobile
       }
-
+      customer_mamul_summary {
+        system_mamul_avg
+      }
       trips(where: { trip_status: { name: { _in: $trip_status } } }) {
         id
         order_date
