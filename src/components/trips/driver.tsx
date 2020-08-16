@@ -57,7 +57,7 @@ const Driver = (props) => {
         onChange={onDriverChange}
         style={{width: '100%'}}
       >
-        {drivers.map(_driver => (
+        { drivers && drivers.map(_driver => (
           <Option key={_driver.id} value={_driver.mobile}>{_driver.mobile}</Option>
         ))}
       </Select>
