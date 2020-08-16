@@ -1,4 +1,4 @@
-import { Row, Col, Modal, Form, Button, Input, message, Table } from 'antd'
+import { Row, Col, Modal, Form, Button, Input, message, Table, Tooltip } from 'antd'
 import { gql, useMutation, useSubscription } from '@apollo/client'
 import moment from 'moment'
 
@@ -19,7 +19,6 @@ subscription truck_coment($id: Int!){
   }
 }
 `
-
 const INSERT_TRUCK_COMMENT_MUTATION = gql`
 mutation TruckComment($description:String, $topic:String, $truck_id: Int, $created_by_id:Int ) {
   insert_truck_comment(objects: {description: $description, truck_id: $truck_id, topic: $topic, created_by_id: $created_by_id}) {
@@ -68,18 +67,25 @@ const TruckComment = (props) => {
 
   const columns = [{
     title: 'Comments',
-    dataIndex: 'description'
+    dataIndex: 'description',
+    width: '40%',
+    render: (text, record) => {
+      return (
+        text && text.length > 20 ? <Tooltip title={text}>{text.slice(0, 20 + '...')}</Tooltip> : text
+      )
+    }
   },
   {
-    dataIndex: 'created_by'
+    dataIndex: 'created_by',
+    width: '30%'
   },
   {
     dataIndex: 'created_at',
+    width: '30%',
     render: (text, record) => {
-      return text ? moment(text).format('DD MMM YY') : null
+      return text ? moment(text).format('DD-MMM-YY') : null
     }
   }]
-
 
   return (
     <>
