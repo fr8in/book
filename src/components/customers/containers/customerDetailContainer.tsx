@@ -1,4 +1,5 @@
 import { Row, Col, Card, Button, Space, Tabs, Tooltip } from "antd";
+import { useState } from "react";
 import {
   BankFilled,
   FileDoneOutlined,
@@ -47,10 +48,21 @@ const CustomerDetailContainer = (props) => {
   };
   const { visible, onShow, onHide } = useShowHide(initial);
 
+  const initialVars = {
+    tabKey: "1",
+    trip_status: "Invoiced",
+  };
+  const [vars, setVars] = useState(initialVars);
+
+  const trip_variables = {
+    trip_status: vars.trip_status ? vars.trip_status : null,
+    cardcode: cardcode,
+  };
+
   const { loading, error, data } = useSubscription(
     CUSTOMER_DETAIL_SUBSCRIPTION,
     {
-      variables: { cardcode },
+      variables: trip_variables,
     }
   );
 
@@ -60,6 +72,28 @@ const CustomerDetailContainer = (props) => {
     const { customer } = data;
     customerInfo = customer[0] ? customer[0] : { name: "ID does not exist" };
   }
+
+  const onTabChange = (key) => {
+    setVars({ ...vars, tabKey: key });
+    switch (key) {
+      case "1":
+        setVars({ ...vars, trip_status: initialVars.trip_status });
+        break;
+      case "3":
+        setVars({ ...vars, trip_status: "Intransit" });
+        break;
+      case "4":
+        setVars({ ...vars, trip_status: "Delivered" });
+        break;
+      case "5":
+        setVars({ ...vars, trip_status: "Delivered" });
+        break;
+
+      default:
+        setVars({ ...vars, trip_status: initialVars.trip_status });
+        break;
+    }
+  };
 
   return (
     <Row>
@@ -122,7 +156,7 @@ const CustomerDetailContainer = (props) => {
           <Row gutter={10} className="mt10">
             <Col xs={24}>
               <Card size="small" className="card-body-0 border-top-blue">
-                <Tabs defaultActiveKey="1">
+                <Tabs onChange={onTabChange} defaultActiveKey="1">
                   <TabPane
                     tab={<TitleWithCount name="Final" value={35} />}
                     key="1"

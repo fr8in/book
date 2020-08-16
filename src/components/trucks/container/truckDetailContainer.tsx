@@ -3,7 +3,7 @@ import TruckInfo from '../truckInfo'
 import Documents from '../truckDocuments'
 import TripDetail from '../../trips/tripsByStages'
 import Truck from '../truck'
-import Timeline from '../truckTimeline'
+import TruckTimeline from '../truckTimeline'
 import { Row, Col, Button, Card, Divider, Space, Tag, Tabs, message } from 'antd'
 import { CommentOutlined, SnippetsOutlined } from '@ant-design/icons'
 import CreatePo from '../../trips/createPo'
@@ -205,7 +205,7 @@ const TruckDetailContainer = (props) => {
               <TabPane tab='Timeline' key='3'>
                 <Row>
                   <Col xs={24} className='p20'>
-                    <Timeline comments={truck_info.truck_comments} />
+                    <TruckTimeline comments={truck_info.truck_comments} />
                   </Col>
                 </Row>
 

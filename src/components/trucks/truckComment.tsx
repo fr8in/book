@@ -1,6 +1,24 @@
-import { useState } from 'react'
-import { Modal, Button, Input, message } from 'antd'
-import { gql, useMutation } from '@apollo/client'
+import { Row, Col, Modal, Form, Button, Input, message, Table } from 'antd'
+import { gql, useMutation, useSubscription } from '@apollo/client'
+import moment from 'moment'
+
+const TRUCK_COMMENT = gql`
+subscription truck_coment($id: Int!){
+  truck(where:{id:{_eq:$id}}){
+    truck_status{
+      id
+      name
+    }
+    truck_comments(limit:5){
+      id
+      description
+      topic
+    	created_at
+      created_by_id
+    }
+  }
+}
+`
 
 const INSERT_TRUCK_COMMENT_MUTATION = gql`
 mutation TruckComment($description:String, $topic:String, $truck_id: Int, $created_by_id:Int ) {
@@ -14,10 +32,19 @@ mutation TruckComment($description:String, $topic:String, $truck_id: Int, $creat
 }
 `
 const TruckComment = (props) => {
-  const { visible, onHide, id, truck_status } = props
-  console.log('truck_status', truck_status)
+  const { visible, onHide, id } = props
 
-  const [userComment, setUserComment] = useState('')
+  const { loading, data, error } = useSubscription(
+    TRUCK_COMMENT, { variables: { id } }
+  )
+
+  let truck_status = null
+  let comments = []
+  if (!loading) {
+    const { truck } = data
+    truck_status = truck && truck[0] ? truck[0].truck_status : null
+    comments = truck && truck[0] ? truck[0].truck_comments : []
+  }
 
   const [insertComment] = useMutation(
     INSERT_TRUCK_COMMENT_MUTATION,
@@ -27,36 +54,64 @@ const TruckComment = (props) => {
     }
   )
 
-  const handleChange = (e) => {
-    setUserComment(e.target.value)
-  }
-  console.log('userComment', userComment)
-
-  const onSubmit = () => {
+  const onSubmit = (form) => {
     console.log('id', id)
     insertComment({
       variables: {
         truck_id: id,
         created_by_id: 1,
-        description: userComment,
+        description: form.comment,
         topic: truck_status
       }
     })
   }
+
+  const columns = [{
+    title: 'Comments',
+    dataIndex: 'description'
+  },
+  {
+    dataIndex: 'created_by'
+  },
+  {
+    dataIndex: 'created_at',
+    render: (text, record) => {
+      return text ? moment(text).format('DD MMM YY') : null
+    }
+  }]
+
 
   return (
     <>
       <Modal
         title='Add Comment'
         visible={visible}
-        onOk={onSubmit}
         onCancel={onHide}
-        footer={[
-          <Button onClick={onSubmit} type='primary' key='ok'> Submit </Button>
-        ]}
+        footer={[]}
       >
-        <p><label>Comment</label></p>
-        <Input onChange={handleChange} placeholder='Enter Comments' />
+        <Form onFinish={onSubmit}>
+          <Row gutter={10} className='mb10'>
+            <Col flex='auto'>
+              <Form.Item name='comment'>
+                <Input.TextArea
+                  placeholder='Please Enter Comments......'
+                />
+              </Form.Item>
+            </Col>
+            <Col flex='80px'>
+              <Form.Item>
+                <Button type='primary' htmlType='submit'>Submit</Button>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+        <Table
+          columns={columns}
+          dataSource={comments}
+          rowKey={record => record.id}
+          size='small'
+          pagination={false}
+        />
       </Modal>
     </>
   )
