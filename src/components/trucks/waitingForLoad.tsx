@@ -165,7 +165,6 @@ const WaitingForLoad = (props) => {
           visible={object.poVisible}
           data={object.poData}
           onHide={handleHide}
-          title={object.title}
         />}
     </>
   )

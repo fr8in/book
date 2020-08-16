@@ -26,7 +26,7 @@ const CustomerDetails = (props) => {
         />
         <LabelWithData
           label='GST No'
-          data={<CustomerGst gst={customerInfo.gst} cardcode={customerInfo.cardcode} />}
+          data={<CustomerGst gst={customerInfo.gst} cardcode={customerInfo.cardcode} loading={props.loading} />}
           labelSpan={10}
           dataSpan={14}
         />

@@ -3,8 +3,8 @@ import { createPO, customer } from '../../../mock/customer/createQuickPo'
 import Link from 'next/link'
 
 const CustomerPo = (props) => {
-  const { visible, onHide, truck_no, title } = props
-  console.log('data', truck_no)
+  const { visible, onHide, data } = props
+  console.log('data', data)
 
   const onSubmit = () => {
     console.log('Customer PO is Created!')
@@ -22,10 +22,11 @@ const CustomerPo = (props) => {
     console.log('sys.mamul!!')
   }
 
+  const partner_name = data && data.partner && data.partner.name
   return (
     <Modal
       visible={visible}
-      title={`PO: ${title}`}
+      title={`PO: ${partner_name}`}
       onOk={onSubmit}
       onCancel={onHide}
       width={960}
@@ -37,7 +38,7 @@ const CustomerPo = (props) => {
     >
       <Form layout='vertical' className='create-po'>
         <Link href='trucks/[id]' as={`trucks/${1}`}>
-          <a className='truckPO'>{truck_no}</a>
+          <a className='truckPO'>{data.truck_no}</a>
         </Link>
         <Row gutter={10}>
           <Col xs={24} sm={12}>

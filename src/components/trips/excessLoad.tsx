@@ -6,6 +6,7 @@ import { gql, useSubscription, useMutation } from '@apollo/client'
 import _ from 'lodash'
 import moment from 'moment'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
+import CreatePo from '../trips/createPo'
 
 const EXCESS_LOAD = gql`
 subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$trip_status: String, $truck_type:[Int!], $managers: [Int!]) {
@@ -191,18 +192,16 @@ const ExcessLoad = (props) => {
     {
       title: 'Action',
       render: (text, record) => (
-        <span className='actions'>
+        <span>
           <Tooltip title='Cancel'>
             <Button type='link' danger icon={<DeleteOutlined />} onClick={() => handleShow('cancel_visible', null, 'record', record.id)} />
           </Tooltip>
           {/* <Tooltip title='Double Click to Copy Text'>
             <Button type='link' disabled icon={<CopyOutlined />} onClick={() => console.log('copy')} />
           </Tooltip> */}
-          <span>
-            <Tooltip title='Quick Po'>
-              <Button type='link' icon={<RocketFilled />} />
-            </Tooltip>
-          </span>
+          <Tooltip title='Quick Po'>
+            <Button type='link' icon={<RocketFilled />} onClick={() => handleShow('po_visible', null, 'record', record)} />
+          </Tooltip>
         </span>
       ),
       width: '12%'
@@ -234,6 +233,13 @@ const ExcessLoad = (props) => {
         >
           <p>Load will get cancelled. Do you want to proceed?</p>
         </Modal>}
+      {object.po_visible &&
+        <CreatePo
+          visible={object.po_visible}
+          data={object.record}
+          onHide={handleHide}
+          title={object.title}
+        />}
     </>
   )
 }

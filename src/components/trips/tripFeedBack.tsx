@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Modal, Button, Row, Input, Col, Table, message } from 'antd'
+import { Modal, Button, Row, Input, Col, Table, message, Tooltip } from 'antd'
 import { gql, useSubscription, useMutation } from '@apollo/client'
 import moment from 'moment'
 
@@ -72,15 +72,23 @@ const Tripcomment = (props) => {
 
   const columns = [{
     title: 'Comments',
-    dataIndex: 'description'
+    dataIndex: 'description',
+    width: '40%',
+    render: (text, record) => {
+      return (
+        text && text.length > 20 ? <Tooltip title={text}>{text.slice(0, 20 + '...')}</Tooltip> : text
+      )
+    }
   },
   {
-    dataIndex: 'created_by'
+    dataIndex: 'created_by',
+    width: '30%'
   },
   {
     dataIndex: 'created_at',
+    width: '30%',
     render: (text, record) => {
-      return text ? moment(text).format('DD MMM YY') : null
+      return text ? moment(text).format('DD-MMM-YY') : null
     }
   }]
 

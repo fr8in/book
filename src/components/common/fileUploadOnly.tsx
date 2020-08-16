@@ -13,8 +13,8 @@ const FILE_UPLOAD_MUTATION = gql`
 
 const FileUploadOnly = (props) => {
   const { type, id, folder, file_type, disable } = props
-  const [base64Str, setBase64Str] = useState(null)
 
+  let base64Str = null
   const [s3FileUpload] = useMutation(
     FILE_UPLOAD_MUTATION,
     {
@@ -23,13 +23,12 @@ const FileUploadOnly = (props) => {
       },
       onCompleted () {
         message.success('Updated!!')
-        setBase64Str(null)
+        base64Str = null
       }
     }
   )
 
   const getBase64 = (file) => {
-    console.log('file', file)
     const reader = new FileReader()
     if (file) {
       reader.readAsBinaryString(file)
@@ -37,7 +36,7 @@ const FileUploadOnly = (props) => {
     reader.onload = function () {
       // @ts-ignore
       const baseStr = btoa(reader.result)
-      setBase64Str(baseStr)
+      base64Str = baseStr
     }
     reader.onerror = function () {
       console.log('unable to parse file')
@@ -47,12 +46,12 @@ const FileUploadOnly = (props) => {
 
   const fileUpload = (data) => {
     const file_name = data.file.name
-    const variables = { name: file_name, type: type, base64Str: base64Str, id: id, folder: folder, fileType: file_type }
     setTimeout(() => {
+      const variables = { name: file_name, type: type, base64Str: base64Str, id: id, folder: folder, fileType: file_type }
       s3FileUpload({
         variables: variables
       })
-    }, 2000)
+    }, 1000)
   }
 
   return (
