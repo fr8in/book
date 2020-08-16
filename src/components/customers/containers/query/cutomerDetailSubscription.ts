@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
   subscription customers($cardcode: String, $trip_status: [String!]) {
@@ -12,7 +12,10 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
       gst
       managed
       pan
-      customer_type_id
+      customer_type{
+        id
+        name
+      }
       virtual_account
       status {
         id
@@ -75,7 +78,10 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
             name
           }
         }
+        trip_prices(limit: 1, where:{deleted_at:{_is_null: true}}) {
+          customer_price
+        }
       }
     }
   }
-`;
+`

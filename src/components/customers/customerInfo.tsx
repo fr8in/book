@@ -13,13 +13,15 @@ const CustomerInfo = (props) => {
 
   const modelInitial = { mamulVisible: false }
   const { visible, onHide, onShow } = useShowHide(modelInitial)
-  const system_mamul = customerInfo.customer_mamul_summary && customerInfo.customer_mamul_summary.length > 0 && customerInfo.customer_mamul_summary[0].system_mamul_avg ? customerInfo.customer_mamul_summary[0].system_mamul_avg : 0
+  const system_mamul = customerInfo.customer_mamul_summary &&
+                        customerInfo.customer_mamul_summary.length > 0 &&
+                        customerInfo.customer_mamul_summary[0].system_mamul_avg ? customerInfo.customer_mamul_summary[0].system_mamul_avg : 0
   return (
     <>
       <Row gutter={8}>
         <LabelAndData
           label='Type'
-          data={<CustomerType type={customerInfo.type_id} cardcode={customerInfo.cardcode} />}
+          data={<CustomerType type={customerInfo.customer_type && customerInfo.customer_type.name} cardcode={customerInfo.cardcode} />}
           mdSpan={4}
           smSpan={8}
           xsSpan={12}
@@ -54,7 +56,7 @@ const CustomerInfo = (props) => {
         <LabelAndData
           label='S.Mamul'
           data={
-            <label className='link' onClick={() => onShow('mamulVisible')}>
+            <label className='link' onClick={system_mamul ? () => onShow('mamulVisible') : () => {}}>
               {system_mamul}
             </label>
           }
