@@ -23,6 +23,12 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
         length
         breadth
         height
+        truck_files{
+            id
+             type
+             file_path
+             folder
+       }
         truck_status{
           id
           name
@@ -43,6 +49,12 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
         partner {
           id
           name
+          partner_files{
+            id
+               type
+               file_path
+               folder
+         }
           partner_users(limit:1 , where:{is_admin:{_eq:true}}){
             mobile
           }
@@ -116,8 +128,11 @@ const TruckDetailContainer = (props) => {
     _data = data
   }
   const truck_info = _data && _data.truck && _data.truck.length > 0 ? _data.truck[0] : { name: 'ID does not exist' }
-
+  
   const status_check = truck_info && truck_info.truck_status && truck_info.truck_status.name === 'Deactivated'
+
+  const partner_id = truck_info && truck_info.partner && truck_info.partner.id 
+  
 
   const onSubmit = (status_check) => {
     console.log('truck_id', truck_info.id)
@@ -181,7 +196,7 @@ const TruckDetailContainer = (props) => {
                   <Col xs={24} className='p20'>
                     <TruckInfo truck_info={truck_info} loading={loading} id={truck_info.id} />
                     <Divider />
-                    <Documents truck_id={truck_info.id} />
+                    <Documents truck_id={truck_info.id}  partner_id={partner_id} truck_info={truck_info}/>
                     <Divider />
                     <Row>
                       <Col span={8}>
