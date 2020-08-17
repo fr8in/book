@@ -86,7 +86,6 @@ const vaahan_file_list = vaahan_files && vaahan_files.length > 0 && vaahan_files
       <Form layout='vertical'>
         <Row gutter={[10, 10]}>
           <Col span={6}>
-            <Row>
               <Form.Item
                 label='PAN'
                 name='PAN'
@@ -100,11 +99,9 @@ const vaahan_file_list = vaahan_files && vaahan_files.length > 0 && vaahan_files
                file_list={pan_file_list}
               />
               </Form.Item>
-            </Row>
           </Col>
 
           <Col span={6}>
-            <Row>
               <Form.Item
                 label='Cheque/PassBook'
                 name='CL'
@@ -117,11 +114,9 @@ const vaahan_file_list = vaahan_files && vaahan_files.length > 0 && vaahan_files
                 file_list={cl_file_list}
               />
               </Form.Item>
-            </Row>
           </Col>
 
           <Col span={6}>
-            <Row>
               <Form.Item
                 label='TDS'
                 name='TDS'
@@ -134,11 +129,9 @@ const vaahan_file_list = vaahan_files && vaahan_files.length > 0 && vaahan_files
                 file_list={tds_file_list}
               />
               </Form.Item>
-            </Row>
           </Col>
 
           <Col span={6}>
-            <Row>
               <Form.Item label='EMI' name='EMI'>
               <FileUpload
                 id={truck_id}
@@ -148,15 +141,12 @@ const vaahan_file_list = vaahan_files && vaahan_files.length > 0 && vaahan_files
                 file_list={emi_file_list}
               />
               </Form.Item>
-            </Row>
           </Col>
         </Row>
 
         <br />
         <Row gutter={[10, 10]}>
           <Col span={6}>
-
-            <Row>
               <Form.Item
                 label='RC'
                 name='RC'
@@ -170,11 +160,9 @@ const vaahan_file_list = vaahan_files && vaahan_files.length > 0 && vaahan_files
                 file_list={rc_file_list}
               />
               </Form.Item>
-            </Row>
           </Col>
 
           <Col span={6}>
-            <Row>
               <Form.Item
                 label='Vaahan'
                 name='vaahan'
@@ -188,11 +176,9 @@ const vaahan_file_list = vaahan_files && vaahan_files.length > 0 && vaahan_files
                 file_list={vaahan_file_list}
               />
               </Form.Item>
-            </Row>
           </Col>
 
           <Col span={6}>
-            <Row>
               <Form.Item
                 label='Insurance'
                 name='insurance'
@@ -205,11 +191,9 @@ const vaahan_file_list = vaahan_files && vaahan_files.length > 0 && vaahan_files
                 file_list={insurance_file_list}
               />
               </Form.Item>
-            </Row>
           </Col>
 
           <Col span={6}>
-            <Row>
               <Form.Item
                 label='Permit'
                 name='permit'
@@ -222,7 +206,6 @@ const vaahan_file_list = vaahan_files && vaahan_files.length > 0 && vaahan_files
                 file_list={permit_file_list}
               />
               </Form.Item>
-            </Row>
           </Col>
         </Row>
       </Form>

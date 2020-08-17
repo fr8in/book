@@ -156,6 +156,7 @@ const TruckDetailContainer = (props) => {
                 <TruckNo
                   id={truck_info.id}
                   truck_no={truck_info.truck_no}
+                  loading={loading}
                 />
               </h3>
               <Divider type='vertical' />

@@ -94,7 +94,7 @@ const TruckInfo = (props) => {
             </Form>
           </Col>
           <Col span={4}>
-            <Form>
+            <Form layout='vertical'>
               <Form.Item
                 label='Driver'
                 name='Driver'
