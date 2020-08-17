@@ -16,6 +16,7 @@ import SourceInDate from './tripSourceIn'
 import SourceOutDate from './tripSourceOut'
 import DestinationInDate from './tripDestinationIn'
 import DestinationOutDate from './tripDestinationOut'
+import ViewFile from '../common/viewFile'
 import { gql, useMutation } from '@apollo/client'
 
 const REMOVE_SOUT_MUTATION = gql`
@@ -123,6 +124,9 @@ const TripTime = (props) => {
   const toPayCheck= trip_info && trip_info.trip_prices && trip_info.trip_prices.length > 0 && trip_info.trip_prices[0].to_pay === 0  ? true : false
   console.log('toPayCheck',toPayCheck)
 
+  const wh_files = trip_info && trip_info.trip_files && trip_info.trip_files.length > 0 ?trip_info.trip_files.filter(file => file.type === 'WH') : null
+  console.log('wh', wh_files)
+
   return (
     <Card size='small' className='mt10'>
       <Row>
@@ -181,12 +185,16 @@ const TripTime = (props) => {
             </Row>
             <Row className='mb15'>
               <Col xs={20}>
-                <Checkbox disabled={false}  onClick={() => onShow('godownReceipt')}>Unloaded at private godown</Checkbox>
+                <Checkbox disabled={trip_info && trip_info.unloaded_private_godown === true ? true : false }  onClick={() => onShow('godownReceipt')} >Unloaded at private godown</Checkbox>
               </Col>
               <Col xs={4} className='text-right'>
-                <Tooltip title='Warehouse Receipt'>
-                  <Button size='small' type='primary' shape='circle' icon={<DownloadOutlined />} />
-                </Tooltip>
+                <ViewFile
+                id={trip_info.id}
+                type='trip'
+                folder='warehousereceipt/'
+                file_type='WH'
+                file_list={wh_files}
+              />
               </Col>
             </Row>
             <Row>
@@ -211,7 +219,7 @@ const TripTime = (props) => {
       </Row>
       {visible.mail && <SendLoadingMemo visible={visible.mail} onHide={onHide} />}
       {visible.deletePO && <DeletePO visible={visible.deletePO} onHide={onHide} />}
-      {visible.godownReceipt && <GodownReceipt visible={visible.godownReceipt} trip_id={trip_info.id} onHide={onHide} />}
+      {visible.godownReceipt && <GodownReceipt visible={visible.godownReceipt} trip_id={trip_info.id} trip_info={trip_info}  onHide={onHide} />}
     </Card>
 
   )
