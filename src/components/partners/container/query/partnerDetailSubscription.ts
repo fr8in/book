@@ -65,7 +65,12 @@ subscription partners($cardcode: String,$partner_id:bigint,$trip_status_value: [
             id
             mobile
           }
-          
+          partner_files{
+            file_path
+            id
+            folder
+            type
+          }
           trucks_aggregate(where:{truck_status_id:{_neq:7}}){
             aggregate{
               count
@@ -101,7 +106,7 @@ subscription partners($cardcode: String,$partner_id:bigint,$trip_status_value: [
           partner_status{
             id
             name
-          } 
+          }
           trips(where: {trip_status: { name: {_in: $trip_status_value}}}){
             id
             order_date
