@@ -13,7 +13,7 @@ mutation PartnerPanEdit($pan:String,$cardcode:String) {
 }
 `
 const PartnerPan = (props) => {
-  const { cardcode, pan } = props
+  const { cardcode, pan,loading } = props
 
   const [updatePan] = useMutation(
     UPDATE_PARTNER_PAN_MUTATION,
@@ -33,10 +33,11 @@ const PartnerPan = (props) => {
   }
 
   return (
+    loading ? null : (
     <InlineEdit
-      text={pan || 'No Pan'}
+      text={pan}
       onSetText={onSubmit}
-    />
+    />)
   )
 }
 

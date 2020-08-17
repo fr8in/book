@@ -6,7 +6,7 @@ import PartnerUser from './partnerUserNumber'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 
 const PartnerInfo = (props) => {
-  const { partner } = props
+  const { partner,loading } = props
   const usersInitial = { partner: [], title: '', visible: false }
   const { object, handleHide, handleShow } = useShowHidewithRecord(usersInitial)
 
@@ -35,9 +35,10 @@ const PartnerInfo = (props) => {
         <PartnerName
           cardcode={partner.cardcode}
           name={partner.name}
+          loading={loading}
         />
         <h4>{partner.cardcode}</h4>
-        <h4><PartnerUser mobile={number} /></h4>
+        <h4><PartnerUser mobile={number}  loading={loading} /></h4>
         <Button
           shape='circle'
           size='small'

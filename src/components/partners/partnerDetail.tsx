@@ -11,7 +11,7 @@ import Gst from '../../components/partners/partnerGst'
 import Pan from './partnerPan'
 import _ from 'lodash'
 const PartnerDetail = (props) => {
-  const { partnerDetail } = props
+  const { partnerDetail, loading } = props
   const initial = {
     address: [],
     addressVisible: false,
@@ -36,7 +36,7 @@ const partner_address = address === null || _.isEmpty(address) ? null  :
         <LabelWithData
           label='PAN'
           data={
-            <Pan cardcode={partnerDetail.cardcode} pan={partnerDetail.pan} />
+            <Pan cardcode={partnerDetail.cardcode} pan={partnerDetail.pan} loading={loading}/>
           }
           labelSpan={10}
           dataSpan={14}
@@ -89,7 +89,7 @@ const partner_address = address === null || _.isEmpty(address) ? null  :
         />
         <LabelWithData
           label='Cibil Score '
-          data={<span><CibilScore cardcode={partnerDetail.cardcode} cibil={partnerDetail.cibil} />
+          data={<span><CibilScore cardcode={partnerDetail.cardcode} cibil={partnerDetail.cibil} loading={loading} />
           </span>}
           labelSpan={10}
           dataSpan={14}
@@ -103,7 +103,7 @@ const partner_address = address === null || _.isEmpty(address) ? null  :
         />
         <LabelWithData
           label=' GST'
-          data={<span><Gst cardcode={partnerDetail.cardcode} gst={partnerDetail.gst} /></span>}
+          data={<span><Gst cardcode={partnerDetail.cardcode} gst={partnerDetail.gst} loading={loading} /></span>}
           labelSpan={10}
           dataSpan={14}
         />

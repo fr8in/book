@@ -13,7 +13,7 @@ mutation PartnerNameEdit($name:String,$cardcode:String) {
 }
 `
 const PartnerName = (props) => {
-  const { cardcode, name } = props
+  const { cardcode, name ,loading} = props
 
   const [updatePartnerName] = useMutation(
     UPDATE_PARTNER_NAME_MUTATION,
@@ -33,10 +33,11 @@ const PartnerName = (props) => {
   }
 
   return (
-    <InlineEdit
-      text={name || 'No Name' }
-      onSetText={onSubmit}
-    />
+    loading ? null : (
+      <InlineEdit
+        text={name}
+        onSetText={onSubmit}
+      />)
   )
 }
 

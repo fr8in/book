@@ -102,7 +102,7 @@ if (!loading) {
           className='border-top-blue'
           title={
             <DetailPageHeader
-              title={<HeaderInfo partner={partnerData} />}
+              title={<HeaderInfo partner={partnerData} loading={loading} />}
               extra={
                 <Space>
                   <Tooltip title='Account Statement'>
@@ -140,7 +140,7 @@ if (!loading) {
                   <TabPane tab='Detail' key='1'>
                     <Row gutter={10} className='p10'>
                       <Col xs={24} sm={12} md={12}>
-                        <DetailInfo partnerDetail={partnerData} />
+                        <DetailInfo partnerDetail={partnerData} loading={loading} />
                       </Col>
                       <Col xs={24} sm={12} md={12}>
                         <Card size='small' className='card-body-0'>
