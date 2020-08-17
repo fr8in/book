@@ -11,7 +11,7 @@ const CUSTOMERS_TYPE_QUERY = gql`
 }
 `
 const UPDATE_CUSTOMER_TYPE_MUTATION = gql`
-mutation customerException($type_id:customer_type_enum,$cardcode:String) {
+mutation customerException($type_id:Int,$cardcode:String) {
   update_customer(_set: {customer_type_id: $type_id}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id
@@ -38,7 +38,7 @@ const CustomerType = (props) => {
 
   const { customer_type } = data
   const typeList = customer_type.map((data) => {
-    return { value: data.comment, label: data.comment }
+    return { value: data.id, label: data.name }
   })
 
   const handleChange = (value) => {

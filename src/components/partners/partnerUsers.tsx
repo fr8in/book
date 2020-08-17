@@ -1,8 +1,7 @@
 
 import { Modal, Button, Row, Input, Col, Table, Popconfirm, Form, message } from 'antd'
 import { PhoneOutlined, DeleteOutlined } from '@ant-design/icons'
-import React, { useState } from 'react'
-import { useSubscription , useMutation, gql } from '@apollo/client'
+import { useSubscription, useMutation, gql } from '@apollo/client'
 
 const PARTNER_USERS_SUBSCRIPTION = gql`
 subscription partnerUser($cardcode: String){
@@ -47,9 +46,6 @@ mutation PartnerUserDelete($id:Int) {
 const PartnerUsers = (props) => {
   const { visible, partner, onHide, title } = props
 
-  console.log('partner_id', partner)
-  const [mobile, setMobile] = useState('')
-
   const { loading, error, data } = useSubscription(
     PARTNER_USERS_SUBSCRIPTION,
     {
@@ -76,21 +72,17 @@ const PartnerUsers = (props) => {
   if (loading) return null
   console.log('PartnerUsers error', error)
 
-  const handleChange = (e) => {
-    setMobile(e.target.value)
-  }
-
-  const onAddUser = () => {
+  const onAddUser = (form) => {
     insertPartnerUser({
       variables: {
         partner_id: partner.id,
-        mobile: mobile,
+        mobile: form.mobile,
         is_admin: false,
-        email: `${mobile}.partner@fr8.in`,
+        email: `${form.mobile}.partner@fr8.in`,
         name: ''
-
       }
     })
+    form.resetFields()
   }
 
   const onDelete = (id) => {
@@ -150,16 +142,18 @@ const PartnerUsers = (props) => {
         size='small'
         pagination={false}
       />
-      <Row className='mt10' gutter={10}>
-        <Col flex='auto'>
-          <Form.Item>
-            <Input type='number' value={mobile} onChange={handleChange} max={10} placeholder='Enter Mobile Number' />
-          </Form.Item>
-        </Col>
-        <Col flex='90px'>
-          <Button type='primary' onClick={onAddUser}>Add User</Button>
-        </Col>
-      </Row>
+      <Form onFinish={onAddUser}>
+        <Row className='mt10' gutter={10}>
+          <Col flex='auto'>
+            <Form.Item name='mobile' initialValue=''>
+              <Input type='number' placeholder='Enter Mobile Number' />
+            </Form.Item>
+          </Col>
+          <Col flex='90px'>
+            <Button type='primary' htmlType='submit'>Add User</Button>
+          </Col>
+        </Row>
+      </Form>
     </Modal>
   )
 }

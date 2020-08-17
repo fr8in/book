@@ -2,7 +2,7 @@ import { Row } from 'antd'
 import LabelAndData from '../common/labelAndData'
 import SystemMamul from '../customers/systemMamul'
 import mockData from '../../../mock/customer/customerDetail'
-import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
+import useShowHide from '../../hooks/useShowHide'
 import ManagedCustomer from './managedCustomer'
 import CustomerExceptionDate from './customerExceptionDate'
 import CustomerType from './customerType'
@@ -11,18 +11,17 @@ import CustomerPaymentManager from './customerPaymentManager'
 const CustomerInfo = (props) => {
   const { customerInfo } = props
 
-  const modelInitial = {
-    mamulVisible: false,
-    mamulData: []
-  }
-  const { object, handleHide, handleShow } = useShowHideWithRecord(modelInitial)
-
+  const modelInitial = { mamulVisible: false }
+  const { visible, onHide, onShow } = useShowHide(modelInitial)
+  const system_mamul = customerInfo.customer_mamul_summary &&
+                        customerInfo.customer_mamul_summary.length > 0 &&
+                        customerInfo.customer_mamul_summary[0].system_mamul_avg ? customerInfo.customer_mamul_summary[0].system_mamul_avg : 0
   return (
     <>
       <Row gutter={8}>
         <LabelAndData
           label='Type'
-          data={<CustomerType type={customerInfo.type_id} cardcode={customerInfo.cardcode} />}
+          data={<CustomerType type={customerInfo.customer_type && customerInfo.customer_type.name} cardcode={customerInfo.cardcode} />}
           mdSpan={4}
           smSpan={8}
           xsSpan={12}
@@ -57,8 +56,8 @@ const CustomerInfo = (props) => {
         <LabelAndData
           label='S.Mamul'
           data={
-            <label className='link' onClick={() => handleShow('mamulVisible', null, 'mamulData', mockData.mamulData)}>
-              {mockData.systemMamul}
+            <label className='link' onClick={system_mamul ? () => onShow('mamulVisible') : () => {}}>
+              {system_mamul}
             </label>
           }
           mdSpan={4}
@@ -73,8 +72,8 @@ const CustomerInfo = (props) => {
           xsSpan={24}
         />
       </Row>
-      {object.mamulVisible && (
-        <SystemMamul visible={object.mamulVisible} onHide={handleHide} data={object.mamulData} />
+      {visible.mamulVisible && (
+        <SystemMamul visible={visible.mamulVisible} onHide={onHide} cardcode={customerInfo.cardcode} />
       )}
     </>
   )

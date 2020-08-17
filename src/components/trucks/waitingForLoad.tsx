@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled, SearchOutlined } from '@ant-design/icons'
 import CreatePo from '../trips/createPo'
 import PartnerUsers from '../partners/partnerUsers'
-import TripFeedBack from '../trips/tripFeedBack'
+import TruckComment from '../trucks/truckComment'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 
 const WaitingForLoad = (props) => {
@@ -104,8 +104,8 @@ const WaitingForLoad = (props) => {
       render: (text, record) => {
         const comment = record.truck_comments && record.truck_comments.length > 0 ? record.truck_comments[0].description : null
         return (
-          comment ? <Tooltip title={comment}><span>{comment.slice(0, 12) + '...'}</span></Tooltip>
-            : null
+          comment && comment.length > 30 ? <Tooltip title={comment}><span>{comment.slice(0, 30) + '...'}</span></Tooltip>
+            : comment
         )
       },
       width: '27%'
@@ -115,15 +115,15 @@ const WaitingForLoad = (props) => {
       render: (text, record) => {
         return (
           <span>
-            <Tooltip title={record.driverPhoneNo}>
-              <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.driverPhoneNo)} />
+            <Tooltip title={record.driver && record.driver.mobile}>
+              <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.driver && record.driver.mobile)} />
             </Tooltip>
             <Tooltip title='Comment'>
-              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.previousComment)} />
+              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
             </Tooltip>
-            <Tooltip title='click to copy message'>
+            {/* <Tooltip title='click to copy message'>
               <Button type='link' icon={<WhatsAppOutlined />} />
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip title='Quick PO'>
               <Button type='link' icon={<RocketFilled />} onClick={() => handleShow('poVisible', record.partner, 'poData', record)} />
             </Tooltip>
@@ -154,9 +154,9 @@ const WaitingForLoad = (props) => {
         />}
 
       {object.commentVisible &&
-        <TripFeedBack
+        <TruckComment
           visible={object.commentVisible}
-          data={object.commentData}
+          id={object.commentData}
           onHide={handleHide}
         />}
 
@@ -165,7 +165,6 @@ const WaitingForLoad = (props) => {
           visible={object.poVisible}
           data={object.poData}
           onHide={handleHide}
-          title={object.title}
         />}
     </>
   )
