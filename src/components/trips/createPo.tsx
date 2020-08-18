@@ -1,6 +1,71 @@
 import { Modal, Row, Button, Form, Input, Col, Select, DatePicker, Radio, Alert, Divider, Checkbox } from 'antd'
 import { createPO, customer } from '../../../mock/customer/createQuickPo'
 import Link from 'next/link'
+import { gql } from '@apollo/client'
+import CitySelect from '../common/citySelect'
+
+const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
+  search_customer(args:{search:$search}){
+    id
+    description
+  }
+}`
+
+const CREATE_PO = gql`
+mutation create_po (
+    $po_date: timestamptz,
+    $source_id: Int, 
+    $destination_id: Int, 
+    $customer_id: Int, 
+    $customer_price: Float, 
+    $ton: float8,
+    $per_ton:float8,
+    $is_per_ton:Boolean, 
+    $mamaul: Float,
+    $including_loading: Boolean,
+    $including_unloading: Boolean,
+    $bank:Float,
+    $cash: Float,
+    $to_pay: Float,
+    $truck_id:Int,
+    $driver: String,
+    $description:String,
+    $topic:String,
+    $created_by: String ) {
+  insert_trip(objects: {
+    po_date:$po_date
+    source_id: $source_id, 
+    destination_id: $destination_id, 
+    customer_id: $customer_id,
+    truck_type_id: $truck_id,
+    driver: $driver,
+    trip_prices: {
+      data: {
+        customer_price: $customer_price,
+        ton: $ton,
+        price_per_ton:$per_ton,
+        is_price_per_ton: $is_per_ton,
+        mamul: $mamaul,
+        including_loading: $including_loading,
+        including_unloading: $including_unloading,
+        bank: $bank,
+        to_pay:$to_pay,
+        cash:$cash
+      }
+    }
+    trip_comments:{
+      data:{
+        description:$description,
+        topic:$topic,
+        created_by:$created_by
+      }
+    }
+  }) {
+    returning {
+      id
+    }
+  }
+}`
 
 const CustomerPo = (props) => {
   const { visible, onHide, data } = props
@@ -20,6 +85,14 @@ const CustomerPo = (props) => {
 
   const showSystemMamul = () => {
     console.log('sys.mamul!!')
+  }
+
+  const onSourceChange = (city_id) => {
+    console.log('source', city_id)
+  }
+
+  const onDestinationChange = (city_id) => {
+    console.log('destination', city_id)
   }
 
   const partner_name = data && data.partner && data.partner.name
@@ -71,20 +144,20 @@ const CustomerPo = (props) => {
             </Form.Item>
           </Col>
           <Col xs={24} sm={6}>
-            <Form.Item label='Source'>
-              <Select
-                onChange={handlechange}
-                options={createPO}
-              />
-            </Form.Item>
+            <CitySelect
+              label='Source'
+              onChange={onSourceChange}
+              required
+              name='source'
+            />
           </Col>
           <Col xs={24} sm={6}>
-            <Form.Item label='Destination'>
-              <Select
-                onChange={handlechange}
-                options={createPO}
-              />
-            </Form.Item>
+            <CitySelect
+              label='Destination'
+              onChange={onDestinationChange}
+              required
+              name='destination'
+            />
           </Col>
         </Row>
         <Divider className='hidden-xs' />
@@ -187,9 +260,9 @@ const CustomerPo = (props) => {
           <Col xs={24} sm={12}>
             <Row gutter={10}>
               <Col xs={12}>
-                <Form.Item label='To-price'>
+                <Form.Item label='To-Pay'>
                   <Input
-                    placeholder='To-Price'
+                    placeholder='To-Pay'
                     disabled={false}
                   />
                 </Form.Item>
