@@ -71,7 +71,7 @@ const TripDetailContainer = (props) => {
           <TripTime trip_info={trip_info} trip_id={trip_info.id}/>
           <Collapse accordion className='small mt10'>
             <Panel header='Customer/Partner - Billing Comment' key='1'>
-              <BillingComment trip_id={trip_info.id} />
+              <BillingComment trip_id={trip_info.id} trip_info={trip_info} />
             </Panel>
           </Collapse>
         </Col>
