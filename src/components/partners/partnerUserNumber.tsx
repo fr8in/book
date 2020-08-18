@@ -13,7 +13,7 @@ mutation PartnerNumberEdit($mobile:String,$id:Int) {
   }
 `
 const PartnerUserNumber = (props) => {
-  const { id, mobile } = props
+  const { id, mobile, loading } = props
 
   const [updateUserNumber] = useMutation(
     UPDATE_PARTNER_NUMBER_MUTATION,
@@ -33,10 +33,11 @@ const PartnerUserNumber = (props) => {
   }
 
   return (
+    loading ? null : (
     <InlineEdit
-      text={mobile || 'No Number'}
+      text={mobile}
       onSetText={onSubmit}
-    />
+    />)
   )
 }
 

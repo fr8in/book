@@ -18,7 +18,6 @@ mutation partnerBankEdit ($account_number:String,$ifsc_code:String,$acconnt_hold
 }
 `
 const EditBank = (props) => {
-
   const { visible, onHide, cardcode } = props
 
   const [updatePartnerBank] = useMutation(
