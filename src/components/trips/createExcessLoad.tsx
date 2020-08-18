@@ -7,6 +7,11 @@ const CreateExcessLoad = (props) => {
   const onSubmit = () => {
     console.log('Excess Load create button Clicked!!')
   }
+
+  const onCityChange = (city_id) => {
+    console.log('City ID', city_id)
+  }
+
   return (
     <Modal
       visible={props.visible}
@@ -46,7 +51,7 @@ const CreateExcessLoad = (props) => {
           <Col xs={12}>
             <CitySelect
               label='Destination'
-              onChange={() => console.log}
+              onChange={onCityChange}
               disabled={false}
             />
           </Col>

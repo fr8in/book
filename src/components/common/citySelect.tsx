@@ -75,7 +75,7 @@ const CitySelect = (props) => {
         location: `${selectedCity[0].latitude},${selectedCity[0].longitude}`
       })
     } else {
-      onChange(value)
+      onChange(value.key)
     }
   }
 
