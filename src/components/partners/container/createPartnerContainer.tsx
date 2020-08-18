@@ -1,58 +1,71 @@
 import { Row, Col, Card, Input, Form, Button, Select,Space,message } from 'antd'
 import { gql, useMutation,useQuery } from '@apollo/client'
 
-
-const INSERT_PARTNER_MUTATION = gql`
-mutation partner_create($name: String, $email: String, $cibil: Int, $address: jsonb, $pin_code: Int, $account_number: String, $ifsc_code: String, $mobile: String, $pan_no: String, $contact_name: String, $acconnt_holder: String, $partner_status_id:Int,$city_id:Int,$partner_advance_percentage_id:Int,$onboarded_by_id:Int) {
-  insert_partner(
-    objects: {
-      name: $name,
-      pan: $pan_no, 
-      cibil: $cibil, 
-      address: $address, 
-      account_number: $account_number,
-      ifsc_code: $ifsc_code,
-      partner_users:
-       {data: {
-         mobile: $mobile,
-          name: $contact_name,
-           email: $email}
-        },
-      acconnt_holder: $acconnt_holder,
-      partner_status_id:$partner_status_id,
-      city_id:$city_id,
-      partner_advance_percentage_id:$partner_advance_percentage_id,
-      onboarded_by_id:$onboarded_by_id
-    }) {
-    returning {
+ const PARTNERS_SUBSCRIPTION = gql`
+  query create_partner{
+    employee{
       id
+      email
+    }
+    partner_advance_percentage{
+      id
+      name
+    }
+    city{
+      id
+      name    
     }
   }
-}
 `
 
- const PARTNERS_QUERY = gql`
-    query create_partner{
-      employee{
+const INSERT_PARTNER_MUTATION = gql`
+  mutation partner_create(
+    $name: String, $email: String, $cibil: Int, $address: jsonb, 
+    $pin_code: Int, $account_number: String, $ifsc_code: String, 
+    $mobile: String, $pan_no: String, $contact_name: String, 
+    $acconnt_holder: String, $partner_status_id:Int,$city_id:Int,
+    $partner_advance_percentage_id:Int,$onboarded_by_id:Int) 
+    {
+    insert_partner(
+      objects: {
+        name: $name,
+        pan: $pan_no, 
+        cibil: $cibil, 
+        address: $address, 
+        account_number: $account_number,
+        ifsc_code: $ifsc_code,
+        partner_users:
+        {data: {
+          mobile: $mobile,
+            name: $contact_name,
+            email: $email}
+          },
+        acconnt_holder: $acconnt_holder,
+        partner_status_id:$partner_status_id,
+        city_id:$city_id,
+        partner_advance_percentage_id:$partner_advance_percentage_id,
+        onboarded_by_id:$onboarded_by_id
+      }) {
+      returning {
         id
-        email
-      }
-      partner_advance_percentage{
-        id
-        name
-      }
-      city{
-        id
-        name    
       }
     }
- `
-
+  }
+`
 
 
 const PartnerProfile = () => {
+
+  const { loading, error, data } = useQuery(
+    PARTNERS_SUBSCRIPTION,
+    {
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
+  )
+  console.log('CreatePartnersContainer error', error)
  
-  const [updatePartnerAddress] = useMutation(
+  const [updatePartner] = useMutation(
     INSERT_PARTNER_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
@@ -60,20 +73,11 @@ const PartnerProfile = () => {
     }
   )
  
-  
-  const { loading, error, data } = useQuery(
-    PARTNERS_QUERY,
-    {
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
-    }
-  )
-  console.log('CreatePartnersContainer error', error)
   var employee = [];
   var city = [];
   var partner_advance_percentage = [];
   if (!loading) {
-    partner_advance_percentage = data.partner_advance_percentage
+     partner_advance_percentage = data.partner_advance_percentage
      city = data.city
      employee = data.employee
   }
@@ -98,7 +102,7 @@ const PartnerProfile = () => {
       state:form.state,
       pin_code:form.pin_code
     }   
-    updatePartnerAddress({
+    updatePartner({
       variables: {
         name: form.name,
         contact_name: form.contact_name,

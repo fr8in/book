@@ -13,7 +13,7 @@ mutation PartnerCibilScoreEdit($cibil:Int,$cardcode:String) {
 }
 `
 const PartnerCibilScore = (props) => {
-  const { cardcode, cibil } = props
+  const { cardcode, cibil,loading } = props
 
   const [updateCibilScore] = useMutation(
     UPDATE_CIBIL_SCORE_MUTATION,
@@ -33,10 +33,11 @@ const PartnerCibilScore = (props) => {
   }
 
   return (
+    loading ? null : (
     <InlineEdit
-      text={cibil || 'No CibilScore'}
+      text={cibil}
       onSetText={onSubmit}
-    />
+    />)
   )
 }
 

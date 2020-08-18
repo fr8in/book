@@ -34,7 +34,7 @@ const FileUpload = (props) => {
   const [file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
   const previewInitial = { visible: false, image: '', title: '', ext: '' }
-  const [preview, setPreview] = useState(previewInitial) 
+  const [preview, setPreview] = useState(previewInitial)
 
   const [s3FileUpload] = useMutation(
     FILE_UPLOAD_MUTATION,

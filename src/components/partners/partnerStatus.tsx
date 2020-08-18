@@ -1,16 +1,6 @@
 import { Checkbox, Row, Col, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 
-const UPDATE_PARTNER_DND_MUTATION = gql`
-mutation PartnerDnd($dnd:Boolean,$cardcode:String) {
-  update_partner(_set: {dnd: $dnd}, where: {cardcode: {_eq: $cardcode}}) {
-    returning {
-      cardcode
-      dnd
-    }
-  }
-}
-`
 const UPDATE_PARTNER_BLACKLIST_MUTATION = gql`
 mutation PartnerBlacklist($partner_status_id:Int,$cardcode:String){
   update_partner( _set: {partner_status_id: $partner_status_id }, where: {cardcode:{_eq: $cardcode}} 
@@ -33,6 +23,18 @@ mutation PartnerDeActivate($partner_status_id:Int,$cardcode:String){
   }
 }
 `
+
+const UPDATE_PARTNER_DND_MUTATION = gql`
+mutation PartnerDnd($dnd:Boolean,$cardcode:String) {
+  update_partner(_set: {dnd: $dnd}, where: {cardcode: {_eq: $cardcode}}) {
+    returning {
+      cardcode
+      dnd
+    }
+  }
+}
+`
+
 
 const PartnerStatus = (props) => {
   const { partnerInfo } = props

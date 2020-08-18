@@ -3,7 +3,7 @@ import { Modal, Button, Input, Row, Col, Form, Select,message } from 'antd'
 import { gql, useMutation,useQuery } from '@apollo/client'
 const { Option } = Select
 
-const PARTNERS_LEAD_QUERY = gql`
+const PARTNERS_LEAD_SUBSCRIPTION = gql`
   query create_partner_lead{
     channel{
       id
@@ -63,7 +63,7 @@ const CreateLead = (props) => {
   const [userComment, setUserComment] = useState('')
  
   const { loading, error, data } = useQuery(
-    PARTNERS_LEAD_QUERY,
+    PARTNERS_LEAD_SUBSCRIPTION,
     {
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true

@@ -1,10 +1,10 @@
 import { Modal, Button, Row, Col, Form, Input, message } from 'antd';
-import { UploadOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
+import FileUploadOnly from '../common/fileUploadOnly'
 
 const PRIVATE_GODWON_MUTATION = gql`
-mutation updatePrivateGodown($id: Int!, $private_godown_address: jsonb) {
-  update_trip(_set: {private_godown_address: $private_godown_address}, where: {id: {_eq: $id}}) {
+mutation updatePrivateGodown($id: Int!, $private_godown_address: jsonb,$unloaded_private_godown:Boolean) {
+  update_trip(_set: {private_godown_address: $private_godown_address,unloaded_private_godown: $unloaded_private_godown}, where: {id: {_eq: $id}}) {
     returning {
       id
     }
@@ -14,7 +14,7 @@ mutation updatePrivateGodown($id: Int!, $private_godown_address: jsonb) {
 `
 
 const CheckBoxModal = (props) => {
-  const { visible, onHide, trip_id } = props
+  const { visible, onHide, trip_id,trip_info } = props
 
   console.log('trip_info', trip_id)
 
@@ -38,11 +38,13 @@ const CheckBoxModal = (props) => {
     insertTopay({
       variables: {
         id: trip_id,
-        private_godown_address: private_godown_address
+        private_godown_address: private_godown_address,
+        unloaded_private_godown: true
       }
     })
   }
 
+ 
   return (
     <>
       <Modal
@@ -54,9 +56,13 @@ const CheckBoxModal = (props) => {
         <Form layout='vertical' onFinish={onPrivateGodown}>
           <div>
             <h4>Godown Receipt</h4>
-            <Button>
-              <UploadOutlined />
-            </Button>
+            <FileUploadOnly
+                id={trip_id}
+                type='trip'
+                folder='warehousereceipt/'
+                file_type='WH'
+               
+              />
           </div>
           <Row>
             <Col sm={20}>

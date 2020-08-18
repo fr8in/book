@@ -6,8 +6,22 @@ import Partners from '../partners'
 import { gql, useQuery } from '@apollo/client'
 
 const PARTNERS_QUERY = gql`
-  query partners($offset: Int!, $limit: Int!,$partner_statusId:[Int!], $name:String, $cardcode:String) {
-    partner(offset: $offset, limit: $limit,where:{partner_status:{id:{_in:$partner_statusId}}, name: {_ilike: $name}, cardcode: {_ilike: $cardcode}}) {
+  query partners(
+    $offset: Int!, 
+    $limit: Int!,
+    $partner_statusId:[Int!], 
+    $name:String, 
+    $cardcode:String
+    ) {
+    partner(
+      offset: $offset, 
+      limit: $limit,
+      where:{
+        partner_status:{id:{_in:$partner_statusId}}, 
+        name: {_ilike: $name}, 
+        cardcode: {_ilike: $cardcode}
+      }
+      ) {
       id
       name
       cardcode
@@ -86,7 +100,7 @@ const PartnerContainer = () => {
   }
   console.log('partner_aggregate', partner_aggregate)
 
-  const partner_status_list = partner_status.filter(data => data.id !== 8)
+  
 
   const record_count = partner_aggregate && partner_aggregate.aggregate && partner_aggregate.aggregate.count
 
@@ -127,7 +141,7 @@ const PartnerContainer = () => {
         record_count={record_count}
         filter={filter}
         onFilter={onFilter}
-        partner_status_list={partner_status_list}
+        partner_status_list={partner_status}
         onNameSearch={onNameSearch}
         onCardCodeSearch={onCardCodeSearch}
       />
