@@ -113,5 +113,5 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         }
       }
     }
-  }
+}
 `

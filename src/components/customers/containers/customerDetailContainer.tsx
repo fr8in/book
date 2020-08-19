@@ -30,7 +30,9 @@ import Fr8Branch from '../fr8Branch'
 import CustomerUser from '../createCustomerUser'
 import CustomerBranch from '../createCustomerBranch'
 import TitleWithCount from '../../common/titleWithCount'
-import OngoingTrip from '../ongoingTrip'
+import ClosedTrip from '../ongoingTrip'
+import OngoingTrip from '../../trips/activeTrips'
+
 // Apollo Client
 import { useSubscription } from '@apollo/client'
 import { CUSTOMER_DETAIL_SUBSCRIPTION } from './query/cutomerDetailSubscription'
@@ -95,7 +97,8 @@ const CustomerDetailContainer = (props) => {
      final_count= customerInfo.final && customerInfo.final.aggregate && customerInfo.final.aggregate.count
      advancepending_count= customerInfo.advancepending && customerInfo.advancepending.aggregate && customerInfo.advancepending.aggregate.count 
   }
- 
+  console.log('customerInfo',customerInfo)
+
   const onTabChange = (key) => {
     setVars({ ...vars, tabKey: key })
     switch (key) {
@@ -236,7 +239,7 @@ const CustomerDetailContainer = (props) => {
                       </Button>
                     </Row>
                     <Users
-                      customerUser={customerInfo.customer_users}
+                      customeruser={customerInfo}
                       loading={loading}
                     />
                   </TabPane>
@@ -267,7 +270,7 @@ const CustomerDetailContainer = (props) => {
                     tab={<TitleWithCount name='Closed' value={closed_count} />}
                     key='10'
                   >
-                    <OngoingTrip trips={customerInfo.trips} loading={loading}/>
+                    <ClosedTrip trips={customerInfo.trips} loading={loading}/>
                   </TabPane>
                   <TabPane tab='Details' key='11'>
                     <Row className='p10'>
