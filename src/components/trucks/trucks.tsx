@@ -262,7 +262,7 @@ const Trucks = (props) => {
       {object.editVisible && (
         <CreateBreakdown
           visible={object.editVisible}
-          truck_id={object.editData}
+          id={object.editData}
           onHide={handleHide}
           title={object.title}
         />

@@ -19,6 +19,7 @@ import Loading from '../common/loading'
 import FileUploadOnly from '../common/fileUploadOnly'
 import DeleteFile from '../common/deleteFile'
 import ViewFile from '../common/viewFile'
+import { useState } from 'react'
 
 const TRUCKS_QUERY = gql`
 query trucks($truck_id : Int){
@@ -74,6 +75,10 @@ const onChange = (date, dateString) => {
 const TruckActivation = (props) => {
   const { visible, onHide, truck_id, title } = props
 
+  const initial = { city_id: null }
+
+  const [city, setCity] = useState(initial)
+
   const { loading, error, data } = useQuery(
     TRUCKS_QUERY,
     {
@@ -113,6 +118,10 @@ const TruckActivation = (props) => {
     return { value: data.id, label: data.name }
   })
 
+  const onCityChange = (city_id) => {
+    setCity({ ...city, city_id: city_id })
+  }
+
   const onTruckActivationSubmit = (form) => {
     console.log('Traffic Added', truck_id)
     updateTruckActivation({
@@ -120,7 +129,7 @@ const TruckActivation = (props) => {
         id: truck_id,
         truck_status_id: 1,
         available_at: form.available_at,
-        city_id: parseInt(form.city_id, 10),
+        city_id:parseInt(city.city_id,10),
         truck_type_id: parseInt(form.truck_type_id, 10)
       }
     })
@@ -231,7 +240,7 @@ const TruckActivation = (props) => {
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={12}>
-                  <CitySelect label='Available City' />
+                  <CitySelect label='Available City'   onChange={onCityChange}/>
                 </Col>
               </Row>
               <Row>
