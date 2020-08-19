@@ -1,6 +1,6 @@
-import { Row, Col, Form, Input, Upload, Button ,message} from 'antd'
-import { UploadOutlined } from '@ant-design/icons'
+import { Row, Col, Form, Input, Button ,message} from 'antd'
 import { gql, useMutation } from '@apollo/client'
+import FileUpload from '../common/fileUpload'
 
 const BILLING_COMMENT_MUTATION = gql`
 mutation updateBillingComment($id: Int!, $billing_remarks: String){
@@ -13,7 +13,7 @@ mutation updateBillingComment($id: Int!, $billing_remarks: String){
 `
 
 const BillingComment = (props) => {
-  const {trip_id} = props
+  const {trip_id,trip_info} = props
 
   const [billingRemarks] = useMutation(
     BILLING_COMMENT_MUTATION,
@@ -33,6 +33,15 @@ const BillingComment = (props) => {
     }) 
   }
 
+  const Evidence_List_files = trip_info && trip_info.trip_files && trip_info.trip_files.length > 0 ? trip_info.trip_files.filter(file => file.type === 'EVIDENCELIST') : null
+  const evidence_file_list = Evidence_List_files && Evidence_List_files.length > 0 && Evidence_List_files.map((file, i) => {
+    return ({
+      uid: `${file.type}-${i}`,
+      name: file.file_path,
+      status: 'done'
+    })
+  })
+console.log('evidence_file_list',evidence_file_list)
   return (
     <Row>
       <Col xs={24}>
@@ -50,18 +59,13 @@ const BillingComment = (props) => {
             <Col xs={6}>
               <div >
                 <h4>Evidence</h4>
-                <Upload>
-                  <Button>
-                    <UploadOutlined /> Select File
-                  </Button>
-                </Upload>
-                <Button
-                  type='primary'
-                  disabled
-                  style={{ marginTop: 10 }}
-                >
-                  {'Start Upload'}
-                </Button>
+                <FileUpload
+                id={trip_id}
+                type='trip'
+                folder='approvals/'
+                file_type='EVIDENCELIST'
+                file_list={evidence_file_list}
+              />
               </div>
             </Col>
             <Col xs={6}>

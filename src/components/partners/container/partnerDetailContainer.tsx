@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { Row, Col, Card, Tabs, Button, Space, Tooltip } from 'antd'
 import { CarOutlined, WalletOutlined, FileTextOutlined, MailOutlined } from '@ant-design/icons'
@@ -29,24 +29,24 @@ import ReportEmail from '../reportEmail'
 import WalletStatement from '../walletStatement'
 const TabPane = Tabs.TabPane
 
-const on_going = ["Confirmed", "Reported at source", "Intransit", "Reported at destination"]
-const pod = ["Delivered"]
-const invoiced = ["Invoiced","Recieved"]
-const paid = ["Paid", "Closed"] 
+const on_going = ['Confirmed', 'Reported at source', 'Intransit', 'Reported at destination']
+const pod = ['Delivered']
+const invoiced = ['Invoiced', 'Recieved']
+const paid = ['Paid', 'Closed']
 const PartnerDetailContainer = (props) => {
   const initial = { topUp: false, reportMail: false, statememt: false }
   const { visible, onShow, onHide } = useShowHide(initial)
-  const [tripStatusId, setTripStatusId ] = useState(on_going)
+  const [tripStatusId, setTripStatusId] = useState(on_going)
 
   const onStatusChange = (key) => {
-    console.log('key',key)
-    if(key === '4') {
-      setTripStatusId (on_going) 
+    console.log('key', key)
+    if (key === '4') {
+      setTripStatusId(on_going)
     }
-    if(key === '5') {
+    if (key === '5') {
       setTripStatusId(pod)
     }
-    if(key === '6') {
+    if (key === '6') {
       setTripStatusId(invoiced)
     }
   }
@@ -54,45 +54,45 @@ const PartnerDetailContainer = (props) => {
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,
     {
-      variables: { 
+      variables: {
         cardcode: cardcode,
-        partner_id : partner_id,
-        trip_status_value: tripStatusId, 
+        partner_id: partner_id,
+        trip_status_value: tripStatusId,
         ongoing: on_going,
         pod: pod,
         invoiced: invoiced,
-        paid:paid
-        }
+        paid: paid
+      }
     }
   )
 
   console.log('PartnerDetailContainer Error', error)
   console.log('PartnerDetailContainer Data', data)
 
-var partnerData = {};
-var trucks = {};
-var trips = {};
-var truck_count = 0
-var ongoing_count = 0
-var pod_count = 0
-var invoiced_count = 0
-var paid_count = 0
-var fas_tag = {};
-if (!loading) {
-  const { partner } = data
-   partnerData = partner[0] ? partner[0] : { name: 'ID does not exist' }
-   trucks = partnerData.trucks
-   trips = partnerData.trips
-   fas_tag = partnerData.fastags
-  console.log('partnerData', partnerData)
-  console.log('trucks', trucks)
-  console.log('fas_tag',fas_tag)
-   truck_count = partnerData.trucks_aggregate && partnerData.trucks_aggregate.aggregate && partnerData.trucks_aggregate.aggregate.count
-   ongoing_count = partnerData.ongoing && partnerData.ongoing.aggregate && partnerData.ongoing.aggregate.count
-   pod_count = partnerData.pod && partnerData.pod.aggregate && partnerData.pod.aggregate.count
-   invoiced_count = partnerData.invoiced && partnerData.invoiced.aggregate && partnerData.invoiced.aggregate.count
-   paid_count = partnerData.paid && partnerData.paid.aggregate && partnerData.paid.aggregate.count
-}
+  var partner_info = {}
+  var trucks = {}
+  var trips = {}
+  var truck_count = 0
+  var ongoing_count = 0
+  var pod_count = 0
+  var invoiced_count = 0
+  var paid_count = 0
+  var fas_tag = {}
+  if (!loading) {
+    const { partner } = data
+    partner_info = partner[0] ? partner[0] : { name: 'ID does not exist' }
+    trucks = partner_info.trucks
+    trips = partner_info.trips
+    fas_tag = partner_info.fastags
+    console.log('partner_info', partner_info)
+    console.log('trucks', trucks)
+    console.log('fas_tag', fas_tag)
+    truck_count = partner_info.trucks_aggregate && partner_info.trucks_aggregate.aggregate && partner_info.trucks_aggregate.aggregate.count
+    ongoing_count = partner_info.ongoing && partner_info.ongoing.aggregate && partner_info.ongoing.aggregate.count
+    pod_count = partner_info.pod && partner_info.pod.aggregate && partner_info.pod.aggregate.count
+    invoiced_count = partner_info.invoiced && partner_info.invoiced.aggregate && partner_info.invoiced.aggregate.count
+    paid_count = partner_info.paid && partner_info.paid.aggregate && partner_info.paid.aggregate.count
+  }
 
   return (
     <Row>
@@ -102,7 +102,7 @@ if (!loading) {
           className='border-top-blue'
           title={
             <DetailPageHeader
-              title={<HeaderInfo partner={partnerData} loading={loading} />}
+              title={<HeaderInfo partner={partner_info} />}
               extra={
                 <Space>
                   <Tooltip title='Account Statement'>
@@ -119,7 +119,7 @@ if (!loading) {
                       <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />} />
                     </Tooltip>
                   </Link>
-                  <WalletStatus cardcode={partnerData.cardcode} status={partnerData.wallet_block} />
+                  <WalletStatus cardcode={partner_info.cardcode} status={partner_info.wallet_block} />
                 </Space>
               }
             />
@@ -127,10 +127,10 @@ if (!loading) {
         >
           <Row>
             <Col xs={24} sm={16} md={16}>
-              <BasicDetail partnerInfo={partnerData} />
+              <BasicDetail partnerInfo={partner_info} />
             </Col>
             <Col xs={24} sm={8} md={8}>
-              <PartnerStatus  partnerInfo = {partnerData}/>
+              <PartnerStatus partnerInfo={partner_info} />
             </Col>
           </Row>
           <Row>
@@ -140,7 +140,7 @@ if (!loading) {
                   <TabPane tab='Detail' key='1'>
                     <Row gutter={10} className='p10'>
                       <Col xs={24} sm={12} md={12}>
-                        <DetailInfo partnerDetail={partnerData} loading={loading} />
+                        <DetailInfo partnerDetail={partner_info} />
                       </Col>
                       <Col xs={24} sm={12} md={12}>
                         <Card size='small' className='card-body-0'>
@@ -154,13 +154,13 @@ if (!loading) {
                               <Barchart />
                             </TabPane>
                             <TabPane tab='Documents' key='3'>
-                              <Document />
+                              <Document partnerInfo={partner_info} />
                             </TabPane>
                             <TabPane tab='Fuel Detail' key='4'>
                               <PartnerFuelDetail />
                             </TabPane>
                             <TabPane tab='FasTag' key='5'>
-                              <FasTags  fastag = {fas_tag}/>
+                              <FasTags fastag={fas_tag} />
                             </TabPane>
                           </Tabs>
                         </Card>
@@ -180,17 +180,17 @@ if (!loading) {
                   </TabPane>
                   <TabPane tab='Comment' key='3'>
                     <div className='p10'>
-                      <Comment partner_id={partnerData.id} loading={loading}/>
+                      <Comment partner_id={partner_info.id} loading={loading} />
                     </div>
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='On-going' value={ongoing_count} />} key='4'>
-                    <TripDetail trips= {trips} loading={loading}/>
+                    <TripDetail trips={trips} loading={loading} />
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='POD' value={pod_count} />} key='5'>
-                    <TripDetail trips= {trips} loading={loading}/>
+                    <TripDetail trips={trips} loading={loading} />
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='Invoiced' value={invoiced_count} />} key='6'>
-                    <TripDetail trips= {trips} loading={loading}/>
+                    <TripDetail trips={trips} loading={loading} />
                   </TabPane>
                   <TabPane tab={<TitleWithCount name='Paid' value={paid_count} />} key='7'>
                     <PaidContainer cardcode={cardcode} />
@@ -203,7 +203,7 @@ if (!loading) {
       </Col>
       {visible.topUp && <WalletTopUp visible={visible.topUp} onHide={onHide} />}
       {visible.reportMail && <ReportEmail visible={visible.reportMail} onHide={onHide} />}
-      {visible.statement && <WalletStatement visible={visible.statement} onHide={onHide} cardcode={partnerData.cardcode} />}
+      {visible.statement && <WalletStatement visible={visible.statement} onHide={onHide} cardcode={partner_info.cardcode} />}
     </Row>
   )
 }
