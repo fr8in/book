@@ -14,64 +14,66 @@ import Comment from '../../components/partners/comment'
 
 
 const PARTNERS_LEAD_QUERY = gql`
-  query(
-    $offset: Int!
-    $limit: Int!
-    $partner_status_name:[String!]
-    $channel_name:[String!]
-    $mobile: String
-    $no_comment:Boolean
-    ){
-    partner(
-      offset: $offset
-      limit: $limit
-      order_by: 
-      {lead_priority: desc_nulls_last},
-      where:{
-        partner_users:{mobile:{ _like: $mobile}},
-        partner_status:{name:{_in:$partner_status_name}},
-        channel: {name: {_in:$channel_name}}}
-        ){
+query(
+  $offset: Int!
+  $limit: Int!
+  $partner_status_name:[String!]
+  $channel_name:[String!]
+  $mobile: String
+  $city_name:String
+  $no_comment:Boolean
+  ){
+  partner(
+    offset: $offset
+    limit: $limit
+    order_by: 
+    {lead_priority: desc_nulls_last},
+    where:{
+      partner_users:{mobile:{ _like: $mobile}},
+      city:{name:{_ilike:$city_name}},
+      partner_status:{name:{_in:$partner_status_name}},
+      channel: {name: {_in:$channel_name}}}
+      ){
+    id
+    name
+    lead_priority
+    onboarded_by{
       id
-      name
-      lead_priority
-      onboarded_by{
-        id
-        email
-      }
-      partner_users{
-        mobile
-      }
-      city{
-        id
-        name
-      }
-      channel{
-        id
-        name
-      }
-      partner_status{
-        name
-      }
-      partner_comments(where:{partner_id:{_is_null: $no_comment}}){
-        created_at
-        description
-      }
+      email
     }
-    partner_aggregate(where: {partner_status: {name: {_in: ["Lead","Registered","Rejected"]}}}) {
-      aggregate {
-        count
-      }
+    partner_users{
+      mobile
     }
-    partner_status(where:{name: {_in: ["Lead","Registered","Rejected"]}}, order_by: {id: asc}) {
+    city{
       id
       name
     }
-    channel {
+    channel{
       id
       name
+    }
+    partner_status{
+      name
+    }
+    partner_comments(where:{partner_id:{_is_null: $no_comment}}){
+      created_at
+      description
     }
   }
+  partner_aggregate(where: {partner_status: {name: {_in: ["Lead","Registered","Rejected"]}}}) {
+    aggregate {
+      count
+    }
+  }
+  partner_status(where:{name: {_in: ["Lead","Registered","Rejected"]}}, order_by: {id: asc}) {
+    id
+    name
+  }
+  channel {
+    id
+    name
+  }
+}
   `
 const LEAD_REJECT_MUTATION = gql`
   mutation partner_lead_reject($partner_status_id:Int,$id:Int! ){
@@ -106,6 +108,7 @@ const PartnerLead = () => {
     offset: 0,
     limit: 10,
     mobile: null,
+    city_name:null,
     partner_status_name: ['Lead', 'Registered'],
     channel_name: null
   }
@@ -120,7 +123,9 @@ const PartnerLead = () => {
     no_comment:filter.no_comment && filter.no_comment.length > 0 ? true : false ,
     partner_status_name: filter.partner_status_name,
     channel_name: filter.channel_name,
-    mobile: filter.mobile ? `%${filter.mobile}%` : null
+    mobile: filter.mobile ? `%${filter.mobile}%` : null,
+    city_name: filter.city_name ? `%${filter.city_name}%` : null
+
   }
 
   const { loading, error, data } = useQuery(
@@ -218,7 +223,9 @@ const PartnerLead = () => {
     setFilter({ ...filter, mobile: e.target.value, offset: 0 })
   };
   
-
+  const handleCityName = (e) => {
+    setFilter({ ...filter, city_name: e.target.value, offset: 0 })
+  };
   const handleNoComment = (checked) => {
     console.log('checked',checked)
     setCurrentPage(1)
@@ -285,7 +292,12 @@ const PartnerLead = () => {
       },
       filterDropdown: (
         <div>
-          <Input placeholder='Search City Name' id='cityName' name='cityName' />
+          <Input placeholder='Search City Name'
+           id='cityName' 
+           name='cityName' 
+           value={filter.city_name}
+           onChange={handleCityName}
+           />
         </div>
       ),
       filterIcon: (filtered) => (
