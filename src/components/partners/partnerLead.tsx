@@ -1,4 +1,4 @@
-import { Table, Input, Switch, Popconfirm, Button, Tooltip, message, Pagination, Checkbox, Modal } from 'antd'
+import { Table, Input, Switch, Popconfirm, Button, Tooltip, message, Pagination, Checkbox, Modal,Radio } from 'antd'
 import {
   EditTwoTone,
   CommentOutlined,
@@ -20,6 +20,7 @@ const PARTNERS_LEAD_QUERY = gql`
     $partner_status_name:[String!]
     $channel_name:[String!]
     $mobile: String
+    $no_comment:Boolean
     ){
     partner(
       offset: $offset
@@ -52,7 +53,7 @@ const PARTNERS_LEAD_QUERY = gql`
       partner_status{
         name
       }
-      partner_comments {
+      partner_comments(where:{partner_id:{_is_null: $no_comment}}){
         created_at
         description
       }
@@ -93,10 +94,11 @@ mutation lead_priority_status($lead_priority: Boolean, $id: Int) {
   }
 }
 `
-const comment = [{ value: 1, text: 'No Comment' }]
+const no_comment = [{ value:1, label: 'No Comment' }]
 
 const PartnerLead = () => {
   const initial = {
+    no_comment:[],
     comment: false,
     employeeList: false,
     ownerVisible: false,
@@ -105,7 +107,7 @@ const PartnerLead = () => {
     limit: 10,
     mobile: null,
     partner_status_name: ['Lead', 'Registered'],
-    channel_name: ["Direct", "Social Media", "Referral", "App"]
+    channel_name: null
   }
 
   const [filter, setFilter] = useState(initial)
@@ -115,6 +117,7 @@ const PartnerLead = () => {
   const partnerQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
+    no_comment:filter.no_comment && filter.no_comment.length > 0 ? true : false ,
     partner_status_name: filter.partner_status_name,
     channel_name: filter.channel_name,
     mobile: filter.mobile ? `%${filter.mobile}%` : null
@@ -195,41 +198,32 @@ const PartnerLead = () => {
     return { value: data.name, label: data.name }
   })
 
-
-  const onPageChange = (value) => {
-    setFilter({ ...filter, offset: value })
-  }
-
-  const onFilter = (value) => {
-    setFilter({ ...filter, partner_status_name: value, offset: 0 })
-  }
-
-  const onChannelFilter = (value) => {
-    setFilter({ ...filter, channel_name: value, offset: 0 })
-  }
-  const onMobileSearch = (value) => {
-    setFilter({ ...filter, mobile: value })
-  };
-
   const pageChange = (page, pageSize) => {
     const newOffset = page * pageSize - filter.limit
     setCurrentPage(page)
-    onPageChange(newOffset)
+    setFilter({ ...filter, offset: newOffset })
   }
 
   const handleStatus = (checked) => {
-    onFilter(checked)
     setCurrentPage(1)
+    setFilter({ ...filter, partner_status_name: checked, offset: 0 })
   }
-
+  
   const handleChannelStatus = (checked) => {
-    onChannelFilter(checked)
     setCurrentPage(1)
+    setFilter({ ...filter, channel_name: checked, offset: 0 })
   }
-
+   
   const handleMobile = (e) => {
-    onMobileSearch(e.target.value);
+    setFilter({ ...filter, mobile: e.target.value, offset: 0 })
   };
+  
+
+  const handleNoComment = (checked) => {
+    console.log('checked',checked)
+    setCurrentPage(1)
+    setFilter({ ...filter, no_comment:checked, offset: 0 })
+  }
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -368,7 +362,15 @@ const PartnerLead = () => {
             comment
           )
       },
-      filters: comment
+      filterDropdown: (
+        <Checkbox.Group
+          options={no_comment}
+          defaultValue={filter.no_comment}
+          onChange={handleNoComment}
+          className='filter-drop-down'
+        />
+      ),
+      
     },
     {
       title: 'Created Date',
