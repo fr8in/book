@@ -3,8 +3,8 @@ import { Row, Col, Table, Input, Button, message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import moment from 'moment'
 
-const PARTNER_COMMENT_QUERY = gql`
-  query partnerComment($id: Int!){
+const PARTNER_COMMENT_SUBSCRIPTION = gql`
+  query partner_comment($id: Int!){
     partner(where:{id:{_eq:$id}}) {
       partner_status{
         name
@@ -19,7 +19,7 @@ const PARTNER_COMMENT_QUERY = gql`
   }
 `
 const INSERT_PARTNER_COMMENT_MUTATION = gql`
-  mutation PartnerComment($description:String, $topic:String, $partner_id: Int, $created_by:String ) {
+  mutation partner_comment($description:String, $topic:String, $partner_id: Int, $created_by:String ) {
     insert_partner_comment(objects: {description: $description, partner_id: $partner_id, topic: $topic, created_by:$created_by}) {
       returning {
         description
@@ -34,7 +34,7 @@ const Comment = (props) => {
   const [userComment, setUserComment] = useState('')
 
   const { loading, error, data } = useQuery(
-    PARTNER_COMMENT_QUERY,
+    PARTNER_COMMENT_SUBSCRIPTION,
     {
       variables: { id: partner_id },
       notifyOnNetworkStatusChange: true
@@ -102,7 +102,7 @@ const Comment = (props) => {
             onChange={handleChange}
             placeholder='Please enter comments'
           />
-        </Col>
+        </Col> 
         <Col xs={4}><Button type='primary' onClick={onSubmit}>Submit</Button></Col>
       </Row>
       <Table

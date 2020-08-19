@@ -13,7 +13,7 @@ mutation PartnerGstEdit($gst:String,$cardcode:String) {
 }
 `
 const PartnerGst = (props) => {
-  const { cardcode, gst } = props
+  const { cardcode, gst,loading } = props
 
   const [updateGst] = useMutation(
     UPDATE_PARTNER_GST_MUTATION,
@@ -33,10 +33,11 @@ const PartnerGst = (props) => {
   }
 
   return (
+    loading ? null : (
     <InlineEdit
-      text={gst || 'No Gst'}
+      text={gst}
       onSetText={onSubmit}
-    />
+    />)
   )
 }
 

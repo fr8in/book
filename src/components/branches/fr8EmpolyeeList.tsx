@@ -2,7 +2,7 @@ import { Modal, Select,message } from 'antd'
 import { gql, useQuery,useMutation } from '@apollo/client'
 import { useState } from 'react'
 
-const PARTNERS_QUERY = gql`
+const PARTNERS_SUBSCRIPTION = gql`
 query create_partner{
   employee{
     id
@@ -26,7 +26,7 @@ const onboarded_by = partner && partner.onboarded_by && partner.onboarded_by.ema
 const [employees, setEmployees] = useState('')
 console.log('onboarded_by',onboarded_by)
   const { loading, error, data } = useQuery(
-    PARTNERS_QUERY,
+    PARTNERS_SUBSCRIPTION,
     {
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true

@@ -27,7 +27,7 @@ mutation insert_city($name: String, $location: point) {
 }
 `
 const CitySelect = (props) => {
-  const { onChange, label, disabled, city } = props
+  const { onChange, label, disabled, city, required, name } = props
 
   const [citySearchMutation, { data }] = useMutation(
     CITY_SEARCH
@@ -41,8 +41,7 @@ const CitySelect = (props) => {
       },
       onCompleted (data) {
         const value = get(data, 'insert_city.returning', [])
-        message.success('Updated!!')
-        console.log('object', value[0].id)
+        // message.success('Updated!!')
         onChange(value[0].id)
       }
     }
@@ -67,15 +66,15 @@ const CitySelect = (props) => {
   }
 
   const onCityChange = (city, value) => {
-    const id = value.key.split('.')
+    const id = isNaN(value.key)
     const selectedCity = citySearch.filter(city => city.id === value.key)
-    if (id.length >= 2) {
+    if (id) {
       insertCity({
         name: selectedCity[0].name,
         location: `${selectedCity[0].latitude},${selectedCity[0].longitude}`
       })
     } else {
-      onChange(value)
+      onChange(value.key)
     }
   }
 
@@ -83,11 +82,10 @@ const CitySelect = (props) => {
   const formatCity = (_city) => _city ? `${_city.name}, ${_city.stateName}` : null
 
   return (
-    <Form.Item label={label}>
+    <Form.Item label={label} name={name} rules={[{ required: required }]} initialValue={formatCity(city)}>
       <Select
         showSearch
         placeholder={label}
-        defaultValue={formatCity(city)}
         onSearch={onSearch}
         disabled={disabled}
         onChange={(city, value) => onCityChange(city, value)}

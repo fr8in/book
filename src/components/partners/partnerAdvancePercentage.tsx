@@ -2,7 +2,7 @@ import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 
-const PARTNER_ADVANCE_PERCENTAGE_QUERY = gql`
+const PARTNER_ADVANCE_PERCENTAGE_SUBSCRIPTION = gql`
   query partnerAdvancePercentage{
    partner_advance_percentage{
     id
@@ -24,11 +24,12 @@ const AdvancePercentage = (props) => {
   const { advance_id, advance, cardcode } = props
 
   const { loading, error, data } = useQuery(
-    PARTNER_ADVANCE_PERCENTAGE_QUERY,
+    PARTNER_ADVANCE_PERCENTAGE_SUBSCRIPTION,
     {
       notifyOnNetworkStatusChange: true
     }
   )
+  console.log('advancePercentage error', error)
 
   const [UpdateAdvancePercentage] = useMutation(
     UPDATE_PARTNER_ADVANCE_PERCENTAGE_MUTATION,
@@ -37,7 +38,7 @@ const AdvancePercentage = (props) => {
       onCompleted () { message.success('Updated!!') }
     }
   )
-  console.log('advancePercentage error', error)
+  
 
   if (loading) return null
   const { partner_advance_percentage } = data
