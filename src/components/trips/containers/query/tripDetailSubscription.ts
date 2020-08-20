@@ -17,6 +17,15 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       unloaded_private_godown
       lr
       customer_confirmation
+      trip_partner_payment{
+        amount
+        mode
+        date
+      }
+      trip_partner_charge{
+        amount
+        name   
+      }
       trip_comments{
         id
         description

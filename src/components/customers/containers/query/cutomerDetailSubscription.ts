@@ -1,8 +1,33 @@
 import { gql } from '@apollo/client';
 
 export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
-  subscription customers($cardcode: String, $trip_status: [String!]) {
+  subscription customers($cardcode: String, $trip_status: [String!],$closed: [String!],$ongoing: [String!],$invoicepending: [String!],$final: [String!],$advancepending: [String!]) {
     customer(where: { cardcode: { _eq: $cardcode } }) {
+      closed: trips_aggregate(where: {trip_status: {name: {_in: $closed}}}) {
+        aggregate {
+          count
+        }
+      }
+      ongoing:trips_aggregate(where: {trip_status: {name: {_in: $ongoing}}}) {
+        aggregate {
+          count
+        }
+      }
+      invoicepending: trips_aggregate(where: {trip_status: {name: {_in: $invoicepending}}}) {
+        aggregate {
+          count
+        }
+      }
+      final: trips_aggregate(where: {trip_status: {name: {_in: $final}}}) {
+        aggregate {
+          count
+        }
+      }
+      advancepending:trips_aggregate(where: {trip_status: {name: {_in: $advancepending}}}) {
+        aggregate {
+          count
+        }
+      }
       id
       cardcode
       name
@@ -57,6 +82,7 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
       trips(where: { trip_status: { name: { _in: $trip_status } } }) {
         id
         order_date
+        km
         customer {
           customer_users {
             name
@@ -71,6 +97,9 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         destination {
           name
         }
+        partner{
+          name
+        }
         truck {
           truck_no
           length
@@ -80,8 +109,9 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         }
         trip_prices(limit: 1, where:{deleted_at:{_is_null: true}}) {
           customer_price
+          partner_price
         }
       }
     }
-  }
+}
 `
