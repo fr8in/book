@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import { Modal, Button, Input, Row, Col, Form, Select,message } from 'antd'
 import { gql, useMutation,useQuery } from '@apollo/client'
+import CitySelect from '../common/citySelect'
 const { Option } = Select
 
 const PARTNERS_LEAD_SUBSCRIPTION = gql`
@@ -26,11 +27,13 @@ const INSERT_PARTNER_LEAD_MUTATION = gql`
     $description:String,
     $onboarded_by_id:Int,
     $topic:String,
-    $created_by:String) 
+    $created_by:String,
+    $city_id: Int) 
     {
     insert_partner(
       objects: {
         name: $name,
+        city_id: $city_id,
         partner_comments: 
         {data: 
           [{description: $description,
@@ -58,10 +61,10 @@ const INSERT_PARTNER_LEAD_MUTATION = gql`
 
 
 const CreateLead = (props) => {
-
+  const initial = {city_id: null}
   const { visible, onHide } = props
   const [userComment, setUserComment] = useState('')
- 
+  const [obj, setObj] = useState(initial)
   const { loading, error, data } = useQuery(
     PARTNERS_LEAD_SUBSCRIPTION,
     {
@@ -75,7 +78,10 @@ const CreateLead = (props) => {
     INSERT_PARTNER_LEAD_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () {
+         message.success('Updated!!')
+         setObj(initial)
+        }
     }
   )
   
@@ -101,11 +107,15 @@ const CreateLead = (props) => {
   const handleCommentChange = (e) => {
     setUserComment(e.target.value)
   }
+  const onCityChange = (city_id) => {
+    setObj({ ...obj, city_id: city_id })
+  }
 
   const onPartnerLeadChange =(form) =>{
-    console.log('inside form submit', form)
+    console.log('inside form submit', form, obj)
     updatePartnerLeadAddress({
       variables: {
+        city_id: obj.city_id,
         name: form.name,
         contact_name: form.contact_name,
         mobile: form.mobile,
@@ -146,11 +156,9 @@ const CreateLead = (props) => {
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
-            <Form.Item>
-              <Select defaultValue='' allowClear>
-                <Option value=' '> </Option>
-              </Select>
-            </Form.Item>
+          <CitySelect
+              onChange={onCityChange}
+            />
           </Col>
         </Row>
         <Row gutter={10}>

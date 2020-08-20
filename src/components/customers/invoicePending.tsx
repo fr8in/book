@@ -45,9 +45,16 @@ const InvoicePending = (props) => {
 
     {
       title: "SO Price",
-      dataIndex: "soPrice",
       sorter: (a, b) => (a.soPrice > b.soPrice ? 1 : -1),
       width: "15%",
+      render: (record) => {
+        console.log();
+        return (
+          record.trip_prices &&
+          record.trip_prices.length > 0 &&
+          record.trip_prices[0].customer_price
+        );
+      }
     },
     {
       title: "Received",

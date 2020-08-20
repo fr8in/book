@@ -1,4 +1,4 @@
-import { Table, Input, Switch, Popconfirm, Button, Tooltip, message, Pagination, Checkbox, Modal } from 'antd'
+import { Table, Input, Switch, Popconfirm, Button, Tooltip, message, Pagination, Checkbox, Modal,Radio } from 'antd'
 import {
   EditTwoTone,
   CommentOutlined,
@@ -14,63 +14,68 @@ import Comment from '../../components/partners/comment'
 
 
 const PARTNERS_LEAD_QUERY = gql`
-  query(
-    $offset: Int!
-    $limit: Int!
-    $partner_status_name:[String!]
-    $channel_name:[String!]
-    $mobile: String
-    ){
-    partner(
-      offset: $offset
-      limit: $limit
-      order_by: 
-      {lead_priority: desc_nulls_last},
-      where:{
-        partner_users:{mobile:{ _like: $mobile}},
-        partner_status:{name:{_in:$partner_status_name}},
-        channel: {name: {_in:$channel_name}}}
-        ){
+query(
+  $offset: Int!
+  $limit: Int!
+  $partner_status_name:[String!]
+  $channel_name:[String!]
+  $mobile: String
+  $city_name:String
+  $owner_name:String
+  $no_comment:Boolean
+  ){
+  partner(
+    offset: $offset
+    limit: $limit
+    order_by: 
+    {lead_priority: desc_nulls_last},
+    where:{
+      partner_users:{mobile:{ _like: $mobile}},
+      city:{name:{_ilike:$city_name}},
+      onboarded_by: {email: {_ilike: $owner_name}},
+      partner_status:{name:{_in:$partner_status_name}},
+      channel: {name: {_in:$channel_name}}}
+      ){
+    id
+    name
+    lead_priority
+    onboarded_by{
       id
-      name
-      lead_priority
-      onboarded_by{
-        id
-        email
-      }
-      partner_users{
-        mobile
-      }
-      city{
-        id
-        name
-      }
-      channel{
-        id
-        name
-      }
-      partner_status{
-        name
-      }
-      partner_comments {
-        created_at
-        description
-      }
+      email
     }
-    partner_aggregate(where: {partner_status: {name: {_in: ["Lead","Registered","Rejected"]}}}) {
-      aggregate {
-        count
-      }
+    partner_users{
+      mobile
     }
-    partner_status(where:{name: {_in: ["Lead","Registered","Rejected"]}}, order_by: {id: asc}) {
+    city{
       id
       name
     }
-    channel {
+    channel{
       id
       name
+    }
+    partner_status{
+      name
+    }
+    partner_comments(where:{partner_id:{_is_null: $no_comment}}){
+      created_at
+      description
     }
   }
+  partner_aggregate(where: {partner_status: {name: {_in: ["Lead","Registered","Rejected"]}}}) {
+    aggregate {
+      count
+    }
+  }
+  partner_status(where:{name: {_in: ["Lead","Registered","Rejected"]}}, order_by: {id: asc}) {
+    id
+    name
+  }
+  channel {
+    id
+    name
+  }
+}
   `
 const LEAD_REJECT_MUTATION = gql`
   mutation partner_lead_reject($partner_status_id:Int,$id:Int! ){
@@ -93,10 +98,11 @@ mutation lead_priority_status($lead_priority: Boolean, $id: Int) {
   }
 }
 `
-const comment = [{ value: 1, text: 'No Comment' }]
+const no_comment = [{ value:1, label: 'No Comment' }]
 
 const PartnerLead = () => {
   const initial = {
+    no_comment:[],
     comment: false,
     employeeList: false,
     ownerVisible: false,
@@ -104,8 +110,10 @@ const PartnerLead = () => {
     offset: 0,
     limit: 10,
     mobile: null,
+    city_name:null,
+    owner_name:null,
     partner_status_name: ['Lead', 'Registered'],
-    channel_name: ["Direct", "Social Media", "Referral", "App"]
+    channel_name: null
   }
 
   const [filter, setFilter] = useState(initial)
@@ -115,9 +123,13 @@ const PartnerLead = () => {
   const partnerQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
+    no_comment:filter.no_comment && filter.no_comment.length > 0 ? true : false ,
     partner_status_name: filter.partner_status_name,
     channel_name: filter.channel_name,
-    mobile: filter.mobile ? `%${filter.mobile}%` : null
+    mobile: filter.mobile ? `%${filter.mobile}%` : null,
+    city_name: filter.city_name ? `%${filter.city_name}%` : null,
+    owner_name: filter.owner_name ? `%${filter.owner_name}%` : null
+
   }
 
   const { loading, error, data } = useQuery(
@@ -195,41 +207,39 @@ const PartnerLead = () => {
     return { value: data.name, label: data.name }
   })
 
-
-  const onPageChange = (value) => {
-    setFilter({ ...filter, offset: value })
-  }
-
-  const onFilter = (value) => {
-    setFilter({ ...filter, partner_status_name: value, offset: 0 })
-  }
-
-  const onChannelFilter = (value) => {
-    setFilter({ ...filter, channel_name: value, offset: 0 })
-  }
-  const onMobileSearch = (value) => {
-    setFilter({ ...filter, mobile: value })
-  };
-
   const pageChange = (page, pageSize) => {
     const newOffset = page * pageSize - filter.limit
     setCurrentPage(page)
-    onPageChange(newOffset)
+    setFilter({ ...filter, offset: newOffset })
   }
 
   const handleStatus = (checked) => {
-    onFilter(checked)
     setCurrentPage(1)
+    setFilter({ ...filter, partner_status_name: checked, offset: 0 })
   }
-
+  
   const handleChannelStatus = (checked) => {
-    onChannelFilter(checked)
     setCurrentPage(1)
+    setFilter({ ...filter, channel_name: checked, offset: 0 })
   }
-
+   
   const handleMobile = (e) => {
-    onMobileSearch(e.target.value);
+    setFilter({ ...filter, mobile: e.target.value, offset: 0 })
   };
+  
+  const handleCityName = (e) => {
+    setFilter({ ...filter, city_name: e.target.value, offset: 0 })
+  };
+
+  const handleOwnerName = (e) => {
+    setFilter({ ...filter, owner_name: e.target.value, offset: 0 })
+  };
+
+  const handleNoComment = (checked) => {
+    console.log('checked',checked)
+    setCurrentPage(1)
+    setFilter({ ...filter, no_comment:checked, offset: 0 })
+  }
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -291,7 +301,12 @@ const PartnerLead = () => {
       },
       filterDropdown: (
         <div>
-          <Input placeholder='Search City Name' id='cityName' name='cityName' />
+          <Input placeholder='Search City Name'
+           id='cityName' 
+           name='cityName' 
+           value={filter.city_name}
+           onChange={handleCityName}
+           />
         </div>
       ),
       filterIcon: (filtered) => (
@@ -315,7 +330,12 @@ const PartnerLead = () => {
       },
       filterDropdown: (
         <div>
-          <Input placeholder='Search Employee Name' id='owner' name='owner' />
+          <Input
+           placeholder='Search Employee Name'
+           id='owner' 
+           name='owner'
+           value={filter.owner_name}
+           onChange={handleOwnerName} />
         </div>
       ),
       filterIcon: (filtered) => (
@@ -368,7 +388,15 @@ const PartnerLead = () => {
             comment
           )
       },
-      filters: comment
+      filterDropdown: (
+        <Checkbox.Group
+          options={no_comment}
+          defaultValue={filter.no_comment}
+          onChange={handleNoComment}
+          className='filter-drop-down'
+        />
+      ),
+      
     },
     {
       title: 'Created Date',
