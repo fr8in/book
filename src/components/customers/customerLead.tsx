@@ -1,4 +1,4 @@
-import { Table, Input, Switch, Button, Tooltip, Popconfirm, Space,Pagination } from "antd";
+import { Table, Input, Switch, Button, Tooltip, Popconfirm, Space,Pagination ,message , Modal} from "antd";
 import {
   SearchOutlined,
   CommentOutlined,
@@ -7,7 +7,7 @@ import {
 import moment from 'moment'
 import { useState } from 'react'
 import useShowHideWithRecord from "../../hooks/useShowHideWithRecord";
-import Comment from "../../components/trips/tripFeedBack";
+import CustomerComment from '../customers/customerComment'
 import { gql, useQuery, useMutation } from '@apollo/client'
 
 const CUSTOMERS_LEAD_QUERY = gql`
@@ -39,6 +39,15 @@ const CUSTOMERS_LEAD_QUERY = gql`
     }
   }
 `  
+
+const LEAD_REJECT_MUTATION = gql`
+mutation customer_lead_reject($status_id:Int,$id:Int! ) {
+  update_customer_by_pk(pk_columns: {id: $id}, _set: {status_id: $status_id}) {
+    id
+    name
+  }
+}
+`
 
 const CusSource = [
   { value: 1, text: "DIRECT" },
@@ -96,6 +105,24 @@ const CustomerLead = () => {
     notifyOnNetworkStatusChange: true
   })
   console.log('partnerLead error', error)
+
+  const [insertComment] = useMutation(
+    LEAD_REJECT_MUTATION, {
+    onError(error) {
+      message.error(error.toString());
+    },
+    onCompleted() {
+      message.success("Updated!!");
+    },
+  });
+  const onSubmit = (id) => {
+    insertComment({
+      variables: {
+        status_id: 7,
+        id: id,
+      },
+    });
+  };
 
   var customer = []
   var customer_aggregate = 0;
@@ -239,7 +266,7 @@ const handleMobile = (e) => {
                   "commentVisible",
                   null,
                   "commentData",
-                  record.previousComment
+                  record.id
                 )
               }
             />
@@ -248,7 +275,7 @@ const handleMobile = (e) => {
             title="Are you sure want to Reject the lead?"
             okText="Yes"
             cancelText="No"
-            onConfirm={() => console.log("Rejected!")}
+            onConfirm={() => onSubmit(record.id)}
           >
             <Button
               type="primary"
@@ -286,13 +313,17 @@ const handleMobile = (e) => {
             className='text-right p10'
           />) : null
       }
-      {object.commentVisible && (
-        <Comment
+       {object.commentVisible && (
+        <Modal
+          title='Comments'
           visible={object.commentVisible}
-          data={object.commentData}
-          onHide={handleHide}
-        />
-      )}
+          onCancel={handleHide}
+          bodyStyle={{ padding: 10 }}
+          footer={null}
+        >
+          <CustomerComment customer_id={object.commentData} />
+        </Modal>)
+      }
     </>
   );
 };
