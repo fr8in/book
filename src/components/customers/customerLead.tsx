@@ -1,12 +1,44 @@
-import { Table, Input, Switch, Button, Tooltip, Popconfirm, Space } from "antd";
+import { Table, Input, Switch, Button, Tooltip, Popconfirm, Space,Pagination } from "antd";
 import {
   SearchOutlined,
   CommentOutlined,
   CloseOutlined,
 } from "@ant-design/icons";
-import mock from "../../../mock/customer/sourcingMock";
+import moment from 'moment'
+import { useState } from 'react'
 import useShowHideWithRecord from "../../hooks/useShowHideWithRecord";
 import Comment from "../../components/trips/tripFeedBack";
+import { gql, useQuery, useMutation } from '@apollo/client'
+
+const CUSTOMERS_LEAD_QUERY = gql`
+  query customers( $offset: Int!
+    $limit: Int!
+    $mobile: String){
+    customer(  offset: $offset
+      limit: $limit where: {status: {name: {_in: ["Lead", "Registered", "Rejected"]}}, mobile: {_like:$mobile }}){
+      id
+      cardcode
+      name
+      mobile
+     status{
+      id
+      name
+    }
+    customer_comments{
+      id
+      topic
+      description
+      created_at
+      created_by
+    }
+    }
+    customer_aggregate(where: {status: {name: {_in: ["Lead","Registered","Rejected"]}}}){
+      aggregate{
+        count
+      }
+    }
+  }
+`  
 
 const CusSource = [
   { value: 1, text: "DIRECT" },
@@ -40,8 +72,64 @@ const CustomerLead = () => {
   const initial = {
     commentData: [],
     commentVisible: false,
+    offset: 0,
+    limit: 10,
+    mobile: null,
   };
+
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial);
+
+  const [filter, setFilter] = useState(initial)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const customerQueryVars = {
+    offset: filter.offset,
+    limit: filter.limit,
+    mobile: filter.mobile ? `%${filter.mobile}%` : null
+  }
+
+
+  const { loading, error, data } = useQuery(
+    CUSTOMERS_LEAD_QUERY, {
+      variables: customerQueryVars,
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  })
+  console.log('partnerLead error', error)
+
+  var customer = []
+  var customer_aggregate = 0;
+  
+  if (!loading) {
+    customer = data && data.customer
+    customer_aggregate = data && data.customer_aggregate
+  }
+
+  const record_count =
+  customer_aggregate &&
+  customer_aggregate.aggregate &&
+  customer_aggregate.aggregate.count;
+console.log("record_count", record_count)
+
+Pagination
+const onPageChange = (value) => {
+  setFilter({ ...filter, offset: value })
+}
+
+const onMobileSearch = (value) => {
+  setFilter({ ...filter, mobile: value })
+};
+
+const pageChange = (page, pageSize) => {
+  const newOffset = page * pageSize - filter.limit
+  setCurrentPage(page)
+  onPageChange(newOffset)
+}
+
+const handleMobile = (e) => {
+  onMobileSearch(e.target.value);
+};
+
 
   const columnsCurrent = [
     {
@@ -54,7 +142,7 @@ const CustomerLead = () => {
     },
     {
       title: "Phone",
-      dataIndex: "number",
+      dataIndex: "mobile",
       filterDropdown: (
         <div>
           <Input
@@ -62,6 +150,8 @@ const CustomerLead = () => {
             id="number"
             name="number"
             type="number"
+            value={filter.mobile}
+            onChange={handleMobile}
           />
         </div>
       ),
@@ -101,15 +191,34 @@ const CustomerLead = () => {
     {
       title: "Status",
       dataIndex: "status",
+      render: (text, record) => {
+        return record.status && record.status.name;
+      },
       filters: CusState,
     },
     {
       title: "Comment",
       dataIndex: "comment",
+      render: (text, record) => {
+        const comment = record.customer_comments && record.customer_comments.length > 0 &&
+          record.customer_comments[0].description ? record.customer_comments[0].description : '-'
+        return comment && comment.length > 20 ? (
+          <Tooltip title={comment}>
+            <span> {comment.slice(0, 20) + '...'}</span>
+          </Tooltip>
+        ) : (
+            comment
+          )
+      },
     },
     {
       title: "Created Date",
       dataIndex: "date",
+      render: (text, record) => {
+        const create_date = record.customer_comments && record.customer_comments.length > 0 &&
+          record.customer_comments[0].created_at ? record.customer_comments[0].created_at : '-'
+        return (create_date ? moment(create_date).format('DD-MMM-YY') : null)
+      },
       sorter: (a, b) => (a.date > b.date ? 1 : -1),
     },
     {
@@ -160,12 +269,23 @@ const CustomerLead = () => {
           ...rowSelection,
         }}
         columns={columnsCurrent}
-        dataSource={mock}
+        dataSource={customer}
         rowKey={(record) => record.id}
         size="middle"
         scroll={{ x: 1156 }}
         pagination={false}
       />
+       {!loading && record_count
+        ? (
+          <Pagination
+            size='small'
+            current={currentPage}
+            pageSize={filter.limit}
+            total={record_count}
+            onChange={pageChange}
+            className='text-right p10'
+          />) : null
+      }
       {object.commentVisible && (
         <Comment
           visible={object.commentVisible}
