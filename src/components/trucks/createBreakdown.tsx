@@ -1,9 +1,22 @@
 import { Modal, Button, Row, Col, DatePicker, Select, Input, Form, Radio, message, Table } from 'antd'
-import { useMutation, gql } from '@apollo/client'
+import { useMutation, gql, useQuery } from '@apollo/client'
 import moment from 'moment'
+import { useState } from 'react'
+import CitySelect from '../common/citySelect'
+
+const CREATE_BREAKDOWN = gql`
+query create_breakdown($id: Int!){
+  truck(where:{id:{_eq:$id}}){
+    truck_status{
+      id
+      name
+    }
+  }
+}
+`
 
 const INSERT_UPDATE_CREATE_BREAKDOWN_MUTATION = gql`
-mutation truck_available($truck_id:Int,$topic:String,$created_by_id:Int,$description:String,$id:Int!,$available_at:timestamptz,$city_id:Int) {
+mutation truck_available($truck_id:Int!,$topic:String,$created_by_id:Int,$description:String,$id:Int!,$available_at:timestamptz,$city_id:Int) {
   insert_truck_comment(objects: {truck_id:$truck_id, topic:$topic, created_by_id:$created_by_id, description:$description}) {
     returning {
       id
@@ -24,7 +37,27 @@ const { Option } = Select
 const { TextArea } = Input
 
 const CreateBreakdown = (props) => {
-  const { visible, onHide, truck_id } = props
+  const { visible, onHide, id } = props
+
+  const initial = { city_id: null }
+
+  const [city, setCity] = useState(initial)
+
+  const { loading, data, error } = useQuery(
+    CREATE_BREAKDOWN, { variables: { id } }
+  )
+
+  console.log('CreateBreakdown Error', error)
+
+  var _data = {}
+
+  if (!loading) {
+    _data = data
+  }
+  const truck_info = _data && _data.truck && _data.truck.length > 0 ? _data.truck[0] : { name: 'ID does not exist' }
+  
+const truck_status = truck_info && truck_info.truck_status && truck_info.truck_status.name
+  console.log('truck_status',truck_status)
 
   const [insertUpdateCreateBreakdown] = useMutation(
     INSERT_UPDATE_CREATE_BREAKDOWN_MUTATION,
@@ -37,8 +70,22 @@ const CreateBreakdown = (props) => {
     }
   )
 
-  const onCreateBreakdown = () => {
-    console.log('truck_id', truck_id)
+  const onCityChange = (city_id) => {
+    setCity({ ...city, city_id: city_id })
+  }
+
+
+  const onCreateBreakdown = (form) => {
+    console.log('id', id , city)
+    insertUpdateCreateBreakdown({
+      variables: {
+        truck_id: id,
+        created_by_id: 1,
+        description: form.comment,
+       topic: truck_status,
+        city_id:parseInt(city.city_id,10)
+      }
+    })
   }
 
   const columnsCurrent = [
@@ -79,12 +126,9 @@ const CreateBreakdown = (props) => {
         width={700}
         visible={visible}
         onCancel={onHide}
-        footer={[
-          <Button key='back' onClick={onHide}>Close</Button>,
-          <Button type='primary' key='submit' onClick={onCreateBreakdown}>Save</Button>
-        ]}
+        footer={null}
       >
-        <Form layout='vertical'>
+        <Form layout='vertical'  onFinish={onCreateBreakdown} >
           {props.radioType &&
             <Form.Item name='type'>
               <Radio.Group>
@@ -105,12 +149,13 @@ const CreateBreakdown = (props) => {
               </Form.Item>
             </Col>
             <Col sm={12}>
-              <Form.Item label='Current City'>
-                <Select defaultValue='Chennai'>
-                  <Option value='Coimbatore'>Coimbatore</Option>
-                  <Option value='Madurai'>Madurai</Option>
-                  <Option value='Trichy'>Trichy</Option>
-                </Select>
+              <Form.Item >
+              <CitySelect
+             label='Current City'
+              onChange={onCityChange}
+              required
+              name='city'
+            />
               </Form.Item>
             </Col>
           </Row>
@@ -120,6 +165,12 @@ const CreateBreakdown = (props) => {
               autoSize={{ minRows: 2, maxRows: 6 }}
             />
           </Form.Item>
+          <Row justify='end'>
+          <Form.Item>
+          <Button key='back' onClick={onHide}>Close</Button>,
+          <Button type='primary' key='submit' htmlType='submit'>Save</Button>
+          </Form.Item>
+          </Row>
         </Form>
         {props.comments && (
           <Table
