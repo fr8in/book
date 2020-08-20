@@ -21,6 +21,7 @@ query(
   $channel_name:[String!]
   $mobile: String
   $city_name:String
+  $owner_name:String
   $no_comment:Boolean
   ){
   partner(
@@ -31,6 +32,7 @@ query(
     where:{
       partner_users:{mobile:{ _like: $mobile}},
       city:{name:{_ilike:$city_name}},
+      onboarded_by: {email: {_ilike: $owner_name}},
       partner_status:{name:{_in:$partner_status_name}},
       channel: {name: {_in:$channel_name}}}
       ){
@@ -109,6 +111,7 @@ const PartnerLead = () => {
     limit: 10,
     mobile: null,
     city_name:null,
+    owner_name:null,
     partner_status_name: ['Lead', 'Registered'],
     channel_name: null
   }
@@ -124,7 +127,8 @@ const PartnerLead = () => {
     partner_status_name: filter.partner_status_name,
     channel_name: filter.channel_name,
     mobile: filter.mobile ? `%${filter.mobile}%` : null,
-    city_name: filter.city_name ? `%${filter.city_name}%` : null
+    city_name: filter.city_name ? `%${filter.city_name}%` : null,
+    owner_name: filter.owner_name ? `%${filter.owner_name}%` : null
 
   }
 
@@ -226,6 +230,11 @@ const PartnerLead = () => {
   const handleCityName = (e) => {
     setFilter({ ...filter, city_name: e.target.value, offset: 0 })
   };
+
+  const handleOwnerName = (e) => {
+    setFilter({ ...filter, owner_name: e.target.value, offset: 0 })
+  };
+
   const handleNoComment = (checked) => {
     console.log('checked',checked)
     setCurrentPage(1)
@@ -321,7 +330,12 @@ const PartnerLead = () => {
       },
       filterDropdown: (
         <div>
-          <Input placeholder='Search Employee Name' id='owner' name='owner' />
+          <Input
+           placeholder='Search Employee Name'
+           id='owner' 
+           name='owner'
+           value={filter.owner_name}
+           onChange={handleOwnerName} />
         </div>
       ),
       filterIcon: (filtered) => (
