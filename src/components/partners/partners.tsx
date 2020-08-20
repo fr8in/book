@@ -79,7 +79,7 @@ const PartnerKyc = (props) => {
   })
 
   const regions = region_list && region_list.map(data => {
-    return { value: data.id, label: data.name }
+    return { value: data.name, label: data.name }
   })
 
   const columnsCurrent = [
