@@ -46,7 +46,7 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         id
         name
       }
-      onboardedBy {
+      onboarded_by {
         id
         email
       }
