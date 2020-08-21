@@ -13,15 +13,6 @@ import KycApproval from '../partners/kycApproval'
 import { useState } from 'react'
 import moment from 'moment'
 
-const region_list = [
-  { value: 1, text: 'North' },
-  { value: 2, text: 'South-1' },
-  { value: 3, text: 'South-2' },
-  { value: 4, text: 'East-1' },
-  { value: 5, text: 'East-2' },
-  { value: 6, text: 'West-1' },
-  { value: 7, text: 'West-2' }
-]
 
 const truck_count = [
   { value: 1, text: '0' },
@@ -39,6 +30,8 @@ const PartnerKyc = (props) => {
      record_count, 
      total_page, 
      onFilter, 
+     onRegionFilter,
+     region_list,
      partner_status_list, 
      onNameSearch, 
      onCardCodeSearch 
@@ -62,6 +55,11 @@ const PartnerKyc = (props) => {
     onFilter(e.target.value)
   }
 
+  const handleRegionStatus = (e) => {
+    onRegionFilter(e.target.value)
+  }
+
+
   const handleName = (e) => {
     onNameSearch(e.target.value)
   }
@@ -78,6 +76,10 @@ const PartnerKyc = (props) => {
 
   const partner_status = partner_status_list && partner_status_list.map(data => {
     return { value: data.id, label: data.name }
+  })
+
+  const regions = region_list && region_list.map(data => {
+    return { value: data.name, label: data.name }
   })
 
   const columnsCurrent = [
@@ -144,10 +146,17 @@ const PartnerKyc = (props) => {
       title: 'Region',
       width: '7%',
       filters: region_list,
-      render: (text, record) => {
-        const region = record.city && record.city.branch && record.city.branch.region.name
-        return (region)
-      }
+      render: (text, record) => record.city && record.city.branch && record.city.branch.region.name,
+      filterDropdown: (
+        <Radio.Group
+          options={regions}
+          defaultValue={filter.region}
+          onChange={handleRegionStatus}
+          className='filter-drop-down'
+        />
+      )
+        
+      
     },
     {
       title: 'Contact No',
