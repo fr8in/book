@@ -23,7 +23,7 @@ const DashboardContainer = (props) => {
   const initial = { excessLoad: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
-  const initialVars = { tabKey: '2', trip_status: 'Reported at destination', now: new Date().toISOString() }
+  const initialVars = { tabKey: '2',truckno: null, trip_status: 'Reported at destination', now: new Date().toISOString() }
   const [vars, setVars] = useState(initialVars)
 
   const variables = {
@@ -33,7 +33,8 @@ const DashboardContainer = (props) => {
     cities: (filters.cities && filters.cities > 0) ? filters.cities : null,
     trip_status: vars.trip_status ? vars.trip_status : null,
     truck_type: (filters.types && filters.types > 0) ? filters.types : null,
-    managers: (filters.managers && filters.managers > 0) ? filters.managers : null
+    managers: (filters.managers && filters.managers > 0) ? filters.managers : null,
+    truckno: vars.truckno ? `%${vars.truckno}%` : null,
   }
   const { loading, data, error } = useSubscription(DASHBOAD_QUERY, { variables })
   console.log('dashboard error', error)
@@ -91,6 +92,11 @@ const DashboardContainer = (props) => {
     const truck_c_aggrigate = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('trucks_current').flatMap('aggregate').flatMap('count').value()
     truck_current_count = truck_c_aggrigate.reduce((a, b) => a + b, 0)
   }
+
+  const onTruckNoSearch = (value) => {
+    setVars({ ...vars, truckno: value })
+  }
+
   const onTabChange = (key) => {
     setVars({ ...vars, tabKey: key })
     switch (key) {
@@ -164,7 +170,7 @@ const DashboardContainer = (props) => {
                   <Trips trips={trips} loading={loading} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='WF.Load' value={truck_current_count + '/' + truck_count} />} key='2'>
-                  <WaitingForLoad trucks={trucks} loading={loading} />
+                  <WaitingForLoad trucks={trucks} loading={loading} onTruckNoSearch={onTruckNoSearch} vars={vars}/>
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Assigned' value={assigned_count} />} key='3'>
                   <Trips trips={trips} loading={loading} />

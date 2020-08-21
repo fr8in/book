@@ -14,15 +14,15 @@ import Comment from '../../components/partners/comment'
 
 
 const PARTNERS_LEAD_QUERY = gql`
-query(
+query partner_lead(
   $offset: Int!
   $limit: Int!
   $partner_status_name:[String!]
   $channel_name:[String!]
-  $mobile: String
-  $city_name:String
   $owner_name:String
   $no_comment:Boolean
+  $partner_users:partner_user_bool_exp
+  $city_name:city_bool_exp
   ){
   partner(
     offset: $offset
@@ -30,8 +30,8 @@ query(
     order_by: 
     {lead_priority: desc_nulls_last},
     where:{
-      partner_users:{mobile:{ _like: $mobile}},
-      city:{name:{_ilike:$city_name}},
+      partner_users:$partner_users,
+      city:$city_name,
       onboarded_by: {email: {_ilike: $owner_name}},
       partner_status:{name:{_in:$partner_status_name}},
       channel: {name: {_in:$channel_name}}}
@@ -126,8 +126,10 @@ const PartnerLead = () => {
     no_comment:filter.no_comment && filter.no_comment.length > 0 ? true : false ,
     partner_status_name: filter.partner_status_name,
     channel_name: filter.channel_name,
-    mobile: filter.mobile ? `%${filter.mobile}%` : null,
-    city_name: filter.city_name ? `%${filter.city_name}%` : null,
+   // mobile: filter.mobile ? `%${filter.mobile}%` : null,
+    partner_users: filter.mobile ? {mobile:{ _like:`%${filter.mobile}%`}}: null,
+    //city_name: filter.city_name ? `%${filter.city_name}%` : null,
+    city_name: filter.city_name ? {name:{ _ilike: `%${filter.city_name}%`}} : null,
     owner_name: filter.owner_name ? `%${filter.owner_name}%` : null
 
   }
