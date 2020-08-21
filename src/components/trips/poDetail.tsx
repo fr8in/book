@@ -58,11 +58,7 @@ const PoDetail = (props) => {
     _data = data
   }
   const customer = _data && _data.customer ? _data.customer[0] : null
-  const default_mamul = customer && customer.customer_mamul_summary && customer.customer_mamul_summary.length > 0 ? customer.customer_mamul_summary[0].system_mamul_avg : null
-
-  useEffect(() => {
-    setTrip_price({ ...trip_price, mamul: default_mamul })
-  }, [loading])
+  const default_mamul = customer && customer.customer_mamul_summary && customer.customer_mamul_summary.length > 0 ? customer.customer_mamul_summary[0].system_mamul_avg : 0
 
   console.log('customer', customer)
 
@@ -70,6 +66,10 @@ const PoDetail = (props) => {
   const customer_advance_percentage = customer && customer.advancePercentage && customer.advancePercentage.name
   const partner_advance_percentage = po_data && po_data.partner_advance_percentage && po_data.partner_advance_percentage.name
   console.log('trip_price', trip_price, po_data)
+
+  useEffect(() => {
+    form.setFieldsValue({ mamul: default_mamul })
+  }, [loading])
 
   const onRadioChange = (e) => {
     setTrip_price({ ...trip_price, rate_type: e.target.value })
@@ -84,14 +84,12 @@ const PoDetail = (props) => {
     form.setFieldsValue({
       customer_price: value,
       partner_price: netPrice,
-      bank: Math.floor(cus_adv),
-      cash: 0,
-      to_pay: 0
+      bank: Math.floor(cus_adv)
     })
     setTrip_price({
       ...trip_price,
       part_price: netPrice,
-      part_adv,
+      part_adv: Math.floor(part_adv),
       part_wallet: part_adv,
       cus_adv: Math.floor(cus_adv)
     })
@@ -100,7 +98,6 @@ const PoDetail = (props) => {
   const onRatePerTon = (e) => {
     const { value } = e.target
     const ton = form.getFieldValue('ton')
-    const cus_price = form.getFieldValue('customer_price')
     const cus_adv = Math.floor((value * (ton || 1)) * customer_advance_percentage / 100)
     const part_adv = Math.floor((value * (ton || 1)) * partner_advance_percentage / 100)
 
@@ -108,13 +105,11 @@ const PoDetail = (props) => {
       customer_price: value * (ton || 1),
       partner_price: (value * (ton || 1)) - form.getFieldValue('mamul'),
       bank: cus_adv,
-      cash: 0,
-      to_pay: 0
     })
 
     setTrip_price({
       ...trip_price,
-      part_price: cus_price - form.getFieldValue('mamul'),
+      part_price: (value * (ton || 1)) - form.getFieldValue('mamul'),
       part_adv: part_adv,
       part_wallet: part_adv,
       cus_adv: cus_adv
@@ -128,9 +123,7 @@ const PoDetail = (props) => {
     form.setFieldsValue({
       customer_price: value * (per_ton_rate || 1),
       partner_price: (value * (per_ton_rate || 1)) - form.getFieldValue('mamul'),
-      bank: Math.floor((value * (per_ton_rate || 1)) * customer_advance_percentage / 100),
-      cash: 0,
-      to_pay: 0
+      bank: Math.floor((value * (per_ton_rate || 1)) * customer_advance_percentage / 100)
     })
 
     setTrip_price({
@@ -139,6 +132,46 @@ const PoDetail = (props) => {
       part_adv: Math.floor((value * (per_ton_rate || 1)) * partner_advance_percentage / 100),
       part_wallet: Math.floor((value * (per_ton_rate || 1)) * partner_advance_percentage / 100),
       cus_adv: Math.floor((value * (per_ton_rate || 1)) * customer_advance_percentage / 100)
+    })
+  }
+
+  const onMamulChange = (e) => {
+    const { value } = e.target
+    form.setFieldsValue({
+      partner_price: form.getFieldValue('customer_price') - value
+    })
+    setTrip_price({
+      ...trip_price,
+      part_price: form.getFieldValue('customer_price') - value,
+      part_adv: Math.floor((form.getFieldValue('customer_price') - value) * partner_advance_percentage / 100),
+      part_wallet: Math.floor((form.getFieldValue('customer_price') - value) * partner_advance_percentage / 100),
+      cus_adv: Math.floor((form.getFieldValue('customer_price') - value) * customer_advance_percentage / 100)
+    })
+  }
+
+  const onCashChange = (e) => {
+    const { value } = e.target
+    const to_pay = parseInt(form.getFieldValue('to_pay'))
+    form.setFieldsValue({
+      bank: trip_price.cus_adv - ((value ? parseInt(value) : 0) + to_pay)
+    })
+    setTrip_price({
+      ...trip_price,
+      part_wallet: trip_price.part_adv - ((value ? parseInt(value) : 0) + to_pay),
+      part_cash: value
+    })
+  }
+
+  const onToPayChange = (e) => {
+    const { value } = e.target
+    const cash = parseInt(form.getFieldValue('cash'))
+    form.setFieldsValue({
+      bank: trip_price.cus_adv - ((value ? parseInt(value) : 0) + cash)
+    })
+    setTrip_price({
+      ...trip_price,
+      part_wallet: trip_price.part_adv - ((value ? parseInt(value) : 0) + cash),
+      part_to_pay: value
     })
   }
 
@@ -235,12 +268,12 @@ const PoDetail = (props) => {
             <Form.Item
               name='mamul'
               label='Mamul Charge'
-              initialValue={default_mamul}
-              extra={<span>System Mamul: <span className='link'>{trip_price.mamul || 0}</span></span>}
+              extra={<span>System Mamul: <span className='link'>{default_mamul || 0}</span></span>}
             >
               <Input
                 placeholder='mamul'
                 disabled={false}
+                onChange={onMamulChange}
               />
             </Form.Item>
           </Col>
@@ -283,6 +316,7 @@ const PoDetail = (props) => {
                   <Input
                     placeholder='Cash'
                     disabled={false}
+                    onChange={onCashChange}
                   />
                 </Form.Item>
               </Col>
@@ -295,6 +329,7 @@ const PoDetail = (props) => {
                   <Input
                     placeholder='To-Pay'
                     disabled={false}
+                    onChange={onToPayChange}
                   />
                 </Form.Item>
               </Col>
