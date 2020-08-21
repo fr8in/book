@@ -23,12 +23,14 @@ const FinalPaymentsPending = (props) => {
     {
       title: "Source",
       dataIndex: "source",
+      sorter: (a, b) => (a.source > b.source ? 1 : -1),
       width: "10%",
       render: (text, record) => record.source && record.source.name,
     },
     {
       title: "Destination",
       dataIndex: "destination",
+      sorter: (a, b) => (a.destination > b.destination ? 1 : -1),
       width: "10%",
       render: (text, record) => record.destination && record.destination.name,
     },
