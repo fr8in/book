@@ -104,7 +104,7 @@ const PoDetail = (props) => {
     form.setFieldsValue({
       customer_price: value * (ton || 1),
       partner_price: (value * (ton || 1)) - form.getFieldValue('mamul'),
-      bank: cus_adv,
+      bank: cus_adv
     })
 
     setTrip_price({
