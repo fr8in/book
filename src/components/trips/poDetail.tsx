@@ -3,6 +3,7 @@ import { Row, Col, Form, DatePicker, Input, Checkbox, Radio, Divider } from 'ant
 import CitySelect from '../common/citySelect'
 import Loading from '../common/loading'
 import { gql, useQuery } from '@apollo/client'
+import Driver from '../partners/driver'
 
 const CUSTOMER_PO_DATA = gql`
 query customers_po($id:Int!){
@@ -84,7 +85,9 @@ const PoDetail = (props) => {
     form.setFieldsValue({
       customer_price: value,
       partner_price: netPrice,
-      bank: Math.floor(cus_adv)
+      bank: Math.floor(cus_adv),
+      cash: 0,
+      to_pay: 0
     })
     setTrip_price({
       ...trip_price,
@@ -119,19 +122,21 @@ const PoDetail = (props) => {
   const onTonChange = (e) => {
     const { value } = e.target
     const per_ton_rate = form.getFieldValue('per_ton_rate')
+    const cus_adv = Math.floor((value * (per_ton_rate || 1)) * customer_advance_percentage / 100)
+    const part_adv = Math.floor((value * (per_ton_rate || 1)) * partner_advance_percentage / 100)
 
     form.setFieldsValue({
       customer_price: value * (per_ton_rate || 1),
       partner_price: (value * (per_ton_rate || 1)) - form.getFieldValue('mamul'),
-      bank: Math.floor((value * (per_ton_rate || 1)) * customer_advance_percentage / 100)
+      bank: cus_adv
     })
 
     setTrip_price({
       ...trip_price,
       part_price: (value * (per_ton_rate || 1)) - form.getFieldValue('mamul'),
-      part_adv: Math.floor((value * (per_ton_rate || 1)) * partner_advance_percentage / 100),
-      part_wallet: Math.floor((value * (per_ton_rate || 1)) * partner_advance_percentage / 100),
-      cus_adv: Math.floor((value * (per_ton_rate || 1)) * customer_advance_percentage / 100)
+      part_adv: part_adv,
+      part_wallet: part_adv,
+      cus_adv: cus_adv
     })
   }
 
@@ -151,13 +156,13 @@ const PoDetail = (props) => {
 
   const onCashChange = (e) => {
     const { value } = e.target
-    const to_pay = parseInt(form.getFieldValue('to_pay'))
+    const to_pay = parseInt(form.getFieldValue('to_pay'), 10)
     form.setFieldsValue({
-      bank: trip_price.cus_adv - ((value ? parseInt(value) : 0) + to_pay)
+      bank: trip_price.cus_adv - ((value ? parseInt(value) : 0) + (to_pay || 0))
     })
     setTrip_price({
       ...trip_price,
-      part_wallet: trip_price.part_adv - ((value ? parseInt(value) : 0) + to_pay),
+      part_wallet: trip_price.part_adv - ((value ? parseInt(value) : 0) + (to_pay || 0)),
       part_cash: value
     })
   }
@@ -166,11 +171,11 @@ const PoDetail = (props) => {
     const { value } = e.target
     const cash = parseInt(form.getFieldValue('cash'))
     form.setFieldsValue({
-      bank: trip_price.cus_adv - ((value ? parseInt(value) : 0) + cash)
+      bank: trip_price.cus_adv - ((value ? parseInt(value) : 0) + (cash || 0))
     })
     setTrip_price({
       ...trip_price,
-      part_wallet: trip_price.part_adv - ((value ? parseInt(value) : 0) + cash),
+      part_wallet: trip_price.part_adv - ((value ? parseInt(value) : 0) + (cash || 0)),
       part_to_pay: value
     })
   }
@@ -334,12 +339,7 @@ const PoDetail = (props) => {
                 </Form.Item>
               </Col>
               <Col xs={12}>
-                <Form.Item label='Driver Number' name='driver'>
-                  <Input
-                    placeholder='Driver Number'
-                    disabled={false}
-                  />
-                </Form.Item>
+                <Driver partner_id={po_data.id} />
               </Col>
             </Row>
           </Col>
