@@ -38,7 +38,7 @@ const TripDetailContainer = (props) => {
   }
   console.log('TripDetailContainer Error', error)
   const trip_info = trip[0] ? trip[0] : { name: 'ID does not exist' }
-
+console.log('trip_info',trip_info)
   const title = (
     <h3>
       <span className='text-primary'>{trip_info.id}</span>
@@ -106,13 +106,13 @@ const TripDetailContainer = (props) => {
                   header={
                     <span>Partner - Payables
                       <span className='pull-right'>
-                        <b>{23500}</b>
+                        <b>{23000}</b>
                       </span>
                     </span>
                   }
                   key='1'
                 >
-                  <Payables />
+                  <Payables trip_pay={trip_info} />
                 </Panel>
               </Collapse>
               <Collapse accordion className='small box-0 mt10'>

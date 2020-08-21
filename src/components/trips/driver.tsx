@@ -9,7 +9,6 @@ mutation updateTripDriver($trip_id:Int!,$driver:String) {
   update_trip_by_pk(pk_columns: {id: $trip_id}, _set: {driver: $driver}) {
     id
   }
-
 }
 `
 const Driver = (props) => {

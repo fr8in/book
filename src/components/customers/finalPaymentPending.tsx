@@ -23,12 +23,14 @@ const FinalPaymentsPending = (props) => {
     {
       title: "Source",
       dataIndex: "source",
+      sorter: (a, b) => (a.source > b.source ? 1 : -1),
       width: "10%",
       render: (text, record) => record.source && record.source.name,
     },
     {
       title: "Destination",
       dataIndex: "destination",
+      sorter: (a, b) => (a.destination > b.destination ? 1 : -1),
       width: "10%",
       render: (text, record) => record.destination && record.destination.name,
     },
@@ -49,9 +51,16 @@ const FinalPaymentsPending = (props) => {
 
     {
       title: "SO Price",
-      dataIndex: "soPrice",
       sorter: (a, b) => (a.soPrice > b.soPrice ? 1 : -1),
       width: "10%",
+      render: (record) => {
+        console.log();
+        return (
+          record.trip_prices &&
+          record.trip_prices.length > 0 &&
+          record.trip_prices[0].customer_price
+        );
+      }
     },
     {
       title: "Balance",
@@ -61,8 +70,8 @@ const FinalPaymentsPending = (props) => {
     },
     {
       title: "Aging",
-      dataIndex: "aging",
-      sorter: (a, b) => (a.aging > b.aging ? 1 : -1),
+      dataIndex: "tat",
+      sorter: (a, b) => (a.tat > b.tat ? 1 : -1),
       width: "10%",
     },
   ];

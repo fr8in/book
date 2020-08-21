@@ -169,7 +169,7 @@ const WaitingForLoad = (props) => {
       {object.poVisible &&
         <CreatePo
           visible={object.poVisible}
-          data={object.poData}
+          po_data={object.poData}
           onHide={handleHide}
         />}
     </>

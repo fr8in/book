@@ -125,6 +125,10 @@ subscription dashboard_trips_truks($now: timestamptz,$regions: [Int!], $branches
               id
               cardcode
               name
+              partner_advance_percentage{
+                id
+                name
+              }
               partner_memberships {
                 membership_type_id
               }

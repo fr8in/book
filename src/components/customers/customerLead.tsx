@@ -1,12 +1,89 @@
-import { Table, Input, Switch, Button, Tooltip, Popconfirm, Space } from "antd";
+import { Table, Input, Switch, Button, Tooltip, Popconfirm, Space,Pagination ,message , Modal,Checkbox} from "antd";
 import {
   SearchOutlined,
   CommentOutlined,
   CloseOutlined,
 } from "@ant-design/icons";
-import mock from "../../../mock/customer/sourcingMock";
+import moment from 'moment'
+import { useState } from 'react'
 import useShowHideWithRecord from "../../hooks/useShowHideWithRecord";
-import Comment from "../../components/trips/tripFeedBack";
+import CustomerComment from '../customers/customerComment'
+import { gql, useQuery, useMutation } from '@apollo/client'
+
+const CUSTOMERS_LEAD_QUERY = gql`
+query customers( $offset: Int!
+  $limit: Int!
+  $customer_status_name:[String!]
+  $channel_name:[String!]
+  $mobile: String){
+  customer(  offset: $offset
+    limit: $limit
+    order_by: 
+    {lead_priority: desc_nulls_last},
+     where: { mobile: {_like:$mobile }, channel: {name: {_in:$channel_name}},status:{name:{_in:$customer_status_name}}},){
+    id
+    cardcode
+    name
+    lead_priority
+    mobile
+     onboarded_by{
+    name
+  }
+  channel{
+    id
+    name
+  }
+  city{
+    id
+    name
+  }
+   status{
+    id
+    name
+  }
+  customer_comments{
+    id
+    topic
+    description
+    created_at
+    created_by
+  }
+  }
+  customer_aggregate(where: {status: {name: {_in: ["Lead","Registered","Rejected"]}}}){
+    aggregate{
+      count
+    }
+  }
+  customer_status(where:{name: {_in: ["Lead","Registered","Rejected"]}}, order_by: {id: asc}){
+    id 
+    name
+  }
+  channel {
+    id
+    name
+  }
+}
+`  
+
+const LEAD_REJECT_MUTATION = gql`
+mutation customer_lead_reject($status_id:Int,$id:Int! ) {
+  update_customer_by_pk(pk_columns: {id: $id}, _set: {status_id: $status_id}) {
+    id
+    name
+  }
+}
+`
+
+const UPDATE_LEAD_PRIORITY_STATUS_MUTATION = gql`
+mutation lead_priority_status($lead_priority: Boolean, $id: Int) {
+  update_partner(_set: {lead_priority: $lead_priority}, where: {id: {_eq: $id}}) {
+    returning {
+      id
+      lead_priority
+    }
+  }
+}
+`
 
 const CusSource = [
   { value: 1, text: "DIRECT" },
@@ -21,9 +98,7 @@ const CusState = [
 ];
 
 const CustomerLead = () => {
-  const onChange = (checked) => {
-    console.log(`checked = ${checked}`);
-  };
+  
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(
@@ -40,8 +115,137 @@ const CustomerLead = () => {
   const initial = {
     commentData: [],
     commentVisible: false,
+    offset: 0,
+    limit: 10,
+    mobile: null,
+    customer_status_name: ['Lead', 'Registered'],
+    channel_name: ["Direct", "Social Media", "Referral", "App"]
   };
+
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial);
+
+  const [filter, setFilter] = useState(initial)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const customerQueryVars = {
+    offset: filter.offset,
+    limit: filter.limit,
+    customer_status_name: filter.customer_status_name,
+    mobile: filter.mobile ? `%${filter.mobile}%` : null,
+    channel_name: filter.channel_name,
+  }
+
+
+  const { loading, error, data } = useQuery(
+    CUSTOMERS_LEAD_QUERY, {
+      variables: customerQueryVars,
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  })
+  console.log('partnerLead error', error)
+
+  const [insertComment] = useMutation(
+    LEAD_REJECT_MUTATION, {
+    onError(error) {
+      message.error(error.toString());
+    },
+    onCompleted() {
+      message.success("Updated!!");
+    },
+  });
+  const onSubmit = (id) => {
+    insertComment({
+      variables: {
+        status_id: 7,
+        id: id,
+      },
+    });
+  };
+
+  const [updateStatusId] = useMutation(
+    UPDATE_LEAD_PRIORITY_STATUS_MUTATION,
+    {
+      onError(error) {
+        message.error(error.toString())
+      },
+      onCompleted() {
+        message.success('Updated!!')
+      }
+    })
+
+  const onLeadChange = (checked, id) => {
+    updateStatusId({
+      variables: {
+        id: id,
+        lead_priority: checked
+      }
+    })
+    console.log('id priority', id)
+  }
+
+  var customer = []
+  var customer_aggregate = 0;
+  var customer_status = [];
+  var channel = [];
+  
+  if (!loading) {
+    customer = data && data.customer
+    customer_aggregate = data && data.customer_aggregate
+    customer_status = data && data.customer_status
+    channel = data && data.channel
+  }
+
+  const record_count =
+  customer_aggregate &&
+  customer_aggregate.aggregate &&
+  customer_aggregate.aggregate.count;
+console.log("record_count", record_count)
+
+const customers_status = customer_status.map((data) => {
+  return { value: data.name, label: data.name }
+})
+
+const channels = channel.map((data) => {
+  return { value: data.name, label: data.name }
+})
+
+const onPageChange = (value) => {
+  setFilter({ ...filter, offset: value })
+}
+
+const onMobileSearch = (value) => {
+  setFilter({ ...filter, mobile: value })
+};
+
+const onChannelFilter = (value) => {
+  setFilter({ ...filter, channel_name: value, offset: 0 })
+}
+
+const onFilter = (value) => {
+  setFilter({ ...filter, customer_status_name: value, offset: 0 })
+}
+
+const pageChange = (page, pageSize) => {
+  const newOffset = page * pageSize - filter.limit
+  setCurrentPage(page)
+  onPageChange(newOffset)
+}
+
+const handleChannelStatus = (checked) => {
+  onChannelFilter(checked)
+  setCurrentPage(1)
+}
+
+
+const handleStatus = (checked) => {
+  onFilter(checked)
+  setCurrentPage(1)
+}
+
+const handleMobile = (e) => {
+  onMobileSearch(e.target.value);
+};
+
 
   const columnsCurrent = [
     {
@@ -54,7 +258,7 @@ const CustomerLead = () => {
     },
     {
       title: "Phone",
-      dataIndex: "number",
+      dataIndex: "mobile",
       filterDropdown: (
         <div>
           <Input
@@ -62,6 +266,8 @@ const CustomerLead = () => {
             id="number"
             name="number"
             type="number"
+            value={filter.mobile}
+            onChange={handleMobile}
           />
         </div>
       ),
@@ -72,6 +278,9 @@ const CustomerLead = () => {
     {
       title: "City",
       dataIndex: "cityName",
+      render: (text, record) => {
+        return record.city && record.city.name;
+      },
       filterDropdown: (
         <div>
           <Input placeholder="Search City Name" id="cityName" name="cityName" />
@@ -84,6 +293,9 @@ const CustomerLead = () => {
     {
       title: "Owner",
       dataIndex: "owner",
+      render: (text, record) => {
+        return record.onboarded_by && record.onboarded_by.name;
+      },
       filterDropdown: (
         <div>
           <Input placeholder="Search Employee Name" id="owner" name="owner" />
@@ -96,26 +308,64 @@ const CustomerLead = () => {
     {
       title: "Source",
       dataIndex: "source",
+      filterDropdown: (
+        <Checkbox.Group
+          options={channels}
+          defaultValue={filter.channel_name}
+          onChange={handleChannelStatus}
+          className='filter-drop-down'
+        />
+      ),
+      render: (text, record) => {
+        return record.channel && record.channel.name;
+      },
       filters: CusSource,
     },
     {
       title: "Status",
       dataIndex: "status",
+      filterDropdown: (
+        <Checkbox.Group
+          options={customers_status}
+          defaultValue={filter.customer_status_name}
+          onChange={handleStatus}
+          className='filter-drop-down'
+        />
+      ),
+      render: (text, record) => {
+        return record.status && record.status.name;
+      },
       filters: CusState,
     },
     {
       title: "Comment",
       dataIndex: "comment",
+      render: (text, record) => {
+        const comment = record.customer_comments && record.customer_comments.length > 0 &&
+          record.customer_comments[0].description ? record.customer_comments[0].description : '-'
+        return comment && comment.length > 20 ? (
+          <Tooltip title={comment}>
+            <span> {comment.slice(0, 20) + '...'}</span>
+          </Tooltip>
+        ) : (
+            comment
+          )
+      },
     },
     {
       title: "Created Date",
       dataIndex: "date",
+      render: (text, record) => {
+        const create_date = record.customer_comments && record.customer_comments.length > 0 &&
+          record.customer_comments[0].created_at ? record.customer_comments[0].created_at : '-'
+        return (create_date ? moment(create_date).format('DD-MMM-YY') : null)
+      },
       sorter: (a, b) => (a.date > b.date ? 1 : -1),
     },
     {
       title: "Priority",
       dataIndex: "priority",
-      render: (text, record) => <Switch onChange={onChange} size="small" />,
+      render: (text, record) => <Switch onChange={(checked) => onLeadChange(checked, record.id)} checked={text}  size="small" />,
     },
     {
       title: "Action",
@@ -130,7 +380,7 @@ const CustomerLead = () => {
                   "commentVisible",
                   null,
                   "commentData",
-                  record.previousComment
+                  record.id
                 )
               }
             />
@@ -139,7 +389,7 @@ const CustomerLead = () => {
             title="Are you sure want to Reject the lead?"
             okText="Yes"
             cancelText="No"
-            onConfirm={() => console.log("Rejected!")}
+            onConfirm={() => onSubmit(record.id)}
           >
             <Button
               type="primary"
@@ -160,19 +410,34 @@ const CustomerLead = () => {
           ...rowSelection,
         }}
         columns={columnsCurrent}
-        dataSource={mock}
+        dataSource={customer}
         rowKey={(record) => record.id}
         size="middle"
         scroll={{ x: 1156 }}
         pagination={false}
       />
-      {object.commentVisible && (
-        <Comment
+       {!loading && record_count
+        ? (
+          <Pagination
+            size='small'
+            current={currentPage}
+            pageSize={filter.limit}
+            total={record_count}
+            onChange={pageChange}
+            className='text-right p10'
+          />) : null
+      }
+       {object.commentVisible && (
+        <Modal
+          title='Comments'
           visible={object.commentVisible}
-          data={object.commentData}
-          onHide={handleHide}
-        />
-      )}
+          onCancel={handleHide}
+          bodyStyle={{ padding: 10 }}
+          footer={null}
+        >
+          <CustomerComment customer_id={object.commentData} />
+        </Modal>)
+      }
     </>
   );
 };

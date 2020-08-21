@@ -29,13 +29,21 @@ import Branch from '../branch'
 import Fr8Branch from '../fr8Branch'
 import CustomerUser from '../createCustomerUser'
 import CustomerBranch from '../createCustomerBranch'
-import Trips from '../../trips/trips'
 import TitleWithCount from '../../common/titleWithCount'
+import ClosedTrip from '../ongoingTrip'
+import OngoingTrip from '../../trips/activeTrips'
+import Trips from '../../trips/trips'
 // Apollo Client
 import { useSubscription } from '@apollo/client'
 import { CUSTOMER_DETAIL_SUBSCRIPTION } from './query/cutomerDetailSubscription'
 
 const { TabPane } = Tabs
+
+const closed = ['Closed']
+const ongoing = ['Assigned','Confirmed','Reported at source','Intransit','Reported at destination']
+const invoicepending= ['Delivered']
+const final = ['Invoiced', 'Paid']
+const advancepending= ['Reported at source', 'Intransit', 'Reported at destination']
 
 const CustomerDetailContainer = (props) => {
   const { cardcode } = props
@@ -56,7 +64,13 @@ const CustomerDetailContainer = (props) => {
 
   const trip_variables = {
     trip_status: vars.trip_status ? vars.trip_status : null,
-    cardcode: cardcode
+    cardcode: cardcode,
+     closed:closed,
+     ongoing:ongoing,
+     invoicepending: invoicepending,
+     final: final,
+     advancepending:advancepending
+
   }
 
   const { loading, error, data } = useSubscription(
@@ -68,10 +82,22 @@ const CustomerDetailContainer = (props) => {
 
   console.log('CustomerDetailContainer Error', error)
   var customerInfo = {}
+  var closed_count=0;
+  var ongoing_count = 0;
+  var invoicepending_count = 0;
+  var final_count =0;
+  var advancepending_count =0;
+  
   if (!loading) {
     const { customer } = data
     customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
+     closed_count= customerInfo.closed && customerInfo.closed.aggregate && customerInfo.closed.aggregate.count
+     ongoing_count= customerInfo.ongoing && customerInfo.ongoing.aggregate && customerInfo.ongoing.aggregate.count
+     invoicepending_count= customerInfo.invoicepending && customerInfo.invoicepending.aggregate && customerInfo.invoicepending.aggregate.count
+     final_count= customerInfo.final && customerInfo.final.aggregate && customerInfo.final.aggregate.count
+     advancepending_count= customerInfo.advancepending && customerInfo.advancepending.aggregate && customerInfo.advancepending.aggregate.count 
   }
+  console.log('customerInfo',customerInfo)
 
   const onTabChange = (key) => {
     setVars({ ...vars, tabKey: key })
@@ -88,6 +114,12 @@ const CustomerDetailContainer = (props) => {
       case '5':
         setVars({ ...vars, trip_status: ['Delivered'] })
         break
+      case '9':
+        setVars({ ...vars, trip_status: ['Assigned','Confirmed','Reported at source','Intransit','Reported at destination'] })
+        break
+      case '10':
+        setVars({ ...vars, trip_status: ['Closed'] })
+        break  
 
       default:
         setVars({ ...vars, trip_status: initialVars.trip_status })
@@ -159,7 +191,7 @@ const CustomerDetailContainer = (props) => {
               <Card size='small' className='card-body-0 border-top-blue'>
                 <Tabs onChange={onTabChange} defaultActiveKey='1'>
                   <TabPane
-                    tab={<TitleWithCount name='Final' value={35} />}
+                    tab={<TitleWithCount name='Final' value={final_count} />}
                     key='1'
                   >
                     <FinalPaymentsPending
@@ -174,7 +206,7 @@ const CustomerDetailContainer = (props) => {
                     <IncomingPayments />
                   </TabPane>
                   <TabPane
-                    tab={<TitleWithCount name='Advance Pending(O)' value={3} />}
+                    tab={<TitleWithCount name='Advance Pending(O)' value={advancepending_count} />}
                     key='3'
                   >
                     <AdvancePending
@@ -183,7 +215,7 @@ const CustomerDetailContainer = (props) => {
                     />
                   </TabPane>
                   <TabPane
-                    tab={<TitleWithCount name='Advance Pending(C)' value={0} />}
+                    tab={<TitleWithCount name='Advance Pending(C)' value={invoicepending_count} />}
                     key='4'
                   >
                     <AdvancePending
@@ -192,7 +224,7 @@ const CustomerDetailContainer = (props) => {
                     />
                   </TabPane>
                   <TabPane
-                    tab={<TitleWithCount name='Invoice Pending' value={2} />}
+                    tab={<TitleWithCount name='Invoice Pending' value={invoicepending_count} />}
                     key='5'
                   >
                     <InvoicePending
@@ -207,7 +239,7 @@ const CustomerDetailContainer = (props) => {
                       </Button>
                     </Row>
                     <Users
-                      customerUser={customerInfo.customer_users}
+                      customeruser={customerInfo}
                       loading={loading}
                     />
                   </TabPane>
@@ -229,16 +261,16 @@ const CustomerDetailContainer = (props) => {
                     <Fr8Branch />
                   </TabPane>
                   <TabPane
-                    tab={<TitleWithCount name='Ongoing' value={3} />}
+                    tab={<TitleWithCount name='Ongoing' value={ongoing_count} />}
                     key='9'
                   >
-                    <Trips />
+                    <OngoingTrip  trips={customerInfo.trips} loading={loading}/>
                   </TabPane>
                   <TabPane
-                    tab={<TitleWithCount name='Closed' value={65} />}
+                    tab={<TitleWithCount name='Closed' value={closed_count} />}
                     key='10'
                   >
-                    <Trips />
+                    <ClosedTrip trips={customerInfo.trips} loading={loading}/>
                   </TabPane>
                   <TabPane tab='Details' key='11'>
                     <Row className='p10'>
@@ -254,10 +286,10 @@ const CustomerDetailContainer = (props) => {
               </Card>
             </Col>
             {visible.addUser && (
-              <CustomerUser visible={visible.addUser} onHide={onHide} />
+              <CustomerUser visible={visible.addUser} onHide={onHide} customer={customerInfo}/>
             )}
             {visible.addBranch && (
-              <CustomerBranch visible={visible.addBranch} onHide={onHide} />
+              <CustomerBranch visible={visible.addBranch} onHide={onHide} customer={customerInfo.id} />
             )}
             {visible.transfer && (
               <Transfer visible={visible.transfer} onHide={onHide} />

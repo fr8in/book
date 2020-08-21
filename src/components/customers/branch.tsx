@@ -1,10 +1,22 @@
 import { Table, Button } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 //import branchData from '../../../mock/customer/branch'
+import useShowHideWithRecord from "../../hooks/useShowHideWithRecord";
+import EditBranch from '../customers/createCustomerBranch'
 
 const Branch = (props) => {
   const { customerBranch, loading } = props;
   console.log("customerBranch", customerBranch);
+
+  const initial = {
+    visible: false,
+    data: [],
+    title: null,
+    createBranchVisible: false,
+    createBranchData: [],
+  };
+  const { object, handleHide, handleShow } = useShowHideWithRecord(initial);
+
   const column = [
     {
       title: "Branch Name",
@@ -51,7 +63,9 @@ const Branch = (props) => {
       render: (text, record) => (
         <span>
           <Button type="link" icon={<DeleteOutlined />} />
-          <Button type="link" icon={<EditOutlined />} />
+          <Button type="link" icon={<EditOutlined />}  onClick={() =>
+                    handleShow("createBranchVisible", null, null, record)
+                  } />
         </span>
       ),
       width: "10%",
@@ -59,6 +73,7 @@ const Branch = (props) => {
   ];
 
   return (
+    <>
     <Table
       columns={column}
       dataSource={customerBranch}
@@ -69,6 +84,14 @@ const Branch = (props) => {
       className="withAction"
       loading={loading}
     />
+     {object.createBranchVisible && (
+        <EditBranch
+          visible={object.createBranchVisible}
+          onHide={handleHide}
+          data={object.createBranchData}
+        />
+      )}
+    </>
   );
 };
 
