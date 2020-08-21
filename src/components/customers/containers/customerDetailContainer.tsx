@@ -32,7 +32,7 @@ import CustomerBranch from '../createCustomerBranch'
 import TitleWithCount from '../../common/titleWithCount'
 import ClosedTrip from '../ongoingTrip'
 import OngoingTrip from '../../trips/activeTrips'
-
+import Trips from '../../trips/trips'
 // Apollo Client
 import { useSubscription } from '@apollo/client'
 import { CUSTOMER_DETAIL_SUBSCRIPTION } from './query/cutomerDetailSubscription'
@@ -87,7 +87,7 @@ const CustomerDetailContainer = (props) => {
   var invoicepending_count = 0;
   var final_count =0;
   var advancepending_count =0;
-
+  
   if (!loading) {
     const { customer } = data
     customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
@@ -286,10 +286,10 @@ const CustomerDetailContainer = (props) => {
               </Card>
             </Col>
             {visible.addUser && (
-              <CustomerUser visible={visible.addUser} onHide={onHide} />
+              <CustomerUser visible={visible.addUser} onHide={onHide} customer={customerInfo}/>
             )}
             {visible.addBranch && (
-              <CustomerBranch visible={visible.addBranch} onHide={onHide} />
+              <CustomerBranch visible={visible.addBranch} onHide={onHide} customer={customerInfo.id} />
             )}
             {visible.transfer && (
               <Transfer visible={visible.transfer} onHide={onHide} />
