@@ -63,15 +63,7 @@ const FasTags = (props) => {
       key: 'partner',
       width: '12%',
       render: (text, record) => record.partner && record.partner.name,
-      filterDropdown: (
-        <div>
-          <Input placeholder='Search' id='partner' name='partner' type='number' />
-        </div>
-      ),
-      filterIcon: (filtered) => (
-        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-      )
-    },
+     },
     {
       title: 'Tag Bal',
       dataIndex: 'balance',

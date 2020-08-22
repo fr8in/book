@@ -18,7 +18,7 @@ query partners(
     offset: $offset, 
     limit: $limit,
     where:{
-       city:{branch:{region:{name:{_in:$region}}}}
+      city:{branch:{region:{name:{_in:$region}}}}
       partner_status:{id:{_in:$partner_statusId}}, 
       name: {_ilike: $name}, 
       cardcode: {_ilike: $cardcode}
