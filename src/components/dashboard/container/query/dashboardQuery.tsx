@@ -119,6 +119,7 @@ subscription dashboard_trips_truks($now: timestamptz,$regions: [Int!], $branches
             id
             truck_no
             truck_type {
+              id
               name
             }
             partner {
