@@ -5,7 +5,6 @@ import TruckVerification from '../../trucks/truckVerification'
 import VasRequest from '../../partners/vasRequest'
 import Breakdown from '../../trucks/breakdown'
 import Announcenmemt from '../../partners/announcement'
-import CustomerLead from '../../customers/customerLead'
 import CreateLead from '../../partners/createLead'
 import FilterList from '../../branches/employeeListFilter'
 import TitleWithCount from '../../common/titleWithCount'
@@ -153,11 +152,6 @@ const SourcingContainer = () => {
               </Card>
             </TabPane>
           </Tabs>
-        </TabPane>
-        <TabPane tab='Customer' key='2'>
-          <Card size='small' className='card-body-0'>
-            <CustomerLead />
-          </Card>
         </TabPane>
         <TabPane tab={<TitleWithCount name='Waiting for Load' value={waiting_for_load_count} />} key='3'>
           <Card size='small' className='card-body-0'>
