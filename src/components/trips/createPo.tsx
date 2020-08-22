@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Modal, Row, Button, Form, Col, Select, Card, Divider } from 'antd'
+import { Modal, Row, Button, Form, Col, Select, Card, Divider, message } from 'antd'
 import Link from 'next/link'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
 
 const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
@@ -16,9 +16,11 @@ mutation create_po (
     $po_date: timestamptz,
     $source_id: Int, 
     $destination_id: Int, 
-    $customer_id: Int, 
-    $customer_price: Float, 
-    $partner_price: Float,
+    $customer_id: Int,
+  	$customer_Branch: Int
+    $partner_id:Int,
+    $customer_price: Float,
+  	$partner_price: Float,
     $ton: float8,
     $per_ton:float8,
     $is_per_ton:Boolean, 
@@ -29,17 +31,18 @@ mutation create_po (
     $cash: Float,
     $to_pay: Float,
     $truck_id:Int,
-    $driver: String,
-    $description:String,
-    $topic:String,
-    $created_by: String ) {
+  	$truck_type_id: Int,
+    $driver: String ) {
   insert_trip(objects: {
     po_date:$po_date
     source_id: $source_id, 
     destination_id: $destination_id, 
     customer_id: $customer_id,
-    truck_type_id: $truck_id,
+    partner_id: $partner_id,
+    truck_id: $truck_id,
+    truck_type_id: $truck_type_id,
     driver: $driver,
+    customer_branch_id:$customer_Branch,
     trip_prices: {
       data: {
         customer_price: $customer_price,
@@ -53,13 +56,6 @@ mutation create_po (
         bank: $bank,
         to_pay:$to_pay,
         cash:$cash
-      }
-    }
-    trip_comments:{
-      data:{
-        description:$description,
-        topic:$topic,
-        created_by:$created_by
       }
     }
   }) {
@@ -90,6 +86,14 @@ const CustomerPo = (props) => {
     _data = data
   }
   const customerSearch = _data.search_customer
+
+  const [create_po_mutation] = useMutation(
+    CREATE_PO,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Load Created!!') }
+    }
+  )
 
   const onSubmit = (form) => {
     console.log('Customer PO is Created!', form)

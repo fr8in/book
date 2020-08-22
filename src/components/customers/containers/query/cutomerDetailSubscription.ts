@@ -47,8 +47,8 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         name
       }
       onboarded_by {
-       id
-       email
+        id
+        email
       }
       paymentManager {
         id
