@@ -27,7 +27,7 @@ mutation insert_city($name: String, $location: point) {
 }
 `
 const CitySelect = (props) => {
-  const { onChange, label, disabled, city, required, name } = props
+  const { onChange, label, disabled, city, required, name,width } = props
 
   const [citySearchMutation, { data }] = useMutation(
     CITY_SEARCH
@@ -89,6 +89,7 @@ const CitySelect = (props) => {
         onSearch={onSearch}
         disabled={disabled}
         onChange={(city, value) => onCityChange(city, value)}
+        style={{width:width || 'auto'}}
       >
         {citySearch.map(_city => (
           <Select.Option key={_city.id} value={formatCity(_city)}>{formatCity(_city)}</Select.Option>
