@@ -17,24 +17,15 @@ const PARTNERS_LEAD_QUERY = gql`
 query partner_lead(
   $offset: Int!
   $limit: Int!
-  $partner_status_name:[String!]
-  $channel_name:[String!]
-  $owner_name:String
   $no_comment:Boolean
-  $partner_users:partner_user_bool_exp
-  $city_name:city_bool_exp
+  $where: partner_bool_exp
   ){
   partner(
     offset: $offset
     limit: $limit
     order_by: 
     {lead_priority: desc_nulls_last},
-    where:{
-      partner_users:$partner_users,
-      city:$city_name,
-      onboarded_by: {email: {_ilike: $owner_name}},
-      partner_status:{name:{_in:$partner_status_name}},
-      channel: {name: {_in:$channel_name}}}
+    where:$where
       ){
     id
     name
@@ -120,19 +111,27 @@ const PartnerLead = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
+  const where = { 
+    partner_users: filter.mobile ? {mobile:{ _like:`%${filter.mobile}%`}}: null,  
+  city: filter.city_name && {name:{ _ilike: `%${filter.city_name}%`}} ,
+  onboarded_by:filter.owner_name ?  {email:{_ilike:`%${filter.owner_name}%`}}: null,
+  partner_status:{name:{_in: filter.partner_status_name ? filter.partner_status_name : null}},
+  channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} 
+  }
+  const whereNoCityFilter ={
+    partner_users: filter.mobile ? {mobile:{ _like:`%${filter.mobile}%`}}: null,  
+    onboarded_by:filter.owner_name ?  {email:{_ilike:`%${filter.owner_name}%`}}: null,
+    partner_status:{name:{_in: filter.partner_status_name ? filter.partner_status_name : null}},
+    channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} 
+  }
+
   const partnerQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
     no_comment:filter.no_comment && filter.no_comment.length > 0 ? true : false ,
-    partner_status_name: filter.partner_status_name,
-    channel_name: filter.channel_name,
-   // mobile: filter.mobile ? `%${filter.mobile}%` : null,
-    partner_users: filter.mobile ? {mobile:{ _like:`%${filter.mobile}%`}}: null,
-    //city_name: filter.city_name ? `%${filter.city_name}%` : null,
-    city_name: filter.city_name ? {name:{ _ilike: `%${filter.city_name}%`}} : null,
-    owner_name: filter.owner_name ? `%${filter.owner_name}%` : null
-
+    where:filter.city_name ?  where : whereNoCityFilter,
   }
+
 
   const { loading, error, data } = useQuery(
     PARTNERS_LEAD_QUERY, {

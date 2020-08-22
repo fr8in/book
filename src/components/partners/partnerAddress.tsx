@@ -67,7 +67,7 @@ const EditAddress = (props) => {
           </Form.Item>
           <Row justify='end'>
             <Space>
-              <Button type='primary' icon={<LeftOutlined />} > Back </Button>
+              <Button type='primary' icon={<LeftOutlined />} onClick={onHide} > Back </Button>
               <Button type='primary' key='back' htmlType='submit'> Save </Button>
             </Space>
           </Row>
