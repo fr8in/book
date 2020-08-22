@@ -7,7 +7,7 @@ import TruckComment from '../trucks/truckComment'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 
 const WaitingForLoad = (props) => {
-  const { trucks, loading } = props
+  const { trucks, loading,onTruckNoSearch, vars } = props
   const initial = {
     usersData: [],
     usersVisible: false,
@@ -22,6 +22,10 @@ const WaitingForLoad = (props) => {
   const callNow = record => {
     window.location.href = 'tel:' + record
   }
+
+  const handleTruckNo = (e) => {
+    onTruckNoSearch(e.target.value);
+  };
 
   const columns = [
     {
@@ -43,6 +47,8 @@ const WaitingForLoad = (props) => {
             placeholder='Search Truck'
             id='truck'
             name='truck'
+            value={vars.truck_no}
+            onChange={handleTruckNo}
           />
         </div>
       ),
@@ -125,7 +131,7 @@ const WaitingForLoad = (props) => {
               <Button type='link' icon={<WhatsAppOutlined />} />
             </Tooltip> */}
             <Tooltip title='Quick PO'>
-              <Button type='link' icon={<RocketFilled />} onClick={() => handleShow('poVisible', record.partner, 'poData', record)} />
+              <Button type='link' icon={<RocketFilled />} onClick={() => handleShow('poVisible', record, 'poData', record)} />
             </Tooltip>
           </span>
         )

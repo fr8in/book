@@ -30,12 +30,12 @@ import Fr8Branch from '../fr8Branch'
 import CustomerUser from '../createCustomerUser'
 import CustomerBranch from '../createCustomerBranch'
 import TitleWithCount from '../../common/titleWithCount'
-import ClosedTrip from '../ongoingTrip'
-import OngoingTrip from '../../trips/activeTrips'
-import Trips from '../../trips/trips'
+ import OngoingTrip from '../../trips/activeTrips'
+ import Trips from '../../trips/trips'
 // Apollo Client
 import { useSubscription } from '@apollo/client'
 import { CUSTOMER_DETAIL_SUBSCRIPTION } from './query/cutomerDetailSubscription'
+// import ClosedTrip from '../containers/closedTripContainer'
 
 const { TabPane } = Tabs
 
@@ -270,7 +270,7 @@ const CustomerDetailContainer = (props) => {
                     tab={<TitleWithCount name='Closed' value={closed_count} />}
                     key='10'
                   >
-                    <ClosedTrip trips={customerInfo.trips} loading={loading}/>
+                    <Trips loading={loading}/>
                   </TabPane>
                   <TabPane tab='Details' key='11'>
                     <Row className='p10'>
@@ -286,7 +286,7 @@ const CustomerDetailContainer = (props) => {
               </Card>
             </Col>
             {visible.addUser && (
-              <CustomerUser visible={visible.addUser} onHide={onHide} customer={customerInfo}/>
+              <CustomerUser visible={visible.addUser} onHide={onHide} customer={customerInfo.id}/>
             )}
             {visible.addBranch && (
               <CustomerBranch visible={visible.addBranch} onHide={onHide} customer={customerInfo.id} />

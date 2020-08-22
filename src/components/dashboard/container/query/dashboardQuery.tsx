@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 // dashboard_trips_truks
 const DASHBOAD_QUERY = gql`
-subscription dashboard_trips_truks($now: timestamptz,$regions: [Int!], $branches: [Int!], $cities: [Int!], $trip_status: String, $truck_type: [Int!], $managers: [Int!] ) {
+subscription dashboard_trips_truks($now: timestamptz,$regions: [Int!], $branches: [Int!], $cities: [Int!], $trip_status: String, $truck_type: [Int!], $managers: [Int!], $truckno: String ) {
   region(where: {id: {_in: $regions}}) {
     id
     name
@@ -113,10 +113,13 @@ subscription dashboard_trips_truks($now: timestamptz,$regions: [Int!], $branches
               count
             }
           }
-          trucks(where: {truck_status: {name: {_in: ["Waiting for load"]}}}) {
+          trucks(where:{
+              truck_no: { _ilike: $truckno }
+              truck_status: {name: {_in: ["Waiting for load"]}}}) {
             id
             truck_no
             truck_type {
+              id
               name
             }
             partner {

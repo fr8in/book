@@ -32,9 +32,9 @@ const Nav = (props) => {
       <Menu.Item key='5' icon={<TeamOutlined />}>
         <Link href='/customers'><a>Customers</a></Link>
       </Menu.Item>
-      <Menu.Item key='6' icon={<CreditCardOutlined />}>
+      {/* <Menu.Item key='6' icon={<CreditCardOutlined />}>
         <Link href='/cards'><a>Cards</a></Link>
-      </Menu.Item>
+      </Menu.Item> */}
       <Menu.Item key='7' icon={<NodeIndexOutlined />}>
         <Link href='/branches'><a>Branches</a></Link>
       </Menu.Item>
