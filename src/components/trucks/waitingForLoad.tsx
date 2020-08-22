@@ -125,7 +125,7 @@ const WaitingForLoad = (props) => {
               <Button type='link' icon={<WhatsAppOutlined />} />
             </Tooltip> */}
             <Tooltip title='Quick PO'>
-              <Button type='link' icon={<RocketFilled />} onClick={() => handleShow('poVisible', record.partner, 'poData', record)} />
+              <Button type='link' icon={<RocketFilled />} onClick={() => handleShow('poVisible', record, 'poData', record)} />
             </Tooltip>
           </span>
         )
