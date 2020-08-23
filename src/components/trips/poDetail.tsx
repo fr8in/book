@@ -4,11 +4,14 @@ import CitySelect from '../common/citySelect'
 import Loading from '../common/loading'
 import { gql, useQuery } from '@apollo/client'
 import Driver from '../partners/driver'
+import SystemMamul from '../customers/systemMamul'
+import useShowHide from '../../hooks/useShowHide'
 
 const CUSTOMER_PO_DATA = gql`
 query customers_po($id:Int!){
   customer(where:{id:{_eq:$id}}){
     id
+    cardcode
     name
     exception_date
     managed
@@ -43,6 +46,9 @@ const PoDetail = (props) => {
     cus_adv: 0
   }
   const [trip_price, setTrip_price] = useState(initial)
+
+  const modelInitial = { mamulVisible: false }
+  const { visible, onHide, onShow } = useShowHide(modelInitial)
 
   const { loading, data, error } = useQuery(
     CUSTOMER_PO_DATA,
@@ -273,7 +279,11 @@ const PoDetail = (props) => {
             <Form.Item
               name='mamul'
               label='Mamul Charge'
-              extra={<span>System Mamul: <span className='link'>{default_mamul || 0}</span></span>}
+              extra={
+                <span>System Mamul:&nbsp;
+                  <span className='link' onClick={default_mamul ? () => onShow('mamulVisible') : () => {}}>{default_mamul || 0}</span>
+                </span>
+              }
             >
               <Input
                 placeholder='mamul'
@@ -351,6 +361,9 @@ const PoDetail = (props) => {
           <Col xs={8} sm={5}>Cash: {trip_price.part_cash}</Col>
           <Col xs={8} sm={4}>To-Pay: {trip_price.part_to_pay}</Col>
         </Row>
+        {visible.mamulVisible && (
+          <SystemMamul visible={visible.mamulVisible} onHide={onHide} cardcode={customer.cardcode} />
+        )}
       </>)
   )
 }

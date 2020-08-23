@@ -23,11 +23,10 @@ mutation insertTripPrice($trip_id:Int,$customer_price:Float,$customer_advance_pe
 
 const CustomerPrice = (props) => {
   const { visible, onHide, trip_id, trip_price } = props
-  const trip_price_data = trip_price[0] ? trip_price[0] : {}
 
   const initial = {
-    customer_price: trip_price_data.customer_price,
-    mamul: trip_price_data.mamul
+    customer_price: trip_price.customer_price,
+    mamul: trip_price.mamul
   }
   const [priceCalc, setPriceCalc] = useState(initial)
 
@@ -65,13 +64,13 @@ const CustomerPrice = (props) => {
     setPriceCalc({ ...priceCalc, mamul: e.target.value })
   }
 
-  const advancewithMamul = Math.ceil((priceCalc.customer_price / 100) * trip_price_data.customer_advance_percentage)
+  const advancewithMamul = Math.ceil((priceCalc.customer_price / 100) * trip_price.customer_advance_percentage)
   const advance = advancewithMamul - priceCalc.mamul
   const partner_price = priceCalc.customer_price - priceCalc.mamul
 
   return (
     <Modal
-      title={`Customer Price Change - Advance (${trip_price_data.customer_advance_percentage}%): ${advance}`}
+      title={`Customer Price Change - Advance (${trip_price.customer_advance_percentage}%): ${advance}`}
       visible={visible}
       onCancel={onHide}
       footer={[]}
@@ -83,7 +82,7 @@ const CustomerPrice = (props) => {
               label='Customer Price'
               name='customer_price'
               rules={[{ required: true, message: 'Customer Price is required field!' }]}
-              initialValue={trip_price_data.customer_price}
+              initialValue={trip_price.customer_price}
             >
               <Input placeholder='Customer Price' onChange={onCustomerPriceChange} />
             </Form.Item>
@@ -92,7 +91,7 @@ const CustomerPrice = (props) => {
             <Form.Item
               label='Mamul Charge'
               name='mamul'
-              initialValue={trip_price_data.mamul}
+              initialValue={trip_price.mamul}
             >
               <Input placeholder='Mamul' onChange={onMamulChange} />
             </Form.Item>
@@ -104,7 +103,7 @@ const CustomerPrice = (props) => {
               label='Bank'
               name='bank'
               rules={[{ required: true, message: 'Bank value is required field!' }]}
-              initialValue={trip_price_data.bank}
+              initialValue={trip_price.bank || 0}
             >
               <Input placeholder='Bank' />
             </Form.Item>
@@ -114,7 +113,7 @@ const CustomerPrice = (props) => {
               label='Cash'
               name='cash'
               rules={[{ required: true, message: 'Cash is required field!' }]}
-              initialValue={trip_price_data.cash}
+              initialValue={trip_price.cash || 0}
             >
               <Input placeholder='Cash' />
             </Form.Item>
@@ -124,7 +123,7 @@ const CustomerPrice = (props) => {
               label='To-Pay'
               name='to_pay'
               rules={[{ required: true, message: 'To-Pay is required field!' }]}
-              initialValue={trip_price_data.to_pay || 0}
+              initialValue={trip_price.to_pay || 0}
             >
               <Input placeholder='To-pay' />
             </Form.Item>
@@ -135,6 +134,7 @@ const CustomerPrice = (props) => {
             <Form.Item
               label='Comment'
               name='comment'
+              initialValue={trip_price.comment || null}
               rules={[{ required: true, message: 'Comment value is required field!' }]}
             >
               <Input placeholder='Comment' />

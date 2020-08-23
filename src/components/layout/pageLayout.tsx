@@ -6,8 +6,16 @@ import Link from 'next/link'
 import '../../styles/site.less'
 import Actions from './actions'
 import Nav from './nav'
+import { gql, useQuery } from '@apollo/client'
+import { DatabaseTwoTone } from '@ant-design/icons'
 
 const { Header, Content } = Layout
+
+const SSH_ACCESS = gql`
+query ssh_access($email:String!){
+  isTechUser(email: $email)
+}
+`
 
 const PageLayout = (props) => {
   const initialFilter = {
@@ -19,6 +27,19 @@ const PageLayout = (props) => {
     types: null
   }
   const [filters, setFilters] = useState(initialFilter)
+
+  const { loading, error, data } = useQuery(
+    SSH_ACCESS,
+    {
+      variables: { email: 'jay@fr8.in' },
+      notifyOnNetworkStatusChange: true,
+      fetchPolicy: 'cache-and-network'
+    }
+  )
+
+  if (loading) return null
+  const { isTechUser } = data
+  
   return (
     <Layout id='page'>
       <Header className='siteLayout'>
@@ -26,7 +47,7 @@ const PageLayout = (props) => {
           <Col flex='70px' className='brand'>
             <Link href='/'><a>FR<span>8</span></a></Link>
           </Col>
-          <Actions onFilter={setFilters} initialFilter />
+          <Actions onFilter={setFilters} initialFilter isTechUser={isTechUser} />
         </Row>
         <Row justify='center'>
           <Col xs={24} sm={24} md={24}>

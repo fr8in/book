@@ -115,7 +115,8 @@ subscription dashboard_trips_truks($now: timestamptz,$regions: [Int!], $branches
           }
           trucks(where:{
               truck_no: { _ilike: $truckno }
-              truck_status: {name: {_in: ["Waiting for load"]}}}) {
+              truck_status: {name: {_in: ["Waiting for load"]}}
+            }) {
             id
             truck_no
             truck_type {

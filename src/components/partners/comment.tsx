@@ -1,10 +1,9 @@
-import { useState } from 'react'
-import { Row, Col, Table, Input, Button, message } from 'antd'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { Row, Col, Table, Input, Button, message, Form } from 'antd'
+import { gql, useMutation, useSubscription } from '@apollo/client'
 import moment from 'moment'
 
 const PARTNER_COMMENT_SUBSCRIPTION = gql`
-  query partner_comment($id: Int!){
+  subscription partner_comment($id: Int!){
     partner(where:{id:{_eq:$id}}) {
       partner_status{
         name
@@ -29,15 +28,14 @@ const INSERT_PARTNER_COMMENT_MUTATION = gql`
   }
 `
 const Comment = (props) => {
-
   const { partner_id } = props
-  const [userComment, setUserComment] = useState('')
 
-  const { loading, error, data } = useQuery(
+  const [form] = Form.useForm()
+
+  const { loading, error, data } = useSubscription(
     PARTNER_COMMENT_SUBSCRIPTION,
     {
-      variables: { id: partner_id },
-      notifyOnNetworkStatusChange: true
+      variables: { id: partner_id }
     }
   )
 
@@ -45,30 +43,25 @@ const Comment = (props) => {
     INSERT_PARTNER_COMMENT_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () {
+        message.success('Updated!!')
+        form.resetFields()
+      }
     }
   )
   console.log('PartnerComment error', error)
-  console.log('PartnerComment data', data)
 
   if (loading) return null
-  const partner_status_name =  data.partner &&  data.partner[0].partner_status && data.partner[0].partner_status.name 
+  const partner_status_name = data.partner && data.partner[0].partner_status && data.partner[0].partner_status.name
   const { partner_comments } = data.partner && data.partner[0] ? data.partner[0] : []
-  
-  console.log('partner_comments',partner_comments)
-  console.log('partner_status_name',partner_status_name)
 
-  const handleChange = (e) => {
-    setUserComment(e.target.value)
-  }
-
-  const onSubmit = () => {
+  const onSubmit = (form) => {
     insertComment({
       variables: {
         partner_id: partner_id,
         created_by: 'shilpa@fr8.in',
-        description: userComment,
-        topic:partner_status_name
+        description: form.comment,
+        topic: partner_status_name
       }
     })
   }
@@ -88,23 +81,29 @@ const Comment = (props) => {
       title: 'Created On',
       dataIndex: 'created_at',
       width: '20%',
-      render:(text, record) => {
+      render: (text, record) => {
         return text ? moment(text).format('DD-MMM-YY') : null
       }
     }
   ]
   return (
     <div>
-      <Row className='mb10' gutter={10}>
-        <Col xs={24} sm={18}>
-          <Input.TextArea
-            value={userComment}
-            onChange={handleChange}
-            placeholder='Please enter comments'
-          />
-        </Col> 
-        <Col xs={4}><Button type='primary' onClick={onSubmit}>Submit</Button></Col>
-      </Row>
+      <Form onFinish={onSubmit} form={form}>
+        <Row className='mb10' gutter={10}>
+          <Col xs={24} sm={18}>
+            <Form.Item name='comment'>
+              <Input.TextArea
+                placeholder='Please enter comments'
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={4}>
+            <Form.Item>
+              <Button type='primary' htmlType='submit'>Submit</Button>
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
       <Table
         columns={columnsCurrent}
         dataSource={partner_comments}

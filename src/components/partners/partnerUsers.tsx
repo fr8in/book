@@ -46,6 +46,8 @@ mutation PartnerUserDelete($id:Int) {
 const PartnerUsers = (props) => {
   const { visible, partner, onHide, title } = props
 
+  const [form] = Form.useForm()
+
   const { loading, error, data } = useSubscription(
     PARTNER_USERS_SUBSCRIPTION,
     {
@@ -57,7 +59,10 @@ const PartnerUsers = (props) => {
     INSERT_PARTNER_USERS_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () {
+        message.success('Updated!!')
+        form.resetFields()
+      }
     }
   )
 
@@ -82,7 +87,6 @@ const PartnerUsers = (props) => {
         name: ''
       }
     })
-    form.resetFields()
   }
 
   const onDelete = (id) => {
@@ -142,7 +146,7 @@ const PartnerUsers = (props) => {
         size='small'
         pagination={false}
       />
-      <Form onFinish={onAddUser}>
+      <Form form={form} onFinish={onAddUser}>
         <Row className='mt10' gutter={10}>
           <Col flex='auto'>
             <Form.Item name='mobile' initialValue=''>

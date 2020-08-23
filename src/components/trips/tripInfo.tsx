@@ -8,12 +8,12 @@ import CustomerPrice from '../trips/customerPrice'
 import moment from 'moment'
 
 const TripInfo = (props) => {
-  const { trip_info, trip_price, trip_id } = props
+  const { trip_info, trip_prices, trip_id } = props
   const initial = { price: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   // const { data } = props
 
-  console.log('trip_price', trip_price)
+  console.log('trip_price', trip_prices)
   return (
     <Row>
       <Col xs={24}>
@@ -69,12 +69,16 @@ const TripInfo = (props) => {
             />
             <LabelWithData
               label='Customer Price'
-              data={<p>{trip_info.trip_prices && trip_info.trip_prices[0].customer_price} <EditTwoTone onClick={() => onShow('price')} /></p>}
+              data={
+                <p>{trip_prices && trip_prices.customer_price ? trip_prices.customer_price : null}
+                  <EditTwoTone onClick={() => onShow('price')} />
+                </p>
+              }
               labelSpan={10}
             />
-            <LabelWithData label='Cash' data={trip_info.trip_prices && trip_info.trip_prices[0].cash} labelSpan={10} />
-            <LabelWithData label='To Pay' data={trip_info.trip_prices && trip_info.trip_prices[0].to_pay} labelSpan={10} />
-            <LabelWithData label='Mamul' data={trip_info.trip_prices && trip_info.trip_prices[0].mamul} labelSpan={10} />
+            <LabelWithData label='Cash' data={trip_prices && trip_prices.cash ? trip_prices.cash : 0} labelSpan={10} />
+            <LabelWithData label='To Pay' data={trip_prices && trip_prices.to_pay ? trip_prices.to_pay : 0} labelSpan={10} />
+            <LabelWithData label='Mamul' data={trip_prices && trip_prices.mamul ? trip_prices.mamul : 0} labelSpan={10} />
           </Col>
           <Col sm={24} md={12}>
             <LabelWithData
@@ -83,13 +87,13 @@ const TripInfo = (props) => {
               ) : ''} labelSpan={10}
             />
             <LabelWithData label='Delay' data={trip_info.delay} labelSpan={10} />
-            <LabelWithData label='Partner Price' data={trip_info.trip_prices && trip_info.trip_prices[0].partner_price} labelSpan={10} />
-            <LabelWithData label='Including loading' data={trip_info.trip_prices && trip_info.trip_prices.including_loading === true ? 'Yes' : 'No'} labelSpan={10} />
-            <LabelWithData label='Including Unloading' data={trip_info.trip_prices && trip_info.trip_prices.including_unloading === true ? 'yes' : 'No'} labelSpan={10} />
+            <LabelWithData label='Partner Price' data={trip_prices && trip_prices.partner_price ? trip_prices.partner_price : 0} labelSpan={10} />
+            <LabelWithData label='Including loading' data={trip_prices && trip_prices.including_loading === true ? 'Yes' : 'No'} labelSpan={10} />
+            <LabelWithData label='Including Unloading' data={trip_prices && trip_prices.including_unloading === true ? 'yes' : 'No'} labelSpan={10} />
           </Col>
         </Row>
       </Col>
-      {visible.price && <CustomerPrice visible={visible.price} onHide={onHide} trip_price={trip_price || {}} trip_id={trip_id} />}
+      {visible.price && <CustomerPrice visible={visible.price} onHide={onHide} trip_price={trip_prices || {}} trip_id={trip_id} />}
     </Row>
   )
 }
