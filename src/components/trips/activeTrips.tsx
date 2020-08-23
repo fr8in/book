@@ -45,7 +45,7 @@ const Trips = (props) => {
       },
       sorter: (a, b) => (a.customer.name > b.customer.name ? 1 : -1),
       width: '10%'
-    },
+    } : {},
     {
       title: 'Partner',
       render: (text, record) => {

@@ -1,12 +1,12 @@
-import { Table, Input, Switch, Button, Tooltip, Popconfirm, Space,Pagination ,message , Modal,Checkbox} from "antd";
+import { Table, Input, Switch, Button, Tooltip, Popconfirm, Space, Pagination, message, Modal, Checkbox } from 'antd'
 import {
   SearchOutlined,
   CommentOutlined,
-  CloseOutlined,
-} from "@ant-design/icons";
+  CloseOutlined
+} from '@ant-design/icons'
 import moment from 'moment'
 import { useState } from 'react'
-import useShowHideWithRecord from "../../hooks/useShowHideWithRecord";
+import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import CustomerComment from '../customers/customerComment'
 import { gql, useQuery, useMutation } from '@apollo/client'
 
@@ -63,7 +63,7 @@ query customers( $offset: Int!
     name
   }
 }
-`  
+`
 
 const LEAD_REJECT_MUTATION = gql`
 mutation customer_lead_reject($status_id:Int,$id:Int! ) {
@@ -86,32 +86,31 @@ mutation lead_priority_status($lead_priority: Boolean, $id: Int) {
 `
 
 const CusSource = [
-  { value: 1, text: "DIRECT" },
-  { value: 2, text: "SOCIAL MEDIA" },
-  { value: 3, text: "REFERRAL" },
-  { value: 4, text: "APP" },
-];
+  { value: 1, text: 'DIRECT' },
+  { value: 2, text: 'SOCIAL MEDIA' },
+  { value: 3, text: 'REFERRAL' },
+  { value: 4, text: 'APP' }
+]
 const CusState = [
-  { value: 1, text: "OPEN" },
-  { value: 2, text: "ON-BOARDED" },
-  { value: 3, text: "REJECTED" },
-];
+  { value: 1, text: 'OPEN' },
+  { value: 2, text: 'ON-BOARDED' },
+  { value: 3, text: 'REJECTED' }
+]
 
 const CustomerLead = () => {
-  
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(
         `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
+        'selectedRows: ',
         selectedRows
-      );
+      )
     },
     getCheckboxProps: (record) => ({
-      disabled: record.name === "Disabled User", // Column configuration not to be checked
-      name: record.name,
-    }),
-  };
+      disabled: record.name === 'Disabled User', // Column configuration not to be checked
+      name: record.name
+    })
+  }
   const initial = {
     commentData: [],
     commentVisible: false,
@@ -119,10 +118,10 @@ const CustomerLead = () => {
     limit: 10,
     mobile: null,
     customer_status_name: ['Lead', 'Registered'],
-    channel_name: ["Direct", "Social Media", "Referral", "App"]
-  };
+    channel_name: ['Direct', 'Social Media', 'Referral', 'App']
+  }
 
-  const { object, handleHide, handleShow } = useShowHideWithRecord(initial);
+  const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
   const [filter, setFilter] = useState(initial)
   const [currentPage, setCurrentPage] = useState(1)
@@ -132,43 +131,42 @@ const CustomerLead = () => {
     limit: filter.limit,
     customer_status_name: filter.customer_status_name,
     mobile: filter.mobile ? `%${filter.mobile}%` : null,
-    channel_name: filter.channel_name,
+    channel_name: filter.channel_name
   }
-
 
   const { loading, error, data } = useQuery(
     CUSTOMERS_LEAD_QUERY, {
       variables: customerQueryVars,
-    fetchPolicy: 'cache-and-network',
-    notifyOnNetworkStatusChange: true
-  })
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    })
   console.log('partnerLead error', error)
 
   const [insertComment] = useMutation(
     LEAD_REJECT_MUTATION, {
-    onError(error) {
-      message.error(error.toString());
-    },
-    onCompleted() {
-      message.success("Updated!!");
-    },
-  });
+      onError (error) {
+        message.error(error.toString())
+      },
+      onCompleted () {
+        message.success('Updated!!')
+      }
+    })
   const onSubmit = (id) => {
     insertComment({
       variables: {
         status_id: 7,
-        id: id,
-      },
-    });
-  };
+        id: id
+      }
+    })
+  }
 
   const [updateStatusId] = useMutation(
     UPDATE_LEAD_PRIORITY_STATUS_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         message.error(error.toString())
       },
-      onCompleted() {
+      onCompleted () {
         message.success('Updated!!')
       }
     })
@@ -184,10 +182,10 @@ const CustomerLead = () => {
   }
 
   var customer = []
-  var customer_aggregate = 0;
-  var customer_status = [];
-  var channel = [];
-  
+  var customer_aggregate = 0
+  var customer_status = []
+  var channel = []
+
   if (!loading) {
     customer = data && data.customer
     customer_aggregate = data && data.customer_aggregate
@@ -198,116 +196,114 @@ const CustomerLead = () => {
   const record_count =
   customer_aggregate &&
   customer_aggregate.aggregate &&
-  customer_aggregate.aggregate.count;
-console.log("record_count", record_count)
+  customer_aggregate.aggregate.count
+  console.log('record_count', record_count)
 
-const customers_status = customer_status.map((data) => {
-  return { value: data.name, label: data.name }
-})
+  const customers_status = customer_status.map((data) => {
+    return { value: data.name, label: data.name }
+  })
 
-const channels = channel.map((data) => {
-  return { value: data.name, label: data.name }
-})
+  const channels = channel.map((data) => {
+    return { value: data.name, label: data.name }
+  })
 
-const onPageChange = (value) => {
-  setFilter({ ...filter, offset: value })
-}
+  const onPageChange = (value) => {
+    setFilter({ ...filter, offset: value })
+  }
 
-const onMobileSearch = (value) => {
-  setFilter({ ...filter, mobile: value })
-};
+  const onMobileSearch = (value) => {
+    setFilter({ ...filter, mobile: value })
+  }
 
-const onChannelFilter = (value) => {
-  setFilter({ ...filter, channel_name: value, offset: 0 })
-}
+  const onChannelFilter = (value) => {
+    setFilter({ ...filter, channel_name: value, offset: 0 })
+  }
 
-const onFilter = (value) => {
-  setFilter({ ...filter, customer_status_name: value, offset: 0 })
-}
+  const onFilter = (value) => {
+    setFilter({ ...filter, customer_status_name: value, offset: 0 })
+  }
 
-const pageChange = (page, pageSize) => {
-  const newOffset = page * pageSize - filter.limit
-  setCurrentPage(page)
-  onPageChange(newOffset)
-}
+  const pageChange = (page, pageSize) => {
+    const newOffset = page * pageSize - filter.limit
+    setCurrentPage(page)
+    onPageChange(newOffset)
+  }
 
-const handleChannelStatus = (checked) => {
-  onChannelFilter(checked)
-  setCurrentPage(1)
-}
+  const handleChannelStatus = (checked) => {
+    onChannelFilter(checked)
+    setCurrentPage(1)
+  }
 
+  const handleStatus = (checked) => {
+    onFilter(checked)
+    setCurrentPage(1)
+  }
 
-const handleStatus = (checked) => {
-  onFilter(checked)
-  setCurrentPage(1)
-}
-
-const handleMobile = (e) => {
-  onMobileSearch(e.target.value);
-};
-
+  const handleMobile = (e) => {
+    onMobileSearch(e.target.value)
+  }
 
   const columnsCurrent = [
     {
-      title: "Company",
-      dataIndex: "company",
+      title: 'Company',
+      dataIndex: 'company'
     },
     {
-      title: "User",
-      dataIndex: "name",
+      title: 'User',
+      dataIndex: 'name'
     },
     {
-      title: "Phone",
-      dataIndex: "mobile",
+      title: 'Phone',
+      dataIndex: 'mobile',
       filterDropdown: (
         <div>
           <Input
-            placeholder="Search Phone Number"
-            id="number"
-            name="number"
-            type="number"
+            placeholder='Search Phone Number'
+            id='number'
+            name='number'
+            type='number'
             value={filter.mobile}
             onChange={handleMobile}
           />
         </div>
       ),
       filterIcon: (filtered) => (
-        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
-      ),
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     {
-      title: "City",
-      dataIndex: "cityName",
+      title: 'City',
+      dataIndex: 'cityName',
       render: (text, record) => {
-        return record.city && record.city.name;
+        return record.city && record.city.name
       },
       filterDropdown: (
         <div>
-          <Input placeholder="Search City Name" id="cityName" name="cityName" />
+          <Input placeholder='Search City Name' id='cityName' name='cityName' />
         </div>
       ),
       filterIcon: (filtered) => (
-        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
-      ),
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     {
-      title: "Owner",
-      dataIndex: "owner",
+      title: 'Owner',
+      dataIndex: 'owner',
       render: (text, record) => {
-        return record.onboarded_by && record.onboarded_by.name;
+        return record.onboarded_by && record.onboarded_by.name
       },
       filterDropdown: (
         <div>
-          <Input placeholder="Search Employee Name" id="owner" name="owner" />
+          <Input placeholder='Search Employee Name' id='owner' name='owner' />
         </div>
       ),
       filterIcon: (filtered) => (
-        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
-      ),
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     {
-      title: "Source",
-      dataIndex: "source",
+      title: 'Source',
+      dataIndex: 'source',
       filterDropdown: (
         <Checkbox.Group
           options={channels}
@@ -317,13 +313,13 @@ const handleMobile = (e) => {
         />
       ),
       render: (text, record) => {
-        return record.channel && record.channel.name;
+        return record.channel && record.channel.name
       },
-      filters: CusSource,
+      filters: CusSource
     },
     {
-      title: "Status",
-      dataIndex: "status",
+      title: 'Status',
+      dataIndex: 'status',
       filterDropdown: (
         <Checkbox.Group
           options={customers_status}
@@ -333,13 +329,13 @@ const handleMobile = (e) => {
         />
       ),
       render: (text, record) => {
-        return record.status && record.status.name;
+        return record.status && record.status.name
       },
-      filters: CusState,
+      filters: CusState
     },
     {
-      title: "Comment",
-      dataIndex: "comment",
+      title: 'Comment',
+      dataIndex: 'comment',
       render: (text, record) => {
         const comment = record.customer_comments && record.customer_comments.length > 0 &&
           record.customer_comments[0].description ? record.customer_comments[0].description : '-'
@@ -348,75 +344,74 @@ const handleMobile = (e) => {
             <span> {comment.slice(0, 20) + '...'}</span>
           </Tooltip>
         ) : (
-            comment
-          )
-      },
+          comment
+        )
+      }
     },
     {
-      title: "Created Date",
-      dataIndex: "date",
+      title: 'Created Date',
+      dataIndex: 'date',
       render: (text, record) => {
         const create_date = record.customer_comments && record.customer_comments.length > 0 &&
           record.customer_comments[0].created_at ? record.customer_comments[0].created_at : '-'
         return (create_date ? moment(create_date).format('DD-MMM-YY') : null)
       },
-      sorter: (a, b) => (a.date > b.date ? 1 : -1),
+      sorter: (a, b) => (a.date > b.date ? 1 : -1)
     },
     {
-      title: "Priority",
-      dataIndex: "priority",
-      render: (text, record) => <Switch onChange={(checked) => onLeadChange(checked, record.id)} checked={text}  size="small" />,
+      title: 'Priority',
+      dataIndex: 'priority',
+      render: (text, record) => <Switch onChange={(checked) => onLeadChange(checked, record.id)} checked={text} size='small' />
     },
     {
-      title: "Action",
+      title: 'Action',
       render: (text, record) => (
         <Space>
-          <Tooltip title="Comment">
+          <Tooltip title='Comment'>
             <Button
-              type="link"
+              type='link'
               icon={<CommentOutlined />}
               onClick={() =>
                 handleShow(
-                  "commentVisible",
+                  'commentVisible',
                   null,
-                  "commentData",
+                  'commentData',
                   record.id
-                )
-              }
+                )}
             />
           </Tooltip>
           <Popconfirm
-            title="Are you sure want to Reject the lead?"
-            okText="Yes"
-            cancelText="No"
+            title='Are you sure want to Reject the lead?'
+            okText='Yes'
+            cancelText='No'
             onConfirm={() => onSubmit(record.id)}
           >
             <Button
-              type="primary"
-              size="small"
-              shape="circle"
+              type='primary'
+              size='small'
+              shape='circle'
               danger
               icon={<CloseOutlined />}
             />
           </Popconfirm>
         </Space>
-      ),
-    },
-  ];
+      )
+    }
+  ]
   return (
     <>
       <Table
         rowSelection={{
-          ...rowSelection,
+          ...rowSelection
         }}
         columns={columnsCurrent}
         dataSource={customer}
         rowKey={(record) => record.id}
-        size="middle"
+        size='middle'
         scroll={{ x: 1156 }}
         pagination={false}
       />
-       {!loading && record_count
+      {!loading && record_count
         ? (
           <Pagination
             size='small'
@@ -425,9 +420,8 @@ const handleMobile = (e) => {
             total={record_count}
             onChange={pageChange}
             className='text-right p10'
-          />) : null
-      }
-       {object.commentVisible && (
+          />) : null}
+      {object.commentVisible && (
         <Modal
           title='Comments'
           visible={object.commentVisible}
@@ -436,10 +430,9 @@ const handleMobile = (e) => {
           footer={null}
         >
           <CustomerComment customer_id={object.commentData} />
-        </Modal>)
-      }
+        </Modal>)}
     </>
-  );
-};
+  )
+}
 
-export default CustomerLead;
+export default CustomerLead

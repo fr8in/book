@@ -89,7 +89,7 @@ const CitySelect = (props) => {
         onSearch={onSearch}
         disabled={disabled}
         onChange={(city, value) => onCityChange(city, value)}
-        style={{width:width || 'auto'}}
+        style={{width:width || '100%'}}
       >
         {citySearch.map(_city => (
           <Select.Option key={_city.id} value={formatCity(_city)}>{formatCity(_city)}</Select.Option>

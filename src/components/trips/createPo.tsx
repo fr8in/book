@@ -5,7 +5,7 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
 
 const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
-  search_customer(args:{search:$search}){
+  search_customer(args:{search:$search}, where:{customer:{status:{name:{_eq:"Active"}}}}){
     id
     description
   }
@@ -147,7 +147,6 @@ const CustomerPo = (props) => {
   }
 
   const onCusSelect = (value, customer) => {
-    console.log('customer', customer.key)
     setObj({ ...obj, customer_id: customer.key })
   }
 
