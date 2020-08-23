@@ -203,12 +203,6 @@ const TruckDetailContainer = (props) => {
                       <Col span={8}>
                         <Button size='small' danger={admin && !status_check} onClick={() => onSubmit(status_check)}>  {status_check ? 'Re-Activate' : 'De-Activate'} </Button>
                       </Col>
-                      <Col span={8} offset={8} style={{ textAlign: 'right' }}>
-                        <Space>
-                          <Button type='primary' htmlType='submit'>Submit</Button>
-                          <Button>Cancel</Button>
-                        </Space>
-                      </Col>
                     </Row>
                   </Col>
                 </Row>
