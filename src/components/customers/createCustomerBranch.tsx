@@ -97,17 +97,14 @@ const CreateCustomerBranch = (props) => {
         <Row>
           <Col xs={24}>
             <Form layout='vertical' onFinish={onAddBranch}>
-              <Form.Item name='branchname'>
+              <Form.Item name='branchname' >
                 <Input placeholder='Branch Name' />
               </Form.Item>
               <Form.Item name='name'>
                 <Input placeholder='Name' />
               </Form.Item>
-              <Form.Item name='no'>
-                <Input placeholder='Building Number' />
-              </Form.Item>
               <Form.Item name='address'>
-                <Input placeholder='Address' />
+                <Input placeholder='Building No ,Address' />
               </Form.Item>
               <Row gutter={6}>
                 <Col xs={12}>

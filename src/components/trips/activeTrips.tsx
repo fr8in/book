@@ -31,7 +31,7 @@ const Trips = (props) => {
       sorter: (a, b) => a.id - b.id,
       width: '8%'
     },
-    {
+    props.customername ? {
       title: 'Customer',
       render: (text, record) => {
         const cardcode = record.customer && record.customer.cardcode

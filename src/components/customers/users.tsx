@@ -1,18 +1,30 @@
 import { Table, Button, Switch } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import get from 'lodash/get'
 //import userData from '../../../mock/customer/users'
 
 const Users = (props) => {
   const { customeruser, loading } = props;
   console.log("customerUser", customeruser);
 
+  var _customeruser= [];
+  if (!loading) {
+    _customeruser= customeruser
+  }
   
+  const name = get(_customeruser,'customeruser.name',[])
+  console.log('name',name)
+  const mobile = get(_customeruser,'customeruser.mobile',[])
+  console.log('mobile',mobile)
+  const email = get(_customeruser,'customer_users.email',[])
+  console.log('email',email)
+
   const addUser = [
     {
       title: "Name",
-      render: (text,record) => {
-        const name = customeruser && customeruser.customer_users &&customeruser.customer_users.length > 0 && customeruser.customer_users[0].name ? customeruser.customer_users[0].name : 'null'
-        return (name)
+      dataIndex: 'name',
+      render: (text,record) => { 
+         return (name)
       },
       width: "15%",
     },
@@ -20,8 +32,7 @@ const Users = (props) => {
     {
       title: "Mobile No",
       render: (text,record) => {
-        const mobile = customeruser && customeruser.customer_users &&customeruser.customer_users.length > 0 && customeruser.customer_users[0].mobile ? customeruser.customer_users[0].mobile : 'null'
-        return (mobile)
+           return (mobile)
       },
       width: "20%",
     },
@@ -29,15 +40,14 @@ const Users = (props) => {
     {
       title: "Email",
       render: (text,record) => {
-        const email = customeruser && customeruser.customer_users &&customeruser.customer_users.length > 0 && customeruser.customer_users[0].email ? customeruser.customer_users[0].email : 'null'
-        return (email)
+         return (email)
       },
       width: "10%",
     },
     {
       title: "User Branch",
       render: (text,record) => {
-        const branch_name = customeruser && customeruser.customerBranches &&customeruser.customerBranches.length > 0 && customeruser.customerBranches[0].branch_name ? customeruser.customerBranches[0].branch_name : 'null'
+        const branch_name = customeruser[0] && customeruser[0].customerBranches &&customeruser[0].customerBranches.branch_name 
         return (branch_name)
       },
       width: "20%",
@@ -45,14 +55,9 @@ const Users = (props) => {
     {
       title: "Operating City",
       render: (text,record) => {
-        const city = customeruser && customeruser.customerBranches &&customeruser.customerBranches.length > 0 && customeruser.customerBranches[0].city && customeruser.customerBranches[0].city.name  ? customeruser.customerBranches[0].city.name : 'null'
+        const city = customeruser[0] && customeruser[0].customerBranches  && customeruser[0].customerBranches[0].city && customeruser.customerBranches[0].city.name  
         return (city)
       },
-      width: "10%",
-    },
-    {
-      title: "Master",
-      render: (text, record) => <Switch defaultChecked />,
       width: "10%",
     },
     {
@@ -70,7 +75,7 @@ const Users = (props) => {
   return (
     <Table
       columns={addUser}
-      dataSource={customeruser.customer_users}
+      dataSource={customeruser}
       size="small"
       scroll={{ x: 800 }}
       pagination={false}

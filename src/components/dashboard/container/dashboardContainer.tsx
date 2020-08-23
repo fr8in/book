@@ -165,19 +165,19 @@ const DashboardContainer = (props) => {
                 }
               >
                 <TabPane tab={<TitleWithCount name='Unloading' value={unloading_count} />} key='1'>
-                  <Trips trips={trips} loading={loading} />
+                  <Trips trips={trips} loading={loading} customername/>
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='WF.Load' value={truck_current_count + '/' + truck_count} />} key='2'>
                   <WaitingForLoad trucks={trucks} loading={loading} onTruckNoSearch={onTruckNoSearch} vars={vars} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Assigned' value={assigned_count} />} key='3'>
-                  <Trips trips={trips} loading={loading} />
+                  <Trips trips={trips} loading={loading} customername/>
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Confirmed' value={confirmed_count} />} key='4'>
-                  <Trips trips={trips} loading={loading} />
+                  <Trips trips={trips} loading={loading} customername/>
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Loading' value={loading_count} />} key='5'>
-                  <Trips trips={trips} loading={loading} />
+                  <Trips trips={trips} loading={loading} customername/>
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Intransit' value={intransit_count} />} key='6'>
                   <Trips trips={trips} loading={loading} intransit />
@@ -192,7 +192,7 @@ const DashboardContainer = (props) => {
                   <ExcessLoad trip_status={vars.trip_status} filters={filters} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Hold' value={hold_count} />} key='10'>
-                  <Trips trips={trips} loading={loading} />
+                  <Trips trips={trips} loading={loading} customername/>
                 </TabPane>
               </Tabs>
             </Card>

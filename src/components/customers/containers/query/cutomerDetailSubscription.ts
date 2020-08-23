@@ -62,14 +62,6 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         name
         mobile
         email
-        customer{
-          customerBranches{
-            branch_name
-            city{
-              name
-            }
-          }
-        }
       }
       customerBranches {
         branch_name
@@ -91,6 +83,19 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         id
         order_date
         km
+        driver
+        trip_comments(limit:1, order_by: {created_at: desc}){
+          description
+        }
+        employee{
+          name
+          region{
+            branches{
+              name
+              order
+            }
+          }
+        }
         customer {
           customer_users {
             name
