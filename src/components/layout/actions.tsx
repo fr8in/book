@@ -63,7 +63,7 @@ query gloabl_filter($now: timestamptz, $regions:[Int!], $branches:[Int!], $citie
 const Clear =(props)=> <span className='clear' onClick={props.onClear}>CLEAR</span>
 
 const Actions = (props) => {
-  const { onFilter, initialFilter, isTechUser } = props
+  const { onFilter, initialFilter } = props
   const initial = { filter: false, search: false, ssh: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
@@ -150,8 +150,7 @@ const Actions = (props) => {
         <Dropdown overlay={account} trigger={['click']} placement='bottomRight'>
           <Button size='small' type='ghost' shape='circle' icon={<BankFilled />} />
         </Dropdown>
-        {isTechUser &&
-        <Button size='small' type='ghost' shape='circle' icon={<CodeOutlined />} onClick={() => onShow('ssh')} />}
+        {/* <Button size='small' type='ghost' shape='circle' icon={<CodeOutlined />} onClick={() => onShow('ssh')} /> */}
         <Dropdown overlay={user} trigger={['click']} placement='bottomRight'>
           <Button size='small' type='primary' shape='circle' icon={<UserOutlined />} />
         </Dropdown>
