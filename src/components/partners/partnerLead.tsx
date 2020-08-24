@@ -102,7 +102,8 @@ mutation update_lead_city($city_id:Int,$id:Int) {
  
 const no_comment = [{ value:1, label: 'No Comment' }]
 
-const PartnerLead = () => {
+const PartnerLead = (props) => {
+  const {visible, onHide} = props
   const initial = {
     no_comment:[],
     comment: false,
@@ -121,6 +122,20 @@ const PartnerLead = () => {
   const [filter, setFilter] = useState(initial)
   const [currentPage, setCurrentPage] = useState(1)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+  const [selectedPartners, setSelectedPartners] = useState([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+ 
+  const onSelectChange = (selectedRowKeys, selectedRows) => {
+    const partner_list = selectedRows && selectedRows.length > 0 ? selectedRows.map(row => row.id) : []
+    setSelectedRowKeys(selectedRowKeys)
+    setSelectedPartners(partner_list)
+  }
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange
+  }
+
 
   const where = { 
     partner_users: filter.mobile ? {mobile:{ _like:`%${filter.mobile}%`}}: null,  
@@ -273,20 +288,7 @@ const PartnerLead = () => {
     setFilter({ ...filter, no_comment:checked, offset: 0 })
   }
 
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        'selectedRows: ',
-        selectedRows
-      )
-    },
-    getCheckboxProps: (record) => ({
-      disabled: record.name === 'Disabled User',
-      name: record.name
-    })
-  }
-
+ 
   const columnsCurrent = [
     {
       title: 'Name',
@@ -362,7 +364,7 @@ const PartnerLead = () => {
           <div>
             <span>{owner}&nbsp;</span>
             <EditTwoTone onClick={() =>
-              handleShow("ownerVisible", null, "ownerData", record)
+              handleShow("ownerVisible", null, "ownerData", record.id)
             } />
           </div>
         )
@@ -522,10 +524,17 @@ const PartnerLead = () => {
           <Comment partner_id={object.commentData} />
         </Modal>)
       }
+      {visible && (
+        <EmployeeList
+          visible={visible}
+          onHide={onHide}
+          partner_ids={selectedPartners}
+        />
+      )}
       {object.ownerVisible && (
         <EmployeeList
           visible={object.ownerVisible}
-          partner={object.ownerData}
+          partner_ids={object.ownerData}
           onHide={handleHide}
         />
       )}

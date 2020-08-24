@@ -37,6 +37,15 @@ breakdown: truck_aggregate(where: $breakdown_truck) {
 const TabPane = Tabs.TabPane
 const SourcingContainer = () => {
 
+  const [mainTabKey, setMainTabKey] = useState('1')
+  const [subTabKey, setSubTabKey] = useState('1')
+  const initial = { createLead: false, employeeList: false, filterList: false }
+  const { visible, onShow, onHide } = useShowHide(initial)
+
+  const waiting_for_load = ['Waiting for load']
+  const breakdown = ["Breakdown"]
+  const [truck_status, settruck_status] = useState(waiting_for_load)
+
   const aggrigation = {
     waiting_for_load_truck: {truck_status: {name: {_in: ['Waiting for load']
   }}},
@@ -49,14 +58,7 @@ const SourcingContainer = () => {
     breakdown_truck: aggrigation.breakdown_truck
   }
 
-  const [mainTabKey, setMainTabKey] = useState('1')
-  const [subTabKey, setSubTabKey] = useState('1')
-  const initial = { createLead: false, employeeList: false, filterList: false }
-  const { visible, onShow, onHide } = useShowHide(initial)
-
-  const waiting_for_load = ['Waiting for load']
-  const breakdown = ["Breakdown"]
-  const [truck_status, settruck_status] = useState(waiting_for_load)
+ 
 
   const { loading, error, data } = useQuery(
     SOURCING_QUERY, {
@@ -143,7 +145,7 @@ const SourcingContainer = () => {
             </TabPane>
             <TabPane tab={<TitleWithCount name='Lead' value={lead_count} />} key='2'>
               <Card size='small' className='card-body-0'>
-                <PartnerLead />
+                <PartnerLead visible={visible.employeeList} onHide={onHide} />
               </Card>
             </TabPane>
             <TabPane tab='Vas Request' key='3'>
@@ -171,7 +173,6 @@ const SourcingContainer = () => {
       </Tabs>
       {visible.createLead && <CreateLead visible={visible.createLead} onHide={onHide} />}
       {visible.filterList && <FilterList visible={visible.filterList} onHide={onHide} />}
-      {visible.employeeList && <EmployeeList visible={visible.employeeList} onHide={onHide} />}
     </Card>
   )
 }
