@@ -17,8 +17,7 @@ const PARTNERS_LEAD_QUERY = gql`
 query partner_lead(
   $offset: Int!
   $limit: Int!
-  $no_comment:Boolean
-  $where: partner_bool_exp
+  $where:partner_bool_exp
   ){
   partner(
     offset: $offset
@@ -48,7 +47,7 @@ query partner_lead(
     partner_status{
       name
     }
-    partner_comments(where:{partner_id:{_is_null: $no_comment}}){
+    partner_comments{
       created_at
       description
     }
@@ -102,9 +101,10 @@ mutation update_lead_city($city_id:Int,$id:Int) {
  
 const no_comment = [{ value:1, label: 'No Comment' }]
 
-const PartnerLead = () => {
+const PartnerLead = (props) => {
+  const {visible, onHide} = props
   const initial = {
-    no_comment:[],
+    no_comment: [],
     comment: false,
     employeeList: false,
     ownerVisible: false,
@@ -121,25 +121,40 @@ const PartnerLead = () => {
   const [filter, setFilter] = useState(initial)
   const [currentPage, setCurrentPage] = useState(1)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+  const [selectedPartners, setSelectedPartners] = useState([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+ 
+  const onSelectChange = (selectedRowKeys, selectedRows) => {
+    const partner_list = selectedRows && selectedRows.length > 0 ? selectedRows.map(row => row.id) : []
+    setSelectedRowKeys(selectedRowKeys)
+    setSelectedPartners(partner_list)
+  }
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange
+  }
+
 
   const where = { 
     partner_users: filter.mobile ? {mobile:{ _like:`%${filter.mobile}%`}}: null,  
-  city: filter.city_name && {name:{ _ilike: `%${filter.city_name}%`}} ,
-  onboarded_by:filter.owner_name ?  {email:{_ilike:`%${filter.owner_name}%`}}: null,
-  partner_status:{name:{_in: filter.partner_status_name ? filter.partner_status_name : null}},
-  channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} 
+    city: filter.city_name && {name:{ _ilike: `%${filter.city_name}%`}} ,
+    onboarded_by:filter.owner_name ?  {email:{_ilike:`%${filter.owner_name}%`}}: null,
+    partner_status:{name:{_in: filter.partner_status_name ? filter.partner_status_name : null}},
+    channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}}, 
+    _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ?  null : {id: {_is_null:true }} }
   }
   const whereNoCityFilter ={
     partner_users: filter.mobile ? {mobile:{ _like:`%${filter.mobile}%`}}: null,  
     onboarded_by:filter.owner_name ?  {email:{_ilike:`%${filter.owner_name}%`}}: null,
     partner_status:{name:{_in: filter.partner_status_name ? filter.partner_status_name : null}},
-    channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} 
+    channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} ,
+    _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ? null :  {id: {_is_null:true }} }
   }
-
+  console.log('filter.no_comment ',filter.no_comment ,filter.no_comment && filter.no_comment.length > 0)
   const partnerQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
-    no_comment:filter.no_comment && filter.no_comment.length > 0 ? true : false ,
     where:filter.city_name ?  where : whereNoCityFilter,
   }
 
@@ -250,6 +265,12 @@ const PartnerLead = () => {
     setFilter({ ...filter, partner_status_name: checked, offset: 0 })
   }
   
+  const handleNoComment = (checked) => {
+    console.log('checked',checked)
+    setCurrentPage(1)
+    setFilter({ ...filter, no_comment:checked, offset: 0 })
+  }
+
   const handleChannelStatus = (checked) => {
     setCurrentPage(1)
     setFilter({ ...filter, channel_name: checked, offset: 0 })
@@ -267,26 +288,9 @@ const PartnerLead = () => {
     setFilter({ ...filter, owner_name: e.target.value, offset: 0 })
   };
 
-  const handleNoComment = (checked) => {
-    console.log('checked',checked)
-    setCurrentPage(1)
-    setFilter({ ...filter, no_comment:checked, offset: 0 })
-  }
+  
 
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        'selectedRows: ',
-        selectedRows
-      )
-    },
-    getCheckboxProps: (record) => ({
-      disabled: record.name === 'Disabled User',
-      name: record.name
-    })
-  }
-
+ 
   const columnsCurrent = [
     {
       title: 'Name',
@@ -362,7 +366,7 @@ const PartnerLead = () => {
           <div>
             <span>{owner}&nbsp;</span>
             <EditTwoTone onClick={() =>
-              handleShow("ownerVisible", null, "ownerData", record)
+              handleShow("ownerVisible", null, "ownerData", record.id)
             } />
           </div>
         )
@@ -522,10 +526,17 @@ const PartnerLead = () => {
           <Comment partner_id={object.commentData} />
         </Modal>)
       }
+      {visible && (
+        <EmployeeList
+          visible={visible}
+          onHide={onHide}
+          partner_ids={selectedPartners}
+        />
+      )}
       {object.ownerVisible && (
         <EmployeeList
           visible={object.ownerVisible}
-          partner={object.ownerData}
+          partner_ids={object.ownerData}
           onHide={handleHide}
         />
       )}
