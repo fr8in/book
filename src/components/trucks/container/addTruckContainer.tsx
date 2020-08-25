@@ -4,6 +4,7 @@ import { City, Trucktype } from '../../../../mock/trucks/addTruck'
 import LabelAndData from '../../common/labelAndData'
 import Link from 'next/link'
 import { gql, useQuery , useMutation } from '@apollo/client'
+import CitySelect from '../../common/citySelect'
 
 
 const ADD_TRUCK_QUERY = gql`
@@ -20,8 +21,8 @@ const ADD_TRUCK_QUERY = gql`
     }
       `
       const INSERT_ADD_TRUCK_MUTATION = gql`
-mutation AddTruck($truck_no:String, $mobile:String, $partner_id: Int, $breadth:Int ,$length:Int,$height:Int,$city_id:Int,$truck_status_id:Int ) {
-  insert_truck(objects: {truck_no: $truck_no, driver: {data: {mobile: $mobile, partner_id: $partner_id}}, breadth: $breadth, height: $height, length: $length, partner_id: $partner_id, city_id: $city_id, truck_status_id: $truck_status_id}) {
+mutation AddTruck($truck_no:String, $mobile:String, $partner_id: Int, $breadth:Int ,$length:Int,$height:Int,$city_id:Int,$truck_status_id:Int, $city_id: Int ) {
+  insert_truck(objects: {truck_no: $truck_no, driver: {data: {mobile: $mobile, partner_id: $partner_id}}, breadth: $breadth, height: $height, length: $length, partner_id: $partner_id, city_id: $city_id, truck_status_id: $truck_status_id, city_id: $city_id}) {
     returning {
       id
       truck_no
@@ -32,7 +33,15 @@ mutation AddTruck($truck_no:String, $mobile:String, $partner_id: Int, $breadth:I
 
 const AddTruck = (props) => {
 
+  const initial = { city_id: null }
+
+  const [city, setCity] = useState(initial)
+
   const [TruckNo, setTruckNo] = useState('')
+
+  const onCityChange = (city_id) => {
+    setCity({ ...city, city_id: city_id })
+  }
 
   const truckNoChange = (e) => {
     setTruckNo(e.target.value)
@@ -90,7 +99,11 @@ const AddTruck = (props) => {
 
   const onSubmit = () => {
     console.log('id')
-    
+    insertTruck({
+      variables: {
+        city_id:parseInt(city.city_id,10)
+      }
+    })
   }
 
   return (
@@ -117,12 +130,13 @@ const AddTruck = (props) => {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item
-                label='Current City'
-                name='Current City'
-                rules={[{ required: true, message: 'Current City is required field!' }]}
-              >
-                <Select defaultValue='Chennai' style={{ width: 380 }} onChange={handleChange} options={City} />
+              <Form.Item>
+              <CitySelect
+             label='Current City'
+              onChange={onCityChange}
+              required
+              name='city'
+            />
               </Form.Item>
             </Col>
             <Col span={8}>

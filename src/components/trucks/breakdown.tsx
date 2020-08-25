@@ -119,7 +119,7 @@ const Breakdown = (props) => {
           <span
             className='link'
             onClick={() =>
-              handleShow('cityVisible', 'Availability - TAT:0', 'cityData', record.city && record.city.name)}
+              handleShow('cityVisible', 'Availability - TAT:0', 'cityData', record.id)}
           >
             {record.city && record.city.name}
           </span>

@@ -80,6 +80,7 @@ const truck_status = truck_info && truck_info.truck_status && truck_info.truck_s
     insertUpdateCreateBreakdown({
       variables: {
         truck_id: id,
+        id:id,
         created_by_id: 1,
         description: form.comment,
        topic: truck_status,
