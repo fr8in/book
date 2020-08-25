@@ -6,7 +6,7 @@ import {useState} from 'react'
 import CitySelect from '../common/citySelect'
 const { Option } = Select
 
-const CUSTOMER_BRANCH_SUBSCRIPTION = gql`
+const CUSTOMER_BRANCH_QUERY = gql`
   query customerbranch{
     state{
       id
@@ -14,9 +14,9 @@ const CUSTOMER_BRANCH_SUBSCRIPTION = gql`
     }
   }
 `
-const INSERT_CUSTOMER_USERS_MUTATION = gql`
-mutation CustomerBranchInsert($address: String, $branchname: String, $mobile: String, $name: String, $pincode: Int, $customer_id: Int, $state: Int,$city_id:Int) {
-  insert_customer_branch(objects: {address: $address, branch_name: $branchname, mobile: $mobile, name: $name, pincode: $pincode, customer_id: $customer_id, city_id: $city_id, state_id: $state}) {
+const INSERT_CUSTOMER_BRANCH_MUTATION = gql`
+mutation CustomerBranchInsert($address: String,$id:Int ,$branchname: String, $mobile: String, $name: String, $pincode: Int, $state: Int,$city_id:Int) {
+  insert_customer_branch(objects: {customer_id:$id,address: $address, branch_name: $branchname, mobile: $mobile, name: $name, pincode: $pincode, city_id: $city_id, state_id: $state}) {
     returning {
       customer_id
       city{
@@ -28,16 +28,16 @@ mutation CustomerBranchInsert($address: String, $branchname: String, $mobile: St
     }
   }
 }
-
 `
 
+
 const CreateCustomerBranch = (props) => {
-  const { visible, onHide,customer } = props
+  const { visible, onHide,customerbranch } = props
   const initial = {city_id: null}
   const [obj, setObj] = useState(initial)
 
   const { loading, error, data } = useQuery(
-    CUSTOMER_BRANCH_SUBSCRIPTION,
+    CUSTOMER_BRANCH_QUERY,
     {
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
@@ -46,7 +46,7 @@ const CreateCustomerBranch = (props) => {
   console.log('createCustomerBranch error', error)
 
   const [insertCustomerBranch] = useMutation(
-    INSERT_CUSTOMER_USERS_MUTATION,
+    INSERT_CUSTOMER_BRANCH_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
       onCompleted () { message.success('Updated!!')  
@@ -54,6 +54,7 @@ const CreateCustomerBranch = (props) => {
     }
   )
 
+  
   var state = [];
   if (!loading) { 
      state = data.state 
@@ -72,7 +73,7 @@ const CreateCustomerBranch = (props) => {
     insertCustomerBranch({
       variables: {
         city_id: obj.city_id,
-        customer_id: customer,
+        id:customerbranch,
         mobile: form.mobile,
         name: form.name,
         address: form.address,
@@ -81,6 +82,8 @@ const CreateCustomerBranch = (props) => {
       }
     })
   }
+
+  
   const handleChange = (value) => {
     console.log(`selected ${value}`)
   }
@@ -96,7 +99,7 @@ const CreateCustomerBranch = (props) => {
       >
         <Row>
           <Col xs={24}>
-            <Form layout='vertical' onFinish={onAddBranch}>
+            <Form layout='vertical' onFinish={onAddBranch} >
               <Form.Item name='branchname' >
                 <Input placeholder='Branch Name' />
               </Form.Item>

@@ -63,7 +63,7 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         mobile
         email
       }
-      customerBranches {
+      customer_branches {
         branch_name
         name
         address

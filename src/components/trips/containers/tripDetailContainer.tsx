@@ -21,6 +21,7 @@ import { TRIP_DETAIL_SUBSCRIPTION } from './query/tripDetailSubscription'
 import DetailPageHeader from '../../common/detailPageHeader'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
+import _ from 'lodash'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
@@ -41,6 +42,7 @@ const TripDetailContainer = (props) => {
   console.log('TripDetailContainer Error', error)
   const trip_info = trip[0] ? trip[0] : { name: 'ID does not exist' }
   console.log('trip_info', trip_info)
+
   const title = (
     <h3>
       <span className='text-primary'>{trip_info.id}</span>
@@ -111,9 +113,6 @@ const TripDetailContainer = (props) => {
                 <Panel
                   header={
                     <span>Partner - Payables
-                      <span className='pull-right'>
-                        <b>{23000}</b>
-                      </span>
                     </span>
                   }
                   key='1'
@@ -125,14 +124,11 @@ const TripDetailContainer = (props) => {
                 <Panel
                   header={
                     <span>Customer - Receivables
-                      <span className='pull-right'>
-                        <b>{23500}</b>
-                      </span>
                     </span>
                   }
                   key='1'
                 >
-                  <Receivables />
+                  <Receivables trip_id={trip_id}/>
                   <CustomerPayments />
                 </Panel>
               </Collapse>

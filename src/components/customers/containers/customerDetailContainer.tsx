@@ -253,7 +253,7 @@ const CustomerDetailContainer = (props) => {
                       </Button>
                     </Row>
                     <Branch
-                      customerBranch={customerInfo.customerBranches}
+                      customerBranch={customerInfo.customer_branches}
                       loading={loading}
                     />
                   </TabPane>
@@ -289,7 +289,7 @@ const CustomerDetailContainer = (props) => {
               <CustomerUser visible={visible.addUser} onHide={onHide} customer={customerInfo.id}/>
             )}
             {visible.addBranch && (
-              <CustomerBranch visible={visible.addBranch} onHide={onHide} customer={customerInfo.id} />
+              <CustomerBranch visible={visible.addBranch} onHide={onHide} customerbranch={customerInfo.id} />
             )}
             {visible.transfer && (
               <Transfer visible={visible.transfer} onHide={onHide} />

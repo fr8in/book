@@ -1,30 +1,44 @@
-import { Table, Button, Switch } from "antd";
+import { Table, Button, message } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import get from 'lodash/get'
-//import userData from '../../../mock/customer/users'
+import { useMutation, gql } from '@apollo/client'
 
+const DELETE_CUSTOMER_USER_MUTATION = gql`
+mutation customerUserDelete($id:Int) {
+  delete_customer_user( where: {id: {_eq:$id}}) {
+    returning {
+      id
+      mobile
+    }
+  }
+}
+`
 const Users = (props) => {
   const { customeruser, loading } = props;
   console.log("customerUser", customeruser);
 
-  var _customeruser= [];
-  if (!loading) {
-    _customeruser= customeruser
+  const [deleteCustomerUser] = useMutation(
+    DELETE_CUSTOMER_USER_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
+
+  const onDelete = (id) => {
+    deleteCustomerUser({
+      variables: {
+        id: id
+      }
+    })
   }
-  
-  const name = get(_customeruser,'customeruser.name',[])
-  console.log('name',name)
-  const mobile = get(_customeruser,'customeruser.mobile',[])
-  console.log('mobile',mobile)
-  const email = get(_customeruser,'customer_users.email',[])
-  console.log('email',email)
+
 
   const addUser = [
     {
       title: "Name",
       dataIndex: 'name',
       render: (text,record) => { 
-         return (name)
+         return (record.name)
       },
       width: "15%",
     },
@@ -32,7 +46,7 @@ const Users = (props) => {
     {
       title: "Mobile No",
       render: (text,record) => {
-           return (mobile)
+           return (record.mobile)
       },
       width: "20%",
     },
@@ -40,7 +54,7 @@ const Users = (props) => {
     {
       title: "Email",
       render: (text,record) => {
-         return (email)
+         return (record.email)
       },
       width: "10%",
     },
@@ -48,7 +62,7 @@ const Users = (props) => {
       title: "User Branch",
       render: (text,record) => {
         const branch_name = customeruser[0] && customeruser[0].customerBranches &&customeruser[0].customerBranches.branch_name 
-        return (branch_name)
+        return (record.branch_name)
       },
       width: "20%",
     },
@@ -56,7 +70,7 @@ const Users = (props) => {
       title: "Operating City",
       render: (text,record) => {
         const city = customeruser[0] && customeruser[0].customerBranches  && customeruser[0].customerBranches[0].city && customeruser.customerBranches[0].city.name  
-        return (city)
+        return (record.city)
       },
       width: "10%",
     },
@@ -64,7 +78,7 @@ const Users = (props) => {
       title: "Action",
       render: (text, record) => (
         <span className="actions">
-          <Button type="link" icon={<DeleteOutlined />} />
+          <Button type="link" icon={<DeleteOutlined />} onClick={() => onDelete(record.id)} />
           <Button type="link" icon={<EditOutlined />} />
         </span>
       ),
