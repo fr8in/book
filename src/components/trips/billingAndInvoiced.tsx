@@ -2,39 +2,60 @@ import React from 'react'
 import { Modal, Button, Input, Row, Col, Form, Select, message } from 'antd'
 import { PrinterOutlined } from '@ant-design/icons'
 import Link from 'next/link'
-import { gql, useSubscription } from '@apollo/client'
-import SelectUser from '../trips/selectUser'
-
+import { gql, useSubscription, useQuery, useMutation } from '@apollo/client'
+import Loading from '../common/loading'
 
 const CUSTOMER_BILLING_ADDRESS_FOR_INVOICE = gql`
 subscription customerBilling($cardcode: String!, $id: Int!) {
   customer(where: {cardcode: {_eq: $cardcode}}) {
     id
-    trips(where: {id: {_eq: $id}}){
+    trips(where: {id: {_eq: $id}}) {
       id
       gst
       hsn
-      customer_branch{
+      customer_branch {
         id
         branch_name
         name
         address
         pincode
         mobile
-        state{
+        state {
           id
           name
         }
       }
     }
-    customer_users {
+    customer_branches{
       id
       name
-      mobile
-  }
+      branch_name
     }
-}
-`
+  }
+}`
+
+const UPDATE_TRIP_CUSTOMER_BRANCH = gql`
+mutation update_trip_customer_branch($branch_id: Int, $id:Int!){
+  update_trip(_set:{customer_branch_id: $branch_id}, where:{id:{_eq:$id}}){
+    returning{
+      customer_branch{
+        id
+        name
+        branch_name
+      }
+    }
+  }
+}`
+
+const UPDATE_TRIP_GST_HSN = gql`
+mutation update_trip_gst_hsn($gst: String, $hsn:String, $id:Int!){
+  update_trip(_set:{gst:$gst, hsn:$hsn}, where:{id:{_eq:$id}}){
+    returning{
+      gst
+      hsn
+    }
+  }
+}`
 
 const BillingAndInvoiced = (props) => {
   const { visible, onHide, cardcode, trip_id } = props
@@ -46,35 +67,48 @@ const BillingAndInvoiced = (props) => {
     }
   )
 
+  const [update_trip_customer_branch] = useMutation(
+    UPDATE_TRIP_CUSTOMER_BRANCH,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
 
-
-  var customer_info = [];
- 
-  if (!loading) {
-    const { customer } = data
-    customer_info = customer[0] ? customer[0] : {}
-   
-  }
+  const [update_trip_gst_hsn] = useMutation(
+    UPDATE_TRIP_GST_HSN,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
 
   console.log('TripDetailContainer Error', error)
+  if (loading) return null
+  const customer = data && data.customer ? data.customer[0] : null
+  const trip = customer && customer.trips ? customer.trips[0] : null
+  const customer_branch = trip && trip.customer_branch ? trip.customer_branch : null
+  const customer_branches = customer && customer.customer_branches ? customer.customer_branches : []
 
-  const hsn = customer_info && customer_info.trips && customer_info.trips.length > 0 && customer_info.trips[0].hsn ? customer_info.trips[0].hsn : 'HSN No'
-  const gst = customer_info && customer_info.trips && customer_info.trips.length > 0 && customer_info.trips[0].gst ? customer_info.trips[0].gst : 'GST No'
-  const mobile = customer_info && customer_info.trips && customer_info.trips.length > 0 && customer_info.trips[0].customer_branch && customer_info.trips[0].customer_branch.mobile
-  const branch_name = customer_info && customer_info.trips && customer_info.trips.length > 0 && customer_info.trips[0].customer_branch && customer_info.trips[0].customer_branch.branch_name
-  const name = customer_info && customer_info.trips && customer_info.trips.length > 0 && customer_info.trips[0].customer_branch && customer_info.trips[0].customer_branch.name
-  const address = customer_info && customer_info.trips && customer_info.trips.length > 0 && customer_info.trips[0].customer_branch && customer_info.trips[0].customer_branch.address
-  const pincode = customer_info && customer_info.trips && customer_info.trips.length > 0 && customer_info.trips[0].customer_branch && customer_info.trips[0].customer_branch.pincode
-  const user = customer_info && customer_info.customer_users &&  customer_info.customer_users.length > 0 && customer_info.customer_users[0].name 
-  const state = customer_info && customer_info.trips && customer_info.trips.length > 0 && customer_info.trips[0].customer_branch && customer_info.trips[0].customer_branch.state && customer_info.trips[0].customer_branch.state.name
-console.log('user',user)
-
-  const handleChange = (value) => {
-    console.log(`selected ${value}`)
+  const onBranchChange = (value, branch) => {
+    update_trip_customer_branch({
+      variables: {
+        id: trip_id,
+        branch_id: parseInt(branch.key)
+      }
+    })
   }
-  console.log('customerinfo', customer_info)
 
-  
+  const onGstHsnChange = (form) => {
+    update_trip_gst_hsn({
+      variables: {
+        id: trip_id,
+        gst: form.gst,
+        hsn: form.hsn
+      }
+    })
+  }
+
   const title = (
     <div>
       Billing & Invoice - <Link href='/customers/[1d]' as={`/customers/${cardcode}`}><a target='_blank'>{cardcode}</a></Link>
@@ -86,70 +120,87 @@ console.log('user',user)
         visible={visible}
         onCancel={onHide}
         footer={[
-          <Row justify='start' className='m5' key='footer'>
-            <Col sm={13}>
+          <Row justify='start' key='footer' gutter={10}>
+            <Col flex='auto'>
               <Input placeholder='Email Address' />
             </Col>
-            <Col flex='180'>
-              <Button type='primary' > Send Email </Button>
-              <Button > Close </Button>
+            <Col flex='120px'>
+              <Button type='primary'>Send Email</Button>
             </Col>
           </Row>
         ]}
       >
-        <Form layout='vertical'>
-          <SelectUser value={user} onChange={handleChange} />
-          <Row gutter={10}>
-            <Col xs={{ span: 24 }} sm={{ span: 12 }}>
-              <p>
-                <label>Branch Address</label>
-              </p>
-              <div className="userBranchList">
-                {customer_info.trips ?
-                  < div className='loadDetailsRowz'>
-                    <p className='text-primary'><b>{branch_name}</b>
-                    </p>
-                    <p>
-                      <span>{name}, </span>{address},
-                                            </p>
-                    <p> <span>{state}</span>,
-                                            </p>
-                    <p><span>{pincode}.</span></p>
-                  </div> : null}
-              </div>
-            </Col>
-
-            <Col sm={12}>
-              <Form.Item
-                label='Contact Number'
-                initialValue={mobile}
-              >
-                <Input value={mobile} />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={10}>
-            <Col sm={12}>
-              <Form.Item
-                label='GST Number'
-                initialValue={gst}
-              >
-                <Input value={gst} />
-              </Form.Item>
-            </Col>
-            <Col sm={12}>
-              <Form.Item
-                label='HSN Number'
-                initialValue={hsn}
-              >
-                <Input value={hsn} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
-        <Row justify='end' className='m5'>
-          <Button type='primary' icon={<PrinterOutlined />}> Save & Print Invoice</Button>
-        </Row>
+        {loading ? <Loading /> : (
+          <Form layout='vertical' onFinish={onGstHsnChange}>
+            <Row gutter={20}>
+              <Col xs={24} sm={12}>
+                <Row>
+                  <Col sm={24}>
+                    <Form.Item label='Branch Detail' name='branch_name' initialValue={customer_branch && customer_branch.branch_name}>
+                      <Select
+                        placeholder='Select Branch'
+                        onChange={onBranchChange}
+                      >
+                        {customer_branches && customer_branches.map(_branch => (
+                          <Select.Option key={_branch.id} value={_branch.branch_name}>{_branch.branch_name}</Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col sm={24}>
+                    <div className='userBranchList'>
+                      {customer_branch ? (
+                        <div className='loadDetailsRowz'>
+                          <div className='text-primary'><b>{customer_branch.branch_name}</b></div>
+                          <div><span>{customer_branch.name}, </span>{customer_branch.address},</div>
+                          <div> <span>{customer_branch.state && customer_branch.state.name}</span>,</div>
+                          <div><span>Pincode: {customer_branch.pincode}</span></div>
+                        </div>) : null}
+                    </div>
+                  </Col>
+                </Row>
+              </Col>
+              <Col sm={12}>
+                <Row>
+                  <Col sm={24}>
+                    <Form.Item
+                      label='Contact Number'
+                      initialValue={customer_branch && customer_branch.mobile}
+                    >
+                      <Input value={customer_branch && customer_branch.mobile} disabled />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col sm={24}>
+                    <Form.Item
+                      label='GST Number'
+                      name='gst'
+                      initialValue={trip.gst}
+                    >
+                      <Input value={trip.gst} placeholder='GST number' />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col sm={24}>
+                    <Form.Item
+                      label='HSN Number'
+                      name='hsn'
+                      initialValue={trip.hsn}
+                    >
+                      <Input value={trip.hsn} placeholder='HSN number' />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+            <Row justify='end'>
+              <Button type='primary' icon={<PrinterOutlined />} htmlType='submit'> Save & Print Invoice</Button>
+            </Row>
+          </Form>)}
       </Modal>
     </div>
   )
