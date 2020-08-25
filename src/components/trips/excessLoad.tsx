@@ -6,7 +6,7 @@ import { gql, useSubscription, useMutation } from '@apollo/client'
 import _ from 'lodash'
 import moment from 'moment'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
-import CreatePo from '../trips/createPo'
+import ExcessToPo from '../trips/excessToPo'
 
 const EXCESS_LOAD = gql`
 subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$trip_status: String, $truck_type:[Int!], $managers: [Int!]) {
@@ -233,12 +233,12 @@ const ExcessLoad = (props) => {
         >
           <p>Load will get cancelled. Do you want to proceed?</p>
         </Modal>}
+      
       {object.po_visible &&
-        <CreatePo
+        <ExcessToPo
           visible={object.po_visible}
-          data={object.record}
+          record={object.record}
           onHide={handleHide}
-          title={object.title}
         />}
     </>
   )

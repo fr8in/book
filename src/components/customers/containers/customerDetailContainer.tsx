@@ -31,11 +31,11 @@ import CustomerUser from '../createCustomerUser'
 import CustomerBranch from '../createCustomerBranch'
 import TitleWithCount from '../../common/titleWithCount'
  import OngoingTrip from '../../trips/activeTrips'
- import Trips from '../../trips/trips'
+ 
 // Apollo Client
 import { useSubscription } from '@apollo/client'
 import { CUSTOMER_DETAIL_SUBSCRIPTION } from './query/cutomerDetailSubscription'
-// import ClosedTrip from '../containers/closedTripContainer'
+import ClosedTripContainer from '../containers/closedtripContainer'
 
 const { TabPane } = Tabs
 
@@ -239,7 +239,7 @@ const CustomerDetailContainer = (props) => {
                       </Button>
                     </Row>
                     <Users
-                      customeruser={customerInfo}
+                      customeruser={customerInfo.customer_users}
                       loading={loading}
                     />
                   </TabPane>
@@ -264,13 +264,13 @@ const CustomerDetailContainer = (props) => {
                     tab={<TitleWithCount name='Ongoing' value={ongoing_count} />}
                     key='9'
                   >
-                    <OngoingTrip  trips={customerInfo.trips} loading={loading}/>
+                    <OngoingTrip  trips={customerInfo.trips} loading={loading} />
                   </TabPane>
                   <TabPane
                     tab={<TitleWithCount name='Closed' value={closed_count} />}
                     key='10'
                   >
-                    <Trips loading={loading}/>
+                    <ClosedTripContainer cardcode={cardcode} loading={loading}/>
                   </TabPane>
                   <TabPane tab='Details' key='11'>
                     <Row className='p10'>

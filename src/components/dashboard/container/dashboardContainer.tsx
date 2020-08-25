@@ -23,7 +23,7 @@ const DashboardContainer = (props) => {
   const initial = { excessLoad: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
-  const initialVars = { tabKey: '2',truckno: null, trip_status: 'Reported at destination', now: new Date().toISOString() }
+  const initialVars = { tabKey: '2', truckno: null, trip_status: 'Reported at destination', now: new Date().toISOString() }
   const [vars, setVars] = useState(initialVars)
 
   const variables = {
@@ -34,7 +34,7 @@ const DashboardContainer = (props) => {
     trip_status: vars.trip_status ? vars.trip_status : null,
     truck_type: (filters.types && filters.types > 0) ? filters.types : null,
     managers: (filters.managers && filters.managers > 0) ? filters.managers : null,
-    truckno: vars.truckno ? `%${vars.truckno}%` : null,
+    truckno: vars.truckno ? `%${vars.truckno}%` : null
   }
   const { loading, data, error } = useSubscription(DASHBOAD_QUERY, { variables })
   console.log('dashboard error', error)
@@ -151,8 +151,6 @@ const DashboardContainer = (props) => {
             </Row>
           </Col>
         </Row>
-        {/** All trips status wise: Filter applocable for Source city
-        ** Waiting for load and Delivery On-hold records */}
         <Row gutter={[0, 10]}>
           <Col xs={24} sm={24}>
             <Card size='small' className='card-body-0 border-top-blue'>
@@ -167,19 +165,19 @@ const DashboardContainer = (props) => {
                 }
               >
                 <TabPane tab={<TitleWithCount name='Unloading' value={unloading_count} />} key='1'>
-                  <Trips trips={trips} loading={loading} />
+                  <Trips trips={trips} loading={loading} customername/>
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='WF.Load' value={truck_current_count + '/' + truck_count} />} key='2'>
-                  <WaitingForLoad trucks={trucks} loading={loading} onTruckNoSearch={onTruckNoSearch} vars={vars}/>
+                  <WaitingForLoad trucks={trucks} loading={loading} onTruckNoSearch={onTruckNoSearch} vars={vars} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Assigned' value={assigned_count} />} key='3'>
-                  <Trips trips={trips} loading={loading} />
+                  <Trips trips={trips} loading={loading} customername/>
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Confirmed' value={confirmed_count} />} key='4'>
-                  <Trips trips={trips} loading={loading} />
+                  <Trips trips={trips} loading={loading} customername/>
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Loading' value={loading_count} />} key='5'>
-                  <Trips trips={trips} loading={loading} />
+                  <Trips trips={trips} loading={loading} customername/>
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Intransit' value={intransit_count} />} key='6'>
                   <Trips trips={trips} loading={loading} intransit />
@@ -194,7 +192,7 @@ const DashboardContainer = (props) => {
                   <ExcessLoad trip_status={vars.trip_status} filters={filters} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Hold' value={hold_count} />} key='10'>
-                  <Trips trips={trips} loading={loading} />
+                  <Trips trips={trips} loading={loading} customername/>
                 </TabPane>
               </Tabs>
             </Card>

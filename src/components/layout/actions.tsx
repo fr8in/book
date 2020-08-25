@@ -10,7 +10,6 @@ import {
 } from '@ant-design/icons'
 import Link from 'next/link'
 import useShowHide from '../../hooks/useShowHide'
-import GlobalFilter from '../dashboard/globalFilter'
 import GlobalSearch from '../dashboard/globalSearch'
 import Ssh from '../dashboard/ssh'
 import { useQuery, gql } from '@apollo/client'
@@ -72,7 +71,7 @@ const Actions = (props) => {
 
   const variables = {
     now: initialFilter.now,
-    regions: (initialFilter.regions && initialFilter.regions.length !== 0) ? initialFilter.regions : null
+    regions: (initialFilter.regions && initialFilter.regions.length !== 0) ? initialFilter.regions : null,
   }
   const { loading, data, error } = useQuery(GLOBAL_FILTER, { variables })
 
@@ -151,7 +150,7 @@ const Actions = (props) => {
         <Dropdown overlay={account} trigger={['click']} placement='bottomRight'>
           <Button size='small' type='ghost' shape='circle' icon={<BankFilled />} />
         </Dropdown>
-        <Button size='small' type='ghost' shape='circle' icon={<CodeOutlined />} onClick={() => onShow('ssh')} />
+        {/* <Button size='small' type='ghost' shape='circle' icon={<CodeOutlined />} onClick={() => onShow('ssh')} /> */}
         <Dropdown overlay={user} trigger={['click']} placement='bottomRight'>
           <Button size='small' type='primary' shape='circle' icon={<UserOutlined />} />
         </Dropdown>

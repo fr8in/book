@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { Modal, Button, Row, Input, Col, Table, message, Tooltip } from 'antd'
+import { Modal, Button, Row, Input, Col, Table, message, Tooltip, Form } from 'antd'
 import { gql, useSubscription, useMutation } from '@apollo/client'
 import moment from 'moment'
 
@@ -29,8 +28,8 @@ mutation TripComment($description:String, $topic:String, $trip_id: Int, $created
 
 const Tripcomment = (props) => {
   const { visible, tripid, onHide } = props
+  const [form] = Form.useForm()
 
-  const [userComment, setUserComment] = useState('')
   const { loading, error, data } = useSubscription(
     TRIP_COMMENT_QUERY,
     {
@@ -44,7 +43,7 @@ const Tripcomment = (props) => {
       onError (error) { message.error(error.toString()) },
       onCompleted () {
         message.success('Updated!!')
-        setUserComment('')
+        form.resetFields()
         onHide()
       }
     }
@@ -53,16 +52,12 @@ const Tripcomment = (props) => {
   if (loading) return null
   console.log('tripComment error', error)
 
-  const handleChange = (e) => {
-    setUserComment(e.target.value)
-  }
-
-  const onSubmit = () => {
+  const onSubmit = (form) => {
     InsertComment({
       variables: {
         trip_id: tripid,
         created_by: 'babu@Fr8Branch.in',
-        description: userComment,
+        description: form.comment,
         topic: 'text'
       }
     })
@@ -102,25 +97,29 @@ const Tripcomment = (props) => {
         <Button onClick={onHide} key='back'>Close</Button>
       ]}
     >
-      <Row gutter={10} className='mb10'>
-        <Col flex='auto'>
-          <Input.TextArea
-            value={userComment}
-            onChange={handleChange}
-            name='comment'
-            placeholder='Please Enter Comments......'
-          />
-        </Col>
-        <Col flex='80px'>
-          <Button type='primary' onClick={onSubmit}>Submit</Button>
-        </Col>
-      </Row>
+      <Form onFinish={onSubmit} form={form}>
+        <Row className='mb10' gutter={10}>
+          <Col xs={24} sm={18}>
+            <Form.Item name='comment'>
+              <Input.TextArea
+                placeholder='Please enter comments'
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={4}>
+            <Form.Item>
+              <Button type='primary' htmlType='submit'>Submit</Button>
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
       <Table
         columns={columns}
         dataSource={trip_comments}
         rowKey={record => record.id}
         size='small'
         pagination={false}
+        loading={loading}
       />
     </Modal>
   )

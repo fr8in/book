@@ -19,6 +19,8 @@ import CreditNoteTable from '../creditNoteTable'
 import { useSubscription } from '@apollo/client'
 import { TRIP_DETAIL_SUBSCRIPTION } from './query/tripDetailSubscription'
 import DetailPageHeader from '../../common/detailPageHeader'
+import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
@@ -38,13 +40,17 @@ const TripDetailContainer = (props) => {
   }
   console.log('TripDetailContainer Error', error)
   const trip_info = trip[0] ? trip[0] : { name: 'ID does not exist' }
-console.log('trip_info',trip_info)
+  console.log('trip_info', trip_info)
   const title = (
     <h3>
       <span className='text-primary'>{trip_info.id}</span>
       <span>{` ${trip_info.source && trip_info.source.name} - ${trip_info.source && trip_info.destination.name} `}</span>
       <small className='text-gray normal'>{trip_info.truck && trip_info.truck.truck_type && trip_info.truck.truck_type.name}</small>
     </h3>)
+
+  const trip_prices = get(trip_info, 'trip_prices', [])
+  const trip_price = isEmpty(trip_prices) ? null : trip_prices[0]
+  console.log('trip_price', trip_price)
   return (
     <Card
       size='small'
@@ -62,13 +68,13 @@ console.log('trip_info',trip_info)
     >
       <Row gutter={10}>
         <Col xs={24} sm={24} md={14}>
-          <TripInfo trip_info={trip_info} trip_price={trip_info && trip_info.trip_prices} trip_id={trip_info.id}/>
+          <TripInfo trip_info={trip_info} trip_prices={trip_price} trip_id={trip_info.id} />
           <Collapse accordion className='small mt10'>
             <Panel header='Trip LR' key='1'>
               <TripLr trip_info={trip_info} />
             </Panel>
           </Collapse>
-          <TripTime trip_info={trip_info} trip_id={trip_info.id}/>
+          <TripTime trip_info={trip_info} trip_id={trip_info.id} />
           <Collapse accordion className='small mt10'>
             <Panel header='Customer/Partner - Billing Comment' key='1'>
               <BillingComment trip_id={trip_info.id} trip_info={trip_info} />
@@ -138,7 +144,7 @@ console.log('trip_info',trip_info)
               </Collapse>
             </TabPane>
             <TabPane tab='Timeline' key='3'>
-              <TripComment trip_id={trip_info.id} comments={trip_info.trip_comments} trip_status={trip_info.trip_status && trip_info.trip_status.name}/>
+              <TripComment trip_id={trip_info.id} comments={trip_info.trip_comments} trip_status={trip_info.trip_status && trip_info.trip_status.name} />
             </TabPane>
           </Tabs>
         </Col>

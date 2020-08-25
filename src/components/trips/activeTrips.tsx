@@ -28,10 +28,10 @@ const Trips = (props) => {
             <a>{text}</a>
           </Link>)
       },
-      sorter: (a, b) => a.tripId - b.tripId,
+      sorter: (a, b) => a.id - b.id,
       width: '8%'
     },
-    {
+    props.customername ? {
       title: 'Customer',
       render: (text, record) => {
         const cardcode = record.customer && record.customer.cardcode
@@ -43,11 +43,11 @@ const Trips = (props) => {
               : <a>{name}</a>}
           </Link>)
       },
+      sorter: (a, b) => (a.customer.name > b.customer.name ? 1 : -1),
       width: '10%'
-    },
+    } : {},
     {
       title: 'Partner',
-      dataIndex: 'partner',
       render: (text, record) => {
         const cardcode = record.partner && record.partner.cardcode
         const name = record.partner && record.partner.name
@@ -58,6 +58,7 @@ const Trips = (props) => {
               : <a>{name}</a>}
           </Link>)
       },
+      sorter: (a, b) => (a.partner.name > b.partner.name ? 1 : -1),
       width: '10%'
     },
     {
@@ -76,7 +77,7 @@ const Trips = (props) => {
         const truck_no = record.truck && record.truck.truck_no
         const truck_type = record.truck && record.truck.truck_type && record.truck.truck_type.name
         return (
-          <Link href='/trucks/truck/[id]' as={`/trucks/truck/${truck_no} `}>
+          <Link href='/trucks/[id]' as={`/trucks/${truck_no} `}>
             <a>{truck_no + ' - ' + truck_type}</a>
           </Link>)
       },
@@ -88,6 +89,7 @@ const Trips = (props) => {
         const source = record.source && record.source.name
         return source && source > 10 ? source.slice(0, 10) + '...' : source
       },
+      sorter: (a, b) => (a.source.name > b.source.name ? 1 : -1),
       width: '8%'
     },
     {
@@ -96,14 +98,13 @@ const Trips = (props) => {
         const destination = record.destination && record.destination.name
         return destination && destination.length > 10 ? destination.slice(0, 10) + '...' : destination
       },
+      sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
       width: '9%'
     },
     {
       title: 'TAT',
       dataIndex: 'tat',
-      sorter: (a, b) =>
-        (a.tat ? a.tat : 0) -
-          (b.tat ? b.tat : 0),
+      sorter: (a, b) => a.tat > b.tat ? 1 : -1,
       render: (text, record) => {
         return text && text ? text : 0
       },

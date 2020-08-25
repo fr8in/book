@@ -11,7 +11,7 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import EmployeeList from '../branches/fr8EmpolyeeList'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from '../../components/partners/comment'
-
+import InlineCitySelect from '../common/inlineCitySelect'
 
 const PARTNERS_LEAD_QUERY = gql`
 query partner_lead(
@@ -89,6 +89,17 @@ mutation lead_priority_status($lead_priority: Boolean, $id: Int) {
   }
 }
 `
+const UPDATE_LEAD_CITY_MUTATION = gql`
+mutation update_lead_city($city_id:Int,$id:Int) {
+  update_partner(_set: {city_id: $city_id}, where: {id: {_eq: $id}}) {
+    returning {
+      id
+      city_id
+    }
+  }
+}
+`
+ 
 const no_comment = [{ value:1, label: 'No Comment' }]
 
 const PartnerLead = () => {
@@ -181,6 +192,26 @@ const PartnerLead = () => {
     })
     console.log('id priority', id)
   }
+
+  const [updateCity] = useMutation(
+    UPDATE_LEAD_CITY_MUTATION, {
+    onError(error) {
+      message.error(error.toString());
+    },
+    onCompleted() {
+      message.success("Updated!!");
+    },
+  });
+  const onCityUpdate = (partner_id,city_id) => {
+    updateCity({
+      variables: {
+        city_id: city_id,
+        id: partner_id,
+      },
+    });
+  };
+
+
 
   var partners = []
   var partner_aggregate = 0;
@@ -296,10 +327,17 @@ const PartnerLead = () => {
     },
     {
       title: 'City',
-      width: '9%',
+      width: '14%',
       render: (text, record) => {
-        return record.city && record.city.name;
-      },
+        return (
+        <InlineCitySelect
+          label= {record.city && record.city.name}
+          handleChange={onCityUpdate}
+          partner_id = {record.id}
+        />
+        )
+    },
+    
       filterDropdown: (
         <div>
           <Input placeholder='Search City Name'
@@ -346,7 +384,7 @@ const PartnerLead = () => {
     {
       title: 'Channel',
       dataIndex: 'source',
-      width: '12%',
+      width: '11%',
       filterDropdown: (
         <Checkbox.Group
           options={channels}
@@ -361,7 +399,7 @@ const PartnerLead = () => {
     },
     {
       title: 'Status',
-      width: '12%',
+      width: '11%',
       filterDropdown: (
         <Checkbox.Group
           options={partners_status}
@@ -402,7 +440,7 @@ const PartnerLead = () => {
     {
       title: 'Created Date',
       dataIndex: 'date',
-      width: '12%',
+      width: '10%',
       render: (text, record) => {
         const create_date = record.partner_comments && record.partner_comments.length > 0 &&
           record.partner_comments[0].created_at ? record.partner_comments[0].created_at : '-'
@@ -413,7 +451,7 @@ const PartnerLead = () => {
     {
       title: 'Priority',
       dataIndex: 'lead_priority',
-      width: '8%',
+      width: '7%',
       render: (text, record) => <Switch onChange={(checked) => onChange(checked, record.id)} checked={text} />
     },
     {
