@@ -1,16 +1,19 @@
 import { Table, Row, Col } from 'antd'
 //import data from '../../../mock/trip/chargesAndPayments'
 import moment from 'moment'
+import _ from 'lodash'
 
 const Payables = (props) => {
   const {trip_pay} =props
 
-  const mode = trip_pay && trip_pay.trip_partner_payment &&trip_pay.trip_partner_payment.length > 0 && trip_pay.trip_partner_payment[0].mode ? trip_pay.trip_partner_payment[0].mode : 'null'
-  const amount = trip_pay && trip_pay.trip_partner_payment &&trip_pay.trip_partner_payment.length > 0 && trip_pay.trip_partner_payment[0].amount ? trip_pay.trip_partner_payment[0].amount : 'null'
-  const date = trip_pay && trip_pay.trip_partner_payment &&trip_pay.trip_partner_payment.length > 0 && trip_pay.trip_partner_payment[0].date ? trip_pay.trip_partner_payment[0].date : 'null'
-  
+  console.log('trip_pay',trip_pay)
+
+const payments = _.sumBy(trip_pay.trip_partner_payment, 'amount');
+console.log('payment',payments)
+const paymentable = _.sumBy(trip_pay.trip_partner_charge, 'amount');
+console.log('paymentable',paymentable)
  
-  const vendorChargeColumns = [
+  const payablesColumn  = [
     {
       title: 'Charges',
       dataIndex: 'name'
@@ -25,21 +28,20 @@ const Payables = (props) => {
       }
     }
   ]
-  const vendorAdvanceColumn = [{
+  const paymentColumn = [{
     title: 'Mode',
     key: 'mode',
     width: '40%',
-    render: (record) => {
-      console.log();
-      return (mode);
-    },
+    render: (text,record) => {
+      return (record.mode)
+    }
   },
   {
     title: 'Date',
     key: 'date',
     width: '30%',
     render: (text, record) => {
-      return date ? moment(date).format('DD MMM YYYY') : null
+      return (record.date) ? moment(record.date).format('DD MMM YYYY') : null
     }
   },
   {
@@ -57,20 +59,26 @@ const Payables = (props) => {
   ]
   return (
     <>
+     <Row className='payableHead' gutter={6}>
+        <Col xs={12}><b>Paymentable</b></Col>
+        <Col xs={12} className='text-right'>
+          <b>{paymentable}</b>
+        </Col>
+      </Row>
       <Table
         dataSource={trip_pay.trip_partner_charge}
-        columns={vendorChargeColumns}
+        columns={payablesColumn}
         pagination={false}
         size='small'
       />
       <Row className='payableHead' gutter={6}>
         <Col xs={12}><b>Payments</b></Col>
         <Col xs={12} className='text-right'>
-          <b>{amount}</b>
+          <b>{payments}</b>
         </Col>
       </Row>
       <Table
-        columns={vendorAdvanceColumn}
+        columns={paymentColumn}
         dataSource={trip_pay.trip_partner_payment}
         scroll={{ x: '300' }}
         pagination={false}

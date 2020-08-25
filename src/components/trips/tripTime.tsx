@@ -119,10 +119,8 @@ const TripTime = (props) => {
   const remove_sout = trip_info.trip_status && trip_info.trip_status.name === 'Intransit' && authorized
   const remove_dout = trip_info.trip_status && trip_info.trip_status.name === 'Delivered' && authorized
 
-  const toPayValue= trip_info && trip_info.trip_prices && trip_info.trip_prices.length > 0 && trip_info.trip_prices[0].to_pay > 0  ? true : false
-  console.log('checking',toPayValue)
-  const toPayCheck= trip_info && trip_info.trip_prices && trip_info.trip_prices.length > 0 && trip_info.trip_prices[0].to_pay === 0  ? true : false
-  console.log('toPayCheck',toPayCheck)
+const toPayCheck = trip_info.source_in && trip_info.source_out && trip_info.destination_in && trip_info.trip_prices[0].to_pay ? true : false
+console.log('toPayCheck',toPayCheck)
 
   const wh_files = trip_info && trip_info.trip_files && trip_info.trip_files.length > 0 ?trip_info.trip_files.filter(file => file.type === 'WH') : null
   console.log('wh', wh_files)
@@ -167,19 +165,24 @@ const TripTime = (props) => {
                     id='toPay'
                     placeholder='To Pay Amount'
                     type='number'
-                    disabled={toPayCheck}
-                    required={toPayValue}
+                    disabled={!toPayCheck}
+                     required={toPayCheck}
                   />
                 </Form.Item>
               </Col>
-              <Col xs={16}>
+              <Col xs={12}>
                 <Form.Item label='To-Pay Comment' name='comment'>
                   <Input
                     id='comment'
                     placeholder='To Pay Comment'
-                    disabled={toPayCheck}
-                    required={toPayValue}
+                    disabled={!toPayCheck}
+                     required={toPayCheck}
                   />
+                </Form.Item>
+              </Col>
+              <Col xs={4} className='text-right'>
+                <Form.Item label>
+                <Button type='primary'  htmlType='submit'  disabled={!toPayCheck} required={toPayCheck} >Submit</Button>
                 </Form.Item>
               </Col>
             </Row>
@@ -209,9 +212,6 @@ const TripTime = (props) => {
                   {remove_dout &&
                     <Button danger icon={<CloseCircleOutlined />} onClick={onDoutRemove}>Dout</Button>}
                 </Space>
-              </Col>
-              <Col xs={8} className='text-right'>
-                <Button type='primary'  htmlType='submit'  disabled={toPayCheck}  >Submit</Button>
               </Col>
             </Row>
           </Form>
