@@ -1,5 +1,5 @@
 import { Table, Row, Col, Tooltip } from 'antd'
-// import data from '../../../mock/trip/chargesAndPayments'
+//  import data from '../../../mock/trip/chargesAndPayments'
 import moment from 'moment'
 import { gql, useQuery} from '@apollo/client'
 import _ from 'lodash'
@@ -46,6 +46,9 @@ const Receivables = (props) => {
   const receipts = _.sumBy(trip_info.customer_receipts, 'amount');
 console.log('receipts',receipts)
 
+const receivables = _.sumBy(trip_info.customer_receivables, 'amount');
+console.log('receivables',receivables)
+
   const customerChargeColumns = [
     {
       title: 'Charges',
@@ -77,23 +80,23 @@ console.log('receipts',receipts)
       return (record.date) ? moment(record.date).format('DD MMM YYYY') : null
     }
   },
-  // {
-  //   title: 'Remarks',
-  //   dataIndex: 'paymentComment',
-  //   key: 'paymentComment',
-  //   width: '37%',
-  //   render: (text, record) => {
-  //     const displayRecord =
-  //     text.length > 35 ? (
-  //       <Tooltip title={text}>
-  //         <span>{text.slice(0, 28) + '...'}</span>
-  //       </Tooltip>
-  //     ) : (
-  //       text
-  //     )
-  //     return displayRecord
-  //   }
-  // },
+  {
+      title: 'Remarks',
+      dataIndex: 'paymentComment',
+      key: 'paymentComment',
+      width: '37%',
+      // render: (text, record) => {
+      //   const displayRecord =
+      //   text.length > 35 ? (
+      //     <Tooltip title={text}>
+      //       <span>{text.slice(0, 28) + '...'}</span>
+      //     </Tooltip>
+      //   ) : (
+      //     text
+      //   )
+      //   return displayRecord
+      // }
+    },
   {
     title: <div className='text-right'> Amount</div>,
     dataIndex: 'amount',
@@ -108,6 +111,12 @@ console.log('receipts',receipts)
 
   return (
     <>
+    <Row className='payableHead' gutter={6}>
+        <Col xs={12}><b>Receivables</b></Col>
+        <Col xs={12} className='text-right'>
+          <b>{receivables}</b>
+        </Col>
+      </Row>
       <Table
         dataSource={trip_info.customer_receivables}
         columns={customerChargeColumns}

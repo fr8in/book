@@ -43,9 +43,6 @@ const TripDetailContainer = (props) => {
   const trip_info = trip[0] ? trip[0] : { name: 'ID does not exist' }
   console.log('trip_info', trip_info)
 
-  const payments = _.sumBy(trip_info.trip_partner_charge, 'amount');
-console.log('payment',payments)
-
   const title = (
     <h3>
       <span className='text-primary'>{trip_info.id}</span>
@@ -116,9 +113,6 @@ console.log('payment',payments)
                 <Panel
                   header={
                     <span>Partner - Payables
-                      <span className='pull-right'>
-                        <b>{payments}</b>
-                      </span>
                     </span>
                   }
                   key='1'
@@ -130,9 +124,6 @@ console.log('payment',payments)
                 <Panel
                   header={
                     <span>Customer - Receivables
-                      <span className='pull-right'>
-                        <b>{9000}</b>
-                      </span>
                     </span>
                   }
                   key='1'

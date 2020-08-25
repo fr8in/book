@@ -10,6 +10,8 @@ const Payables = (props) => {
 
 const payments = _.sumBy(trip_pay.trip_partner_payment, 'amount');
 console.log('payment',payments)
+const paymentable = _.sumBy(trip_pay.trip_partner_charge, 'amount');
+console.log('paymentable',paymentable)
  
   const payablesColumn  = [
     {
@@ -57,6 +59,12 @@ console.log('payment',payments)
   ]
   return (
     <>
+     <Row className='payableHead' gutter={6}>
+        <Col xs={12}><b>Paymentable</b></Col>
+        <Col xs={12} className='text-right'>
+          <b>{paymentable}</b>
+        </Col>
+      </Row>
       <Table
         dataSource={trip_pay.trip_partner_charge}
         columns={payablesColumn}
