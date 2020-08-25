@@ -23,6 +23,10 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
         length
         breadth
         height
+        driver{
+          id
+          mobile
+        }
         truck_files{
             id
              type
@@ -133,6 +137,7 @@ const TruckDetailContainer = (props) => {
 
   const partner_id = truck_info && truck_info.partner && truck_info.partner.id 
   
+ 
 
   const onSubmit = (status_check) => {
     console.log('truck_id', truck_info.id)
@@ -195,7 +200,7 @@ const TruckDetailContainer = (props) => {
               <TabPane tab='Details' key='1'>
                 <Row>
                   <Col xs={24} className='p20'>
-                    <TruckInfo truck_info={truck_info} loading={loading} id={truck_info.id} />
+                    <TruckInfo truck_info={truck_info} loading={loading} id={truck_info.id}  partner_id={partner_id} />
                     <Divider />
                     <Documents truck_id={truck_info.id}  partner_id={partner_id} truck_info={truck_info}/>
                     <Divider />
