@@ -39,13 +39,13 @@ subscription dashboard_trips_truks($regions: [Int!], $trip_status:String!, $bran
                 mobile
               }
             }
-            driver
-            truck {
-              truck_no
-              truck_type {
-                name
-              }
-            }
+            # driver
+            # truck {
+            #   truck_no
+            #   truck_type {
+            #     name
+            #   }
+            # }
             source {
               id
               name

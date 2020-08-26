@@ -1,11 +1,11 @@
-import { Table, Pagination, Radio, Input } from "antd";
-import { useState } from "react";
-import Link from "next/link";
-import { EditTwoTone, SearchOutlined } from "@ant-design/icons";
-import CreateBreakdown from "../../components/trucks/createBreakdown";
-import PartnerUsers from "../partners/partnerUsers";
-import CreatePo from "../../components/trips/createPo";
-import useShowHidewithRecord from "../../hooks/useShowHideWithRecord";
+import { Table, Pagination, Radio, Input } from 'antd'
+import { useState } from 'react'
+import Link from 'next/link'
+import { EditTwoTone, SearchOutlined } from '@ant-design/icons'
+import CreateBreakdown from '../../components/trucks/createBreakdown'
+import PartnerUsers from '../partners/partnerUsers'
+import CreatePo from '../../components/trips/createPo'
+import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 
 const Trucks = (props) => {
   const initial = {
@@ -15,10 +15,10 @@ const Trucks = (props) => {
     poVisible: false,
     editVisible: false,
     editData: [],
-    title: "",
-  };
-  const { object, handleHide, handleShow } = useShowHidewithRecord(initial);
-  const [currentPage, setCurrentPage] = useState(1);
+    title: ''
+  }
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
+  const [currentPage, setCurrentPage] = useState(1)
 
   const {
     trucks,
@@ -31,57 +31,57 @@ const Trucks = (props) => {
     onTruckNoSearch,
     filter,
     truck_status_list,
-    onFilter,
-  } = props;
-  console.log(props);
+    onFilter
+  } = props
+  console.log(props)
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {},
     getCheckboxProps: (record) => ({
-      disabled: record.name === "Disabled User",
-      name: record.name,
-    }),
-  };
+      disabled: record.name === 'Disabled User',
+      name: record.name
+    })
+  }
 
   const pageChange = (page, pageSize) => {
-    const newOffset = page * pageSize - filter.limit;
-    setCurrentPage(page);
-    onPageChange(newOffset);
-  };
+    const newOffset = page * pageSize - filter.limit
+    setCurrentPage(page)
+    onPageChange(newOffset)
+  }
 
   const handleStatus = (e) => {
-    onFilter(e.target.value);
-  };
+    onFilter(e.target.value)
+  }
 
   const handleName = (e) => {
-    onNameSearch(e.target.value);
-  };
+    onNameSearch(e.target.value)
+  }
 
   const handleTruckNo = (e) => {
-    onTruckNoSearch(e.target.value);
-  };
+    onTruckNoSearch(e.target.value)
+  }
 
   const truck_status = truck_status_list.map((data) => {
-    return { value: data.id, label: data.name };
-  });
+    return { value: data.id, label: data.name }
+  })
 
   const columns = [
     {
-      title: "Truck No",
-      dataIndex: "truck_no",
+      title: 'Truck No',
+      dataIndex: 'truck_no',
       render: (text, record) => {
         return (
-          <Link href="trucks/[id]" as={`trucks/${record.truck_no}`}>
+          <Link href='trucks/[id]' as={`trucks/${record.truck_no}`}>
             <a>
               {record.truck_no}-{record.truck_type && record.truck_type.name}
             </a>
           </Link>
-        );
+        )
       },
       filterDropdown: (
         <div>
           <Input
-            placeholder="Search TruckNo"
+            placeholder='Search TruckNo'
             value={filter.truck_no}
             onChange={handleTruckNo}
           />
@@ -89,78 +89,77 @@ const Trucks = (props) => {
       ),
       filterIcon: () => (
         <SearchOutlined
-          style={{ color: filter.mobile ? "#1890ff" : undefined }}
+          style={{ color: filter.mobile ? '#1890ff' : undefined }}
         />
-      ),
+      )
     },
     {
-      title: "Trip ID",
-      dataIndex: "id",
+      title: 'Trip ID',
+      dataIndex: 'id',
       render: (text, record) => {
-        const id = record && record.trips[0] ? record.trips[0].id : null;
+        const id = record && record.trips && record.trips[0] ? record.trips[0].id : null
         return (
           <span>
             {id && (
-              <Link href="/trips/[id]" as={`/trips/${id} `}>
+              <Link href='/trips/[id]' as={`/trips/${id} `}>
                 <a>{id}</a>
               </Link>
             )}
           </span>
-        );
-      },
+        )
+      }
     },
     {
-      title: "Trip",
+      title: 'Trip',
       render: (text, record) => {
-        const id = record && record.trips[0] ? record.trips[0].id : null;
+        const id = record && record.trips && record.trips[0] ? record.trips[0].id : null
         const source =
-          record && record.trips[0] && record.trips[0].source
+          record && record.trips && record.trips[0] && record.trips[0].source
             ? record.trips[0].source.name
-            : null;
+            : null
         const destination =
-          record && record.trips[0] && record.trips[0].destination
+          record && record.trips && record.trips[0] && record.trips[0].destination
             ? record.trips[0].destination.name
-            : null;
+            : null
         return (
           <span>
             {id ? (
-              <span>{source.slice(0, 3) + "-" + destination.slice(0, 3)}</span>
+              <span>{source.slice(0, 3) + '-' + destination.slice(0, 3)}</span>
             ) : record.truck_status.id === 1 ? (
               <a
-                className="link"
+                className='link'
                 onClick={() =>
                   handleShow(
-                    "poVisible",
+                    'poVisible',
                     record.partner.name,
-                    "poData",
+                    'poData',
                     record.truck_no
-                  )
-                }
+                  )}
               >
                 Assign
               </a>
             ) : (
-              "NA"
+              'NA'
             )}
           </span>
-        );
-      },
+        )
+      }
     },
     {
-      title: "Partner",
-      dataIndex: "name",
+      title: 'Partner',
+      dataIndex: 'name',
       render: (text, record) => {
         return (
-          <Link href="partners/[id]" as={`partners/${record.partner.cardcode}`}>
+          <Link href='partners/[id]' as={`partners/${record.partner.cardcode}`}>
             <a>{record.partner.name}</a>
           </Link>
-        );
+        )
       },
 
       filterDropdown: (
         <div>
           <Input
-            placeholder="Search Partner"
+            placeholder='Search Partner'
             value={filter.name}
             onChange={handleName}
           />
@@ -168,13 +167,13 @@ const Trucks = (props) => {
       ),
       filterIcon: () => (
         <SearchOutlined
-          style={{ color: filter.name ? "#1890ff" : undefined }}
+          style={{ color: filter.name ? '#1890ff' : undefined }}
         />
-      ),
+      )
     },
     {
-      title: "Phone No",
-      dataIndex: "mobile",
+      title: 'Phone No',
+      dataIndex: 'mobile',
       render: (text, record) => {
         const number =
           record.partner &&
@@ -182,72 +181,70 @@ const Trucks = (props) => {
           record.partner.partner_users.length > 0 &&
           record.partner.partner_users[0].mobile
             ? record.partner.partner_users[0].mobile
-            : "-";
+            : '-'
         return (
           <span
-            className="link"
+            className='link'
             onClick={() =>
-              handleShow("usersVisible", null, "usersData", record.partner)
-            }
+              handleShow('usersVisible', null, 'usersData', record.partner)}
           >
             {number}
           </span>
-        );
-      },
+        )
+      }
     },
     {
-      title: "Status",
+      title: 'Status',
       render: (text, record) =>
         record.truck_status && record.truck_status.name,
-      width: "14%",
+      width: '14%',
       filterDropdown: (
         <Radio.Group
           options={truck_status}
           defaultValue={filter.truck_statusId[0]}
           onChange={handleStatus}
-          className="filter-drop-down"
+          className='filter-drop-down'
         />
-      ),
+      )
     },
     {
-      title: "City",
+      title: 'City',
       render: (text, record) => {
-        return record.city && record.city.name;
-      },
+        return record.city && record.city.name
+      }
     },
     {
-      title: "",
+      title: '',
       render: (text, record) => (
         <EditTwoTone
           onClick={() =>
-            handleShow("editVisible", "Breakdown", "editData", record.id )
-          }
+            handleShow('editVisible', 'Breakdown', 'editData', record.id)}
         />
-      ),
-    },
-  ];
+      )
+    }
+  ]
   return (
     <>
       <Table
         rowSelection={{
-          ...rowSelection,
+          ...rowSelection
         }}
         columns={columns}
         dataSource={trucks}
         rowKey={(record) => record.id}
-        size="small"
+        size='small'
         scroll={{ x: 1156 }}
         pagination={false}
         loading={loading}
       />
       {!loading && (
         <Pagination
-          size="small"
+          size='small'
           current={currentPage}
           pageSize={filter.limit}
           total={record_count}
           onChange={pageChange}
-          className="text-right p10"
+          className='text-right p10'
         />
       )}
       {object.usersVisible && (
@@ -277,7 +274,7 @@ const Trucks = (props) => {
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default Trucks;
+export default Trucks

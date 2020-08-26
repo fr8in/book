@@ -1,10 +1,59 @@
-import TripsTracking from '../tripsTracking'
-import { useQuery } from '@apollo/client'
-import { TRIPS_QUERY } from './query/tripsQuery'
+import { gql, useQuery } from '@apollo/client'
 import { useState } from 'react'
 import get from 'lodash/get'
+import Trips from '../trips'
 
-const DeliveredContainer = () => {
+const TRIPS_QUERY = gql`
+query trips(
+  $offset: Int!, 
+  $limit: Int!,
+  $trip_statusName: [String!],
+  $where: trip_bool_exp){
+  rows: trip_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  trip_status(where: {name: {_in: $trip_statusName}}, order_by: {id: asc}) {
+    id
+    name
+  }
+  trip(offset: $offset, limit: $limit, where:$where, order_by: { order_date: desc })
+    {
+    id
+    order_date
+    customer {
+      name
+      cardcode
+    } 
+    partner {
+      name
+      cardcode
+    }
+    truck {
+      truck_no
+    }
+    source {
+      name
+    }
+    destination {
+      name
+    }
+    trip_status{
+      name
+    }
+    km    
+    tat
+    # trip_prices(limit:1, where:{deleted_at:{_is_null:true}})
+    # {
+    #   id
+    #   customer_price
+    #   partner_price
+    # }
+  }
+}`
+
+const AllTripsContainer = (props) => {
   const initialFilter = {
     offset: 0,
     limit: 10,
@@ -13,19 +62,19 @@ const DeliveredContainer = () => {
     sourcename: null,
     destinationname: null,
     truckno: null,
-    trip_statusName: ['Delivered'],
-    id: null
+    id: null,
+    trip_statusName: ['Delivered', 'Invoiced', 'Paid', 'Received', 'Closed']
   }
   const [filter, setFilter] = useState(initialFilter)
 
   const where = {
-    _and: [{ trip_status: { name: { _in: filter.trip_statusName } } }/* , { trip_pod_status: { name: { _eq: 'POD Verified' } } } */],
+    _and: [{ trip_status: { name: { _in: filter.trip_statusName && filter.trip_statusName.length > 0 ? filter.trip_statusName : initialFilter.trip_statusName } } }],
     id: { _in: filter.id ? filter.id : null },
     partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
     customer: { name: { _ilike: filter.customername ? `%${filter.customername}%` : null } },
     source: { name: { _ilike: filter.sourcename ? `%${filter.sourcename}%` : null } },
-    destination: { name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } },
-    truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } }
+    destination: { name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } }
+    // truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } }
   }
 
   const variables = {
@@ -43,7 +92,7 @@ const DeliveredContainer = () => {
       notifyOnNetworkStatusChange: true
     }
   )
-  console.log('DeliveredContainer error', error)
+  console.log('AllTripsContainer error', error)
   var _data = {}
   if (!loading) {
     _data = data
@@ -60,31 +109,32 @@ const DeliveredContainer = () => {
     setFilter({ ...filter, offset: value })
   }
   const onPartnerNameSearch = (value) => {
-    setFilter({ ...filter, partnername: value })
+    setFilter({ ...filter, partnername: value, offset: 0 })
   }
   const onCustomerNameSearch = (value) => {
-    setFilter({ ...filter, customername: value })
+    setFilter({ ...filter, customername: value, offset: 0 })
   }
   const onSourceNameSearch = (value) => {
-    setFilter({ ...filter, sourcename: value })
+    setFilter({ ...filter, sourcename: value, offset: 0 })
   }
   const onDestinationNameSearch = (value) => {
-    setFilter({ ...filter, destinationname: value })
+    setFilter({ ...filter, destinationname: value, offset: 0 })
   }
   const onTruckNoSearch = (value) => {
-    setFilter({ ...filter, truckno: value })
+    setFilter({ ...filter, truckno: value, offset: 0 })
   }
   const onFilter = (value) => {
-    setFilter({ ...filter, trip_statusName: value })
+    setFilter({ ...filter, trip_statusName: value, offset: 0 })
   }
   const onTripIdSearch = (value) => {
-    setFilter({ ...filter, id: value })
+    setFilter({ ...filter, id: value, offset: 0 })
   }
   return (
-    <TripsTracking
-      trips={trip} loading={loading}
-      filter={filter}
+    <Trips
+      trips={trip}
+      loading={loading}
       record_count={record_count}
+      filter={filter}
       onPageChange={onPageChange}
       onPartnerNameSearch={onPartnerNameSearch}
       onCustomerNameSearch={onCustomerNameSearch}
@@ -94,9 +144,8 @@ const DeliveredContainer = () => {
       onTripIdSearch={onTripIdSearch}
       trip_status_list={trip_status}
       onFilter={onFilter}
-      verified
     />
   )
 }
 
-export default DeliveredContainer
+export default AllTripsContainer

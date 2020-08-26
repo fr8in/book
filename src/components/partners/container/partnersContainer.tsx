@@ -18,7 +18,7 @@ query partners(
     offset: $offset, 
     limit: $limit,
     where:{
-      city:{branch:{region:{name:{_in:$region}}}}
+      # city:{branch:{region:{name:{_in:$region}}}},
       partner_status:{id:{_in:$partner_statusId}}, 
       name: {_ilike: $name}, 
       cardcode: {_ilike: $cardcode}
@@ -36,22 +36,22 @@ query partners(
     partner_status{
       name
     }
-     city {
-       branch {
-         region {
-           name
-         }
-       }
-     }
+    #  city {
+    #    branch {
+    #      region {
+    #        name
+    #      }
+    #    }
+    #  }
     partner_users(limit:1 , where:{is_admin:{_eq:true}}){
       mobile
     }
-    partner_comments(limit:1,order_by:{created_at:desc}){
-      partner_id
-      description
-      created_at
-      created_by
-    }
+    # partner_comments(limit:1,order_by:{created_at:desc}){
+    #   partner_id
+    #   description
+    #   created_at
+    #   created_by
+    # }
     trucks_aggregate(where:{truck_status_id:{_neq:7}}){
       aggregate{
         count
