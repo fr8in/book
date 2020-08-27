@@ -4,21 +4,21 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
 subscription partners($cardcode: String,$partner_id:bigint,$trip_status_value: [String!],$ongoing: [String!], $pod: [String!], $invoiced: [String!], $paid: [String!]) {
   partner(where: {cardcode: {_eq: $cardcode}})
          {
-          fastags (where: {id:{_eq:$partner_id}}) {
-            tagId
-            truck {
-              truck_no
-            }
-            partner {
-              cardcode
-              name
-            }
-            balance
-            tag_status {
-              id
-              status
-            }
-          }
+          # fastags{
+          #   tagId
+          #   truck {
+          #     truck_no
+          #   }
+          #   partner {
+          #     cardcode
+          #     name
+          #   }
+          #   balance
+          #   tag_status {
+          #     id
+          #     status
+          #   }
+          # }
           ongoing: trips_aggregate(where: {trip_status: {name: {_in: $ongoing}}}) {
             aggregate {
               count
@@ -81,15 +81,15 @@ subscription partners($cardcode: String,$partner_id:bigint,$trip_status_value: [
               name
               email
           }
-          city{
-              id
-              name
-              branch {
-                region {
-                  name
-                }
-              }
-         }  
+        #   city{
+        #       id
+        #       name
+        #       branch {
+        #         region {
+        #           name
+        #         }
+        #       }
+        #  }  
          tds_percentage {
             name
           }
@@ -133,15 +133,15 @@ subscription partners($cardcode: String,$partner_id:bigint,$trip_status_value: [
               id
               name
             }        
-            trips(where: {trip_status: {name: {_in: $trip_status_value}}}) {
-              id
-              source{
-                name
-              }
-              destination{
-                name
-              }
-            }
+            # trips(where: {trip_status: {name: {_in: $trip_status_value}}}) {
+            #   id
+            #   source{
+            #     name
+            #   }
+            #   destination{
+            #     name
+            #   }
+            # }
           }
         }    
       }

@@ -5,7 +5,7 @@ import { getMainDefinition } from '@apollo/client/utilities'
 
 const isBrowser = typeof window !== 'undefined'
 const wsLink = isBrowser ? new WebSocketLink({
-  uri: 'ws://dev-fr8.southeastasia.azurecontainer.io/v1/graphql',
+  uri: 'ws://prodcore.southeastasia.azurecontainer.io/v1/graphql',
   options: {
     reconnect: true
   }
@@ -13,7 +13,7 @@ const wsLink = isBrowser ? new WebSocketLink({
 }) : null
 console.log(' process.browser: ', process.browser)
 const httpLink = new HttpLink({
-  uri: process.env.CORE || 'http://dev-fr8.southeastasia.azurecontainer.io/v1/graphql',
+  uri: process.env.CORE || 'http://prodcore.southeastasia.azurecontainer.io/v1/graphql',
   credentials: 'same-origin' // Additional fetch() options like `credentials` or `headers`
 })
 const link = isBrowser ? split(

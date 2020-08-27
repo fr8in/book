@@ -47,7 +47,7 @@ const WaitingForLoad = (props) => {
             placeholder='Search Truck'
             id='truck'
             name='truck'
-            value={vars.truck_no}
+            value={vars && vars.truck_no}
             onChange={handleTruckNo}
           />
         </div>

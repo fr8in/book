@@ -39,13 +39,13 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
               id
               name
             }
-            truck {
-              truck_no
-              truck_type {
-                id
-                name
-              }
-            }
+            # truck {
+            #   truck_no
+            #   truck_type {
+            #     id
+            #     name
+            #   }
+            # }
             customer {
               cardcode
               name
@@ -54,22 +54,22 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
               customer_price
             }
             created_at
-            leads(where:{deleted_at:{_is_null:true}}) {
-              id
-              created_at
-              partner {
-                id
-                cardcode
-                name
-                partner_users(where: {is_admin: {_eq: true}}) {
-                  mobile
-                }
-                trucks(where: {truck_status:{name:{_eq:"Waiting for load"}}}){
-                  id
-                  truck_no
-                }
-              }
-            }
+            # leads(where:{deleted_at:{_is_null:true}}) {
+            #   id
+            #   created_at
+            #   partner {
+            #     id
+            #     cardcode
+            #     name
+            #     partner_users(where: {is_admin: {_eq: true}}) {
+            #       mobile
+            #     }
+            #     trucks(where: {truck_status:{name:{_eq:"Waiting for load"}}}){
+            #       id
+            #       truck_no
+            #     }
+            #   }
+            # }
           }
         }
       }
