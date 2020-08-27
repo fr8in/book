@@ -16,27 +16,35 @@ import get from 'lodash/get'
 
 
 const SOURCING_QUERY = gql`
-query($waiting_for_load_truck: truck_bool_exp, $breakdown_truck: truck_bool_exp){
-partner_aggregate(where: {partner_status: {name: {_in: ["Lead","Registered"]}}}) {
-  aggregate {
-    count
+query sourcing($waiting_for_load_truck: truck_bool_exp, $breakdown_truck: truck_bool_exp, $employee_email: [String!]) {
+  partner(where: {partner_status: {name: {_in: ["Lead", "Registered", "Rejected"]}}, onboarded_by: {email: {_in: $employee_email}}}) {
+    name
+    onboarded_by {
+      email
+      id
+    }
   }
-}
-waiting_for_load: truck_aggregate(where: $waiting_for_load_truck) {
-  aggregate {
-    count
+  partner_aggregate(where: {partner_status: {name: {_in: ["Lead", "Registered"]}}}) {
+    aggregate {
+      count
+    }
   }
-}
-breakdown: truck_aggregate(where: $breakdown_truck) {
-  aggregate {
-    count
+  waiting_for_load: truck_aggregate(where: $waiting_for_load_truck) {
+    aggregate {
+      count
+    }
   }
-}
+  breakdown: truck_aggregate(where: $breakdown_truck) {
+    aggregate {
+      count
+    }
+  }
 }
 `
 const TabPane = Tabs.TabPane
 const SourcingContainer = () => {
 
+  
   const [mainTabKey, setMainTabKey] = useState('1')
   const [subTabKey, setSubTabKey] = useState('1')
   const initial = { createLead: false, employeeList: false, filterList: false }
