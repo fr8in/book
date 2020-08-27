@@ -27,12 +27,12 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
           id
           mobile
         }
-        truck_files{
-            id
-             type
-             file_path
-             folder
-       }
+       # truck_files{
+        #    id
+       #      type
+       #      file_path
+        #     folder
+      # }
         truck_status{
           id
           name

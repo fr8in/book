@@ -5,6 +5,7 @@ import LabelAndData from '../../common/labelAndData'
 import Link from 'next/link'
 import { gql, useQuery , useMutation } from '@apollo/client'
 import CitySelect from '../../common/citySelect'
+import Driver from "../driver";
 
 
 const ADD_TRUCK_QUERY = gql`
@@ -13,6 +14,9 @@ const ADD_TRUCK_QUERY = gql`
         id
         cardcode
         name
+        trucks{
+          id
+        }
       }
       truck_type {
         id
@@ -21,8 +25,8 @@ const ADD_TRUCK_QUERY = gql`
     }
       `
       const INSERT_ADD_TRUCK_MUTATION = gql`
-mutation AddTruck($truck_no:String, $mobile:String, $partner_id: Int, $breadth:Int ,$length:Int,$height:Int,$city_id:Int,$truck_status_id:Int, $city_id: Int ) {
-  insert_truck(objects: {truck_no: $truck_no, driver: {data: {mobile: $mobile, partner_id: $partner_id}}, breadth: $breadth, height: $height, length: $length, partner_id: $partner_id, city_id: $city_id, truck_status_id: $truck_status_id, city_id: $city_id}) {
+mutation AddTruck($truck_no:String,  $partner_id: Int, $breadth:float8,$length:float8,$height:float8,$city_id:Int,$truck_type_id:Int ) {
+  insert_truck(objects: {truck_no: $truck_no,breadth: $breadth, height: $height, length: $length, partner_id: $partner_id,  truck_type_id: $truck_type_id, city_id: $city_id}) {
     returning {
       id
       truck_no
@@ -31,38 +35,18 @@ mutation AddTruck($truck_no:String, $mobile:String, $partner_id: Int, $breadth:I
 }
 `
 
-const AddTruck = (props) => {
+const AddTruck = () => {
 
   const initial = { city_id: null }
 
   const [city, setCity] = useState(initial)
 
-  const [TruckNo, setTruckNo] = useState('')
+ 
 
   const onCityChange = (city_id) => {
     setCity({ ...city, city_id: city_id })
   }
 
-  const truckNoChange = (e) => {
-    setTruckNo(e.target.value)
-  }
-
-  const [length, setlength] = useState('')
-
-  const lengthChange = (e) => {
-    setlength(e.target.value)
-  }
-  const [breadth, setbreadth] = useState('')
-
-  const breadthChange = (e) => {
-    setbreadth(e.target.value)
-  }
-
-  const [height, setheight] = useState('')
-
-  const heightChange = (e) => {
-    setheight(e.target.value)
-  }
 
   const handleChange = (value) => {
     console.log(`selected ${value}`)
@@ -84,6 +68,8 @@ const AddTruck = (props) => {
     partner_info = partner[0] ? partner[0] : { name: 'ID does not exist' }
     truck_type = data.truck_type
   }
+
+  const truck_id = partner_info && partner_info.trucks  && partner_info.trucks.id 
  
   const typeList = truck_type.map((data) => {
     return { value: data.id, label: data.name }
@@ -97,11 +83,17 @@ const AddTruck = (props) => {
     }
   )
 
-  const onSubmit = () => {
-    console.log('id')
+  const onSubmit = (form) => {
+    console.log('id',form)
     insertTruck({
       variables: {
-        city_id:parseInt(city.city_id,10)
+        partner_id:partner_info.id,
+        city_id:parseInt(city.city_id,10),
+        length: parseFloat(form.length),
+        breadth: parseFloat(form.breadth),
+        height: parseFloat(form.height),
+        truck_no:(form.truck_no),
+        truck_type_id:(form.truck_type)
       }
     })
   }
@@ -118,15 +110,15 @@ const AddTruck = (props) => {
       />
       <Divider />
       <Card size='small' title='Truck Detail' className='mb10'>
-        <Form layout='vertical'>
+        <Form layout='vertical' onFinish={onSubmit}>
           <Row gutter={10}>
             <Col span={8}>
               <Form.Item
                 label='Truck Number'
-                name='Truck Number'
+                name='truck_no'
                 rules={[{ required: true, message: 'Truck Number is required field!' }]}
               >
-                <Input placeholder='Truck Number' onChange={truckNoChange} />
+                <Input placeholder='Truck Number' />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -140,61 +132,58 @@ const AddTruck = (props) => {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item
-                label='Driver Number'
-                name='Driver Number'
-                rules={[{ required: true, message: 'Driver Number is required field' }]}
-              >
-                <Input placeholder='Driver Number' />
-              </Form.Item>
+            <Form.Item>
+               <Driver partner_id={partner_info.id} truck_id={truck_id}/>
+               </Form.Item>
             </Col>
           </Row>
           <Row gutter={10}>
             <Col span={6}>
               <Form.Item
                 label='Truck Type'
-                name='Truck Type'
+                name='truck_type'
                 rules={[{ required: true, message: 'Truck Type is required field' }]}
               >
-                <Select defaultValue='10W' style={{ width: 280 }} onChange={handleChange} options={typeList} />
+                <Select style={{ width: 280 }} onChange={handleChange} options={typeList} />
               </Form.Item>
             </Col>
             <Col span={6}>
               <Form.Item
                 label='Length(Ft)'
-                name='Length(Ft)'
+                name='length'
                 rules={[{ required: true, message: 'Length(Ft) is required field' }]}
               >
-                <Input placeholder='Length(Ft)' type='number' disabled={false} onChange={lengthChange}/>
+                <Input placeholder='Length(Ft)' type='number' disabled={false} />
               </Form.Item>
             </Col>
             <Col span={6}>
               <Form.Item
                 label='Breadth(Ft)'
-                name='Breadth(Ft)'
+                name='breadth'
                 rules={[{ required: true, message: 'Breadth(Ft) is required field' }]}
               >
-                <Input placeholder='Breadth(Ft)' type='number' disabled={false} onChange={breadthChange}/>
+                <Input placeholder='Breadth(Ft)' type='number' disabled={false} />
               </Form.Item>
             </Col>
             <Col span={6}>
               <Form.Item
                 label='Height(Ft)'
-                name='Height(Ft)'
+                name='height'
                 rules={[{ required: true, message: 'Height(Ft) is required field' }]}
               >
-                <Input placeholder='Height(Ft)' type='number' disabled={false} onChange={heightChange}/>
+                <Input placeholder='Height(Ft)' type='number' disabled={false} />
               </Form.Item>
             </Col>
           </Row>
-        </Form>
-      </Card>
-      <Row justify='end' className='m5'>
+          <Row justify='end' className='m5'>
         <Space>
           <Button type='primary' htmlType='submit'>Submit</Button>
           <Button>Cancel</Button>
         </Space>
       </Row>
+        </Form>
+      </Card>
+      
     </div>
   )
 }
