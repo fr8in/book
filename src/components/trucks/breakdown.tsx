@@ -67,6 +67,8 @@ const Breakdown = (props) => {
     _data = data
   }
 
+  console.log('_data',_data)
+
   const truck = get(_data, 'truck', [])
   const truck_info = get(_data, 'truck[0]', {})
   const record_count = get(_data, 'rows.aggregate.count', 0)
