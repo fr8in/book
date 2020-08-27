@@ -15,7 +15,7 @@ const CUSTOMER_BRANCH_QUERY = gql`
   }
 `
 const INSERT_CUSTOMER_BRANCH_MUTATION = gql`
-mutation CustomerBranchInsert($address: String,$id:Int ,$branchname: String, $mobile: String, $name: String, $pincode: Int, $state: Int,$city_id:Int) {
+mutation CustomerBranchInsert($address: String,$id:Int ,$branch_name: String, $mobile: String, $name: String, $pincode: Int, $state: Int,$city_id:Int) {
   insert_customer_branch(objects: {customer_id:$id,address: $address, branch_name: $branchname, mobile: $mobile, name: $name, pincode: $pincode, city_id: $city_id, state_id: $state}) {
     returning {
       customer_id
@@ -29,10 +29,25 @@ mutation CustomerBranchInsert($address: String,$id:Int ,$branchname: String, $mo
   }
 }
 `
-
+const UPDATE_CUSTOMER_BRANCH_MUTATION = gql`
+mutation CustomerBranchInsert($address: String, $id: Int, $branch_name: String, $mobile: String, $name: String, $customer_id: Int, $pincode: Int, $state: Int, $city_id: Int) {
+  update_customer_branch(_set: {address: $address, branch_name: $branch_name, city_id: $city_id, mobile: $mobile, name: $name, pincode: $pincode, state_id: $state}, where: {customer_id: {_eq: $customer_id}, id: {_eq:  $id}}) {
+    returning {
+      customer_id
+      city {
+        name
+      }
+      state {
+        name
+      }
+    }
+  }
+}
+`
 
 const CreateCustomerBranch = (props) => {
-  const { visible, onHide,customerbranch } = props
+  const { visible, onHide,customerbranches } = props
+  console.log('customerbranches',customerbranches)
   const initial = {city_id: null}
   const [obj, setObj] = useState(initial)
 
@@ -47,6 +62,15 @@ const CreateCustomerBranch = (props) => {
 
   const [insertCustomerBranch] = useMutation(
     INSERT_CUSTOMER_BRANCH_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!')  
+      setObj(initial) }
+    }
+  )
+
+  const [updateCustomerBranch] = useMutation(
+    UPDATE_CUSTOMER_BRANCH_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
       onCompleted () { message.success('Updated!!')  
@@ -73,16 +97,19 @@ const CreateCustomerBranch = (props) => {
     insertCustomerBranch({
       variables: {
         city_id: obj.city_id,
-        id:customerbranch,
+        id:customerbranches,
         mobile: form.mobile,
         name: form.name,
         address: form.address,
         pincode: form.pincode,
-        branchname: form.branchname
+        branch_name: form.branch_name
       }
     })
+
   }
 
+const branch_name= customerbranches.map(element => element.branch_name);
+console.log(branch_name)
   
   const handleChange = (value) => {
     console.log(`selected ${value}`)
@@ -100,7 +127,7 @@ const CreateCustomerBranch = (props) => {
         <Row>
           <Col xs={24}>
             <Form layout='vertical' onFinish={onAddBranch} >
-              <Form.Item name='branchname' >
+              <Form.Item  name='branch_name' initialValue={branch_name} >
                 <Input placeholder='Branch Name' />
               </Form.Item>
               <Form.Item name='name'>

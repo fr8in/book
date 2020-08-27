@@ -54,6 +54,7 @@ const CheckBoxModal = (props) => {
         footer={null}
       >
         <Form layout='vertical' onFinish={onPrivateGodown}>
+          <Row>
           <div>
             <h4>Godown Receipt</h4>
             <FileUploadOnly
@@ -64,6 +65,7 @@ const CheckBoxModal = (props) => {
                
               />
           </div>
+          </Row>
           <Row>
             <Col sm={20}>
               <Form.Item

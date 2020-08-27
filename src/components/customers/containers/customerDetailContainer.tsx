@@ -254,6 +254,7 @@ const CustomerDetailContainer = (props) => {
                     </Row>
                     <Branch
                       customerBranch={customerInfo.customer_branches}
+                      branch={customerInfo.customer_branches && customerInfo.customer_branches.id}
                       loading={loading}
                     />
                   </TabPane>

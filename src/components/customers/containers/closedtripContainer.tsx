@@ -55,7 +55,7 @@ query trip($cardcode:String,$offset: Int, $limit: Int,$trip_statusName:[String!]
 const ClosedTripContainer = (props) => {
   const initialFilter = {
     offset: 0,
-    limit: 3,
+    limit: 10,
     partnername: null,
     customername: null,
     sourcename: null,
@@ -103,6 +103,7 @@ const ClosedTripContainer = (props) => {
   const trips = get(_data,'customer[0].trips',[])
   const customerData = get(_data,'customer[0]',[])
   const record_count = get(_data, 'rows.aggregate.count', 0)
+  const total_page = Math.ceil(record_count / filter.limit)
 
   console.log('trip_status',trip_status)
 
@@ -137,6 +138,7 @@ const ClosedTripContainer = (props) => {
       trips={trips}
       loading={loading}
       record_count={record_count}
+      total_page={total_page}
       onPageChange={onPageChange}
       onPartnerNameSearch={onPartnerNameSearch}
       onCustomerNameSearch={onCustomerNameSearch}
