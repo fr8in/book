@@ -76,17 +76,19 @@ query partners(
 `
 
 const PartnerContainer = () => {
-  const initialFilter = { partner_statusId: [6],
-    region:null,
-     offset: 0,
-      limit: 10,
-       name: null,
-        cardcode: null }
+  const initialFilter = {
+    partner_statusId: [6],
+    region: null,
+    offset: 0,
+    limit: 10,
+    name: null,
+    cardcode: null
+  }
   const [filter, setFilter] = useState(initialFilter)
   const partnersQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
-    region:filter.region,
+    region: filter.region,
     partner_statusId: filter.partner_statusId,
     name: filter.name ? `%${filter.name}%` : null,
     cardcode: filter.cardcode ? `%${filter.cardcode}%` : null
@@ -114,11 +116,8 @@ const PartnerContainer = () => {
   }
   console.log('partner_aggregate', partner_aggregate)
 
-
-
   const record_count = partner_aggregate && partner_aggregate.aggregate && partner_aggregate.aggregate.count
 
-  const total_page = Math.ceil(record_count / filter.limit)
   console.log('record_count', record_count)
 
   const onFilter = (name) => {
@@ -154,7 +153,6 @@ const PartnerContainer = () => {
         partners={partner}
         loading={loading}
         onPageChange={onPageChange}
-        total_page={total_page}
         record_count={record_count}
         filter={filter}
         onFilter={onFilter}

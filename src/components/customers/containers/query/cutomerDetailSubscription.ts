@@ -46,10 +46,10 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         id
         name
       }
-      onboarded_by {
-        id
-        email
-      }
+      # onboarded_by {
+      #   id
+      #   email
+      # }
       paymentManager {
         id
         email
@@ -63,22 +63,22 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         mobile
         email
       }
-      customer_branches {
-        branch_name
-        name
-        address
-        state {
-          name
-        }
-        city {
-          name
-        }
-        pincode
-        mobile
-      }
-      customer_mamul_summary {
-        system_mamul_avg
-      }
+      # customer_branches {
+      #   branch_name
+      #   name
+      #   address
+      #   state {
+      #     name
+      #   }
+      #   city {
+      #     name
+      #   }
+      #   pincode
+      #   mobile
+      # }
+      # customer_mamul_summary {
+      #   system_mamul_avg
+      # }
       trips(where: { trip_status: { name: { _in: $trip_status } } }) {
         id
         order_date
@@ -92,7 +92,7 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
           region{
             branches{
               name
-              order
+              # order
             }
           }
         }
