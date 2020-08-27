@@ -41,10 +41,10 @@ subscription dashboard_trips($regions: [Int!], $branches: [Int!], $cities: [Int!
             driver {
               mobile
             }
-            # tat
-            # truck_comments(limit: 1, order_by: {created_at: desc}) {
-            #   description
-            # }
+            tat
+            truck_comments(limit: 1, order_by: {created_at: desc}) {
+              description
+            }
           }
         }
       }
@@ -56,9 +56,9 @@ const WaitingForLoadContainer = (props) => {
   const { filters } = props
   const variables = {
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
-    branches: (filters.branches && filters.branches > 0) ? filters.branches : null,
-    cities: (filters.cities && filters.cities > 0) ? filters.cities : null,
-    truck_type: (filters.types && filters.types > 0) ? filters.types : null,
+    branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
+    cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
+    truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
     truck_no: null
   }
   const { loading, data, error } = useSubscription(DASHBOARD_TRUCK_QUERY, { variables })

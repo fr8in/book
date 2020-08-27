@@ -27,7 +27,7 @@ subscription dashboard_trips($regions: [Int!], $branches: [Int!], $cities: [Int!
                 mobile
               }
             }
-            driver_id
+            driver
             source {
               id
               name
