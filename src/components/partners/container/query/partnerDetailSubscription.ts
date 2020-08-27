@@ -4,21 +4,21 @@ export const PARTNER_DETAIL_SUBSCRIPTION = gql`
 subscription partners($cardcode: String,$partner_id:bigint,$trip_status_value: [String!],$ongoing: [String!], $pod: [String!], $invoiced: [String!], $paid: [String!]) {
   partner(where: {cardcode: {_eq: $cardcode}})
          {
-         # fastags (where: {id:{_eq:$partner_id}}) {
-         #   tagId
-         #   truck {
-         #     truck_no
-         #   }
-          #  partner {
-         #     cardcode
-         #     name
-         #   }
-          #  balance
-         #   tag_status {
-         #     id
-         #     status
-         #   }
-        #  }
+          fastags (where: {id:{_eq:$partner_id}}) {
+            tagId
+            truck {
+              truck_no
+            }
+            partner {
+              cardcode
+              name
+            }
+            balance
+            tag_status {
+              id
+              status
+            }
+          }
           ongoing: trips_aggregate(where: {trip_status: {name: {_in: $ongoing}}}) {
             aggregate {
               count
@@ -65,12 +65,12 @@ subscription partners($cardcode: String,$partner_id:bigint,$trip_status_value: [
             id
             mobile
           }
-         # partner_files{
-         #   file_path
-          #  id
-          #  folder
-          #  type
-          #}
+          partner_files{
+            file_path
+            id
+            folder
+            type
+          }
           trucks_aggregate(where:{truck_status_id:{_neq:7}}){
             aggregate{
               count
