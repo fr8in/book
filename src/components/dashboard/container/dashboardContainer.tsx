@@ -18,7 +18,7 @@ const { TabPane } = Tabs
 
 const DashboardContainer = (props) => {
   const { filters } = props
-
+  console.log('filters', filters)
   const initial = { excessLoad: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
@@ -105,7 +105,7 @@ const DashboardContainer = (props) => {
           <Col xs={24} sm={24}>
             <Card size='small' className='card-body-0 border-top-blue'>
               <Tabs
-                defaultActiveKey='2'
+                defaultActiveKey='1'
                 tabBarExtraContent={
                   <Space>
                     <Button size='small' shape='circle' type='primary' className='btn-success' icon={<WhatsAppOutlined />} />

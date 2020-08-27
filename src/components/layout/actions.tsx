@@ -25,7 +25,7 @@ query gloabl_filter($now: timestamptz, $regions:[Int!], $branches:[Int!], $citie
     id
     name
   }
-  region {
+  region(where: {id: {_in: $regions}}) {
     id
     name
     branches(where:{_and: [ {region_id:{_in:$regions}} {id:{_in:$branches}}]}) {
@@ -44,12 +44,12 @@ query gloabl_filter($now: timestamptz, $regions:[Int!], $branches:[Int!], $citie
         cities {
           id
           name
-          trucks_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for load"}}}) {
+          trucks_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}}) {
             aggregate {
               count
             }
           }
-          trucks_current: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for load"}}}, {available_at: {_gte: $now}}]}) {
+          trucks_current: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, {available_at: {_gte: $now}}]}) {
             aggregate {
               count
             }
@@ -71,11 +71,11 @@ const Actions = (props) => {
 
   const variables = {
     now: initialFilter.now,
-    regions: (initialFilter.regions && initialFilter.regions.length !== 0) ? initialFilter.regions : null,
+    regions: (filter.regions && filter.regions.length > 0) ? filter.regions : null
   }
   const { loading, data, error } = useQuery(GLOBAL_FILTER, { variables })
 
-  console.log('Actions error', error)
+  console.log('Actions filter', filter, initialFilter)
   let region_options = []
   //2nd level branch_options 
   let branch_options = []

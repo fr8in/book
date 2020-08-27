@@ -12,7 +12,7 @@ subscription dashboard_trips($regions: [Int!], $branches: [Int!], $cities: [Int!
         id
         cities {
           id
-          trucks(where: {truck_status: {name: {_eq: "Waiting for Load"}}, truck_no: {_ilike: $truck_no}, truck_type_id: {_in: $truck_type}}) {
+          trucks(where: {truck_status: {name: {_eq: "Waiting for Load"}}, truck_no: {_ilike: $truck_no}, truck_type: {id:{_in: $truck_type}}}) {
             id
             truck_no
             truck_type {
