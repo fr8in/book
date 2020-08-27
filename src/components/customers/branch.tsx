@@ -5,14 +5,15 @@ import EditBranch from '../customers/createCustomerBranch'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 
 const Branch = (props) => {
-  const { customerBranch, loading } = props;
+  const { customerBranch, loading,branch } = props;
   console.log("customerBranch", customerBranch);
-
+  console.log("branch", branch)
   const initial = {
     customerBranchVisible: false,
     title: null,
-    customerBranchData: []
+    customerBranchData: customerBranch
   }
+  console.log('initial',initial)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
   const column = [
@@ -61,7 +62,7 @@ const Branch = (props) => {
       render: (text, record) => (
         <span>
           <Button type="link" icon={<EditOutlined />}   onClick={() =>
-                  handleShow("customerBranchVisible",null, "customerBranchdata",record)}/>
+                  handleShow("customerBranchVisible",null, "customerBranchdata",record.customerBranch && record.customerBranch.id)} />
         </span>
       ),
       width: "10%",
@@ -84,7 +85,7 @@ const Branch = (props) => {
         <EditBranch
         visible={object.customerBranchVisible}
         onHide={handleHide}
-        data={object.customerBranchData}
+        customerbranches={object.customerBranchData}
         title={object.title}
         />
          )
