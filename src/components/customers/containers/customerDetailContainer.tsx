@@ -26,7 +26,7 @@ import AdvancePending from '../advancePending'
 import InvoicePending from '../invoicePending'
 import Users from '../users'
 import Branch from '../branch'
-import Fr8Branch from '../fr8Branch'
+import Fr8Branch from '../../customers/containers/fr8branchContainer'
 import CustomerUser from '../createCustomerUser'
 import CustomerBranch from '../createCustomerBranch'
 import TitleWithCount from '../../common/titleWithCount'
@@ -259,7 +259,7 @@ const CustomerDetailContainer = (props) => {
                     />
                   </TabPane>
                   <TabPane tab='FR8 Branch' key='8'>
-                    <Fr8Branch />
+                    <Fr8Branch cardcode={cardcode}/>
                   </TabPane>
                   <TabPane
                     tab={<TitleWithCount name='Ongoing' value={ongoing_count} />}

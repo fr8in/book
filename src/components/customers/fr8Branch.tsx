@@ -1,24 +1,19 @@
 import { Table } from "antd";
 import branchData from "../../../mock/customer/branch";
 
-const Fr8Branch = () => {
+const Fr8Branch = (props) => {
+
   const fr8Branch = [
     {
       title: "Branch Name",
       dataIndex: "name",
-      width: "35%",
+      width: "50%",
       render: (text, record) => record.branch && record.branch.name,
-    },
-    {
-      title: "Orders",
-      dataIndex: "order",
-      width: "35%",
-      render: (text, record) => record.branch && record.branch.order,
     },
     {
       title: "Traffic",
       dataIndex: "traffic",
-      width: "30%",
+      width: "50%",
     },
   ];
 
