@@ -36,10 +36,10 @@ query partner_lead(
     partner_users{
       mobile
     }
-    city{
-      id
-      name
-    }
+    #city{
+    #  id
+  #    name
+  #  }
     channel{
       id
       name
@@ -102,7 +102,7 @@ mutation update_lead_city($city_id:Int,$id:Int) {
 const no_comment = [{ value:1, label: 'No Comment' }]
 
 const PartnerLead = (props) => {
-  const {visible, onHide} = props
+  const {visible, onHide,onboarded_by} = props
   const initial = {
     no_comment: [],
     comment: false,
@@ -135,21 +135,21 @@ const PartnerLead = (props) => {
     onChange: onSelectChange
   }
 
-
+console.log('onboarded_by',onboarded_by)
   const where = { 
     partner_users: filter.mobile ? {mobile:{ _like:`%${filter.mobile}%`}}: null,  
-    city: filter.city_name && {name:{ _ilike: `%${filter.city_name}%`}} ,
-    onboarded_by:filter.owner_name ?  {email:{_ilike:`%${filter.owner_name}%`}}: null,
-    partner_status:{name:{_in: filter.partner_status_name ? filter.partner_status_name : null}},
-    channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}}, 
-    _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ?  null : {id: {_is_null:true }} }
+   // city: filter.city_name && {name:{ _ilike: `%${filter.city_name}%`}} ,
+   onboarded_by:   {email:{_ilike: filter.owner_name ? `%${filter.owner_name}%` : null,_in : onboarded_by || null}}, 
+    partner_status:{name:{_in: filter.partner_status_name ? filter.partner_status_name : null}}
+    //channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}}, 
+    //_not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ?  null : {id: {_is_null:true }} }
   }
   const whereNoCityFilter ={
     partner_users: filter.mobile ? {mobile:{ _like:`%${filter.mobile}%`}}: null,  
-    onboarded_by:filter.owner_name ?  {email:{_ilike:`%${filter.owner_name}%`}}: null,
-    partner_status:{name:{_in: filter.partner_status_name ? filter.partner_status_name : null}},
-    channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} ,
-    _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ? null :  {id: {_is_null:true }} }
+    onboarded_by:   {email:{_ilike: filter.owner_name ? `%${filter.owner_name}%` : null,_in : onboarded_by || null}}, 
+    partner_status:{name:{_in: filter.partner_status_name ? filter.partner_status_name : null}}
+    //channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} ,
+   // _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ? null :  {id: {_is_null:true }} }
   }
   console.log('filter.no_comment ',filter.no_comment ,filter.no_comment && filter.no_comment.length > 0)
   const partnerQueryVars = {
@@ -239,6 +239,7 @@ const PartnerLead = (props) => {
     partner_status = data && data.partner_status
     channel = data && data.channel
   }
+  console.log('partners list', partners)
   console.log('channel', channel)
 
   const record_count =

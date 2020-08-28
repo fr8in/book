@@ -85,7 +85,13 @@ console.log('partner_ids',partner_ids)
       onOk={onSubmit}
       onCancel={onHide}
     >
-      <Select value={employees} onChange={employeeChange} style={{ width: 300 }} options={employeeList} />
+      <Select 
+      value={employees} 
+      onChange={employeeChange} 
+      style={{ width: 300 }} 
+      options={employeeList} 
+      optionFilterProp='label'
+      showSearch/>
     </Modal>
   )
 }
