@@ -28,11 +28,12 @@ const CustomerPrice = (props) => {
   const { visible, onHide, trip_id, trip_price } = props
 
   const [form] = Form.useForm()
-  const initial = {
-    customer_price: trip_price.customer_price,
-    mamul: trip_price.mamul
-  }
-  const [priceCalc, setPriceCalc] = useState(initial)
+
+  const customer_advance_percentage = trip_price.customer_advance_percentage || 90
+  const customer_advance = (trip_price.customer_price - trip_price.mamul) * customer_advance_percentage / 100
+
+  const initial = { partner_price: trip_price.partner_price, advance: customer_advance }
+  const [price, setPrice] = useState(initial)
 
   const [insertTripPrice] = useMutation(
     CUSTOMER_MUTATION,
@@ -65,38 +66,86 @@ const CustomerPrice = (props) => {
   }
 
   const onPerTonPriceChange = (e) => {
-    setPriceCalc({ ...priceCalc, customer_price: e.target.value })
+    const { value } = e.target
+    const ton = form.getFieldValue('ton')
+    const cus_price = value * (ton || 1)
+    const cus_adv = (cus_price - form.getFieldValue('mamul')) * customer_advance_percentage / 100
+    const bank = cus_adv - (parseFloat(form.getFieldValue('cash')) + parseFloat(form.getFieldValue('to_pay')))
+
+    form.setFieldsValue({
+      customer_price: cus_price,
+      bank: bank > 0 ? bank : 0
+    })
+    setPrice({ ...price, partner_price: cus_price - form.getFieldValue('mamul'), advance: cus_adv })
   }
   const onTonChange = (e) => {
-    setPriceCalc({ ...priceCalc, mamul: e.target.value })
+    const { value } = e.target
+    const price_per_ton = form.getFieldValue('price_per_ton')
+    const cus_price = value * (price_per_ton || 1)
+    const cus_adv = (cus_price - form.getFieldValue('mamul')) * customer_advance_percentage / 100
+    const bank = cus_adv - (parseFloat(form.getFieldValue('cash')) + parseFloat(form.getFieldValue('to_pay')))
+
+    form.setFieldsValue({
+      customer_price: cus_price,
+      bank: bank > 0 ? bank : 0
+    })
+    setPrice({ ...price, partner_price: cus_price - form.getFieldValue('mamul'), advance: cus_adv })
   }
   const onCustomerPriceChange = (e) => {
-    setPriceCalc({ ...priceCalc, customer_price: e.target.value })
+    const { value } = e.target
+    const netPrice = value - form.getFieldValue('mamul')
+    const cus_adv = netPrice * customer_advance_percentage / 100
+    const bank = cus_adv - (parseFloat(form.getFieldValue('cash')) + parseFloat(form.getFieldValue('to_pay')))
+
+    form.setFieldsValue({
+      customer_price: value,
+      bank: bank > 0 ? bank : 0
+    })
+    setPrice({ ...price, partner_price: netPrice, advance: cus_adv })
   }
   const onMamulChange = (e) => {
-    setPriceCalc({ ...priceCalc, mamul: e.target.value })
+    const { value } = e.target
+    const netPrice = form.getFieldValue('customer_price') - value
+    const cus_adv = netPrice * customer_advance_percentage / 100
+    const bank = cus_adv - (parseFloat(form.getFieldValue('cash')) + parseFloat(form.getFieldValue('to_pay')))
+    console.log('bank', bank, cus_adv)
+    form.setFieldsValue({
+      bank: bank > 0 ? bank : 0
+    })
+    setPrice({ ...price, partner_price: netPrice, advance: parseFloat(cus_adv) })
   }
-
-  const advancewithMamul = Math.ceil((priceCalc.customer_price / 100) * trip_price.customer_advance_percentage)
-  const advance = advancewithMamul - priceCalc.mamul
-  const partner_price = priceCalc.customer_price - priceCalc.mamul
+  const onCashChange = (e) => {
+    const { value } = e.target
+    const bank = parseFloat(price.advance) - (parseFloat(value) + parseFloat(form.getFieldValue('to_pay')))
+    form.setFieldsValue({
+      bank: bank > 0 ? bank : 0
+    })
+  }
+  const onToPayChange = (e) => {
+    const { value } = e.target
+    const bank = parseFloat(price.advance) - (parseFloat(value) + parseFloat(form.getFieldValue('cash')))
+    console.log('bank', bank)
+    form.setFieldsValue({
+      bank: bank > 0 ? bank : 0
+    })
+  }
 
   return (
     <Modal
-      title={`Customer Price Change - Advance (${trip_price.customer_advance_percentage}%): ${advance}`}
+      title={`Customer Price Change - Advance (${customer_advance_percentage}%): ${price.advance}`}
       visible={visible}
       onCancel={onHide}
       footer={[]}
     >
       <Form layout='vertical' onFinish={onCustomerPriceSubmit} form={form}>
-        {trip_price.is_price_per_ton &&
+        {!trip_price.is_price_per_ton &&
           <Row gutter={10}>
             <Col sm={12}>
               <Form.Item
                 label='Per Ton Price'
                 name='price_per_ton'
                 rules={[{ required: true, message: 'Per Ton Price is required field!' }]}
-                initialValue={trip_price.price_per_ton}
+                initialValue={trip_price.price_per_ton || 0}
               >
                 <Input placeholder='Customer Price' onChange={onPerTonPriceChange} />
               </Form.Item>
@@ -105,7 +154,8 @@ const CustomerPrice = (props) => {
               <Form.Item
                 label='No.of Ton'
                 name='ton'
-                initialValue={trip_price.ton}
+                rules={[{ required: true, message: 'No.of Ton is required field!' }]}
+                initialValue={trip_price.ton || 0}
               >
                 <Input placeholder='Ton' onChange={onTonChange} />
               </Form.Item>
@@ -119,14 +169,14 @@ const CustomerPrice = (props) => {
               rules={[{ required: true, message: 'Customer Price is required field!' }]}
               initialValue={trip_price.customer_price}
             >
-              <Input placeholder='Customer Price' disabled={trip_price.is_price_per_ton} onChange={onCustomerPriceChange} />
+              <Input placeholder='Customer Price' disabled={!trip_price.is_price_per_ton} onChange={onCustomerPriceChange} />
             </Form.Item>
           </Col>
           <Col sm={12}>
             <Form.Item
               label='Mamul Charge'
               name='mamul'
-              initialValue={trip_price.mamul}
+              initialValue={trip_price.mamul || 0}
             >
               <Input placeholder='Mamul' onChange={onMamulChange} />
             </Form.Item>
@@ -140,7 +190,7 @@ const CustomerPrice = (props) => {
               rules={[{ required: true, message: 'Bank value is required field!' }]}
               initialValue={trip_price.bank || 0}
             >
-              <Input placeholder='Bank' />
+              <Input placeholder='Bank' disabled />
             </Form.Item>
           </Col>
           <Col sm={8}>
@@ -150,7 +200,7 @@ const CustomerPrice = (props) => {
               rules={[{ required: true, message: 'Cash is required field!' }]}
               initialValue={trip_price.cash || 0}
             >
-              <Input placeholder='Cash' />
+              <Input placeholder='Cash' onChange={onCashChange} />
             </Form.Item>
           </Col>
           <Col sm={8}>
@@ -160,7 +210,7 @@ const CustomerPrice = (props) => {
               rules={[{ required: true, message: 'To-Pay is required field!' }]}
               initialValue={trip_price.to_pay || 0}
             >
-              <Input placeholder='To-pay' />
+              <Input placeholder='To-pay' onChange={onToPayChange} />
             </Form.Item>
           </Col>
         </Row>
@@ -178,7 +228,7 @@ const CustomerPrice = (props) => {
         </Row>
         <Row>
           <Col flex='auto'>
-            <h4>Partner Price: {partner_price}</h4>
+            <h4>Partner Price: {price.partner_price}</h4>
           </Col>
           <Col flex='100px' className='text-right'>
             <Button type='primary' htmlType='submit'>Update</Button>

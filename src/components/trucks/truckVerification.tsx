@@ -234,6 +234,7 @@ const TruckVerification = (props) => {
             size='small'
             current={currentPage}
             pageSize={filter.limit}
+            showSizeChanger={false}
             total={record_count}
             onChange={pageChange}
             className='text-right p10'

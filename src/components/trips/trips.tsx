@@ -61,8 +61,6 @@ const Trips = (props) => {
     return { value: data.name, label: data.name }
   })
 
-  console.log('trips', trips)
-
   const columns = [
     {
       title: 'ID',
@@ -305,7 +303,7 @@ const Trips = (props) => {
         dataSource={trips}
         rowKey={(record) => record.id}
         size='small'
-        scroll={{ x: 1156 }}
+        scroll={{ x: 1156, y: 530 }}
         pagination={false}
         loading={loading}
       />

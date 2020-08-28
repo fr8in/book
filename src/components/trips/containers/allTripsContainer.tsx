@@ -56,7 +56,7 @@ query trips(
 const AllTripsContainer = (props) => {
   const initialFilter = {
     offset: 0,
-    limit: 10,
+    limit: 100,
     partnername: null,
     customername: null,
     sourcename: null,

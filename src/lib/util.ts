@@ -4,5 +4,6 @@ export default {
     const B = b.displayPosition
 
     return (A > B) ? 1 : -1
-  }
+  },
+  limit: 100
 }
