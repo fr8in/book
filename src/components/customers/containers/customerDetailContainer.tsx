@@ -203,7 +203,7 @@ const CustomerDetailContainer = (props) => {
                     tab={<TitleWithCount name='Incoming' value={29} />}
                     key='2'
                   >
-                    <IncomingPayments />
+                    <IncomingPayments  cardcode={customerInfo.cardcode}/>
                   </TabPane>
                   <TabPane
                     tab={<TitleWithCount name='Advance Pending(O)' value={advancepending_count} />}
