@@ -17,14 +17,30 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       unloaded_private_godown
       lr
       customer_confirmation
-      trip_partner_payment{
+      trip_payables {
+        name
         amount
-        mode
-        date
+        ordering
+        created_at
       }
-      trip_partner_charge{
+      trip_payments{
+        refno
         amount
-        name   
+        transaction_type
+        mode
+        created_at
+      }
+      trip_receivables {
+        name
+        amount
+        ordering
+        created_at
+      }
+      trip_receipts{
+        amount
+        comment
+        mode
+        created_at
       }
       trip_comments{
         id
@@ -78,6 +94,9 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         including_loading
         including_unloading
         customer_advance_percentage
+        ton
+        is_price_per_ton
+        price_per_ton
       }
       trip_files{
         id

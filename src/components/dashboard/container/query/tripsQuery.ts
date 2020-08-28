@@ -4,7 +4,7 @@ const DASHBOAD_TRIPS_QUERY = gql`
 subscription dashboard_trips($regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $managers: [Int!], $trip_status: String) {
   region(where: {id: {_in: $regions}}) {
     id
-    branches(where: {id: {_in: $branches}}) {
+    branches(where:{_and: [ {region_id:{_in:$regions}} {id:{_in:$branches}}]}) {
       id
       connected_cities: cities(where: {_and: [{is_connected_city: {_eq: true}}, {id: {_in: $cities}}]}) {
         id
@@ -27,7 +27,7 @@ subscription dashboard_trips($regions: [Int!], $branches: [Int!], $cities: [Int!
                 mobile
               }
             }
-            driver_id
+            driver
             source {
               id
               name

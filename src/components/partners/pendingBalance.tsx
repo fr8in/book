@@ -5,6 +5,7 @@ import useShowHide from '../../hooks/useShowHide'
 import OnHoldTrips from '../trips/onholdTrips'
 
 const PendingBalance = (props) => {
+  const {partner_summary} = props
   const initial = { onhold: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   return (
@@ -16,11 +17,11 @@ const PendingBalance = (props) => {
       />
       <LabelData
         label='OnHold'
-        value={<h4 className='link u' onClick={() => onShow('onhold')}>{props.onhold || 0}</h4>}
+        value={<h4 className='link u' onClick={() => onShow('onhold')}> {partner_summary.partner_accounting && partner_summary.partner_accounting.onhold || 0}</h4>}
       />
       <LabelData
         label='Cleared'
-        value={props.cleared}
+        value={partner_summary.partner_accounting && partner_summary.partner_accounting.cleared}
       />
       {visible.onhold && <OnHoldTrips visible={visible.onhold} onHide={onHide} />}
     </Card>

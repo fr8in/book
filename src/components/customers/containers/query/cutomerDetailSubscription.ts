@@ -50,10 +50,10 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
       #   id
       #   email
       # }
-      paymentManager {
-        id
-        email
-      }
+      #paymentManager {
+       # id
+       # email
+      #}
       customer_type {
         id
         name

@@ -7,11 +7,11 @@ const TripsContainer = (props) => {
   const { filters, trip_status } = props
   const variables = {
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
-    branches: (filters.branches && filters.branches > 0) ? filters.branches : null,
-    cities: (filters.cities && filters.cities > 0) ? filters.cities : null,
+    branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
+    cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
     trip_status: trip_status,
-    truck_type: (filters.types && filters.types > 0) ? filters.types : null,
-    managers: (filters.managers && filters.managers > 0) ? filters.managers : null
+    truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
+    managers: (filters.managers && filters.managers.length > 0) ? filters.managers : null
   }
   const { loading, data, error } = useSubscription(DASHBOAD_TRIPS_QUERY, { variables })
   console.log('TripsContainer error', error)

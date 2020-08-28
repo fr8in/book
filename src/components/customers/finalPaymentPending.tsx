@@ -45,8 +45,8 @@ const FinalPaymentsPending = (props) => {
       title: "Type",
       dataIndex: "type",
       width: "15%",
-      render: (text, record) =>
-        record.truck.truck_type && record.truck.truck_type.name,
+      // render: (text, record) =>
+      //   record.truck.truck_type && record.truck.truck_type.name,
     },
 
     {

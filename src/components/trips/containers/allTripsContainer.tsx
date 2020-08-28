@@ -14,11 +14,11 @@ query trips(
       count
     }
   }
-  trip_status(where: {name: {_in: $trip_statusName}}, order_by: {id: asc}) {
+  trip_status(where: {name: {_in: $trip_statusName}}) {
     id
     name
   }
-  trip(offset: $offset, limit: $limit, where:$where, order_by: { order_date: desc })
+  trip(offset: $offset, limit: $limit, where:$where)
     {
     id
     order_date
@@ -44,12 +44,12 @@ query trips(
     }
     km    
     tat
-    # trip_prices(limit:1, where:{deleted_at:{_is_null:true}})
-    # {
-    #   id
-    #   customer_price
-    #   partner_price
-    # }
+    trip_prices(limit:1, where:{deleted_at:{_is_null:true}})
+    {
+      id
+      customer_price
+      partner_price
+    }
   }
 }`
 

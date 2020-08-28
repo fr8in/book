@@ -44,12 +44,12 @@ const SourcingContainer = () => {
   const initial = { createLead: false, employeeList: false, filterList: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
-  const waiting_for_load = ['Waiting for load']
+  const waiting_for_load = ['Waiting for Load']
   const breakdown = ["Breakdown"]
   const [truck_status, settruck_status] = useState(waiting_for_load)
 
   const aggrigation = {
-    waiting_for_load_truck: {truck_status: {name: {_in: ['Waiting for load']
+    waiting_for_load_truck: {truck_status: {name: {_in: ['Waiting for Load']
   }}},
   breakdown_truck: {truck_status: {name: {_in: ['Breakdown']
   }}}

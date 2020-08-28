@@ -39,13 +39,13 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
               id
               name
             }
-            # truck {
-            #   truck_no
-            #   truck_type {
-            #     id
-            #     name
-            #   }
-            # }
+            truck {
+              truck_no
+              truck_type {
+                id
+                name
+              }
+            }
             customer {
               cardcode
               name
@@ -54,22 +54,22 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
               customer_price
             }
             created_at
-            # leads(where:{deleted_at:{_is_null:true}}) {
-            #   id
-            #   created_at
-            #   partner {
-            #     id
-            #     cardcode
-            #     name
-            #     partner_users(where: {is_admin: {_eq: true}}) {
-            #       mobile
-            #     }
-            #     trucks(where: {truck_status:{name:{_eq:"Waiting for load"}}}){
-            #       id
-            #       truck_no
-            #     }
-            #   }
-            # }
+            leads(where:{deleted_at:{_is_null:true}}) {
+              id
+              created_at
+              # partner {
+              #   id
+              #   cardcode
+              #   name
+              #   partner_users(where: {is_admin: {_eq: true}}) {
+              #     mobile
+              #   }
+              #   trucks(where: {truck_status:{name:{_eq:"Waiting for load"}}}){
+              #     id
+              #     truck_no
+              #   }
+              # }
+            }
           }
         }
       }
@@ -95,11 +95,11 @@ const ExcessLoad = (props) => {
 
   const variables = {
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
-    branches: (filters.branches && filters.branches > 0) ? filters.branches : null,
-    cities: (filters.cities && filters.cities > 0) ? filters.cities : null,
+    branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
+    cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
     trip_status: trip_status || null,
-    truck_type: (filters.types && filters.types > 0) ? filters.types : null,
-    managers: (filters.managers && filters.managers > 0) ? filters.managers : null
+    truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
+    managers: (filters.managers && filters.managers.length > 0) ? filters.managers : null
   }
 
   const { loading, data, error } = useSubscription(

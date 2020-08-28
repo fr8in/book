@@ -148,7 +148,7 @@ const TripsTracking = (props) => {
         </div>
       ),
       filterIcon: () => <SearchOutlined style={{ color: filter.customername ? '#1890ff' : undefined }} />,
-      width: '10%'
+      width: '11%'
     },
     {
       title: 'Partner',
@@ -170,7 +170,7 @@ const TripsTracking = (props) => {
         </div>
       ),
       filterIcon: () => <SearchOutlined style={{ color: filter.partnername ? '#1890ff' : undefined }} />,
-      width: '10%'
+      width: '11%'
     },
     {
       title: 'Truck',
@@ -238,7 +238,7 @@ const TripsTracking = (props) => {
       title: 'Status',
       render: (text, record) =>
         record.trip_status && record.trip_status.name,
-      width: '12%',
+      width: '10%',
       filterDropdown: (
         <Checkbox.Group
           options={trip_status}
@@ -293,12 +293,14 @@ const TripsTracking = (props) => {
         scroll={{ x: 1156 }}
         pagination={false}
         loading={loading}
+        className='withAction'
       />
       {!loading && record_count ? (
         <Pagination
           size='small'
           current={currentPage}
           pageSize={filter.limit}
+          showSizeChanger={false}
           total={record_count}
           onChange={pageChange}
           className='text-right p10'
