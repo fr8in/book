@@ -44,8 +44,8 @@ const CustomerInfo = (props) => {
           label='Payment Manager'
           data={
             <CustomerPaymentManager
-              paymentManager={customerInfo.paymentManager && customerInfo.paymentManager.email}
-              paymentManagerId={customerInfo.paymentManager && customerInfo.paymentManager.id}
+              paymentManager={customerInfo.payment_manager && customerInfo.payment_manager.email}
+              paymentManagerId={customerInfo.payment_manager && customerInfo.payment_manager.id}
               cardcode={customerInfo.cardcode}
             />
           }

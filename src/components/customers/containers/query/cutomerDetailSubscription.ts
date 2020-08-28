@@ -1,34 +1,24 @@
 import { gql } from '@apollo/client'
 
 export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
-  subscription customers($cardcode: String, $trip_status: [String!],$closed: [String!],$ongoing: [String!],$invoicepending: [String!],$final: [String!],$advancepending_o: [String!], $advancepending_c: [String!]) {
+  subscription customers($cardcode: String, $ongoing: [String!], $delivered: [String!], $invoiced: [String!], $recieved: [String!]) {
     customer(where: { cardcode: { _eq: $cardcode } }) {
-      closed: trips_aggregate(where: {trip_status: {name: {_in: $closed}}}) {
-        aggregate {
-          count
-        }
-      }
       ongoing:trips_aggregate(where: {trip_status: {name: {_in: $ongoing}}}) {
         aggregate {
           count
         }
       }
-      invoicepending: trips_aggregate(where: {trip_status: {name: {_in: $invoicepending}}}) {
+      delivered: trips_aggregate(where: {trip_status: {name: {_in: $delivered}}}) {
         aggregate {
           count
         }
       }
-      final: trips_aggregate(where: {trip_status: {name: {_in: $final}}}) {
+      invoiced: trips_aggregate(where: {trip_status: {name: {_in: $invoiced}}}) {
         aggregate {
           count
         }
       }
-      advancepending_o:trips_aggregate(where: {trip_status: {name: {_in: $advancepending_o}}}) {
-        aggregate {
-          count
-        }
-      }
-      advancepending_c:trips_aggregate(where: {trip_status: {name: {_in: $advancepending_c}}}) {
+      recieved: trips_aggregate(where: {trip_status: {name: {_in: $recieved}}}) {
         aggregate {
           count
         }

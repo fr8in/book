@@ -50,13 +50,14 @@ const CustomerPaymentManager = (props) => {
   }
 
   return (
-    <InlineSelect
-      label={paymentManager}
-      value={paymentManagerId}
-      options={empList}
-      handleChange={onChange}
-      style={{ width: 110 }}
-    />
+    loading ? null : (
+      <InlineSelect
+        label={paymentManager}
+        value={paymentManagerId}
+        options={empList}
+        handleChange={onChange}
+        style={{ width: 110 }}
+      />)
   )
 }
 

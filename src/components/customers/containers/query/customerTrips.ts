@@ -1,31 +1,16 @@
 import { gql } from '@apollo/client'
 
 const CUSTOMER_TRIPS = gql`
-subscription customer_trips($cardcode: String, $trip_status: [String!]) {
+query customer_trip_list($cardcode: String, $trip_status: [String!],) {
   customer(where: {cardcode: {_eq: $cardcode}}) {
-    trips(where: {trip_status: {name: {_in: $trip_status}}}) {
+    trips(where:{trip_status:{name:{_in:$trip_status}}} order_by:{trip_receipts_aggregate:{sum:{amount:asc_nulls_first}}}) {
       id
       order_date
-      km
-      driver
-      trip_comments(limit: 1, order_by: {created_at: desc}) {
-        description
-      }
-      employee {
-        name
-        region {
-          branches {
-            name
-          }
-        }
-      }
-      customer {
-        customer_users {
+      truck {
+        truck_no
+        truck_type {
           name
         }
-      }
-      trip_status {
-        name
       }
       source {
         name
@@ -36,16 +21,25 @@ subscription customer_trips($cardcode: String, $trip_status: [String!]) {
       partner {
         name
       }
-      truck {
-        truck_no
-        length
-        truck_type {
-          name
+      trip_status {
+        name
+      }
+      trip_pod_status{
+        name
+      }
+      trip_receivables_aggregate(where:{deleted_at:{_is_null:true}}) {
+        aggregate {
+          sum {
+            amount
+          }
         }
       }
-      trip_prices(limit: 1, where: {deleted_at: {_is_null: true}}) {
-        customer_price
-        partner_price
+      trip_receipts_aggregate(where:{deleted_at:{_is_null:true}}) {
+        aggregate {
+          sum {
+            amount
+          }
+        }
       }
     }
   }

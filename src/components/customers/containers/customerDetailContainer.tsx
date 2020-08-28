@@ -22,30 +22,24 @@ import WalletBalance from '../walletBalance'
 import PendingPayments from '../pendingPayments'
 import CustomerTrips from '../customerTrips'
 import IncomingPayments from '../incomingPayments'
-import AdvancePending from '../advancePending'
-import InvoicePending from '../invoicePending'
 import Users from '../users'
 import Branch from '../branch'
 import Fr8Branch from '../../customers/containers/fr8branchContainer'
 import CustomerUser from '../createCustomerUser'
 import CustomerBranch from '../createCustomerBranch'
 import TitleWithCount from '../../common/titleWithCount'
-import OngoingTrip from '../../trips/activeTrips'
 
 // Apollo Client
 import { useSubscription } from '@apollo/client'
 import { CUSTOMER_DETAIL_SUBSCRIPTION } from './query/cutomerDetailSubscription'
-import ClosedTripContainer from '../containers/closedtripContainer'
 import Loading from '../../common/loading'
 
 const { TabPane } = Tabs
 
-const ongoing = ['Confirmed', 'Reported at source', 'Intransit', 'Reported at destination', 'Delivery onhold']
-const invoicepending = ['Delivered', 'Approval Pending']
-const final = ['Invoiced', 'Paid']
-const closed = ['Recieved', 'Closed']
-const advancepending_o = ['Confirmed', 'Reported at source', 'Intransit', 'Reported at destination', 'Delivery onhold']
-const advancepending_c = ['Delivered', 'Approval Pending', 'Invoiced', 'Paid']
+const ongoing = ['Assigned', 'Confirmed', 'Reported at source', 'Intransit', 'Reported at destination', 'Delivery onhold']
+const delivered = ['Delivered']
+const invoiced = ['Invoiced', 'Paid']
+const recieved = ['Recieved', 'Closed']
 
 const CustomerDetailContainer = (props) => {
   const { cardcode } = props
@@ -58,41 +52,35 @@ const CustomerDetailContainer = (props) => {
   }
   const { visible, onShow, onHide } = useShowHide(initial)
 
-  const trip_variables = {
+  const variables = {
     cardcode: cardcode,
-    closed: closed,
     ongoing: ongoing,
-    invoicepending: invoicepending,
-    final: final,
-    advancepending_o: advancepending_o,
-    advancepending_c: advancepending_c
+    delivered: delivered,
+    invoiced: invoiced,
+    recieved: recieved
   }
 
   const { loading, error, data } = useSubscription(
     CUSTOMER_DETAIL_SUBSCRIPTION,
     {
-      variables: trip_variables
+      variables: variables
     }
   )
 
   console.log('CustomerDetailContainer Error', error)
   let customerInfo = {}
-  let closed_count = 0
   let ongoing_count = 0
-  let invoicepending_count = 0
-  let final_count = 0
-  let advancepending_count_o = 0
-  let advancepending_count_c = 0
+  let delivered_count = 0
+  let invoiced_count = 0
+  let recieved_count = 0
 
   if (!loading) {
     const { customer } = data
-    customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
-    closed_count = get(customerInfo, 'closed.aggregate.count', 0)
+    customerInfo = customer && customer[0] ? customer[0] : { name: 'ID does not exist' }
     ongoing_count = get(customerInfo, 'ongoing.aggregate.count', 0)
-    invoicepending_count = get(customerInfo, 'invoicepending.aggregate.count', 0)
-    final_count = get(customerInfo, 'final.aggregate.count', 0)
-    advancepending_count_o = get(customerInfo, 'advancepending_o.aggregate.count', 0)
-    advancepending_count_c = get(customerInfo, 'advancepending_c.aggregate.count', 0)
+    delivered_count = get(customerInfo, 'delivered.aggregate.count', 0)
+    invoiced_count = get(customerInfo, 'invoiced.aggregate.count', 0)
+    recieved_count = get(customerInfo, 'recieved.aggregate.count', 0)
   }
   console.log('customerInfo', customerInfo)
 
@@ -161,43 +149,34 @@ const CustomerDetailContainer = (props) => {
                 <Card size='small' className='card-body-0 border-top-blue'>
                   <Tabs defaultActiveKey='1'>
                     <TabPane
-                      tab={<TitleWithCount name='Final' value={final_count} />}
+                      tab={<TitleWithCount name='On-going' value={ongoing_count} />}
                       key='1'
                     >
-                      <CustomerTrips cardcode={customerInfo.cardcode} status_names={final} />
+                      <CustomerTrips cardcode={customerInfo.cardcode} status_names={ongoing} />
                     </TabPane>
                     <TabPane
-                      tab={<TitleWithCount name='Incoming' value={29} />}
+                      tab={<TitleWithCount name='Delivered' value={delivered_count} />}
                       key='2'
                     >
-                      <IncomingPayments />
+                      <CustomerTrips cardcode={customerInfo.cardcode} status_names={delivered} delivered />
                     </TabPane>
                     <TabPane
-                      tab={<TitleWithCount name='Advance Pending(O)' value={advancepending_count_o} />}
+                      tab={<TitleWithCount name='Invoiced' value={invoiced_count} />}
                       key='3'
                     >
-                      <AdvancePending
-                        advance_Pending={customerInfo.trips}
-                        loading={loading}
-                      />
+                      <CustomerTrips cardcode={customerInfo.cardcode} status_names={invoiced} />
                     </TabPane>
                     <TabPane
-                      tab={<TitleWithCount name='Advance Pending(C)' value={advancepending_count_c} />}
+                      tab={<TitleWithCount name='Recieved' value={recieved_count} />}
                       key='4'
                     >
-                      <AdvancePending
-                        advance_pending={customerInfo.trips}
-                        loading={loading}
-                      />
+                      <CustomerTrips cardcode={customerInfo.cardcode} status_names={recieved} />
                     </TabPane>
                     <TabPane
-                      tab={<TitleWithCount name='Invoice Pending' value={invoicepending_count} />}
+                      tab={<TitleWithCount name='Incoming' value={0} />}
                       key='5'
                     >
-                      <InvoicePending
-                        invoice_Pending={customerInfo.trips}
-                        loading={loading}
-                      />
+                      <IncomingPayments />
                     </TabPane>
                     <TabPane tab='Users' key='6'>
                       <Row justify='end' className='m5'>
@@ -228,19 +207,7 @@ const CustomerDetailContainer = (props) => {
                     <TabPane tab='FR8 Branch' key='8'>
                       <Fr8Branch />
                     </TabPane>
-                    <TabPane
-                      tab={<TitleWithCount name='Ongoing' value={ongoing_count} />}
-                      key='9'
-                    >
-                      <OngoingTrip trips={customerInfo.trips} loading={loading} />
-                    </TabPane>
-                    <TabPane
-                      tab={<TitleWithCount name='Closed' value={closed_count} />}
-                      key='10'
-                    >
-                      <ClosedTripContainer cardcode={cardcode} />
-                    </TabPane>
-                    <TabPane tab='Details' key='11'>
+                    <TabPane tab='Details' key='9'>
                       <Row className='p10'>
                         <Col xs={24} sm={24} md={12}>
                           <CustomerDetails customerInfo={customerInfo} loading={loading} />
