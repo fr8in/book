@@ -128,7 +128,7 @@ const TripDetailContainer = (props) => {
                   }
                   key='1'
                 >
-                  <Receivables trip_id={trip_id} />
+                  <Receivables trip_pay={trip_info} />
                   <CustomerPayments />
                 </Panel>
               </Collapse>

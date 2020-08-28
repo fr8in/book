@@ -4,49 +4,13 @@ import moment from 'moment'
 import { gql, useQuery} from '@apollo/client'
 import _ from 'lodash'
 
-
-const CUSTOMER_RECEIVABLES = gql`
-query customer ($id: Int!){
-  trip(where: {id: {_eq: $id}}) {
-    customer_receivables {
-      id
-      trip_id
-      name
-      amount
-    }
-    customer_receipts {
-      trip_id
-      mode
-      amount
-      date
-    }
-  }
-}
-`
 const Receivables = (props) => {
-  const {trip_id} = props
-  const { loading, error, data } = useQuery(
-    CUSTOMER_RECEIVABLES,
-    {
-      variables: {id: trip_id},
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
-    }
-  )
-  console.log('trips error', error)
-
-  var trip = []
-  if (!loading) {
-     trip = data && data.trip
-  }
+  const {trip_pay} = props
   
-   const trip_info = trip[0] ? trip[0] : { name: 'ID does not exist' }
-  console.log('trip_info', trip_info)
-  
-  const receipts = _.sumBy(trip_info.customer_receipts, 'amount');
+  const receipts = _.sumBy(trip_pay.trip_receipts, 'amount');
 console.log('receipts',receipts)
 
-const receivables = _.sumBy(trip_info.customer_receivables, 'amount');
+const receivables = _.sumBy(trip_pay.trip_receivables, 'amount');
 console.log('receivables',receivables)
 
   const customerChargeColumns = [
@@ -74,10 +38,10 @@ console.log('receivables',receivables)
   },
   {
     title: 'Date',
-    dataIndex: 'date',
+    dataIndex: 'created_at',
     width: '16%',
     render: (text, record) => {
-      return (record.date) ? moment(record.date).format('DD MMM YYYY') : null
+      return (record.created_at) ? moment(record.created_at).format('DD MMM YYYY') : null
     }
   },
   {
@@ -85,17 +49,17 @@ console.log('receivables',receivables)
       dataIndex: 'paymentComment',
       key: 'paymentComment',
       width: '37%',
-      // render: (text, record) => {
-      //   const displayRecord =
-      //   text.length > 35 ? (
-      //     <Tooltip title={text}>
-      //       <span>{text.slice(0, 28) + '...'}</span>
-      //     </Tooltip>
-      //   ) : (
-      //     text
-      //   )
-      //   return displayRecord
-      // }
+      render: (text, record) => {
+        const displayRecord =
+        record.comment.length > 35 ? (
+          <Tooltip title={record.comment}>
+            <span>{record.comment.slice(0, 28) + '...'}</span>
+          </Tooltip>
+        ) : (
+          record.comment
+        )
+        return displayRecord
+      }
     },
   {
     title: <div className='text-right'> Amount</div>,
@@ -118,7 +82,7 @@ console.log('receivables',receivables)
         </Col>
       </Row>
       <Table
-        dataSource={trip_info.customer_receivables}
+        dataSource={trip_pay.trip_receivables}
         columns={customerChargeColumns}
         pagination={false}
         size='small'
@@ -132,7 +96,7 @@ console.log('receivables',receivables)
       <Table
         columns={advanceColumn}
         scroll={{ x: '450' }}
-        dataSource={trip_info.customer_receipts}
+        dataSource={trip_pay.trip_receipts}
         pagination={false}
         size='small'
       />

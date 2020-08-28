@@ -8,9 +8,9 @@ const Payables = (props) => {
 
   console.log('trip_pay',trip_pay)
 
-const payments = _.sumBy(trip_pay.trip_partner_payment, 'amount');
+const payments = _.sumBy(trip_pay.trip_payments, 'amount');
 console.log('payment',payments)
-const paymentable = _.sumBy(trip_pay.trip_partner_charge, 'amount');
+const paymentable = _.sumBy(trip_pay.trip_payables, 'amount');
 console.log('paymentable',paymentable)
  
   const payablesColumn  = [
@@ -38,10 +38,10 @@ console.log('paymentable',paymentable)
   },
   {
     title: 'Date',
-    key: 'date',
+    key: 'created_at',
     width: '30%',
     render: (text, record) => {
-      return (record.date) ? moment(record.date).format('DD MMM YYYY') : null
+      return (record.created_at) ? moment(record.created_at).format('DD MMM YYYY') : null
     }
   },
   {
@@ -66,7 +66,7 @@ console.log('paymentable',paymentable)
         </Col>
       </Row>
       <Table
-        dataSource={trip_pay.trip_partner_charge}
+        dataSource={trip_pay.trip_payables}
         columns={payablesColumn}
         pagination={false}
         size='small'
@@ -79,7 +79,7 @@ console.log('paymentable',paymentable)
       </Row>
       <Table
         columns={paymentColumn}
-        dataSource={trip_pay.trip_partner_payment}
+        dataSource={trip_pay.trip_payments}
         scroll={{ x: '300' }}
         pagination={false}
         size='small'

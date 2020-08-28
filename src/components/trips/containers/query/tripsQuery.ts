@@ -19,10 +19,6 @@ query trips(
     {
     id
     order_date
-    trip_prices{
-      customer_price
-      partner_price
-    }
     customer {
       name
       cardcode
