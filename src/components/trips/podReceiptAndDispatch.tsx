@@ -3,33 +3,18 @@ import { Modal, Input, Radio, Button, Form, Select, Tag, message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 
 const POD_RECEIPT_BY_EMP_MUTATION = gql`
-mutation trip_pod_emp($objects: [trip_pod_receipt_insert_input!]!, $emp_id: Int!, $pod_status_id: Int!) {
+mutation trip_pod_courier_update($objects: [trip_pod_receipt_insert_input!]!, $trip_ids: [Int!], $pod_status_id: Int!) {
 insert_trip_pod_receipt(objects: $objects) {
   returning {
       id
     }
   }
-  update_trip(where: {trip_pod_receipts: {by_hand_id: {_eq: $emp_id}}}, _set:{trip_pod_status_id: $pod_status_id }){
+  update_trip(where: {id:{_in:$trip_ids}}, _set:{trip_pod_status_id: $pod_status_id }){
     returning{
       id
       trip_pod_status_id
     }
     affected_rows
-  }
-}
-`
-const POD_RECEIPT_BY_DOCKET_MUTATION = gql`
-mutation trip_pod_docket($objects: [trip_pod_receipt_insert_input!]!, $docket: String!, $pod_status_id: Int!) {
-insert_trip_pod_receipt(objects: $objects) {
-  returning {
-      id
-    }
-  }
-  update_trip(where: {trip_pod_receipts: {docket:{_eq: $docket}}}, _set:{trip_pod_status_id: $pod_status_id }){
-    returning{
-      id
-      trip_pod_status_id
-    }
   }
 }
 `
@@ -47,9 +32,9 @@ const ALL_EMP_AND_COURIER = gql`
 `
 const PodReceiptAndDispatch = (props) => {
   const { visible, onHide, trip_ids, onRemoveTag, podDispatch } = props
-  const listType = [{ label: 'Internal', value: '1' }, { label: 'Courier', value: '2' }]
+  const listType = [{ label: 'Internal', value: 'Internal' }, { label: 'Courier', value: 'Courier' }]
 
-  const [selectValue, setSelectValue] = useState('1')
+  const [selectValue, setSelectValue] = useState('Internal')
   const initialData = { emp_id: null, courier: null, docket: null }
   const [podData, setPodData] = useState(initialData)
 
@@ -59,20 +44,8 @@ const PodReceiptAndDispatch = (props) => {
     }
   )
 
-  const [updatePodByEmp] = useMutation(
+  const [updatePodCourierDetail] = useMutation(
     POD_RECEIPT_BY_EMP_MUTATION,
-    {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () {
-        message.success('Updated!!')
-        setPodData(initialData)
-        onHide()
-      }
-    }
-  )
-
-  const [updatePodByDocket] = useMutation(
-    POD_RECEIPT_BY_DOCKET_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
       onCompleted () {
@@ -122,7 +95,7 @@ const PodReceiptAndDispatch = (props) => {
   const empObjects = trip_ids && trip_ids.length > 0 ? trip_ids.map(id => {
     return {
       trip_id: id,
-      created_by_id: 1, // TODO USER ID GET from AUTH
+      created_by_id: 110, // TODO USER ID GET from AUTH
       by_hand_id: podData.emp_id
     }
   }) : null
@@ -130,31 +103,22 @@ const PodReceiptAndDispatch = (props) => {
   const docketObjects = trip_ids && trip_ids.length > 0 ? trip_ids.map(id => {
     return {
       trip_id: id,
-      created_by_id: 1, // TODO USER ID GET from AUTH
+      created_by_id: 110, // TODO USER ID GET from AUTH
       docket: podData.docket,
       courier_id: podData.courier
     }
   }) : null
 
-  const onPodByEmpSubmit = () => {
-    updatePodByEmp({
+  const onPodReceiptDispatchSubmit = () => {
+    updatePodCourierDetail({
       variables: {
-        objects: empObjects,
-        emp_id: podData.emp_id,
+        objects: (selectValue === 'Internal') ? empObjects : docketObjects,
+        trip_ids: trip_ids,
         pod_status_id: podDispatch ? 2 : 1
       }
     })
   }
 
-  const onDocketSubmit = () => {
-    updatePodByDocket({
-      variables: {
-        objects: docketObjects,
-        docket: podData.docket,
-        pod_status_id: podDispatch ? 2 : 1
-      }
-    })
-  }
   const isTripSelected = trip_ids && trip_ids.length > 0
   return (
     <Modal
@@ -162,9 +126,7 @@ const PodReceiptAndDispatch = (props) => {
       visible={visible}
       onCancel={onClose}
       footer={[
-        selectValue === '1'
-          ? <Button disabled={!isTripSelected} type='primary' key='emp' onClick={onPodByEmpSubmit}>Submit</Button>
-          : <Button disabled={!isTripSelected} type='primary' key='docket' onClick={onDocketSubmit}>Submit</Button>
+        <Button disabled={!isTripSelected} type='primary' key='emp' onClick={onPodReceiptDispatchSubmit}>Submit</Button>
       ]}
     >
       {isTripSelected ? (
@@ -172,11 +134,11 @@ const PodReceiptAndDispatch = (props) => {
           <Form.Item>
             <Radio.Group
               options={listType}
-              defaultValue='1'
+              defaultValue='Internal'
               onChange={onRadioChange}
             />
           </Form.Item>
-          {selectValue === '1' ? (
+          {selectValue === 'Internal' ? (
             <Form.Item>
               <Select
                 placeholder='Select Employee'

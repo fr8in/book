@@ -46,14 +46,14 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         id
         name
       }
-      # onboarded_by {
-      #   id
-      #   email
-      # }
-      #paymentManager {
-       # id
-       # email
-      #}
+      onboarded_by {
+        id
+        email
+      }
+      payment_manager {
+       id
+       email
+      }
       customer_type {
         id
         name
@@ -63,19 +63,19 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         mobile
         email
       }
-      # customer_branches {
-      #   branch_name
-      #   name
-      #   address
-      #   state {
-      #     name
-      #   }
-      #   city {
-      #     name
-      #   }
-      #   pincode
-      #   mobile
-      # }
+      customer_branches {
+        branch_name
+        name
+        address
+        # state {
+        #   name
+        # }
+        # city {
+        #   name
+        # }
+        pincode
+        mobile
+      }
       # customer_mamul_summary {
       #   system_mamul_avg
       # }
@@ -92,7 +92,6 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
           region{
             branches{
               name
-              # order
             }
           }
         }
