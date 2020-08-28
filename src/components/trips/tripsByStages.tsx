@@ -89,7 +89,7 @@ const Partners = (props) => {
         dataSource={trips}
         rowKey={record => record.id}
         size='middle'
-        scroll={{ x: 900, y: 270 }}
+        scroll={{ x: 900, y: 400 }}
         pagination={false}
         loading={loading}
       />
