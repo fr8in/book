@@ -5,16 +5,12 @@ import Trip from '../../trips/trips'
 import get from 'lodash/get'
 
 const CLOSEDTRIP_QUERY = gql`
-query trip($cardcode:String,$offset: Int, $limit: Int,$trip_statusName:[String!],$name: String, 
-  $customername:String,
-  $sourcename:String,
-  $destinationname:String,
-  $truckno:String,
+query trip($cardcode:String,$offset: Int, $limit: Int,$trip_statusName:[String!],
   $where: trip_bool_exp){ 
     customer(where:{cardcode:{_eq:$cardcode}})
     {
       cardcode
-      rows: trips_aggregate(where:{trip_status:{name:{_eq:"Closed"}}}){
+      rows: trips_aggregate(where:$where){
         aggregate{
           count
         }
@@ -67,7 +63,7 @@ const ClosedTripContainer = (props) => {
     destinationname: null,
     truckno: null,
     id: null,
-    trip_statusName: ['Delivered', 'Approval Pending', 'POD Verified', 'Invoiced','Paid', 'Received', 'Closed']
+    trip_statusName: ['Received', 'Closed']
   };
   const [filter, setFilter] = useState(initialFilter);
 
@@ -90,6 +86,7 @@ const ClosedTripContainer = (props) => {
     trip_statusName: initialFilter.trip_statusName
   }
   console.log('variables',variables)
+  console.log('cardcode',cardcode)
   const { loading, error, data } = useQuery(
     CLOSEDTRIP_QUERY,
     {
@@ -104,11 +101,14 @@ const ClosedTripContainer = (props) => {
   if (!loading) {
     _data = data
   }
+  console.log('_data',_data)
+
   const trip_status = get(_data, 'trip_status', [])
   const trips = get(_data,'customer[0].trips',[])
   const customerData = get(_data,'customer[0]',[])
-  const record_count = get(_data, 'rows.aggregate.count', 0)
+  const record_count = get(customerData, 'rows.aggregate.count', 0)
   const total_page = Math.ceil(record_count / filter.limit)
+  
   console.log('record_count',record_count)
   console.log('trip_status',trip_status)
 

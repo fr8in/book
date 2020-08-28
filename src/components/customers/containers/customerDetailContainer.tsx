@@ -271,7 +271,7 @@ const CustomerDetailContainer = (props) => {
                     tab={<TitleWithCount name='Closed' value={closed_count} />}
                     key='10'
                   >
-                    <ClosedTripContainer cardcode={cardcode} loading={loading}/>
+                    <ClosedTripContainer cardcode={cardcode} />
                   </TabPane>
                   <TabPane tab='Details' key='11'>
                     <Row className='p10'>
