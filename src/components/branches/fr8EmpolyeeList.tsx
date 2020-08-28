@@ -1,6 +1,7 @@
 import { Modal, Select, message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import { useState } from 'react'
+import { isArray } from 'lodash'
 
 const EMP_LIST = gql`
 query create_partner{
@@ -11,8 +12,8 @@ query create_partner{
 }
 `
 const UPDATE_OWNER_MUTATION = gql`
-mutation update_owner($id:Int,$onboarded_by_id:Int) {
-  update_partner(_set: {onboarded_by_id: $onboarded_by_id}, where: {id: {_eq: $id}}) {
+mutation update_owner($id:[Int!],$onboarded_by_id:Int) {
+  update_partner(_set: {onboarded_by_id: $onboarded_by_id}, where: {id: {_in: $id}}) {
     returning {
       id
     }
@@ -21,10 +22,12 @@ mutation update_owner($id:Int,$onboarded_by_id:Int) {
 `
 
 const EmployeeList = (props) => {
-  const { visible, onHide, partner } = props
-  const onboarded_by = partner && partner.onboarded_by && partner.onboarded_by.email
+  const { visible, onHide, partner_ids } = props
+ 
   const [employees, setEmployees] = useState('')
-  console.log('onboarded_by', onboarded_by)
+  //console.log('onboarded_by', onboarded_by)
+console.log('partner_ids',partner_ids)
+
   const { loading, error, data } = useQuery(
     EMP_LIST,
     {
@@ -33,11 +36,14 @@ const EmployeeList = (props) => {
     }
   )
   console.log('CreatePartnersContainer error', error)
+  
   const [updateOwner] = useMutation(
     UPDATE_OWNER_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () { 
+        message.success('Updated!!') 
+      }
     }
   )
 
@@ -52,14 +58,26 @@ const EmployeeList = (props) => {
   const employeeChange = (value) => {
     setEmployees(value)
   }
+  var arr_partner_ids= null
+ if (isArray(partner_ids)){
+  arr_partner_ids= partner_ids
+ }
+ else {
+  arr_partner_ids= []
+  arr_partner_ids.push(partner_ids)
+ }
+ 
+
+  console.log('arr_partner_ids',arr_partner_ids,isArray(partner_ids) )
   const onSubmit = () => {
     updateOwner({
       variables: {
-        id: partner.id,
+        id: arr_partner_ids,
         onboarded_by_id: employees
       }
     })
   }
+ 
 
   return (
     <Modal
@@ -67,7 +85,13 @@ const EmployeeList = (props) => {
       onOk={onSubmit}
       onCancel={onHide}
     >
-      <Select value={employees} onChange={employeeChange} style={{ width: 300 }} options={employeeList} />
+      <Select 
+      value={employees} 
+      onChange={employeeChange} 
+      style={{ width: 300 }} 
+      options={employeeList} 
+      optionFilterProp='label'
+      showSearch/>
     </Modal>
   )
 }

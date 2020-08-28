@@ -45,15 +45,15 @@ const TRUCKS_QUERY = gql`
         }
         cardcode
       }
-      trips(where: { trip_status_id: { _in: $trip_status_id } }) {
-        id
-        source {
-          name
-        }
-        destination {
-          name
-        }
-      }
+      # trips(where: { trip_status_id: { _in: $trip_status_id } }) {
+      #   id
+      #   source {
+      #     name
+      #   }
+      #   destination {
+      #     name
+      #   }
+      # }
     }
     truck_status(order_by: { id: asc }) {
       id

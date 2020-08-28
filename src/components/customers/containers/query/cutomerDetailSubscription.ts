@@ -50,39 +50,51 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         id
         email
       }
-      paymentManager {
-        id
-        email
+      payment_manager {
+       id
+       email
       }
       customer_type {
         id
         name
       }
-      customer_users {
+      customer_users{
         name
         mobile
         email
       }
-      customerBranches {
+      customer_branches {
         branch_name
         name
         address
-        state {
-          name
-        }
-        city {
-          name
-        }
+        # state {
+        #   name
+        # }
+        # city {
+        #   name
+        # }
         pincode
         mobile
       }
-      customer_mamul_summary {
-        system_mamul_avg
-      }
+      # customer_mamul_summary {
+      #   system_mamul_avg
+      # }
       trips(where: { trip_status: { name: { _in: $trip_status } } }) {
         id
         order_date
         km
+        driver
+        trip_comments(limit:1, order_by: {created_at: desc}){
+          description
+        }
+        employee{
+          name
+          region{
+            branches{
+              name
+            }
+          }
+        }
         customer {
           customer_users {
             name

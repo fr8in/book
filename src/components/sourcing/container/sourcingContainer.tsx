@@ -5,7 +5,6 @@ import TruckVerification from '../../trucks/truckVerification'
 import VasRequest from '../../partners/vasRequest'
 import Breakdown from '../../trucks/breakdown'
 import Announcenmemt from '../../partners/announcement'
-import CustomerLead from '../../customers/customerLead'
 import CreateLead from '../../partners/createLead'
 import FilterList from '../../branches/employeeListFilter'
 import TitleWithCount from '../../common/titleWithCount'
@@ -17,29 +16,40 @@ import get from 'lodash/get'
 
 
 const SOURCING_QUERY = gql`
-query($waiting_for_load_truck: truck_bool_exp, $breakdown_truck: truck_bool_exp){
-partner_aggregate(where: {partner_status: {name: {_in: ["Lead","Registered"]}}}) {
-  aggregate {
-    count
+query sourcing($waiting_for_load_truck: truck_bool_exp, $breakdown_truck: truck_bool_exp) {
+  partner_aggregate(where: {partner_status: {name: {_in: ["Lead", "Registered"]}}}) {
+    aggregate {
+      count
+    }
   }
-}
-waiting_for_load: truck_aggregate(where: $waiting_for_load_truck) {
-  aggregate {
-    count
+  waiting_for_load: truck_aggregate(where: $waiting_for_load_truck) {
+    aggregate {
+      count
+    }
   }
-}
-breakdown: truck_aggregate(where: $breakdown_truck) {
-  aggregate {
-    count
+  breakdown: truck_aggregate(where: $breakdown_truck) {
+    aggregate {
+      count
+    }
   }
-}
 }
 `
 const TabPane = Tabs.TabPane
 const SourcingContainer = () => {
 
+  const auth_user = ['jay@fr8.in']  
+  const [filter, setFilter ] = useState(auth_user)
+  const [mainTabKey, setMainTabKey] = useState('1')
+  const [subTabKey, setSubTabKey] = useState('1')
+  const initial = { createLead: false, employeeList: false, filterList: false }
+  const { visible, onShow, onHide } = useShowHide(initial)
+
+  const waiting_for_load = ['Waiting for Load']
+  const breakdown = ["Breakdown"]
+  const [truck_status, settruck_status] = useState(waiting_for_load)
+
   const aggrigation = {
-    waiting_for_load_truck: {truck_status: {name: {_in: ['Waiting for load']
+    waiting_for_load_truck: {truck_status: {name: {_in: ['Waiting for Load']
   }}},
   breakdown_truck: {truck_status: {name: {_in: ['Breakdown']
   }}}
@@ -50,14 +60,7 @@ const SourcingContainer = () => {
     breakdown_truck: aggrigation.breakdown_truck
   }
 
-  const [mainTabKey, setMainTabKey] = useState('1')
-  const [subTabKey, setSubTabKey] = useState('1')
-  const initial = { createLead: false, employeeList: false, filterList: false }
-  const { visible, onShow, onHide } = useShowHide(initial)
-
-  const waiting_for_load = ['Waiting for load']
-  const breakdown = ["Breakdown"]
-  const [truck_status, settruck_status] = useState(waiting_for_load)
+ 
 
   const { loading, error, data } = useQuery(
     SOURCING_QUERY, {
@@ -82,6 +85,9 @@ const SourcingContainer = () => {
 
  console.log('lead_count',lead_count)
  
+const onFilterChange = (checked) => {
+  setFilter(checked)
+}
 
   const mainTabChange = (key) => {
     setMainTabKey(key)
@@ -113,7 +119,7 @@ const SourcingContainer = () => {
             {mainTabKey === '2' &&
               <Space>
                 <Button type='primary' onClick={() => onShow('employeeList')}>Assign</Button>
-                <Button shape='circle' icon={<FilterOutlined />} onClick={() => onShow('filterList')} />
+                <Button shape='circle' icon={<FilterOutlined />} onClick={() => onShow('filterList')} onChange={onFilterChange}/>
                 <Button type='primary' shape='circle' icon={<UserAddOutlined />} onClick={() => onShow('createLead')} />
               </Space>}
             {(mainTabKey === '3' || mainTabKey === '4') &&
@@ -144,7 +150,7 @@ const SourcingContainer = () => {
             </TabPane>
             <TabPane tab={<TitleWithCount name='Lead' value={lead_count} />} key='2'>
               <Card size='small' className='card-body-0'>
-                <PartnerLead />
+                <PartnerLead visible={visible.employeeList} onHide={onHide} onboarded_by={filter} />
               </Card>
             </TabPane>
             <TabPane tab='Vas Request' key='3'>
@@ -153,11 +159,6 @@ const SourcingContainer = () => {
               </Card>
             </TabPane>
           </Tabs>
-        </TabPane>
-        <TabPane tab='Customer' key='2'>
-          <Card size='small' className='card-body-0'>
-            <CustomerLead />
-          </Card>
         </TabPane>
         <TabPane tab={<TitleWithCount name='Waiting for Load' value={waiting_for_load_count} />} key='3'>
           <Card size='small' className='card-body-0'>
@@ -176,8 +177,7 @@ const SourcingContainer = () => {
         </TabPane>
       </Tabs>
       {visible.createLead && <CreateLead visible={visible.createLead} onHide={onHide} />}
-      {visible.filterList && <FilterList visible={visible.filterList} onHide={onHide} />}
-      {visible.employeeList && <EmployeeList visible={visible.employeeList} onHide={onHide} />}
+      {visible.filterList && <FilterList visible={visible.filterList} onHide={onHide} onFilterChange={onFilterChange} onboarded_by={filter} />}
     </Card>
   )
 }

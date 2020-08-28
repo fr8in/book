@@ -23,12 +23,16 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
         length
         breadth
         height
-        truck_files{
-            id
-             type
-             file_path
-             folder
-       }
+        driver{
+          id
+          mobile
+        }
+       # truck_files{
+        #    id
+       #      type
+       #      file_path
+        #     folder
+      # }
         truck_status{
           id
           name
@@ -60,21 +64,21 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
           }
           cardcode
         }
-        trips (where: {trip_status_id: {_in: $trip_status_id}}) {
-          id
-          order_date
-          km
-          avg_km_day
-          source{
-            name
-          }
-          destination{
-            name
-          }
-          trip_status{
-            name
-          }
-        }
+       # trips (where: {trip_status_id: {_in: $trip_status_id}}) {
+         # id
+        #  order_date
+        #  km
+        #  avg_km_day
+         # source{
+         #   name
+         # }
+         # destination{
+         #   name
+         # }
+         # trip_status{
+         #   name
+         # }
+       # }
         
       }
      
@@ -133,6 +137,7 @@ const TruckDetailContainer = (props) => {
 
   const partner_id = truck_info && truck_info.partner && truck_info.partner.id 
   
+ 
 
   const onSubmit = (status_check) => {
     console.log('truck_id', truck_info.id)
@@ -195,19 +200,13 @@ const TruckDetailContainer = (props) => {
               <TabPane tab='Details' key='1'>
                 <Row>
                   <Col xs={24} className='p20'>
-                    <TruckInfo truck_info={truck_info} loading={loading} id={truck_info.id} />
+                    <TruckInfo truck_info={truck_info} loading={loading} id={truck_info.id}  partner_id={partner_id} />
                     <Divider />
                     <Documents truck_id={truck_info.id}  partner_id={partner_id} truck_info={truck_info}/>
                     <Divider />
                     <Row>
                       <Col span={8}>
                         <Button size='small' danger={admin && !status_check} onClick={() => onSubmit(status_check)}>  {status_check ? 'Re-Activate' : 'De-Activate'} </Button>
-                      </Col>
-                      <Col span={8} offset={8} style={{ textAlign: 'right' }}>
-                        <Space>
-                          <Button type='primary' htmlType='submit'>Submit</Button>
-                          <Button>Cancel</Button>
-                        </Space>
                       </Col>
                     </Row>
                   </Col>

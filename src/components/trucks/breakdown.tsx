@@ -52,8 +52,7 @@ const Breakdown = (props) => {
   const variables = {
     offset: filter.offset,
     limit: filter.limit,
-    truck_status_name: truck_status
-
+    truck_status_name: truck_status,
   }
 
   const { loading, error, data } = useQuery(
@@ -67,6 +66,8 @@ const Breakdown = (props) => {
   if (!loading) {
     _data = data
   }
+
+  console.log('_data',_data)
 
   const truck = get(_data, 'truck', [])
   const truck_info = get(_data, 'truck[0]', {})
@@ -119,7 +120,7 @@ const Breakdown = (props) => {
           <span
             className='link'
             onClick={() =>
-              handleShow('cityVisible', 'Availability - TAT:0', 'cityData', record.city && record.city.name)}
+              handleShow('cityVisible', 'Availability - TAT:0', 'cityData', record.id)}
           >
             {record.city && record.city.name}
           </span>
@@ -145,6 +146,7 @@ const Breakdown = (props) => {
             size='small'
             current={currentPage}
             pageSize={filter.limit}
+            showSizeChanger={false}
             total={record_count}
             onChange={pageChange}
             className='text-right p10'
@@ -152,7 +154,7 @@ const Breakdown = (props) => {
       {object.cityVisible && (
         <CreateBreakdown
           visible={object.cityVisible}
-          partner={object.cityData}
+          id={object.cityData}
           onHide={handleHide}
           title={object.title}
           comments

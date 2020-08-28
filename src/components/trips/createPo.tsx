@@ -5,7 +5,7 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
 
 const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
-  search_customer(args:{search:$search}){
+  search_customer(args:{search:$search}, where:{customer:{status:{name:{_eq:"Active"}}}}){
     id
     description
   }
@@ -91,20 +91,55 @@ const CustomerPo = (props) => {
     CREATE_PO,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Load Created!!') }
+      onCompleted () {
+        message.success('Load Created!!')
+        setObj(initial)
+        onHide()
+      }
     }
   )
 
   const onSubmit = (form) => {
-    console.log('Customer PO is Created!', form)
+    const loading_charge = form.charge_inclue.includes('Loading')
+    const unloading_charge = form.charge_inclue.includes('Unloading')
+    const err = false
+    console.log('Customer PO is Created!', form, obj, po_data)
+    if (err) {
+      message.error('error Occured!')
+    } else {
+      create_po_mutation({
+        variables: {
+          po_date: form.po_date.toDate(),
+          source_id: parseInt(obj.source_id, 10),
+          destination_id: parseInt(obj.destination_id, 10),
+          customer_id: parseInt(obj.customer_id, 10),
+          customer_Branch: null,
+          partner_id: po_data && po_data.partner && po_data.partner.id,
+          customer_price: parseFloat(form.customer_price),
+          partner_price: parseFloat(form.partner_price),
+          ton: form.ton ? form.ton : null,
+          per_ton: form.per_ton_rate ? parseFloat(form.per_ton_rate) : null,
+          is_per_ton: !!form.ton,
+          mamul: parseFloat(form.mamul),
+          including_loading: loading_charge,
+          including_unloading: unloading_charge,
+          bank: parseFloat(form.bank),
+          cash: parseFloat(form.cash),
+          to_pay: parseFloat(form.to_pay),
+          truck_id: po_data && po_data.id,
+          truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
+          driver: form.driver
+        }
+      })
+    }
   }
 
   const onSourceChange = (city_id) => {
-    console.log('source', city_id)
+    setObj({ ...obj, source_id: city_id })
   }
 
   const onDestinationChange = (city_id) => {
-    console.log('destination', city_id)
+    setObj({ ...obj, destination_id: city_id })
   }
 
   const onCusSearch = (value) => {
@@ -112,7 +147,6 @@ const CustomerPo = (props) => {
   }
 
   const onCusSelect = (value, customer) => {
-    console.log('customer', customer.key)
     setObj({ ...obj, customer_id: customer.key })
   }
 
@@ -128,7 +162,7 @@ const CustomerPo = (props) => {
       footer={[]}
     >
       <Form form={form} layout='vertical' className='create-po' onFinish={onSubmit}>
-        <Link href='trucks/[id]' as={`trucks/${1}`}>
+        <Link href='trucks/[id]' as={`trucks/${po_data.truck_no}`}>
           <a className='truckPO'>{po_data.truck_no}</a>
         </Link>
         <Row gutter={10}>

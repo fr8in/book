@@ -1,61 +1,46 @@
-import { useState } from 'react';
-import { Row, Col, Card } from 'antd';
-import Customers from '../customers';
+import { useState } from 'react'
+import { Row, Col, Card } from 'antd'
+import Customers from '../customers'
+import u from '../../../lib/util'
 
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client'
 
 const CUSTOMERS_QUERY = gql`
-  query customers(
-    $offset: Int!
-    $limit: Int!
-    $statusId: [Int!]
-    $name: String
-    $mobile: String
-  ) {
-    customer(
-      offset: $offset
-      limit: $limit
-      where: {
-        status: { id: { _in: $statusId } }
-        mobile: { _like: $mobile }
-        name: { _ilike: $name }
-      }
-    ) {
+  query customers($offset: Int!, $limit: Int!, $statusId: [Int!], $name: String, $mobile: String) {
+  customer_user(where: {customer: {status: {id: {_in: $statusId}}}, mobile: {_like: $mobile}, name: {_ilike: $name}}, offset: $offset, limit: $limit) {
+    id
+    name
+    mobile
+    customer {
       cardcode
-      customer_users {
-        id
-        name
-      }
       name
-      mobile
       customer_type_id
       created_at
       pan
-      advancePercentage {
-        id
-        name
-      }
       status {
         id
         name
       }
-    }
-    customer_aggregate(
-      where: {
-        status: { id: { _in: $statusId } }
-        name: { _ilike: $name }
-        mobile: { _like: $mobile }
+      advance_percentage_id
+      # advance_percentage{
+      #   id
+      #   name
+      # }
+      customer_type {
+        name
       }
-    ) {
-      aggregate {
-        count
-      }
-    }
-    customer_status(order_by: { id: asc }) {
-      id
-      name
     }
   }
+  customer_user_aggregate(where: {customer: {status: {id: {_in: $statusId}}}, mobile: {_like: $mobile}, name: {_ilike: $name}}) {
+    aggregate {
+      count
+    }
+  }
+  customer_status(order_by: {id: asc}) {
+    id
+    name
+  }
+}
 `
 
 const CustomersContainer = (props) => {
@@ -65,7 +50,7 @@ const CustomersContainer = (props) => {
     name: null,
     mobile: null,
     offset: 0,
-    limit: 10
+    limit: u.limit
   }
   const [filter, setFilter] = useState(initialFilter)
 
@@ -84,13 +69,13 @@ const CustomersContainer = (props) => {
   })
 
   console.log('CustomersContainer error', error)
-  var customer = []
+  var customer_user = []
   var customer_status = []
   var customer_aggregate = 0
   if (!loading) {
-    customer = data && data.customer
+    customer_user = data && data.customer_user
     customer_status = data && data.customer_status
-    customer_aggregate = data && data.customer_aggregate
+    customer_aggregate = data && data.customer_user_aggregate
   }
 
   const customer_status_list =
@@ -105,26 +90,26 @@ const CustomersContainer = (props) => {
   console.log('record_count', record_count)
   const onFilter = (value) => {
     setFilter({ ...filter, statusId: value })
-  };
+  }
 
   const onNameSearch = (value) => {
     setFilter({ ...filter, name: value })
-  };
+  }
 
   const onMobileSearch = (value) => {
     setFilter({ ...filter, mobile: value })
-  };
+  }
 
   const onPageChange = (value) => {
     setFilter({ ...filter, offset: value })
-  };
+  }
 
   return (
     <Row>
       <Col sm={24}>
         <Card size='small' className='card-body-0 border-top-blue'>
           <Customers
-            customers={customer}
+            customers={customer_user}
             customer_status_list={customer_status_list}
             record_count={record_count}
             total_page={total_page}
@@ -139,6 +124,6 @@ const CustomersContainer = (props) => {
       </Col>
     </Row>
   )
-};
+}
 
 export default CustomersContainer

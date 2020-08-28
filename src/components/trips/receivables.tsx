@@ -1,8 +1,16 @@
 import { Table, Row, Col, Tooltip } from 'antd'
-import data from '../../../mock/trip/chargesAndPayments'
+//  import data from '../../../mock/trip/chargesAndPayments'
 import moment from 'moment'
 
-const Receivables = () => {
+const Receivables = (props) => {
+  const {trip_pay} = props
+  
+  const receipts = _.sumBy(trip_pay.trip_receipts, 'amount');
+console.log('receipts',receipts)
+
+const receivables = _.sumBy(trip_pay.trip_receivables, 'amount');
+console.log('receivables',receivables)
+
   const customerChargeColumns = [
     {
       title: 'Charges',
@@ -21,33 +29,36 @@ const Receivables = () => {
   const advanceColumn = [{
     title: 'Mode',
     dataIndex: 'mode',
-    width: '27%'
+    width: '27%',
+    render: (text,record) => {
+      return (record.mode)
+    }
   },
   {
     title: 'Date',
-    dataIndex: 'date',
+    dataIndex: 'created_at',
     width: '16%',
     render: (text, record) => {
-      return text ? moment(text, 'x').format('DD MMM YY') : null
+      return (record.created_at) ? moment(record.created_at).format('DD MMM YYYY') : null
     }
   },
   {
-    title: 'Remarks',
-    dataIndex: 'paymentComment',
-    key: 'paymentComment',
-    width: '37%',
-    render: (text, record) => {
-      const displayRecord =
-      text.length > 35 ? (
-        <Tooltip title={text}>
-          <span>{text.slice(0, 28) + '...'}</span>
-        </Tooltip>
-      ) : (
-        text
-      )
-      return displayRecord
-    }
-  },
+      title: 'Remarks',
+      dataIndex: 'paymentComment',
+      key: 'paymentComment',
+      width: '37%',
+      render: (text, record) => {
+        const displayRecord =
+        record.comment.length > 35 ? (
+          <Tooltip title={record.comment}>
+            <span>{record.comment.slice(0, 28) + '...'}</span>
+          </Tooltip>
+        ) : (
+          record.comment
+        )
+        return displayRecord
+      }
+    },
   {
     title: <div className='text-right'> Amount</div>,
     dataIndex: 'amount',
@@ -62,8 +73,14 @@ const Receivables = () => {
 
   return (
     <>
+    <Row className='payableHead' gutter={6}>
+        <Col xs={12}><b>Receivables</b></Col>
+        <Col xs={12} className='text-right'>
+          <b>{receivables}</b>
+        </Col>
+      </Row>
       <Table
-        dataSource={data.loadCustomerCharge}
+        dataSource={trip_pay.trip_receivables}
         columns={customerChargeColumns}
         pagination={false}
         size='small'
@@ -71,13 +88,13 @@ const Receivables = () => {
       <Row className='payableHead' gutter={6}>
         <Col xs={12}><b>Receipts</b></Col>
         <Col xs={12} className='text-right'>
-          <b>{23000}</b>
+          <b>{receipts}</b>
         </Col>
       </Row>
       <Table
         columns={advanceColumn}
         scroll={{ x: '450' }}
-        dataSource={data.loadCustomerPayment}
+        dataSource={trip_pay.trip_receipts}
         pagination={false}
         size='small'
       />

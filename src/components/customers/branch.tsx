@@ -1,21 +1,20 @@
 import { Table, Button } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 //import branchData from '../../../mock/customer/branch'
-import useShowHideWithRecord from "../../hooks/useShowHideWithRecord";
 import EditBranch from '../customers/createCustomerBranch'
+import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 
 const Branch = (props) => {
-  const { customerBranch, loading } = props;
+  const { customerBranch, loading,branch } = props;
   console.log("customerBranch", customerBranch);
-
+  console.log("branch", branch)
   const initial = {
-    visible: false,
-    data: [],
+    customerBranchVisible: false,
     title: null,
-    createBranchVisible: false,
-    createBranchData: [],
-  };
-  const { object, handleHide, handleShow } = useShowHideWithRecord(initial);
+    customerBranchData: customerBranch
+  }
+  console.log('initial',initial)
+  const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
   const column = [
     {
@@ -62,10 +61,8 @@ const Branch = (props) => {
       title: "Action",
       render: (text, record) => (
         <span>
-          <Button type="link" icon={<DeleteOutlined />} />
-          <Button type="link" icon={<EditOutlined />}  onClick={() =>
-                    handleShow("createBranchVisible", null, null, record)
-                  } />
+          <Button type="link" icon={<EditOutlined />}   onClick={() =>
+                  handleShow("customerBranchVisible",null, "customerBranchdata",record.customerBranch && record.customerBranch.id)} />
         </span>
       ),
       width: "10%",
@@ -84,13 +81,15 @@ const Branch = (props) => {
       className="withAction"
       loading={loading}
     />
-     {object.createBranchVisible && (
+    {object.customerBranchVisible && (
         <EditBranch
-          visible={object.createBranchVisible}
-          onHide={handleHide}
-          data={object.createBranchData}
+        visible={object.customerBranchVisible}
+        onHide={handleHide}
+        customerbranches={object.customerBranchData}
+        title={object.title}
         />
-      )}
+         )
+      }
     </>
   );
 };

@@ -2,6 +2,7 @@
 import { Row, Col, Form, Input, Button, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import Loading from '../common/loading'
+import Driver from "../trucks/driver";
 
 const UPDATE_TRUCK_INFO_MUTATION = gql`
 mutation TruckInfo($length:float8,$breadth:float8,$height:float8,$id:Int!) {
@@ -17,9 +18,13 @@ mutation TruckInfo($length:float8,$breadth:float8,$height:float8,$id:Int!) {
 `
 
 const TruckInfo = (props) => {
-  const { truck_info, id, loading } = props
+  const { truck_info, id, loading , partner_id} = props
 
   console.log('truck_info', truck_info)
+
+  const driver_number = truck_info && truck_info.driver && truck_info.driver.mobile 
+
+console.log('driver_number',driver_number)
 
   const [updateTruckInfo] = useMutation(
     UPDATE_TRUCK_INFO_MUTATION,
@@ -95,13 +100,9 @@ const TruckInfo = (props) => {
           </Col>
           <Col span={4}>
             <Form layout='vertical'>
-              <Form.Item
-                label='Driver'
-                name='Driver'
-                rules={[{ required: true, message: 'Driver Number is required field' }]}
-              >
-                <Input placeholder='Driver Number' />
-              </Form.Item>
+            <Form.Item initialValue={driver_number}>
+            <Driver partner_id={partner_id} truck_id={id}/>
+            </Form.Item>
             </Form>
           </Col>
         </Row>) : <Loading />}

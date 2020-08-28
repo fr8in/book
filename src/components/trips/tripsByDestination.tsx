@@ -4,7 +4,7 @@ import { gql, useSubscription } from '@apollo/client'
 import _ from 'lodash'
 
 const TRIPS_QUERY = gql`
-subscription dashboard_trips_truks($regions: [Int!], $trip_status:String!, $branches: [Int!], $cities: [Int!] ) {
+subscription dashboard_trips_truks($regions: [Int!], $trip_status:String!, $branches: [Int!], $cities: [Int!], $truck_type:[Int!], $managers: [Int!] ) {
   region(where: {id: {_in: $regions}}) {
     id
     name
@@ -24,7 +24,7 @@ subscription dashboard_trips_truks($regions: [Int!], $trip_status:String!, $bran
         cities {
           id
           name
-          tripsByDestination(where: {trip_status: {name: {_eq: $trip_status}}}) {
+          tripsByDestination(where: {trip_status: {name: {_eq: $trip_status}}, truck_type:{id: {_in:$truck_type}}, created_by: {_in: $managers}}) {
             id
             delay
             eta
@@ -39,13 +39,13 @@ subscription dashboard_trips_truks($regions: [Int!], $trip_status:String!, $bran
                 mobile
               }
             }
-            driver
-            truck {
-              truck_no
-              truck_type {
-                name
-              }
-            }
+            # driver
+            # truck {
+            #   truck_no
+            #   truck_type {
+            #     name
+            #   }
+            # }
             source {
               id
               name
@@ -67,8 +67,10 @@ const TripsByDestination = (props) => {
 
   const variables = {
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
-    branches: (filters.branches && filters.branches > 0) ? filters.branches : null,
-    cities: (filters.cities && filters.cities > 0) ? filters.cities : null,
+    branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
+    cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
+    truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
+    managers: (filters.managers && filters.managers.length > 0) ? filters.managers : null,
     trip_status: trip_status
   }
 

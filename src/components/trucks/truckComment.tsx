@@ -9,7 +9,7 @@ subscription truck_coment($id: Int!){
       id
       name
     }
-    truck_comments(limit:5){
+    truck_comments(limit:5, order_by:{created_at:desc}){
       id
       description
       topic
@@ -33,6 +33,8 @@ mutation TruckComment($description:String, $topic:String, $truck_id: Int, $creat
 const TruckComment = (props) => {
   const { visible, onHide, id } = props
 
+  const [form] = Form.useForm()
+
   const { loading, data, error } = useSubscription(
     TRUCK_COMMENT, { variables: { id } }
   )
@@ -49,7 +51,10 @@ const TruckComment = (props) => {
     INSERT_TRUCK_COMMENT_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () {
+        message.success('Updated!!')
+        form.resetFields()
+      }
     }
   )
 
@@ -60,7 +65,7 @@ const TruckComment = (props) => {
         truck_id: id,
         created_by_id: 1,
         description: form.comment,
-        topic: truck_status
+        topic: truck_status.name
       }
     })
   }
@@ -71,12 +76,12 @@ const TruckComment = (props) => {
     width: '40%',
     render: (text, record) => {
       return (
-        text && text.length > 20 ? <Tooltip title={text}>{text.slice(0, 20 + '...')}</Tooltip> : text
+        text && text.length > 20 ? <Tooltip title={text}><span>{text.slice(0, 20) + '...'}</span></Tooltip> : text
       )
     }
   },
   {
-    dataIndex: 'created_by',
+    dataIndex: 'created_by_id',
     width: '30%'
   },
   {
@@ -95,7 +100,7 @@ const TruckComment = (props) => {
         onCancel={onHide}
         footer={[]}
       >
-        <Form onFinish={onSubmit}>
+        <Form onFinish={onSubmit} form={form}>
           <Row gutter={10} className='mb10'>
             <Col flex='auto'>
               <Form.Item name='comment'>

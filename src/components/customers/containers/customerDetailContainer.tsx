@@ -30,12 +30,12 @@ import Fr8Branch from '../fr8Branch'
 import CustomerUser from '../createCustomerUser'
 import CustomerBranch from '../createCustomerBranch'
 import TitleWithCount from '../../common/titleWithCount'
-import ClosedTrip from '../ongoingTrip'
-import OngoingTrip from '../../trips/activeTrips'
-import Trips from '../../trips/trips'
+ import OngoingTrip from '../../trips/activeTrips'
+ 
 // Apollo Client
 import { useSubscription } from '@apollo/client'
 import { CUSTOMER_DETAIL_SUBSCRIPTION } from './query/cutomerDetailSubscription'
+import ClosedTripContainer from '../containers/closedtripContainer'
 
 const { TabPane } = Tabs
 
@@ -239,7 +239,7 @@ const CustomerDetailContainer = (props) => {
                       </Button>
                     </Row>
                     <Users
-                      customeruser={customerInfo}
+                      customeruser={customerInfo.customer_users}
                       loading={loading}
                     />
                   </TabPane>
@@ -253,7 +253,8 @@ const CustomerDetailContainer = (props) => {
                       </Button>
                     </Row>
                     <Branch
-                      customerBranch={customerInfo.customerBranches}
+                      customerBranch={customerInfo.customer_branches}
+                      branch={customerInfo.customer_branches && customerInfo.customer_branches.id}
                       loading={loading}
                     />
                   </TabPane>
@@ -264,13 +265,13 @@ const CustomerDetailContainer = (props) => {
                     tab={<TitleWithCount name='Ongoing' value={ongoing_count} />}
                     key='9'
                   >
-                    <OngoingTrip  trips={customerInfo.trips} loading={loading}/>
+                    <OngoingTrip  trips={customerInfo.trips} loading={loading} />
                   </TabPane>
                   <TabPane
                     tab={<TitleWithCount name='Closed' value={closed_count} />}
                     key='10'
                   >
-                    <ClosedTrip trips={customerInfo.trips} loading={loading}/>
+                    <ClosedTripContainer cardcode={cardcode} />
                   </TabPane>
                   <TabPane tab='Details' key='11'>
                     <Row className='p10'>
@@ -286,10 +287,10 @@ const CustomerDetailContainer = (props) => {
               </Card>
             </Col>
             {visible.addUser && (
-              <CustomerUser visible={visible.addUser} onHide={onHide} customer={customerInfo}/>
+              <CustomerUser visible={visible.addUser} onHide={onHide} customer={customerInfo.id}/>
             )}
             {visible.addBranch && (
-              <CustomerBranch visible={visible.addBranch} onHide={onHide} customer={customerInfo.id} />
+              <CustomerBranch visible={visible.addBranch} onHide={onHide} customerbranch={customerInfo.id} />
             )}
             {visible.transfer && (
               <Transfer visible={visible.transfer} onHide={onHide} />

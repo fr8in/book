@@ -11,30 +11,20 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import EmployeeList from '../branches/fr8EmpolyeeList'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from '../../components/partners/comment'
-
+import InlineCitySelect from '../common/inlineCitySelect'
 
 const PARTNERS_LEAD_QUERY = gql`
-query(
+query partner_lead(
   $offset: Int!
   $limit: Int!
-  $partner_status_name:[String!]
-  $channel_name:[String!]
-  $mobile: String
-  $city_name:String
-  $owner_name:String
-  $no_comment:Boolean
+  $where:partner_bool_exp
   ){
   partner(
     offset: $offset
     limit: $limit
     order_by: 
     {lead_priority: desc_nulls_last},
-    where:{
-      partner_users:{mobile:{ _like: $mobile}},
-      city:{name:{_ilike:$city_name}},
-      onboarded_by: {email: {_ilike: $owner_name}},
-      partner_status:{name:{_in:$partner_status_name}},
-      channel: {name: {_in:$channel_name}}}
+    where:$where
       ){
     id
     name
@@ -46,10 +36,10 @@ query(
     partner_users{
       mobile
     }
-    city{
-      id
-      name
-    }
+    #city{
+    #  id
+  #    name
+  #  }
     channel{
       id
       name
@@ -57,7 +47,7 @@ query(
     partner_status{
       name
     }
-    partner_comments(where:{partner_id:{_is_null: $no_comment}}){
+    partner_comments{
       created_at
       description
     }
@@ -98,11 +88,23 @@ mutation lead_priority_status($lead_priority: Boolean, $id: Int) {
   }
 }
 `
+const UPDATE_LEAD_CITY_MUTATION = gql`
+mutation update_lead_city($city_id:Int,$id:Int) {
+  update_partner(_set: {city_id: $city_id}, where: {id: {_eq: $id}}) {
+    returning {
+      id
+      city_id
+    }
+  }
+}
+`
+ 
 const no_comment = [{ value:1, label: 'No Comment' }]
 
-const PartnerLead = () => {
+const PartnerLead = (props) => {
+  const {visible, onHide,onboarded_by} = props
   const initial = {
-    no_comment:[],
+    no_comment: [],
     comment: false,
     employeeList: false,
     ownerVisible: false,
@@ -119,18 +121,43 @@ const PartnerLead = () => {
   const [filter, setFilter] = useState(initial)
   const [currentPage, setCurrentPage] = useState(1)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+  const [selectedPartners, setSelectedPartners] = useState([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+ 
+  const onSelectChange = (selectedRowKeys, selectedRows) => {
+    const partner_list = selectedRows && selectedRows.length > 0 ? selectedRows.map(row => row.id) : []
+    setSelectedRowKeys(selectedRowKeys)
+    setSelectedPartners(partner_list)
+  }
 
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange
+  }
+
+console.log('onboarded_by',onboarded_by)
+  const where = { 
+    partner_users: filter.mobile ? {mobile:{ _like:`%${filter.mobile}%`}}: null,  
+   // city: filter.city_name && {name:{ _ilike: `%${filter.city_name}%`}} ,
+   onboarded_by:   {email:{_ilike: filter.owner_name ? `%${filter.owner_name}%` : null,_in : onboarded_by || null}}, 
+    partner_status:{name:{_in: filter.partner_status_name ? filter.partner_status_name : null}}
+    //channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}}, 
+    //_not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ?  null : {id: {_is_null:true }} }
+  }
+  const whereNoCityFilter ={
+    partner_users: filter.mobile ? {mobile:{ _like:`%${filter.mobile}%`}}: null,  
+    onboarded_by:   {email:{_ilike: filter.owner_name ? `%${filter.owner_name}%` : null,_in : onboarded_by || null}}, 
+    partner_status:{name:{_in: filter.partner_status_name ? filter.partner_status_name : null}}
+    //channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} ,
+   // _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ? null :  {id: {_is_null:true }} }
+  }
+  console.log('filter.no_comment ',filter.no_comment ,filter.no_comment && filter.no_comment.length > 0)
   const partnerQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
-    no_comment:filter.no_comment && filter.no_comment.length > 0 ? true : false ,
-    partner_status_name: filter.partner_status_name,
-    channel_name: filter.channel_name,
-    mobile: filter.mobile ? `%${filter.mobile}%` : null,
-    city_name: filter.city_name ? `%${filter.city_name}%` : null,
-    owner_name: filter.owner_name ? `%${filter.owner_name}%` : null
-
+    where:filter.city_name ?  where : whereNoCityFilter,
   }
+
 
   const { loading, error, data } = useQuery(
     PARTNERS_LEAD_QUERY, {
@@ -181,6 +208,26 @@ const PartnerLead = () => {
     console.log('id priority', id)
   }
 
+  const [updateCity] = useMutation(
+    UPDATE_LEAD_CITY_MUTATION, {
+    onError(error) {
+      message.error(error.toString());
+    },
+    onCompleted() {
+      message.success("Updated!!");
+    },
+  });
+  const onCityUpdate = (partner_id,city_id) => {
+    updateCity({
+      variables: {
+        city_id: city_id,
+        id: partner_id,
+      },
+    });
+  };
+
+
+
   var partners = []
   var partner_aggregate = 0;
   var partner_status = [];
@@ -192,6 +239,7 @@ const PartnerLead = () => {
     partner_status = data && data.partner_status
     channel = data && data.channel
   }
+  console.log('partners list', partners)
   console.log('channel', channel)
 
   const record_count =
@@ -218,6 +266,12 @@ const PartnerLead = () => {
     setFilter({ ...filter, partner_status_name: checked, offset: 0 })
   }
   
+  const handleNoComment = (checked) => {
+    console.log('checked',checked)
+    setCurrentPage(1)
+    setFilter({ ...filter, no_comment:checked, offset: 0 })
+  }
+
   const handleChannelStatus = (checked) => {
     setCurrentPage(1)
     setFilter({ ...filter, channel_name: checked, offset: 0 })
@@ -235,26 +289,9 @@ const PartnerLead = () => {
     setFilter({ ...filter, owner_name: e.target.value, offset: 0 })
   };
 
-  const handleNoComment = (checked) => {
-    console.log('checked',checked)
-    setCurrentPage(1)
-    setFilter({ ...filter, no_comment:checked, offset: 0 })
-  }
+  
 
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        'selectedRows: ',
-        selectedRows
-      )
-    },
-    getCheckboxProps: (record) => ({
-      disabled: record.name === 'Disabled User',
-      name: record.name
-    })
-  }
-
+ 
   const columnsCurrent = [
     {
       title: 'Name',
@@ -295,10 +332,17 @@ const PartnerLead = () => {
     },
     {
       title: 'City',
-      width: '9%',
+      width: '14%',
       render: (text, record) => {
-        return record.city && record.city.name;
-      },
+        return (
+        <InlineCitySelect
+          label= {record.city && record.city.name}
+          handleChange={onCityUpdate}
+          partner_id = {record.id}
+        />
+        )
+    },
+    
       filterDropdown: (
         <div>
           <Input placeholder='Search City Name'
@@ -323,7 +367,7 @@ const PartnerLead = () => {
           <div>
             <span>{owner}&nbsp;</span>
             <EditTwoTone onClick={() =>
-              handleShow("ownerVisible", null, "ownerData", record)
+              handleShow("ownerVisible", null, "ownerData", record.id)
             } />
           </div>
         )
@@ -345,7 +389,7 @@ const PartnerLead = () => {
     {
       title: 'Channel',
       dataIndex: 'source',
-      width: '12%',
+      width: '11%',
       filterDropdown: (
         <Checkbox.Group
           options={channels}
@@ -360,7 +404,7 @@ const PartnerLead = () => {
     },
     {
       title: 'Status',
-      width: '12%',
+      width: '11%',
       filterDropdown: (
         <Checkbox.Group
           options={partners_status}
@@ -401,7 +445,7 @@ const PartnerLead = () => {
     {
       title: 'Created Date',
       dataIndex: 'date',
-      width: '12%',
+      width: '10%',
       render: (text, record) => {
         const create_date = record.partner_comments && record.partner_comments.length > 0 &&
           record.partner_comments[0].created_at ? record.partner_comments[0].created_at : '-'
@@ -412,7 +456,7 @@ const PartnerLead = () => {
     {
       title: 'Priority',
       dataIndex: 'lead_priority',
-      width: '8%',
+      width: '7%',
       render: (text, record) => <Switch onChange={(checked) => onChange(checked, record.id)} checked={text} />
     },
     {
@@ -468,6 +512,7 @@ const PartnerLead = () => {
             size='small'
             current={currentPage}
             pageSize={filter.limit}
+            showSizeChanger={false}
             total={record_count}
             onChange={pageChange}
             className='text-right p10'
@@ -483,10 +528,17 @@ const PartnerLead = () => {
           <Comment partner_id={object.commentData} />
         </Modal>)
       }
+      {visible && (
+        <EmployeeList
+          visible={visible}
+          onHide={onHide}
+          partner_ids={selectedPartners}
+        />
+      )}
       {object.ownerVisible && (
         <EmployeeList
           visible={object.ownerVisible}
-          partner={object.ownerData}
+          partner_ids={object.ownerData}
           onHide={handleHide}
         />
       )}

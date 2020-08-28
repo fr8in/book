@@ -1,18 +1,18 @@
-import {useState} from 'react'
-import { Table,Pagination } from 'antd'
+import { useState } from 'react'
+import { Table, Pagination } from 'antd'
 // import mock from '../../../mock/trip/tripsByStages'
 import Link from 'next/link'
 import moment from 'moment'
 
 const Partners = (props) => {
-  const { 
-    trips, 
+  const {
+    trips,
     loading,
     filter,
     record_count,
     total_page,
     onPageChange
-   } = props
+  } = props
   const [currentPage, setCurrentPage] = useState(1)
 
   const pageChange = (page, pageSize) => {
@@ -34,7 +34,7 @@ const Partners = (props) => {
     {
       title: 'OrderDate',
       dataIndex: 'order_date',
-      render:(text, record) => {
+      render: (text, record) => {
         return text ? moment(text).format('DD-MMM-YY') : null
       }
     },
@@ -62,7 +62,7 @@ const Partners = (props) => {
       : {
         title: 'SourceIn',
         dataIndex: 'source_in',
-        render:(text, record) => {
+        render: (text, record) => {
           return text ? moment(text).format('DD-MMM-YY') : null
         }
       },
@@ -84,20 +84,21 @@ const Partners = (props) => {
   ]
   return (
     <>
-    <Table
-      columns={columnsCurrent}
-      dataSource={trips}
-      rowKey={record => record.id}
-      size='middle'
-      scroll={{ x: 900, y: 270 }}
-      pagination={false}
-      loading={loading}
-    />
-    {!loading &&  record_count &&
+      <Table
+        columns={columnsCurrent}
+        dataSource={trips}
+        rowKey={record => record.id}
+        size='middle'
+        scroll={{ x: 900, y: 400 }}
+        pagination={false}
+        loading={loading}
+      />
+      {!loading && record_count &&
         <Pagination
           size='small'
           current={currentPage}
           pageSize={filter.limit}
+          showSizeChanger={false}
           total={record_count}
           onChange={pageChange}
           className='text-right p10'

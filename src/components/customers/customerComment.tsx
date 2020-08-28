@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Row, Col, Table, Input, Button, message } from 'antd'
+import { Row, Col, Table, Input, Button, message, Form } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import moment from 'moment'
 
@@ -29,9 +29,9 @@ const INSERT_CUSTOMER_COMMENT_MUTATION = gql`
   }
 `
 const customerComment = (props) => {
-
   const { customer_id } = props
-  const [userComment, setUserComment] = useState('')
+
+  const [form] = Form.useForm()
 
   const { loading, error, data } = useQuery(
     CUSTOMER_COMMENT_SUBSCRIPTION,
@@ -45,30 +45,26 @@ const customerComment = (props) => {
     INSERT_CUSTOMER_COMMENT_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () {
+        message.success('Updated!!')
+        form.resetFields()
+      }
     }
   )
   console.log('customerComment error', error)
   console.log('customerComment data', data)
 
   if (loading) return null
-  const customer_status_name =  data.customer &&  data.customer[0].status && data.customer[0].status.name 
+  const customer_status_name = data.customer && data.customer[0].status && data.customer[0].status.name
   const { customer_comments } = data.customer && data.customer[0] ? data.customer[0] : []
-  
-  console.log('customer_comments',customer_comments)
-  console.log('customer_status_name',customer_status_name)
 
-  const handleChange = (e) => {
-    setUserComment(e.target.value)
-  }
-
-  const onSubmit = () => {
+  const onSubmit = (form) => {
     insertComment({
       variables: {
         customer_id: customer_id,
         created_by: 'shilpa@fr8.in',
-        description: userComment,
-        topic:customer_status_name
+        description: form.comment,
+        topic: customer_status_name
       }
     })
   }
@@ -88,23 +84,29 @@ const customerComment = (props) => {
       title: 'Created On',
       dataIndex: 'created_at',
       width: '20%',
-      render:(text, record) => {
+      render: (text, record) => {
         return text ? moment(text).format('DD-MMM-YY') : null
       }
     }
   ]
   return (
     <div>
-      <Row className='mb10' gutter={10}>
-        <Col xs={24} sm={18}>
-          <Input.TextArea
-            value={userComment}
-            onChange={handleChange}
-            placeholder='Please enter comments'
-          />
-        </Col> 
-        <Col xs={4}><Button type='primary' onClick={onSubmit}>Submit</Button></Col>
-      </Row>
+      <Form onFinish={onSubmit} form={form}>
+        <Row className='mb10' gutter={10}>
+          <Col xs={24} sm={18}>
+            <Form.Item name='comment'>
+              <Input.TextArea
+                placeholder='Please enter comments'
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={4}>
+            <Form.Item>
+              <Button type='primary' htmlType='submit'>Submit</Button>
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
       <Table
         columns={columnsCurrent}
         dataSource={customer_comments}

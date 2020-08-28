@@ -10,7 +10,6 @@ import {
 } from '@ant-design/icons'
 import Link from 'next/link'
 import useShowHide from '../../hooks/useShowHide'
-import GlobalFilter from '../dashboard/globalFilter'
 import GlobalSearch from '../dashboard/globalSearch'
 import Ssh from '../dashboard/ssh'
 import { useQuery, gql } from '@apollo/client'
@@ -26,7 +25,7 @@ query gloabl_filter($now: timestamptz, $regions:[Int!], $branches:[Int!], $citie
     id
     name
   }
-  region {
+  region(where: {id: {_in: $regions}}) {
     id
     name
     branches(where:{_and: [ {region_id:{_in:$regions}} {id:{_in:$branches}}]}) {
@@ -45,12 +44,12 @@ query gloabl_filter($now: timestamptz, $regions:[Int!], $branches:[Int!], $citie
         cities {
           id
           name
-          trucks_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for load"}}}) {
+          trucks_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}}) {
             aggregate {
               count
             }
           }
-          trucks_current: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for load"}}}, {available_at: {_gte: $now}}]}) {
+          trucks_current: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, {available_at: {_gte: $now}}]}) {
             aggregate {
               count
             }
@@ -72,11 +71,11 @@ const Actions = (props) => {
 
   const variables = {
     now: initialFilter.now,
-    regions: (initialFilter.regions && initialFilter.regions.length !== 0) ? initialFilter.regions : null
+    regions: (filter.regions && filter.regions.length > 0) ? filter.regions : null
   }
   const { loading, data, error } = useQuery(GLOBAL_FILTER, { variables })
 
-  console.log('Actions error', error)
+  console.log('Actions filter', filter, initialFilter)
   let region_options = []
   //2nd level branch_options 
   let branch_options = []
@@ -151,7 +150,7 @@ const Actions = (props) => {
         <Dropdown overlay={account} trigger={['click']} placement='bottomRight'>
           <Button size='small' type='ghost' shape='circle' icon={<BankFilled />} />
         </Dropdown>
-        <Button size='small' type='ghost' shape='circle' icon={<CodeOutlined />} onClick={() => onShow('ssh')} />
+        {/* <Button size='small' type='ghost' shape='circle' icon={<CodeOutlined />} onClick={() => onShow('ssh')} /> */}
         <Dropdown overlay={user} trigger={['click']} placement='bottomRight'>
           <Button size='small' type='primary' shape='circle' icon={<UserOutlined />} />
         </Dropdown>
