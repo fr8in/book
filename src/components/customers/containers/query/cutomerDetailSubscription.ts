@@ -1,7 +1,7 @@
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client'
 
 export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
-  subscription customers($cardcode: String, $trip_status: [String!],$closed: [String!],$ongoing: [String!],$invoicepending: [String!],$final: [String!],$advancepending: [String!]) {
+  subscription customers($cardcode: String, $trip_status: [String!],$closed: [String!],$ongoing: [String!],$invoicepending: [String!],$final: [String!],$advancepending_o: [String!], $advancepending_c: [String!]) {
     customer(where: { cardcode: { _eq: $cardcode } }) {
       closed: trips_aggregate(where: {trip_status: {name: {_in: $closed}}}) {
         aggregate {
@@ -23,7 +23,12 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
           count
         }
       }
-      advancepending:trips_aggregate(where: {trip_status: {name: {_in: $advancepending}}}) {
+      advancepending_o:trips_aggregate(where: {trip_status: {name: {_in: $advancepending_o}}}) {
+        aggregate {
+          count
+        }
+      }
+      advancepending_c:trips_aggregate(where: {trip_status: {name: {_in: $advancepending_c}}}) {
         aggregate {
           count
         }
@@ -58,72 +63,27 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         id
         name
       }
-      customer_users{
-        name
-        mobile
-        email
-      }
-      customer_branches {
-        branch_name
-        name
-        address
-        # state {
-        #   name
-        # }
-        # city {
-        #   name
-        # }
-        pincode
-        mobile
-      }
+      # customer_users{
+      #   name
+      #   mobile
+      #   email
+      # }
+      # customer_branches {
+      #   branch_name
+      #   name
+      #   address
+      #   # state {
+      #   #   name
+      #   # }
+      #   # city {
+      #   #   name
+      #   # }
+      #   pincode
+      #   mobile
+      # }
       # customer_mamul_summary {
       #   system_mamul_avg
       # }
-      trips(where: { trip_status: { name: { _in: $trip_status } } }) {
-        id
-        order_date
-        km
-        driver
-        trip_comments(limit:1, order_by: {created_at: desc}){
-          description
-        }
-        employee{
-          name
-          region{
-            branches{
-              name
-            }
-          }
-        }
-        customer {
-          customer_users {
-            name
-          }
-        }
-        trip_status {
-          name
-        }
-        source {
-          name
-        }
-        destination {
-          name
-        }
-        partner{
-          name
-        }
-        truck {
-          truck_no
-          length
-          truck_type {
-            name
-          }
-        }
-        trip_prices(limit: 1, where:{deleted_at:{_is_null: true}}) {
-          customer_price
-          partner_price
-        }
-      }
     }
 }
 `
