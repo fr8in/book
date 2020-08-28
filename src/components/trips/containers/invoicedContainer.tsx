@@ -14,7 +14,7 @@ const DeliveredContainer = (props) => {
     destinationname: null,
     truckno: null,
     id: null,
-    trip_statusName: ['Invoiced', 'Paid', 'Received', 'Closed']
+    trip_statusName: ['Invoiced', 'Paid']
   }
   const [filter, setFilter] = useState(initialFilter)
 
@@ -32,7 +32,7 @@ const DeliveredContainer = (props) => {
     offset: filter.offset,
     limit: filter.limit,
     where: where,
-    trip_statusName: initialFilter.trip_statusName
+    trip_statusName: ['Invoiced', 'Paid', 'Recieved', 'Closed']
   }
 
   const { loading, error, data } = useQuery(
