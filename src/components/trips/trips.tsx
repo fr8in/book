@@ -61,6 +61,8 @@ const Trips = (props) => {
     return { value: data.name, label: data.name };
   });
 
+console.log('trips',trips)
+
   const columns = [
     {
       title: "ID",

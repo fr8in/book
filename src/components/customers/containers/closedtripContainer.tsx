@@ -10,10 +10,15 @@ query trip($cardcode:String,$offset: Int, $limit: Int,$trip_statusName:[String!]
   $sourcename:String,
   $destinationname:String,
   $truckno:String,
-  $where: trip_bool_exp){
+  $where: trip_bool_exp){ 
     customer(where:{cardcode:{_eq:$cardcode}})
     {
       cardcode
+      rows: trips_aggregate(where:{trip_status:{name:{_eq:"Closed"}}}){
+        aggregate{
+          count
+        }
+  }
       trips(offset: $offset, limit: $limit,where:$where){
         id
        order_date
@@ -104,7 +109,7 @@ const ClosedTripContainer = (props) => {
   const customerData = get(_data,'customer[0]',[])
   const record_count = get(_data, 'rows.aggregate.count', 0)
   const total_page = Math.ceil(record_count / filter.limit)
-
+  console.log('record_count',record_count)
   console.log('trip_status',trip_status)
 
   const onPageChange = (value) => {
