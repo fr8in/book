@@ -3,10 +3,11 @@ import useShowHide from '../../hooks/useShowHide'
 import WeeklyBranchTarget from '../partners/weeklyBranchTarget'
 import OrderReport from '../partners/orderReport'
 
-const data = [{ count: 400, name: 'Orders' }]
-const Orders = () => {
+const Orders = (props) => {
+  const { orders } = props
   const initial = { orders: false, report: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+  const data = [{ count: orders, name: 'Orders' }]
   return (
     <>
       <Stats

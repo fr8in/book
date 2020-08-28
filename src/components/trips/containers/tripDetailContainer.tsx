@@ -37,7 +37,7 @@ const TripDetailContainer = (props) => {
   )
   var trip = []
   if (!loading) {
-    trip = data.trip
+    trip = data && data.trip
   }
   console.log('TripDetailContainer Error', error)
   const trip_info = trip[0] ? trip[0] : { name: 'ID does not exist' }
@@ -128,7 +128,7 @@ const TripDetailContainer = (props) => {
                   }
                   key='1'
                 >
-                  <Receivables trip_id={trip_id}/>
+                  <Receivables trip_id={trip_id} />
                   <CustomerPayments />
                 </Panel>
               </Collapse>

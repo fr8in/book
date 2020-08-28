@@ -3,18 +3,21 @@ import { gql, useMutation } from '@apollo/client'
 import { useState } from 'react'
 
 const CUSTOMER_MUTATION = gql`
-mutation insertTripPrice($trip_id:Int,$customer_price:Float,$customer_advance_percentage:Int,$mamul:Float,$bank:Float,$cash:Float,$to_pay:Float,$comment:String,$partner_price:Float){
-  insert_trip_price(objects:{
-    trip_id: $trip_id,
+mutation insertTripPrice($trip_id: Int, $customer_price: Float, $mamul: Float, $bank: Float, $cash: Float, $to_pay: Float, $comment: String, $partner_price: Float, $ton: float8, $price_per_ton: float8, $is_ton: Boolean) {
+  insert_trip_price(objects: {
+    trip_id: $trip_id, 
     customer_price: $customer_price, 
     mamul: $mamul, 
     bank: $bank, 
     cash: $cash, 
-    to_pay: $to_pay,
-    comment: $comment
-    partner_price: $partner_price
-  }){
-    returning{
+    to_pay: $to_pay, 
+    comment: $comment, 
+    partner_price: $partner_price, 
+    ton: $ton, 
+    is_price_per_ton: $is_ton, 
+    price_per_ton: $price_per_ton
+  }) {
+    returning {
       id
     }
   }
@@ -24,6 +27,7 @@ mutation insertTripPrice($trip_id:Int,$customer_price:Float,$customer_advance_pe
 const CustomerPrice = (props) => {
   const { visible, onHide, trip_id, trip_price } = props
 
+  const [form] = Form.useForm()
   const initial = {
     customer_price: trip_price.customer_price,
     mamul: trip_price.mamul
@@ -43,20 +47,29 @@ const CustomerPrice = (props) => {
 
   const onCustomerPriceSubmit = (form) => {
     console.log('inside form submit', form)
-    insertTripPrice({
-      variables: {
-        trip_id: trip_id,
-        customer_price: parseInt(form.customer_price, 10),
-        mamul: parseInt(form.mamul, 10),
-        bank: parseInt(form.bank, 10),
-        cash: parseInt(form.cash, 10),
-        to_pay: parseInt(form.to_pay, 10),
-        comment: form.comment,
-        partner_price: parseInt(partner_price, 10)
-      }
-    })
+    // insertTripPrice({
+    //   variables: {
+    //     trip_id: trip_id,
+    //     customer_price: parseInt(form.customer_price, 10),
+    //     mamul: parseInt(form.mamul, 10),
+    //     bank: parseInt(form.bank, 10),
+    //     cash: parseInt(form.cash, 10),
+    //     to_pay: parseInt(form.to_pay, 10),
+    //     comment: form.comment,
+    //     partner_price: parseInt(partner_price, 10),
+    //     ton: null,
+    //     is_price_per_ton: false,
+    //     price_per_ton: null
+    //   }
+    // })
   }
 
+  const onPerTonPriceChange = (e) => {
+    setPriceCalc({ ...priceCalc, customer_price: e.target.value })
+  }
+  const onTonChange = (e) => {
+    setPriceCalc({ ...priceCalc, mamul: e.target.value })
+  }
   const onCustomerPriceChange = (e) => {
     setPriceCalc({ ...priceCalc, customer_price: e.target.value })
   }
@@ -75,7 +88,29 @@ const CustomerPrice = (props) => {
       onCancel={onHide}
       footer={[]}
     >
-      <Form layout='vertical' onFinish={onCustomerPriceSubmit}>
+      <Form layout='vertical' onFinish={onCustomerPriceSubmit} form={form}>
+        {trip_price.is_price_per_ton &&
+          <Row gutter={10}>
+            <Col sm={12}>
+              <Form.Item
+                label='Per Ton Price'
+                name='price_per_ton'
+                rules={[{ required: true, message: 'Per Ton Price is required field!' }]}
+                initialValue={trip_price.price_per_ton}
+              >
+                <Input placeholder='Customer Price' onChange={onPerTonPriceChange} />
+              </Form.Item>
+            </Col>
+            <Col sm={12}>
+              <Form.Item
+                label='No.of Ton'
+                name='ton'
+                initialValue={trip_price.ton}
+              >
+                <Input placeholder='Ton' onChange={onTonChange} />
+              </Form.Item>
+            </Col>
+          </Row>}
         <Row gutter={10}>
           <Col sm={12}>
             <Form.Item
@@ -84,7 +119,7 @@ const CustomerPrice = (props) => {
               rules={[{ required: true, message: 'Customer Price is required field!' }]}
               initialValue={trip_price.customer_price}
             >
-              <Input placeholder='Customer Price' onChange={onCustomerPriceChange} />
+              <Input placeholder='Customer Price' disabled={trip_price.is_price_per_ton} onChange={onCustomerPriceChange} />
             </Form.Item>
           </Col>
           <Col sm={12}>

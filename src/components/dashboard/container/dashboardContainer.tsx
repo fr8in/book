@@ -1,9 +1,6 @@
 import { Row, Col, Card, Tabs, Button, Space } from 'antd'
 import TripsContainer from './dashboardTripsContainer'
 import TripsByDestination from '../../trips/tripsByDestination'
-import Orders from '../../reports/orders'
-import Revenue from '../../reports/revenue'
-import Progress from '../../reports/progress'
 import { WhatsAppOutlined, CarOutlined } from '@ant-design/icons'
 import ExcessLoad from '../../trips/excessLoad'
 import TitleWithCount from '../../common/titleWithCount'
@@ -13,22 +10,23 @@ import DASHBOAD_QUERY from './query/dashboardQuery'
 import { useSubscription } from '@apollo/client'
 import _ from 'lodash'
 import WaitingForLoadContainer from './waitingForLoadContainer'
+import AnalyticsContainer from './analyticsContainer'
 
 const { TabPane } = Tabs
 
 const DashboardContainer = (props) => {
   const { filters } = props
-
+  console.log('filters', filters)
   const initial = { excessLoad: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
   const variables = {
     now: filters.now,
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
-    branches: (filters.branches && filters.branches > 0) ? filters.branches : null,
-    cities: (filters.cities && filters.cities > 0) ? filters.cities : null,
-    truck_type: (filters.types && filters.types > 0) ? filters.types : null,
-    managers: (filters.managers && filters.managers > 0) ? filters.managers : null
+    branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
+    cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
+    truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
+    managers: (filters.managers && filters.managers.length > 0) ? filters.managers : null
   }
   const { loading, data, error } = useSubscription(DASHBOAD_QUERY, { variables })
   console.log('dashboard error', error)
@@ -82,30 +80,22 @@ const DashboardContainer = (props) => {
     truck_current_count = _.sumBy(truck_c_aggrigate, 'count')
   }
 
+  const truck_tab_disable = !!((filters.branches && filters.branches.length === 0) || filters.branches === null)
+  console.log('truck_tab_disable', truck_tab_disable)
   return (
     <Row>
       <Col xs={24}>
         {/* Statictics data */}
         <Row gutter={[0, 10]}>
           <Col xs={24} style={{ overflow: 'hidden' }}>
-            <Row gutter={10}>
-              <Col xs={24} sm={9} md={8}>
-                <Orders />
-              </Col>
-              <Col xs={24} sm={15} md={8}>
-                <Revenue />
-              </Col>
-              <Col xs={24} sm={24} md={8}>
-                <Progress />
-              </Col>
-            </Row>
+            <AnalyticsContainer filters={filters} />
           </Col>
         </Row>
         <Row gutter={[0, 10]}>
           <Col xs={24} sm={24}>
             <Card size='small' className='card-body-0 border-top-blue'>
               <Tabs
-                defaultActiveKey='2'
+                defaultActiveKey='1'
                 tabBarExtraContent={
                   <Space>
                     <Button size='small' shape='circle' type='primary' className='btn-success' icon={<WhatsAppOutlined />} />
@@ -116,7 +106,7 @@ const DashboardContainer = (props) => {
                 <TabPane tab={<TitleWithCount name='Unloading' value={unloading_count} />} key='1'>
                   <TripsContainer filters={filters} trip_status='Reported at destination' />
                 </TabPane>
-                <TabPane tab={<TitleWithCount name='WF.Load' value={truck_current_count + '/' + truck_count} />} key='2'>
+                <TabPane disabled={truck_tab_disable} tab={<TitleWithCount name='WF.Load' value={truck_current_count + '/' + truck_count} />} key='2'>
                   <WaitingForLoadContainer filters={filters} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Assigned' value={assigned_count} />} key='3'>
