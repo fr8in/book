@@ -11,11 +11,8 @@ query employee_list{
 }
 `
 const EmployeeListFilter = (props) => {
-  const { visible, onHide} = props
-  const usersInitial = { checkedItems: [], visible: false }
-  const [checkedItems, setCheckedItems] = useState(usersInitial)
-
-  const auth_user = ['jay@fr8.in']
+  const { visible, onHide, onFilterChange, onboarded_by} = props
+    
   
   const { loading, error, data } = useQuery(
     EMP_LIST,
@@ -32,11 +29,12 @@ const EmployeeListFilter = (props) => {
     employee = data && data.employee
   }
   const employeeList = employee.map((data) => {
-    return { value: data.id, label: data.email }
+    return { value: data.email, label: data.email }
   })
   
   const onChange = (checkedValues) => {
-    setCheckedItems(checkedValues)
+    onFilterChange(checkedValues)
+    console.log('checked',checkedValues)
   }
   return (
     <Modal
@@ -47,7 +45,10 @@ const EmployeeListFilter = (props) => {
       <Row>
         <Checkbox>All</Checkbox>
         <Col xs={24} className='emp-list'>
-          <Checkbox.Group options={employeeList} defaultValue={auth_user} onChange={onChange}  />
+          <Checkbox.Group
+           options={employeeList} 
+           defaultValue={onboarded_by} 
+           onChange={onChange}  />
         </Col>
       </Row>
     </Modal>

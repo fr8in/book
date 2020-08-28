@@ -35,7 +35,7 @@ const paid = ["Paid", "Closed"]
 const PaidContainer = (props) => {
   const initialFilter = {
     offset: 0,
-    limit: 1,
+    limit: 10,
   };
   const [filter, setFilter] = useState(initialFilter);
 
