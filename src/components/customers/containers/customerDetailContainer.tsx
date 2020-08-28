@@ -68,7 +68,7 @@ const CustomerDetailContainer = (props) => {
   )
 
   console.log('CustomerDetailContainer Error', error)
-  let customerInfo = {}
+  let customer_info = {}
   let ongoing_count = 0
   let delivered_count = 0
   let invoiced_count = 0
@@ -76,13 +76,12 @@ const CustomerDetailContainer = (props) => {
 
   if (!loading) {
     const { customer } = data
-    customerInfo = customer && customer[0] ? customer[0] : { name: 'ID does not exist' }
-    ongoing_count = get(customerInfo, 'ongoing.aggregate.count', 0)
-    delivered_count = get(customerInfo, 'delivered.aggregate.count', 0)
-    invoiced_count = get(customerInfo, 'invoiced.aggregate.count', 0)
-    recieved_count = get(customerInfo, 'recieved.aggregate.count', 0)
+    customer_info = customer && customer[0] ? customer[0] : { name: 'ID does not exist' }
+    ongoing_count = get(customer_info, 'ongoing.aggregate.count', 0)
+    delivered_count = get(customer_info, 'delivered.aggregate.count', 0)
+    invoiced_count = get(customer_info, 'invoiced.aggregate.count', 0)
+    recieved_count = get(customer_info, 'recieved.aggregate.count', 0)
   }
-  console.log('customerInfo', customerInfo)
 
   return (
     loading ? <Loading /> : (
@@ -96,11 +95,11 @@ const CustomerDetailContainer = (props) => {
                 title={
                   <Space>
                     <CustomerName
-                      cardcode={customerInfo.cardcode}
-                      name={customerInfo.name}
+                      cardcode={cardcode}
+                      name={customer_info.name}
                       loading={loading}
                     />
-                    <h4>{customerInfo.cardcode}</h4>
+                    <h4>{cardcode}</h4>
                   </Space>
                 }
                 extra={
@@ -135,15 +134,15 @@ const CustomerDetailContainer = (props) => {
                     </Tooltip>
                     <WalletBalance />
                     <Blacklist
-                      cardcode={customerInfo.cardcode}
-                      statusId={customerInfo.status && customerInfo.status.id}
+                      cardcode={cardcode}
+                      statusId={customer_info.status && customer_info.status.id}
                     />
                   </Space>
                 }
               />
             }
           >
-            <CustomerInfo customerInfo={customerInfo} loading={loading} />
+            <CustomerInfo customer_info={customer_info} loading={loading} />
             <Row gutter={10} className='mt10'>
               <Col xs={24}>
                 <Card size='small' className='card-body-0 border-top-blue'>
@@ -152,25 +151,25 @@ const CustomerDetailContainer = (props) => {
                       tab={<TitleWithCount name='On-going' value={ongoing_count} />}
                       key='1'
                     >
-                      <CustomerTrips cardcode={customerInfo.cardcode} status_names={ongoing} />
+                      <CustomerTrips cardcode={cardcode} status_names={ongoing} />
                     </TabPane>
                     <TabPane
                       tab={<TitleWithCount name='Delivered' value={delivered_count} />}
                       key='2'
                     >
-                      <CustomerTrips cardcode={customerInfo.cardcode} status_names={delivered} delivered />
+                      <CustomerTrips cardcode={cardcode} status_names={delivered} delivered />
                     </TabPane>
                     <TabPane
                       tab={<TitleWithCount name='Invoiced' value={invoiced_count} />}
                       key='3'
                     >
-                      <CustomerTrips cardcode={customerInfo.cardcode} status_names={invoiced} />
+                      <CustomerTrips cardcode={cardcode} status_names={invoiced} />
                     </TabPane>
                     <TabPane
                       tab={<TitleWithCount name='Recieved' value={recieved_count} />}
                       key='4'
                     >
-                      <CustomerTrips cardcode={customerInfo.cardcode} status_names={recieved} />
+                      <CustomerTrips cardcode={cardcode} status_names={recieved} />
                     </TabPane>
                     <TabPane
                       tab={<TitleWithCount name='Incoming' value={0} />}
@@ -185,7 +184,7 @@ const CustomerDetailContainer = (props) => {
                         </Button>
                       </Row>
                       <Users
-                        customeruser={customerInfo.customer_users}
+                        customeruser={customer_info.customer_users}
                         loading={loading}
                       />
                     </TabPane>
@@ -199,8 +198,8 @@ const CustomerDetailContainer = (props) => {
                         </Button>
                       </Row>
                       <Branch
-                        customerBranch={customerInfo.customer_branches}
-                        branch={customerInfo.customer_branches && customerInfo.customer_branches.id}
+                        customerBranch={customer_info.customer_branches}
+                        branch={customer_info.customer_branches && customer_info.customer_branches.id}
                         loading={loading}
                       />
                     </TabPane>
@@ -210,7 +209,7 @@ const CustomerDetailContainer = (props) => {
                     <TabPane tab='Details' key='9'>
                       <Row className='p10'>
                         <Col xs={24} sm={24} md={12}>
-                          <CustomerDetails customerInfo={customerInfo} loading={loading} />
+                          <CustomerDetails customer_info={customer_info} loading={loading} />
                         </Col>
                         <Col xs={24} sm={24} md={12}>
                           <PendingPayments />
@@ -221,10 +220,10 @@ const CustomerDetailContainer = (props) => {
                 </Card>
               </Col>
               {visible.addUser && (
-                <CustomerUser visible={visible.addUser} onHide={onHide} customer={customerInfo.id} />
+                <CustomerUser visible={visible.addUser} onHide={onHide} customer={customer_info.id} />
               )}
               {visible.addBranch && (
-                <CustomerBranch visible={visible.addBranch} onHide={onHide} customerbranch={customerInfo.id} />
+                <CustomerBranch visible={visible.addBranch} onHide={onHide} customerbranch={customer_info.id} />
               )}
               {visible.transfer && (
                 <Transfer visible={visible.transfer} onHide={onHide} />
