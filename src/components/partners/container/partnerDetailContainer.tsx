@@ -146,9 +146,9 @@ const PartnerDetailContainer = (props) => {
                         <Card size='small' className='card-body-0'>
                           <Tabs defaultActiveKey='1'>
                             <TabPane tab='Summary' key='1'>
-                              <AccountSummary />
-                              <PendingBalance />
-                              <AvailableBalance />
+                              <AccountSummary partner_summary={partner_info}/>
+                              <PendingBalance partner_summary={partner_info}/>
+                              <AvailableBalance partner_summary={partner_info}/>
                             </TabPane>
                             <TabPane tab='Order Report' key='2'>
                               <Barchart />
