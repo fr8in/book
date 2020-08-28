@@ -27,12 +27,12 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
           id
           mobile
         }
-        truck_files{
-            id
-             type
-             file_path
-             folder
-       }
+       # truck_files{
+        #    id
+       #      type
+       #      file_path
+        #     folder
+      # }
         truck_status{
           id
           name
@@ -64,21 +64,21 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
           }
           cardcode
         }
-        trips (where: {trip_status_id: {_in: $trip_status_id}}) {
-          id
-          order_date
-          km
-          avg_km_day
-          source{
-            name
-          }
-          destination{
-            name
-          }
-          trip_status{
-            name
-          }
-        }
+       # trips (where: {trip_status_id: {_in: $trip_status_id}}) {
+         # id
+        #  order_date
+        #  km
+        #  avg_km_day
+         # source{
+         #   name
+         # }
+         # destination{
+         #   name
+         # }
+         # trip_status{
+         #   name
+         # }
+       # }
         
       }
      
