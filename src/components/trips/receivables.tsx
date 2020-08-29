@@ -1,6 +1,7 @@
 import { Table, Row, Col, Tooltip } from 'antd'
 //  import data from '../../../mock/trip/chargesAndPayments'
 import moment from 'moment'
+import _ from 'lodash'
 
 const Receivables = (props) => {
   const {trip_pay} = props
