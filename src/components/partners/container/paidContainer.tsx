@@ -1,8 +1,8 @@
-import React from 'react'
-import PaidStatus from '../../trips/tripsByStages'
 import { useState } from 'react'
-import { gql, useQuery } from '@apollo/client'
+import PaidStatus from '../../trips/tripsByStages'
+import u from '../../../lib/util'
 
+import { gql, useQuery } from '@apollo/client'
 
 const PAID_QUERY = gql`
 query partners($offset: Int, $limit: Int,$trip_status_value:[String!], $cardcode: String){
@@ -31,13 +31,13 @@ query partners($offset: Int, $limit: Int,$trip_status_value:[String!], $cardcode
   }        
 }
 `
-const paid = ["Paid", "Closed"]
+const paid = ['Paid', 'Closed']
 const PaidContainer = (props) => {
   const initialFilter = {
     offset: 0,
-    limit: 10,
-  };
-  const [filter, setFilter] = useState(initialFilter);
+    limit: u.limit
+  }
+  const [filter, setFilter] = useState(initialFilter)
 
   const { cardcode } = props
   const variables = {
@@ -46,7 +46,7 @@ const PaidContainer = (props) => {
     cardcode: cardcode,
     trip_status_value: paid
   }
-  console.log('variables',variables)
+  console.log('variables', variables)
   const { loading, error, data } = useQuery(
     PAID_QUERY,
     {
@@ -56,23 +56,23 @@ const PaidContainer = (props) => {
     }
   )
   console.log('PaidContainer error', error)
-  var trips = [];
-  var partnerData = [];
-  var trips_aggregate = 0;
+  var trips = []
+  var partnerData = []
+  var trips_aggregate = 0
   if (!loading) {
     const { partner } = data
     partnerData = partner[0] ? partner[0] : { name: 'ID does not exist' }
     trips = data.partner[0] && data.partner[0].trips
-    trips_aggregate = data && data.partnerData && data.partnerData.trips_aggregate;
+    trips_aggregate = data && data.partnerData && data.partnerData.trips_aggregate
   }
 
-  const record_count = partnerData && partnerData.trips_aggregate && partnerData.trips_aggregate.aggregate && partnerData.trips_aggregate.aggregate.count 
+  const record_count = partnerData && partnerData.trips_aggregate && partnerData.trips_aggregate.aggregate && partnerData.trips_aggregate.aggregate.count
   console.log('record_count', record_count)
-  const total_page = Math.ceil(record_count / filter.limit);
+  const total_page = Math.ceil(record_count / filter.limit)
 
   const onPageChange = (value) => {
-    setFilter({ ...filter, offset: value });
-  };
+    setFilter({ ...filter, offset: value })
+  }
   return (
     <PaidStatus
       cardcode={cardcode}
@@ -85,4 +85,4 @@ const PaidContainer = (props) => {
     />
   )
 }
-export default PaidContainer 
+export default PaidContainer
