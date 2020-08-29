@@ -8,7 +8,6 @@ import {
   MailOutlined
 } from '@ant-design/icons'
 import useShowHide from '../../../hooks/useShowHide'
-// All components
 import AccStmtMail from '../stmtMail'
 import DetailPageHeader from '../../common/detailPageHeader'
 import CustomerName from '../customerName'
@@ -132,7 +131,7 @@ const CustomerDetailContainer = (props) => {
                         onClick={() => onShow('wallet')}
                       />
                     </Tooltip>
-                    <WalletBalance wallet_balance={customer_info.customer_accounting && customer_info.customer_accounting.wallet_balance}/>
+                    <WalletBalance wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)} />
                     <Blacklist
                       cardcode={cardcode}
                       statusId={get(customer_info, 'status.id', null)}

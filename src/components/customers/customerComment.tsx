@@ -1,7 +1,7 @@
-import { useState } from 'react'
 import { Row, Col, Table, Input, Button, message, Form } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import moment from 'moment'
+import get from 'lodash/get'
 
 const CUSTOMER_COMMENT_SUBSCRIPTION = gql`
   query customer_comment($id: Int!){
@@ -52,11 +52,13 @@ const customerComment = (props) => {
     }
   )
   console.log('customerComment error', error)
-  console.log('customerComment data', data)
 
-  if (loading) return null
-  const customer_status_name = data.customer && data.customer[0].status && data.customer[0].status.name
-  const { customer_comments } = data.customer && data.customer[0] ? data.customer[0] : []
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const customer_status_name = get(_data, 'customer[0].status.name', null)
+  const customer_comments = get(_data, 'customer[0].customer_comments', [])
 
   const onSubmit = (form) => {
     insertComment({
@@ -84,9 +86,7 @@ const customerComment = (props) => {
       title: 'Created On',
       dataIndex: 'created_at',
       width: '20%',
-      render: (text, record) => {
-        return text ? moment(text).format('DD-MMM-YY') : null
-      }
+      render: (text, record) => text ? moment(text).format('DD-MMM-YY') : null
     }
   ]
   return (
@@ -114,6 +114,7 @@ const customerComment = (props) => {
         size='small'
         scroll={{ x: 500, y: 400 }}
         pagination={false}
+        loading={loading}
       />
     </div>
   )

@@ -3,8 +3,7 @@ import useShowHide from '../../hooks/useShowHide'
 import BookedDetail from './bookedDetail'
 
 const WalletBalance = (props) => {
-
-const {wallet_balance} = props  
+  const { wallet_balance } = props
   const initial = { booked: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 

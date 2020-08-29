@@ -1,10 +1,9 @@
 
-import { Row, Col, Modal, Button, Input, Select, Form,message } from 'antd'
+import { Row, Col, Modal, Button, Input, Select, Form, message } from 'antd'
 //  import  {State}  from '../../../mock/customer/createCustomerBranchMock'
-import { useMutation, gql,useQuery } from '@apollo/client'
-import {useState} from 'react'
+import { useMutation, gql, useQuery } from '@apollo/client'
+import { useState } from 'react'
 import CitySelect from '../common/citySelect'
-const { Option } = Select
 
 const CUSTOMER_BRANCH_QUERY = gql`
   query customerbranch{
@@ -46,9 +45,9 @@ mutation CustomerBranchInsert($address: String, $id: Int, $branch_name: String, 
 `
 
 const CreateCustomerBranch = (props) => {
-  const { visible, onHide,customerbranches } = props
-  console.log('customerbranches',customerbranches)
-  const initial = {city_id: null}
+  const { visible, onHide, customerbranches } = props
+  console.log('customerbranches', customerbranches)
+  const initial = { city_id: null }
   const [obj, setObj] = useState(initial)
 
   const { loading, error, data } = useQuery(
@@ -64,8 +63,10 @@ const CreateCustomerBranch = (props) => {
     INSERT_CUSTOMER_BRANCH_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!')  
-      setObj(initial) }
+      onCompleted () {
+        message.success('Updated!!')
+        setObj(initial)
+      }
     }
   )
 
@@ -73,17 +74,18 @@ const CreateCustomerBranch = (props) => {
     UPDATE_CUSTOMER_BRANCH_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!')  
-      setObj(initial) }
+      onCompleted () {
+        message.success('Updated!!')
+        setObj(initial)
+      }
     }
   )
 
-  
-  var state = [];
-  if (!loading) { 
-     state = data.state 
+  var state = []
+  if (!loading) {
+    state = data.state
   }
- 
+
   const StateList = state.map((data) => {
     return { value: data.id, label: data.name }
   })
@@ -97,7 +99,7 @@ const CreateCustomerBranch = (props) => {
     insertCustomerBranch({
       variables: {
         city_id: obj.city_id,
-        id:customerbranches,
+        id: customerbranches,
         mobile: form.mobile,
         name: form.name,
         address: form.address,
@@ -105,12 +107,10 @@ const CreateCustomerBranch = (props) => {
         branch_name: form.branch_name
       }
     })
-
   }
 
-const branch_name= customerbranches.map(element => element.branch_name);
-console.log(branch_name)
-  
+  const branch_name = customerbranches.map(element => element.branch_name)
+
   const handleChange = (value) => {
     console.log(`selected ${value}`)
   }
@@ -126,8 +126,8 @@ console.log(branch_name)
       >
         <Row>
           <Col xs={24}>
-            <Form layout='vertical' onFinish={onAddBranch} >
-              <Form.Item  name='branch_name' initialValue={branch_name} >
+            <Form layout='vertical' onFinish={onAddBranch}>
+              <Form.Item name='branch_name' initialValue={branch_name}>
                 <Input placeholder='Branch Name' />
               </Form.Item>
               <Form.Item name='name'>
@@ -138,10 +138,10 @@ console.log(branch_name)
               </Form.Item>
               <Row gutter={6}>
                 <Col xs={12}>
-                <CitySelect
-                label='City'
-                onChange={onCityChange}
-            />
+                  <CitySelect
+                    label='City'
+                    onChange={onCityChange}
+                  />
                 </Col>
                 <Col xs={12}>
                   <Form.Item
@@ -149,7 +149,7 @@ console.log(branch_name)
                     name='State'
                     rules={[{ required: true, message: 'State is required field' }]}
                   >
-                    <Select defaultValue='' onChange={handleChange}  options={StateList}/>
+                    <Select defaultValue='' onChange={handleChange} options={StateList} />
                   </Form.Item>
                 </Col>
               </Row>
@@ -167,8 +167,8 @@ console.log(branch_name)
               </Row>
               <Row justify='end'>
                 <Form.Item>
-                <Button key='back' onClick={onHide}>Cancel</Button>
-                <Button type='primary' htmlType='submit'>Save</Button>
+                  <Button key='back' onClick={onHide}>Cancel</Button>
+                  <Button type='primary' htmlType='submit'>Save</Button>
                 </Form.Item>
               </Row>
             </Form>

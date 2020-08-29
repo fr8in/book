@@ -4,10 +4,10 @@ import CUSTOMER_TRIPS from './containers/query/customerTrips'
 import { useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
+import Truncate from '../common/truncate'
 
 const CustomerTrips = (props) => {
   const { cardcode, status_names, delivered } = props
-  console.log('status_names', status_names)
 
   const variables = {
     cardcode: cardcode,
@@ -32,13 +32,11 @@ const CustomerTrips = (props) => {
       dataIndex: 'id',
       sorter: (a, b) => (a.id > b.id ? 1 : -1),
       width: '6%',
-      render: (text, record) => {
-        return (
-          <Link href='/trips/[id]' as={`/trips/${record.id} `}>
-            <a>{text}</a>
-          </Link>
-        )
-      }
+      render: (text, record) => (
+        <Link href='/trips/[id]' as={`/trips/${record.id} `}>
+          <a>{text}</a>
+        </Link>
+      )
     },
     {
       title: 'O.Date',
@@ -52,10 +50,11 @@ const CustomerTrips = (props) => {
       width: '16%',
       render: (text, record) => {
         const truck_no = get(record, 'truck.truck_no', null)
-        const truck_type_name = get(record, 'truck.truck_type.name', null)
-        const truck_type = truck_type_name ? truck_type_name.slice(0, 9) : '-'
+        const truck_type = get(record, 'truck.truck_type.name', null)
         return (
-          <span>{`${truck_no} - ${truck_type}`}</span>
+          <Link href='/trucks/[id]' as={`/trucks/${truck_no} `}>
+            <a>{`${truck_no} - ${truck_type ? truck_type.slice(0, 9) : '-'}`}</a>
+          </Link>
         )
       }
     },
@@ -64,10 +63,15 @@ const CustomerTrips = (props) => {
       width: '10%',
       render: (text, record) => {
         const partner = get(record, 'partner.name', null)
+        const cardcode = get(record, 'partner.cardcode', null)
         return (
-          partner && partner.length > 10 ? (
-            <Tooltip title='partner'><span>{partner.slice(0, 10) + '...'}</span></Tooltip>
-          ) : partner
+          <Link href='/partners/[id]' as={`/partners/${cardcode} `}>
+            <Tooltip title='partner'>
+              <a>
+                {partner && partner.length > 10 ? partner.slice(0, 10) + '...' : partner}
+              </a>
+            </Tooltip>
+          </Link>
         )
       }
     },
@@ -88,7 +92,7 @@ const CustomerTrips = (props) => {
       width: '11%',
       render: (text, record) => {
         const status = get(record, 'trip_status.name', '-')
-        return status
+        return <Truncate data={status} length={15} />
       }
     } : {},
     delivered ? {
@@ -96,7 +100,7 @@ const CustomerTrips = (props) => {
       width: '11%',
       render: (text, record) => {
         const status = get(record, 'trip_pod_status.name', '-')
-        return status
+        return <Truncate data={status} length={15} />
       }
     } : {},
     {
@@ -124,7 +128,7 @@ const CustomerTrips = (props) => {
       render: (record) => {
         const receivable = get(record, 'trip_receivables_aggregate.aggregate.sum.amount', null)
         const receipts = get(record, 'trip_receipts_aggregate.aggregate.sum.amount', null)
-        return receivable - receipts
+        return (receivable - receipts)
       }
     },
     {

@@ -10,6 +10,8 @@ import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import CustomerComment from '../customers/customerComment'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import u from '../../lib/util'
+import Truncate from '../common/truncate'
+import get from 'lodash/get'
 
 const CUSTOMERS_LEAD_QUERY = gql`
 query customers( $offset: Int!
@@ -182,23 +184,17 @@ const CustomerLead = () => {
     console.log('id priority', id)
   }
 
-  var customer = []
-  var customer_aggregate = 0
-  var customer_status = []
-  var channel = []
+  let _data = {}
 
   if (!loading) {
-    customer = data && data.customer
-    customer_aggregate = data && data.customer_aggregate
-    customer_status = data && data.customer_status
-    channel = data && data.channel
+    _data = data
   }
+  const customer = get(_data, 'customer', [])
+  const customer_aggregate = get(data, 'customer_aggregate', 0)
+  const customer_status = get(data, 'customer_status', null)
+  const channel = get(data, 'channel', null)
 
-  const record_count =
-  customer_aggregate &&
-  customer_aggregate.aggregate &&
-  customer_aggregate.aggregate.count
-  console.log('record_count', record_count)
+  const record_count = get(customer_aggregate, 'aggregate.count', 0)
 
   const customers_status = customer_status.map((data) => {
     return { value: data.name, label: data.name }
@@ -338,23 +334,15 @@ const CustomerLead = () => {
       title: 'Comment',
       dataIndex: 'comment',
       render: (text, record) => {
-        const comment = record.customer_comments && record.customer_comments.length > 0 &&
-          record.customer_comments[0].description ? record.customer_comments[0].description : '-'
-        return comment && comment.length > 20 ? (
-          <Tooltip title={comment}>
-            <span> {comment.slice(0, 20) + '...'}</span>
-          </Tooltip>
-        ) : (
-          comment
-        )
+        const comment = get(record, 'customer_comments[0].description', '-')
+        return <Truncate data={comment} length={20} />
       }
     },
     {
       title: 'Created Date',
       dataIndex: 'date',
       render: (text, record) => {
-        const create_date = record.customer_comments && record.customer_comments.length > 0 &&
-          record.customer_comments[0].created_at ? record.customer_comments[0].created_at : '-'
+        const create_date = get(record, 'customer_comments[0].created_at', '-')
         return (create_date ? moment(create_date).format('DD-MMM-YY') : null)
       },
       sorter: (a, b) => (a.date > b.date ? 1 : -1)
@@ -372,13 +360,7 @@ const CustomerLead = () => {
             <Button
               type='link'
               icon={<CommentOutlined />}
-              onClick={() =>
-                handleShow(
-                  'commentVisible',
-                  null,
-                  'commentData',
-                  record.id
-                )}
+              onClick={() => handleShow('commentVisible', null, 'commentData', record.id)}
             />
           </Tooltip>
           <Popconfirm
@@ -402,9 +384,7 @@ const CustomerLead = () => {
   return (
     <>
       <Table
-        rowSelection={{
-          ...rowSelection
-        }}
+        rowSelection={{ ...rowSelection }}
         columns={columnsCurrent}
         dataSource={customer}
         rowKey={(record) => record.id}
@@ -419,7 +399,6 @@ const CustomerLead = () => {
             current={currentPage}
             pageSize={filter.limit}
             showSizeChanger={false}
-            total={record_count}
             onChange={pageChange}
             className='text-right p10'
           />) : null}

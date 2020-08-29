@@ -7,21 +7,20 @@ import ManagedCustomer from './managedCustomer'
 import CustomerExceptionDate from './customerExceptionDate'
 import CustomerType from './customerType'
 import CustomerPaymentManager from './customerPaymentManager'
+import get from 'lodash/get'
 
 const CustomerInfo = (props) => {
   const { customer_info } = props
 
   const modelInitial = { mamulVisible: false }
   const { visible, onHide, onShow } = useShowHide(modelInitial)
-  const system_mamul = customer_info.customer_mamul_summary &&
-                        customer_info.customer_mamul_summary.length > 0 &&
-                        customer_info.customer_mamul_summary[0].system_mamul_avg ? customer_info.customer_mamul_summary[0].system_mamul_avg : 0
+  const system_mamul = get(customer_info, 'customer_mamul_summary[0].system_mamul_avg', 0)
   return (
     <>
       <Row gutter={8}>
         <LabelAndData
           label='Type'
-          data={<CustomerType type={customer_info.customer_type && customer_info.customer_type.name} cardcode={customer_info.cardcode} />}
+          data={<CustomerType type={get(customer_info, 'customer_type.name', '-')} cardcode={customer_info.cardcode} />}
           mdSpan={4}
           smSpan={8}
           xsSpan={12}
@@ -44,8 +43,8 @@ const CustomerInfo = (props) => {
           label='Payment Manager'
           data={
             <CustomerPaymentManager
-              paymentManager={customer_info.payment_manager && customer_info.payment_manager.email}
-              paymentManagerId={customer_info.payment_manager && customer_info.payment_manager.id}
+              paymentManager={get(customer_info, 'payment_manager.email', '-')}
+              paymentManagerId={get(customer_info, 'payment_manager.id', null)}
               cardcode={customer_info.cardcode}
             />
           }

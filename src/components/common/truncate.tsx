@@ -1,7 +1,7 @@
 import { Tooltip } from 'antd'
 
 const Truncate = (props) => {
-  const { data, length, link } = props
+  const { data, length } = props
   return (
     data && data.length > length ? (
       <Tooltip title={data}>

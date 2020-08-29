@@ -23,6 +23,8 @@ import BranchCreation from '../customers/branchCreation'
 import CustomerAdvancePercentage from './customerAdvancePercentage'
 import { gql, useMutation } from '@apollo/client'
 import moment from 'moment'
+import Truncate from '../common/truncate'
+import get from 'lodash/get'
 
 const CUSTOMER_REJECT_MUTATION = gql`
   mutation customerReject($status_id: Int, $id: Int!) {
@@ -116,22 +118,14 @@ const CustomerKyc = (props) => {
       title: 'User Name',
       dataIndex: 'name',
       width: '11%',
-      render: (text, record) => {
-        return text && text.length > 14 ? (
-          <Tooltip title={text}>
-            <span> {text.slice(0, 14) + '...'}</span>
-          </Tooltip>
-        ) : (
-          text
-        )
-      }
+      render: (text, record) => <Truncate data={text} length={14} />
     },
     {
       title: 'Company Name',
       width: '11%',
       render: (text, record) => {
-        const company = record.customer && record.customer.name
-        const cardcode = record.customer && record.customer.cardcode
+        const company = get(record, 'customer.name', '-')
+        const cardcode = get(record, 'customer.cardcode', null)
         return (
           <Link href='customers/[id]' as={`customers/${cardcode}`}>
             {company && company.length > 14 ? (
@@ -182,7 +176,7 @@ const CustomerKyc = (props) => {
       title: 'Type',
       width: '8%',
       render: (text, record) => {
-        const type = record.customer && record.customer.customer_type && record.customer.customer_type.name ? record.customer.customer_type.name : '-'
+        const type = get(record, 'customer.customer_type.name', '-')
         return type
       }
     },
@@ -190,21 +184,15 @@ const CustomerKyc = (props) => {
       title: 'Reg Date',
       width: '9%',
       render: (text, record) => {
-        const registered = record.customer && record.customer.created_at ? record.customer.created_at : '-'
-        return registered && registered.length > 10 ? (
-          <Tooltip title={registered}>
-            <span>{registered ? moment(registered).format('DD-MMM-YY') : '-'}</span>
-          </Tooltip>
-        ) : (
-          registered
-        )
+        const registered = get(record, 'customer.created_at', '-')
+        return registered ? moment(registered).format('DD-MMM-YY') : '-'
       }
     },
     {
       title: 'PAN',
       width: '9%',
       render: (text, record) => {
-        const type = record.customer && record.customer.pan ? record.customer.pan : '-'
+        const type = get(record, 'customer.pan', '-')
         return type
       }
     },
@@ -212,11 +200,11 @@ const CustomerKyc = (props) => {
       title: 'Mamul',
       width: '8%',
       render: (text, record) => {
-        const statusId = record.customer && record.customer.status && record.customer.status.id ? record.customer.status.id : null
+        const statusId = get(record, 'customer.status.id', null)
         return (
           <span>
             {statusId === 1 || statusId === 5 ? (
-              `${text || 0}`
+              `${text || 0}` // TODO get mamul
             ) : statusId === 3 || statusId === 4 ? (
               <Input
                 type='number'
@@ -239,10 +227,8 @@ const CustomerKyc = (props) => {
       title: 'Adv %',
       width: '10%',
       render: (text, record) => {
-        const advancePercentage =
-        record.customer && record.customer.advancePercentage && record.customer.advancePercentage.name ? record.customer.advancePercentage.name : '-'
-        const advancePercentageId =
-        record.customer && record.customer.advance_percentage_id ? record.advance_percentage_id : null
+        const advancePercentage = get(record, 'customer.advance_percentage.name', '-')
+        const advancePercentageId = get(record, 'customer.advance_percentage.id', null)
         return (
           <CustomerAdvancePercentage
             advancePercentage={advancePercentage}
@@ -254,7 +240,7 @@ const CustomerKyc = (props) => {
     },
     {
       title: 'Status',
-      render: (text, record) => record.customer && record.customer.status && record.customer.status.name,
+      render: (text, record) => get(record, 'customer.status.name', null),
       width: '14%',
       filterDropdown: (
         <Radio.Group
@@ -269,7 +255,7 @@ const CustomerKyc = (props) => {
       title: 'Action',
       width: '10%',
       render: (text, record) => {
-        const statusId = record.customer && record.customer.status && record.customer.status.id ? record.customer.status.id : null
+        const statusId = get(record, 'customer.status.id', null)
         return (
           <Space>
             {record.panNo ? (

@@ -13,22 +13,22 @@ const BookedDetail = (props) => {
   const columns = [{
     title: 'Date',
     dataIndex: 'date',
-    width: '15%'
+    width: '10%'
   },
   {
     title: 'Amount',
     dataIndex: 'recevied',
-    width: '15%'
+    width: '10%'
   },
   {
     title: 'Booked',
     dataIndex: 'booked',
-    width: '15%'
+    width: '10%'
   },
   {
     title: 'Balance',
     dataIndex: 'balance',
-    width: '15%'
+    width: '10%'
   },
   {
     title: 'Remarks',

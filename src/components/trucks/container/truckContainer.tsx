@@ -1,4 +1,4 @@
-import { Row, Col, Input, Card } from 'antd'
+import { Row, Col, Card } from 'antd'
 import Trucks from '../trucks'
 import { useState } from 'react'
 import u from '../../../lib/util'
