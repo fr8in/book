@@ -32,6 +32,9 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
       gst
       managed
       pan
+      customer_accounting {
+        wallet_balance
+      }
       customer_type{
         id
         name

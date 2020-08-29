@@ -132,7 +132,7 @@ const CustomerDetailContainer = (props) => {
                         onClick={() => onShow('wallet')}
                       />
                     </Tooltip>
-                    <WalletBalance />
+                    <WalletBalance wallet_balance={customer_info.customer_accounting && customer_info.customer_accounting.wallet_balance}/>
                     <Blacklist
                       cardcode={cardcode}
                       statusId={get(customer_info, 'status.id', null)}
