@@ -7,7 +7,7 @@ const Orders = (props) => {
   const { orders } = props
   const initial = { orders: false, report: false }
   const { visible, onShow, onHide } = useShowHide(initial)
-  const data = [{ count: orders, name: 'Orders' }]
+  const data = [{ count: orders || 0, name: 'Orders' }]
   return (
     <>
       <Stats

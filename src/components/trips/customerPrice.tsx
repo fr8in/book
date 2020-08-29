@@ -3,7 +3,7 @@ import { gql, useMutation } from '@apollo/client'
 import { useState } from 'react'
 
 const CUSTOMER_MUTATION = gql`
-mutation insertTripPrice($trip_id: Int, $customer_price: Float, $mamul: Float, $bank: Float, $cash: Float, $to_pay: Float, $comment: String, $partner_price: Float, $ton: float8, $price_per_ton: float8, $is_ton: Boolean) {
+mutation insertTripPrice($trip_id: Int, $customer_price: Float, $mamul: Float, $bank: Float, $cash: Float, $to_pay: Float, $comment: String, $partner_price: Float, $ton: float8, $price_per_ton: float8, $is_price_per_ton: Boolean) {
   insert_trip_price(objects: {
     trip_id: $trip_id, 
     customer_price: $customer_price, 
@@ -14,7 +14,7 @@ mutation insertTripPrice($trip_id: Int, $customer_price: Float, $mamul: Float, $
     comment: $comment, 
     partner_price: $partner_price, 
     ton: $ton, 
-    is_price_per_ton: $is_ton, 
+    is_price_per_ton: $is_price_per_ton, 
     price_per_ton: $price_per_ton
   }) {
     returning {
@@ -48,21 +48,21 @@ const CustomerPrice = (props) => {
 
   const onCustomerPriceSubmit = (form) => {
     console.log('inside form submit', form)
-    // insertTripPrice({
-    //   variables: {
-    //     trip_id: trip_id,
-    //     customer_price: parseInt(form.customer_price, 10),
-    //     mamul: parseInt(form.mamul, 10),
-    //     bank: parseInt(form.bank, 10),
-    //     cash: parseInt(form.cash, 10),
-    //     to_pay: parseInt(form.to_pay, 10),
-    //     comment: form.comment,
-    //     partner_price: parseInt(partner_price, 10),
-    //     ton: null,
-    //     is_price_per_ton: false,
-    //     price_per_ton: null
-    //   }
-    // })
+    insertTripPrice({
+      variables: {
+        trip_id: trip_id,
+        customer_price: parseFloat(form.customer_price),
+        mamul: parseFloat(form.mamul),
+        bank: parseFloat(form.bank),
+        cash: parseFloat(form.cash),
+        to_pay: parseFloat(form.to_pay),
+        comment: form.comment,
+        partner_price: parseFloat(price.partner_price),
+        ton: form.ton ? parseInt(form.ton, 10) : null,
+        is_price_per_ton: !!form.ton,
+        price_per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null
+      }
+    })
   }
 
   const onPerTonPriceChange = (e) => {
@@ -138,7 +138,7 @@ const CustomerPrice = (props) => {
       footer={[]}
     >
       <Form layout='vertical' onFinish={onCustomerPriceSubmit} form={form}>
-        {!trip_price.is_price_per_ton &&
+        {trip_price.is_price_per_ton &&
           <Row gutter={10}>
             <Col sm={12}>
               <Form.Item
@@ -169,7 +169,7 @@ const CustomerPrice = (props) => {
               rules={[{ required: true, message: 'Customer Price is required field!' }]}
               initialValue={trip_price.customer_price}
             >
-              <Input placeholder='Customer Price' disabled={!trip_price.is_price_per_ton} onChange={onCustomerPriceChange} />
+              <Input placeholder='Customer Price' disabled={trip_price.is_price_per_ton} onChange={onCustomerPriceChange} />
             </Form.Item>
           </Col>
           <Col sm={12}>
@@ -214,18 +214,14 @@ const CustomerPrice = (props) => {
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={10}>
-          <Col sm={24}>
-            <Form.Item
-              label='Comment'
-              name='comment'
-              initialValue={trip_price.comment || null}
-              rules={[{ required: true, message: 'Comment value is required field!' }]}
-            >
-              <Input placeholder='Comment' />
-            </Form.Item>
-          </Col>
-        </Row>
+        <Form.Item
+          label='Comment'
+          name='comment'
+          initialValue={trip_price.comment || null}
+          rules={[{ required: true, message: 'Comment value is required field!' }]}
+        >
+          <Input placeholder='Comment' />
+        </Form.Item>
         <Row>
           <Col flex='auto'>
             <h4>Partner Price: {price.partner_price}</h4>

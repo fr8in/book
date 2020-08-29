@@ -49,7 +49,7 @@ const CustomerTrips = (props) => {
     {
       title: 'Truck No',
       sorter: (a, b) => (a.truckN0 > b.truckNo ? 1 : -1),
-      width: '17%',
+      width: '16%',
       render: (text, record) => {
         const truck_no = get(record, 'truck.truck_no', null)
         const truck_type_name = get(record, 'truck.truck_type.name', null)
@@ -61,7 +61,7 @@ const CustomerTrips = (props) => {
     },
     {
       title: 'Partner',
-      width: '11%',
+      width: '10%',
       render: (text, record) => {
         const partner = get(record, 'partner.name', null)
         return (
@@ -74,18 +74,18 @@ const CustomerTrips = (props) => {
     {
       title: 'Source',
       sorter: (a, b) => (a.source.name > b.source.name ? 1 : -1),
-      width: '11%',
+      width: '10%',
       render: (text, record) => get(record, 'source.name', '-')
     },
     {
       title: 'Destination',
       sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
-      width: '11%',
+      width: '10%',
       render: (text, record) => get(record, 'destination.name', '-')
     },
     !delivered ? {
       title: 'Status',
-      width: '8%',
+      width: '11%',
       render: (text, record) => {
         const status = get(record, 'trip_status.name', '-')
         return status
@@ -93,7 +93,7 @@ const CustomerTrips = (props) => {
     } : {},
     delivered ? {
       title: 'Pod Status',
-      width: '8%',
+      width: '11%',
       render: (text, record) => {
         const status = get(record, 'trip_pod_status.name', '-')
         return status
@@ -101,7 +101,8 @@ const CustomerTrips = (props) => {
     } : {},
     {
       title: 'Receivable',
-      width: '7%',
+      width: '8%',
+      sorter: (a, b) => (a.receivable > b.receivable ? 1 : -1),
       render: (record) => {
         const receivable = get(record, 'trip_receivables_aggregate.aggregate.sum.amount', null)
         return receivable
@@ -110,6 +111,7 @@ const CustomerTrips = (props) => {
     {
       title: 'Receipts',
       width: '7%',
+      sorter: (a, b) => (a.receipts > b.receipts ? 1 : -1),
       render: (record) => {
         const receipts = get(record, 'trip_receipts_aggregate.aggregate.sum.amount', null)
         return receipts
@@ -117,9 +119,13 @@ const CustomerTrips = (props) => {
     },
     {
       title: 'Balance',
-      dataIndex: 'balance',
       sorter: (a, b) => (a.balance > b.balance ? 1 : -1),
-      width: '7%'
+      width: '7%',
+      render: (record) => {
+        const receivable = get(record, 'trip_receivables_aggregate.aggregate.sum.amount', null)
+        const receipts = get(record, 'trip_receipts_aggregate.aggregate.sum.amount', null)
+        return receivable - receipts
+      }
     },
     {
       title: 'Aging',

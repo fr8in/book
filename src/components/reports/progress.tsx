@@ -1,16 +1,19 @@
 import Stats from './stats'
 import useShowHide from '../../hooks/useShowHide'
 import { Modal } from 'antd'
+import get from 'lodash/get'
 
-const data = [
-  { count: 856, name: 'Trucks' },
-  { count: 461, name: 'Partners' },
-  { count: 1607, name: 'Orders' }
-]
-
-const Progress = () => {
+const Progress = (props) => {
+  const { rolling_data } = props
   const initial = { report: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+
+  const data = [
+    { count: get(rolling_data, 'truck', 0), name: 'Trucks' },
+    { count: get(rolling_data, 'partner', 0), name: 'Partners' },
+    { count: get(rolling_data, 'trip', 0), name: 'Orders' }
+  ]
+
   return (
     <>
       <Stats

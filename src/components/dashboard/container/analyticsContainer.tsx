@@ -15,6 +15,12 @@ query analytics_data($month:float8!, $year: float8!, $branch_id:[Int!]){
       }
     }
   }
+  analytics_rolling {
+    partner
+    customer
+    truck
+    trip
+  }
 }
 `
 
@@ -36,9 +42,13 @@ const AnalyticsContainer = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
-  if (loading) return null
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
   console.log('AnalyticsContainer Error', error)
-  const analytics = get(data, 'analytics_trip_monthly_aggregate.aggregate.sum', null)
+  const analytics = get(_data, 'analytics_trip_monthly_aggregate.aggregate.sum', null)
+  const analytics_rolling = get(_data, 'analytics_rolling', null)
   return (
     <Row gutter={10}>
       <Col xs={24} sm={9} md={8}>
@@ -48,7 +58,7 @@ const AnalyticsContainer = (props) => {
         <Revenue booked={analytics && analytics.booking} />
       </Col>
       <Col xs={24} sm={24} md={8}>
-        <Progress />
+        <Progress rolling_data={analytics_rolling} />
       </Col>
     </Row>
   )
