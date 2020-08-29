@@ -1,53 +1,13 @@
-import { Table, Row, Col, Tooltip } from 'antd'
-//  import data from '../../../mock/trip/chargesAndPayments'
+import { Table, Row, Col } from 'antd'
 import moment from 'moment'
-import { gql, useQuery} from '@apollo/client'
 import _ from 'lodash'
+import Truncate from '../common/truncate'
 
-
-const CUSTOMER_RECEIVABLES = gql`
-query customer ($id: Int!){
-  trip(where: {id: {_eq: $id}}) {
-    customer_receivables {
-      id
-      trip_id
-      name
-      amount
-    }
-    customer_receipts {
-      trip_id
-      mode
-      amount
-      date
-    }
-  }
-}
-`
 const Receivables = (props) => {
-  const {trip_id} = props
-  const { loading, error, data } = useQuery(
-    CUSTOMER_RECEIVABLES,
-    {
-      variables: {id: trip_id},
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
-    }
-  )
-  console.log('trips error', error)
+  const { trip_pay } = props
 
-  var trip = []
-  if (!loading) {
-     trip = data && data.trip
-  }
-  
-   const trip_info = trip[0] ? trip[0] : { name: 'ID does not exist' }
-  console.log('trip_info', trip_info)
-  
-  const receipts = _.sumBy(trip_info.customer_receipts, 'amount');
-console.log('receipts',receipts)
-
-const receivables = _.sumBy(trip_info.customer_receivables, 'amount');
-console.log('receivables',receivables)
+  const receivables = _.sumBy(trip_pay.trip_receivables, 'amount').toFixed(2)
+  const receipts = _.sumBy(trip_pay.trip_receipts, 'amount').toFixed(2)
 
   const customerChargeColumns = [
     {
@@ -57,68 +17,49 @@ console.log('receivables',receivables)
     {
       title: <div className='text-right'>Amount</div>,
       dataIndex: 'amount',
-      render: (text, record) => {
-        return text
-          ? <div className='text-right'> {text ? text.toFixed(2) : 0}</div>
-          : <div className='text-right'>0</div>
-      }
+      className: 'text-right',
+      render: (text, record) => text ? text.toFixed(2) : 0
     }
   ]
-  const advanceColumn = [{
-    title: 'Mode',
-    dataIndex: 'mode',
-    width: '27%',
-    render: (text,record) => {
-      return (record.mode)
-    }
-  },
-  {
-    title: 'Date',
-    dataIndex: 'date',
-    width: '16%',
-    render: (text, record) => {
-      return (record.date) ? moment(record.date).format('DD MMM YYYY') : null
-    }
-  },
-  {
-      title: 'Remarks',
-      dataIndex: 'paymentComment',
-      key: 'paymentComment',
-      width: '37%',
-      // render: (text, record) => {
-      //   const displayRecord =
-      //   text.length > 35 ? (
-      //     <Tooltip title={text}>
-      //       <span>{text.slice(0, 28) + '...'}</span>
-      //     </Tooltip>
-      //   ) : (
-      //     text
-      //   )
-      //   return displayRecord
-      // }
+  const advanceColumn = [
+    {
+      title: 'Mode',
+      dataIndex: 'mode',
+      width: '27%',
+      render: (text, record) => text
     },
-  {
-    title: <div className='text-right'> Amount</div>,
-    dataIndex: 'amount',
-    width: '20%',
-    render: (text, record) => {
-      return text
-        ? <div className='text-right'> {text ? text.toFixed(2) : 0}</div>
-        : <div className='text-right'>0</div>
+    {
+      title: 'Date',
+      dataIndex: 'created_at',
+      width: '18%',
+      render: (text, record) => text ? moment(text).format('DD MMM YY') : null
+    },
+    {
+      title: 'Remarks',
+      dataIndex: 'comment',
+      key: 'comment',
+      width: '35%',
+      render: (text, record) => <Truncate data={text} length={20} />
+    },
+    {
+      title: <div className='text-right'>Amount</div>,
+      dataIndex: 'amount',
+      width: '20%',
+      className: 'text-right',
+      render: (text, record) => text ? text.toFixed(2) : 0
     }
-  }
   ]
 
   return (
     <>
-    <Row className='payableHead' gutter={6}>
+      <Row className='payableHead' gutter={6}>
         <Col xs={12}><b>Receivables</b></Col>
         <Col xs={12} className='text-right'>
           <b>{receivables}</b>
         </Col>
       </Row>
       <Table
-        dataSource={trip_info.customer_receivables}
+        dataSource={trip_pay.trip_receivables}
         columns={customerChargeColumns}
         pagination={false}
         size='small'
@@ -132,7 +73,7 @@ console.log('receivables',receivables)
       <Table
         columns={advanceColumn}
         scroll={{ x: '450' }}
-        dataSource={trip_info.customer_receipts}
+        dataSource={trip_pay.trip_receipts}
         pagination={false}
         size='small'
       />

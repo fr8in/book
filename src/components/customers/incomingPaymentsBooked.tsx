@@ -1,31 +1,38 @@
 import { Table } from 'antd'
 
 const IncomingPaymentsBooked = (props) => {
+
+  const {customer_booked} = props
+
+  console.log('props',props)
+  
+
   const data = [
     {
       title: 'Date',
-      dataIndex: 'date',
+      dataIndex: 'created_at',
       width: '10%'
     },
     {
       title: 'Load Id',
-      dataIndex: 'id',
+      dataIndex: 'trip_id',
       width: '10%'
     },
     {
       title: 'Invoice No',
-      dataIndex: 'invoiceNo',
+      dataIndex: 'invoice_no',
       width: '10%'
     },
     {
       title: 'Booked For',
-      dataIndex: 'bookedFor',
+      dataIndex: 'comment',
       width: '10%'
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
-      width: '10%'
+      width: '10%',
+     
     }
 
   ]
@@ -33,7 +40,7 @@ const IncomingPaymentsBooked = (props) => {
   return (
     <Table
       columns={data}
-      dataSource={props.lead}
+      dataSource={customer_booked}
       rowKey={(record) => record.id}
       size='small'
       pagination={false}

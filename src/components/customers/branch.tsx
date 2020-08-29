@@ -1,97 +1,127 @@
-import { Table, Button } from "antd";
-import { EditOutlined } from "@ant-design/icons";
-//import branchData from '../../../mock/customer/branch'
+import { Table, Button } from 'antd'
+import { EditOutlined } from '@ant-design/icons'
 import EditBranch from '../customers/createCustomerBranch'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
+import { gql, useSubscription } from '@apollo/client'
+import get from 'lodash/get'
+
+const CUSTOMER_BRANCH = gql`
+subscription customer_users($cardcode: String) {
+  customer(where: { cardcode: { _eq: $cardcode } }) {
+    id
+     customer_branches {
+        id
+        branch_name
+        name
+        address
+        # state {
+        #   name
+        # }
+        # city {
+        #   name
+        # }
+        pincode
+        mobile
+      }
+  }
+}`
 
 const Branch = (props) => {
-  const { customerBranch, loading,branch } = props;
-  console.log("customerBranch", customerBranch);
-  console.log("branch", branch)
+  const { cardcode } = props
+
   const initial = {
     customerBranchVisible: false,
     title: null,
-    customerBranchData: customerBranch
+    customerBranchData: null
   }
-  console.log('initial',initial)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+
+  const { loading, data, error } = useSubscription(
+    CUSTOMER_BRANCH,
+    { variables: { cardcode: cardcode } }
+  )
+
+  console.log('customer_Branch Error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+
+  const customer_branches = get(_data, 'customer[0].customer_branches', [])
 
   const column = [
     {
-      title: "Branch Name",
-      dataIndex: "branch_name",
-      width: "15%",
+      title: 'Branch Name',
+      dataIndex: 'branch_name',
+      width: '15%'
     },
     {
-      title: "Name",
-      dataIndex: "name",
-      width: "10%",
+      title: 'Name',
+      dataIndex: 'name',
+      width: '10%'
     },
 
     {
-      title: "Address",
-      dataIndex: "address",
-      width: "15%",
+      title: 'Address',
+      dataIndex: 'address',
+      width: '15%'
     },
     {
-      title: "City",
-      dataIndex: "city",
-      width: "10%",
-      render: (text, record) => record.city && record.city.name,
+      title: 'City',
+      width: '10%',
+      render: (text, record) => record.city && record.city.name
     },
     {
-      title: "State",
-      dataIndex: "state_id",
-      width: "10%",
-      render: (text, record) => {
-        return record.state && record.state.name;
-      },
+      title: 'State',
+      width: '10%',
+      render: (text, record) => record.state && record.state.name
     },
     {
-      title: "Pin",
-      dataIndex: "pincode",
-      width: "10%",
+      title: 'Pin',
+      dataIndex: 'pincode',
+      width: '10%'
     },
     {
-      title: "Contact No",
-      dataIndex: "mobile",
-      width: "10%",
+      title: 'Contact No',
+      dataIndex: 'mobile',
+      width: '10%'
     },
     {
-      title: "Action",
+      title: 'Action',
       render: (text, record) => (
         <span>
-          <Button type="link" icon={<EditOutlined />}   onClick={() =>
-                  handleShow("customerBranchVisible",null, "customerBranchdata",record.customerBranch && record.customerBranch.id)} />
+          <Button
+            type='link' icon={<EditOutlined />} onClick={() =>
+              handleShow('customerBranchVisible', null, 'customerBranchdata', record.customer_branches && record.customer_branches.id)}
+          />
         </span>
       ),
-      width: "10%",
-    },
-  ];
+      width: '10%'
+    }
+  ]
 
   return (
     <>
-    <Table
-      columns={column}
-      dataSource={customerBranch}
-      rowKey={(record) => record.id}
-      size="small"
-      scroll={{ x: 800 }}
-      pagination={false}
-      className="withAction"
-      loading={loading}
-    />
-    {object.customerBranchVisible && (
+      <Table
+        columns={column}
+        dataSource={customer_branches}
+        rowKey={(record) => record.id}
+        size='small'
+        scroll={{ x: 800 }}
+        pagination={false}
+        className='withAction'
+        loading={loading}
+      />
+      {object.customerBranchVisible && (
         <EditBranch
-        visible={object.customerBranchVisible}
-        onHide={handleHide}
-        customerbranches={object.customerBranchData}
-        title={object.title}
+          visible={object.customerBranchVisible}
+          onHide={handleHide}
+          customerbranches={object.customerBranchData}
+          title={object.title}
         />
-         )
-      }
+      )}
     </>
-  );
-};
+  )
+}
 
-export default Branch;
+export default Branch

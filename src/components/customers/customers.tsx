@@ -117,7 +117,7 @@ const CustomerKyc = (props) => {
       dataIndex: 'name',
       width: '11%',
       render: (text, record) => {
-        return text > 14 ? (
+        return text && text.length > 14 ? (
           <Tooltip title={text}>
             <span> {text.slice(0, 14) + '...'}</span>
           </Tooltip>
@@ -328,7 +328,7 @@ const CustomerKyc = (props) => {
         dataSource={customers}
         rowKey={(record) => record.id}
         size='small'
-        scroll={{ x: 960, y: 550 }}
+        scroll={{ x: 960, y: 530 }}
         className='withIcon paginated'
         loading={loading}
         pagination={false}
@@ -338,6 +338,7 @@ const CustomerKyc = (props) => {
           size='small'
           current={currentPage}
           pageSize={filter.limit}
+          showSizeChanger={false}
           total={record_count}
           onChange={pageChange}
           className='text-right p10'

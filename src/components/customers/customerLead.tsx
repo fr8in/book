@@ -9,6 +9,7 @@ import { useState } from 'react'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import CustomerComment from '../customers/customerComment'
 import { gql, useQuery, useMutation } from '@apollo/client'
+import u from '../../lib/util'
 
 const CUSTOMERS_LEAD_QUERY = gql`
 query customers( $offset: Int!
@@ -115,7 +116,7 @@ const CustomerLead = () => {
     commentData: [],
     commentVisible: false,
     offset: 0,
-    limit: 10,
+    limit: u.limit,
     mobile: null,
     customer_status_name: ['Lead', 'Registered'],
     channel_name: ['Direct', 'Social Media', 'Referral', 'App']
@@ -417,6 +418,7 @@ const CustomerLead = () => {
             size='small'
             current={currentPage}
             pageSize={filter.limit}
+            showSizeChanger={false}
             total={record_count}
             onChange={pageChange}
             className='text-right p10'

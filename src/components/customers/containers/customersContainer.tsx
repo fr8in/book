@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Row, Col, Card } from 'antd'
 import Customers from '../customers'
+import u from '../../../lib/util'
 
 import { gql, useQuery } from '@apollo/client'
 
@@ -30,7 +31,7 @@ const CUSTOMERS_QUERY = gql`
       }
     }
   }
-  customer_user_aggregate {
+  customer_user_aggregate(where: {customer: {status: {id: {_in: $statusId}}}, mobile: {_like: $mobile}, name: {_ilike: $name}}) {
     aggregate {
       count
     }
@@ -49,7 +50,7 @@ const CustomersContainer = (props) => {
     name: null,
     mobile: null,
     offset: 0,
-    limit: 10
+    limit: u.limit
   }
   const [filter, setFilter] = useState(initialFilter)
 
@@ -74,7 +75,7 @@ const CustomersContainer = (props) => {
   if (!loading) {
     customer_user = data && data.customer_user
     customer_status = data && data.customer_status
-    customer_aggregate = data && data.customer_aggregate
+    customer_aggregate = data && data.customer_user_aggregate
   }
 
   const customer_status_list =

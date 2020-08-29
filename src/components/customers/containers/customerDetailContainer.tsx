@@ -1,5 +1,5 @@
 import { Row, Col, Card, Button, Space, Tabs, Tooltip } from 'antd'
-import { useState } from 'react'
+import get from 'lodash/get'
 import {
   BankFilled,
   FileDoneOutlined,
@@ -20,30 +20,26 @@ import Rebate from '../rebate'
 import WalletTopup from '../walletTopup'
 import WalletBalance from '../walletBalance'
 import PendingPayments from '../pendingPayments'
-import FinalPaymentsPending from '../finalPaymentPending'
+import CustomerTrips from '../customerTrips'
 import IncomingPayments from '../incomingPayments'
-import AdvancePending from '../advancePending'
-import InvoicePending from '../invoicePending'
 import Users from '../users'
 import Branch from '../branch'
-import Fr8Branch from '../fr8Branch'
+import Fr8Branch from '../../customers/containers/fr8branchContainer'
 import CustomerUser from '../createCustomerUser'
 import CustomerBranch from '../createCustomerBranch'
 import TitleWithCount from '../../common/titleWithCount'
- import OngoingTrip from '../../trips/activeTrips'
- 
+
 // Apollo Client
 import { useSubscription } from '@apollo/client'
 import { CUSTOMER_DETAIL_SUBSCRIPTION } from './query/cutomerDetailSubscription'
-import ClosedTripContainer from '../containers/closedtripContainer'
+import Loading from '../../common/loading'
 
 const { TabPane } = Tabs
 
-const closed = ['Closed']
-const ongoing = ['Assigned','Confirmed','Reported at source','Intransit','Reported at destination']
-const invoicepending= ['Delivered']
-const final = ['Invoiced', 'Paid']
-const advancepending= ['Reported at source', 'Intransit', 'Reported at destination']
+const ongoing = ['Assigned', 'Confirmed', 'Reported at source', 'Intransit', 'Reported at destination', 'Delivery onhold']
+const delivered = ['Delivered']
+const invoiced = ['Invoiced', 'Paid']
+const recieved = ['Recieved', 'Closed']
 
 const CustomerDetailContainer = (props) => {
   const { cardcode } = props
@@ -56,258 +52,188 @@ const CustomerDetailContainer = (props) => {
   }
   const { visible, onShow, onHide } = useShowHide(initial)
 
-  const initialVars = {
-    tabKey: '1',
-    trip_status: ['Invoiced', 'Paid']
-  }
-  const [vars, setVars] = useState(initialVars)
-
-  const trip_variables = {
-    trip_status: vars.trip_status ? vars.trip_status : null,
+  const variables = {
     cardcode: cardcode,
-     closed:closed,
-     ongoing:ongoing,
-     invoicepending: invoicepending,
-     final: final,
-     advancepending:advancepending
-
+    ongoing: ongoing,
+    delivered: delivered,
+    invoiced: invoiced,
+    recieved: recieved
   }
 
   const { loading, error, data } = useSubscription(
     CUSTOMER_DETAIL_SUBSCRIPTION,
     {
-      variables: trip_variables
+      variables: variables
     }
   )
 
   console.log('CustomerDetailContainer Error', error)
-  var customerInfo = {}
-  var closed_count=0;
-  var ongoing_count = 0;
-  var invoicepending_count = 0;
-  var final_count =0;
-  var advancepending_count =0;
-  
+  let customer_info = {}
+  let ongoing_count = 0
+  let delivered_count = 0
+  let invoiced_count = 0
+  let recieved_count = 0
+
   if (!loading) {
     const { customer } = data
-    customerInfo = customer[0] ? customer[0] : { name: 'ID does not exist' }
-     closed_count= customerInfo.closed && customerInfo.closed.aggregate && customerInfo.closed.aggregate.count
-     ongoing_count= customerInfo.ongoing && customerInfo.ongoing.aggregate && customerInfo.ongoing.aggregate.count
-     invoicepending_count= customerInfo.invoicepending && customerInfo.invoicepending.aggregate && customerInfo.invoicepending.aggregate.count
-     final_count= customerInfo.final && customerInfo.final.aggregate && customerInfo.final.aggregate.count
-     advancepending_count= customerInfo.advancepending && customerInfo.advancepending.aggregate && customerInfo.advancepending.aggregate.count 
-  }
-  console.log('customerInfo',customerInfo)
-
-  const onTabChange = (key) => {
-    setVars({ ...vars, tabKey: key })
-    switch (key) {
-      case '1':
-        setVars({ ...vars, trip_status: initialVars.trip_status })
-        break
-      case '3':
-        setVars({ ...vars, trip_status: ['Reported at source', 'Intransit', 'Reported at destination'] })
-        break
-      case '4':
-        setVars({ ...vars, trip_status: ['Delivered'] })
-        break
-      case '5':
-        setVars({ ...vars, trip_status: ['Delivered'] })
-        break
-      case '9':
-        setVars({ ...vars, trip_status: ['Assigned','Confirmed','Reported at source','Intransit','Reported at destination'] })
-        break
-      case '10':
-        setVars({ ...vars, trip_status: ['Closed'] })
-        break  
-
-      default:
-        setVars({ ...vars, trip_status: initialVars.trip_status })
-        break
-    }
+    customer_info = customer && customer[0] ? customer[0] : { name: 'ID does not exist' }
+    ongoing_count = get(customer_info, 'ongoing.aggregate.count', 0)
+    delivered_count = get(customer_info, 'delivered.aggregate.count', 0)
+    invoiced_count = get(customer_info, 'invoiced.aggregate.count', 0)
+    recieved_count = get(customer_info, 'recieved.aggregate.count', 0)
   }
 
   return (
-    <Row>
-      <Col xs={24}>
-        <Card
-          size='small'
-          className='border-top-blue'
-          title={
-            <DetailPageHeader
-              title={
-                <Space>
-                  <CustomerName
-                    cardcode={customerInfo.cardcode}
-                    name={customerInfo.name}
-                    loading={loading}
-                  />
-                  <h4>{customerInfo.cardcode}</h4>
-                </Space>
-              }
-              extra={
-                <Space>
-                  <Tooltip title='Account Statement'>
-                    <Button
-                      icon={<MailOutlined />}
-                      shape='circle'
-                      onClick={() => onShow('showModal')}
-                    />
-                  </Tooltip>
-                  <Tooltip title='Transfer'>
-                    <Button
-                      icon={<BankFilled />}
-                      shape='circle'
-                      onClick={() => onShow('transfer')}
-                    />
-                  </Tooltip>
-                  <Tooltip title='Excess'>
-                    <Button
-                      icon={<FileDoneOutlined />}
-                      shape='circle'
-                      onClick={() => onShow('rebate')}
-                    />
-                  </Tooltip>
-                  <Tooltip title='Wallet Topup'>
-                    <Button
-                      shape='circle'
-                      icon={<WalletOutlined />}
-                      onClick={() => onShow('wallet')}
-                    />
-                  </Tooltip>
-                  <WalletBalance />
-                  <Blacklist
-                    cardcode={customerInfo.cardcode}
-                    statusId={customerInfo.status && customerInfo.status.id}
-                  />
-                </Space>
-              }
-            />
-          }
-        >
-          <CustomerInfo customerInfo={customerInfo} loading={loading} />
-          <Row gutter={10} className='mt10'>
-            <Col xs={24}>
-              <Card size='small' className='card-body-0 border-top-blue'>
-                <Tabs onChange={onTabChange} defaultActiveKey='1'>
-                  <TabPane
-                    tab={<TitleWithCount name='Final' value={final_count} />}
-                    key='1'
-                  >
-                    <FinalPaymentsPending
-                      finalPayment={customerInfo.trips}
+    loading ? <Loading /> : (
+      <Row>
+        <Col xs={24}>
+          <Card
+            size='small'
+            className='border-top-blue'
+            title={
+              <DetailPageHeader
+                title={
+                  <Space>
+                    <CustomerName
+                      cardcode={cardcode}
+                      name={customer_info.name}
                       loading={loading}
                     />
-                  </TabPane>
-                  <TabPane
-                    tab={<TitleWithCount name='Incoming' value={29} />}
-                    key='2'
-                  >
-                    <IncomingPayments />
-                  </TabPane>
-                  <TabPane
-                    tab={<TitleWithCount name='Advance Pending(O)' value={advancepending_count} />}
-                    key='3'
-                  >
-                    <AdvancePending
-                      advance_Pending={customerInfo.trips}
-                      loading={loading}
-                    />
-                  </TabPane>
-                  <TabPane
-                    tab={<TitleWithCount name='Advance Pending(C)' value={invoicepending_count} />}
-                    key='4'
-                  >
-                    <AdvancePending
-                      advance_pending={customerInfo.trips}
-                      loading={loading}
-                    />
-                  </TabPane>
-                  <TabPane
-                    tab={<TitleWithCount name='Invoice Pending' value={invoicepending_count} />}
-                    key='5'
-                  >
-                    <InvoicePending
-                      invoice_Pending={customerInfo.trips}
-                      loading={loading}
-                    />
-                  </TabPane>
-                  <TabPane tab='Users' key='6'>
-                    <Row justify='end' className='m5'>
-                      <Button type='primary' onClick={() => onShow('addUser')}>
-                        <PlusOutlined /> Add Users
-                      </Button>
-                    </Row>
-                    <Users
-                      customeruser={customerInfo.customer_users}
-                      loading={loading}
-                    />
-                  </TabPane>
-                  <TabPane tab='Branch' key='7'>
-                    <Row justify='end' className='m5'>
+                    <h4>{cardcode}</h4>
+                  </Space>
+                }
+                extra={
+                  <Space>
+                    <Tooltip title='Account Statement'>
                       <Button
-                        type='primary'
-                        onClick={() => onShow('addBranch')}
-                      >
-                        <PlusOutlined /> Add Branch
-                      </Button>
-                    </Row>
-                    <Branch
-                      customerBranch={customerInfo.customer_branches}
-                      branch={customerInfo.customer_branches && customerInfo.customer_branches.id}
-                      loading={loading}
+                        icon={<MailOutlined />}
+                        shape='circle'
+                        onClick={() => onShow('showModal')}
+                      />
+                    </Tooltip>
+                    <Tooltip title='Transfer'>
+                      <Button
+                        icon={<BankFilled />}
+                        shape='circle'
+                        onClick={() => onShow('transfer')}
+                      />
+                    </Tooltip>
+                    <Tooltip title='Excess'>
+                      <Button
+                        icon={<FileDoneOutlined />}
+                        shape='circle'
+                        onClick={() => onShow('rebate')}
+                      />
+                    </Tooltip>
+                    <Tooltip title='Wallet Topup'>
+                      <Button
+                        shape='circle'
+                        icon={<WalletOutlined />}
+                        onClick={() => onShow('wallet')}
+                      />
+                    </Tooltip>
+                    <WalletBalance wallet_balance={customer_info.customer_accounting && customer_info.customer_accounting.wallet_balance}/>
+                    <Blacklist
+                      cardcode={cardcode}
+                      statusId={get(customer_info, 'status.id', null)}
                     />
-                  </TabPane>
-                  <TabPane tab='FR8 Branch' key='8'>
-                    <Fr8Branch />
-                  </TabPane>
-                  <TabPane
-                    tab={<TitleWithCount name='Ongoing' value={ongoing_count} />}
-                    key='9'
-                  >
-                    <OngoingTrip  trips={customerInfo.trips} loading={loading} />
-                  </TabPane>
-                  <TabPane
-                    tab={<TitleWithCount name='Closed' value={closed_count} />}
-                    key='10'
-                  >
-                    <ClosedTripContainer cardcode={cardcode} loading={loading}/>
-                  </TabPane>
-                  <TabPane tab='Details' key='11'>
-                    <Row className='p10'>
-                      <Col xs={24} sm={24} md={12}>
-                        <CustomerDetails customerInfo={customerInfo} loading={loading} />
-                      </Col>
-                      <Col xs={24} sm={24} md={12}>
-                        <PendingPayments />
-                      </Col>
-                    </Row>
-                  </TabPane>
-                </Tabs>
-              </Card>
-            </Col>
-            {visible.addUser && (
-              <CustomerUser visible={visible.addUser} onHide={onHide} customer={customerInfo.id}/>
-            )}
-            {visible.addBranch && (
-              <CustomerBranch visible={visible.addBranch} onHide={onHide} customerbranch={customerInfo.id} />
-            )}
-            {visible.transfer && (
-              <Transfer visible={visible.transfer} onHide={onHide} />
-            )}
-            {visible.rebate && (
-              <Rebate visible={visible.rebate} onHide={onHide} />
-            )}
-            {visible.wallet && (
-              <WalletTopup visible={visible.wallet} onHide={onHide} />
-            )}
-            {visible.showModal && (
-              <AccStmtMail visible={visible.showModal} onHide={onHide} />
-            )}
-          </Row>
-        </Card>
-      </Col>
-    </Row>
+                  </Space>
+                }
+              />
+            }
+          >
+            <CustomerInfo customer_info={customer_info} loading={loading} />
+            <Row gutter={10} className='mt10'>
+              <Col xs={24}>
+                <Card size='small' className='card-body-0 border-top-blue'>
+                  <Tabs defaultActiveKey='1'>
+                    <TabPane
+                      tab={<TitleWithCount name='On-going' value={ongoing_count} />}
+                      key='1'
+                    >
+                      <CustomerTrips cardcode={cardcode} status_names={ongoing} />
+                    </TabPane>
+                    <TabPane
+                      tab={<TitleWithCount name='Delivered' value={delivered_count} />}
+                      key='2'
+                    >
+                      <CustomerTrips cardcode={cardcode} status_names={delivered} delivered />
+                    </TabPane>
+                    <TabPane
+                      tab={<TitleWithCount name='Invoiced' value={invoiced_count} />}
+                      key='3'
+                    >
+                      <CustomerTrips cardcode={cardcode} status_names={invoiced} />
+                    </TabPane>
+                    <TabPane
+                      tab={<TitleWithCount name='Recieved' value={recieved_count} />}
+                      key='4'
+                    >
+                      <CustomerTrips cardcode={cardcode} status_names={recieved} />
+                    </TabPane>
+                    <TabPane
+                      tab={<TitleWithCount name='Incoming' value={0} />}
+                      key='5'
+                    >
+                      <IncomingPayments cardcode={cardcode} />
+                    </TabPane>
+                    <TabPane tab='Users' key='6'>
+                      <Row justify='end' className='m5'>
+                        <Button type='primary' onClick={() => onShow('addUser')}>
+                          <PlusOutlined /> Add Users
+                        </Button>
+                      </Row>
+                      <Users cardcode={cardcode} />
+                    </TabPane>
+                    <TabPane tab='Branch' key='7'>
+                      <Row justify='end' className='m5'>
+                        <Button
+                          type='primary'
+                          onClick={() => onShow('addBranch')}
+                        >
+                          <PlusOutlined /> Add Branch
+                        </Button>
+                      </Row>
+                      <Branch cardcode={cardcode} />
+                    </TabPane>
+                    <TabPane tab='FR8 Branch' key='8'>
+                      <Fr8Branch />
+                    </TabPane>
+                    <TabPane tab='Details' key='9'>
+                      <Row className='p10'>
+                        <Col xs={24} sm={24} md={12}>
+                          <CustomerDetails customer_info={customer_info} loading={loading} />
+                        </Col>
+                        <Col xs={24} sm={24} md={12}>
+                          <PendingPayments />
+                        </Col>
+                      </Row>
+                    </TabPane>
+                  </Tabs>
+                </Card>
+              </Col>
+              {visible.addUser && (
+                <CustomerUser visible={visible.addUser} onHide={onHide} customer={customer_info.id} />
+              )}
+              {visible.addBranch && (
+                <CustomerBranch visible={visible.addBranch} onHide={onHide} customerbranch={customer_info.id} />
+              )}
+              {visible.transfer && (
+                <Transfer visible={visible.transfer} onHide={onHide} />
+              )}
+              {visible.rebate && (
+                <Rebate visible={visible.rebate} onHide={onHide} />
+              )}
+              {visible.wallet && (
+                <WalletTopup visible={visible.wallet} onHide={onHide} />
+              )}
+              {visible.showModal && (
+                <AccStmtMail visible={visible.showModal} onHide={onHide} />
+              )}
+            </Row>
+          </Card>
+        </Col>
+      </Row>)
   )
 }
 
