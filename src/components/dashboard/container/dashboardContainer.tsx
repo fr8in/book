@@ -10,7 +10,9 @@ import DASHBOAD_QUERY from './query/dashboardQuery'
 import { useSubscription } from '@apollo/client'
 import _ from 'lodash'
 import WaitingForLoadContainer from './waitingForLoadContainer'
-import AnalyticsContainer from './analyticsContainer'
+import Orders from '../../reports/orders'
+import Revenue from '../../reports/revenue'
+import Progress from '../../reports/progress'
 
 const { TabPane } = Tabs
 
@@ -88,7 +90,17 @@ const DashboardContainer = (props) => {
         {/* Statictics data */}
         <Row gutter={[0, 10]}>
           <Col xs={24} style={{ overflow: 'hidden' }}>
-            <AnalyticsContainer filters={filters} />
+            <Row gutter={10}>
+              <Col xs={24} sm={9} md={8}>
+                <Orders filters={filters} />
+              </Col>
+              <Col xs={24} sm={15} md={8}>
+                <Revenue filters={filters} />
+              </Col>
+              <Col xs={24} sm={24} md={8}>
+                <Progress />
+              </Col>
+            </Row>
           </Col>
         </Row>
         <Row gutter={[0, 10]}>
