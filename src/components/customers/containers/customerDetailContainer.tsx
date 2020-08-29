@@ -194,11 +194,7 @@ const CustomerDetailContainer = (props) => {
                           <PlusOutlined /> Add Branch
                         </Button>
                       </Row>
-                      <Branch
-                        customerBranch={customer_info.customer_branches}
-                        branch={customer_info.customer_branches && customer_info.customer_branches.id}
-                        loading={loading}
-                      />
+                      <Branch cardcode={cardcode} />
                     </TabPane>
                     <TabPane tab='FR8 Branch' key='8'>
                       <Fr8Branch />

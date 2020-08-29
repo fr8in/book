@@ -53,19 +53,6 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         id
         name
       }
-      # customer_branches {
-      #   branch_name
-      #   name
-      #   address
-      #   # state {
-      #   #   name
-      #   # }
-      #   # city {
-      #   #   name
-      #   # }
-      #   pincode
-      #   mobile
-      # }
       # customer_mamul_summary {
       #   system_mamul_avg
       # }
