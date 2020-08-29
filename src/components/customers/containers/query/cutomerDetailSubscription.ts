@@ -53,11 +53,6 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         id
         name
       }
-      # customer_users{
-      #   name
-      #   mobile
-      #   email
-      # }
       # customer_branches {
       #   branch_name
       #   name

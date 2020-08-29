@@ -1,22 +1,47 @@
-import { Table, Button, message } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { useMutation, gql } from '@apollo/client'
+import { Table, Button, message } from 'antd'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { gql, useMutation, useSubscription } from '@apollo/client'
+import get from 'lodash/get'
+
+const CUSTOMER_USER = gql`
+subscription customer_users($cardcode: String!) {
+  customer(where: { cardcode: { _eq: $cardcode } }) {
+    customer_users{
+      id
+      name
+      mobile
+      email
+    }
+  }
+}`
 
 const DELETE_CUSTOMER_USER_MUTATION = gql`
-mutation customerUserDelete($id:Int) {
+mutation customer_usersDelete($id:Int) {
   delete_customer_user( where: {id: {_eq:$id}}) {
     returning {
       id
       mobile
     }
   }
-}
-`
-const Users = (props) => {
-  const { customeruser, loading } = props;
-  console.log("customerUser", customeruser);
+}`
 
-  const [deleteCustomerUser] = useMutation(
+const Users = (props) => {
+  const { cardcode } = props
+
+  const { loading, data, error } = useSubscription(
+    CUSTOMER_USER,
+    { variables: { cardcode: cardcode } }
+  )
+
+  console.log('customer_users Error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+
+  const customer_users = get(_data, 'customer[0].customer_users', [])
+
+  const [deletecustomer_users] = useMutation(
     DELETE_CUSTOMER_USER_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
@@ -25,77 +50,67 @@ const Users = (props) => {
   )
 
   const onDelete = (id) => {
-    deleteCustomerUser({
+    deletecustomer_users({
       variables: {
         id: id
       }
     })
   }
 
-
-  const addUser = [
+  const column = [
     {
-      title: "Name",
+      title: 'Name',
       dataIndex: 'name',
-      render: (text,record) => { 
-         return (record.name)
-      },
-      width: "15%",
+      render: (text, record) => text,
+      width: '15%'
     },
 
     {
-      title: "Mobile No",
-      render: (text,record) => {
-           return (record.mobile)
-      },
-      width: "20%",
+      title: 'Mobile No',
+      dataIndex: 'mobile',
+      render: (text, record) => text,
+      width: '20%'
     },
 
     {
-      title: "Email",
-      render: (text,record) => {
-         return (record.email)
-      },
-      width: "10%",
+      title: 'Email',
+      dataIndex: 'email',
+      render: (text, record) => text,
+      width: '10%'
     },
     {
-      title: "User Branch",
-      render: (text,record) => {
-        const branch_name = customeruser[0] && customeruser[0].customerBranches &&customeruser[0].customerBranches.branch_name 
-        return (record.branch_name)
-      },
-      width: "20%",
+      title: 'User Branch',
+      render: (text, record) => record.branch_name,
+      width: '20%'
     },
     {
-      title: "Operating City",
-      render: (text,record) => {
-        const city = customeruser[0] && customeruser[0].customerBranches  && customeruser[0].customerBranches[0].city && customeruser.customerBranches[0].city.name  
-        return (record.city)
-      },
-      width: "10%",
+      title: 'Operating City',
+      render: (text, record) => record.city,
+      width: '10%'
     },
     {
-      title: "Action",
+      title: 'Action',
       render: (text, record) => (
-        <span className="actions">
-          <Button type="link" icon={<DeleteOutlined />} onClick={() => onDelete(record.id)} />
-          <Button type="link" icon={<EditOutlined />} />
+        <span className='actions'>
+          <Button type='link' icon={<DeleteOutlined />} onClick={() => onDelete(record.id)} />
+          <Button type='link' icon={<EditOutlined />} />
         </span>
       ),
-      width: "12%",
-    },
-  ];
+      width: '12%'
+    }
+  ]
 
   return (
     <Table
-      columns={addUser}
-      dataSource={customeruser}
-      size="small"
+      columns={column}
+      dataSource={customer_users}
+      size='small'
       scroll={{ x: 800 }}
+      rowKey={record => record.id}
       pagination={false}
       loading={loading}
     />
-  );
-};
+  )
+}
 
-export default Users;
+export default Users

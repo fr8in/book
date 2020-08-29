@@ -135,7 +135,7 @@ const CustomerDetailContainer = (props) => {
                     <WalletBalance />
                     <Blacklist
                       cardcode={cardcode}
-                      statusId={customer_info.status && customer_info.status.id}
+                      statusId={get(customer_info, 'status.id', null)}
                     />
                   </Space>
                 }
@@ -183,10 +183,7 @@ const CustomerDetailContainer = (props) => {
                           <PlusOutlined /> Add Users
                         </Button>
                       </Row>
-                      <Users
-                        customeruser={customer_info.customer_users}
-                        loading={loading}
-                      />
+                      <Users cardcode={cardcode} />
                     </TabPane>
                     <TabPane tab='Branch' key='7'>
                       <Row justify='end' className='m5'>
