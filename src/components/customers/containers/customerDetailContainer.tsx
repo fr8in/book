@@ -175,7 +175,7 @@ const CustomerDetailContainer = (props) => {
                       tab={<TitleWithCount name='Incoming' value={0} />}
                       key='5'
                     >
-                      <IncomingPayments />
+                      <IncomingPayments cardcode={cardcode} />
                     </TabPane>
                     <TabPane tab='Users' key='6'>
                       <Row justify='end' className='m5'>
