@@ -1,68 +1,52 @@
 import { Table, Row, Col } from 'antd'
-//import data from '../../../mock/trip/chargesAndPayments'
 import moment from 'moment'
 import _ from 'lodash'
 
 const Payables = (props) => {
-  const {trip_pay} =props
+  const { trip_pay } = props
 
-  console.log('trip_pay',trip_pay)
+  const payables = _.sumBy(trip_pay.trip_payables, 'amount').toFixed(2)
+  const payments = _.sumBy(trip_pay.trip_payments, 'amount').toFixed(2)
 
-const payments = _.sumBy(trip_pay.trip_payments, 'amount');
-console.log('payment',payments)
-const paymentable = _.sumBy(trip_pay.trip_payables, 'amount');
-console.log('paymentable',paymentable)
- 
-  const payablesColumn  = [
+  const payablesColumn = [
     {
       title: 'Charges',
       dataIndex: 'name'
     },
     {
-      title: <div className='text-right'> Amount</div>,
+      title: <div className='text-right'>Amount</div>,
       dataIndex: 'amount',
-      render: (text, record) => {
-        return text
-          ? <div className='text-right'> {text.toFixed(2)}</div>
-          : <div className='text-right'>0</div>
-      }
+      className: 'text-right',
+      render: (text, record) => text.toFixed(2)
     }
   ]
-  const paymentColumn = [{
-    title: 'Mode',
-    key: 'mode',
-    width: '40%',
-    render: (text,record) => {
-      return (record.mode)
+  const paymentColumn = [
+    {
+      title: 'Mode',
+      dataIndex: 'mode',
+      width: '40%',
+      render: (text, record) => text
+    },
+    {
+      title: 'Date',
+      dataIndex: 'created_at',
+      width: '30%',
+      render: (text, record) => text ? moment(text).format('DD MMM YYYY') : null
+    },
+    {
+      title: <div className='text-right'>Amount</div>,
+      dataIndex: 'amount',
+      width: '30%',
+      className: 'text-right',
+      render: (text, record) => text ? text.toFixed(2) : 0
     }
-  },
-  {
-    title: 'Date',
-    key: 'created_at',
-    width: '30%',
-    render: (text, record) => {
-      return (record.created_at) ? moment(record.created_at).format('DD MMM YYYY') : null
-    }
-  },
-  {
-    title: <div className='text-right'>Amount</div>,
-    dataIndex: 'amount',
-    key: 'amount',
-    width: '30%',
-    render: (text, record) => {
-      return text  
-        ? <div className='text-right'> {text ? text.toFixed(2) : 0}</div>
-        : <div className='text-right'>0</div>
-       
-    }
-  }
   ]
   return (
     <>
-     <Row className='payableHead' gutter={6}>
+      <Row className='payableHead' gutter={6}>
         <Col xs={12}><b>Paymentable</b></Col>
         <Col xs={12} className='text-right'>
-          <b>{paymentable}</b>
+          <b>{payables}</b>
         </Col>
       </Row>
       <Table
