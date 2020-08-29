@@ -77,16 +77,14 @@ const PartnerDetailContainer = (props) => {
   var pod_count = 0
   var invoiced_count = 0
   var paid_count = 0
-  var fas_tag = {}
+ 
   if (!loading) {
     const { partner } = data
     partner_info = partner[0] ? partner[0] : { name: 'ID does not exist' }
     trucks = partner_info.trucks
     trips = partner_info.trips
-    fas_tag = partner_info.fastags
     console.log('partner_info', partner_info)
     console.log('trucks', trucks)
-    console.log('fas_tag', fas_tag)
     truck_count = partner_info.trucks_aggregate && partner_info.trucks_aggregate.aggregate && partner_info.trucks_aggregate.aggregate.count
     ongoing_count = partner_info.ongoing && partner_info.ongoing.aggregate && partner_info.ongoing.aggregate.count
     pod_count = partner_info.pod && partner_info.pod.aggregate && partner_info.pod.aggregate.count
@@ -157,10 +155,10 @@ const PartnerDetailContainer = (props) => {
                               <Document partnerInfo={partner_info} />
                             </TabPane>
                             <TabPane tab='Fuel Detail' key='4'>
-                              <PartnerFuelDetail />
+                              <PartnerFuelDetail partner_id={partner_info.id}/>
                             </TabPane>
                             <TabPane tab='FasTag' key='5'>
-                              <FasTags fastag={fas_tag} />
+                              <FasTags partner_id={partner_info.id} />
                             </TabPane>
                           </Tabs>
                         </Card>
