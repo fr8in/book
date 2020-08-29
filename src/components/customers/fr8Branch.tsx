@@ -2,13 +2,15 @@ import { Table } from "antd";
 import branchData from "../../../mock/customer/branch";
 
 const Fr8Branch = (props) => {
-
+const {employee} =props
   const fr8Branch = [
     {
       title: "Branch Name",
       dataIndex: "name",
       width: "50%",
-      render: (text, record) => record.branch && record.branch.name,
+      render: (text, record) => {
+      return (record.name)
+      }
     },
     {
       title: "Traffic",
@@ -20,7 +22,7 @@ const Fr8Branch = (props) => {
   return (
     <Table
       columns={fr8Branch}
-      dataSource={branchData}
+      dataSource={employee}
       rowKey={(record) => record.id}
       size="small"
       scroll={{ x: 800 }}
