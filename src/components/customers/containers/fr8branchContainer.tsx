@@ -1,26 +1,39 @@
 import Fr8Branch from '../fr8Branch'
 import React from 'react'
 import { gql, useQuery } from '@apollo/client'
-import get from 'lodash/get'
 
 const EMPLOOYEE_QUERY = gql`
-query fr8branch($cardcode:String){
-    employee(where:{trips:{customer:{cardcode:{_eq:$cardcode}}}}){
-      name
-      branch_employees{
-        branch{
-          name
+query customer_fr8Branch_manager($id: Int){
+  branch{
+    id
+    name
+    branch_employees(where: {is_manager:{_eq: true}}){
+      customer_branch_employees(where:{customer_id:{_eq:$id}}){
+        id
+        customer_id
+        branch_employee{
+          id
+          employee{
+            id
+            email
+            name
+          }
         }
+      }
+      employee{
+        id
+        name
+        email
       }
     }
   }
-  
-  
+}
+
 `
 const CustomersContainer = (props) => {
-    const { cardcode } = props
+    const { id } = props
     const variables = {
-        cardcode: cardcode
+        id:id
       }
          
 const { loading, error, data } = useQuery(
@@ -31,22 +44,18 @@ const { loading, error, data } = useQuery(
     notifyOnNetworkStatusChange: true
   })
   console.log('error', error)
-  console.log('data',data)
-
-//   var _data = {};
-//   if (!loading) {
-//     _data = data
-//   }
-//   console.log('_data',_data)
-var employee = []
+  console.log('id',variables)
+  
+var branch = []
 if (!loading){
-     employee = data && data.employee
+     branch = data && data.branch
 }
-console.log('employee',employee)
+console.log('branch',branch)
+
   return (
      <Fr8Branch
-         cardcode={cardcode}
-         employee={employee}
+         id={id}
+         customer_fr8Branch={branch}
           />
   )
 }
