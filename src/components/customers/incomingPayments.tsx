@@ -37,13 +37,15 @@ const IncomingPayments = (props) => {
   )
 
   console.log('Excess Load Error', error)
-  var customer = []
+ 
+  var customer_info = {}
 
   if (!loading) {
-    customer = data && data.customer
+    const { customer } = data
+    customer_info = customer[0] ? customer[0] : { name: 'ID does not exist' }
   }
  
-console.log('customer',customer)
+console.log('customer',data)
 
 
   const columns = [
@@ -65,7 +67,7 @@ console.log('customer',customer)
       key: 'booked',
       width: '20%',
       render: (text, record) => {
-        return record.customer && record.customer_info.customer_incomings && record.customer_info.customer_incomings.booked
+        return record.customer_info && record.customer_info.customer_incomings && record.customer_info.customer_incomings.booked
       }
     },
     {
