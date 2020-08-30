@@ -81,9 +81,7 @@ const Comment = (props) => {
       title: 'Created On',
       dataIndex: 'created_at',
       width: '20%',
-      render: (text, record) => {
-        return text ? moment(text).format('DD-MMM-YY') : null
-      }
+      render: (text, record) => text ? moment(text).format('DD-MMM-YY') : null
     }
   ]
   return (

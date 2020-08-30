@@ -69,12 +69,12 @@ const Branch = (props) => {
     {
       title: 'City',
       width: '10%',
-      render: (text, record) => record.city && record.city.name
+      render: (text, record) => get(record, 'city.name', null)
     },
     {
       title: 'State',
       width: '10%',
-      render: (text, record) => record.state && record.state.name
+      render: (text, record) => get(record, 'state.name', null)
     },
     {
       title: 'Pin',
@@ -91,8 +91,9 @@ const Branch = (props) => {
       render: (text, record) => (
         <span>
           <Button
-            type='link' icon={<EditOutlined />} onClick={() =>
-              handleShow('customerBranchVisible', null, 'customerBranchdata', record.customer_branches && record.customer_branches.id)}
+            type='link'
+            icon={<EditOutlined />}
+            onClick={() => handleShow('customerBranchVisible', null, 'customerBranchdata', get(record, 'customer_branches.id', null))}
           />
         </span>
       ),

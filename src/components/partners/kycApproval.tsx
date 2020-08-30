@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   Modal,
   Button,
@@ -14,7 +13,7 @@ import {
   Table
 } from 'antd'
 import { DeleteTwoTone, EyeTwoTone, UploadOutlined } from '@ant-design/icons'
-import Link from 'next/link'
+import LinkComp from '../common/link'
 
 const { Option } = Select
 const tableData = [
@@ -35,10 +34,11 @@ const KycApproval = (props) => {
       dataIndex: 'truck_no',
       render: (text, record) => {
         return (
-          <Link href='/trucks/[id]' as={`trucks/${record.truck_no}`}>
-            <a>{text}</a>
-          </Link>
-        )
+          <LinkComp
+            type='trucks'
+            data={text}
+            id={record.truck_no}
+          />)
       }
     },
     {
@@ -69,7 +69,11 @@ const KycApproval = (props) => {
         <Row gutter={10}>
           <Col xs={24} sm={10}>
             <Form.Item name='partnerName' label='Partner Name'>
-              <Link href='/partners/[id]' as={`/partners/${data.cardcode}`}><a>{data.name}</a></Link>
+              <LinkComp
+                type='partners'
+                data={data.name}
+                id={data.cardcode}
+              />
             </Form.Item>
           </Col>
           <Col xs={24} sm={6}>

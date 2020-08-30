@@ -1,6 +1,5 @@
 
 import { Row, Col, Modal, Button, Input, Select, Form, message } from 'antd'
-//  import  {State}  from '../../../mock/customer/createCustomerBranchMock'
 import { useMutation, gql, useQuery } from '@apollo/client'
 import { useState } from 'react'
 import CitySelect from '../common/citySelect'
@@ -46,7 +45,7 @@ mutation CustomerBranchInsert($address: String, $id: Int, $branch_name: String, 
 
 const CreateCustomerBranch = (props) => {
   const { visible, onHide, customerbranches } = props
-  console.log('customerbranches', customerbranches)
+
   const initial = { city_id: null }
   const [obj, setObj] = useState(initial)
 

@@ -1,6 +1,7 @@
 import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
+import get from 'lodash/get'
 
 const PARTNER_ADVANCE_PERCENTAGE_SUBSCRIPTION = gql`
   query partnerAdvancePercentage{
@@ -38,11 +39,13 @@ const AdvancePercentage = (props) => {
       onCompleted () { message.success('Updated!!') }
     }
   )
-  
 
-  if (loading) return null
-  const { partner_advance_percentage } = data
-  
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const partner_advance_percentage = get(_data, 'partner_advance_percentage', [])
+
   const advancePercentage = partner_advance_percentage.map(data => {
     return { value: data.id, label: data.name }
   })
@@ -51,19 +54,20 @@ const AdvancePercentage = (props) => {
     UpdateAdvancePercentage({
       variables: {
         cardcode,
-        partner_advance_percentage_id : value
+        partner_advance_percentage_id: value
       }
     })
   }
 
   return (
-    <InlineSelect
-      label={advance}
-      value={advance_id}
-      options={advancePercentage}
-      handleChange={onChange}
-      style={{ width: 110 }}
-    />
+    loading ? null : (
+      <InlineSelect
+        label={advance}
+        value={advance_id}
+        options={advancePercentage}
+        handleChange={onChange}
+        style={{ width: 110 }}
+      />)
   )
 }
 

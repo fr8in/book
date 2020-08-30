@@ -75,6 +75,7 @@ const Branches = () => {
         size='small'
         scroll={{ x: 800, y: 400 }}
         pagination={false}
+        rowKey={record => record.id}
       />
       {object.trafficVisible && (
         <AddTraffic

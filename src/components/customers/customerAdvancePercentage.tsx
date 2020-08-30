@@ -2,7 +2,6 @@ import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
-import Loading from '../common/loading'
 
 const CUSTOMERS_ADVANCE_PERCENTAGE_QUERY = gql`
   query customerAdvancePercentage{
@@ -62,7 +61,7 @@ const CustomerAdvancePercentage = (props) => {
   }
 
   return (
-    loading ? <Loading /> : (
+    loading ? null : (
       <InlineSelect
         label={advancePercentage}
         value={advancePercentageId}

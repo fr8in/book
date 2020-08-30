@@ -3,7 +3,6 @@ import {
   Table,
   Button,
   Space,
-  Tooltip,
   Input,
   Popconfirm,
   Radio,
@@ -18,13 +17,13 @@ import {
   SearchOutlined
 } from '@ant-design/icons'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
-import Link from 'next/link'
 import BranchCreation from '../customers/branchCreation'
 import CustomerAdvancePercentage from './customerAdvancePercentage'
 import { gql, useMutation } from '@apollo/client'
 import moment from 'moment'
 import Truncate from '../common/truncate'
 import get from 'lodash/get'
+import LinkComp from '../common/link'
 
 const CUSTOMER_REJECT_MUTATION = gql`
   mutation customerReject($status_id: Int, $id: Int!) {
@@ -127,16 +126,12 @@ const CustomerKyc = (props) => {
         const company = get(record, 'customer.name', '-')
         const cardcode = get(record, 'customer.cardcode', null)
         return (
-          <Link href='customers/[id]' as={`customers/${cardcode}`}>
-            {company && company.length > 14 ? (
-              <Tooltip title={company}>
-                <a>{company.slice(0, 14) + '...'}</a>
-              </Tooltip>
-            ) : (
-              <a>{company}</a>
-            )}
-          </Link>
-        )
+          <LinkComp
+            type='customers'
+            data={company}
+            id={cardcode}
+            length={12}
+          />)
       },
       filterDropdown: (
         <div>
@@ -175,10 +170,7 @@ const CustomerKyc = (props) => {
     {
       title: 'Type',
       width: '8%',
-      render: (text, record) => {
-        const type = get(record, 'customer.customer_type.name', '-')
-        return type
-      }
+      render: (text, record) => get(record, 'customer.customer_type.name', '-')
     },
     {
       title: 'Reg Date',
@@ -191,10 +183,7 @@ const CustomerKyc = (props) => {
     {
       title: 'PAN',
       width: '9%',
-      render: (text, record) => {
-        const type = get(record, 'customer.pan', '-')
-        return type
-      }
+      render: (text, record) => get(record, 'customer.pan', '-')
     },
     {
       title: 'Mamul',
@@ -209,11 +198,7 @@ const CustomerKyc = (props) => {
               <Input
                 type='number'
                 min={0}
-                value={
-                  defaultMamul.selectedId === record.cardcode
-                    ? defaultMamul.mamul
-                    : ''
-                }
+                value={defaultMamul.selectedId === record.cardcode ? defaultMamul.mamul : ''}
                 defaultValue={defaultMamul.mamul}
                 onChange={(e) => onMamul(record, e)}
                 size='small'

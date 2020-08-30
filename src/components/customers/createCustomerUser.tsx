@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Row, Col, Modal, Button, Input, Select, Form, message } from 'antd'
-// import { OperatingCities } from '../../../mock/customer/createCustomerUserMock'
 import { useMutation, gql, useQuery } from '@apollo/client'
 import CitySelect from '../common/citySelect'
 

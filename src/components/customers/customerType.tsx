@@ -1,6 +1,7 @@
 import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
+import get from 'lodash/get'
 
 const CUSTOMERS_TYPE_QUERY = gql`
   query customerType{
@@ -33,10 +34,13 @@ const CustomerType = (props) => {
     onCompleted () { message.success('Updated!!') }
   })
 
-  if (loading) return null
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
   console.log('CustomerType error', error)
 
-  const { customer_type } = data
+  const customer_type = get(_data, 'customer_type', [])
   const typeList = customer_type.map((data) => {
     return { value: data.id, label: data.name }
   })
@@ -51,13 +55,14 @@ const CustomerType = (props) => {
   }
 
   return (
-    <InlineSelect
-      label={type}
-      value={type}
-      options={typeList}
-      handleChange={handleChange}
-      style={{ width: 110 }}
-    />
+    loading ? null : (
+      <InlineSelect
+        label={type}
+        value={type}
+        options={typeList}
+        handleChange={handleChange}
+        style={{ width: 110 }}
+      />)
   )
 }
 

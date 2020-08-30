@@ -9,7 +9,7 @@ const WalletBalance = (props) => {
 
   return (
     <span>
-      <Button type='link' onClick={() => onShow('booked')} className='p0 bu'>&#8377;{wallet_balance}</Button>
+      <Button type='link' onClick={() => onShow('booked')} className='p0 bu'>&#8377;{wallet_balance || 0}</Button>
       {visible.booked && <BookedDetail visible={visible.booked} onHide={onHide} />}
     </span>
   )
