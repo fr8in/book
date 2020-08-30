@@ -13,6 +13,7 @@ import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from '../../components/partners/comment'
 import InlineCitySelect from '../common/inlineCitySelect'
 import u from '../../lib/util'
+import Truncate from '../common/truncate'
 
 const PARTNERS_LEAD_QUERY = gql`
 query partner_lead(
@@ -152,7 +153,7 @@ const PartnerLead = (props) => {
     // channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} ,
     // _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ? null :  {id: {_is_null:true }} }
   }
-  console.log('filter.no_comment ', filter.no_comment , filter.no_comment && filter.no_comment.length > 0)
+  console.log('filter.no_comment ', filter.no_comment, filter.no_comment && filter.no_comment.length > 0)
   const partnerQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
@@ -172,10 +173,10 @@ const PartnerLead = (props) => {
     LEAD_REJECT_MUTATION, {
       onError (error) {
         message.error(error.toString())
-    },
+      },
       onCompleted () {
         message.success('Updated!!')
-    }
+      }
     })
   const onSubmit = (id) => {
     insertComment({
@@ -184,7 +185,7 @@ const PartnerLead = (props) => {
         id: id
       }
     })
-  };
+  }
 
   const [updateStatusId] = useMutation(
     UPDATE_LEAD_PRIORITY_STATUS_MUTATION,
@@ -210,10 +211,10 @@ const PartnerLead = (props) => {
     UPDATE_LEAD_CITY_MUTATION, {
       onError (error) {
         message.error(error.toString())
-    },
+      },
       onCompleted () {
         message.success('Updated!!')
-    }
+      }
     })
   const onCityUpdate = (partner_id, city_id) => {
     updateCity({
@@ -222,7 +223,7 @@ const PartnerLead = (props) => {
         id: partner_id
       }
     })
-  };
+  }
 
   var partners = []
   var partner_aggregate = 0
@@ -276,7 +277,7 @@ const PartnerLead = (props) => {
   const handleMobile = (e) => {
     setFilter({ ...filter, mobile: e.target.value, offset: 0 })
   }
-  
+
   const handleCityName = (e) => {
     setFilter({ ...filter, city_name: e.target.value, offset: 0 })
   }
@@ -285,23 +286,12 @@ const PartnerLead = (props) => {
     setFilter({ ...filter, owner_name: e.target.value, offset: 0 })
   }
 
-  
-
- 
   const columnsCurrent = [
     {
       title: 'Name',
       dataIndex: 'name',
       width: '9%',
-      render: (text, record) => {
-        return record.name.length > 12 ? (
-          <Tooltip title={record.name}>
-            <span> {record.name.slice(0, 12) + '...'}</span>
-          </Tooltip>
-        ) : (
-          record.name
-        )
-      }
+      render: (text, record) => <Truncate data={text} length={12} />
     },
     {
       title: 'Phone',
@@ -334,7 +324,7 @@ const PartnerLead = (props) => {
           <InlineCitySelect
             label={record.city && record.city.name}
             handleChange={onCityUpdate}
-            partner_id ={record.id}
+            partner_id={record.id}
           />
         )
       },
@@ -342,7 +332,7 @@ const PartnerLead = (props) => {
       filterDropdown: (
         <div>
           <Input
-placeholder='Search City Name'
+            placeholder='Search City Name'
             id='cityName'
             name='cityName'
             value={filter.city_name}
@@ -422,13 +412,7 @@ placeholder='Search City Name'
       render: (text, record) => {
         const comment = record.partner_comments && record.partner_comments.length > 0 &&
           record.partner_comments[0].description ? record.partner_comments[0].description : '-'
-        return comment && comment.length > 20 ? (
-          <Tooltip title={comment}>
-            <span> {comment.slice(0, 20) + '...'}</span>
-          </Tooltip>
-        ) : (
-          comment
-        )
+        return <Truncate data={comment} length={20} />
       },
       filterDropdown: (
         <Checkbox.Group

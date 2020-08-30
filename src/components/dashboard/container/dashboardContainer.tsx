@@ -131,7 +131,7 @@ const DashboardContainer = (props) => {
                   <TripsContainer filters={filters} trip_status='Reported at source' />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Intransit' value={intransit_count} />} key='6'>
-                  <TripsContainer filters={filters} trip_status='Intransit' />
+                  <TripsContainer filters={filters} trip_status='Intransit' intransit />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Intransit(D)' value={intransit_d_count} />} key='7'>
                   <TripsByDestination filters={filters} intransit trip_status='Intransit' />

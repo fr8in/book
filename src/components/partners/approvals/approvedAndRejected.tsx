@@ -1,6 +1,8 @@
 import React from 'react'
-import { Table, Tooltip, Input } from 'antd'
+import { Table, Input } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
+import Truncate from '../../common/truncate'
+import Link from 'next/link'
 
 import pendingDetail from '../../../../mock/approval/approvalPending'
 
@@ -25,13 +27,18 @@ const requestedBy = [
   { value: 2, text: 'Fr8' }
 ]
 
-export default function ApprovedAndRejected () {
+const ApprovedAndRejected = () => {
   const ApprovalPending = [
     {
       title: 'Load ID',
       dataIndex: 'loadId',
       key: 'loadId',
       width: '7%',
+      render: (text, record) => (
+        <Link href='/trips/[id]' as={`/trips/${record.loadId} `}>
+          <a>{text}</a>
+        </Link>
+      ),
       filterDropdown: (
         <div>
           <Input placeholder='Search' id='id' name='id' type='number' />
@@ -70,7 +77,8 @@ export default function ApprovedAndRejected () {
       title: 'Reason',
       dataIndex: 'reason',
       key: 'reason',
-      width: '11%'
+      width: '11%',
+      render: (text, record) => <Truncate data={text} length={18} />
     },
     {
       title: 'Request By',
@@ -78,6 +86,7 @@ export default function ApprovedAndRejected () {
       key: 'requestBy',
       filters: requestedBy,
       width: '12%',
+      render: (text, record) => <Truncate data={text} length={18} />,
       filterDropdown: (
         <div>
           <Input
@@ -104,22 +113,15 @@ export default function ApprovedAndRejected () {
       title: 'Closed By',
       dataIndex: 'closedBy',
       key: 'closedBy',
-      width: '11%'
+      width: '11%',
+      render: (text, record) => <Truncate data={text} length={18} />
     },
     {
       title: 'Remarks',
       dataIndex: 'remarks',
       key: 'remarks',
       width: '11%',
-      render: (text, record) => {
-        return record.remarks && record.remarks.length > 12 ? (
-          <Tooltip title={record.remarks}>
-            <span> {record.remarks.slice(0, 12) + '...'}</span>
-          </Tooltip>
-        ) : (
-          record.remarks
-        )
-      }
+      render: (text, record) => <Truncate data={text} length={12} />
     }
   ]
 
@@ -133,3 +135,5 @@ export default function ApprovedAndRejected () {
     />
   )
 }
+
+export default ApprovedAndRejected
