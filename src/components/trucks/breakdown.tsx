@@ -53,7 +53,7 @@ const Breakdown = (props) => {
   const variables = {
     offset: filter.offset,
     limit: filter.limit,
-    truck_status_name: truck_status,
+    truck_status_name: truck_status
   }
 
   const { loading, error, data } = useQuery(
@@ -68,7 +68,7 @@ const Breakdown = (props) => {
     _data = data
   }
 
-  console.log('_data',_data)
+  console.log('_data', _data)
 
   const truck = get(_data, 'truck', [])
   const truck_info = get(_data, 'truck[0]', {})
