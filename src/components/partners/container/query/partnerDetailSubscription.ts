@@ -11,21 +11,6 @@ subscription partners($cardcode: String,$partner_id:bigint,$trip_status_value: [
             commission
             billed
           }
-          # fastags{
-          #   tagId
-          #   truck {
-          #     truck_no
-          #   }
-          #   partner {
-          #     cardcode
-          #     name
-          #   }
-          #   balance
-          #   tag_status {
-          #     id
-          #     status
-          #   }
-          # }
           ongoing: trips_aggregate(where: {trip_status: {name: {_in: $ongoing}}}) {
             aggregate {
               count
