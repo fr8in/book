@@ -20,15 +20,18 @@ mutation partnerKycReject ($description:String, $topic:String, $partner_id: Int,
 `
 const KycReject = (props) => {
   const { partner_id } = props
-  const { visible, onHide } = props
+  const { onHide } = props
   const [userComment, setUserComment] = useState('')
 
   console.log('partner_id', partner_id)
   const [insertComment] = useMutation(
     INSERT_PARTNER_REJECT_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () {
+        message.success('Updated!!')
+        onHide()
+      }
     }
   )
   const handleChange = (e) => {
@@ -44,31 +47,29 @@ const KycReject = (props) => {
         description: userComment,
         topic: 'Kyc Rejected',
         partner_status_id: 3,
-        id:partner_id
+        id: partner_id
       }
     })
   }
 
-    return (
-      <>
-        <Row>
-          <Input
-            placeholder='Enter Reject Reason'
-            value={userComment}
-            onChange={handleChange}
-          />
-        </Row>
-        <br />
-        <Row justify='end'>
-          <Space>
-            <Button size='middle' onClick={onHide}>Cancel</Button>
-            <Button type='primary' size='middle' onClick={onSubmit}>Ok</Button>
-          </Space>
-        </Row>
-      </>
-    )
-  }
+  return (
+    <>
+      <Row>
+        <Input
+          placeholder='Enter Reject Reason'
+          value={userComment}
+          onChange={handleChange}
+        />
+      </Row>
+      <br />
+      <Row justify='end'>
+        <Space>
+          <Button size='middle' onClick={onHide}>Cancel</Button>
+          <Button type='primary' size='middle' onClick={onSubmit}>Ok</Button>
+        </Space>
+      </Row>
+    </>
+  )
+}
 
 export default KycReject
-
-

@@ -62,29 +62,28 @@ const PartnerDocument = (props) => {
               margin_bottom
             />
             <LabelWithData
-              label='Card Number'
+              label='Cheque'
               data={<Button shape='circle' icon={<UploadOutlined />} />}
               labelSpan={8}
               dataSpan={16}
               margin_bottom
             />
             <LabelWithData
-              label='Balance'
+              label='TDS'
               data={<Button shape='circle' icon={<UploadOutlined />} />}
               labelSpan={8}
               dataSpan={16}
               margin_bottom
             />
             <LabelWithData
-              label=' Linked Mobile '
+              label='Agreement'
               data={<Button shape='circle' icon={<UploadOutlined />} />}
               labelSpan={8}
               dataSpan={16}
               margin_bottom
             />
-
             <LabelWithData
-              label='Status'
+              label='Cibil Score'
               data={<Button shape='circle' icon={<UploadOutlined />} />}
               labelSpan={8}
               dataSpan={16}

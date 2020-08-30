@@ -269,7 +269,7 @@ const PartnerKyc = (props) => {
           onCancel={handleHide}
           footer={null}
         >
-          <KycReject partner_id={object.rejectData} />
+          <KycReject partner_id={object.rejectData} onHide={handleHide} />
         </Modal>
       )}
       {object.approvalVisible && (
