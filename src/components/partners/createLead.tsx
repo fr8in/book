@@ -1,8 +1,7 @@
-import {useState} from 'react'
-import { Modal, Button, Input, Row, Col, Form, Select,message } from 'antd'
-import { gql, useMutation,useQuery } from '@apollo/client'
+import { useState } from 'react'
+import { Modal, Button, Input, Row, Col, Form, Select, message } from 'antd'
+import { gql, useMutation, useQuery } from '@apollo/client'
 import CitySelect from '../common/citySelect'
-const { Option } = Select
 
 const PARTNERS_LEAD_SUBSCRIPTION = gql`
   query create_partner_lead{
@@ -59,9 +58,8 @@ const INSERT_PARTNER_LEAD_MUTATION = gql`
   }
 `
 
-
 const CreateLead = (props) => {
-  const initial = {city_id: null}
+  const initial = { city_id: null }
   const { visible, onHide } = props
   const [userComment, setUserComment] = useState('')
   const [obj, setObj] = useState(initial)
@@ -79,22 +77,20 @@ const CreateLead = (props) => {
     {
       onError (error) { message.error(error.toString()) },
       onCompleted () {
-         message.success('Updated!!')
-         setObj(initial)
-        }
+        message.success('Updated!!')
+        setObj(initial)
+      }
     }
   )
-  
-  var channel = [];
-  var employee = [];
-  
+
+  var channel = []
+  var employee = []
+
   if (!loading) {
-    
-     channel = data.channel
-     employee = data.employee
-     
+    channel = data.channel
+    employee = data.employee
   }
- 
+
   const channelList = channel.map((data) => {
     return { value: data.id, label: data.name }
   })
@@ -111,7 +107,7 @@ const CreateLead = (props) => {
     setObj({ ...obj, city_id: city_id })
   }
 
-  const onPartnerLeadChange =(form) =>{
+  const onPartnerLeadChange = (form) => {
     console.log('inside form submit', form, obj)
     updatePartnerLeadAddress({
       variables: {
@@ -121,14 +117,14 @@ const CreateLead = (props) => {
         mobile: form.mobile,
         partner_status_id: 8,
         channel_id: form.channel,
-        onboarded_by_id:form.employee,
+        onboarded_by_id: form.employee,
         created_by: 'karthi@fr8.in',
         description: userComment,
-        topic:'Lead'
+        topic: 'Lead'
       }
-    })   
-   }
-  
+    })
+  }
+
   return (
     <Modal
       title='Create Lead'
@@ -138,25 +134,25 @@ const CreateLead = (props) => {
     >
       <Form layout='vertical' onFinish={onPartnerLeadChange}>
         <Form.Item
-           name='name'
-        >  
-          <Input placeholder='Company Name'  />
+          name='name'
+        >
+          <Input placeholder='Company Name' />
         </Form.Item>
         <Form.Item
-        name='contact_name'
+          name='contact_name'
         >
           <Input placeholder=' Name' />
         </Form.Item>
         <Row gutter={10}>
           <Col xs={24} sm={12}>
             <Form.Item
-            name='mobile'
+              name='mobile'
             >
               <Input placeholder='Phone' />
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
-          <CitySelect
+            <CitySelect
               onChange={onCityChange}
             />
           </Col>
@@ -164,14 +160,14 @@ const CreateLead = (props) => {
         <Row gutter={10}>
           <Col xs={24} sm={12}>
             <Form.Item
-             name='channel'
+              name='channel'
             >
               <Select defaultValue='Select Channel' onChange={handleChange} options={channelList} />
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
             <Form.Item
-            name='employee'
+              name='employee'
             >
               <Select defaultValue='Select Owner' onChange={handleChange} options={employeeList} />
             </Form.Item>
@@ -179,12 +175,13 @@ const CreateLead = (props) => {
         </Row>
         <Form.Item>
           <Input.TextArea
-          value={userComment}
-          onChange={handleCommentChange}
-          placeholder='Comment' allowClear  />        
+            value={userComment}
+            onChange={handleCommentChange}
+            placeholder='Comment' allowClear
+          />
         </Form.Item>
         <Row justify='end'>
-        <Button type='primary' key='back' htmlType='submit'> Submit </Button>
+          <Button type='primary' key='back' htmlType='submit'> Submit </Button>
         </Row>
       </Form>
     </Modal>

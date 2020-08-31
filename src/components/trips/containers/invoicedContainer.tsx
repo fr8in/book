@@ -3,11 +3,12 @@ import { useQuery } from '@apollo/client'
 import { TRIPS_QUERY } from './query/tripsQuery'
 import { useState } from 'react'
 import get from 'lodash/get'
+import u from '../../../lib/util'
 
 const DeliveredContainer = (props) => {
   const initialFilter = {
     offset: 0,
-    limit: 10,
+    limit: u.limit,
     partnername: null,
     customername: null,
     sourcename: null,

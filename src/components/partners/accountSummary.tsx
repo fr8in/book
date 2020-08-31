@@ -1,12 +1,10 @@
 import { Card } from 'antd'
 import LabelData from '../../components/common/labelData'
-import data from '../../../mock/trip/additionalAdvance'
 
 const AccountSummary = (props) => {
+  const { partner_summary } = props
 
-const {partner_summary} = props
-
-console.log('props',props)
+  console.log('props', props)
 
   return (
     <Card size='small'>
@@ -15,7 +13,7 @@ console.log('props',props)
         label='Billed'
         count={props.billedCount}
         value={partner_summary.partner_accounting && partner_summary.partner_accounting.billed}
-       
+
       />
       <LabelData
         label='Commission'

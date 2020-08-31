@@ -1,4 +1,4 @@
-import { Table, Input, Switch, Popconfirm, Button, Tooltip, message, Pagination, Checkbox, Modal,Radio } from 'antd'
+import { Table, Input, Switch, Popconfirm, Button, Tooltip, message, Pagination, Checkbox, Modal, Radio } from 'antd'
 import {
   EditTwoTone,
   CommentOutlined,
@@ -12,6 +12,8 @@ import EmployeeList from '../branches/fr8EmpolyeeList'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from '../../components/partners/comment'
 import InlineCitySelect from '../common/inlineCitySelect'
+import u from '../../lib/util'
+import Truncate from '../common/truncate'
 
 const PARTNERS_LEAD_QUERY = gql`
 query partner_lead(
@@ -52,7 +54,7 @@ query partner_lead(
       description
     }
   }
-  partner_aggregate(where: {partner_status: {name: {_in: ["Lead","Registered","Rejected"]}}}) {
+  partner_aggregate(where: $where) {
     aggregate {
       count
     }
@@ -98,11 +100,11 @@ mutation update_lead_city($city_id:Int,$id:Int) {
   }
 }
 `
- 
-const no_comment = [{ value:1, label: 'No Comment' }]
+
+const no_comment = [{ value: 1, label: 'No Comment' }]
 
 const PartnerLead = (props) => {
-  const {visible, onHide,onboarded_by} = props
+  const { visible, onHide, onboarded_by } = props
   const initial = {
     no_comment: [],
     comment: false,
@@ -110,10 +112,10 @@ const PartnerLead = (props) => {
     ownerVisible: false,
     ownerData: [],
     offset: 0,
-    limit: 10,
+    limit: u.limit,
     mobile: null,
-    city_name:null,
-    owner_name:null,
+    city_name: null,
+    owner_name: null,
     partner_status_name: ['Lead', 'Registered'],
     channel_name: null
   }
@@ -123,7 +125,7 @@ const PartnerLead = (props) => {
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const [selectedPartners, setSelectedPartners] = useState([])
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
- 
+
   const onSelectChange = (selectedRowKeys, selectedRows) => {
     const partner_list = selectedRows && selectedRows.length > 0 ? selectedRows.map(row => row.id) : []
     setSelectedRowKeys(selectedRowKeys)
@@ -135,66 +137,63 @@ const PartnerLead = (props) => {
     onChange: onSelectChange
   }
 
-console.log('onboarded_by',onboarded_by)
-  const where = { 
-    partner_users: filter.mobile ? {mobile:{ _like:`%${filter.mobile}%`}}: null,  
-   // city: filter.city_name && {name:{ _ilike: `%${filter.city_name}%`}} ,
-   onboarded_by:   {email:{_ilike: filter.owner_name ? `%${filter.owner_name}%` : null,_in : onboarded_by || null}}, 
-    partner_status:{name:{_in: filter.partner_status_name ? filter.partner_status_name : null}}
-    //channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}}, 
-    //_not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ?  null : {id: {_is_null:true }} }
+  console.log('onboarded_by', onboarded_by)
+  const where = {
+    partner_users: filter.mobile ? { mobile: { _like: `%${filter.mobile}%` } } : null,
+    // city: filter.city_name && {name:{ _ilike: `%${filter.city_name}%`}} ,
+    onboarded_by: { email: { _ilike: filter.owner_name ? `%${filter.owner_name}%` : null, _in: onboarded_by || null } },
+    partner_status: { name: { _in: filter.partner_status_name && filter.partner_status_name.length > 0 ? filter.partner_status_name : null } }
+    // channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}},
+    // _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ?  null : {id: {_is_null:true }} }
   }
-  const whereNoCityFilter ={
-    partner_users: filter.mobile ? {mobile:{ _like:`%${filter.mobile}%`}}: null,  
-    onboarded_by:   {email:{_ilike: filter.owner_name ? `%${filter.owner_name}%` : null,_in : onboarded_by || null}}, 
-    partner_status:{name:{_in: filter.partner_status_name ? filter.partner_status_name : null}}
-    //channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} ,
-   // _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ? null :  {id: {_is_null:true }} }
+  const whereNoCityFilter = {
+    partner_users: filter.mobile ? { mobile: { _like: `%${filter.mobile}%` } } : null,
+    onboarded_by: { email: { _ilike: filter.owner_name ? `%${filter.owner_name}%` : null, _in: onboarded_by || null } },
+    partner_status: { name: { _in: filter.partner_status_name ? filter.partner_status_name : null } }
+    // channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} ,
+    // _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ? null :  {id: {_is_null:true }} }
   }
-  console.log('filter.no_comment ',filter.no_comment ,filter.no_comment && filter.no_comment.length > 0)
+  console.log('filter.no_comment ', filter.no_comment, filter.no_comment && filter.no_comment.length > 0)
   const partnerQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
-    where:filter.city_name ?  where : whereNoCityFilter,
+    where: filter.city_name ? where : whereNoCityFilter
   }
-
 
   const { loading, error, data } = useQuery(
     PARTNERS_LEAD_QUERY, {
-    variables: partnerQueryVars,
-    fetchPolicy: 'cache-and-network',
-    notifyOnNetworkStatusChange: true
-  })
+      variables: partnerQueryVars,
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    })
   console.log('partnerLead error', error)
   console.log('partnerLead data', data)
 
-
   const [insertComment] = useMutation(
     LEAD_REJECT_MUTATION, {
-    onError(error) {
-      message.error(error.toString());
-    },
-    onCompleted() {
-      message.success("Updated!!");
-    },
-  });
+      onError (error) {
+        message.error(error.toString())
+      },
+      onCompleted () {
+        message.success('Updated!!')
+      }
+    })
   const onSubmit = (id) => {
     insertComment({
       variables: {
         partner_status_id: 3,
-        id: id,
-      },
-    });
-  };
-
+        id: id
+      }
+    })
+  }
 
   const [updateStatusId] = useMutation(
     UPDATE_LEAD_PRIORITY_STATUS_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         message.error(error.toString())
       },
-      onCompleted() {
+      onCompleted () {
         message.success('Updated!!')
       }
     })
@@ -210,28 +209,26 @@ console.log('onboarded_by',onboarded_by)
 
   const [updateCity] = useMutation(
     UPDATE_LEAD_CITY_MUTATION, {
-    onError(error) {
-      message.error(error.toString());
-    },
-    onCompleted() {
-      message.success("Updated!!");
-    },
-  });
-  const onCityUpdate = (partner_id,city_id) => {
+      onError (error) {
+        message.error(error.toString())
+      },
+      onCompleted () {
+        message.success('Updated!!')
+      }
+    })
+  const onCityUpdate = (partner_id, city_id) => {
     updateCity({
       variables: {
         city_id: city_id,
-        id: partner_id,
-      },
-    });
-  };
-
-
+        id: partner_id
+      }
+    })
+  }
 
   var partners = []
-  var partner_aggregate = 0;
-  var partner_status = [];
-  var channel = [];
+  var partner_aggregate = 0
+  var partner_status = []
+  var channel = []
 
   if (!loading) {
     partners = data && data.partner
@@ -245,8 +242,8 @@ console.log('onboarded_by',onboarded_by)
   const record_count =
     partner_aggregate &&
     partner_aggregate.aggregate &&
-    partner_aggregate.aggregate.count;
-  console.log("record_count", record_count)
+    partner_aggregate.aggregate.count
+  console.log('record_count', record_count)
 
   const partners_status = partner_status.map((data) => {
     return { value: data.name, label: data.name }
@@ -265,54 +262,43 @@ console.log('onboarded_by',onboarded_by)
     setCurrentPage(1)
     setFilter({ ...filter, partner_status_name: checked, offset: 0 })
   }
-  
+
   const handleNoComment = (checked) => {
-    console.log('checked',checked)
+    console.log('checked', checked)
     setCurrentPage(1)
-    setFilter({ ...filter, no_comment:checked, offset: 0 })
+    setFilter({ ...filter, no_comment: checked, offset: 0 })
   }
 
   const handleChannelStatus = (checked) => {
     setCurrentPage(1)
     setFilter({ ...filter, channel_name: checked, offset: 0 })
   }
-   
+
   const handleMobile = (e) => {
     setFilter({ ...filter, mobile: e.target.value, offset: 0 })
-  };
-  
+  }
+
   const handleCityName = (e) => {
     setFilter({ ...filter, city_name: e.target.value, offset: 0 })
-  };
+  }
 
   const handleOwnerName = (e) => {
     setFilter({ ...filter, owner_name: e.target.value, offset: 0 })
-  };
+  }
 
-  
-
- 
   const columnsCurrent = [
     {
       title: 'Name',
       dataIndex: 'name',
       width: '9%',
-      render: (text, record) => {
-        return record.name.length > 12 ? (
-          <Tooltip title={record.name}>
-            <span> {record.name.slice(0, 12) + '...'}</span>
-          </Tooltip>
-        ) : (
-            record.name
-          )
-      }
+      render: (text, record) => <Truncate data={text} length={12} />
     },
     {
       title: 'Phone',
       dataIndex: 'number',
       width: '9%',
       render: (text, record) => {
-        return record.partner_users[0] && record.partner_users[0].mobile;
+        return record.partner_users[0] && record.partner_users[0].mobile
       },
       filterDropdown: (
         <div>
@@ -335,22 +321,23 @@ console.log('onboarded_by',onboarded_by)
       width: '14%',
       render: (text, record) => {
         return (
-        <InlineCitySelect
-          label= {record.city && record.city.name}
-          handleChange={onCityUpdate}
-          partner_id = {record.id}
-        />
+          <InlineCitySelect
+            label={record.city && record.city.name}
+            handleChange={onCityUpdate}
+            partner_id={record.id}
+          />
         )
-    },
-    
+      },
+
       filterDropdown: (
         <div>
-          <Input placeholder='Search City Name'
-           id='cityName' 
-           name='cityName' 
-           value={filter.city_name}
-           onChange={handleCityName}
-           />
+          <Input
+            placeholder='Search City Name'
+            id='cityName'
+            name='cityName'
+            value={filter.city_name}
+            onChange={handleCityName}
+          />
         </div>
       ),
       filterIcon: (filtered) => (
@@ -367,19 +354,20 @@ console.log('onboarded_by',onboarded_by)
           <div>
             <span>{owner}&nbsp;</span>
             <EditTwoTone onClick={() =>
-              handleShow("ownerVisible", null, "ownerData", record.id)
-            } />
+              handleShow('ownerVisible', null, 'ownerData', record.id)}
+            />
           </div>
         )
       },
       filterDropdown: (
         <div>
           <Input
-           placeholder='Search Employee Name'
-           id='owner' 
-           name='owner'
-           value={filter.owner_name}
-           onChange={handleOwnerName} />
+            placeholder='Search Employee Name'
+            id='owner'
+            name='owner'
+            value={filter.owner_name}
+            onChange={handleOwnerName}
+          />
         </div>
       ),
       filterIcon: (filtered) => (
@@ -399,8 +387,8 @@ console.log('onboarded_by',onboarded_by)
         />
       ),
       render: (text, record) => {
-        return record.channel && record.channel.name;
-      },
+        return record.channel && record.channel.name
+      }
     },
     {
       title: 'Status',
@@ -414,8 +402,8 @@ console.log('onboarded_by',onboarded_by)
         />
       ),
       render: (text, record) => {
-        return record.partner_status && record.partner_status.name;
-      },
+        return record.partner_status && record.partner_status.name
+      }
     },
     {
       title: 'Last Comment',
@@ -424,13 +412,7 @@ console.log('onboarded_by',onboarded_by)
       render: (text, record) => {
         const comment = record.partner_comments && record.partner_comments.length > 0 &&
           record.partner_comments[0].description ? record.partner_comments[0].description : '-'
-        return comment && comment.length > 20 ? (
-          <Tooltip title={comment}>
-            <span> {comment.slice(0, 20) + '...'}</span>
-          </Tooltip>
-        ) : (
-            comment
-          )
+        return <Truncate data={comment} length={20} />
       },
       filterDropdown: (
         <Checkbox.Group
@@ -439,8 +421,8 @@ console.log('onboarded_by',onboarded_by)
           onChange={handleNoComment}
           className='filter-drop-down'
         />
-      ),
-      
+      )
+
     },
     {
       title: 'Created Date',
@@ -470,7 +452,7 @@ console.log('onboarded_by',onboarded_by)
               type='link'
               icon={<CommentOutlined />}
               onClick={() =>
-                handleShow('commentVisible', null,'commentData',record.id)}
+                handleShow('commentVisible', null, 'commentData', record.id)}
             />
           </Tooltip>
           <Popconfirm
@@ -503,7 +485,7 @@ console.log('onboarded_by',onboarded_by)
         size='small'
         scroll={{ x: 1156 }}
         pagination={false}
-        //onMobileSearch={onMobileSearch}
+        // onMobileSearch={onMobileSearch}
         className='withAction'
       />
       {!loading && record_count
@@ -516,8 +498,7 @@ console.log('onboarded_by',onboarded_by)
             total={record_count}
             onChange={pageChange}
             className='text-right p10'
-          />) : null
-      }
+          />) : null}
       {object.commentVisible && (
         <Modal
           title='Comments'
@@ -526,8 +507,7 @@ console.log('onboarded_by',onboarded_by)
           bodyStyle={{ padding: 10 }}
         >
           <Comment partner_id={object.commentData} />
-        </Modal>)
-      }
+        </Modal>)}
       {visible && (
         <EmployeeList
           visible={visible}

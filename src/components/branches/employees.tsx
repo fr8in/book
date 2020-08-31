@@ -1,35 +1,54 @@
-import React from "react";
-import { Table } from "antd";
-//import Branch from '../../../mock/branches/branches'
+import React from 'react'
+import { Table } from 'antd'
+import { gql, useQuery } from '@apollo/client'
+import get from 'lodash/get'
+
+const EMPLOYEE_QUERY = gql`
+  query BranchEmployee {
+    employee {
+      id
+      name
+      mobileno
+    }
+  }
+`
 
 const Employees = (props) => {
-  const { employees, loading } = props;
+  const { loading, error, data } = useQuery(
+    EMPLOYEE_QUERY, { notifyOnNetworkStatusChange: true }
+  )
 
-  const Employees = [
+  console.log('BranchesContainer error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const employees = get(_data, 'employee', [])
+
+  const column = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      width: "10%",
+      title: 'Name',
+      dataIndex: 'name',
+      width: '10%'
     },
     {
-      title: "Mobile Number",
-      dataIndex: "mobileNumber",
-      key: "mobileNumber",
-      width: "20%",
-    },
-  ];
+      title: 'Mobile Number',
+      dataIndex: 'mobileno',
+      width: '20%'
+    }
+  ]
 
   return (
     <Table
-      columns={Employees}
+      columns={column}
       dataSource={employees}
-      size="small"
+      size='small'
       scroll={{ x: 800, y: 400 }}
+      rowKey={record => record.id}
       pagination={false}
       loading={loading}
     />
-  );
-};
+  )
+}
 
-export default Employees;
+export default Employees

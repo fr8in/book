@@ -7,8 +7,8 @@ const Stats = (props) => {
   const dataComp = (count, name, i) => {
     return (
       <div className='data' key={i}>
-        <h2>{count}</h2>
-        <p>{name}</p>
+        <h2>{count || 0}</h2>
+        <p>{name || '-'}</p>
       </div>
     )
   }

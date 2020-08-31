@@ -8,7 +8,6 @@ import {
   MailOutlined
 } from '@ant-design/icons'
 import useShowHide from '../../../hooks/useShowHide'
-// All components
 import AccStmtMail from '../stmtMail'
 import DetailPageHeader from '../../common/detailPageHeader'
 import CustomerName from '../customerName'
@@ -132,10 +131,10 @@ const CustomerDetailContainer = (props) => {
                         onClick={() => onShow('wallet')}
                       />
                     </Tooltip>
-                    <WalletBalance />
+                    <WalletBalance wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)} />
                     <Blacklist
                       cardcode={cardcode}
-                      statusId={customer_info.status && customer_info.status.id}
+                      statusId={get(customer_info, 'status.id', null)}
                     />
                   </Space>
                 }
@@ -183,10 +182,7 @@ const CustomerDetailContainer = (props) => {
                           <PlusOutlined /> Add Users
                         </Button>
                       </Row>
-                      <Users
-                        customeruser={customer_info.customer_users}
-                        loading={loading}
-                      />
+                      <Users cardcode={cardcode} />
                     </TabPane>
                     <TabPane tab='Branch' key='7'>
                       <Row justify='end' className='m5'>
@@ -197,11 +193,7 @@ const CustomerDetailContainer = (props) => {
                           <PlusOutlined /> Add Branch
                         </Button>
                       </Row>
-                      <Branch
-                        customerBranch={customer_info.customer_branches}
-                        branch={customer_info.customer_branches && customer_info.customer_branches.id}
-                        loading={loading}
-                      />
+                      <Branch cardcode={cardcode} />
                     </TabPane>
                     <TabPane tab='FR8 Branch' key='8'>
                       <Fr8Branch cardcode={cardcode} id={customer_info.id}/>

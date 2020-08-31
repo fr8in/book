@@ -1,26 +1,28 @@
-import IncomingPaymentData from '../../../mock/customer/incomingdata'
 import { Table } from 'antd'
 import { gql, useQuery } from '@apollo/client'
 import IncomingPaymentsBooked from './incomingPaymentsBooked'
-import ColumnGroup from 'antd/lib/table/ColumnGroup'
-
+import get from 'lodash/get'
+import moment from 'moment'
 
 const INCOMING_PAYMENT = gql`
 query customer_booking($cardcode: String) {
   customer(where: {cardcode: {_eq: $cardcode}}) {
     id
     cardcode
-    customer_accounting {
-      wallet_balance
-    }
     customer_incomings {
+      id
       booked
       balance
       comment
       recevied
+      created_at
       customer_booked {
+        id
+        created_at
         amount
         comment
+        trip_id
+        invoice_no
       }
     }
   }
@@ -28,72 +30,66 @@ query customer_booking($cardcode: String) {
 `
 
 const IncomingPayments = (props) => {
-
-  const {cardcode} = props
+  const { cardcode } = props
 
   const { loading, data, error } = useQuery(
     INCOMING_PAYMENT,
-    cardcode
+    {
+      variables: { cardcode: cardcode }
+    }
+
   )
 
-  console.log('Excess Load Error', error)
- 
-  var customer_info = {}
+  console.log('Incoming Error', error)
 
+  let _data = {}
   if (!loading) {
-    const { customer } = data
-    customer_info = customer[0] ? customer[0] : { name: 'ID does not exist' }
+    _data = data
   }
- 
-console.log('customer',data)
 
+  const customer = get(_data, 'customer[0]', [])
+  const customer_incomings = get(customer, 'customer_incomings', 0)
+
+  console.log('customer', customer_incomings)
 
   const columns = [
     {
       title: 'Date',
-      dataIndex: 'date',
-      key: 'date',
-      width: '20%'
+      dataIndex: 'created_at',
+      key: 'created_at',
+      width: '15%',
+      render: (text, render) => text ? moment(text).format('DD-MMM-YY') : '-'
     },
     {
       title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
-      width: '20%'
+      dataIndex: 'recevied',
+      key: 'recevied',
+      width: '15%'
     },
     {
       title: 'Booked',
       dataIndex: 'booked',
       key: 'booked',
-      width: '20%',
-      render: (text, record) => {
-        return record.customer_info && record.customer_info.customer_incomings && record.customer_info.customer_incomings.booked
-      }
+      width: '15%'
     },
     {
       title: 'Balance',
       dataIndex: 'balance',
       key: 'balance',
-      width: '20%',
-      render: (text, record) => {
-        return record.customer_info && record.customer_info.customer_incomings && record.customer_info.customer_incomings.balance
-      }
+      width: '15%'
     },
     {
       title: 'Remarks',
-      dataIndex: 'remarks',
-      key: 'remarks',
-      width: '20%',
-      render: (text, record) => {
-        return record.customer_info && record.customer_info.customer_incomings && record.customer_info.customer_incomings.comment
-      }
+      dataIndex: 'comment',
+      key: 'comment',
+      width: '40%'
     }
   ]
   return (
     <Table
       columns={columns}
-      expandedRowRender={record => <IncomingPaymentsBooked {...record} />}
-      dataSource={data}
+      expandedRowRender={record => <IncomingPaymentsBooked customer_booked={record.customer_booked} />}
+      dataSource={customer_incomings}
       rowKey={record => record.id}
       size='small'
       scroll={{ x: 1156 }}

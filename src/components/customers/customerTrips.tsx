@@ -1,13 +1,13 @@
-import { Table, Tooltip } from 'antd'
-import Link from 'next/link'
+import { Table } from 'antd'
 import CUSTOMER_TRIPS from './containers/query/customerTrips'
 import { useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
+import Truncate from '../common/truncate'
+import LinkComp from '../common/link'
 
 const CustomerTrips = (props) => {
   const { cardcode, status_names, delivered } = props
-  console.log('status_names', status_names)
 
   const variables = {
     cardcode: cardcode,
@@ -32,13 +32,13 @@ const CustomerTrips = (props) => {
       dataIndex: 'id',
       sorter: (a, b) => (a.id > b.id ? 1 : -1),
       width: '6%',
-      render: (text, record) => {
-        return (
-          <Link href='/trips/[id]' as={`/trips/${record.id} `}>
-            <a>{text}</a>
-          </Link>
-        )
-      }
+      render: (text, record) => (
+        <LinkComp
+          type='trips'
+          data={text}
+          id={record.id}
+        />
+      )
     },
     {
       title: 'O.Date',
@@ -49,77 +49,77 @@ const CustomerTrips = (props) => {
     {
       title: 'Truck No',
       sorter: (a, b) => (a.truckN0 > b.truckNo ? 1 : -1),
-      width: '17%',
+      width: '16%',
       render: (text, record) => {
         const truck_no = get(record, 'truck.truck_no', null)
         const truck_type_name = get(record, 'truck.truck_type.name', null)
-        const truck_type = truck_type_name ? truck_type_name.slice(0, 9) : '-'
+        const truck_type = truck_type_name ? truck_type_name.slice(0, 9) : null
         return (
-          <span>{`${truck_no} - ${truck_type}`}</span>
-        )
+          <LinkComp
+            type='trucks'
+            data={`${truck_no} - ${truck_type}`}
+            id={truck_no}
+          />)
       }
     },
     {
       title: 'Partner',
-      width: '11%',
+      width: '10%',
       render: (text, record) => {
         const partner = get(record, 'partner.name', null)
+        const cardcode = get(record, 'partner.cardcode', null)
         return (
-          partner && partner.length > 10 ? (
-            <Tooltip title='partner'><span>{partner.slice(0, 10) + '...'}</span></Tooltip>
-          ) : partner
-        )
+          <LinkComp
+            type='partners'
+            data={partner}
+            id={cardcode}
+            length={10}
+          />)
       }
     },
     {
       title: 'Source',
       sorter: (a, b) => (a.source.name > b.source.name ? 1 : -1),
-      width: '11%',
+      width: '10%',
       render: (text, record) => get(record, 'source.name', '-')
     },
     {
       title: 'Destination',
       sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
-      width: '11%',
+      width: '10%',
       render: (text, record) => get(record, 'destination.name', '-')
     },
     !delivered ? {
       title: 'Status',
-      width: '8%',
-      render: (text, record) => {
-        const status = get(record, 'trip_status.name', '-')
-        return status
-      }
+      width: '11%',
+      render: (text, record) => <Truncate data={get(record, 'trip_status.name', '-')} length={15} />
     } : {},
     delivered ? {
       title: 'Pod Status',
-      width: '8%',
-      render: (text, record) => {
-        const status = get(record, 'trip_pod_status.name', '-')
-        return status
-      }
+      width: '11%',
+      render: (text, record) => <Truncate data={get(record, 'trip_pod_status.name', '-')} length={15} />
     } : {},
     {
       title: 'Receivable',
-      width: '7%',
-      render: (record) => {
-        const receivable = get(record, 'trip_receivables_aggregate.aggregate.sum.amount', null)
-        return receivable
-      }
+      width: '8%',
+      sorter: (a, b) => (a.receivable > b.receivable ? 1 : -1),
+      render: (record) => get(record, 'trip_receivables_aggregate.aggregate.sum.amount', null)
     },
     {
       title: 'Receipts',
       width: '7%',
-      render: (record) => {
-        const receipts = get(record, 'trip_receipts_aggregate.aggregate.sum.amount', null)
-        return receipts
-      }
+      sorter: (a, b) => (a.receipts > b.receipts ? 1 : -1),
+      render: (record) => get(record, 'trip_receipts_aggregate.aggregate.sum.amount', null)
     },
     {
       title: 'Balance',
-      dataIndex: 'balance',
       sorter: (a, b) => (a.balance > b.balance ? 1 : -1),
-      width: '7%'
+      width: '7%',
+      render: (record) => {
+        const receivable = get(record, 'trip_receivables_aggregate.aggregate.sum.amount', null)
+        const receipts = get(record, 'trip_receipts_aggregate.aggregate.sum.amount', null)
+        return (receivable - receipts)
+      }
     },
     {
       title: 'Aging',

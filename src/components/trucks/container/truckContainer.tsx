@@ -1,6 +1,7 @@
-import { Row, Col, Input, Card } from 'antd'
+import { Row, Col, Card } from 'antd'
 import Trucks from '../trucks'
 import { useState } from 'react'
+import u from '../../../lib/util'
 
 import { gql, useQuery } from '@apollo/client'
 
@@ -45,15 +46,15 @@ const TRUCKS_QUERY = gql`
         }
         cardcode
       }
-      # trips(where: { trip_status_id: { _in: $trip_status_id } }) {
-      #   id
-      #   source {
-      #     name
-      #   }
-      #   destination {
-      #     name
-      #   }
-      # }
+      trips(where: { trip_status_id: { _in: $trip_status_id } }) {
+        id
+        source {
+          name
+        }
+        destination {
+          name
+        }
+      }
     }
     truck_status(order_by: { id: asc }) {
       id
@@ -67,15 +68,13 @@ const TRUCKS_QUERY = gql`
   }
 `
 
-const { Search } = Input
-
 const TruckContainer = () => {
   const initialFilter = {
     truck_statusId: [1],
     name: null,
     truckno: null,
     offset: 0,
-    limit: 10
+    limit: u.limit
   }
   const [filter, setFilter] = useState(initialFilter)
 

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button, Card } from 'antd'
 import Link from 'next/link'
 import Partners from '../partners'
+import u from '../../../lib/util'
 
 import { gql, useQuery } from '@apollo/client'
 
@@ -80,7 +81,7 @@ const PartnerContainer = () => {
     partner_statusId: [6],
     region: null,
     offset: 0,
-    limit: 10,
+    limit: u.limit,
     name: null,
     cardcode: null
   }

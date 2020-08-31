@@ -6,6 +6,7 @@ import TruckReject from '../../components/trucks/truckReject'
 import TruckActivation from '../trucks/truckActivation'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import { gql, useQuery } from '@apollo/client'
+import u from '../../lib/util'
 
 const TRUCKS_QUERY = gql`
 query trucks(
@@ -51,7 +52,7 @@ query trucks(
 const TruckVerification = (props) => {
   const initial = {
     offset: 0,
-    limit: 10,
+    limit: u.limit,
     truckActivationVisible: false,
     truckActivationData: [],
     truckRejectVisible: false,

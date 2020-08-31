@@ -1,25 +1,39 @@
-import { Table, Button } from 'antd'
-import Link from 'next/link'
-// import mock from '../../../mock/partner/truckByPartner'
+import { Table } from 'antd'
+import LinkComp from '../common/link'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import CreatePo from '../trips/createPo'
+import { gql, useSubscription } from '@apollo/client'
+import get from 'lodash/get'
 
-const list = [
-  { value: 1, text: 'All' },
-  { value: 2, text: 'Ordered' },
-  { value: 3, text: 'Assigned' },
-  { value: 4, text: 'confirmed' },
-  { value: 5, text: 'Waiting for Loading' },
-  { value: 6, text: 'Intransit to Destination' },
-  { value: 7, text: 'Waiting for Unloading' },
-  { value: 8, text: 'Witing for Load' },
-  { value: 9, text: 'Deactivate' },
-  { value: 10, text: 'Unloading' }
-]
-const status = [
-  { value: 1, text: 'Express' },
-  { value: 2, text: 'Non-Express' }
-]
+const PARTNER_TRUCKS_QUERY = gql`
+subscription partners($cardcode: String) {
+  partner(where: {cardcode: {_eq: $cardcode}}) {
+    trucks(where: {truck_status:{name:{_neq: "Rejected"} }}) {
+      truck_no
+      truck_type {
+        name
+      }
+      city {
+        name
+      }
+      truck_status {
+        id
+        name
+      }
+      trips(where: {trip_status: {name: {_in: ["Confirmed", "Reported at source", "Intransit", "Reported at destination", "Delivery onhold"]}}}) {
+        id
+        source {
+          name
+        }
+        destination {
+          name
+        }
+      }
+    }
+  }
+}
+`
+
 const rowSelection = {
   onChange: (selectedRowKeys, selectedRows) => {
     console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
@@ -30,26 +44,42 @@ const rowSelection = {
   })
 }
 
-const PartnerTruck = (props) => {
+const TrucksByPartner = (props) => {
+  const { cardcode } = props
   const initial = {
     poData: [],
     poVisible: false,
     title: ''
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
-  const { trucks } = props
+
+  const { loading, error, data } = useSubscription(
+    PARTNER_TRUCKS_QUERY,
+    {
+      variables: {
+        cardcode: cardcode
+      }
+    }
+  )
+
+  console.log('PartnerTripContainer Error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const trucks = get(_data, 'partner[0].trucks', [])
 
   const columnsCurrent = [
     {
       title: 'Truck No',
       dataIndex: 'truck_no',
-      render: (text, record) => {
-        return (
-          <Link href='/trucks/[id]' as={`/trucks/${record.truck_no}`}>
-            <a>{record.truck_no}</a>
-          </Link>
-        )
-      }
+      render: (text, record) => (
+        <LinkComp
+          type='trucks'
+          data={record.truck_no}
+          id={record.truck_no}
+        />
+      )
     },
     {
       title: 'Truck Type',
@@ -59,17 +89,15 @@ const PartnerTruck = (props) => {
 
     },
     {
+      title: 'Status',
+      render: (text, record) => record.truck_status && record.truck_status.name
+    },
+    {
       title: 'Trip ID',
       render: (text, record) => {
         const id = record && record.trips[0] ? record.trips[0].id : null
         return (
-          <span>{
-            id &&
-              <Link href='/trips/[id]' as={`/trips/${id} `}>
-                <a>{id}</a>
-              </Link>
-          }
-          </span>
+          <span>{id ? <LinkComp type='trips' data={id} id={id} /> : '-'}</span>
         )
       }
     },
@@ -79,14 +107,15 @@ const PartnerTruck = (props) => {
         const id = record && record.trips[0] ? record.trips[0].id : null
         const source = record && record.trips[0] && record.trips[0].source ? record.trips[0].source.name : null
         const destination = record && record.trips[0] && record.trips[0].destination ? record.trips[0].destination.name : null
-        const status = record.truck_status &&  record.truck_status.id 
+        const status = record.truck_status && record.truck_status.name
         return (
           <span>{
-            id ? 
+            id ? (
               <span>
                 {source.slice(0, 3) + '-' + destination.slice(0, 3)}
-              </span>
-              : (status === 1) ? <a type='link' onClick={() => handleShow('poVisible', record.partner, 'poData', record)}>Assign</a> : 'NA'
+              </span>)
+              : (status === 'Waiting for Load') ? <a type='link' onClick={() => handleShow('poVisible', record.partner, 'poData', record)}>Assign</a>
+                : 'NA'
           }
           </span>
         )
@@ -97,20 +126,17 @@ const PartnerTruck = (props) => {
       render: (text, record) => {
         return (record.city && record.city.name)
       }
-
-    },
+    }
   ]
   return (
     <>
       <Table
-        rowSelection={{
-          ...rowSelection
-        }}
+        // rowSelection={{...rowSelection}}
         columns={columnsCurrent}
         dataSource={trucks}
         rowKey={record => record.id}
-        size='middle'
-        scroll={{ x: 1050, y: 400 }}
+        size='small'
+        scroll={{ x: 1050}}
         pagination={false}
       />
       {object.poVisible &&
@@ -124,4 +150,4 @@ const PartnerTruck = (props) => {
   )
 }
 
-export default PartnerTruck
+export default TrucksByPartner

@@ -6,7 +6,6 @@ import Link from 'next/link'
 import '../../styles/site.less'
 import Actions from './actions'
 import Nav from './nav'
-import { DatabaseTwoTone } from '@ant-design/icons'
 
 const { Header, Content } = Layout
 

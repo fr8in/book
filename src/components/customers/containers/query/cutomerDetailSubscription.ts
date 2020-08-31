@@ -32,6 +32,9 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
       gst
       managed
       pan
+      customer_accounting {
+        wallet_balance
+      }
       customer_type{
         id
         name
@@ -53,24 +56,6 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         id
         name
       }
-      # customer_users{
-      #   name
-      #   mobile
-      #   email
-      # }
-      # customer_branches {
-      #   branch_name
-      #   name
-      #   address
-      #   # state {
-      #   #   name
-      #   # }
-      #   # city {
-      #   #   name
-      #   # }
-      #   pincode
-      #   mobile
-      # }
       # customer_mamul_summary {
       #   system_mamul_avg
       # }

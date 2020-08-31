@@ -1,39 +1,43 @@
 import { Table } from 'antd'
+import moment from 'moment'
 
 const IncomingPaymentsBooked = (props) => {
+  const { customer_booked } = props
+
   const data = [
     {
       title: 'Date',
-      dataIndex: 'date',
-      width: '10%'
+      dataIndex: 'created_at',
+      width: '20%',
+      render: (text, render) => text ? moment(text).format('DD-MMM-YY') : '-'
     },
     {
       title: 'Load Id',
-      dataIndex: 'id',
-      width: '10%'
+      dataIndex: 'trip_id',
+      width: '20%'
     },
     {
       title: 'Invoice No',
-      dataIndex: 'invoiceNo',
-      width: '10%'
+      dataIndex: 'invoice_no',
+      width: '20%'
     },
     {
       title: 'Booked For',
-      dataIndex: 'bookedFor',
-      width: '10%'
+      dataIndex: 'comment',
+      width: '20%'
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
-      width: '10%'
-    }
+      width: '20%'
 
+    }
   ]
 
   return (
     <Table
       columns={data}
-      dataSource={props.lead}
+      dataSource={customer_booked}
       rowKey={(record) => record.id}
       size='small'
       pagination={false}

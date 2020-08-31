@@ -9,10 +9,30 @@ import {
   StopOutlined,
   SearchOutlined
 } from '@ant-design/icons'
-//import Cards from '../../../../mock/card/cards'
+import { gql,useQuery } from '@apollo/client'
+import get from 'lodash/get'
+
+const FUEL_CARD_QUERY = gql`
+query all($partner_id: Int!) {
+  partner(where: {id: {_eq: $partner_id}}) {
+    name
+    cardcode
+    fastags {
+      mobile
+      tag_id
+      truck_no
+      balance
+      status
+    }
+    fastag_balance
+  }
+}
+`
 
 const FasTags = (props) => {
- const { fastag }= props
+
+  const {partner_id} = props
+
   const initial = {
     suspendVisible: false,
     reversalVisible: false,
@@ -21,23 +41,42 @@ const FasTags = (props) => {
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
  
- 
+  console.log('partner_id',partner_id)
+    const { loading, error, data } = useQuery(
+      FUEL_CARD_QUERY, {
+        variables:{
+          partner_id:partner_id
+        },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    })
+    console.log('FasTag error', error)
+    console.log('FasTag data', data)
+  
+    var _data = {}
+    if (!loading) {
+      _data = data
+    }
+    const partner = get(_data, 'partner', [])
+    const fas_tag = get(_data,'partner[0].fastags',[])
+    console.log('fastag',fas_tag)
+ console.log('partner',partner)
  const onChange = (checked) => {
   console.log(`switch to ${checked}`)
 }
   const CardsFastag = [
     {
       title: 'Tag Id',
-      dataIndex: 'tagId',
       key: 'tagId',
-      width: '17%',
+      width: '16%',
+      render: (text, record) =>record && record.fastags[0] && record.fastags[0].tag_id,
     },
     {
       title: 'Truck No',
       key: 'truckNo',
-      width: '9%',
+      width: '8%',
       render: (text, record) => {
-        const truckNo = record.truck && record.truck.truck_no
+        const truckNo = record && record.fastags[0] && record.fastags[0].truck_no
         return (
           <Link href='trucks/[id]' as={`trucks/${truckNo}`}>
             <a>{truckNo}</a>
@@ -47,10 +86,10 @@ const FasTags = (props) => {
     },
     {
       title: 'ST Code',
-      key: 'stCode',
-      width: '8%',
+      key: 'cardcode',
+      width: '7%',
       render: (text, record) => {
-        const partner_id = record.partner && record.partner.cardcode
+        const partner_id = record && record.cardcode
         return (
           <Link href='partners/[id]' as={`partners/${partner_id}`}>
             <a>{partner_id}</a>
@@ -60,32 +99,38 @@ const FasTags = (props) => {
     },
     {
       title: 'Partner',
+      dataIndex: 'name',
       key: 'partner',
-      width: '12%',
-      render: (text, record) => record.partner && record.partner.name,
-     },
+      width: '11%'
+    },
+    {
+      title: 'Partner State',
+     // dataIndex: 'name',
+      key: 'partner',
+      width: '8%'
+    },
     {
       title: 'Tag Bal',
-      dataIndex: 'balance',
+      dataIndex: 'fastag_balance',
       sorter: (a, b) => (a.tagBal > b.tagBal ? 1 : -1),
-      width: '8%'
+      width: '7%'
     },
     {
       title: 'T.Status',
       render: (text, record) => record.tag_status && record.tag_status.status,
-      width: '11%'
+      width: '10%'
     },
 
     {
       title: 'C.Status',
       dataIndex: 'cStatus',
-      width: '8%',
+      width: '7%',
       render: () => <Switch size='small' defaultChecked onChange={onChange} />
     },
     {
       title: 'Reverse',
       dataIndex: 'Reverse',
-      width: '8%',
+      width: '7%',
       render: (text, record) => (
         <Button
           size='small'
@@ -122,7 +167,7 @@ const FasTags = (props) => {
     <>
       <Table
         columns={CardsFastag}
-        dataSource={fastag}
+        dataSource={partner}
         rowKey={(record) => record.tagId}
         size='small'
         scroll={{ x: 1156, y: 400 }}

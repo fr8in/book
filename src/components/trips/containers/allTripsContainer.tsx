@@ -2,6 +2,7 @@ import { gql, useQuery } from '@apollo/client'
 import { useState } from 'react'
 import get from 'lodash/get'
 import Trips from '../trips'
+import u from '../../../lib/util'
 
 const TRIPS_QUERY = gql`
 query trips(
@@ -56,7 +57,7 @@ query trips(
 const AllTripsContainer = (props) => {
   const initialFilter = {
     offset: 0,
-    limit: 100,
+    limit: u.limit,
     partnername: null,
     customername: null,
     sourcename: null,

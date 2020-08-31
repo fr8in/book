@@ -86,7 +86,7 @@ const Actions = (props) => {
   let truck_type_options = []
 
   if (!loading) {
-    truck_type_options = data.truck_type.map(_truck_type => { return { label: _truck_type.name, value: _truck_type.id } })
+    truck_type_options = data && data.truck_type ? data.truck_type.map(_truck_type => { return { label: _truck_type.name, value: _truck_type.id } }) : []
 
     const { region } = data
 
