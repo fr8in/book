@@ -1,9 +1,10 @@
 import Fr8Branch from '../fr8Branch'
 import React from 'react'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useSubscription } from '@apollo/client'
+import get from 'lodash/get'
 
 const EMPLOOYEE_QUERY = gql`
-query customer_fr8Branch_manager($id: Int){
+subscription customer_fr8Branch_manager($id: Int){
   branch{
     id
     name
@@ -32,31 +33,31 @@ query customer_fr8Branch_manager($id: Int){
 `
 const CustomersContainer = (props) => {
     const { id } = props
+
     const variables = {
         id:id
       }
          
-const { loading, error, data } = useQuery(
+const { loading, error, data } = useSubscription(
     EMPLOOYEE_QUERY, 
     {
-        variables: variables,
-    fetchPolicy: 'cache-and-network',
-    notifyOnNetworkStatusChange: true
+        variables: variables
   })
   console.log('error', error)
   console.log('id',variables)
   
-var branch = []
+let _data = []
 if (!loading){
-     branch = data && data.branch
+     _data = data 
 }
+const branch = get(_data,'branch',[])
 console.log('branch',branch)
 
   return (
-     <Fr8Branch
+    <Fr8Branch
          id={id}
-         customer_fr8Branch={branch}
-          />
+         fr8Branch={branch}
+    />
   )
 }
 
