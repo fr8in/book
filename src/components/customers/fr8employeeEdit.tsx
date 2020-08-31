@@ -14,7 +14,7 @@ const EMPLOYEE_QUERY = gql`
 `
 
 const Fr8Employee = (props) => {
-  
+  const { employee } = props
   const { loading, error, data } = useQuery(
     EMPLOYEE_QUERY,
     {
@@ -33,14 +33,17 @@ const Fr8Employee = (props) => {
     return { value: data.id, label: data.name }
   })
 
-  const handleChange = (value) => { }
+  const handleChange = (value) => {
+    console.log('Selected Emp', value)
+  }
 
   return (
     loading ? null : (
       <InlineSelect
         options={emplist}
+        label={employee}
         handleChange={handleChange}
-        style={{ width: '80%' }}
+        style={{ width: '200px' }}
       />)
   )
 }
