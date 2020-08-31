@@ -5,6 +5,8 @@ import {
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
+import Truncate from '../../common/truncate'
+import Link from 'next/link'
 
 import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
 import pendingDetail from '../../../../mock/approval/approvalPending'
@@ -40,7 +42,12 @@ export default function Pending () {
       title: 'Load ID',
       dataIndex: 'loadId',
       key: 'loadId',
-      width: '6%'
+      width: '6%',
+      render: (text, record) => (
+        <Link href='/trips/[id]' as={`/trips/${record.loadId} `}>
+          <a>{text}</a>
+        </Link>
+      )
     },
     {
       title: 'Type',
@@ -64,7 +71,8 @@ export default function Pending () {
       title: 'Reason',
       dataIndex: 'reason',
       key: 'reason',
-      width: '11%'
+      width: '11%',
+      render: (text, record) => <Truncate data={text} length={18} />
     },
     {
       title: 'Region',
@@ -78,7 +86,8 @@ export default function Pending () {
       dataIndex: 'requestBy',
       key: 'requestBy',
       filters: RequestedBy,
-      width: '13%'
+      width: '13%',
+      render: (text, record) => <Truncate data={text} length={18} />
     },
 
     {
@@ -92,7 +101,8 @@ export default function Pending () {
       title: 'Responsibility',
       dataIndex: 'responsibility',
       key: 'responsibility',
-      width: '11%',
+      width: '9%',
+      render: (text, record) => <Truncate data={text} length={18} />,
       filterDropdown: (
         <div>
           <Input placeholder='Search' id='id' name='id' type='number' />
@@ -106,20 +116,12 @@ export default function Pending () {
       title: 'Comment',
       dataIndex: 'comment',
       key: 'comment',
-      width: '9%',
-      render: (text, record) => {
-        return record.comment && record.comment.length > 9 ? (
-          <Tooltip title={record.comment}>
-            <span> {record.comment.slice(0, 9) + '...'}</span>
-          </Tooltip>
-        ) : (
-          record.comment
-        )
-      }
+      width: '13%',
+      render: (text, record) => <Truncate data={text} length={18} />
     },
     {
       title: 'Action',
-      width: '12%',
+      width: '10%',
       render: (text, record) => (
         <Space>
           <Tooltip title='Comment'>

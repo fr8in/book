@@ -1,6 +1,7 @@
 import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
+import get from 'lodash/get'
 
 const CUSTOMERS_ADVANCE_PERCENTAGE_QUERY = gql`
   query customerAdvancePercentage{
@@ -39,10 +40,13 @@ const CustomerAdvancePercentage = (props) => {
     }
   )
 
-  if (loading) return null
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
   console.log('CustomerType error', error)
 
-  const { customer_advance_percentage } = data
+  const customer_advance_percentage = get(_data, 'customer_advance_percentage', [])
   const advancePercentageList = customer_advance_percentage.map(data => {
     return { value: data.id, label: data.name }
   })
@@ -57,13 +61,14 @@ const CustomerAdvancePercentage = (props) => {
   }
 
   return (
-    <InlineSelect
-      label={advancePercentage}
-      value={advancePercentageId}
-      options={advancePercentageList}
-      handleChange={handleChange}
-      style={{ width: '80%' }}
-    />
+    loading ? null : (
+      <InlineSelect
+        label={advancePercentage}
+        value={advancePercentageId}
+        options={advancePercentageList}
+        handleChange={handleChange}
+        style={{ width: '80%' }}
+      />)
   )
 }
 

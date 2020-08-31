@@ -12,7 +12,7 @@ import Comment from './comment'
 import KycApproval from '../partners/kycApproval'
 import { useState } from 'react'
 import moment from 'moment'
-
+import Truncate from '../common/truncate'
 
 const truck_count = [
   { value: 1, text: '0' },
@@ -23,19 +23,18 @@ const truck_count = [
 
 const PartnerKyc = (props) => {
   const {
-     partners,
-     loading, 
-     onPageChange, 
-     filter, 
-     record_count, 
-     total_page, 
-     onFilter, 
-     onRegionFilter,
-     region_list,
-     partner_status_list, 
-     onNameSearch, 
-     onCardCodeSearch 
-    } = props
+    partners,
+    loading,
+    onPageChange,
+    filter,
+    record_count,
+    onFilter,
+    onRegionFilter,
+    region_list,
+    partner_status_list,
+    onNameSearch,
+    onCardCodeSearch
+  } = props
 
   const [currentPage, setCurrentPage] = useState(1)
   const initial = {
@@ -50,7 +49,6 @@ const PartnerKyc = (props) => {
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
   const value = { reject: false }
 
-
   const handleStatus = (e) => {
     onFilter(e.target.value)
   }
@@ -58,7 +56,6 @@ const PartnerKyc = (props) => {
   const handleRegionStatus = (e) => {
     onRegionFilter(e.target.value)
   }
-
 
   const handleName = (e) => {
     onNameSearch(e.target.value)
@@ -84,9 +81,9 @@ const PartnerKyc = (props) => {
 
   const columnsCurrent = [
     {
-      title: 'Partner Code',
+      title: 'C.Code',
       dataIndex: 'cardcode',
-      width: '10%',
+      width: '8%',
       render: (text, record) => {
         return (
           <Link href='partners/[id]' as={`partners/${record.cardcode}`}>
@@ -113,7 +110,7 @@ const PartnerKyc = (props) => {
         return (
           <span>
             <Badge dot style={{ backgroundColor: '#28a745' }} />
-            <span>{text}</span>
+            <Truncate data={text} length={12} />
           </span>
         )
       },
@@ -133,13 +130,7 @@ const PartnerKyc = (props) => {
       width: '10%',
       render: (text, record) => {
         const onboarded_by = record.onboarded_by && record.onboarded_by.name
-        return onboarded_by && onboarded_by.length > 12 ? (
-          <Tooltip title={onboarded_by}>
-            <span> {onboarded_by.slice(0, 12) + '...'}</span>
-          </Tooltip>
-        ) : (
-          onboarded_by
-        )
+        return <Truncate data={onboarded_by} length={12} />
       }
     },
     {
@@ -155,8 +146,7 @@ const PartnerKyc = (props) => {
           className='filter-drop-down'
         />
       )
-        
-      
+
     },
     {
       title: 'Contact No',
@@ -172,7 +162,7 @@ const PartnerKyc = (props) => {
       title: 'Registered At',
       dataIndex: 'created_at',
       width: '10%',
-      render:(text, record) => {
+      render: (text, record) => {
         return text ? moment(text).format('DD-MMM-YY') : null
       }
     },
@@ -194,7 +184,7 @@ const PartnerKyc = (props) => {
     {
       title: 'Status',
       render: (text, record) => record.partner_status && record.partner_status.name,
-      width: '14%',
+      width: '10%',
       filterDropdown: (
         <Radio.Group
           options={partner_status}
@@ -206,17 +196,11 @@ const PartnerKyc = (props) => {
     },
     {
       title: 'Comment',
-      width: '11%',
+      width: '12%',
       render: (text, record) => {
         const comment = record.partner_comments && record.partner_comments.length > 0 &&
         record.partner_comments[0].description ? record.partner_comments[0].description : '-'
-        return comment && comment.length > 12 ? (
-          <Tooltip title={comment}>
-            <span> {comment.slice(0, 12) + '...'}</span>
-          </Tooltip>
-        ) : (
-          comment
-        )
+        return <Truncate data={comment} length={12} />
       }
 
     },
@@ -248,7 +232,7 @@ const PartnerKyc = (props) => {
             shape='circle'
             danger
             icon={<CloseOutlined />}
-            onClick={() => 
+            onClick={() =>
               handleShow('rejectVisible', null, 'rejectData', record.id)}
           />
         </Space>
@@ -263,7 +247,7 @@ const PartnerKyc = (props) => {
         dataSource={partners}
         rowKey={(record) => record.id}
         size='small'
-        scroll={{ x: 1256 }}
+        scroll={{ x: 1150 }}
         pagination={false}
         className='withAction'
         loading={loading}
@@ -278,16 +262,15 @@ const PartnerKyc = (props) => {
           <Comment partner_id={object.commentData} />
         </Modal>
       )}
-      {object.rejectVisible && ( 
-         <Modal
-         title='Reject Partner'
-         visible={object.rejectVisible}
-         onCancel={handleHide}
-         footer= {null}
-         
-       >
-        <KycReject partner_id={object.rejectData} />
-      </Modal>
+      {object.rejectVisible && (
+        <Modal
+          title='Reject Partner'
+          visible={object.rejectVisible}
+          onCancel={handleHide}
+          footer={null}
+        >
+          <KycReject partner_id={object.rejectData} onHide={handleHide} />
+        </Modal>
       )}
       {object.approvalVisible && (
         <KycApproval
@@ -311,4 +294,3 @@ const PartnerKyc = (props) => {
 }
 
 export default PartnerKyc
-

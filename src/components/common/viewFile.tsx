@@ -12,7 +12,7 @@ const FILE_DOWNLOAD_MUTATION = gql`
   `
 
 const ViewFile = (props) => {
-  const { type, id, folder, file_type, file_list } = props
+  const { type, id, folder, file_type, file_list, size } = props
   const file = file_list && file_list.length > 0 ? file_list[0].file_path : null
   console.log('file_list', file_list, file)
   const previewInitial = { visible: false, image: '', title: '', ext: '' }
@@ -57,7 +57,7 @@ const ViewFile = (props) => {
 
   return (
     <>
-      <Button shape='circle' icon={<EyeOutlined />} onClick={() => onPreview(file)} />
+      <Button shape='circle' size={size || 'default'} icon={<EyeOutlined />} onClick={() => onPreview(file)} />
       {preview.visible &&
         <Modal
           visible={preview.visible}

@@ -8,7 +8,6 @@ import {
   MailOutlined
 } from '@ant-design/icons'
 import useShowHide from '../../../hooks/useShowHide'
-// All components
 import AccStmtMail from '../stmtMail'
 import DetailPageHeader from '../../common/detailPageHeader'
 import CustomerName from '../customerName'
@@ -132,7 +131,7 @@ const CustomerDetailContainer = (props) => {
                         onClick={() => onShow('wallet')}
                       />
                     </Tooltip>
-                    <WalletBalance wallet_balance={customer_info.customer_accounting && customer_info.customer_accounting.wallet_balance}/>
+                    <WalletBalance wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)} />
                     <Blacklist
                       cardcode={cardcode}
                       statusId={get(customer_info, 'status.id', null)}
@@ -194,11 +193,7 @@ const CustomerDetailContainer = (props) => {
                           <PlusOutlined /> Add Branch
                         </Button>
                       </Row>
-                      <Branch
-                        customerBranch={customer_info.customer_branches}
-                        branch={customer_info.customer_branches && customer_info.customer_branches.id}
-                        loading={loading}
-                      />
+                      <Branch cardcode={cardcode} />
                     </TabPane>
                     <TabPane tab='FR8 Branch' key='8'>
                       <Fr8Branch />

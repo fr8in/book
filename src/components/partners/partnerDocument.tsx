@@ -2,6 +2,8 @@ import { Row, Col, Button, Tabs, Space, Input } from 'antd'
 import { UploadOutlined, EyeTwoTone, DeleteTwoTone } from '@ant-design/icons'
 import LabelWithData from '../common/labelWithData'
 import FileUploadOnly from '../common/fileUploadOnly'
+import ViewFile from '../common/viewFile'
+import DeleteFile from '../common/deleteFile'
 
 const { TabPane } = Tabs
 const PartnerDocument = (props) => {
@@ -11,7 +13,7 @@ const PartnerDocument = (props) => {
   }
   const files = partnerInfo.partner_files
   const pan_doc = files.filter(file => file.type === 'PAN')
-  const pod_files = pan_doc && pan_doc.length > 0 ? pan_doc.map((file, i) => {
+  const pan_files = pan_doc && pan_doc.length > 0 ? pan_doc.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
       name: file.file_path,
@@ -27,41 +29,65 @@ const PartnerDocument = (props) => {
             <LabelWithData
               label='PAN'
               data={
-                <FileUploadOnly
-                  id={partnerInfo.id}
-                  type='partner'
-                  folder='approvals/'
-                  file_type='PAN'
-                  file_list={pod_files}
-                />
+                <span>
+                  {pan_files ? (
+                    <Space>
+                      <ViewFile
+                        id={partnerInfo.id}
+                        type='partner'
+                        file_type='PAN'
+                        folder='approvals/'
+                        file_list={pan_files}
+                      />
+                      <DeleteFile
+                        id={partnerInfo.id}
+                        type='partner'
+                        file_type='PAN'
+                        file_list={pan_files}
+                      />
+                    </Space>
+                  ) : (
+                    <FileUploadOnly
+                      id={partnerInfo.id}
+                      type='partner'
+                      folder='approvals/'
+                      file_type='PAN'
+                      file_list={pan_files}
+                    />
+                  )}
+                </span>
               }
               labelSpan={8}
               dataSpan={16}
+              margin_bottom
             />
             <LabelWithData
-              label='Card Number'
-              data={<Button icon={<UploadOutlined />} />}
+              label='Cheque'
+              data={<Button shape='circle' icon={<UploadOutlined />} />}
               labelSpan={8}
               dataSpan={16}
+              margin_bottom
             />
             <LabelWithData
-              label='Balance'
-              data={<Button icon={<UploadOutlined />} />}
+              label='TDS'
+              data={<Button shape='circle' icon={<UploadOutlined />} />}
               labelSpan={8}
               dataSpan={16}
+              margin_bottom
             />
             <LabelWithData
-              label=' Linked Mobile '
-              data={<Button icon={<UploadOutlined />} />}
+              label='Agreement'
+              data={<Button shape='circle' icon={<UploadOutlined />} />}
               labelSpan={8}
               dataSpan={16}
+              margin_bottom
             />
-
             <LabelWithData
-              label='Status'
-              data={<Button icon={<UploadOutlined />} />}
+              label='Cibil Score'
+              data={<Button shape='circle' icon={<UploadOutlined />} />}
               labelSpan={8}
               dataSpan={16}
+              margin_bottom
             />
           </Col>
         </Row>
@@ -73,7 +99,6 @@ const PartnerDocument = (props) => {
               <Col sm={6}>Name</Col>
               <Col sm={14}><Input placeholder='Company Name' /></Col>
             </Row>
-            <br />
             <Row>
               <Col sm={6}>PAN</Col>
               <Col sm={14}><Input placeholder='PAN Number' /></Col>
@@ -93,7 +118,6 @@ const PartnerDocument = (props) => {
                 </Space>
               </Col>
             </Row>
-            <br />
             <Row>
               <Col sm={6}>Cibil Score</Col>
               <Col sm={14}><Input placeholder='Cibil Score' /></Col>
@@ -113,7 +137,6 @@ const PartnerDocument = (props) => {
                 </Space>
               </Col>
             </Row>
-            <br />
             <Row>
               <Col sm={6}>TDS</Col>
               <Col sm={14}> </Col>
@@ -133,12 +156,10 @@ const PartnerDocument = (props) => {
                 </Space>
               </Col>
             </Row>
-            <br />
             <Row>
               <Col sm={6}>Trucks</Col>
               <Col sm={18}><Input placeholder='Add Trucks' /></Col>
             </Row>
-            <br />
             <Row>
               <Col xs={24} sm={24} className='text-right'><Button>Save</Button></Col>
             </Row>

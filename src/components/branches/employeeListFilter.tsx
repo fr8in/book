@@ -1,6 +1,5 @@
 import { Modal, Checkbox, Row, Col } from 'antd'
-import React, { useState } from 'react'
-import { gql, useQuery} from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 
 const EMP_LIST = gql`
 query employee_list{
@@ -11,9 +10,8 @@ query employee_list{
 }
 `
 const EmployeeListFilter = (props) => {
-  const { visible, onHide, onFilterChange, onboarded_by} = props
-    
-  
+  const { visible, onHide, onFilterChange, onboarded_by } = props
+
   const { loading, error, data } = useQuery(
     EMP_LIST,
     {
@@ -23,7 +21,6 @@ const EmployeeListFilter = (props) => {
   )
   console.log('CreatePartnersContainer error', error)
 
-
   var employee = []
   if (!loading) {
     employee = data && data.employee
@@ -31,10 +28,10 @@ const EmployeeListFilter = (props) => {
   const employeeList = employee.map((data) => {
     return { value: data.email, label: data.email }
   })
-  
+
   const onChange = (checkedValues) => {
     onFilterChange(checkedValues)
-    console.log('checked',checkedValues)
+    console.log('checked', checkedValues)
   }
   return (
     <Modal
@@ -46,9 +43,10 @@ const EmployeeListFilter = (props) => {
         <Checkbox>All</Checkbox>
         <Col xs={24} className='emp-list'>
           <Checkbox.Group
-           options={employeeList} 
-           defaultValue={onboarded_by} 
-           onChange={onChange}  />
+            options={employeeList}
+            defaultValue={onboarded_by}
+            onChange={onChange}
+          />
         </Col>
       </Row>
     </Modal>

@@ -89,7 +89,7 @@ const TripsByDestination = (props) => {
   }
 
   return (
-    <Trips trips={trips} loading={loading} intransit={intransit ? intransit : ''} />
+    <Trips trips={trips} loading={loading} intransit={intransit} />
   )
 }
 

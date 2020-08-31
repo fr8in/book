@@ -4,6 +4,7 @@ import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import CreateBreakdown from './createBreakdown'
+import u from '../../lib/util'
 
 const TRUCK_BREAKDOWN_QUERY = gql`
 query ($truck_status_name: [String!], $offset: Int!, $limit: Int!) {
@@ -36,7 +37,7 @@ query ($truck_status_name: [String!], $offset: Int!, $limit: Int!) {
 const Breakdown = (props) => {
   const initial = {
     offset: 0,
-    limit: 10,
+    limit: u.limit,
     cityVisible: false,
     cityData: [],
     title: ''
@@ -52,7 +53,7 @@ const Breakdown = (props) => {
   const variables = {
     offset: filter.offset,
     limit: filter.limit,
-    truck_status_name: truck_status,
+    truck_status_name: truck_status
   }
 
   const { loading, error, data } = useQuery(
@@ -67,7 +68,7 @@ const Breakdown = (props) => {
     _data = data
   }
 
-  console.log('_data',_data)
+  console.log('_data', _data)
 
   const truck = get(_data, 'truck', [])
   const truck_info = get(_data, 'truck[0]', {})

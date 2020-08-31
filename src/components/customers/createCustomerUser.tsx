@@ -1,9 +1,7 @@
-import {useState} from 'react'
-import { Row, Col, Modal, Button, Input, Select, Form,message } from 'antd'
-// import { OperatingCities } from '../../../mock/customer/createCustomerUserMock'
-import { useMutation, gql,useQuery } from '@apollo/client'
+import { useState } from 'react'
+import { Row, Col, Modal, Button, Input, Select, Form, message } from 'antd'
+import { useMutation, gql, useQuery } from '@apollo/client'
 import CitySelect from '../common/citySelect'
-const { Option } = Select
 
 const CUSTOMER_USERS_SUBSCRIPTION = gql`
   query customer{
@@ -32,8 +30,8 @@ mutation CustomeruserInsert($name:String,$mobile:String,$email:String,$customer_
 `
 
 const CreateCustomerUser = (props) => {
-  const { visible, onHide,customer } = props
-  const initial = {city_id: null}
+  const { visible, onHide, customer } = props
+  const initial = { city_id: null }
   const [obj, setObj] = useState(initial)
 
   const { loading, error, data } = useQuery(
@@ -49,16 +47,18 @@ const CreateCustomerUser = (props) => {
     INSERT_CUSTOMER_USERS_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') 
-      setObj(initial)}
+      onCompleted () {
+        message.success('Updated!!')
+        setObj(initial)
+      }
     }
   )
-  
-  var branch = [];
-  if (!loading) { 
-     branch = data.branch 
+
+  var branch = []
+  if (!loading) {
+    branch = data.branch
   }
- 
+
   const branchList = branch.map((data) => {
     return { value: data.id, label: data.name }
   })
@@ -69,7 +69,6 @@ const CreateCustomerUser = (props) => {
   const onCityChange = (city_id) => {
     setObj({ ...obj, city_id: city_id })
   }
-
 
   const onAddUser = (form) => {
     insertcustomerUser({
@@ -96,7 +95,7 @@ const CreateCustomerUser = (props) => {
           <Form layout='vertical' onFinish={onAddUser}>
             <Form.Item name='name'>
               <Input placeholder='Name' />
-            </Form.Item> 
+            </Form.Item>
             <Form.Item name='mobile'>
               <Input placeholder='Mobile No' />
             </Form.Item>
@@ -110,14 +109,14 @@ const CreateCustomerUser = (props) => {
                 </Form.Item>
               </Col>
               <Col xs={12}>
-              <CitySelect
-              onChange={onCityChange}
-            />
+                <CitySelect
+                  onChange={onCityChange}
+                />
               </Col>
             </Row>
             <Row justify='end'>
               <Form.Item>
-               <Button key='back' onClick={onHide}>Cancel</Button>
+                <Button key='back' onClick={onHide}>Cancel</Button>
                 <Button type='primary' htmlType='submit'>Save</Button>
               </Form.Item>
             </Row>

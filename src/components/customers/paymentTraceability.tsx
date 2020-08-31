@@ -1,13 +1,14 @@
-import { Card, Table, Button, Tooltip } from 'antd'
+import { Card, Table, Button } from 'antd'
 import moment from 'moment'
 import IncomingPaymentData from '../../../mock/customer/incomingdata'
+import Truncate from '../common/truncate'
 
 const PaymentTraceability = () => {
   const columns = [{
     title: 'Date',
     dataIndex: 'date',
     width: '15%',
-    render: (text, record) => text ? moment(text, 'x').format('YYYY-MM-DD') : null
+    render: (text, record) => text ? moment(text).format('DD-MMM-YY') : null
   },
   {
     title: 'Amount',
@@ -33,9 +34,7 @@ const PaymentTraceability = () => {
     title: 'Remarks',
     dataIndex: 'remarks',
     width: '15%',
-    render: (text, record) => {
-      return (text && text.length > 20 ? <Tooltip title={text}><span>{text.slice(0, 20) + '...'}</span></Tooltip> : text)
-    }
+    render: (text, record) => <Truncate data={text} length={20} />
   }
   ]
 

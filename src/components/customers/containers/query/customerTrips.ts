@@ -19,6 +19,7 @@ query customer_trip_list($cardcode: String, $trip_status: [String!],) {
         name
       }
       partner {
+        cardcode
         name
       }
       trip_status {

@@ -1,9 +1,11 @@
 import { Table, Tooltip, Button } from 'antd'
-import Link from 'next/link'
 import { PhoneOutlined, CommentOutlined, WhatsAppOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import TripFeedBack from '../trips/tripFeedBack'
+import Truncate from '../common/truncate'
+import get from 'lodash/get'
+import LinkComp from '../common/link'
 
 const Trips = (props) => {
   const { trips, loading } = props
@@ -24,39 +26,43 @@ const Trips = (props) => {
       dataIndex: 'id',
       render: (text, record) => {
         return (
-          <Link href='/trips/[id]' as={`/trips/${record.id} `}>
-            <a>{text}</a>
-          </Link>)
+          <LinkComp
+            type='trips'
+            data={text}
+            id={record.id}
+          />)
       },
       sorter: (a, b) => a.id - b.id,
-      width: '8%'
+      width: '7%'
     },
-    props.customername ? {
+    {
       title: 'Customer',
       render: (text, record) => {
-        const cardcode = record.customer && record.customer.cardcode
-        const name = record.customer && record.customer.name
+        const cardcode = get(record, 'customer.cardcode', null)
+        const name = get(record, 'customer.name', null)
         return (
-          <Link href='/customers/[id]' as={`/customers/${cardcode} `}>
-            {name && name.length > 12
-              ? <Tooltip title={name}><a>{name.slice(0, 12) + '...'}</a></Tooltip>
-              : <a>{name}</a>}
-          </Link>)
+          <LinkComp
+            type='customers'
+            data={name}
+            id={cardcode}
+            length={12}
+          />)
       },
       sorter: (a, b) => (a.customer.name > b.customer.name ? 1 : -1),
       width: '10%'
-    } : {},
+    },
     {
       title: 'Partner',
       render: (text, record) => {
-        const cardcode = record.partner && record.partner.cardcode
-        const name = record.partner && record.partner.name
+        const cardcode = get(record, 'partner.cardcode', null)
+        const name = get(record, 'partner.name', null)
         return (
-          <Link href='/partners/[id]' as={`/partners/${cardcode} `}>
-            {name && name.length > 12
-              ? <Tooltip title={name}><a>{name.slice(0, 12) + '...'}</a></Tooltip>
-              : <a>{name}</a>}
-          </Link>)
+          <LinkComp
+            type='partners'
+            data={name}
+            id={cardcode}
+            length={12}
+          />)
       },
       sorter: (a, b) => (a.partner.name > b.partner.name ? 1 : -1),
       width: '10%'
@@ -74,20 +80,23 @@ const Trips = (props) => {
     {
       title: 'Truck',
       render: (text, record) => {
-        const truck_no = record.truck && record.truck.truck_no
-        const truck_type = record.truck && record.truck.truck_type && record.truck.truck_type.name
+        const truck_no = get(record, 'truck.truck_no', null)
+        const truck_type_name = get(record, 'truck.truck_type.name', null)
+        const truck_type = truck_type_name ? truck_type_name.slice(0, 9) : null
         return (
-          <Link href='/trucks/[id]' as={`/trucks/${truck_no} `}>
-            <a>{truck_no + ' - ' + truck_type}</a>
-          </Link>)
+          <LinkComp
+            type='trucks'
+            data={truck_no + ' - ' + truck_type}
+            id={truck_no}
+          />)
       },
-      width: props.intransit ? '12%' : '14%'
+      width: '16%'
     },
     {
       title: 'Source',
       render: (text, record) => {
-        const source = record.source && record.source.name
-        return source && source > 10 ? source.slice(0, 10) + '...' : source
+        const source = get(record, 'source.name', null)
+        return <Truncate data={source} length={10} />
       },
       sorter: (a, b) => (a.source.name > b.source.name ? 1 : -1),
       width: '8%'
@@ -95,19 +104,17 @@ const Trips = (props) => {
     {
       title: 'Destination',
       render: (text, record) => {
-        const destination = record.destination && record.destination.name
-        return destination && destination.length > 10 ? destination.slice(0, 10) + '...' : destination
+        const destination = get(record, 'destination.name', null)
+        return <Truncate data={destination} length={10} />
       },
       sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
-      width: '9%'
+      width: '8%'
     },
     {
       title: 'TAT',
       dataIndex: 'tat',
       sorter: (a, b) => a.tat > b.tat ? 1 : -1,
-      render: (text, record) => {
-        return text && text ? text : 0
-      },
+      render: (text, record) => text && text ? text : 0,
       width: '4%'
     },
     props.intransit ? {
@@ -126,13 +133,10 @@ const Trips = (props) => {
     {
       title: 'Comment',
       render: (text, record) => {
-        const comment = record.trip_comments && record.trip_comments.length > 0 ? record.trip_comments[0].description : null
-        return (
-          comment ? <Tooltip title={comment}><span>{comment.slice(0, 12) + '...'}</span></Tooltip>
-            : null
-        )
+        const comment = get(record, 'trip_comments[0].description', null)
+        return <Truncate data={comment} length={26} />
       },
-      width: props.intransit ? '10%' : '17%'
+      width: props.intransit ? '9%' : '17%'
     },
     {
       title: 'Action',
@@ -149,7 +153,7 @@ const Trips = (props) => {
           </Tooltip> */}
         </span>
       ),
-      width: props.intransit ? '10%' : '11%'
+      width: props.intransit ? '9%' : '11%'
     }
   ]
   return (

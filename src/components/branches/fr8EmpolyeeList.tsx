@@ -23,10 +23,7 @@ mutation update_owner($id:[Int!],$onboarded_by_id:Int) {
 
 const EmployeeList = (props) => {
   const { visible, onHide, partner_ids } = props
- 
   const [employees, setEmployees] = useState('')
-  //console.log('onboarded_by', onboarded_by)
-console.log('partner_ids',partner_ids)
 
   const { loading, error, data } = useQuery(
     EMP_LIST,
@@ -36,18 +33,18 @@ console.log('partner_ids',partner_ids)
     }
   )
   console.log('CreatePartnersContainer error', error)
-  
+
   const [updateOwner] = useMutation(
     UPDATE_OWNER_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { 
-        message.success('Updated!!') 
+      onCompleted () {
+        message.success('Updated!!')
       }
     }
   )
 
-  var employee = []
+  let employee = []
   if (!loading) {
     employee = data && data.employee
   }
@@ -58,17 +55,15 @@ console.log('partner_ids',partner_ids)
   const employeeChange = (value) => {
     setEmployees(value)
   }
-  var arr_partner_ids= null
- if (isArray(partner_ids)){
-  arr_partner_ids= partner_ids
- }
- else {
-  arr_partner_ids= []
-  arr_partner_ids.push(partner_ids)
- }
- 
 
-  console.log('arr_partner_ids',arr_partner_ids,isArray(partner_ids) )
+  let arr_partner_ids = null
+  if (isArray(partner_ids)) {
+    arr_partner_ids = partner_ids
+  } else {
+    arr_partner_ids = []
+    arr_partner_ids.push(partner_ids)
+  }
+
   const onSubmit = () => {
     updateOwner({
       variables: {
@@ -77,7 +72,6 @@ console.log('partner_ids',partner_ids)
       }
     })
   }
- 
 
   return (
     <Modal
@@ -85,13 +79,14 @@ console.log('partner_ids',partner_ids)
       onOk={onSubmit}
       onCancel={onHide}
     >
-      <Select 
-      value={employees} 
-      onChange={employeeChange} 
-      style={{ width: 300 }} 
-      options={employeeList} 
-      optionFilterProp='label'
-      showSearch/>
+      <Select
+        value={employees}
+        onChange={employeeChange}
+        style={{ width: 300 }}
+        options={employeeList}
+        optionFilterProp='label'
+        showSearch
+      />
     </Modal>
   )
 }

@@ -1,9 +1,8 @@
-import IncomingPaymentData from '../../../mock/customer/incomingdata'
 import { Table } from 'antd'
 import { gql, useQuery } from '@apollo/client'
 import IncomingPaymentsBooked from './incomingPaymentsBooked'
 import get from 'lodash/get'
-
+import moment from 'moment'
 
 const INCOMING_PAYMENT = gql`
 query customer_booking($cardcode: String) {
@@ -31,63 +30,59 @@ query customer_booking($cardcode: String) {
 `
 
 const IncomingPayments = (props) => {
-
-  const {cardcode} = props
+  const { cardcode } = props
 
   const { loading, data, error } = useQuery(
     INCOMING_PAYMENT,
     {
       variables: { cardcode: cardcode }
     }
-    
+
   )
 
   console.log('Incoming Error', error)
- 
-  var _data = {}
+
+  let _data = {}
   if (!loading) {
     _data = data
   }
 
-  console.log('_data',_data)
+  const customer = get(_data, 'customer[0]', [])
+  const customer_incomings = get(customer, 'customer_incomings', 0)
 
-  const customer = get(_data, 'customer', [])
-  const customer_incomings = get(_data, 'customer[0].customer_incomings', 0)
- 
-
-console.log('customer',customer_incomings)
-
+  console.log('customer', customer_incomings)
 
   const columns = [
     {
       title: 'Date',
       dataIndex: 'created_at',
       key: 'created_at',
-      width: '20%'
+      width: '15%',
+      render: (text, render) => text ? moment(text).format('DD-MMM-YY') : '-'
     },
     {
       title: 'Amount',
       dataIndex: 'recevied',
       key: 'recevied',
-      width: '20%'
+      width: '15%'
     },
     {
       title: 'Booked',
       dataIndex: 'booked',
       key: 'booked',
-      width: '20%',
+      width: '15%'
     },
     {
       title: 'Balance',
       dataIndex: 'balance',
       key: 'balance',
-      width: '20%',
+      width: '15%'
     },
     {
       title: 'Remarks',
       dataIndex: 'comment',
       key: 'comment',
-      width: '20%',
+      width: '40%'
     }
   ]
   return (

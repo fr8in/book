@@ -14,24 +14,24 @@ mutation address_update($address:jsonb, $cardcode:String){
 `
 const EditAddress = (props) => {
   const { visible, onHide, cardcode } = props
-  
+
   const [updatePartnerAddress] = useMutation(
     UPDATE_PARTNER_ADDRESS_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
 
-  const onAddressSubmit = (form) =>{
+  const onAddressSubmit = (form) => {
     console.log('inside form submit', form)
-    const address={
-      no:form.no,
-      address:form.address,
-      city:form.city,
-      state:form.state,
-      pin_code:form.pin_code
-    }   
+    const address = {
+      no: form.no,
+      address: form.address,
+      city: form.city,
+      state: form.state,
+      pin_code: form.pin_code
+    }
     updatePartnerAddress({
       variables: {
         cardcode: cardcode,
@@ -39,7 +39,6 @@ const EditAddress = (props) => {
       }
     })
   }
-  console.log('cardcode', cardcode)
 
   return (
     <>
@@ -50,24 +49,24 @@ const EditAddress = (props) => {
         footer={null}
       >
         <Form layout='vertical' onFinish={onAddressSubmit}>
-          <Form.Item   name='no'>
+          <Form.Item name='no'>
             <Input placeholder='Building Number' />
           </Form.Item>
-          <Form.Item   name='address'>
+          <Form.Item name='address'>
             <Input placeholder='Address' />
           </Form.Item>
-          <Form.Item   name='city'>
+          <Form.Item name='city'>
             <Input placeholder='City' />
           </Form.Item>
-          <Form.Item   name='state'>
+          <Form.Item name='state'>
             <Input placeholder='State' />
           </Form.Item>
-          <Form.Item   name='pin_code'>
+          <Form.Item name='pin_code'>
             <Input placeholder='Pin Code' />
           </Form.Item>
           <Row justify='end'>
             <Space>
-              <Button type='primary' icon={<LeftOutlined />} onClick={onHide} > Back </Button>
+              <Button type='primary' icon={<LeftOutlined />} onClick={onHide}> Back </Button>
               <Button type='primary' key='back' htmlType='submit'> Save </Button>
             </Space>
           </Row>

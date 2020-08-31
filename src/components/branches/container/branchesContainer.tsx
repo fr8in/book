@@ -1,62 +1,41 @@
-import Branch from '../branches';
-import Employees from '../employees';
-import City from '../cityPricing';
-import AddBranch from '../addBranch';
-import { PlusCircleOutlined } from '@ant-design/icons';
-import { Tabs, Row, Col, Card, Button } from 'antd';
-import { gql, useQuery } from '@apollo/client';
-
-import useShowHide from '../../../hooks/useShowHide';
+import Branch from '../branches'
+import Employees from '../employees'
+import CityBranchMapping from '../cityBranchMapping'
+import AddBranch from '../addBranch'
+import { PlusCircleOutlined } from '@ant-design/icons'
+import { Tabs, Card, Button } from 'antd'
+import useShowHide from '../../../hooks/useShowHide'
 
 const TabPane = Tabs.TabPane
 
-const EMPLOYEE_QUERY = gql`
-  query BranchEmployee {
-    employee {
-      id
-      name
-    }
-  }
-`
-
 const BranchesContainer = () => {
-  const { loading, error, data } = useQuery(EMPLOYEE_QUERY, {
-    notifyOnNetworkStatusChange: true
-  })
-
-  console.log('BranchesContainer error', error)
-  var employee = []
-
-  if (!loading) {
-    employee = data.employee
-  }
-
   const initial = { showModal: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   return (
-    <Card size='small' className='card-body-0 border-top-blue'>
-      <Tabs>
-        <TabPane tab='Container' key='1'>
-          <Row justify='end' className='m5'>
-            <Col flex='130px'>
-              <Button
-                title='Add Branch'
-                size='small'
-                type='primary'
-                icon={<PlusCircleOutlined />}
-                onClick={() => onShow('showModal')}
-              >
+    <Card
+      size='small'
+      className='card-body-0 border-top-blue'
+    >
+      <Tabs
+        tabBarExtraContent={
+          <Button
+            title='Add Branch'
+            type='primary'
+            icon={<PlusCircleOutlined />}
+            onClick={() => onShow('showModal')}
+          >
                 Add Branch
-              </Button>
-            </Col>
-          </Row>
+          </Button>
+        }
+      >
+        <TabPane tab='Branches' key='1'>
           <Branch />
         </TabPane>
         <TabPane tab='Employess' key='2'>
-          <Employees employees={employee} loading={loading} />
+          <Employees />
         </TabPane>
-        <TabPane tab='City Pricing' key='3'>
-          <City />
+        <TabPane tab='City Branch Mapping' key='3'>
+          <CityBranchMapping />
         </TabPane>
       </Tabs>
       {visible.showModal && (
@@ -64,6 +43,6 @@ const BranchesContainer = () => {
       )}
     </Card>
   )
-};
+}
 
 export default BranchesContainer

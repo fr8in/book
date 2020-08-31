@@ -11,7 +11,7 @@ const FILE_DELETE_MUTATION = gql`
     `
 
 const DeleteFile = (props) => {
-  const { type, id, file_type, file_list } = props
+  const { type, id, file_type, file_list, size } = props
   const file = file_list && file_list.length > 0 ? file_list[0].file_path : null
 
   const [s3FileDelete] = useMutation(
@@ -34,7 +34,7 @@ const DeleteFile = (props) => {
   }
 
   return (
-    <Button shape='circle' danger icon={<DeleteOutlined />} onClick={() => remove(file)} />
+    <Button shape='circle' size={size || 'default'} danger icon={<DeleteOutlined />} onClick={() => remove(file)} />
   )
 }
 

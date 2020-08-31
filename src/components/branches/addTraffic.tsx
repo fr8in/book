@@ -24,13 +24,7 @@ const AddTraffic = (props) => {
     {
       title: 'BM.Traffic',
       dataIndex: 'bmTraffic',
-      render: (text, record) => {
-        return (
-          <span>
-            <Radio>{text}</Radio>
-          </span>
-        )
-      }
+      render: (text, record) => <Radio>{text}</Radio>
     },
     {
       title: 'Phone',
