@@ -20,6 +20,7 @@ import WalletTopup from '../walletTopup'
 import WalletBalance from '../walletBalance'
 import PendingPayments from '../pendingPayments'
 import CustomerTrips from '../customerTrips'
+import CustomerClosedTrips from '../customerClosedTrips'
 import IncomingPayments from '../incomingPayments'
 import Users from '../users'
 import Branch from '../branch'
@@ -168,7 +169,7 @@ const CustomerDetailContainer = (props) => {
                       tab={<TitleWithCount name='Recieved' value={recieved_count} />}
                       key='4'
                     >
-                      <CustomerTrips cardcode={cardcode} status_names={recieved} />
+                      <CustomerClosedTrips cardcode={cardcode} />
                     </TabPane>
                     <TabPane
                       tab={<TitleWithCount name='Incoming' value={0} />}
