@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Tabs, Card, Space, Button } from 'antd'
 import PartnerLead from '../../partners/partnerLead'
 import TruckVerification from '../../trucks/truckVerification'
-import VasRequest from '../../partners/vasRequest'
 import Breakdown from '../../trucks/breakdown'
 import Announcenmemt from '../../partners/announcement'
 import CreateLead from '../../partners/createLead'
@@ -106,11 +105,6 @@ const SourcingContainer = () => {
             <TabPane tab={<TitleWithCount name='Lead' value={lead_count} />} key='2'>
               <Card size='small' className='card-body-0'>
                 <PartnerLead visible={visible.employeeList} onHide={onHide} onboarded_by={filter} />
-              </Card>
-            </TabPane>
-            <TabPane tab='Vas Request' key='3'>
-              <Card size='small' className='card-body-0'>
-                <VasRequest />
               </Card>
             </TabPane>
           </Tabs>
