@@ -1,8 +1,15 @@
 import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
-import { ALL_EMPLOYEE } from '../branches/container/query/employeeQuery'
 import InlineSelect from '../common/inlineSelect'
 
+const ALL_EMPLOYEE = gql`
+  query allEmployee {
+  employee{
+    id
+    email
+  }
+}
+`
 const UPDATE_CUSTOMER_PAYMENT_MANAGER_MUTATION = gql`
 mutation customerPaymentManager($payment_manager_id:Int,$cardcode:String) {
   update_customer(_set: {payment_manager_id: $payment_manager_id}, where: {cardcode: {_eq: $cardcode}}) {

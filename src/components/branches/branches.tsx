@@ -1,10 +1,32 @@
 import React from 'react'
 import { Table, Tag } from 'antd'
-import Branch from '../../../mock/branches/branches'
 import { EditTwoTone } from '@ant-design/icons'
-
 import AddTraffic from '../branches/addTraffic'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
+import { gql, useSubscription } from '@apollo/client'
+import get from 'lodash/get'
+
+const BRANCHES_QUERY = gql`
+subscription branches{
+  branch(order_by: {displayposition: asc}){
+    id
+    name
+    displayposition
+    branch_employees{
+      id
+      is_manager
+      employee{
+        id
+        name
+        mobileno
+      }
+    }
+    cities{
+      id
+      name
+    }
+  }
+}`
 
 const Branches = () => {
   const initial = {
@@ -14,23 +36,32 @@ const Branches = () => {
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
-  const Branches = [
+  const { loading, data, error } = useSubscription(BRANCHES_QUERY)
+
+  console.log('Branches Error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+
+  const branches = get(_data, 'branch', [])
+
+  const column = [
     {
       title: 'Branch Name',
-      dataIndex: 'branchName',
-      key: 'branchName',
-      width: '13%'
+      dataIndex: 'name',
+      width: '10%'
     },
     {
       title: 'Connected City',
       dataIndex: 'connectedCity',
       key: 'connectedCity',
-      width: '25%',
+      width: '30%',
       render: (text, record) =>
-        record.connectedCity.length > 0
-          ? record.connectedCity.map((data, i) => (
-            <Tag className='tagSpace' key={i}>
-              {data}
+        record.cities.length > 0
+          ? record.cities.map((data, i) => (
+            <Tag className='small-tag' key={i}>
+              {data.name}
             </Tag>
           ))
           : null
@@ -39,20 +70,33 @@ const Branches = () => {
       title: 'Traffic Members',
       dataIndex: 'trafficMembers',
       key: 'trafficMembers',
-      width: '25%',
+      width: '50%',
       render: (text, record) => {
         return (
-          <div>
+          <div className='cell-wrapper'>
             <span>
-              {record.trafficMembers
-                ? record.trafficMembers.map((data, i) => <Tag key={i}><span>{data}</span></Tag>)
+              {record.branch_employees
+                ? record.branch_employees.map((data, i) => {
+                  const mobile = get(data, 'employee.mobileno', '-')
+                  const name = get(data, 'employee.name', '-')
+                  return (
+                    <Tag
+                      key={i}
+                      className='small-tag'
+                      color={data.is_manager ? 'blue' : null}
+                    >
+                      <span>{`${mobile} - ${name}`}</span>
+                    </Tag>
+                  )
+                })
                 : null}
             </span>
             {
               <EditTwoTone
                 type='edit'
+                className='cell-icon'
                 onClick={() =>
-                  handleShow('trafficVisible', record.branchName, null, null)}
+                  handleShow('trafficVisible', record.name, 'trafficData', record)}
               />
             }
           </div>
@@ -63,25 +107,26 @@ const Branches = () => {
       title: 'Weekly Target',
       dataIndex: 'weeklyTarget',
       key: 'weeklyTarget',
-      width: '25%'
+      width: '10%'
     }
   ]
 
   return (
     <>
       <Table
-        columns={Branches}
-        dataSource={Branch}
+        columns={column}
+        dataSource={branches}
         size='small'
-        scroll={{ x: 800, y: 400 }}
+        scroll={{ x: 800 }}
         pagination={false}
         rowKey={record => record.id}
+        loading={loading}
       />
       {object.trafficVisible && (
         <AddTraffic
           visible={object.trafficVisible}
           onHide={handleHide}
-          data={object.trafficData}
+          branch_data={object.trafficData}
           title={object.title}
         />
       )}

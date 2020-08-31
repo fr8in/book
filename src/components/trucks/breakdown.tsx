@@ -136,10 +136,9 @@ const Breakdown = (props) => {
         columns={columnsCurrent}
         dataSource={truck}
         rowKey={record => record.id}
-        size='middle'
-        scroll={{ x: 800, y: 400 }}
+        size='small'
+        scroll={{ x: 800, y: 450 }}
         pagination={false}
-
       />
       {!loading && record_count
         ? (

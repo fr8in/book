@@ -1,14 +1,15 @@
 import React from 'react'
 import { Table } from 'antd'
-import Branch from '../../../mock/branches/branches'
-import { EditTwoTone } from '@ant-design/icons'
+import BranchEdit from './citybranchedit'
 
-const CityPricing = () => {
+const CityPricing = (props) => {
+  const {citymapping} = props
+  console.log('citymapping',citymapping)
   const CityPricing = [
     {
       title: 'City',
-      dataIndex: 'city',
-      key: 'city',
+      dataIndex: 'name',
+      key: 'name',
       width: '30%'
     },
     {
@@ -16,14 +17,20 @@ const CityPricing = () => {
       dataIndex: 'branch',
       key: 'branch',
       width: '70%',
-      render: (text, record) => <span>{text} <EditTwoTone /></span>
+      render: (text, record) => {
+        const branch = record.branch && record.branch.name
+        return(
+      <span>{branch} <BranchEdit id={record.id} branch={branch}/></span>
+      
+        )
+      }
     }
   ]
 
   return (
     <Table
       columns={CityPricing}
-      dataSource={Branch}
+      dataSource={citymapping}
       size='small'
       scroll={{ x: 1156, y: 400 }}
       pagination={false}
