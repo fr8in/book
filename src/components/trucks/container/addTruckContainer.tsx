@@ -12,9 +12,6 @@ query addTruck ( $cardcode: String){
     id
     cardcode
     name
-    trucks{
-      id
-    }
   }
   truck_type {
     id
@@ -23,8 +20,8 @@ query addTruck ( $cardcode: String){
 }`
 
 const INSERT_ADD_TRUCK_MUTATION = gql`
-mutation AddTruck($truck_no:String,  $partner_id: Int, $breadth:float8,$length:float8,$height:float8,$city_id:Int,$truck_type_id:Int ) {
-  insert_truck(objects: {truck_no: $truck_no,breadth: $breadth, height: $height, length: $length, partner_id: $partner_id,  truck_type_id: $truck_type_id, city_id: $city_id}) {
+mutation AddTruck($truck_no:String,  $partner_id: Int, $breadth:float8,$length:float8,$height:float8,$city_id:Int,$truck_type_id:Int, $driver_id: Int ) {
+  insert_truck(objects: {truck_no: $truck_no,breadth: $breadth, height: $height, length: $length, partner_id: $partner_id,  truck_type_id: $truck_type_id, city_id: $city_id, driver_id: $driver_id, truck_status_id: 5}) {
     returning {
       id
       truck_no
@@ -33,23 +30,23 @@ mutation AddTruck($truck_no:String,  $partner_id: Int, $breadth:float8,$length:f
 }`
 
 const AddTruck = () => {
-  const initial = { city_id: null }
-
-  const [city, setCity] = useState(initial)
+  const [city_id, setCity_id] = useState(null)
+  const [driver_id, setDriver_id] = useState(null)
 
   const onCityChange = (city_id) => {
-    setCity({ ...city, city_id: city_id })
+    setCity_id(city_id)
   }
 
-  const handleChange = (value) => {
-    console.log(`selected ${value}`)
+  const driverChange = (driver_id) => {
+    setDriver_id(driver_id)
   }
 
-  const { loading, error, data } = useQuery
-  (ADD_TRUCK_QUERY,
+  const { loading, error, data } = useQuery(
+    ADD_TRUCK_QUERY,
     {
       notifyOnNetworkStatusChange: true
-    })
+    }
+  )
 
   console.log('AddTruck error', error)
 
@@ -61,8 +58,6 @@ const AddTruck = () => {
     partner_info = partner[0] ? partner[0] : { name: 'ID does not exist' }
     truck_type = data.truck_type
   }
-
-  const truck_id = partner_info && partner_info.trucks && partner_info.trucks.id
 
   const typeList = truck_type.map((data) => {
     return { value: data.id, label: data.name }
@@ -81,12 +76,13 @@ const AddTruck = () => {
     insertTruck({
       variables: {
         partner_id: partner_info.id,
-        city_id: parseInt(city.city_id, 10),
+        city_id: parseInt(city_id, 10),
         length: parseFloat(form.length),
         breadth: parseFloat(form.breadth),
         height: parseFloat(form.height),
         truck_no: (form.truck_no),
-        truck_type_id: (form.truck_type)
+        truck_type_id: parseInt(form.truck_type, 10),
+        driver_id: driver_id
       }
     })
   }
@@ -125,7 +121,7 @@ const AddTruck = () => {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Driver partner_id={partner_info.id} truck_id={truck_id} />
+              <Driver partner_id={partner_info.id} driverChange={driverChange} />
             </Col>
           </Row>
           <Row gutter={10}>
@@ -135,7 +131,7 @@ const AddTruck = () => {
                 name='truck_type'
                 rules={[{ required: true, message: 'Truck Type is required field' }]}
               >
-                <Select style={{ width: 280 }} onChange={handleChange} options={typeList} />
+                <Select style={{ width: 280 }} options={typeList} />
               </Form.Item>
             </Col>
             <Col span={6}>
