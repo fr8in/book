@@ -4,6 +4,7 @@ import PartnerLead from '../../partners/partnerLead'
 import TruckVerification from '../../trucks/truckVerification'
 import Breakdown from '../../trucks/breakdown'
 import Announcenmemt from '../../partners/announcement'
+import CreateAnnouncenmemt from '../../partners/createannouncenment'
 import CreateLead from '../../partners/createLead'
 import FilterList from '../../branches/employeeListFilter'
 import TitleWithCount from '../../common/titleWithCount'
@@ -79,7 +80,7 @@ const SourcingContainer = () => {
             {(mainTabKey === '3' || mainTabKey === '4') &&
               <Button shape='circle' icon={<FilterOutlined />} onClick={() => onShow('filterList')} />}
             {mainTabKey === '5' &&
-              <Button shape='circle' type='primary' icon={<PlusOutlined />} onClick={() => onShow('filterList')} />}
+              <Button shape='circle' type='primary' icon={<PlusOutlined />} onClick={() => onShow('createAnnouncenmemt')} />}
           </span>
         }
       >
@@ -127,6 +128,7 @@ const SourcingContainer = () => {
       </Tabs>
       {visible.createLead && <CreateLead visible={visible.createLead} onHide={onHide} />}
       {visible.filterList && <FilterList visible={visible.filterList} onHide={onHide} onFilterChange={onFilterChange} onboarded_by={filter} />}
+      {visible.createAnnouncenmemt && <CreateAnnouncenmemt visible={visible.createAnnouncenmemt} onHide={onHide} />}
     </Card>
   )
 }
