@@ -1,4 +1,4 @@
-import { Table, Button, Switch, Input } from 'antd'
+import { Table, Button, Switch, message } from 'antd'
 import Link from 'next/link'
 import FastagSuspend from '../cards/fastagSuspend'
 import FastagReversal from './fastagReversal'
@@ -9,18 +9,17 @@ import {
   StopOutlined,
   SearchOutlined
 } from '@ant-design/icons'
-import { gql,useQuery } from '@apollo/client'
+import { gql,useQuery,useMutation } from '@apollo/client'
 import get from 'lodash/get'
 
-const FUEL_CARD_QUERY = gql`
+const FASTAG_QUERY = gql`
 query all($partner_id: Int!) {
   partner(where: {id: {_eq: $partner_id}}) {
-    name
-    cardcode
     fastags {
       mobile
       tag_id
       truck_no
+      truck_id
       balance
       status
     }
@@ -28,7 +27,15 @@ query all($partner_id: Int!) {
   }
 }
 `
-
+const UPDATE_FASTAG_STATUS_MUTATION = gql`
+mutation update_fastag_status($truckId:Int!,$status:Int!,$modifiedBy:String!){
+  update_fastag(truck_id:$truckId,status:$status,modified_by:$modifiedBy)
+  {
+    status
+    description
+}
+}
+`
 const FasTags = (props) => {
 
   const {partner_id} = props
@@ -43,7 +50,7 @@ const FasTags = (props) => {
  
   console.log('partner_id',partner_id)
     const { loading, error, data } = useQuery(
-      FUEL_CARD_QUERY, {
+      FASTAG_QUERY, {
         variables:{
           partner_id:partner_id
         },
@@ -53,79 +60,76 @@ const FasTags = (props) => {
     console.log('FasTag error', error)
     console.log('FasTag data', data)
   
+    const [updateFastagStatus] = useMutation(
+      UPDATE_FASTAG_STATUS_MUTATION,
+      {
+        onError (error) { message.error(error.toString()) },
+        onCompleted () { message.success('Updated!!') }
+      }
+    )
+    const onChange = (value,record) => {
+      console.log('record', record,value)
+      updateFastagStatus({
+        variables: {
+          truckId: record.truck_id,
+          status: value == true ? 1 : 0,
+          modifiedBy: "pravalika.k@fr8.in"
+        }
+      })
+     
+    }
+    
+
     var _data = {}
     if (!loading) {
       _data = data
     }
-    const partner = get(_data, 'partner', [])
-    const fas_tag = get(_data,'partner[0].fastags',[])
-    console.log('fastag',fas_tag)
- console.log('partner',partner)
- const onChange = (checked) => {
-  console.log(`switch to ${checked}`)
-}
+    const fastags = get(_data, 'partner[0].fastags', [])
+    console.log('fastags',fastags)
+
   const CardsFastag = [
     {
       title: 'Tag Id',
-      key: 'tagId',
+      dataIndex:'tag_id',
+      key: 'tag_id',
       width: '16%',
-      render: (text, record) =>record && record.fastags[0] && record.fastags[0].tag_id,
+     
     },
     {
       title: 'Truck No',
-      key: 'truckNo',
+      dataIndex:'truck_no',
+      key: 'truck_no',
       width: '8%',
       render: (text, record) => {
-        const truckNo = record && record.fastags[0] && record.fastags[0].truck_no
         return (
-          <Link href='trucks/[id]' as={`trucks/${truckNo}`}>
-            <a>{truckNo}</a>
+          <Link href='trucks/[id]' as={`trucks/${text}`}>
+            <a>{text}</a>
           </Link>
         )
       }
     },
-    {
-      title: 'ST Code',
-      key: 'cardcode',
-      width: '7%',
-      render: (text, record) => {
-        const partner_id = record && record.cardcode
-        return (
-          <Link href='partners/[id]' as={`partners/${partner_id}`}>
-            <a>{partner_id}</a>
-          </Link>
-        )
-      }
-    },
-    {
-      title: 'Partner',
-      dataIndex: 'name',
-      key: 'partner',
-      width: '11%'
-    },
-    {
-      title: 'Partner State',
-     // dataIndex: 'name',
-      key: 'partner',
-      width: '8%'
-    },
+  
     {
       title: 'Tag Bal',
-      dataIndex: 'fastag_balance',
+      dataIndex: 'balance',
       sorter: (a, b) => (a.tagBal > b.tagBal ? 1 : -1),
       width: '7%'
     },
-    {
-      title: 'T.Status',
-      render: (text, record) => record.tag_status && record.tag_status.status,
-      width: '10%'
-    },
+    // {
+    //   title: 'T.Status',
+    //   render: (text, record) => record.tag_status && record.tag_status.status,
+    //   width: '10%'
+    // },
 
     {
       title: 'C.Status',
       dataIndex: 'cStatus',
       width: '7%',
-      render: () => <Switch size='small' defaultChecked onChange={onChange} />
+      render: (text,record) => 
+      <Switch size='small' 
+      defaultChecked 
+      onChange={(checked) => onChange(checked, record)} checked={text}
+       />
     },
     {
       title: 'Reverse',
@@ -157,7 +161,7 @@ const FasTags = (props) => {
           danger
           shape='circle'
           icon={<StopOutlined />}
-          onClick={() => handleShow('suspendVisible', null, 'suspendData', record)}
+          onClick={() => handleShow('suspendVisible', null, 'suspendData', record.truck_id)}
         />
       )
     }
@@ -167,7 +171,7 @@ const FasTags = (props) => {
     <>
       <Table
         columns={CardsFastag}
-        dataSource={partner}
+        dataSource={fastags}
         rowKey={(record) => record.tagId}
         size='small'
         scroll={{ x: 1156, y: 400 }}
@@ -177,7 +181,7 @@ const FasTags = (props) => {
       {object.suspendVisible && (
         <FastagSuspend
           visible={object.suspendVisible}
-          data={object.suspendData}
+          truck_id={object.suspendData}
           onHide={handleHide}
         />
       )}

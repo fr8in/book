@@ -3,6 +3,8 @@ import LabelWithData from '../../common/labelWithData'
 import fuelDetail from '../../../../mock/card/fuelCard'
 import { gql,useQuery,useMutation } from '@apollo/client'
 import get from 'lodash/get'
+
+
 const FUEL_CARD_QUERY = gql`
 query all($partner_id: Int!) {
   partner(where: {id: {_eq: $partner_id}}) {
@@ -18,7 +20,9 @@ query all($partner_id: Int!) {
 `
 const UPDATE_FUEL_CARD_STATUS_MUTATION = gql`
 mutation update_fuel_card_status($number:String!,$status:Boolean!,$provider:String!,$modifiedBy:String!){
-  update_fuel_card(number:$number,status:$status,provider:$provider,modified_by:$modifiedBy)
+  update_fuel_card(number:$number,status:$status,provider:$provider,modified_by:$modifiedBy){status
+    description
+}
 }
 `
 const PartnerFuelDetail = (props) => {
