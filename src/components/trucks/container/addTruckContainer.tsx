@@ -1,67 +1,57 @@
-import {useState} from "react";
-import { Row, Col, Card, Input, Button, Form, Divider, Space, Select ,message} from 'antd'
-import { City, Trucktype } from '../../../../mock/trucks/addTruck'
+import { useState } from 'react'
+import { Row, Col, Card, Input, Button, Form, Divider, Space, Select, message } from 'antd'
 import LabelAndData from '../../common/labelAndData'
 import Link from 'next/link'
-import { gql, useQuery , useMutation } from '@apollo/client'
+import { gql, useQuery, useMutation } from '@apollo/client'
 import CitySelect from '../../common/citySelect'
-import Driver from "../driver";
-
+import Driver from '../driver'
 
 const ADD_TRUCK_QUERY = gql`
-  query addTruck ( $cardcode: String){
-      partner(where: {cardcode: {_eq: $cardcode}}) {
-        id
-        cardcode
-        name
-        trucks{
-          id
-        }
-      }
-      truck_type {
-        id
-        name
-      }
-    }
-      `
-      const INSERT_ADD_TRUCK_MUTATION = gql`
-mutation AddTruck($truck_no:String,  $partner_id: Int, $breadth:float8,$length:float8,$height:float8,$city_id:Int,$truck_type_id:Int ) {
-  insert_truck(objects: {truck_no: $truck_no,breadth: $breadth, height: $height, length: $length, partner_id: $partner_id,  truck_type_id: $truck_type_id, city_id: $city_id}) {
+query addTruck ( $cardcode: String){
+  partner(where: {cardcode: {_eq: $cardcode}}) {
+    id
+    cardcode
+    name
+  }
+  truck_type {
+    id
+    name
+  }
+}`
+
+const INSERT_ADD_TRUCK_MUTATION = gql`
+mutation AddTruck($truck_no:String,  $partner_id: Int, $breadth:float8,$length:float8,$height:float8,$city_id:Int,$truck_type_id:Int, $driver_id: Int ) {
+  insert_truck(objects: {truck_no: $truck_no,breadth: $breadth, height: $height, length: $length, partner_id: $partner_id,  truck_type_id: $truck_type_id, city_id: $city_id, driver_id: $driver_id, truck_status_id: 5}) {
     returning {
       id
       truck_no
     }
   }
-}
-`
+}`
 
 const AddTruck = () => {
-
-  const initial = { city_id: null }
-
-  const [city, setCity] = useState(initial)
-
- 
+  const [city_id, setCity_id] = useState(null)
+  const [driver_id, setDriver_id] = useState(null)
 
   const onCityChange = (city_id) => {
-    setCity({ ...city, city_id: city_id })
+    setCity_id(city_id)
   }
 
-
-  const handleChange = (value) => {
-    console.log(`selected ${value}`)
+  const driverChange = (driver_id) => {
+    setDriver_id(driver_id)
   }
 
-  const { loading, error, data } = useQuery
-  (ADD_TRUCK_QUERY, 
+  const { loading, error, data } = useQuery(
+    ADD_TRUCK_QUERY,
     {
-    notifyOnNetworkStatusChange: true
-  })
+      notifyOnNetworkStatusChange: true
+    }
+  )
 
   console.log('AddTruck error', error)
 
   var partner_info = {}
-  var truck_type = [];
+  var truck_type = []
 
   if (!loading) {
     const { partner } = data
@@ -69,8 +59,6 @@ const AddTruck = () => {
     truck_type = data.truck_type
   }
 
-  const truck_id = partner_info && partner_info.trucks  && partner_info.trucks.id 
- 
   const typeList = truck_type.map((data) => {
     return { value: data.id, label: data.name }
   })
@@ -84,16 +72,17 @@ const AddTruck = () => {
   )
 
   const onSubmit = (form) => {
-    console.log('id',form)
+    console.log('id', form)
     insertTruck({
       variables: {
-        partner_id:partner_info.id,
-        city_id:parseInt(city.city_id,10),
+        partner_id: partner_info.id,
+        city_id: parseInt(city_id, 10),
         length: parseFloat(form.length),
         breadth: parseFloat(form.breadth),
         height: parseFloat(form.height),
-        truck_no:(form.truck_no),
-        truck_type_id:(form.truck_type)
+        truck_no: (form.truck_no),
+        truck_type_id: parseInt(form.truck_type, 10),
+        driver_id: driver_id
       }
     })
   }
@@ -123,18 +112,16 @@ const AddTruck = () => {
             </Col>
             <Col span={8}>
               <Form.Item>
-              <CitySelect
-             label='Current City'
-              onChange={onCityChange}
-              required
-              name='city'
-            />
+                <CitySelect
+                  label='Current City'
+                  onChange={onCityChange}
+                  required
+                  name='city'
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
-            <Form.Item>
-               <Driver partner_id={partner_info.id} truck_id={truck_id}/>
-               </Form.Item>
+              <Driver partner_id={partner_info.id} driverChange={driverChange} />
             </Col>
           </Row>
           <Row gutter={10}>
@@ -144,7 +131,7 @@ const AddTruck = () => {
                 name='truck_type'
                 rules={[{ required: true, message: 'Truck Type is required field' }]}
               >
-                <Select style={{ width: 280 }} onChange={handleChange} options={typeList} />
+                <Select style={{ width: 280 }} options={typeList} />
               </Form.Item>
             </Col>
             <Col span={6}>
@@ -176,17 +163,15 @@ const AddTruck = () => {
             </Col>
           </Row>
           <Row justify='end' className='m5'>
-        <Space>
-          <Button type='primary' htmlType='submit'>Submit</Button>
-          <Button>Cancel</Button>
-        </Space>
-      </Row>
+            <Space>
+              <Button type='primary' htmlType='submit'>Submit</Button>
+              <Button>Cancel</Button>
+            </Space>
+          </Row>
         </Form>
       </Card>
-      
     </div>
   )
 }
-
 
 export default AddTruck

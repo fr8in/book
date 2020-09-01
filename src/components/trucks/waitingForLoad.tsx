@@ -1,8 +1,10 @@
 import { Table, Tooltip, Badge, Button, Input } from 'antd'
-import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled, SearchOutlined } from '@ant-design/icons'
+import Link from 'next/link'
+import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled, SearchOutlined , EditTwoTone} from '@ant-design/icons'
 import CreatePo from '../trips/createPo'
 import PartnerUsers from '../partners/partnerUsers'
 import TruckComment from '../trucks/truckComment'
+import CreateBreakdown from '../../components/trucks/createBreakdown'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import LinkComp from '../common/link'
 import Truncate from '../common/truncate'
@@ -16,6 +18,8 @@ const WaitingForLoad = (props) => {
     commentVisible: false,
     poData: [],
     poVisible: false,
+    editVisible: false,
+    editData: [],
     title: ''
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
@@ -100,6 +104,15 @@ const WaitingForLoad = (props) => {
       }
     },
     {
+      title: '',
+      render: (text, record) => (
+        <EditTwoTone
+          onClick={() =>
+            handleShow('editVisible', 'Breakdown', 'editData', record.id)}
+        />
+      )
+    },
+    {
       title: 'TAT',
       dataIndex: 'tat',
       width: '6%',
@@ -171,6 +184,16 @@ const WaitingForLoad = (props) => {
           po_data={object.poData}
           onHide={handleHide}
         />}
+
+
+      {object.editVisible && (
+        <CreateBreakdown
+          visible={object.editVisible}
+          id={object.editData}
+          onHide={handleHide}
+          title={object.title}
+        />
+      )}
     </>
   )
 }
