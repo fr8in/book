@@ -36,7 +36,7 @@ query ($truck_status_name: [String!], $offset: Int!, $limit: Int! ,$onboarded_by
 `
 
 const Breakdown = (props) => {
-  const { visible, onHide, onboarded_by,truck_status } = props
+  const {  onboarded_by,truck_status } = props
   const initial = {
     offset: 0,
     limit: u.limit,
