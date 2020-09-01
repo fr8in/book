@@ -63,7 +63,7 @@ const TruckComment = (props) => {
     insertComment({
       variables: {
         truck_id: id,
-        created_by_id: 1,
+        created_by_id: 115,
         description: form.comment,
         topic: truck_status.name
       }
