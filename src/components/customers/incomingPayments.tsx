@@ -94,6 +94,7 @@ const IncomingPayments = (props) => {
       size='small'
       scroll={{ x: 1156 }}
       pagination={false}
+      loading={loading}
     />
 
   )

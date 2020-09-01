@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 const CUSTOMER_TRIPS = gql`
-query customer_trip_list($cardcode: String, $trip_status: [String!],) {
+query customer_trip_list($cardcode: String, $trip_status: [String!]) {
   customer(where: {cardcode: {_eq: $cardcode}}) {
     trips(where:{trip_status:{name:{_in:$trip_status}}} order_by:{trip_receipts_aggregate:{sum:{amount:asc_nulls_first}}}) {
       id

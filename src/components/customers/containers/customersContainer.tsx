@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Row, Col, Card } from 'antd'
 import Customers from '../customers'
 import u from '../../../lib/util'
+import get from 'lodash/get'
 
 import { gql, useQuery } from '@apollo/client'
 
@@ -54,7 +55,7 @@ const CustomersContainer = (props) => {
   }
   const [filter, setFilter] = useState(initialFilter)
 
-  const customersQueryVars = {
+  const variables = {
     offset: filter.offset,
     limit: filter.limit,
     statusId: filter.statusId,
@@ -63,31 +64,24 @@ const CustomersContainer = (props) => {
   }
 
   const { loading, error, data } = useQuery(CUSTOMERS_QUERY, {
-    variables: customersQueryVars,
+    variables: variables,
     fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true
   })
 
   console.log('CustomersContainer error', error)
-  var customer_user = []
-  var customer_status = []
-  var customer_aggregate = 0
+  let _data = {}
   if (!loading) {
-    customer_user = data && data.customer_user
-    customer_status = data && data.customer_status
-    customer_aggregate = data && data.customer_user_aggregate
+    _data = data
   }
+  const customer_user = get(_data, 'customer_user', null)
+  const customer_status = get(_data, 'customer_status', [])
+  const customer_aggregate = get(_data, 'customer_user_aggregate', null)
 
-  const customer_status_list =
-    customer_status && customer_status.filter((data) => data.id !== 8)
+  const customer_status_list = customer_status && customer_status.filter((data) => data.id !== 8)
 
-  const record_count =
-    customer_aggregate &&
-    customer_aggregate.aggregate &&
-    customer_aggregate.aggregate.count
-  const total_page = Math.ceil(record_count / filter.limit)
+  const record_count = get(customer_aggregate, 'aggregate.count', 0)
 
-  console.log('record_count', record_count)
   const onFilter = (value) => {
     setFilter({ ...filter, statusId: value })
   }
@@ -112,7 +106,6 @@ const CustomersContainer = (props) => {
             customers={customer_user}
             customer_status_list={customer_status_list}
             record_count={record_count}
-            total_page={total_page}
             filter={filter}
             onFilter={onFilter}
             onNameSearch={onNameSearch}
