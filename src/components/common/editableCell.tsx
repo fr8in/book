@@ -1,6 +1,6 @@
-import {  Input } from 'antd'
+import { Input, Space } from 'antd'
 import { useState } from 'react'
-import { EditTwoTone, CloseCircleTwoTone ,CheckCircleOutlined} from '@ant-design/icons'
+import { EditTwoTone, CloseCircleTwoTone, CheckCircleOutlined } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
 
 const EditableCell = (props) => {
@@ -11,10 +11,14 @@ const EditableCell = (props) => {
 
   const [inputValue, setinputValue] = useState(null)
 
+  const onChange = (e) => {
+    setinputValue(e.target.value)
+  }
 
-const onChange = (e) => {
-  setinputValue(e.target.value)
-}
+  const handleSubmit = () => {
+    onSubmit(inputValue)
+    onHide()
+  }
 
   return (
     <div>
@@ -26,13 +30,15 @@ const onChange = (e) => {
         : (
           <span>
             <Input
-            size='small'
-            style={{width:'40%'}}
-            onChange={onChange}
+              size='small'
+              style={{ width: '40%' }}
+              onChange={onChange}
             />
             {' '}
-            <CheckCircleOutlined onClick={() => onSubmit(inputValue)}/>
-            <CloseCircleTwoTone onClick={onHide} />
+            <Space>
+              <CheckCircleOutlined onClick={handleSubmit} />
+              <CloseCircleTwoTone onClick={onHide} />
+            </Space>
           </span>)}
     </div>
   )

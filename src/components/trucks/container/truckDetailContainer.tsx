@@ -27,12 +27,12 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
           id
           mobile
         }
-       # truck_files{
-        #    id
-       #      type
-       #      file_path
-        #     folder
-      # }
+        truck_files{
+            id
+              type
+              file_path
+              folder
+        }
         truck_status{
           id
           name
@@ -101,7 +101,7 @@ const TruckDetailContainer = (props) => {
   const admin = true
   const [subTabKey, setSubTabKey] = useState('1')
 
-  const initial = { commment: false, poModal: false }
+  const initial = { commment: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
   const [updateStatus] = useMutation(
@@ -132,12 +132,10 @@ const TruckDetailContainer = (props) => {
     _data = data
   }
   const truck_info = _data && _data.truck && _data.truck.length > 0 ? _data.truck[0] : { name: 'ID does not exist' }
-  
+
   const status_check = truck_info && truck_info.truck_status && truck_info.truck_status.name === 'Deactivated'
 
-  const partner_id = truck_info && truck_info.partner && truck_info.partner.id 
-  
- 
+  const partner_id = truck_info && truck_info.partner && truck_info.partner.id
 
   const onSubmit = (status_check) => {
     console.log('truck_id', truck_info.id)
@@ -176,7 +174,6 @@ const TruckDetailContainer = (props) => {
           }
           extra={
             <Space>
-              <Button type='primary' shape='circle' onClick={() => onShow('poModal')} icon={<SnippetsOutlined />} />
               <Tag className='status'>{truck_info && truck_info.truck_status && truck_info.truck_status.name}</Tag>
             </Space>
           }
@@ -200,22 +197,20 @@ const TruckDetailContainer = (props) => {
               <TabPane tab='Details' key='1'>
                 <Row>
                   <Col xs={24} className='p20'>
-                    <TruckInfo truck_info={truck_info} loading={loading} id={truck_info.id}  partner_id={partner_id} />
+                    <TruckInfo truck_info={truck_info} loading={loading} id={truck_info.id} partner_id={partner_id} />
                     <Divider />
-                    <Documents truck_id={truck_info.id}  partner_id={partner_id} truck_info={truck_info}/>
+                    <Documents truck_id={truck_info.id} partner_id={partner_id} truck_info={truck_info} />
                     <Divider />
                     <Row>
                       <Col span={8}>
-                        <Button size='small' danger={admin && !status_check} onClick={() => onSubmit(status_check)}>  {status_check ? 'Re-Activate' : 'De-Activate'} </Button>
+                        <Button danger={admin && !status_check} onClick={() => onSubmit(status_check)}>  {status_check ? 'Re-Activate' : 'De-Activate'} </Button>
                       </Col>
                     </Row>
                   </Col>
                 </Row>
               </TabPane>
               <TabPane tab='Trips' key='2'>
-
                 <TripDetail trip trips={truck_info.trips} loading={loading} />
-
               </TabPane>
               <TabPane tab='Timeline' key='3'>
                 <Row>
@@ -229,8 +224,7 @@ const TruckDetailContainer = (props) => {
           </Card>
         </Col>
       </Row>
-      {visible.comment && <TruckComment visible={visible.comment} onHide={onHide} id={truck_info.id} truck_status={truck_info && truck_info.truck_status && truck_info.truck_status.name}/>}
-      {visible.poModal && <CreatePo visible={visible.poModal} onHide={() => onHide()} />}
+      {visible.comment && <TruckComment visible={visible.comment} onHide={onHide} id={truck_info.id} truck_status={truck_info && truck_info.truck_status && truck_info.truck_status.name} />}
     </Card>
   )
 }

@@ -4,7 +4,6 @@ import { useState } from 'react'
 import get from 'lodash/get'
 import _ from 'lodash'
 
-
 const { Option } = Select
 
 const DRIVER_QUERY = gql`
@@ -26,18 +25,8 @@ mutation driver_insert($id: Int!, $mobile: String){
   }
 }`
 
-const UPDATE_TRUCK_DRIVER_MUTATION = gql`
-mutation TruckDriver($driver_id:Int,$truck_id:Int) {
-  update_truck(_set: {driver_id: $driver_id}, where: {id: {_eq: $truck_id}}){
-    returning{
-      id
-    }
-  }
-}
-`
-
 const Driver = (props) => {
-  const { partner_id ,truck_id} = props
+  const { partner_id, driverChange, initialValue } = props
   if (!partner_id) return null
 
   const [searchText, setSearchText] = useState('')
@@ -56,47 +45,28 @@ const Driver = (props) => {
 
   console.log('Driver error', error)
   console.log('data', _data)
-  
+
   const driver_data = _data && _data.partner && _data.partner.length > 0 &&
                         _data.partner[0].drivers && _data.partner[0].drivers.length > 0
     ? _data.partner[0].drivers : []
 
-
-    console.log('driver_data',driver_data)
+  console.log('driver_data', driver_data)
 
   const [insertDriver] = useMutation(
     INSERT_PARTNER_DRIVER,
     {
       onError (error) { message.error(error.toString()) },
       onCompleted (data) {
-        const value= get(data,'insert_driver.returning',[])
-        message.success('Updated!!')
+        const value = get(data, 'insert_driver.returning', [])
         setSearchText('')
-        onDriverUpdate(value[0].id)
+        driverChange(value[0].id)
       }
     }
   )
 
-  const [updateTruckDriver] = useMutation(
-    UPDATE_TRUCK_DRIVER_MUTATION,
-    {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Saved!!') }
-    }
-  )
-
-  const onDriverUpdate = id => {
-    updateTruckDriver({
-        variables: {
-          truck_id: truck_id,
-          driver_id: id
-        }
-      })
-  }
-
-  const onDriverChange = (value,driver) => {
+  const onDriverChange = (value, driver) => {
     const isNew = driver_data && driver_data.filter(_driver => _driver.mobile.search(value) !== -1)
-    console.log('mobile', value,driver, (_.isEmpty(isNew)))
+    console.log('mobile', value, driver, (_.isEmpty(isNew)))
     if ((_.isEmpty(isNew))) {
       insertDriver({
         variables: {
@@ -105,11 +75,9 @@ const Driver = (props) => {
         }
       })
     } else {
-        onDriverUpdate(driver.key)
+      driverChange(driver.key)
     }
-    
   }
-
 
   let drivers = []
   if (searchText && searchText.length >= 10) {
@@ -119,9 +87,10 @@ const Driver = (props) => {
   }
   console.log('drivers', drivers)
   return (
-    <Form.Item label='Driver' name='driver'>
+    <Form.Item label='Driver' name='driver' initialValue={initialValue}>
       <Select
         showSearch
+        placeholder='Select or Enter Driver'
         onSearch={onSearch}
         onChange={onDriverChange}
       >
