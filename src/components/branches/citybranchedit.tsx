@@ -24,7 +24,7 @@ mutation ($city_id:Int,$branch_id:Int){
 `
 
 const Fr8Employee = (props) => {
-  const {id} = props
+  const {id,branch} = props
     
   const { loading, error, data } = useQuery(
     BRANCH_QUERY,
@@ -65,6 +65,7 @@ const Fr8Employee = (props) => {
     loading ? null : (
       <InlineSelect
         options={branchlist}
+        label={branch}
         handleChange={handleChange}
         style={{ width: '40%' }}
       />)

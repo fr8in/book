@@ -1,10 +1,34 @@
 import React from 'react'
 import { Table } from 'antd'
 import BranchEdit from './citybranchedit'
+import { gql, useSubscription } from '@apollo/client'
+import get from 'lodash/get'
 
-const CityPricing = (props) => {
-  const {citymapping} = props
-  console.log('citymapping',citymapping)
+const CITY_QUERY = gql`
+subscription{
+  city{
+    id
+    name
+    branch{
+      id
+      name
+    }
+  }
+}
+`
+const CityPricing = () => {
+  
+  const { loading, error, data } = useSubscription(CITY_QUERY)
+  console.log('error', error)
+
+  let _data = []
+if (!loading){
+     _data = data 
+}
+const citymapping = get(_data,'city',[])
+console.log('city',citymapping)
+
+  
   const CityPricing = [
     {
       title: 'City',
@@ -20,7 +44,7 @@ const CityPricing = (props) => {
       render: (text, record) => {
         const branch = record.branch && record.branch.name
         return(
-      <span>{branch} <BranchEdit id={record.id} branch={branch}/></span>
+      <span> <BranchEdit id={record.id} branch={branch}/></span>
       
         )
       }
