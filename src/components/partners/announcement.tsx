@@ -52,7 +52,7 @@ const Announcement = () => {
     updateAnnouncement({
       variables: {
         id: data.id,
-        deleted: e.target.checked
+        deleted: !e.target.checked
       }
     })
   }
