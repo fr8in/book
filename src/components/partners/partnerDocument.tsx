@@ -1,4 +1,4 @@
-import { Row, Col, Button, Tabs, Space, Input,Form } from 'antd'
+import { Row, Col, Button, Tabs, Space, Input, Form } from 'antd'
 import { UploadOutlined, EyeTwoTone, DeleteTwoTone } from '@ant-design/icons'
 import LabelWithData from '../common/labelWithData'
 import FileUploadOnly from '../common/fileUploadOnly'
@@ -47,14 +47,14 @@ const PartnerDocument = (props) => {
                       />
                     </Space>
                   ) : (
-                    <FileUploadOnly
-                      id={partnerInfo.id}
-                      type='partner'
-                      folder='approvals/'
-                      file_type='PAN'
-                      file_list={pan_files}
-                    />
-                  )}
+                      <FileUploadOnly
+                        id={partnerInfo.id}
+                        type='partner'
+                        folder='approvals/'
+                        file_type='PAN'
+                        file_list={pan_files}
+                      />
+                    )}
                 </span>
               }
               labelSpan={8}
@@ -93,95 +93,95 @@ const PartnerDocument = (props) => {
         </Row>
       </TabPane>
       <TabPane tab='Sub Company' key='2'>
-      <Form layout='horizontal'>
-        <Row gutter={8} className='p10'>
-          <Col xs={24} sm={24} md={24}>
-            <Form.Item
-              label='Name'
-            >
-               <Col offset={1} sm={17}>
-              <Input  placeholder='Name' />
-              </Col>
-            </Form.Item>
-              <Form.Item 
-              label='PAN'
+        <Form layout='horizontal'>
+          <Row gutter={8} className='p10'>
+            <Col xs={24} sm={24} md={24}>
+              <Form.Item
+                label='Name'
+              >
+                <Col offset={1} sm={17}>
+                  <Input placeholder='Name' />
+                </Col>
+              </Form.Item>
+              <Form.Item
+                label='PAN'
               >
                 <Row justify='end'>
-                <Col offset={1} sm={16}>
-                <Input placeholder='PAN Number'  />
-                </Col>
-                <Col offset={3} sm={3}>
-                <Space>
-                  <Button
-                    type='primary'
-                    shape='circle'
-                    size='middle'
-                    icon={<EyeTwoTone />}
-                  />
-                  <Button
-                    size='middle'
-                    shape='circle'
-                    icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
-                  />
-                  </Space>
+                  <Col offset={1} sm={16}>
+                    <Input placeholder='PAN Number' />
                   </Col>
-                  </Row>  
+                  <Col offset={3} sm={3}>
+                    <Space>
+                      <Button
+                        type='primary'
+                        shape='circle'
+                        size='middle'
+                        icon={<EyeTwoTone />}
+                      />
+                      <Button
+                        size='middle'
+                        shape='circle'
+                        icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
+                      />
+                    </Space>
+                  </Col>
+                </Row>
               </Form.Item>
-           <Form.Item 
-           label='Cibil Score'
-           >
-              <Row justify='end'>
-                <Col sm={18}>
-             <Input  placeholder='Cibil Score' />
-             </Col>
-             <Col offset={3} sm={3}>
-                <Space>
-                  <Button
-                    type='primary'
-                    shape='circle'
-                    size='middle'
-                    icon={<EyeTwoTone />}
-                  />
-                  <Button
-                    size='middle'
-                    shape='circle'
-                    icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
-                  />
-                </Space>
-              </Col>
-              </Row>
-             </Form.Item>
-            <Form.Item
-              label='TDS'
-            >
-            <Row justify='end'>
-            <Col offset={3} sm={3}>
-                <Space>
-                  <Button
-                    type='primary'
-                    shape='circle'
-                    size='middle'
-                    icon={<EyeTwoTone />}
-                  />
-                  <Button
-                    size='middle'
-                    shape='circle'
-                    icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
-                  />
-                </Space>
-              </Col>
-              </Row>
+              <Form.Item
+                label='Cibil Score'
+              >
+                <Row justify='end'>
+                  <Col sm={18}>
+                    <Input placeholder='Cibil Score' />
+                  </Col>
+                  <Col offset={3} sm={3}>
+                    <Space>
+                      <Button
+                        type='primary'
+                        shape='circle'
+                        size='middle'
+                        icon={<EyeTwoTone />}
+                      />
+                      <Button
+                        size='middle'
+                        shape='circle'
+                        icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
+                      />
+                    </Space>
+                  </Col>
+                </Row>
               </Form.Item>
-            <Form.Item 
-              label='Trucks'
+              <Form.Item
+                label='TDS'
+              >
+                <Row justify='end'>
+                  <Col offset={3} sm={3}>
+                    <Space>
+                      <Button
+                        type='primary'
+                        shape='circle'
+                        size='middle'
+                        icon={<EyeTwoTone />}
+                      />
+                      <Button
+                        size='middle'
+                        shape='circle'
+                        icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
+                      />
+                    </Space>
+                  </Col>
+                </Row>
+              </Form.Item>
+              <Form.Item
+                label='Trucks'
               >
                 <Input placeholder='Add Trucks' />
               </Form.Item>
-            <Row justify='end'>
-             <Button type='primary'>Save</Button>
-            </Row>
+              <Row justify='end'>
+                <Button type='primary'>Save</Button>
+              </Row>
             </Col>
-        </Row>
+          </Row>
         </Form>
       </TabPane>
     </Tabs>
