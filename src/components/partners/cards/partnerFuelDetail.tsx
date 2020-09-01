@@ -1,7 +1,7 @@
-import { Row, Col, Switch } from 'antd'
+import { Row, Col, Switch,message } from 'antd'
 import LabelWithData from '../../common/labelWithData'
 import fuelDetail from '../../../../mock/card/fuelCard'
-import { gql,useQuery } from '@apollo/client'
+import { gql,useQuery,useMutation } from '@apollo/client'
 import get from 'lodash/get'
 const FUEL_CARD_QUERY = gql`
 query all($partner_id: Int!) {
@@ -14,6 +14,11 @@ query all($partner_id: Int!) {
     }
     fuel_balance
   }
+}
+`
+const UPDATE_FUEL_CARD_STATUS_MUTATION = gql`
+mutation update_fuel_card_status($number:String!,$status:Boolean!,$provider:String!,$modifiedBy:String!){
+  update_fuel_card(number:$number,status:$status,provider:$provider,modified_by:$modifiedBy)
 }
 `
 const PartnerFuelDetail = (props) => {
@@ -30,6 +35,25 @@ console.log('partner_id',partner_id)
   console.log('FuelCard error', error)
   console.log('FuelCard data', data)
 
+  const [updateFuelCardStatus] = useMutation(
+    UPDATE_FUEL_CARD_STATUS_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
+  const onChange = (checked) => {
+    updateFuelCardStatus({
+      variables: {
+        number: card_number,
+        provider: "RELIANCE",
+        status: checked,
+        modifiedBy:"pravalika.k@fr8.in"
+      }
+    })
+  }
+  
+
   var _data = {}
   if (!loading) {
     _data = data
@@ -40,7 +64,6 @@ console.log('partner_id',partner_id)
   const card_id =  partner_info.fuel_card &&  partner_info.fuel_card.id 
   const card_number =  partner_info.fuel_card &&  partner_info.fuel_card.number 
   const mobile =  partner_info.fuel_card &&  partner_info.fuel_card.mobile 
-  const status =  partner_info.fuel_card &&  partner_info.fuel_card.status 
   const balance = partner_info && partner_info.fuel_balance
   return (
     <Row gutter={10} className='p10'>
@@ -69,8 +92,8 @@ console.log('partner_id',partner_id)
           label='Status'
           data={<Switch 
             size='small' 
-            checked = {status}
             defaultChecked
+            onChange={onChange}
              />}
           labelSpan={8}
         />

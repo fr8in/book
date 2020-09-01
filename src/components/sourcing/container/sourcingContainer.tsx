@@ -73,7 +73,7 @@ const SourcingContainer = () => {
             {mainTabKey === '2' &&
               <Space>
                 <Button type='primary' onClick={() => onShow('employeeList')}>Assign</Button>
-                <Button shape='circle' icon={<FilterOutlined />} onClick={() => onShow('filterList')} onChange={onFilterChange} />
+                <Button shape='circle' icon={<FilterOutlined />} onClick={() => onShow('filterList')}  />
                 <Button type='primary' shape='circle' icon={<UserAddOutlined />} onClick={() => onShow('createLead')} />
               </Space>}
             {(mainTabKey === '3' || mainTabKey === '4') &&
@@ -91,7 +91,7 @@ const SourcingContainer = () => {
                 {subTabKey === '2' &&
                   <Space>
                     <Button type='primary' onClick={() => onShow('employeeList')}>Assign</Button>
-                    <Button shape='circle' icon={<FilterOutlined />} onClick={() => onShow('filterList')} />
+                    <Button shape='circle' icon={<FilterOutlined />} onClick={() => onShow('filterList')} onChange={onFilterChange} />
                     <Button type='primary' shape='circle' icon={<UserAddOutlined />} onClick={() => onShow('createLead')} />
                   </Space>}
               </span>
