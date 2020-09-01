@@ -1,13 +1,15 @@
 import { useState } from 'react'
-import { Row, Col, Card, Input, Button, Form, Divider, Space, Select, message } from 'antd'
-import LabelAndData from '../../common/labelAndData'
+import { Row, Col, Card, Input, Button, Form, Space, Select, message } from 'antd'
+import { LeftOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import CitySelect from '../../common/citySelect'
 import Driver from '../driver'
+import get from 'lodash/get'
+import { useRouter } from 'next/router'
 
 const ADD_TRUCK_QUERY = gql`
-query addTruck ( $cardcode: String){
+query addTruck ( $cardcode: String!){
   partner(where: {cardcode: {_eq: $cardcode}}) {
     id
     cardcode
@@ -20,7 +22,7 @@ query addTruck ( $cardcode: String){
 }`
 
 const INSERT_ADD_TRUCK_MUTATION = gql`
-mutation AddTruck($truck_no:String,  $partner_id: Int, $breadth:float8,$length:float8,$height:float8,$city_id:Int,$truck_type_id:Int, $driver_id: Int ) {
+mutation add_truck($truck_no:String,  $partner_id: Int, $breadth:float8,$length:float8,$height:float8,$city_id:Int,$truck_type_id:Int, $driver_id: Int ) {
   insert_truck(objects: {truck_no: $truck_no,breadth: $breadth, height: $height, length: $length, partner_id: $partner_id,  truck_type_id: $truck_type_id, city_id: $city_id, driver_id: $driver_id, truck_status_id: 5}) {
     returning {
       id
@@ -29,9 +31,11 @@ mutation AddTruck($truck_no:String,  $partner_id: Int, $breadth:float8,$length:f
   }
 }`
 
-const AddTruck = () => {
+const AddTruckContainer = (props) => {
+  const { cardcode } = props
   const [city_id, setCity_id] = useState(null)
   const [driver_id, setDriver_id] = useState(null)
+  const router = useRouter()
 
   const onCityChange = (city_id) => {
     setCity_id(city_id)
@@ -44,6 +48,7 @@ const AddTruck = () => {
   const { loading, error, data } = useQuery(
     ADD_TRUCK_QUERY,
     {
+      variables: { cardcode: cardcode },
       notifyOnNetworkStatusChange: true
     }
   )
@@ -67,7 +72,13 @@ const AddTruck = () => {
     INSERT_ADD_TRUCK_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted (data) {
+        const value = get(data, 'insert_truck.returning', [])
+        message.success('Updated!!')
+        const url = '/trucks/[id]'
+        const as = `/trucks/${value[0].truck_no}`
+        router.push(url, as, 'shallow')
+      }
     }
   )
 
@@ -88,90 +99,90 @@ const AddTruck = () => {
   }
 
   return (
-    <div>
-      <LabelAndData
-        smSpan={6}
-        data={
-          <Link href='/partners/[id]' as={`/partners/${partner_info.cardcode}`}>
-            <h1><a>{partner_info.name}</a></h1>
-          </Link>
-        }
-      />
-      <Divider />
-      <Card size='small' title='Truck Detail' className='mb10'>
-        <Form layout='vertical' onFinish={onSubmit}>
-          <Row gutter={10}>
-            <Col span={8}>
-              <Form.Item
-                label='Truck Number'
-                name='truck_no'
-                rules={[{ required: true, message: 'Truck Number is required field!' }]}
-              >
-                <Input placeholder='Truck Number' />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item>
-                <CitySelect
-                  label='Current City'
-                  onChange={onCityChange}
-                  required
-                  name='city'
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Driver partner_id={partner_info.id} driverChange={driverChange} />
-            </Col>
-          </Row>
-          <Row gutter={10}>
-            <Col span={6}>
-              <Form.Item
-                label='Truck Type'
-                name='truck_type'
-                rules={[{ required: true, message: 'Truck Type is required field' }]}
-              >
-                <Select style={{ width: 280 }} options={typeList} />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item
-                label='Length(Ft)'
-                name='length'
-                rules={[{ required: true, message: 'Length(Ft) is required field' }]}
-              >
-                <Input placeholder='Length(Ft)' type='number' disabled={false} />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item
-                label='Breadth(Ft)'
-                name='breadth'
-                rules={[{ required: true, message: 'Breadth(Ft) is required field' }]}
-              >
-                <Input placeholder='Breadth(Ft)' type='number' disabled={false} />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item
-                label='Height(Ft)'
-                name='height'
-                rules={[{ required: true, message: 'Height(Ft) is required field' }]}
-              >
-                <Input placeholder='Height(Ft)' type='number' disabled={false} />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row justify='end' className='m5'>
-            <Space>
-              <Button type='primary' htmlType='submit'>Submit</Button>
-              <Button>Cancel</Button>
-            </Space>
-          </Row>
-        </Form>
-      </Card>
-    </div>
+    <Card
+      title={
+        <Link href='/partners/[id]' as={`/partners/${cardcode}`}>
+          <h3><a>{partner_info.name}</a></h3>
+        </Link>
+      }
+      size='small'
+      className='border-top-blue'
+    >
+      <Form layout='vertical' onFinish={onSubmit}>
+        <h3>Add Truck</h3>
+        <Row gutter={10}>
+          <Col span={8}>
+            <Form.Item
+              label='Truck Number'
+              name='truck_no'
+              rules={[{ required: true, message: 'Truck Number is required field!' }]}
+            >
+              <Input placeholder='Truck Number' />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item>
+              <CitySelect
+                label='Current City'
+                onChange={onCityChange}
+                required
+                name='city'
+              />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Driver partner_id={partner_info.id} driverChange={driverChange} />
+          </Col>
+        </Row>
+        <Row gutter={10}>
+          <Col span={6}>
+            <Form.Item
+              label='Truck Type'
+              name='truck_type'
+              rules={[{ required: true, message: 'Truck Type is required field' }]}
+            >
+              <Select style={{ width: 280 }} options={typeList} />
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item
+              label='Length(Ft)'
+              name='length'
+              rules={[{ required: true, message: 'Length(Ft) is required field' }]}
+            >
+              <Input placeholder='Length(Ft)' type='number' disabled={false} />
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item
+              label='Breadth(Ft)'
+              name='breadth'
+              rules={[{ required: true, message: 'Breadth(Ft) is required field' }]}
+            >
+              <Input placeholder='Breadth(Ft)' type='number' disabled={false} />
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item
+              label='Height(Ft)'
+              name='height'
+              rules={[{ required: true, message: 'Height(Ft) is required field' }]}
+            >
+              <Input placeholder='Height(Ft)' type='number' disabled={false} />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row justify='end' className='m5'>
+          <Space>
+            <Link href='/partners/[id]' as={`/partners/${cardcode}`}>
+              <Button icon={<LeftOutlined />}>Back</Button>
+            </Link>
+            <Button type='primary' htmlType='submit'>Submit</Button>
+          </Space>
+        </Row>
+      </Form>
+    </Card>
   )
 }
 
-export default AddTruck
+export default AddTruckContainer

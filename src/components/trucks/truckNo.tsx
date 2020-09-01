@@ -14,7 +14,7 @@ mutation TruckNoEdit($truck_no:String,$id:Int) {
 }
 `
 const TruckNo = (props) => {
-  const { truck_no, id ,loading} = props
+  const { truck_no, id , loading } = props
   const router = useRouter()
 
   const [updateTruckNo] = useMutation(
@@ -39,10 +39,10 @@ const TruckNo = (props) => {
 
   return (
     loading ? null : (
-    <InlineEdit
-      text={truck_no || 'No TruckNo'}
-      onSetText={onSubmit}
-    />)
+      <InlineEdit
+        text={truck_no || 'No TruckNo'}
+        onSetText={onSubmit}
+      />)
   )
 }
 

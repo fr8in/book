@@ -57,7 +57,6 @@ const PartnerDetailContainer = (props) => {
   console.log('PartnerDetailContainer Data', data)
 
   let partner_info = {}
-  let trucks = []
   let truck_count = 0
   let ongoing_count = 0
   let pod_count = 0
@@ -67,8 +66,6 @@ const PartnerDetailContainer = (props) => {
   if (!loading) {
     const { partner } = data
     partner_info = partner[0] ? partner[0] : { name: 'ID does not exist' }
-    trucks = partner_info.trucks
-
     truck_count = get(partner_info, 'trucks_aggregate.aggregate.count', 0)
     ongoing_count = get(partner_info, 'ongoing.aggregate.count', 0)
     pod_count = get(partner_info, 'pod.aggregate.count', 0)
@@ -97,7 +94,7 @@ const PartnerDetailContainer = (props) => {
                     <Tooltip title='Wallet Topup'>
                       <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('topUp')} />
                     </Tooltip>
-                    <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${'ST003579'}`}>
+                    <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${cardcode}`}>
                       <Tooltip title='Add Truck'>
                         <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />} />
                       </Tooltip>

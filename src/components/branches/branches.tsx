@@ -5,23 +5,27 @@ import AddTraffic from '../branches/addTraffic'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
+import u from '../../lib/util'
 
 const BRANCHES_QUERY = gql`
-subscription branches{
-  branch(order_by: {displayposition: asc}){
+subscription branches($week: Int!, $year: Int!) {
+  branch(order_by: {displayposition: asc}) {
     id
     name
     displayposition
-    branch_employees{
+    branch_weekly_targets(where: {week: {_eq: $week}, year: {_eq: $year}}) {
+      trip_target
+    }
+    branch_employees {
       id
       is_manager
-      employee{
+      employee {
         id
         name
         mobileno
       }
     }
-    cities{
+    cities {
       id
       name
     }
@@ -34,9 +38,18 @@ const Branches = () => {
     title: null,
     trafficData: []
   }
+
+  const period = u.getWeekNumber(new Date())
+  console.log('period', period)
+
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
-  const { loading, data, error } = useSubscription(BRANCHES_QUERY)
+  const { loading, data, error } = useSubscription(
+    BRANCHES_QUERY,
+    {
+      variables: { week: period.week, year: period.year }
+    }
+  )
 
   console.log('Branches Error', error)
   let _data = {}
@@ -70,7 +83,7 @@ const Branches = () => {
       title: 'Traffic Members',
       dataIndex: 'trafficMembers',
       key: 'trafficMembers',
-      width: '50%',
+      width: '48%',
       render: (text, record) => {
         return (
           <div className='cell-wrapper'>
@@ -105,9 +118,11 @@ const Branches = () => {
     },
     {
       title: 'Weekly Target',
-      dataIndex: 'weeklyTarget',
-      key: 'weeklyTarget',
-      width: '10%'
+      width: '12%',
+      render: (text, record) => {
+        const target = get(record, 'branch_weekly_targets[0].trip_target', 0)
+        return target
+      }
     }
   ]
 

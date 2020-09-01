@@ -106,7 +106,7 @@ const AddTraffic = (props) => {
   })
 
   const onIsManagerChange = (e, emp_id) => {
-    console.log('Traffic Added', e.target.checked, emp_id, branch_id)
+    console.log('Traffic Added', e.target.checked, emp_id)
     is_manager_update({
       variables: {
         is_manager: e.target.checked,
