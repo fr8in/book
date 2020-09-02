@@ -1,11 +1,12 @@
-import { Table, Checkbox,message } from 'antd'
+import { Table, Checkbox, message } from 'antd'
 import moment from 'moment'
-import { gql, useSubscription,useMutation } from '@apollo/client'
+import { gql, useSubscription, useMutation } from '@apollo/client'
 import get from 'lodash/get'
+import Truncate from '../common/truncate'
 
 const ANNOUNCEMENT_QUERY = gql`
 subscription announcement{
-  announcement{
+  announcement(order_by: {createdat:desc}){
     id
     createdat
     createdby
@@ -21,23 +22,20 @@ mutation update_announcement($id: Int, $deleted: Boolean) {
     returning {
       id
       deleted
-      description
     }
   }
 }
 `
 const Announcement = () => {
-
   const { loading, error, data } = useSubscription(ANNOUNCEMENT_QUERY)
-  console.log('error', error)
+  console.log('Announcement error', error)
 
   let _data = []
-  if (!loading){
-       _data = data 
+  if (!loading) {
+    _data = data
   }
-  const Announcement = get(_data,'announcement',[])
-  console.log('announcement',Announcement)
-  
+  const announcement = get(_data, 'announcement', [])
+
   const [updateAnnouncement] = useMutation(
     UPDATE_ANNOUNCEMENT_MUTATION,
     {
@@ -48,10 +46,10 @@ const Announcement = () => {
     }
   )
 
-  const onChange = (e) => {
+  const onChange = (e, id) => {
     updateAnnouncement({
       variables: {
-        id: data.id,
+        id: id,
         deleted: !e.target.checked
       }
     })
@@ -59,10 +57,9 @@ const Announcement = () => {
   const columnsCurrent = [
     {
       title: 'Date',
+      dataIndex: 'createdat',
       width: ' 10%',
-      render: (text, record) => {
-        return record.createdat ? moment(record.createdat).format('DD-MMM-YY hh:mm') : null
-      }
+      render: (text, record) => text ? moment(text).format('DD-MMM-YY') : null
     },
     {
       title: 'Created By',
@@ -77,25 +74,25 @@ const Announcement = () => {
     {
       title: 'Description',
       dataIndex: 'description',
-      width: '50%'
+      width: '50%',
+      render: (text, record) => <Truncate data={text} length={240} />
     },
     {
       title: 'Published',
       dataIndex: 'deleted',
-      render: (text, record) => (
-        <Checkbox onChange={onChange} />
-      ),
+      render: (text, record) => <Checkbox checked={!text} onChange={(e) => onChange(e, record.id)} />,
       width: ' 10%'
     }
   ]
   return (
     <Table
       columns={columnsCurrent}
-      dataSource={Announcement}
+      dataSource={announcement}
       rowKey={record => record.id}
       size='middle'
       scroll={{ x: 1156 }}
       pagination={false}
+      loading={loading}
     />
   )
 }
