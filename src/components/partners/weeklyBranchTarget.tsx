@@ -45,9 +45,9 @@ const WeeklyBranchTarget = (props) => {
   }
   const weekly_booking = get(_data, 'analytics_weekly_booking', [])
 
-  const w1 = weekly_booking.filter(data => data.week === week[0])
-  const w2 = weekly_booking.filter(data => data.week === week[1])
-  const w3 = weekly_booking.filter(data => data.week === week[2])
+  const w1 = weekly_booking.filter(data => data.week === week[0] && data.year === year[0])
+  const w2 = weekly_booking.filter(data => data.week === week[1] && data.year === (year.length > 1 ? year[1] : year[0]))
+  const w3 = weekly_booking.filter(data => data.week === week[2] && data.year === (year.length > 1 ? year[1] : year[0]))
 
   const weekly_target = w1.map((data, i) => {
     return ({
@@ -119,12 +119,12 @@ const WeeklyBranchTarget = (props) => {
       width: '28%',
       className: 'alignRight',
       render: (text, record) => {
-        const w1_actual = get(record, 'w1.trip_actual')
-        const w1_target = get(record, 'w1.trip_target')
+        const actual = get(record, 'w1.trip_actual')
+        const target = get(record, 'w1.trip_target')
         return (
           <span>
-            {`${w1_actual} / ${record.week_day_target} `}
-            <Tag style={{ width: 31, textAlign: 'center' }}>{w1_target || 0}</Tag>
+            {`${actual} / ${record.week_day_target} `}
+            <Tag style={{ width: 31, textAlign: 'center' }}>{target || 0}</Tag>
           </span>
         )
       }
@@ -134,10 +134,10 @@ const WeeklyBranchTarget = (props) => {
       width: '24%',
       className: 'alignRight',
       render: (text, record) => {
-        const w2_actual = get(record, 'w2.trip_actual')
-        const w2_target = get(record, 'w2.trip_target')
+        const actual = get(record, 'w2.trip_actual')
+        const target = get(record, 'w2.trip_target')
         return (
-          <span>{`${w2_actual} / ${w2_target || 0}`}</span>
+          <span>{`${actual} / ${target || 0}`}</span>
         )
       }
     },
@@ -146,10 +146,10 @@ const WeeklyBranchTarget = (props) => {
       width: '24%',
       className: 'alignRight',
       render: (text, record) => {
-        const w3_actual = get(record, 'w3.trip_actual')
-        const w3_target = get(record, 'w3.trip_target')
+        const actual = get(record, 'w3.trip_actual')
+        const target = get(record, 'w3.trip_target')
         return (
-          <span>{`${w3_actual} / ${w3_target || 0}`}</span>
+          <span>{`${actual} / ${target || 0}`}</span>
         )
       }
     }
