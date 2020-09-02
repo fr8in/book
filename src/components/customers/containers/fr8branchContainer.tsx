@@ -30,7 +30,6 @@ subscription customer_fr8Branch_manager($id: Int){
     }
   }
 }
-
 `
 const CustomersContainer = (props) => {
   const { id } = props
@@ -45,8 +44,7 @@ const CustomersContainer = (props) => {
       variables: variables
     })
   console.log('error', error)
-  console.log('id', variables)
-
+  
   let _data = []
   if (!loading) {
     _data = data
@@ -67,8 +65,9 @@ const CustomersContainer = (props) => {
         const customer_branch_employees = get(record, 'branch_employees[0].customer_branch_employees[0]', null)
         const branch_employees = get(record, 'branch_employees[0].customer_branch_employees[0].branch_employee.employee', null)
         const employee = get(record, 'branch_employees[0].employee', null)
-        const emp = (branch_employee ? (customer_branch_employees ? branch_employees && branch_employees.name : (employee ? employee && employee.name : null)) : null)
-        return <EmployeeList employee={emp} />
+        // const emp = (branch_employee ? (customer_branch_employees ? branch_employees && branch_employees.name : (employee ? employee && employee.name : null)) : null)
+        const emp = customer_branch_employees ? branch_employees && branch_employees.name : employee && employee.name 
+        return <EmployeeList employee={emp} id={record.id}/>
       }
     }
   ]

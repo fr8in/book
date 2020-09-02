@@ -1,5 +1,5 @@
-
-import { gql, useQuery } from '@apollo/client'
+import { message } from 'antd'
+import { gql, useQuery,useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
 
@@ -12,9 +12,20 @@ const EMPLOYEE_QUERY = gql`
       }
 }
 `
+const UPDATE_BRABCH_EMPLOYEE_MUTATION = gql`
+mutation ($branch_id: Int, $employee_id: Int) {
+  update_branch_employee(where: {branch_id: {_eq: $branch_id}, is_manager: {_eq: true}}, _set: {employee_id: $employee_id}) {
+    returning {
+      employee {
+        name
+      }
+    }
+  }
+}
+`
 
 const Fr8Employee = (props) => {
-  const { employee } = props
+  const { employee ,id} = props
   const { loading, error, data } = useQuery(
     EMPLOYEE_QUERY,
     {
@@ -28,13 +39,26 @@ const Fr8Employee = (props) => {
   }
   console.log('error', error)
 
+  const [updateTruckNo] = useMutation(
+    UPDATE_BRABCH_EMPLOYEE_MUTATION,
+  {
+    onError (error) { message.error(error.toString()) },
+    onCompleted () { message.success('Saved!!') }
+  }
+)
+
   const employees = get(_data, 'employee', [])
   const emplist = employees.map(data => {
     return { value: data.id, label: data.name }
   })
 
   const handleChange = (value) => {
-    console.log('Selected Emp', value)
+    updateTruckNo({
+      variables: {
+        branch_id: id,
+        employee_id: value
+      }
+    })
   }
 
   return (

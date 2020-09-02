@@ -1,5 +1,5 @@
 import { Table, Button, message } from 'antd'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { DeleteOutlined } from '@ant-design/icons'
 import { gql, useMutation, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 
@@ -62,41 +62,28 @@ const Users = (props) => {
       title: 'Name',
       dataIndex: 'name',
       render: (text, record) => text,
-      width: '15%'
+      width: '25%'
     },
-
     {
       title: 'Mobile No',
       dataIndex: 'mobile',
       render: (text, record) => text,
-      width: '20%'
+      width: '25%'
     },
-
     {
       title: 'Email',
       dataIndex: 'email',
       render: (text, record) => text,
-      width: '10%'
-    },
-    {
-      title: 'User Branch',
-      render: (text, record) => record.branch_name,
-      width: '20%'
-    },
-    {
-      title: 'Operating City',
-      render: (text, record) => record.city,
-      width: '10%'
+      width: '30%'
     },
     {
       title: 'Action',
       render: (text, record) => (
         <span className='actions'>
           <Button type='link' icon={<DeleteOutlined />} onClick={() => onDelete(record.id)} />
-          <Button type='link' icon={<EditOutlined />} />
         </span>
       ),
-      width: '12%'
+      width: '20%'
     }
   ]
 
