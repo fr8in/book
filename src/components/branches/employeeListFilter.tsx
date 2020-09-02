@@ -41,7 +41,7 @@ const EmployeeListFilter = (props) => {
 
   const onCheckall = (e) => {
     setCheckAll(e.target.checked)
-   const all_emp = employee.map((data) => data.email )
+    const all_emp = employee.map((data) => data.email)
     onFilterChange(e.target.checked ? all_emp : [])
   }
 
