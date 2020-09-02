@@ -52,8 +52,10 @@ const AddBranch = (props) => {
     INSERT_BRANCH_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
-      onHide()   
+      onCompleted () { message.success('Updated!!') 
+      onHide()    
+    }
+     
     }
   )
 
