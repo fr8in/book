@@ -53,6 +53,7 @@ const AddBranch = (props) => {
     {
       onError (error) { message.error(error.toString()) },
       onCompleted () { message.success('Updated!!') }
+      onHide()   
     }
   )
 
@@ -73,7 +74,6 @@ const AddBranch = (props) => {
 
   
   const onSubmit = (form) => {
-    console.log('form',form)
     const bm_traffic = [
       { employee_id: form.bm_id, is_manager: true },
       { employee_id: form.traffic_id, is_manager: false}
@@ -81,8 +81,6 @@ const AddBranch = (props) => {
   const bm= [
       { employee_id: form.bm_id, is_manager: true }
     ]  
-    console.log('bm_traffic',bm_traffic)
-    console.log('bm',bm)
     updateBranch({
       variables: {
       name: form.name,
@@ -91,7 +89,6 @@ const AddBranch = (props) => {
       displayposition: form.display_position
       }
     })
-    onHide()   
   }
 
   return (
