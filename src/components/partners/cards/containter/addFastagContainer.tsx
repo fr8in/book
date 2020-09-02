@@ -2,6 +2,8 @@ import { Row, Col, Form, Input, Button, Select, Space, Card } from 'antd'
 
 const { Option } = Select
 
+
+
 const AddFastagContainer = () => {
   return (
     <Card size='small' title='Add FasTag' className='border-top-blue'>

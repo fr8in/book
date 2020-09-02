@@ -1,5 +1,6 @@
 import { Table, Button, Switch, message } from 'antd'
 import Link from 'next/link'
+import {useState} from 'react'
 import FastagSuspend from '../cards/fastagSuspend'
 import FastagReversal from './fastagReversal'
 import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
@@ -20,6 +21,7 @@ query all($partner_id: Int!) {
       tag_id
       truck_no
       truck_id
+      partner_id
       balance
       status
     }
@@ -27,6 +29,7 @@ query all($partner_id: Int!) {
   }
 }
 `
+
 const UPDATE_FASTAG_STATUS_MUTATION = gql`
 mutation update_fastag_status($truckId:Int!,$status:Int!,$modifiedBy:String!){
   update_fastag(truck_id:$truckId,status:$status,modified_by:$modifiedBy)
@@ -36,6 +39,12 @@ mutation update_fastag_status($truckId:Int!,$status:Int!,$modifiedBy:String!){
 }
 }
 `
+const TOKEN_MUTATION = gql`
+mutation token{
+  token
+}
+`
+
 const FasTags = (props) => {
 
   const {partner_id} = props
@@ -47,7 +56,7 @@ const FasTags = (props) => {
     reversalData: []
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
- 
+ const [token , setToken] = useState('')
   console.log('partner_id',partner_id)
     const { loading, error, data } = useQuery(
       FASTAG_QUERY, {
@@ -60,6 +69,8 @@ const FasTags = (props) => {
     console.log('FasTag error', error)
     console.log('FasTag data', data)
   
+   
+
     const [updateFastagStatus] = useMutation(
       UPDATE_FASTAG_STATUS_MUTATION,
       {
@@ -67,6 +78,19 @@ const FasTags = (props) => {
         onCompleted () { message.success('Updated!!') }
       }
     )
+
+    const [token_id] = useMutation(
+      TOKEN_MUTATION,
+      {
+        onError (error) { message.error(error.toString()) },
+        onCompleted (data) {
+          const value = get(data, 'token', null)
+          // message.success('Updated!!')
+          setToken(value)
+        }
+      }
+    )
+console.log('token',token)
     const onChange = (value,record) => {
       console.log('record', record,value)
       updateFastagStatus({
@@ -79,6 +103,10 @@ const FasTags = (props) => {
      
     }
     
+const showModal = (record) =>{
+  token_id()
+  handleShow('reversalVisible', null, 'reversalData', record)
+} 
 
     var _data = {}
     if (!loading) {
@@ -142,7 +170,7 @@ const FasTags = (props) => {
           type='primary'
           className='btn-success'
           icon={<LeftCircleOutlined />}
-          onClick={() => handleShow('reversalVisible', null, 'reversalData', record)}
+          onClick={() => showModal(record)}
         />
       )
     },
@@ -188,8 +216,9 @@ const FasTags = (props) => {
       {object.reversalVisible && (
         <FastagReversal
           visible={object.reversalVisible}
-          data={object.reversalData}
+          fastag={object.reversalData}
           onHide={handleHide}
+          token={token}
         />
       )}
     </>
