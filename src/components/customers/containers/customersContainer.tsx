@@ -18,6 +18,14 @@ const CUSTOMERS_QUERY = gql`
       customer_type_id
       created_at
       pan
+      customer_files{
+        id
+        type
+        folder
+        file_path
+        created_at
+        customer_id
+      }
       status {
         id
         name
