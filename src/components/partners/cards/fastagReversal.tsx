@@ -51,7 +51,6 @@ const FastagReversal = (props) => {
     onHide()
   }
 
-
   return (
     <Modal
       title='Fastag Reversal'
