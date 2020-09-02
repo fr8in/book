@@ -55,7 +55,8 @@ const PoDetail = (props) => {
     {
       variables: { id: parseInt(customer_id) },
       fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
+      notifyOnNetworkStatusChange: true,
+      skip: !customer_id
     }
   )
 
