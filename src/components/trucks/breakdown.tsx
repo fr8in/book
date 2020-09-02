@@ -7,15 +7,15 @@ import CreateBreakdown from './createBreakdown'
 import u from '../../lib/util'
 
 const TRUCK_BREAKDOWN_QUERY = gql`
-query ($truck_status_name: [String!], $offset: Int!, $limit: Int!) {
+query ($truck_status_name: [String!], $offset: Int!, $limit: Int! ,$onboarded_by: [String!]) {
   
-  rows: truck_aggregate(where: {truck_status: {name: {_in: $truck_status_name}}}) {
+  rows: truck_aggregate(where: {truck_status: {name: {_in: $truck_status_name}}, city: {branch: {branch_employees: {employee: {email: {_in: $onboarded_by}}}}}}) {
     aggregate {
       count
     }
   }
   truck(offset: $offset
-    limit: $limit where: {truck_status: {name: {_in: $truck_status_name}}}) {
+    limit: $limit where: {truck_status: {name: {_in: $truck_status_name}}, city: {branch: {branch_employees: {employee: {email: {_in: $onboarded_by}}}}}}) {
     id
     truck_no
     partner {
@@ -35,25 +35,27 @@ query ($truck_status_name: [String!], $offset: Int!, $limit: Int!) {
 `
 
 const Breakdown = (props) => {
+  const { onboarded_by, truck_status } = props
   const initial = {
     offset: 0,
     limit: u.limit,
     cityVisible: false,
     cityData: [],
+    owner_name: null,
     title: ''
   }
 
   const [filter, setFilter] = useState(initial)
   const [currentPage, setCurrentPage] = useState(1)
 
-  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
-  const { truck_status } = props
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
   const variables = {
     offset: filter.offset,
     limit: filter.limit,
-    truck_status_name: truck_status
+    truck_status_name: truck_status,
+    onboarded_by: onboarded_by
   }
 
   const { loading, error, data } = useQuery(
@@ -160,7 +162,6 @@ const Breakdown = (props) => {
           comments
         />
       )}
-
     </>
 
   )

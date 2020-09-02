@@ -1,4 +1,5 @@
 import { Modal, Checkbox, Row, Col } from 'antd'
+import { useState } from 'react'
 import { gql, useQuery } from '@apollo/client'
 
 const EMP_LIST = gql`
@@ -11,6 +12,10 @@ query employee_list{
 `
 const EmployeeListFilter = (props) => {
   const { visible, onHide, onFilterChange, onboarded_by } = props
+
+  const initial = false
+
+  const [checkAll, setCheckAll] = useState(initial)
 
   const { loading, error, data } = useQuery(
     EMP_LIST,
@@ -33,6 +38,13 @@ const EmployeeListFilter = (props) => {
     onFilterChange(checkedValues)
     console.log('checked', checkedValues)
   }
+
+  const onCheckall = (e) => {
+    setCheckAll(e.target.checked)
+    const all_emp = employee.map((data) => data.email)
+    onFilterChange(e.target.checked ? all_emp : [])
+  }
+
   return (
     <Modal
       visible={visible}
@@ -40,11 +52,12 @@ const EmployeeListFilter = (props) => {
       footer={null}
     >
       <Row>
-        <Checkbox>All</Checkbox>
+        <Checkbox onChange={onCheckall} checked={checkAll}>All</Checkbox>
         <Col xs={24} className='emp-list'>
           <Checkbox.Group
             options={employeeList}
             defaultValue={onboarded_by}
+            value={onboarded_by}
             onChange={onChange}
           />
         </Col>

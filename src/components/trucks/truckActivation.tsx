@@ -127,7 +127,7 @@ const TruckActivation = (props) => {
     updateTruckActivation({
       variables: {
         id: truck_id,
-        truck_status_id: 1,
+        truck_status_id: 5,
         available_at: form.available_at,
         city_id:parseInt(city.city_id,10),
         truck_type_id: parseInt(form.truck_type_id, 10)

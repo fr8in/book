@@ -14,12 +14,12 @@ subscription customer_users($cardcode: String) {
         branch_name
         name
         address
-        # state {
-        #   name
-        # }
-        # city {
-        #   name
-        # }
+        state {
+         name
+        }
+        city {
+         name
+        }
         pincode
         mobile
       }
