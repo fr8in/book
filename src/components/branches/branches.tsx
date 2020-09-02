@@ -2,6 +2,7 @@ import React from 'react'
 import { Table, Tag } from 'antd'
 import { EditTwoTone } from '@ant-design/icons'
 import AddTraffic from '../branches/addTraffic'
+import WeeklyTarget from '../branches/weeklytarget'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
@@ -121,7 +122,7 @@ const Branches = () => {
       width: '12%',
       render: (text, record) => {
         const target = get(record, 'branch_weekly_targets[0].trip_target', 0)
-        return target
+        return <WeeklyTarget id={record.id} label={target} Week={period.week} Year={period.year}/>
       }
     }
   ]

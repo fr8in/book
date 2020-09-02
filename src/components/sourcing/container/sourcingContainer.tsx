@@ -4,6 +4,7 @@ import PartnerLead from '../../partners/partnerLead'
 import TruckVerification from '../../trucks/truckVerification'
 import Breakdown from '../../trucks/breakdown'
 import Announcenmemt from '../../partners/announcement'
+import CreateAnnouncenmemt from '../../partners/createannouncenment'
 import CreateLead from '../../partners/createLead'
 import FilterList from '../../branches/employeeListFilter'
 import TitleWithCount from '../../common/titleWithCount'
@@ -47,7 +48,7 @@ const SourcingContainer = () => {
 
   const lead_count = get(_data, 'partner_aggregate.aggregate.count', 0)
   const waiting_for_load_count = get(_data, 'waiting_for_load.aggregate.count', 0)
-  
+
 
   const onFilterChange = (checked) => {
     setFilter(checked)
@@ -66,9 +67,9 @@ const SourcingContainer = () => {
         tabBarExtraContent={
           <span>
             {mainTabKey === '2' &&
-              <Button shape='circle' icon={<FilterOutlined />} onClick={() => onShow('filterList')}  />}
+              <Button shape='circle' icon={<FilterOutlined />} onClick={() => onShow('filterList')} />}
             {mainTabKey === '3' &&
-              <Button shape='circle' type='primary' icon={<PlusOutlined />} onClick={() => onShow('filterList')} />}
+              <Button shape='circle' type='primary' icon={<PlusOutlined />} onClick={() => onShow('createAnnouncenmemt')} />}
           </span>
         }
       >
@@ -100,7 +101,7 @@ const SourcingContainer = () => {
         </TabPane>
         <TabPane tab={<TitleWithCount name='Waiting for Load' value={waiting_for_load_count} />} key='2'>
           <Card size='small' className='card-body-0'>
-            <Breakdown truck_status={['Waiting for Load']} loading={loading} visible={visible.employeeList} onHide={onHide} onboarded_by={filter}/>
+            <Breakdown truck_status={['Waiting for Load']} loading={loading} visible={visible.employeeList} onHide={onHide} onboarded_by={filter} />
           </Card>
         </TabPane>
         <TabPane tab='Announcement' key='3'>
@@ -111,6 +112,7 @@ const SourcingContainer = () => {
       </Tabs>
       {visible.createLead && <CreateLead visible={visible.createLead} onHide={onHide} />}
       {visible.filterList && <FilterList visible={visible.filterList} onHide={onHide} onFilterChange={onFilterChange} onboarded_by={filter} />}
+      {visible.createAnnouncenmemt && <CreateAnnouncenmemt visible={visible.createAnnouncenmemt} onHide={onHide} />}
     </Card>
   )
 }

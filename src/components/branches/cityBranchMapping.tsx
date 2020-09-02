@@ -6,7 +6,7 @@ import get from 'lodash/get'
 
 const CITY_QUERY = gql`
 subscription{
-  city{
+  city(where:{_and: [ {is_connected_city: {_eq: true}}]}){
     id
     name
     branch{
