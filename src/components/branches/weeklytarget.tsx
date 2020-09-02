@@ -12,35 +12,35 @@ mutation update_branch_weekly_target($trip_target: Int!, $branch_id: Int!, $week
     }
   }
   `
-  
-  const WeeklyTarget = (props) => {
-    const { id, label,Week,Year } = props
-  
-    const [updateTruckNo] = useMutation(
-        UPDATE_BRABCH_WEEKLY_TARGET_MUTATION,
-      {
-        onError (error) { message.error(error.toString()) },
-        onCompleted () { message.success('Saved!!') }
-      }
-    )
-  
-    const onSubmit = (value) => {
-      updateTruckNo({
-        variables: {
-          branch_id: id,
-          week: Week,
-          year: Year,
-          trip_target: value
-        } 
-      }) 
+
+const WeeklyTarget = (props) => {
+  const { id, label, week, year } = props
+
+  const [updateTruckNo] = useMutation(
+    UPDATE_BRABCH_WEEKLY_TARGET_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Saved!!') }
     }
- 
-    return (
-      <EditableCell
-        label={label}
-        onSubmit={onSubmit}
-      />
-    )
+  )
+
+  const onSubmit = (value) => {
+    updateTruckNo({
+      variables: {
+        branch_id: id,
+        week: week,
+        year: year,
+        trip_target: value
+      }
+    })
   }
-  
-  export default WeeklyTarget
+
+  return (
+    <EditableCell
+      label={label}
+      onSubmit={onSubmit}
+    />
+  )
+}
+
+export default WeeklyTarget
