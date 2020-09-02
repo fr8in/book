@@ -1,6 +1,7 @@
 import Link from 'next/link'
+import { useState } from 'react'
 import { Row, Col, Card, Tabs, Button, Space, Tooltip } from 'antd'
-import { CarOutlined, WalletOutlined, FileTextOutlined, MailOutlined } from '@ant-design/icons'
+import { CarOutlined, WalletOutlined, FileTextOutlined, MailOutlined,PlusCircleOutlined } from '@ant-design/icons'
 import DetailPageHeader from '../../common/detailPageHeader'
 import HeaderInfo from '../partner'
 import WalletStatus from '../walletStatus'
@@ -34,7 +35,15 @@ const pod = ['Delivered']
 const invoiced = ['Invoiced', 'Recieved']
 const paid = ['Paid', 'Closed']
 
+
 const PartnerDetailContainer = (props) => {
+
+  const [Key, setKey] = useState('1')
+
+  const tabChange = (key) => {
+    setKey(key)
+  }
+
   const initial = { topUp: false, reportMail: false, statememt: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
@@ -124,7 +133,23 @@ const PartnerDetailContainer = (props) => {
                         </Col>
                         <Col xs={24} sm={12} md={12}>
                           <Card size='small' className='card-body-0'>
-                            <Tabs defaultActiveKey='1'>
+                            <Tabs defaultActiveKey='1' onChange={tabChange}
+                              tabBarExtraContent={
+                                <span>
+                                  {Key === '5' && (
+                                    <Link href='/partners/add-fastag'>
+                                      <Button
+                                        type='primary'
+                                        size='small'
+                                        icon={<PlusCircleOutlined />}
+                                      >
+                                        Add Card
+                                      </Button>
+                                    </Link>
+                                  )}
+                                </span>
+                              }
+                            >
                               <TabPane tab='Summary' key='1'>
                                 <AccountSummary partner_summary={partner_info} />
                                 <PendingBalance partner_summary={partner_info} />
