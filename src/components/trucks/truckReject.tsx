@@ -35,10 +35,10 @@ const TruckReject = (props) => {
     insertComment({
       variables: {
         truck_id: truck_id,
-        created_by_id: 1,
+        created_by_id: 110,
         description: rejectComment,
         topic: 'text',
-        truck_status_id: 13,
+        truck_status_id: 12,
         id: truck_id
       }
     })

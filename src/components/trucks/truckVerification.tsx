@@ -36,12 +36,12 @@ query trucks(
         name
       }
     }
-    truck_aggregate(  where: {truck_status: {name: {_in: ["Verification Pending","Rejected"],}}}){
+    truck_aggregate(  where: {truck_status: {name: {_in: ["Verification","Rejected"],}}}){
       aggregate{
         count
      }
     }
-    truck_status(where:{name: {_in: ["Verification Pending","Rejected"]}}, order_by: {id: asc}) {
+    truck_status(where:{name: {_in: ["Verification","Rejected"]}}, order_by: {id: asc}) {
       id
       name
     }
@@ -57,7 +57,7 @@ const TruckVerification = (props) => {
     truckActivationData: [],
     truckRejectVisible: false,
     truckRejectData: [],
-    truck_statusName: ['Verification Pending']
+    truck_statusName: ['Verification']
   }
 
   const [filter, setFilter] = useState(initial)
