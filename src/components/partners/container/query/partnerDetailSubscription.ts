@@ -53,6 +53,11 @@ subscription partners($cardcode: String, $partner_id: bigint, $ongoing: [String!
     dnd
     cibil
     final_payment_date
+    city {
+      state {
+        name
+      }
+    }
     bank {
       id
       name
