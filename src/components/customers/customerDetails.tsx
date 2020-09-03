@@ -4,7 +4,9 @@ import LabelWithData from '../common/labelWithData'
 import FileUploadOnly from '../common/fileUploadOnly'
 import ViewFile from '../common/viewFile'
 import mockData from '../../../mock/customer/customerDetail'
+import get from 'lodash/get'
 import CustomerGst from './customerGst'
+import CustomerOnBoardedBy from './customerOnboardedByName'
 
 const CustomerDetails = (props) => {
   const { customer_info } = props
@@ -88,7 +90,13 @@ const CustomerDetails = (props) => {
         <LabelWithData label='Mobile No' data={customer_info.mobile} labelSpan={10} dataSpan={14} />
         <LabelWithData
           label='OnBoarded By'
-          data={customer_info.approved_by_id}
+          data={
+            <CustomerOnBoardedBy
+              onboardedBy={get(customer_info, 'onboarded_by.email', '-')}
+              onboardedById={get(customer_info, 'onboarded_by.id', null)}
+              cardcode={customer_info.cardcode}
+            />
+          }
           labelSpan={10}
           dataSpan={14}
         />
