@@ -1,26 +1,48 @@
 import { Row, Col, Space, Button } from 'antd'
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons'
 import LabelWithData from '../common/labelWithData'
-
+import FileUploadOnly from '../common/fileUploadOnly'
+import ViewFile from '../common/viewFile'
 import mockData from '../../../mock/customer/customerDetail'
 import CustomerGst from './customerGst'
 
 const CustomerDetails = (props) => {
   const { customer_info } = props
 
+  const lr_files  = customer_info && customer_info.customer_files && customer_info.customer_files.filter(file => file.type === 'LR')
+  const pan_files  = customer_info && customer_info.customer_files && customer_info.customer_files.filter(file => file.type === 'PAN')
+
+
   return (
     <Row gutter={8}>
       <Col xs={24} sm={24} md={12}>
         <LabelWithData
-          label='PAN'
-          data={
-            <Space>
-              <span>{customer_info.pan}</span>
-              {customer_info.panUrl
-                ? <Button type='primary' shape='circle' icon={<DownloadOutlined />} size='small' />
-                : <Button shape='circle' icon={<UploadOutlined />} size='small' />}
-            </Space>
-          }
+           label='PAN'
+           data={
+             <span>
+               {pan_files && pan_files.length > 0 ? (
+                 <Space>
+                   <ViewFile
+                   size='small'
+                     id={customer_info.id}
+                     type='customer'
+                     file_type='PAN'
+                     folder='pan/'
+                     file_list={pan_files}
+                   />
+                 </Space>
+               ) : (
+                   <FileUploadOnly
+                   size='small'
+                     id={customer_info.id}
+                     type='customer'
+                     folder='pan/'
+                     file_type='PAN'
+                     file_list={pan_files}
+                   />
+                 )}
+             </span>
+           }
           labelSpan={10}
           dataSpan={14}
         />
@@ -36,11 +58,29 @@ const CustomerDetails = (props) => {
         <LabelWithData
           label='LR'
           data={
-            <Space>
-              {customer_info.lrUrl
-                ? <Button type='primary' shape='circle' icon={<DownloadOutlined />} size='small' />
-                : <Button shape='circle' icon={<UploadOutlined />} size='small' />}
-            </Space>
+            <span>
+              {lr_files && lr_files.length > 0 ? (
+                <Space>
+                  <ViewFile
+                  size='small'
+                    id={customer_info.id}
+                    type='customer'
+                    file_type='LR'
+                    folder='lr/'
+                    file_list={lr_files}
+                  />
+                </Space>
+              ) : (
+                  <FileUploadOnly
+                  size='small'
+                    id={customer_info.id}
+                    type='customer'
+                    folder='lr/'
+                    file_type='LR'
+                    file_list={lr_files}
+                  />
+                )}
+            </span>
           }
           labelSpan={10}
           dataSpan={14}

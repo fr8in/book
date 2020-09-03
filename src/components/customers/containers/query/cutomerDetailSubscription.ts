@@ -32,6 +32,14 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
       gst
       managed
       pan
+      customer_files{
+        id
+        type
+        folder
+        file_path
+        created_at
+        customer_id
+      }
       customer_accounting {
         wallet_balance
       }
