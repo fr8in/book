@@ -1,4 +1,4 @@
-import { Modal, Button, Row, Col, DatePicker, Select, Input, Form, Radio, message, Table } from 'antd'
+import { Modal, Button, Row, Col, DatePicker, Space, Input, Form, Radio, message, Table } from 'antd'
 import { useMutation, gql, useQuery } from '@apollo/client'
 import moment from 'moment'
 import { useState } from 'react'
@@ -32,8 +32,6 @@ mutation truck_available($truck_id:Int!,$topic:String,$created_by_id:Int,$descri
   }
 }
 `
-
-const { Option } = Select
 const { TextArea } = Input
 
 const CreateBreakdown = (props) => {
@@ -55,9 +53,9 @@ const CreateBreakdown = (props) => {
     _data = data
   }
   const truck_info = _data && _data.truck && _data.truck.length > 0 ? _data.truck[0] : { name: 'ID does not exist' }
-  
-const truck_status = truck_info && truck_info.truck_status && truck_info.truck_status.name
-  console.log('truck_status',truck_status)
+
+  const truck_status = truck_info && truck_info.truck_status && truck_info.truck_status.name
+  console.log('truck_status', truck_status)
 
   const [insertUpdateCreateBreakdown] = useMutation(
     INSERT_UPDATE_CREATE_BREAKDOWN_MUTATION,
@@ -74,17 +72,16 @@ const truck_status = truck_info && truck_info.truck_status && truck_info.truck_s
     setCity({ ...city, city_id: city_id })
   }
 
-
   const onCreateBreakdown = (form) => {
-    console.log('id', id , city)
+    console.log('id', id, city)
     insertUpdateCreateBreakdown({
       variables: {
         truck_id: id,
-        id:id,
+        id: id,
         created_by_id: 110,
         description: form.comment,
-       topic: truck_status,
-        city_id:parseInt(city.city_id,10)
+        topic: truck_status,
+        city_id: parseInt(city.city_id, 10)
       }
     })
   }
@@ -114,9 +111,7 @@ const truck_status = truck_info && truck_info.truck_status && truck_info.truck_s
       title: 'Created On',
       dataIndex: 'created_at',
       width: '20%',
-      render: (text, record) => {
-        return text ? moment(text).format('DD-MMM-YY') : null
-      }
+      render: (text, record) => text ? moment(text).format('DD-MMM-YY') : null
     }
   ]
 
@@ -129,7 +124,7 @@ const truck_status = truck_info && truck_info.truck_status && truck_info.truck_s
         onCancel={onHide}
         footer={null}
       >
-        <Form layout='vertical'  onFinish={onCreateBreakdown} >
+        <Form layout='vertical' onFinish={onCreateBreakdown}>
           {props.radioType &&
             <Form.Item name='type'>
               <Radio.Group>
@@ -150,13 +145,13 @@ const truck_status = truck_info && truck_info.truck_status && truck_info.truck_s
               </Form.Item>
             </Col>
             <Col sm={12}>
-              <Form.Item >
-              <CitySelect
-             label='Current City'
-              onChange={onCityChange}
-              required
-              name='city'
-            />
+              <Form.Item>
+                <CitySelect
+                  label='Current City'
+                  onChange={onCityChange}
+                  required
+                  name='city'
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -167,10 +162,12 @@ const truck_status = truck_info && truck_info.truck_status && truck_info.truck_s
             />
           </Form.Item>
           <Row justify='end'>
-          <Form.Item>
-          <Button key='back' onClick={onHide}>Close</Button>,
-          <Button type='primary' key='submit' htmlType='submit'>Save</Button>
-          </Form.Item>
+            <Form.Item>
+              <Space>
+                <Button key='back' onClick={onHide}>Close</Button>
+                <Button type='primary' key='submit' htmlType='submit'>Save</Button>
+              </Space>
+            </Form.Item>
           </Row>
         </Form>
         {props.comments && (

@@ -5,6 +5,7 @@ import { gql, useQuery } from '@apollo/client'
 import Loading from '../common/loading'
 import LabelAndData from '../common/labelAndData'
 import Link from 'next/link'
+import get from 'lodash/get'
 
 const GLOBAL_SEARCH = gql`
 query search($search:String){
@@ -45,10 +46,10 @@ const GlobalSearch = (props) => {
   if (!loading) {
     _data = data
   }
-  const customer = _data.search_customer
-  const partner = _data.search_partner
-  const trip = _data.search_trip
-  const truck = _data.search_truck
+  const customer = get(_data, 'search_customer', [])
+  const partner = get(_data, 'search_partner', [])
+  const trip = get(_data, 'search_trip', [])
+  const truck = get(_data, 'search_truck', [])
 
   console.log('GlobalSearch Error', error)
 

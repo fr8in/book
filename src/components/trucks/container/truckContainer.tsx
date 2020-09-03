@@ -82,7 +82,7 @@ const TruckContainer = () => {
     offset: filter.offset,
     limit: filter.limit,
     truck_statusId: filter.truck_statusId,
-    trip_status_id: [2, 3, 4, 5, 6],
+    trip_status_id: [2, 3, 4, 5, 6, 8],
     truckno: filter.truckno ? `%${filter.truckno}%` : null,
     name: filter.name ? `%${filter.name}%` : null
   }
@@ -109,7 +109,6 @@ const TruckContainer = () => {
 
   const record_count =
     truck_aggregate.aggregate && truck_aggregate.aggregate.count
-  const total_page = Math.ceil(record_count / filter.limit)
 
   console.log('record_count', record_count)
   const onFilter = (value) => {
@@ -144,7 +143,6 @@ const TruckContainer = () => {
               onNameSearch={onNameSearch}
               onTruckNoSearch={onTruckNoSearch}
               record_count={record_count}
-              total_page={total_page}
             />
           </Card>
         </Col>

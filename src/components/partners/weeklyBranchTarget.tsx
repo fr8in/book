@@ -181,6 +181,7 @@ const WeeklyBranchTarget = (props) => {
         scroll={{ x: 400, y: 420 }}
         rowKey={record => record.branch_id}
         className='weeklyTarget'
+        loading={loading}
       />
     </Modal>
   )
