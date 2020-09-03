@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { Row, Col, Card, Tabs, Button, Space, Tooltip } from 'antd'
-import { CarOutlined, WalletOutlined, FileTextOutlined, MailOutlined,PlusCircleOutlined } from '@ant-design/icons'
+import { CarOutlined, WalletOutlined, FileTextOutlined, MailOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import DetailPageHeader from '../../common/detailPageHeader'
 import HeaderInfo from '../partner'
 import WalletStatus from '../walletStatus'
@@ -35,9 +35,7 @@ const pod = ['Delivered']
 const invoiced = ['Invoiced', 'Recieved']
 const paid = ['Paid', 'Closed']
 
-
 const PartnerDetailContainer = (props) => {
-
   const [Key, setKey] = useState('1')
 
   const tabChange = (key) => {
@@ -63,24 +61,19 @@ const PartnerDetailContainer = (props) => {
   )
 
   console.log('PartnerDetailContainer Error', error)
-  console.log('PartnerDetailContainer Data', data)
 
-  let partner_info = {}
-  let truck_count = 0
-  let ongoing_count = 0
-  let pod_count = 0
-  let invoiced_count = 0
-  let paid_count = 0
+  let _data = {}
 
   if (!loading) {
-    const { partner } = data
-    partner_info = partner[0] ? partner[0] : { name: 'ID does not exist' }
-    truck_count = get(partner_info, 'trucks_aggregate.aggregate.count', 0)
-    ongoing_count = get(partner_info, 'ongoing.aggregate.count', 0)
-    pod_count = get(partner_info, 'pod.aggregate.count', 0)
-    invoiced_count = get(partner_info, 'invoiced.aggregate.count', 0)
-    paid_count = get(partner_info, 'paid.aggregate.count', 0)
+    _data = data
   }
+
+  const partner_info = get(_data, 'partner[0]', 'ID does not exist')
+  const truck_count = get(partner_info, 'trucks_aggregate.aggregate.count', 0)
+  const ongoing_count = get(partner_info, 'ongoing.aggregate.count', 0)
+  const pod_count = get(partner_info, 'pod.aggregate.count', 0)
+  const invoiced_count = get(partner_info, 'invoiced.aggregate.count', 0)
+  const paid_count = get(partner_info, 'paid.aggregate.count', 0)
 
   return (
     loading ? <Loading /> : (
@@ -133,7 +126,9 @@ const PartnerDetailContainer = (props) => {
                         </Col>
                         <Col xs={24} sm={12} md={12}>
                           <Card size='small' className='card-body-0'>
-                            <Tabs defaultActiveKey='1' onChange={tabChange}
+                            <Tabs
+                              defaultActiveKey='1'
+                              onChange={tabChange}
                               tabBarExtraContent={
                                 <span>
                                   {Key === '5' && (

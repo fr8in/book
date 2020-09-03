@@ -17,18 +17,16 @@ subscription{
 }
 `
 const CityPricing = () => {
-  
   const { loading, error, data } = useSubscription(CITY_QUERY)
   console.log('error', error)
 
   let _data = []
-if (!loading){
-     _data = data 
-}
-const citymapping = get(_data,'city',[])
-console.log('city',citymapping)
+  if (!loading) {
+    _data = data
+  }
+  const citymapping = get(_data, 'city', [])
+  console.log('city', citymapping)
 
-  
   const CityPricing = [
     {
       title: 'City',
@@ -43,9 +41,9 @@ console.log('city',citymapping)
       width: '70%',
       render: (text, record) => {
         const branch = record.branch && record.branch.name
-        return(
-      <span> <BranchEdit id={record.id} branch={branch}/></span>
-      
+        return (
+          <span> <BranchEdit id={record.id} branch={branch} /></span>
+
         )
       }
     }
