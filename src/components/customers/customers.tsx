@@ -23,6 +23,8 @@ import { gql, useMutation } from '@apollo/client'
 import moment from 'moment'
 import Truncate from '../common/truncate'
 import get from 'lodash/get'
+import FileUploadOnly from '../common/fileUploadOnly'
+import ViewFile from '../common/viewFile'
 import LinkComp from '../common/link'
 
 const CUSTOMER_REJECT_MUTATION = gql`
@@ -241,22 +243,37 @@ const CustomerKyc = (props) => {
       width: '10%',
       render: (text, record) => {
         const statusId = get(record, 'customer.status.id', null)
+        const files = record && record.customer && record.customer.customer_files
+  const pan_doc = files.filter(file => file.type === 'PAN')
+  const pan_files = pan_doc && pan_doc.length > 0 ? pan_doc.map((file, i) => {
+    return ({
+      uid: `${file.type}-${i}`,
+      name: file.file_path,
+      status: 'done'
+    })
+  }) : []
+  console.log('file', pan_doc)
         return (
           <Space>
-            {record.panNo ? (
-              <Button
-                type='primary'
-                size='small'
-                shape='circle'
-                icon={<EyeOutlined />}
-                onClick={() => console.log('View')}
+            {pan_files && pan_files.length > 0 ? (
+            <Space>
+              <ViewFile
+               size='small'
+                id={record.id}
+                type='customer'
+                file_type='PAN'
+                folder='pan/'
+                file_list={pan_files}
               />
-            ) : (
-              <Button
-                size='small'
-                shape='circle'
-                icon={<UploadOutlined />}
-                onClick={() => console.log('Upload')}
+            </Space>
+          ) : (
+              <FileUploadOnly
+              size='small'
+                id={record.id}
+                type='customer'
+                folder='pan/'
+                file_type='PAN'
+                file_list={pan_files}
               />
             )}
             {(statusId === 3 || statusId === 4) && (

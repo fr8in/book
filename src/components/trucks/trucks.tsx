@@ -22,10 +22,8 @@ const Trucks = (props) => {
 
   const {
     trucks,
-    status,
     loading,
     record_count,
-    total_page,
     onPageChange,
     onNameSearch,
     onTruckNoSearch,
@@ -125,7 +123,7 @@ const Trucks = (props) => {
           <span>
             {id ? (
               <span>{source.slice(0, 3) + '-' + destination.slice(0, 3)}</span>
-            ) : record.truck_status.id === 1 ? (
+            ) : record.truck_status.id === 5 ? (
               <a
                 className='link'
                 onClick={() =>
@@ -226,9 +224,7 @@ const Trucks = (props) => {
   return (
     <>
       <Table
-        rowSelection={{
-          ...rowSelection
-        }}
+        // rowSelection={{ ...rowSelection }}
         columns={columns}
         dataSource={trucks}
         rowKey={(record) => record.id}

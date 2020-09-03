@@ -1,8 +1,8 @@
-import { Modal, Form, Input, Select,message ,Row,Col,Button,Space} from 'antd'
+import { Modal, Form, Input, Select, message, Row, Col, Button, Space } from 'antd'
 import React from 'react'
-import { gql, useMutation,useQuery } from '@apollo/client'
+import { gql, useMutation, useQuery } from '@apollo/client'
 
- const ADD_BRANCH_SUBSCRIPTION = gql`
+const ADD_BRANCH_SUBSCRIPTION = gql`
  query add_branch{
   employee{
     id
@@ -18,17 +18,13 @@ import { gql, useMutation,useQuery } from '@apollo/client'
 const INSERT_BRANCH_MUTATION = gql`
 mutation insert_branch(
   $name: String!,
-  $bm_id: Int,
-  $traffic_id: Int,
   $region_id: Int,
-  $displayposition: Int
+  $displayposition: Int,
+  $data: [branch_employee_insert_input!]!
 ) {
   insert_branch(objects: {
     name: $name, 
-    branch_employees: {data: [
-      { employee_id: $bm_id, is_manager: true },
-      { employee_id: $traffic_id, is_manager: false}
-    ]},
+    branch_employees: {data: $data},
     region_id: $region_id,
     displayposition: $displayposition
   }) {
@@ -56,18 +52,21 @@ const AddBranch = (props) => {
     INSERT_BRANCH_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () {
+        message.success('Updated!!')
+        onHide()
+      }
+
     }
   )
 
-
-  var employee = [];
-  var region = [];
+  var employee = []
+  var region = []
   if (!loading) {
-     region = data.region
-     employee = data.employee
+    region = data.region
+    employee = data.employee
   }
- 
+
   const regionList = region.map((data) => {
     return { value: data.id, label: data.name }
   })
@@ -75,19 +74,22 @@ const AddBranch = (props) => {
     return { value: data.id, label: data.email }
   })
 
-
   const onSubmit = (form) => {
-    console.log('form',form)
+    const bm_traffic = [
+      { employee_id: form.bm_id, is_manager: true },
+      { employee_id: form.traffic_id, is_manager: false }
+    ]
+    const bm = [
+      { employee_id: form.bm_id, is_manager: true }
+    ]
     updateBranch({
       variables: {
         name: form.name,
-  bm_id: form.bank_manager,
-  traffic_id: form.traffic_coordinator,
-  region_id: form.region,
-  displayposition: form.display_position
+        data: form.bm_id && form.traffic_id ? bm_traffic : bm,
+        region_id: form.region,
+        displayposition: form.display_position
       }
     })
-    onHide()   
   }
 
   return (
@@ -101,33 +103,33 @@ const AddBranch = (props) => {
         <Form.Item name='name'>
           <Input placeholder='Branch Name' />
         </Form.Item>
-        <Form.Item name='bank_manager'>
+        <Form.Item name='bm_id'>
           <Select placeholder='Branch Manager'>
-                <Select.Option  options={employeeList} value='Branch Manager'> </Select.Option>
-              </Select>
+            <Select.Option options={employeeList} value='Branch Manager'> </Select.Option>
+          </Select>
         </Form.Item>
-        <Form.Item name='traffic_coordinator'>
-        <Select placeholder='Traffic Coordinator'>
-                <Select.Option  options={employeeList} value='Traffic Coordinator'> </Select.Option>
-              </Select>
+        <Form.Item name='traffic_id'>
+          <Select placeholder='Traffic Coordinator'>
+            <Select.Option options={employeeList} value='Traffic Coordinator'> </Select.Option>
+          </Select>
         </Form.Item>
         <Form.Item name='display_position'>
           <Input placeholder='Display Position' />
         </Form.Item>
         <Form.Item name='region'>
-        <Select placeholder='Region'>
-                <Select.Option  options={regionList} value='Region'> </Select.Option>
-              </Select>
+          <Select placeholder='Region'>
+            <Select.Option options={regionList} value='Region'> </Select.Option>
+          </Select>
         </Form.Item>
 
         <Row justify='end'>
-        <Col xs={24} className='text-right'>
-        <Space>
-          <Button>Cancel</Button>
-          <Button type='primary' htmlType='submit' >Submit</Button>
-          </Space>
-        </Col>
-      </Row>
+          <Col xs={24} className='text-right'>
+            <Space>
+              <Button>Cancel</Button>
+              <Button type='primary' htmlType='submit'>Submit</Button>
+            </Space>
+          </Col>
+        </Row>
       </Form>
     </Modal>
   )

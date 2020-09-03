@@ -15,43 +15,44 @@ const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
   }
 }`
 
-const EXCESS_LOAD_MUTATION = gql`mutation excees_load (
-    $source_id: Int, 
-    $destination_id: Int, 
-    $customer_id: Int, 
-    $customer_price: Float, 
-    $ton: float8,
-    $rate_per_ton:float8,
-    $is_per_ton:Boolean, 
-    $truck_type_id:Int,
-    $description:String,
-    $topic:String,
-    $created_by: String ) {
-  insert_trip(objects: {
-    source_id: $source_id, 
-    destination_id: $destination_id, 
-    customer_id: $customer_id,
-    truck_type_id: $truck_type_id,
-    trip_prices: {
-      data: {
-        customer_price: $customer_price,
-        ton: $ton,
-        price_per_ton:$rate_per_ton,
-        is_price_per_ton: $is_per_ton
-      }
-    }
-    trip_comments:{
-      data:{
-        description:$description,
-        topic:$topic,
-        created_by:$created_by
-      }
-    }
-  }) {
-    returning {
-      id
+const EXCESS_LOAD_MUTATION = gql`mutation create_excees_load (
+  $source_id: Int, 
+  $destination_id: Int, 
+  $customer_id: Int, 
+  $customer_price: Float, 
+  $ton: float8,
+  $rate_per_ton:float8,
+  $is_per_ton:Boolean, 
+  $truck_type_id:Int,
+  $description:String,
+  $topic:String,
+  $created_by: String ) {
+insert_trip(objects: {
+  trip_status_id: 1,
+  source_id: $source_id, 
+  destination_id: $destination_id, 
+  customer_id: $customer_id,
+  truck_type_id: $truck_type_id,
+  trip_prices: {
+    data: {
+      customer_price: $customer_price,
+      ton: $ton,
+      price_per_ton:$rate_per_ton,
+      is_price_per_ton: $is_per_ton
     }
   }
+  trip_comments:{
+    data:{
+      description:$description,
+      topic:$topic,
+      created_by:$created_by
+    }
+  }
+}) {
+  returning {
+    id
+  }
+}
 }
 `
 
@@ -118,7 +119,7 @@ const CreateExcessLoad = (props) => {
         is_per_ton: !!form.ton,
         truck_type_id: form.truck_type,
         description: form.comment,
-        topic: 'Excess Load',
+        topic: 'Excess Load Created',
         created_by: 'Karthik'
       }
     })
