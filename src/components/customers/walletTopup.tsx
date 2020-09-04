@@ -1,55 +1,130 @@
-import { Modal, Row, Col, Button, Space, Input, Table } from 'antd'
+import { Modal, Row, Col, Button, message, Input, Table } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
-import IncomingPaymentData from '../../../mock/customer/incomingdata'
+import { gql, useQuery, useMutation } from '@apollo/client'
+import { useState } from 'react'
+import sumBy from 'lodash/sumBy'
+import get from 'lodash/get'
+
+const CUSTOMER_INCOMING_PAYMENTS = gql`
+query  bank_incoming($search:String){
+  bank_incoming(search:$search) {
+    transno
+    amount
+    date
+    details
+    originno
+  }
+}`
+
+const CUSTOMER_TOPUP_MUTATION = gql`
+mutation customer_topup(
+  $transno: Int!
+  $originno: Int!
+  $created_by: String!
+  $walletcode: String!
+) {
+  customer_topup(
+    transno: $transno
+    originno: $originno
+    created_by: $created_by
+    walletcode: $walletcode
+  ) {
+    status
+    description
+  }
+}`
 
 const WalletTopup = (props) => {
-  const { visible, onHide } = props
+  const { visible, onHide, walletcode } = props
+  const [search, setSearch] = useState(null)
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const [selectedRow, setSelectedRow] = useState([])
+  const [disableButton, setDisableButton] = useState(true)
+
+  const { loading, data, error } = useQuery(
+    CUSTOMER_INCOMING_PAYMENTS,
+    {
+      variables: { search: search || null }
+    }
+  )
+  const [customer_topup] = useMutation(
+    CUSTOMER_TOPUP_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted (data) {
+        message.success(get(data, 'customer_topup.description', 'Processed!'))
+        onHide()
+      }
+    }
+  )
+
+  console.log('WalletTopup Error', error)
+
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+
+  const { bank_incoming } = _data
+  const count = bank_incoming ? bank_incoming.length : 0
+  const total = bank_incoming ? sumBy(bank_incoming, 'amount').toFixed(2) : 0
 
   const onSubmit = () => {
-    console.log('data Transfered!')
-    onHide()
+    customer_topup({
+      variables: {
+        transno: selectedRow[0].transno,
+        originno: selectedRow[0].originno,
+        created_by: 'karthik.fr8.in',
+        walletcode: walletcode
+      }
+    })
+  }
+
+  const onSearch = (e) => {
+    setSearch(e.target.value)
+  }
+
+  const selectOnchange = (selectedRowKeys, selectedRows) => {
+    setSelectedRowKeys(selectedRowKeys)
+    setSelectedRow(selectedRows)
+    setDisableButton(!!(selectedRows && selectedRows.length === 0))
   }
 
   const columns = [
     {
       title: 'Reference No',
-      dataIndex: 'referenceNo',
-      key: 'referenceNo',
-      sorter: (a, b) => (a.referenceNo > b.referenceNo ? 1 : -1),
-      width: '25%'
+      dataIndex: 'transno',
+      sorter: (a, b) => (a.transno > b.transno ? 1 : -1),
+      width: '15%'
     },
     {
       title: 'Date',
       dataIndex: 'date',
       key: 'date',
       sorter: (a, b) => (a.date > b.date ? 1 : -1),
-      width: '15%'
+      width: '12%'
     },
     {
       title: 'Payment Details',
-      dataIndex: 'paymentDetails',
-      key: 'paymentDetails',
-      width: '42%'
+      dataIndex: 'details',
+      width: '57%'
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
       sorter: (a, b) => (a.amount > b.amount ? 1 : -1),
-      width: '18%'
+      width: '16%'
     }
   ]
 
   const footerData = (
     <Row>
       <Col flex='auto' className='text-left'>
-        <span>Total Amount: <b>₹{77200}</b></span>
+        <span>Total Amount: <b>₹{total}</b></span>
       </Col>
-      <Col flex='200px'>
-        <Space>
-          <Button onClick={onHide}>Close</Button>
-          <Button type='primary'> Top Up </Button>
-        </Space>
+      <Col flex='120px'>
+        <Button type='primary' disabled={disableButton} onClick={onSubmit}>Top Up</Button>
       </Col>
     </Row>)
 
@@ -58,9 +133,9 @@ const WalletTopup = (props) => {
       title={
         <div>
           <Row>
-            <Col span={8} className='mb5'>Top Up to Wallet</Col>
+            <Col className='mb5'>Top Up to Wallet - {count}</Col>
           </Row>
-          <Row><Input placeholder='Search...' suffix={<SearchOutlined />} /></Row>
+          <Row><Input placeholder='Search...' suffix={<SearchOutlined />} onChange={onSearch} /></Row>
         </div>
       }
       visible={visible}
@@ -72,11 +147,18 @@ const WalletTopup = (props) => {
       footer={footerData}
     >
       <Table
+        rowSelection={{
+          selectedRowKeys,
+          onChange: selectOnchange,
+          type: 'radio'
+        }}
         columns={columns}
-        dataSource={IncomingPaymentData}
-        rowKey={(record) => record.id}
+        dataSource={bank_incoming}
+        rowKey={(record) => record.transno}
         size='small'
         pagination={false}
+        loading={loading}
+        scroll={{ x: 800, y: 400 }}
       />
     </Modal>
   )
