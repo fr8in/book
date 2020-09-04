@@ -22,7 +22,6 @@ const PartnerDetail = (props) => {
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
-  console.log('partnerDetail', partnerDetail)
   const address = partnerDetail && partnerDetail.address
   const partner_address = address === null || _.isEmpty(address) ? null
     : `${address.no || null},

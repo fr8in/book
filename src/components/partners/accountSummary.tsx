@@ -4,8 +4,6 @@ import LabelData from '../../components/common/labelData'
 const AccountSummary = (props) => {
   const { partner_summary } = props
 
-  console.log('props', props)
-
   return (
     <Card size='small'>
       <LabelData

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import PaidStatus from '../../trips/tripsByStages'
 import u from '../../../lib/util'
+import get from 'lodash/get'
 
 import { gql, useQuery } from '@apollo/client'
 
@@ -17,6 +18,12 @@ query partners($offset: Int, $limit: Int,$trip_status_value:[String!], $cardcode
     trips(offset: $offset, limit: $limit, where: {trip_status: {name: {_in: $trip_status_value}}}) {
       id
       order_date
+      truck{
+        truck_no
+        truck_type{
+          name
+        }
+      }
       source {
         name
       }
@@ -29,8 +36,8 @@ query partners($offset: Int, $limit: Int,$trip_status_value:[String!], $cardcode
       }
     }
   }        
-}
-`
+}`
+
 const paid = ['Paid', 'Closed']
 const PaidContainer = (props) => {
   const initialFilter = {
@@ -46,7 +53,7 @@ const PaidContainer = (props) => {
     cardcode: cardcode,
     trip_status_value: paid
   }
-  console.log('variables', variables)
+
   const { loading, error, data } = useQuery(
     PAID_QUERY,
     {
@@ -55,34 +62,31 @@ const PaidContainer = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
+
   console.log('PaidContainer error', error)
-  var trips = []
-  var partnerData = []
-  var trips_aggregate = 0
+  let _data = {}
   if (!loading) {
-    const { partner } = data
-    partnerData = partner[0] ? partner[0] : { name: 'ID does not exist' }
-    trips = data.partner[0] && data.partner[0].trips
-    trips_aggregate = data && data.partnerData && data.partnerData.trips_aggregate
+    _data = data
   }
 
-  const record_count = partnerData && partnerData.trips_aggregate && partnerData.trips_aggregate.aggregate && partnerData.trips_aggregate.aggregate.count
-  console.log('record_count', record_count)
-  const total_page = Math.ceil(record_count / filter.limit)
+  const trips = get(_data, 'partner[0].trips', [])
+  const record_count = get(_data, 'partner[0].trips_aggregate.aggregate.count', 0)
 
   const onPageChange = (value) => {
     setFilter({ ...filter, offset: value })
   }
+
   return (
     <PaidStatus
       cardcode={cardcode}
       trips={trips}
       loading={loading}
       record_count={record_count}
-      total_page={total_page}
       filter={filter}
       onPageChange={onPageChange}
+      partnerPage
     />
   )
 }
+
 export default PaidContainer

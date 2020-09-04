@@ -82,7 +82,6 @@ const walletTopup = (props) => {
   }, [loading])
 
   const onSubmit = () => {
-    console.log('onSubmit Clicked!!')
     partner_manual_topup({
       variables: {
         input: {
@@ -124,7 +123,6 @@ const walletTopup = (props) => {
       setTotal(_.sumBy(rows, 'balance'))
     }
   }
-  console.log('selectedTopUps', selectedTopUps)
 
   const rowSelection = {
     selectedRowKeys,
@@ -203,7 +201,7 @@ const walletTopup = (props) => {
            Amount: {total}
           </Col>
           <Col flex='180'>
-            <Button>Cancel</Button>
+            <Button onClick={onHide}>Cancel</Button>
             <Button type='primary' onClick={onSubmit}>Top Up</Button>
           </Col>
         </Row>
@@ -217,6 +215,7 @@ const walletTopup = (props) => {
         size='middle'
         scroll={{ x: 800, y: 400 }}
         pagination={false}
+        loading={loading}
       />
     </Modal>
   )
