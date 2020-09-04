@@ -20,8 +20,8 @@ query partner_invoiced($id: Int!){
 }`
 
 const MANUAL_TOPUP_MUTATION = gql`
-mutation partner_manual_topup($input: PartnerTopUpInput!  ) {
-  partner_manual_topup(input: $input) {
+mutation partner_manual_topup($created_by: String!, $topups: [PartnerTopUp] ) {
+  partner_manual_topup(created_by: $created_by, topups: $topups) {
     description
     status
   }
@@ -30,10 +30,10 @@ mutation partner_manual_topup($input: PartnerTopUpInput!  ) {
 // const vars = {
 //   input: {
 //     created_by: 'jay@fr8.in',
-//     topups: [
-//       { docnum: 20027417, is_with_deduction: true },
-//       { docnum: 20029096, is_with_deduction: false }
-//     ]
+// topups: [
+//   { docnum: 20027417, is_with_deduction: true },
+//   { docnum: 20029096, is_with_deduction: false }
+// ]
 //   }
 // }
 
@@ -84,15 +84,13 @@ const walletTopup = (props) => {
   const onSubmit = () => {
     partner_manual_topup({
       variables: {
-        input: {
-          created_by: 'jay@fr8.in',
-          topups: selectedTopUps.map(data => {
-            return {
-              docnum: data.docnum,
-              is_with_deduction: data.is_with_deduction === '2%'
-            }
-          })
-        }
+        created_by: 'jay@fr8.in',
+        topups: selectedTopUps.map(data => {
+          return {
+            docnum: data.docnum,
+            is_with_deduction: data.is_with_deduction === '2%'
+          }
+        })
       }
     })
   }
