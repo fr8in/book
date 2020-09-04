@@ -201,7 +201,7 @@ const PartnerDetailContainer = (props) => {
             </Row>
           </Card>
         </Col>
-        {visible.topUp && <WalletTopUp visible={visible.topUp} onHide={onHide} />}
+        {visible.topUp && <WalletTopUp visible={visible.topUp} onHide={onHide} partner_id={partner_info.id} />}
         {visible.reportMail && <ReportEmail visible={visible.reportMail} onHide={onHide} />}
         {visible.statement && <WalletStatement visible={visible.statement} onHide={onHide} cardcode={partner_info.cardcode} />}
       </Row>)
