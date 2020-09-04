@@ -49,8 +49,12 @@ const Progress = (props) => {
           title='Trucks, Partners, Orders Report'
           visible={visible.report}
           onCancel={onHide}
+          footer={null}
         >
-          <p>Trucks, Partners, Orders Report will come</p>
+          <div className='truckStatusReport'>
+            <iframe width='100%'
+              height='100%' src="https://app.powerbi.com/view?r=eyJrIjoiOTI5ZjhmMjktYTJlMC00ZDRmLTlmZDYtNjY0N2U4OTc5YTEyIiwidCI6IjE5ZWE5NTViLTE1MzYtNGM3Ni04NDIwLTUxZmJjNGM5YzM5NyIsImMiOjEwfQ==" ></iframe>
+          </div>
         </Modal>}
     </>
   )

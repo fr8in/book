@@ -216,7 +216,7 @@ const CustomerDetailContainer = (props) => {
                 <CustomerUser visible={visible.addUser} onHide={onHide} customer={customer_info.id} />
               )}
               {visible.addBranch && (
-                <CustomerBranch visible={visible.addBranch} onHide={onHide} customerbranch={customer_info.id} />
+                <CustomerBranch visible={visible.addBranch} onHide={onHide} customerbranches={customer_info.id} />
               )}
               {visible.transfer && (
                 <Transfer visible={visible.transfer} onHide={onHide} />
