@@ -27,16 +27,6 @@ mutation partner_manual_topup($created_by: String!, $topups: [PartnerTopUp] ) {
   }
 }`
 
-// const vars = {
-//   input: {
-//     created_by: 'jay@fr8.in',
-// topups: [
-//   { docnum: 20027417, is_with_deduction: true },
-//   { docnum: 20029096, is_with_deduction: false }
-// ]
-//   }
-// }
-
 const walletTopup = (props) => {
   const { visible, onHide, partner_id } = props
 
