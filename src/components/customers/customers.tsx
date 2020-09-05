@@ -214,7 +214,7 @@ const CustomerKyc = (props) => {
       title: 'Adv %',
       width: '10%',
       render: (text, record) => {
-        const advancePercentage = get(record, 'customer.advance_percentage.name', '-')
+        const advancePercentage = get(record, 'customer.customer_advance_percentage.name', '-')
         const advancePercentageId = get(record, 'customer.advance_percentage.id', null)
         return (
           <CustomerAdvancePercentage
