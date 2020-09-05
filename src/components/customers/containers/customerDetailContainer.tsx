@@ -175,7 +175,7 @@ const CustomerDetailContainer = (props) => {
                       tab={<TitleWithCount name='Incoming' value={0} />}
                       key='5'
                     >
-                      <IncomingPayments cardcode={cardcode} id={customer_info.id}/>
+                      <IncomingPayments cardcode={cardcode} id={customer_info.id} />
                     </TabPane>
                     <TabPane tab='Users' key='6'>
                       <Row justify='end' className='m5'>
@@ -197,7 +197,7 @@ const CustomerDetailContainer = (props) => {
                       <Branch cardcode={cardcode} />
                     </TabPane>
                     <TabPane tab='FR8 Branch' key='8'>
-                      <Fr8Branch cardcode={cardcode} id={customer_info.id}/>
+                      <Fr8Branch cardcode={cardcode} id={customer_info.id} />
                     </TabPane>
                     <TabPane tab='Details' key='9'>
                       <Row className='p10'>
@@ -216,7 +216,7 @@ const CustomerDetailContainer = (props) => {
                 <CustomerUser visible={visible.addUser} onHide={onHide} customer={customer_info.id} />
               )}
               {visible.addBranch && (
-                <CustomerBranch visible={visible.addBranch} onHide={onHide} customerbranch={customer_info.id} />
+                <CustomerBranch visible={visible.addBranch} onHide={onHide} customerbranches={customer_info.id} />
               )}
               {visible.transfer && (
                 <Transfer visible={visible.transfer} onHide={onHide} />
@@ -225,7 +225,7 @@ const CustomerDetailContainer = (props) => {
                 <Rebate visible={visible.rebate} onHide={onHide} />
               )}
               {visible.wallet && (
-                <WalletTopup visible={visible.wallet} onHide={onHide} />
+                <WalletTopup visible={visible.wallet} onHide={onHide} walletcode={customer_info.walletcode} />
               )}
               {visible.showModal && (
                 <AccStmtMail visible={visible.showModal} onHide={onHide} />

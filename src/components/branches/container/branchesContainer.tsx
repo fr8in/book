@@ -11,7 +11,6 @@ const TabPane = Tabs.TabPane
 const BranchesContainer = () => {
   const initial = { showModal: false }
   const { visible, onShow, onHide } = useShowHide(initial)
-  
 
   return (
     <Card

@@ -14,7 +14,7 @@ const CUSTOMER_BRANCH_QUERY = gql`
 `
 const INSERT_CUSTOMER_BRANCH_MUTATION = gql`
 mutation CustomerBranchInsert($address: String,$id:Int ,$branch_name: String, $mobile: String, $name: String, $pincode: Int, $state: Int,$city_id:Int) {
-  insert_customer_branch(objects: {customer_id:$id,address: $address, branch_name: $branchname, mobile: $mobile, name: $name, pincode: $pincode, city_id: $city_id, state_id: $state}) {
+  insert_customer_branch(objects: {customer_id:$id,address: $address, branch_name: $branch_name, mobile: $mobile, name: $name, pincode: $pincode, city_id: $city_id, state_id: $state}) {
     returning {
       customer_id
       city{
@@ -45,10 +45,10 @@ mutation CustomerBranchInsert($address: String, $id: Int, $branch_name: String, 
 
 const CreateCustomerBranch = (props) => {
   const { visible, onHide, customerbranches } = props
-
+console.log('customerbranches',customerbranches)
   const initial = { city_id: null }
   const [obj, setObj] = useState(initial)
-
+  
   const { loading, error, data } = useQuery(
     CUSTOMER_BRANCH_QUERY,
     {
@@ -103,15 +103,14 @@ const CreateCustomerBranch = (props) => {
         name: form.name,
         address: form.address,
         pincode: form.pincode,
+        state:form.state,
         branch_name: form.branch_name
       }
     })
   }
 
-  const branch_name = customerbranches.map(element => element.branch_name)
-
   const handleChange = (value) => {
-    console.log(`selected ${value}`)
+      console.log(`selected ${value}`) 
   }
 
   return (
@@ -126,7 +125,7 @@ const CreateCustomerBranch = (props) => {
         <Row>
           <Col xs={24}>
             <Form layout='vertical' onFinish={onAddBranch}>
-              <Form.Item name='branch_name' initialValue={branch_name}>
+              <Form.Item name='branch_name' >
                 <Input placeholder='Branch Name' />
               </Form.Item>
               <Form.Item name='name'>
@@ -145,7 +144,7 @@ const CreateCustomerBranch = (props) => {
                 <Col xs={12}>
                   <Form.Item
                     label='State'
-                    name='State'
+                    name='state'
                     rules={[{ required: true, message: 'State is required field' }]}
                   >
                     <Select defaultValue='' onChange={handleChange} options={StateList} />

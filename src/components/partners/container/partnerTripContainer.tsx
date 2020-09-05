@@ -11,6 +11,12 @@ subscription partners($cardcode: String, $trip_status_value: [String!]) {
       source {
         name
       }
+      truck{
+        truck_no
+        truck_type{
+          name
+        }
+      }
       destination {
         name
       }
@@ -42,7 +48,7 @@ const PartnerTripContainer = (props) => {
   const trips = get(_data, 'partner[0].trips', [])
 
   return (
-    <TripsByStages trips={trips} loading={loading} />
+    <TripsByStages trips={trips} loading={loading} partnerPage />
   )
 }
 

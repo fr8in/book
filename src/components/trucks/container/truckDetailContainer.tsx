@@ -209,7 +209,7 @@ const TruckDetailContainer = (props) => {
                 </Row>
               </TabPane>
               <TabPane tab='Trips' key='2'>
-                <TripDetail trip trips={truck_info.trips} loading={loading} />
+                <TripDetail truckPage trips={truck_info.trips} loading={loading} />
               </TabPane>
               <TabPane tab='Timeline' key='3'>
                 <Row>

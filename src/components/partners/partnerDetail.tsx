@@ -2,7 +2,6 @@ import { Row, Col, Space } from 'antd'
 import { EditTwoTone } from '@ant-design/icons'
 import LabelWithData from '../common/labelWithData'
 import AdvancePercentage from './partnerAdvancePercentage'
-import detailInfo from '../../../mock/partner/partnerDetailInfo'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import EditAddress from './partnerAddress'
 import EditBank from './partnerBank'
@@ -22,7 +21,6 @@ const PartnerDetail = (props) => {
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
-  console.log('partnerDetail', partnerDetail)
   const address = partnerDetail && partnerDetail.address
   const partner_address = address === null || _.isEmpty(address) ? null
     : `${address.no || null},
@@ -66,7 +64,7 @@ const PartnerDetail = (props) => {
         />
         <LabelWithData
           label='State'
-          data={<span>{detailInfo.state}</span>}
+          data={<span>{partnerDetail.city && partnerDetail.city.state && partnerDetail.city.state.name }</span>}
           labelSpan={10}
           dataSpan={14}
         />

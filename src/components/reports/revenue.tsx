@@ -61,8 +61,13 @@ const Revenue = (props) => {
           title='Revenue Report'
           visible={visible.report}
           onCancel={onHide}
+          width={550}
+          footer={null}
         >
-          <p>Report will come</p>
+          <div className='truckStatusReport'>
+            <iframe width="100%" height="100%"
+              src="https://app.powerbi.com/view?r=eyJrIjoiZTE4NjQ0MmMtMDE4NC00MzNiLWJlYTktMzg3MGY3ZjIzZTM2IiwidCI6IjE5ZWE5NTViLTE1MzYtNGM3Ni04NDIwLTUxZmJjNGM5YzM5NyIsImMiOjEwfQ=="  ></iframe>
+          </div>
         </Modal>}
     </>
   )
