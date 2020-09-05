@@ -69,10 +69,10 @@ const Trips = (props) => {
     },
     {
       title: 'Driver No',
-      dataIndex: 'driver',
       render: (text, record) => {
+        const mobile = get(record, 'truck.driver.mobile', null)
         return (
-          text ? <span onClick={() => callNow(text)} className='link'>{text}</span> : null
+          mobile ? <span onClick={() => callNow(mobile)} className='link'>{mobile}</span> : null
         )
       },
       width: props.intransit ? '8%' : '9%'

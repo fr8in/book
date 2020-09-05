@@ -46,6 +46,9 @@ subscription dashboard_trips($regions: [Int!], $branches: [Int!], $cities: [Int!
               truck_type {
                 name
               }
+              driver {
+                mobile
+              }
             }
           }
         }
