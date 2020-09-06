@@ -34,10 +34,10 @@ const PartnerUserNumber = (props) => {
 
   return (
     loading ? null : (
-    <InlineEdit
-      text={mobile}
-      onSetText={onSubmit}
-    />)
+      <InlineEdit
+        text={mobile}
+        onSetText={onSubmit}
+      />)
   )
 }
 

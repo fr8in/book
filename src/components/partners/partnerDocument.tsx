@@ -74,7 +74,7 @@ const PartnerDocument = (props) => {
                   {pan_files && pan_files.length > 0 ? (
                     <Space>
                       <ViewFile
-                      size='small'
+                        size='small'
                         id={partnerInfo.id}
                         type='partner'
                         file_type='PAN'
@@ -82,7 +82,7 @@ const PartnerDocument = (props) => {
                         file_list={pan_files}
                       />
                       <DeleteFile
-                       size='small'
+                        size='small'
                         id={partnerInfo.id}
                         type='partner'
                         file_type='PAN'
@@ -90,15 +90,15 @@ const PartnerDocument = (props) => {
                       />
                     </Space>
                   ) : (
-                      <FileUploadOnly
+                    <FileUploadOnly
                       size='small'
-                        id={partnerInfo.id}
-                        type='partner'
-                        folder='approvals/'
-                        file_type='PAN'
-                        file_list={pan_files}
-                      />
-                    )}
+                      id={partnerInfo.id}
+                      type='partner'
+                      folder='approvals/'
+                      file_type='PAN'
+                      file_list={pan_files}
+                    />
+                  )}
                 </span>
               }
               labelSpan={8}
@@ -107,12 +107,12 @@ const PartnerDocument = (props) => {
             />
             <LabelWithData
               label='Cheque'
-            data={
+              data={
                 <span>
                   {cheaque_files && cheaque_files.length > 0 ? (
                     <Space>
                       <ViewFile
-                       size='small'
+                        size='small'
                         id={partnerInfo.id}
                         type='partner'
                         file_type='CL'
@@ -120,7 +120,7 @@ const PartnerDocument = (props) => {
                         file_list={cheaque_files}
                       />
                       <DeleteFile
-                       size='small'
+                        size='small'
                         id={partnerInfo.id}
                         type='partner'
                         file_type='CL'
@@ -128,15 +128,15 @@ const PartnerDocument = (props) => {
                       />
                     </Space>
                   ) : (
-                      <FileUploadOnly
+                    <FileUploadOnly
                       size='small'
-                        id={partnerInfo.id}
-                        type='partner'
-                        folder='approvals/'
-                        file_type='CL'
-                        file_list={cheaque_files}
-                      />
-                    )}
+                      id={partnerInfo.id}
+                      type='partner'
+                      folder='approvals/'
+                      file_type='CL'
+                      file_list={cheaque_files}
+                    />
+                  )}
                 </span>
               }
               labelSpan={8}
@@ -150,7 +150,7 @@ const PartnerDocument = (props) => {
                   {tds_files && tds_files.length > 0 ? (
                     <Space>
                       <ViewFile
-                       size='small'
+                        size='small'
                         id={partnerInfo.id}
                         type='partner'
                         file_type='TDS'
@@ -158,7 +158,7 @@ const PartnerDocument = (props) => {
                         file_list={tds_files}
                       />
                       <DeleteFile
-                       size='small'
+                        size='small'
                         id={partnerInfo.id}
                         type='partner'
                         file_type='TDS'
@@ -166,15 +166,15 @@ const PartnerDocument = (props) => {
                       />
                     </Space>
                   ) : (
-                      <FileUploadOnly
+                    <FileUploadOnly
                       size='small'
-                        id={partnerInfo.id}
-                        type='partner'
-                        folder='approvals/'
-                        file_type='TDS'
-                        file_list={tds_files}
-                      />
-                    )}
+                      id={partnerInfo.id}
+                      type='partner'
+                      folder='approvals/'
+                      file_type='TDS'
+                      file_list={tds_files}
+                    />
+                  )}
                 </span>
               }
               labelSpan={8}
@@ -188,7 +188,7 @@ const PartnerDocument = (props) => {
                   {agreement_files && agreement_files.length > 0 ? (
                     <Space>
                       <ViewFile
-                       size='small'
+                        size='small'
                         id={partnerInfo.id}
                         type='partner'
                         file_type='Agreement'
@@ -196,7 +196,7 @@ const PartnerDocument = (props) => {
                         file_list={agreement_files}
                       />
                       <DeleteFile
-                       size='small'
+                        size='small'
                         id={partnerInfo.id}
                         type='partner'
                         file_type='Agreement'
@@ -204,15 +204,15 @@ const PartnerDocument = (props) => {
                       />
                     </Space>
                   ) : (
-                      <FileUploadOnly
+                    <FileUploadOnly
                       size='small'
-                        id={partnerInfo.id}
-                        type='partner'
-                        folder='approvals/'
-                        file_type='Agreement'
-                        file_list={agreement_files}
-                      />
-                    )}
+                      id={partnerInfo.id}
+                      type='partner'
+                      folder='approvals/'
+                      file_type='Agreement'
+                      file_list={agreement_files}
+                    />
+                  )}
                 </span>
               }
               labelSpan={8}
@@ -226,7 +226,7 @@ const PartnerDocument = (props) => {
                   {cs_files && cs_files.length > 0 ? (
                     <Space>
                       <ViewFile
-                       size='small'
+                        size='small'
                         id={partnerInfo.id}
                         type='partner'
                         file_type='CS'
@@ -234,7 +234,7 @@ const PartnerDocument = (props) => {
                         file_list={cs_files}
                       />
                       <DeleteFile
-                       size='small'
+                        size='small'
                         id={partnerInfo.id}
                         type='partner'
                         file_type='CS'
@@ -242,15 +242,15 @@ const PartnerDocument = (props) => {
                       />
                     </Space>
                   ) : (
-                      <FileUploadOnly
+                    <FileUploadOnly
                       size='small'
-                        id={partnerInfo.id}
-                        type='partner'
-                        folder='approvals/'
-                        file_type='CS'
-                        file_list={cs_files}
-                      />
-                    )}
+                      id={partnerInfo.id}
+                      type='partner'
+                      folder='approvals/'
+                      file_type='CS'
+                      file_list={cs_files}
+                    />
+                  )}
                 </span>
               }
               labelSpan={8}
@@ -283,11 +283,9 @@ const PartnerDocument = (props) => {
                       <Button
                         type='primary'
                         shape='circle'
-                        size='middle'
                         icon={<EyeTwoTone />}
                       />
                       <Button
-                        size='middle'
                         shape='circle'
                         icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
                       />
@@ -307,11 +305,9 @@ const PartnerDocument = (props) => {
                       <Button
                         type='primary'
                         shape='circle'
-                        size='middle'
                         icon={<EyeTwoTone />}
                       />
                       <Button
-                        size='middle'
                         shape='circle'
                         icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
                       />
@@ -328,11 +324,9 @@ const PartnerDocument = (props) => {
                       <Button
                         type='primary'
                         shape='circle'
-                        size='middle'
                         icon={<EyeTwoTone />}
                       />
                       <Button
-                        size='middle'
                         shape='circle'
                         icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
                       />

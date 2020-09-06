@@ -1,6 +1,6 @@
 import { Table, Button, Switch, message } from 'antd'
 import Link from 'next/link'
-import {useState} from 'react'
+import { useState } from 'react'
 import FastagSuspend from '../cards/fastagSuspend'
 import FastagReversal from './fastagReversal'
 import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
@@ -10,7 +10,7 @@ import {
   StopOutlined,
   SearchOutlined
 } from '@ant-design/icons'
-import { gql,useQuery,useMutation } from '@apollo/client'
+import { gql, useQuery, useMutation } from '@apollo/client'
 import get from 'lodash/get'
 
 const FASTAG_QUERY = gql`
@@ -46,8 +46,7 @@ mutation token{
 `
 
 const FasTags = (props) => {
-
-  const {partner_id} = props
+  const { partner_id } = props
 
   const initial = {
     suspendVisible: false,
@@ -56,76 +55,73 @@ const FasTags = (props) => {
     reversalData: []
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
- const [token , setToken] = useState('')
-  console.log('partner_id',partner_id)
-    const { loading, error, data } = useQuery(
-      FASTAG_QUERY, {
-        variables:{
-          partner_id:partner_id
-        },
+  const [token, setToken] = useState('')
+  console.log('partner_id', partner_id)
+  const { loading, error, data } = useQuery(
+    FASTAG_QUERY, {
+      variables: {
+        partner_id: partner_id
+      },
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     })
-    console.log('FasTag error', error)
-    console.log('FasTag data', data)
-  
-   
+  console.log('FasTag error', error)
+  console.log('FasTag data', data)
 
-    const [updateFastagStatus] = useMutation(
-      UPDATE_FASTAG_STATUS_MUTATION,
-      {
-        onError (error) { message.error(error.toString()) },
-        onCompleted () { message.success('Updated!!') }
-      }
-    )
-
-    const [token_id] = useMutation(
-      TOKEN_MUTATION,
-      {
-        onError (error) { message.error(error.toString()) },
-        onCompleted (data) {
-          const value = get(data, 'token', null)
-          // message.success('Updated!!')
-          setToken(value)
-        }
-      }
-    )
-console.log('token',token)
-    const onChange = (value,record) => {
-      console.log('record', record,value)
-      updateFastagStatus({
-        variables: {
-          truckId: record.truck_id,
-          status: value == true ? 1 : 0,
-          modifiedBy: "pravalika.k@fr8.in"
-        }
-      })
-     
+  const [updateFastagStatus] = useMutation(
+    UPDATE_FASTAG_STATUS_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
-    
-const showModal = (record) =>{
-  token_id()
-  handleShow('reversalVisible', null, 'reversalData', record)
-} 
+  )
 
-    var _data = {}
-    if (!loading) {
-      _data = data
+  const [token_id] = useMutation(
+    TOKEN_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted (data) {
+        const value = get(data, 'token', null)
+        // message.success('Updated!!')
+        setToken(value)
+      }
     }
-    const fastags = get(_data, 'partner[0].fastags', [])
-    console.log('fastags',fastags)
+  )
+  console.log('token', token)
+  const onChange = (value, record) => {
+    console.log('record', record, value)
+    updateFastagStatus({
+      variables: {
+        truckId: record.truck_id,
+        status: value == true ? 1 : 0,
+        modifiedBy: 'pravalika.k@fr8.in'
+      }
+    })
+  }
+
+  const showModal = (record) => {
+    token_id()
+    handleShow('reversalVisible', null, 'reversalData', record)
+  }
+
+  var _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const fastags = get(_data, 'partner[0].fastags', [])
+  console.log('fastags', fastags)
 
   const CardsFastag = [
     {
       title: 'Tag Id',
-      dataIndex:'tag_id',
+      dataIndex: 'tag_id',
       key: 'tag_id',
-      width: '16%',
-     
+      width: '16%'
+
     },
     {
       title: 'Truck No',
-      dataIndex:'truck_no',
+      dataIndex: 'truck_no',
       key: 'truck_no',
       width: '8%',
       render: (text, record) => {
@@ -136,7 +132,7 @@ const showModal = (record) =>{
         )
       }
     },
-  
+
     {
       title: 'Tag Bal',
       dataIndex: 'balance',
@@ -153,11 +149,12 @@ const showModal = (record) =>{
       title: 'C.Status',
       dataIndex: 'cStatus',
       width: '7%',
-      render: (text,record) => 
-      <Switch size='small' 
-      defaultChecked 
-      onChange={(checked) => onChange(checked, record)} checked={text}
-       />
+      render: (text, record) =>
+        <Switch
+          size='small'
+          defaultChecked
+          onChange={(checked) => onChange(checked, record)} checked={text}
+        />
     },
     {
       title: 'Reverse',

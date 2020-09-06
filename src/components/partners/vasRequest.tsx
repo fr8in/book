@@ -82,7 +82,7 @@ const VasRequest = () => {
         columns={columnsCurrent}
         dataSource={mock}
         rowKey={record => record.id}
-        size='middle'
+        size='small'
         scroll={{ x: 1156 }}
         pagination={false}
         className='withAction'

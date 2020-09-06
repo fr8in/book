@@ -1,7 +1,7 @@
-import { Row, Col, Card, Input, Form, Button, Select,Space,message } from 'antd'
-import { gql, useMutation,useQuery } from '@apollo/client'
+import { Row, Col, Card, Input, Form, Button, Select, Space, message } from 'antd'
+import { gql, useMutation, useQuery } from '@apollo/client'
 
- const PARTNERS_SUBSCRIPTION = gql`
+const PARTNERS_SUBSCRIPTION = gql`
   query create_partner{
     employee{
       id
@@ -53,9 +53,7 @@ const INSERT_PARTNER_MUTATION = gql`
   }
 `
 
-
 const PartnerProfile = () => {
-
   const { loading, error, data } = useQuery(
     PARTNERS_SUBSCRIPTION,
     {
@@ -64,7 +62,7 @@ const PartnerProfile = () => {
     }
   )
   console.log('CreatePartnersContainer error', error)
- 
+
   const [updatePartner] = useMutation(
     INSERT_PARTNER_MUTATION,
     {
@@ -72,16 +70,16 @@ const PartnerProfile = () => {
       onCompleted () { message.success('Updated!!') }
     }
   )
- 
-  var employee = [];
-  var city = [];
-  var partner_advance_percentage = [];
+
+  var employee = []
+  var city = []
+  var partner_advance_percentage = []
   if (!loading) {
-     partner_advance_percentage = data.partner_advance_percentage
-     city = data.city
-     employee = data.employee
+    partner_advance_percentage = data.partner_advance_percentage
+    city = data.city
+    employee = data.employee
   }
- 
+
   const advancePercentageList = partner_advance_percentage.map((data) => {
     return { value: data.id, label: data.name }
   })
@@ -92,16 +90,15 @@ const PartnerProfile = () => {
     return { value: data.id, label: data.email }
   })
 
-
-  const onPartnerChange =(form) =>{
+  const onPartnerChange = (form) => {
     console.log('inside form submit', form)
-    const address={
-      no:form.no,
-      address:form.address,
-      city:form.city,
-      state:form.state,
-      pin_code:form.pin_code
-    }   
+    const address = {
+      no: form.no,
+      address: form.address,
+      city: form.city,
+      state: form.state,
+      pin_code: form.pin_code
+    }
     updatePartner({
       variables: {
         name: form.name,
@@ -119,8 +116,8 @@ const PartnerProfile = () => {
         city_id: form.city,
         onboarded_by_id: form.on_boarded_by
       }
-    })   
-   }
+    })
+  }
 
   return (
     <Form layout='vertical' onFinish={onPartnerChange}>
@@ -132,7 +129,7 @@ const PartnerProfile = () => {
               name='name'
               rules={[{ required: true, message: 'Partner Name(Should be RC name) is required field!' }]}
             >
-              <Input  placeholder='PartnerName' />
+              <Input placeholder='PartnerName' />
             </Form.Item>
           </Col>
           <Col xs={24} sm={5}>
@@ -141,7 +138,7 @@ const PartnerProfile = () => {
               name='contact_name'
               rules={[{ required: true, message: 'Contact Person is required field!' }]}
             >
-              <Input  placeholder='Contact Person' />
+              <Input placeholder='Contact Person' />
             </Form.Item>
           </Col>
           <Col xs={24} sm={5}>
@@ -150,7 +147,7 @@ const PartnerProfile = () => {
               name='mobile'
               rules={[{ required: true, message: 'Mobile Number is required field' }]}
             >
-              <Input  placeholder='Phone Number' />
+              <Input placeholder='Phone Number' />
             </Form.Item>
           </Col>
           <Col xs={24} sm={5}>
@@ -159,7 +156,7 @@ const PartnerProfile = () => {
               name='email'
               rules={[{ required: true, message: 'Email is required field' }]}
             >
-              <Input  placeholder='Email Address' />
+              <Input placeholder='Email Address' />
             </Form.Item>
           </Col>
           <Col xs={24} sm={4}>
@@ -168,7 +165,7 @@ const PartnerProfile = () => {
               name='pan_no'
               rules={[{ required: true, message: 'Pan Number is required field' }]}
             >
-              <Input  placeholder='Pan Number' />
+              <Input placeholder='Pan Number' />
             </Form.Item>
           </Col>
         </Row>
@@ -179,7 +176,7 @@ const PartnerProfile = () => {
               name='cibil'
               rules={[{ required: true, message: 'Cibil Score is required field!' }]}
             >
-              <Input  placeholder='Cibil Score ' />
+              <Input placeholder='Cibil Score ' />
             </Form.Item>
           </Col>
           <Col xs={24} sm={5}>
@@ -197,25 +194,25 @@ const PartnerProfile = () => {
               name='address'
               rules={[{ required: true, message: 'Address is required field!' }]}
             >
-              <Input  placeholder='Address' />
+              <Input placeholder='Address' />
             </Form.Item>
           </Col>
           <Col xs={24} sm={5}>
-          <Form.Item
-              label='State'
-              name='state'
-              rules={[{ required: true, message: 'State is required field!' }]}
-            >
-              <Input  placeholder='State' />
-            </Form.Item>
-            </Col>
+            <Form.Item
+            label='State'
+            name='state'
+            rules={[{ required: true, message: 'State is required field!' }]}
+          >
+            <Input placeholder='State' />
+          </Form.Item>
+          </Col>
           <Col xs={24} sm={4}>
             <Form.Item
               label='Zip Code'
               name='pin_code'
               rules={[{ required: true, message: 'Zip Code is required field' }]}
             >
-              <Input  placeholder='Zip Code' />
+              <Input placeholder='Zip Code' />
             </Form.Item>
           </Col>
         </Row>
@@ -237,7 +234,7 @@ const PartnerProfile = () => {
               name='account_no'
               rules={[{ required: true, message: 'Account No is required field!' }]}
             >
-              <Input  placeholder='Account Number' />
+              <Input placeholder='Account Number' />
             </Form.Item>
           </Col>
           <Col xs={24} sm={5}>
@@ -257,7 +254,7 @@ const PartnerProfile = () => {
               name='ifsc_code'
               rules={[{ required: true, message: 'IFSC Code is required field!' }]}
             >
-              <Input  placeholder='IFSC Code' />
+              <Input placeholder='IFSC Code' />
             </Form.Item>
           </Col>
           <Col xs={24} sm={5}>
@@ -285,7 +282,7 @@ const PartnerProfile = () => {
               rules={[{ required: true }]}
             >
               <Select>
-                <Select.Option options={advancePercentageList}   value='Advance Percentage' disabled> </Select.Option>
+                <Select.Option options={advancePercentageList} value='Advance Percentage' disabled> </Select.Option>
               </Select>
             </Form.Item>
           </Col>
@@ -296,7 +293,7 @@ const PartnerProfile = () => {
               rules={[{ required: true, message: 'City is required field!' }]}
             >
               <Select>
-                <Select.Option options={cityList}  value='City'> </Select.Option>
+                <Select.Option options={cityList} value='City'> </Select.Option>
               </Select>
             </Form.Item>
           </Col>
@@ -313,13 +310,13 @@ const PartnerProfile = () => {
           </Col>
         </Row>
       </Card>
-     
+
       <Row justify='end'>
         <Col xs={24} className='text-right'>
-        <Space>
-          <Button>Cancel</Button>
-          <Button type='primary' htmlType='submit' >Submit</Button>
-          </Space>
+          <Space>
+            <Button>Cancel</Button>
+            <Button type='primary' htmlType='submit'>Submit</Button>
+        </Space>
         </Col>
       </Row>
     </Form>

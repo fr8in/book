@@ -1,6 +1,5 @@
 import { Table, Tooltip, Badge, Button, Input } from 'antd'
-import Link from 'next/link'
-import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled, SearchOutlined , EditTwoTone} from '@ant-design/icons'
+import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled, SearchOutlined, EditTwoTone } from '@ant-design/icons'
 import CreatePo from '../trips/createPo'
 import PartnerUsers from '../partners/partnerUsers'
 import TruckComment from '../trucks/truckComment'
@@ -184,7 +183,6 @@ const WaitingForLoad = (props) => {
           po_data={object.poData}
           onHide={handleHide}
         />}
-
 
       {object.editVisible && (
         <CreateBreakdown

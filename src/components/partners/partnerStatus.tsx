@@ -35,7 +35,6 @@ mutation PartnerDnd($dnd:Boolean,$cardcode:String) {
 }
 `
 
-
 const PartnerStatus = (props) => {
   const { partnerInfo } = props
   const is_blacklisted = partnerInfo && partnerInfo.partner_status && partnerInfo.partner_status.id && partnerInfo.partner_status.id === 4
@@ -47,15 +46,15 @@ const PartnerStatus = (props) => {
   const [updateBlacklist] = useMutation(
     UPDATE_PARTNER_BLACKLIST_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
   const blacklistChange = (e) => {
     updateBlacklist({
       variables: {
         cardcode: partnerInfo.cardcode,
-        partner_status_id: e.target.checked ? 4 : 2 
+        partner_status_id: e.target.checked ? 4 : 2
       }
     })
   }
@@ -63,15 +62,15 @@ const PartnerStatus = (props) => {
   const [updateDeactivate] = useMutation(
     UPDATE_PARTNER_DE_ACTIVATE_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
   const deActivateChange = (e) => {
     updateDeactivate({
       variables: {
         cardcode: partnerInfo.cardcode,
-        partner_status_id:  e.target.checked ? 7 : 2 
+        partner_status_id: e.target.checked ? 7 : 2
       }
     })
   }
@@ -79,8 +78,8 @@ const PartnerStatus = (props) => {
   const [updateDnd] = useMutation(
     UPDATE_PARTNER_DND_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
   const dndChange = (e) => {
@@ -96,12 +95,12 @@ const PartnerStatus = (props) => {
     <Row>
       <Col xs={8}>
         <Checkbox
-          checked={is_blacklisted }
-          disabled={!admin && is_blacklisted }
+          checked={is_blacklisted}
+          disabled={!admin && is_blacklisted}
           onChange={blacklistChange}
         >
           BlackList
-          </Checkbox>
+        </Checkbox>
       </Col>
       <Col xs={9}>
         <Checkbox
@@ -110,20 +109,19 @@ const PartnerStatus = (props) => {
           onChange={deActivateChange}
         >
           De-activate
-          </Checkbox>
+        </Checkbox>
       </Col>
       <Col xs={7}>
         <Checkbox
           checked={partnerInfo.dnd}
-          disabled={is_blacklisted || is_deactivate }
+          disabled={is_blacklisted || is_deactivate}
           onChange={dndChange}
         >
           DND
-          </Checkbox>
+        </Checkbox>
       </Col>
     </Row>
   )
 }
 
 export default PartnerStatus
-

@@ -104,11 +104,9 @@ const KycApproval = (props) => {
                 <Button
                   type='primary'
                   shape='circle'
-                  size='middle'
                   icon={<EyeTwoTone />}
                 />
                 <Button
-                  size='middle'
                   shape='circle'
                   icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
                 />
@@ -123,11 +121,9 @@ const KycApproval = (props) => {
                 <Button
                   type='primary'
                   shape='circle'
-                  size='middle'
                   icon={<EyeTwoTone />}
                 />
                 <Button
-                  size='middle'
                   shape='circle'
                   icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
                 />
@@ -142,11 +138,9 @@ const KycApproval = (props) => {
                 <Button
                   type='primary'
                   shape='circle'
-                  size='middle'
                   icon={<EyeTwoTone />}
                 />
                 <Button
-                  size='middle'
                   shape='circle'
                   icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
                 />
@@ -161,11 +155,9 @@ const KycApproval = (props) => {
                 <Button
                   type='primary'
                   shape='circle'
-                  size='middle'
                   icon={<EyeTwoTone />}
                 />
                 <Button
-                  size='middle'
                   shape='circle'
                   icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
                 />
@@ -181,7 +173,7 @@ const KycApproval = (props) => {
               </Radio.Group>
             </Col>
             <Col xs={12} sm={4} className='text-right'>
-              <Button size='middle' shape='circle' icon={<UploadOutlined />} />
+              <Button shape='circle' icon={<UploadOutlined />} />
             </Col>
           </List.Item>
           <List.Item>
