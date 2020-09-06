@@ -23,7 +23,7 @@ const PendingBalance = (props) => {
         label='Cleared'
         value={partner_summary.partner_accounting && partner_summary.partner_accounting.cleared}
       />
-      {visible.onhold && <OnHoldTrips visible={visible.onhold} onHide={onHide} />}
+      {visible.onhold && <OnHoldTrips visible={visible.onhold} onHide={onHide} cardcode={partner_summary.cardcode}/>}
     </Card>
   )
 }
