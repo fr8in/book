@@ -1,9 +1,10 @@
-import { Card, Table, Button } from 'antd'
+import { Card, Table, Button, Input } from 'antd'
 import moment from 'moment'
 import IncomingPaymentData from '../../../mock/customer/incomingdata'
 import Truncate from '../common/truncate'
 
-const PaymentTraceability = () => {
+const PaymentTraceability = (props) => {
+  const { selectedRowKeys, selectOnchange } = props
   const columns = [{
     title: 'Date',
     dataIndex: 'date',
@@ -12,7 +13,7 @@ const PaymentTraceability = () => {
   },
   {
     title: 'Amount',
-    dataIndex: 'recevied',
+    dataIndex: 'amount',
     width: '15%'
   },
   {
@@ -27,8 +28,13 @@ const PaymentTraceability = () => {
   },
   {
     title: 'Book Now',
-    dataIndex: 'bookNow',
-    width: '15%'
+    width: '15%',
+    render: (text, record) => {
+      return (
+        // selectedRow && selectedRow.length > 0 && selectedRow.find(data => data.key === record.key)
+        <Input />
+      )
+    }
   },
   {
     title: 'Remarks',
@@ -46,6 +52,11 @@ const PaymentTraceability = () => {
       extra={<Button type='primary' size='small'>Wallet Top-up</Button>}
     >
       <Table
+        rowSelection={{
+          selectedRowKeys,
+          onChange: selectOnchange,
+          type: 'radio'
+        }}
         columns={columns}
         dataSource={IncomingPaymentData}
         rowKey={(record) => record.id}
