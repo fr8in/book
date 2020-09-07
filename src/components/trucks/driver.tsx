@@ -25,8 +25,18 @@ mutation driver_insert($id: Int!, $mobile: String){
   }
 }`
 
+const UPDATE_TRUCK_DRIVER_MUTATION = gql`
+mutation TruckDriver($driver_id:Int,$truck_id:Int) {
+  update_truck(_set: {driver_id: $driver_id}, where: {id: {_eq: $truck_id}}){
+    returning{
+      id
+    }
+  }
+}
+`
+
 const Driver = (props) => {
-  const { partner_id, driverChange, initialValue } = props
+  const { partner_id, driverChange, initialValue ,truck_id} = props
   if (!partner_id) return null
 
   const [searchText, setSearchText] = useState('')
@@ -59,10 +69,27 @@ const Driver = (props) => {
       onCompleted (data) {
         const value = get(data, 'insert_driver.returning', [])
         setSearchText('')
-        driverChange(value[0].id)
+       truck_id ? onDriverUpdate(value[0].id) : driverChange(value[0].id)
       }
     }
   )
+
+  const [updateTruckDriver] = useMutation(
+    UPDATE_TRUCK_DRIVER_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Saved!!') }
+    }
+  )
+
+  const onDriverUpdate = id => {
+    updateTruckDriver({
+      variables: {
+        truck_id: truck_id,
+        driver_id: id
+      }
+    })
+  }
 
   const onDriverChange = (value, driver) => {
     const isNew = driver_data && driver_data.filter(_driver => _driver.mobile.search(value) !== -1)
@@ -75,7 +102,7 @@ const Driver = (props) => {
         }
       })
     } else {
-      driverChange(driver.key)
+      truck_id ? onDriverUpdate(driver.key) :   driverChange(driver.key)
     }
   }
 
