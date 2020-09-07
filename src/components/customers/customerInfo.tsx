@@ -14,7 +14,7 @@ const CustomerInfo = (props) => {
 
   const modelInitial = { mamulVisible: false }
   const { visible, onHide, onShow } = useShowHide(modelInitial)
-  const system_mamul = get(customer_info, 'customer_mamul_summary[0].system_mamul_avg', 0)
+  const system_mamul = get(customer_info, 'system_mamul', 0)
   return (
     <>
       <Row gutter={8}>

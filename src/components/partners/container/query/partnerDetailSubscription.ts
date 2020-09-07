@@ -94,5 +94,13 @@ subscription partners($cardcode: String, $partner_id: bigint, $ongoing: [String!
       id
       name
     }
+    city {
+      name
+        branch {
+          region {
+            name
+          }
+        }
+      }
   }
 }`
