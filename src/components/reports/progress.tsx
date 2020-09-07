@@ -52,8 +52,11 @@ const Progress = (props) => {
           footer={null}
         >
           <div className='truckStatusReport'>
-            <iframe width='100%'
-              height='100%' src="https://app.powerbi.com/view?r=eyJrIjoiOTI5ZjhmMjktYTJlMC00ZDRmLTlmZDYtNjY0N2U4OTc5YTEyIiwidCI6IjE5ZWE5NTViLTE1MzYtNGM3Ni04NDIwLTUxZmJjNGM5YzM5NyIsImMiOjEwfQ==" ></iframe>
+            <iframe
+              width='100%'
+              height='100%'
+              src='https://app.powerbi.com/view?r=eyJrIjoiOTI5ZjhmMjktYTJlMC00ZDRmLTlmZDYtNjY0N2U4OTc5YTEyIiwidCI6IjE5ZWE5NTViLTE1MzYtNGM3Ni04NDIwLTUxZmJjNGM5YzM5NyIsImMiOjEwfQ=='
+            />
           </div>
         </Modal>}
     </>

@@ -27,22 +27,20 @@ subscription partner_fastag_tag {
 }
 `
 const FasTags = () => {
- 
   const { loading, error, data } = useSubscription(
     FASTAG_SUBSCRIPTION
   )
   console.log('FastagContainer Error', error)
   console.log('FastagContainer Data', data)
- 
+
   var fastag = []
   if (!loading) {
-    fastag = data.fastag_tag      
+    fastag = data.fastag_tag
   }
-  
- console.log('fastag_tag',fastag)
+
+  console.log('fastag_tag', fastag)
   return (
-    <FasTag fastag={fastag}/>
+    <FasTag fastag={fastag} />
   )
 }
 export default FasTags
-

@@ -50,7 +50,7 @@ const BranchCreation = (props) => {
           <Row gutter={10}>
             <Col xs={24} sm={12}>
               <Form.Item>
-                <Select size='middle' placeholder='Region' options={regionList} />
+                <Select placeholder='Region' options={regionList} />
               </Form.Item>
             </Col>
             <Col xs={24} sm={12}>
@@ -68,7 +68,6 @@ const BranchCreation = (props) => {
             <Col xs={24} sm={12}>
               <Form.Item>
                 <Select
-                  size='middle'
                   placeholder='Customer Type ....'
                   options={cusType}
                 />
@@ -90,12 +89,12 @@ const BranchCreation = (props) => {
           <Row gutter={10}>
             <Col xs={24} sm={8}>
               <Form.Item>
-                <Select size='middle' placeholder='Select City' options={data} />
+                <Select placeholder='Select City' options={data} />
               </Form.Item>
             </Col>
             <Col xs={24} sm={8}>
               <Form.Item>
-                <Select size='middle' placeholder='Select State' options={data} />
+                <Select placeholder='Select State' options={data} />
               </Form.Item>
             </Col>
             <Col xs={24} sm={8}>
@@ -107,13 +106,12 @@ const BranchCreation = (props) => {
           <Row gutter={10}>
             <Col xs={24} sm={12}>
               <Form.Item>
-                <Select size='middle' placeholder='OnBoarded By' options={data} />
+                <Select placeholder='OnBoarded By' options={data} />
               </Form.Item>
             </Col>
             <Col xs={24} sm={12}>
               <Form.Item>
                 <Select
-                  size='middle'
                   placeholder='Select Payment Manager'
                   options={data}
                 />

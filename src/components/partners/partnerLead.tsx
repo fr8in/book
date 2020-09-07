@@ -38,10 +38,10 @@ query partner_lead(
     partner_users{
       mobile
     }
-    #city{
-    #  id
-  #    name
-  #  }
+    city{
+      id
+      name
+    }
     channel{
       id
       name

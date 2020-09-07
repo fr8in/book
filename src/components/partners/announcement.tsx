@@ -89,7 +89,7 @@ const Announcement = () => {
       columns={columnsCurrent}
       dataSource={announcement}
       rowKey={record => record.id}
-      size='middle'
+      size='small'
       scroll={{ x: 1156 }}
       pagination={false}
       loading={loading}

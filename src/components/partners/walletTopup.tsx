@@ -200,7 +200,7 @@ const walletTopup = (props) => {
         columns={walletColumns}
         dataSource={invocedTrips}
         rowKey={record => record.docnum}
-        size='middle'
+        size='small'
         scroll={{ x: 800, y: 400 }}
         pagination={false}
         loading={loading}

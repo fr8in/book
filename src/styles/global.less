@@ -357,6 +357,15 @@ a, .link {
   margin-bottom: 2px;
 }
 
+.truckStatusReport {
+  overflow: scroll;
+  min-height: 320px;
+  > iframe {
+    height: 320px;
+    border: 1px solid @border-light;
+  }
+}
+
 @media only screen and (max-width: 767px) {
   .stats {
     margin-bottom: 10px;

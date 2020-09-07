@@ -223,11 +223,10 @@ const TruckVerification = (props) => {
         columns={columnsCurrent}
         dataSource={truck}
         rowKey={(record) => record.id}
-        size='middle'
+        size='small'
         scroll={{ x: 1150 }}
         pagination={false}
         className='withAction'
-
       />
       {!loading && record_count
         ? (

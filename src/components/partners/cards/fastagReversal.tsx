@@ -1,6 +1,6 @@
-import { Modal, Form, Input,message,Row,Col,Button,Space } from 'antd'
+import { Modal, Form, Input, message, Row, Col, Button, Space } from 'antd'
 import React from 'react'
-import { gql,useQuery,useMutation } from '@apollo/client'
+import { gql, useMutation } from '@apollo/client'
 
 const UPDATE_FASTAG_REVERSE_MUTATION = gql`
 mutation tag_reversal(
@@ -25,9 +25,7 @@ mutation tag_reversal(
 }
 `
 const FastagReversal = (props) => {
-  const { visible, onHide, fastag,token } = props
-
-  
+  const { visible, onHide, fastag, token } = props
 
   const [reverse_fastag] = useMutation(
     UPDATE_FASTAG_REVERSE_MUTATION,
@@ -37,13 +35,13 @@ const FastagReversal = (props) => {
     }
   )
   const onSubmit = (form) => {
-   console.log('form',form)
+    console.log('form', form)
     reverse_fastag({
       variables: {
-        truckId:fastag.truck_id,
-        partnerId:  fastag.partner_id,
+        truckId: fastag.truck_id,
+        partnerId: fastag.partner_id,
         tagId: fastag.tag_id,
-        modifiedBy: "pravalika.k@fr8.in",
+        modifiedBy: 'pravalika.k@fr8.in',
         reversalAmount: form.reversal_amount,
         token: token
       }
@@ -68,13 +66,13 @@ const FastagReversal = (props) => {
           <p>Tag balance Amount:</p>
         </Form.Item>
         <Row justify='end'>
-        <Col xs={24} className='text-right'>
-        <Space>
-          <Button>Cancel</Button>
-          <Button type='primary'htmlType='submit' >Ok</Button>
-          </Space>
-        </Col>
-      </Row>
+          <Col xs={24} className='text-right'>
+            <Space>
+              <Button>Cancel</Button>
+              <Button type='primary' htmlType='submit'>Ok</Button>
+            </Space>
+          </Col>
+        </Row>
       </Form>
 
     </Modal>

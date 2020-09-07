@@ -1,9 +1,7 @@
-import { Row, Col, Switch,message } from 'antd'
+import { Row, Col, Switch, message } from 'antd'
 import LabelWithData from '../../common/labelWithData'
-import fuelDetail from '../../../../mock/card/fuelCard'
-import { gql,useQuery,useMutation } from '@apollo/client'
+import { gql, useQuery, useMutation } from '@apollo/client'
 import get from 'lodash/get'
-
 
 const FUEL_CARD_QUERY = gql`
 query all($partner_id: Int!) {
@@ -26,16 +24,16 @@ mutation update_fuel_card_status($number:String!,$status:Boolean!,$provider:Stri
 }
 `
 const PartnerFuelDetail = (props) => {
-const {partner_id} = props
-console.log('partner_id',partner_id)
+  const { partner_id } = props
+  console.log('partner_id', partner_id)
   const { loading, error, data } = useQuery(
     FUEL_CARD_QUERY, {
-      variables:{
-        partner_id:partner_id
+      variables: {
+        partner_id: partner_id
       },
-    fetchPolicy: 'cache-and-network',
-    notifyOnNetworkStatusChange: true
-  })
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    })
   console.log('FuelCard error', error)
   console.log('FuelCard data', data)
 
@@ -50,24 +48,23 @@ console.log('partner_id',partner_id)
     updateFuelCardStatus({
       variables: {
         number: card_number,
-        provider: "RELIANCE",
+        provider: 'RELIANCE',
         status: checked,
-        modifiedBy:"pravalika.k@fr8.in"
+        modifiedBy: 'pravalika.k@fr8.in'
       }
     })
   }
-  
 
-  var _data = {}
+  let _data = {}
   if (!loading) {
     _data = data
   }
   const partner = get(_data, 'partner', [])
   const partner_info = partner[0] ? partner[0] : { name: 'ID does not exist' }
 
-  const card_id =  partner_info.fuel_card &&  partner_info.fuel_card.id 
-  const card_number =  partner_info.fuel_card &&  partner_info.fuel_card.number 
-  const mobile =  partner_info.fuel_card &&  partner_info.fuel_card.mobile 
+  const card_id = partner_info.fuel_card && partner_info.fuel_card.id
+  const card_number = partner_info.fuel_card && partner_info.fuel_card.number
+  const mobile = partner_info.fuel_card && partner_info.fuel_card.mobile
   const balance = partner_info && partner_info.fuel_balance
   return (
     <Row gutter={10} className='p10'>
@@ -94,11 +91,11 @@ console.log('partner_id',partner_id)
         />
         <LabelWithData
           label='Status'
-          data={<Switch 
-            size='small' 
+          data={<Switch
+            size='small'
             defaultChecked
             onChange={onChange}
-             />}
+          />}
           labelSpan={8}
         />
       </Col>

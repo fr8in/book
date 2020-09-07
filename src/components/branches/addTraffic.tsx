@@ -185,7 +185,6 @@ const AddTraffic = (props) => {
               <Button
                 key='submit'
                 type='primary'
-                size='middle'
                 onClick={onAddTraffic}
               >
                   Add Traffic

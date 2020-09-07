@@ -27,7 +27,6 @@ subscription dashboard_trips($regions: [Int!], $branches: [Int!], $cities: [Int!
                 mobile
               }
             }
-            driver
             source {
               id
               name
@@ -45,6 +44,9 @@ subscription dashboard_trips($regions: [Int!], $branches: [Int!], $cities: [Int!
               truck_no
               truck_type {
                 name
+              }
+              driver {
+                mobile
               }
             }
           }

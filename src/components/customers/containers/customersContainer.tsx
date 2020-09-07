@@ -18,6 +18,9 @@ const CUSTOMERS_QUERY = gql`
       customer_type_id
       created_at
       pan
+      customer_advance_percentage{
+        name
+      }
       customer_files{
         id
         type
@@ -31,10 +34,6 @@ const CUSTOMERS_QUERY = gql`
         name
       }
       advance_percentage_id
-      # advance_percentage{
-      #   id
-      #   name
-      # }
       customer_type {
         name
       }

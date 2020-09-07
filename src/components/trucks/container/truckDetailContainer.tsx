@@ -189,7 +189,7 @@ const TruckDetailContainer = (props) => {
               tabBarExtraContent={
                 <span>
                   {subTabKey === '3' &&
-                    <Button size='middle' shape='circle' icon={<CommentOutlined />} onClick={() => onShow('comment')} />}
+                    <Button shape='circle' icon={<CommentOutlined />} onClick={() => onShow('comment')} />}
                 </span>
               }
             >
