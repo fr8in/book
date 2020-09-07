@@ -37,9 +37,9 @@ subscription customer_trip_list($cardcode: String, $trip_status: [String!],$limi
       trip_status {
         name
       }
-      trip_pod_status{
-        name
-      }
+      # trip_pod_status{
+      #   name
+      # }
       trip_prices(where:{deleted_at:{_is_null: true}}){
         customer_price
         partner_price
