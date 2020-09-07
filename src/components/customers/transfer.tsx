@@ -2,7 +2,7 @@ import { Modal, Row, Button, Form, Col, Input, Radio } from 'antd'
 import PaymentTraceability from './paymentTraceability'
 
 const Transfer = (props) => {
-  const { visible, onHide } = props
+  const { visible, onHide ,cardcode,wallet_balance} = props
 
   const onSubmit = () => {
     console.log('data Transfered!')
@@ -22,7 +22,7 @@ const Transfer = (props) => {
   return (
 
     <Modal
-      title={`Wallet Balance: ₹${1250}`}
+      title={wallet_balance}
       visible={visible}
       onOk={onSubmit}
       onCancel={onHide}
@@ -33,7 +33,7 @@ const Transfer = (props) => {
     >
       <Row className='mb10'>
         <Col xs={24}>
-          <PaymentTraceability />
+          <PaymentTraceability cardcode={cardcode} wallet_balance={wallet_balance}/>
         </Col>
       </Row>
       <Form layout='vertical'>
