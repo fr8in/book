@@ -3,6 +3,8 @@ import moment from 'moment'
 import Truncate from '../common/truncate'
 import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
+import WalletTopup from './walletTopup'
+import useShowHide from '../../hooks/useShowHide'
 
 const INCOMING_PAYMENT = gql`
 query customer_booking($cardcode: String) {
@@ -22,6 +24,7 @@ query customer_booking($cardcode: String) {
 `
 const PaymentTraceability = (props) => {
   const { selectedRowKeys, selectOnchange,cardcode,wallet_balance } = props
+  const { visible, onShow, onHide } = useShowHide('')
 
   const { loading, data, error } = useQuery(
     INCOMING_PAYMENT,
@@ -89,7 +92,7 @@ const PaymentTraceability = (props) => {
       size='small'
       className='card-body-0 mb10'
       title={wallet_balance}
-      extra={<Button type='primary' size='small'>Wallet Top-up</Button>}
+      extra={<Button type='primary' size='small' onClick={() => onShow('wallet')} > Wallet Top-up </Button>}
     >
       <Table
         rowSelection={{
@@ -104,6 +107,9 @@ const PaymentTraceability = (props) => {
         scroll={{ x: 780, y: 400 }}
         pagination={false}
       />
+      {visible.wallet && (
+                <WalletTopup visible={visible.wallet} onHide={onHide}  />
+              )}
     </Card>
   )
 }
