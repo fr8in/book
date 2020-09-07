@@ -115,7 +115,7 @@ const TripTime = (props) => {
                     trip_info.trip_status.name === 'Confirmed' &&
                     trip_info.trip_status.name === 'Reported at source') &&
                     !trip_info.source_out
-  const process_advance = trip_info.source_in && !trip_info.source_out // &&  trip_info.loaded = 'No'
+  const process_advance = trip_info.source_in && trip_info.source_out  &&  trip_info.loaded === "N" 
   const remove_sout = trip_info.trip_status && trip_info.trip_status.name === 'Intransit' && authorized
   const remove_dout = trip_info.trip_status && trip_info.trip_status.name === 'Delivered' && authorized
 
@@ -206,7 +206,7 @@ console.log('toPayCheck',toPayCheck)
                   {po_delete &&
                     <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>}
                   {process_advance &&
-                    <Button type='primary'>Process Advance</Button>}
+                    <Button type='primary' >Process Advance</Button>}
                   {remove_sout &&
                     <Button danger icon={<CloseCircleOutlined />} onClick={onSoutRemove}>Sout</Button>}
                   {remove_dout &&
