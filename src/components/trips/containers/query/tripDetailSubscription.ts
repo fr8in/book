@@ -7,6 +7,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       order_date
       source_in
       source_out
+      loaded
       status_at
       destination_in
       destination_out
