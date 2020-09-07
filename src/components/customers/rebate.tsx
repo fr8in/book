@@ -1,13 +1,25 @@
+import { useState } from 'react'
 import { Modal, Row, Button, Form, Input, Col } from 'antd'
 import PaymentTraceability from './paymentTraceability'
 
 const Rebate = (props) => {
   const { visible, onHide } = props
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const [selectedRow, setSelectedRow] = useState([])
+  const [disableButton, setDisableButton] = useState(true)
 
   const onSubmit = () => {
     console.log('data Transfered!')
     onHide()
   }
+
+  const selectOnchange = (selectedRowKeys, selectedRows) => {
+    setSelectedRowKeys(selectedRowKeys)
+    setSelectedRow(selectedRows)
+    setDisableButton(!!(selectedRows && selectedRows.length === 0))
+  }
+
+  console.log("Rebate", selectedRowKeys, selectedRow)
 
   return (
     <Modal
@@ -22,7 +34,10 @@ const Rebate = (props) => {
     >
       <Row className='mb10'>
         <Col xs={24}>
-          <PaymentTraceability />
+          <PaymentTraceability
+            selectedRowKeys={selectedRowKeys}
+            selectOnchange={selectOnchange}
+          />
         </Col>
       </Row>
       <Form layout='vertical'>

@@ -14,13 +14,6 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
     id
     name
     branches(where: {id: {_in: $branches}}) {
-      branch_employees {
-        id
-        employee {
-          id
-          name
-        }
-      }
       id
       name
       connected_cities: cities(where: {_and: [{is_connected_city: {_eq: true}}, {id: {_in: $cities}}]}) {
@@ -57,18 +50,18 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
             leads(where:{deleted_at:{_is_null:true}}) {
               id
               created_at
-              # partner {
-              #   id
-              #   cardcode
-              #   name
-              #   partner_users(where: {is_admin: {_eq: true}}) {
-              #     mobile
-              #   }
-              #   trucks(where: {truck_status:{name:{_eq:"Waiting for load"}}}){
-              #     id
-              #     truck_no
-              #   }
-              # }
+              partner {
+                id
+                cardcode
+                name
+                partner_users(where: {is_admin: {_eq: true}}) {
+                  mobile
+                }
+                trucks(where: {truck_status:{name:{_eq:"Waiting for load"}}}){
+                  id
+                  truck_no
+                }
+              }
             }
           }
         }
