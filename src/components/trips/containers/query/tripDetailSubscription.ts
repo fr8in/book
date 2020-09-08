@@ -7,10 +7,11 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       order_date
       source_in
       source_out
+      loaded
       status_at
       destination_in
       destination_out
-      driver
+     driver_id
       delay
       eta
       po_date
@@ -93,7 +94,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         mamul
         including_loading
         including_unloading
-        customer_advance_percentage
+        ##customer_advance_percentage
         ton
         is_price_per_ton
         price_per_ton
