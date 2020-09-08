@@ -17,7 +17,17 @@ import SourceOutDate from './tripSourceOut'
 import DestinationInDate from './tripDestinationIn'
 import DestinationOutDate from './tripDestinationOut'
 import ViewFile from '../common/viewFile'
-import { gql, useMutation } from '@apollo/client'
+import get from 'lodash/get'
+import { gql, useMutation ,useLazyQuery} from '@apollo/client'
+
+const GET_WORD = gql`
+query($id:Int!){
+  trip(where:{id:{_eq:$id}})
+  {
+    loading_memo(word:true)
+  }
+}
+`
 
 const REMOVE_SOUT_MUTATION = gql`
 mutation removeSouceOut($source_out:timestamptz,$id:Int!) {
@@ -57,6 +67,34 @@ const TripTime = (props) => {
   console.log('trip_info', trip_info)
   const initial = { checkbox: false, mail: false, deletePO: false,godownReceipt:false }
   const { visible, onShow, onHide } = useShowHide(initial)
+
+  const [
+    getWord, 
+    { loading, data , error}
+  ] = useLazyQuery(GET_WORD);
+
+  console.log('tripTime error', error)
+
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const loading_memo = get(_data, 'trip[0].loading_memo', [])
+  console.log('loading_memo', loading_memo)
+  console.log('_data',_data)
+
+  if (loading_memo) {
+    window.open(loading_memo, '_blank')
+  } else { 
+    null
+   }
+
+  const onWordClick =()=>{
+    console.log('trip_info.id',trip_info.id)
+    getWord({
+         variables:{id: trip_info.id}
+       }) 
+    }
 
   const [removeSout] = useMutation(
     REMOVE_SOUT_MUTATION,
@@ -151,8 +189,8 @@ console.log('toPayCheck',toPayCheck)
               <Col xs={8}>
                 <Form.Item label='Loading Memo'>
                   <Space>
-                    <Button type='primary' shape='circle' icon={<FilePdfOutlined />} />
-                    <Button type='primary' shape='circle' icon={<FileWordOutlined />} />
+                    <Button type='primary' shape='circle' icon={<FilePdfOutlined />}  />
+                    <Button type='primary' shape='circle' icon={<FileWordOutlined />} onClick={() => onWordClick()}/>
                     <Button shape='circle' icon={<MailOutlined />} onClick={() => onShow('mail')} />
                   </Space>
                 </Form.Item>
