@@ -104,13 +104,13 @@ const CustomerDetailContainer = (props) => {
                 }
                 extra={
                   <Space>
-                    <Tooltip title='Account Statement'>
+                    {/* <Tooltip title='Account Statement'>
                       <Button
                         icon={<MailOutlined />}
                         shape='circle'
                         onClick={() => onShow('showModal')}
                       />
-                    </Tooltip>
+                    </Tooltip> */}
                     <Tooltip title='Transfer'>
                       <Button
                         icon={<BankFilled />}

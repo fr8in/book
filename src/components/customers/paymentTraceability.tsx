@@ -48,7 +48,9 @@ const PaymentTraceability = (props) => {
   console.log('customer_incomings', customer_incomings)
   const onAmountChange = (e) => {
     setAmount(e.target.value)
-    form.setFieldsValue({ amount: e.target.value })
+    if (form) {
+      form.setFieldsValue({ amount: e.target.value })
+    }
   }
 
   const columns = [{

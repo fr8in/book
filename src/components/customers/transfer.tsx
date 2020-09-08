@@ -61,6 +61,7 @@ const Transfer = (props) => {
     {
       onError (error) { message.error(error.toString()) },
       onCompleted (data) {
+        setDisableButton(false)
         const status = get(data, 'customer_excess_payment.status', null)
         const description = get(data, 'customer_mamul_transfer.description', null)
         if (status === 'OK') {
@@ -72,7 +73,6 @@ const Transfer = (props) => {
   )
 
   const validateIFSC = () => {
-    console.log('validateIFSC on blur')
     getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc') } })
   }
 
@@ -83,10 +83,8 @@ const Transfer = (props) => {
   }
 
   const bank_detail = get(_data, 'bank_detail', null)
-  const ifsc_error = error
 
   const onSubmit = (form) => {
-    console.log('data Transfered!', selectedRow, form, cardcode, amount, walletcode)
     if (amount) {
       setDisableButton(true)
       customer_mamul_transfer({
@@ -130,7 +128,7 @@ const Transfer = (props) => {
     })
   ]
 
-  if (called && ifsc_error) {
+  if (called && error) {
     message.error('Enter Valid IFSC code')
     form.resetFields(['ifsc'])
   }

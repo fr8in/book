@@ -24,6 +24,7 @@ const Rebate = (props) => {
     {
       onError (error) { message.error(error.toString()) },
       onCompleted (data) {
+        setDisableButton(false)
         const status = get(data, 'customer_excess_payment.status', null)
         const description = get(data, 'customer_excess_payment.description', null)
         if (status === 'OK') {
