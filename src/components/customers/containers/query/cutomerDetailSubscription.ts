@@ -65,8 +65,6 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
       id
       name
     }
-# customer_mamul_summary {
-#   system_mamul_avg
-# }
+    system_mamul
   }
 }`

@@ -65,7 +65,7 @@ const WalletTopup = (props) => {
     _data = data
   }
 
-  const { bank_incoming } = _data
+  const bank_incoming = get(_data, 'bank_incoming', [])
   const count = bank_incoming ? bank_incoming.length : 0
   const total = bank_incoming ? sumBy(bank_incoming, 'amount').toFixed(2) : 0
 
