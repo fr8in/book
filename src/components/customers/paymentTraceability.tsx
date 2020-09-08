@@ -5,12 +5,14 @@ import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import WalletTopup from './walletTopup'
 import useShowHide from '../../hooks/useShowHide'
+import _ from 'lodash'
 
 const INCOMING_PAYMENT = gql`
 query customer_booking($cardcode: String) {
   customer(where: {cardcode: {_eq: $cardcode}}) {
     id
     cardcode
+    walletcode
     customer_incomings(where: {balance: {_neq: 0}}) {
       id
       created_at
@@ -18,12 +20,13 @@ query customer_booking($cardcode: String) {
       booked
       balance
       comment
+      customer_incoming_id
     }
   }
 }
 `
 const PaymentTraceability = (props) => {
-  const { selectedRowKeys, selectOnchange, cardcode, wallet_balance } = props
+  const { selectedRowKeys, selectOnchange, cardcode, wallet_balance, amount, setAmount, form } = props
   const { visible, onShow, onHide } = useShowHide('')
 
   const { loading, data, error } = useQuery(
@@ -40,8 +43,13 @@ const PaymentTraceability = (props) => {
     _data = data
   }
 
-  const customer = get(_data, 'customer[0]', [])
-  const customer_incomings = get(customer, 'customer_incomings', 0)
+  const customer = get(_data, 'customer[0]', null)
+  const customer_incomings = get(customer, 'customer_incomings', [])
+  console.log('customer_incomings', customer_incomings)
+  const onAmountChange = (e) => {
+    setAmount(e.target.value)
+    form.setFieldsValue({ amount: e.target.value })
+  }
 
   const columns = [{
     title: 'Date',
@@ -69,11 +77,12 @@ const PaymentTraceability = (props) => {
   },
   {
     title: 'Book Now',
+    dataIndex: 'amount',
     width: '12%',
     render: (text, record) => {
+      const enableSelectedRows = _.includes(selectedRowKeys, record.id)
       return (
-        // selectedRow && selectedRow.length > 0 && selectedRow.find(data => data.key === record.key)
-        <Input size='small' />
+        <Input size='small' value={enableSelectedRows ? amount : null} disabled={!enableSelectedRows} onChange={onAmountChange} />
       )
     }
   },
@@ -88,7 +97,7 @@ const PaymentTraceability = (props) => {
   return (
     <Card
       size='small'
-      className='card-body-0 mb10'
+      className='card-body-0'
       title={wallet_balance}
       extra={<Button type='primary' size='small' onClick={() => onShow('wallet')}> Wallet Top-up </Button>}
     >
@@ -102,11 +111,11 @@ const PaymentTraceability = (props) => {
         dataSource={customer_incomings}
         rowKey={(record) => record.id}
         size='small'
-        scroll={{ x: 780, y: 400 }}
+        scroll={{ x: 780, y: 250 }}
         pagination={false}
       />
       {visible.wallet && (
-        <WalletTopup visible={visible.wallet} onHide={onHide} />
+        <WalletTopup visible={visible.wallet} onHide={onHide} walletcode={customer.walletcode} />
       )}
     </Card>
   )

@@ -219,10 +219,22 @@ const CustomerDetailContainer = (props) => {
                 <CustomerBranch visible={visible.addBranch} onHide={onHide} customerbranches={customer_info.id} />
               )}
               {visible.transfer && (
-                <Transfer visible={visible.transfer} onHide={onHide} cardcode={cardcode} wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)}/>
+                <Transfer
+                  visible={visible.transfer}
+                  onHide={onHide}
+                  cardcode={cardcode}
+                  walletcode={customer_info.walletcode}
+                  wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)}
+                />
               )}
               {visible.rebate && (
-                <Rebate visible={visible.rebate} onHide={onHide} cardcode={cardcode} wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)}/>
+                <Rebate
+                  visible={visible.rebate}
+                  onHide={onHide}
+                  cardcode={cardcode}
+                  walletcode={customer_info.walletcode}
+                  wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)}
+                />
               )}
               {visible.wallet && (
                 <WalletTopup visible={visible.wallet} onHide={onHide} walletcode={customer_info.walletcode} />
