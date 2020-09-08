@@ -22,7 +22,7 @@ const Transfer = (props) => {
   return (
 
     <Modal
-      title={wallet_balance}
+      title={'Wallet Balance: ₹' + wallet_balance}
       visible={visible}
       onOk={onSubmit}
       onCancel={onHide}
@@ -33,7 +33,7 @@ const Transfer = (props) => {
     >
       <Row className='mb10'>
         <Col xs={24}>
-          <PaymentTraceability cardcode={cardcode} wallet_balance={wallet_balance}/>
+          <PaymentTraceability cardcode={cardcode} wallet_balance={'₹' + wallet_balance}/>
         </Col>
       </Row>
       <Form layout='vertical'>

@@ -56,27 +56,26 @@ const IncomingPayments = (props) => {
     {
       title: 'Date',
       dataIndex: 'created_at',
-      key: 'created_at',
       width: '15%',
       render: (text, render) => text ? moment(text).format('DD-MMM-YY') : '-'
     },
     {
       title: 'Amount',
       dataIndex: 'recevied',
-      key: 'recevied',
-      width: '15%'
+      width: '15%',
+      sorter: (a, b) => (a.recevied > b.recevied ? 1 : -1)
     },
     {
       title: 'Booked',
       dataIndex: 'booked',
-      key: 'booked',
-      width: '15%'
+      width: '15%',
+      sorter: (a, b) => (a.booked > b.booked ? 1 : -1)
     },
     {
       title: 'Balance',
       dataIndex: 'balance',
-      key: 'balance',
-      width: '15%'
+      width: '15%',
+      sorter: (a, b) => (a.balance > b.balance ? 1 : -1)
     },
     {
       title: 'Remarks',

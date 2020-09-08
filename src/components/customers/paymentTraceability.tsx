@@ -23,13 +23,13 @@ query customer_booking($cardcode: String) {
 }
 `
 const PaymentTraceability = (props) => {
-  const { selectedRowKeys, selectOnchange,cardcode,wallet_balance } = props
+  const { selectedRowKeys, selectOnchange, cardcode, wallet_balance } = props
   const { visible, onShow, onHide } = useShowHide('')
 
   const { loading, data, error } = useQuery(
     INCOMING_PAYMENT,
     {
-      variables: {cardcode:cardcode} 
+      variables: { cardcode: cardcode }
     }
   )
 
@@ -46,44 +46,42 @@ const PaymentTraceability = (props) => {
   const columns = [{
     title: 'Date',
     dataIndex: 'created_at',
-    key: 'created_at',
-    width: '15%',
+    width: '12%',
     render: (text, record) => text ? moment(text).format('DD-MMM-YY') : null
   },
   {
     title: 'Amount',
     dataIndex: 'recevied',
-    key: 'recevied',
-    width: '15%'
+    width: '12%',
+    sorter: (a, b) => (a.recevied > b.recevied ? 1 : -1)
   },
   {
     title: 'Booked',
     dataIndex: 'booked',
-    key: 'booked',
-    width: '15%'
+    width: '12%',
+    sorter: (a, b) => (a.booked > b.booked ? 1 : -1)
   },
   {
     title: 'Balance',
     dataIndex: 'balance',
-    key: 'balance',
-    width: '15%'
+    width: '12%',
+    sorter: (a, b) => (a.balance > b.balance ? 1 : -1)
   },
   {
     title: 'Book Now',
-    width: '15%',
+    width: '12%',
     render: (text, record) => {
       return (
         // selectedRow && selectedRow.length > 0 && selectedRow.find(data => data.key === record.key)
-        <Input />
+        <Input size='small' />
       )
     }
   },
   {
     title: 'Remarks',
     dataIndex: 'comment',
-    key: 'comment',
-    width: '15%',
-    render: (text, record) => <Truncate data={text} length={20} />
+    width: '40%',
+    render: (text, record) => <Truncate data={text} length={36} />
   }
   ]
 
@@ -92,7 +90,7 @@ const PaymentTraceability = (props) => {
       size='small'
       className='card-body-0 mb10'
       title={wallet_balance}
-      extra={<Button type='primary' size='small' onClick={() => onShow('wallet')} > Wallet Top-up </Button>}
+      extra={<Button type='primary' size='small' onClick={() => onShow('wallet')}> Wallet Top-up </Button>}
     >
       <Table
         rowSelection={{
@@ -108,8 +106,8 @@ const PaymentTraceability = (props) => {
         pagination={false}
       />
       {visible.wallet && (
-                <WalletTopup visible={visible.wallet} onHide={onHide}  />
-              )}
+        <WalletTopup visible={visible.wallet} onHide={onHide} />
+      )}
     </Card>
   )
 }

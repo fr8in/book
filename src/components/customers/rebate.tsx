@@ -3,7 +3,7 @@ import { Modal, Row, Button, Form, Input, Col } from 'antd'
 import PaymentTraceability from './paymentTraceability'
 
 const Rebate = (props) => {
-  const { visible, onHide, cardcode,wallet_balance} = props
+  const { visible, onHide, cardcode, wallet_balance } = props
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
   const [disableButton, setDisableButton] = useState(true)
@@ -19,11 +19,11 @@ const Rebate = (props) => {
     setDisableButton(!!(selectedRows && selectedRows.length === 0))
   }
 
-  console.log("Rebate", selectedRowKeys, selectedRow)
+  console.log('Rebate', selectedRowKeys, selectedRow)
 
   return (
     <Modal
-      title={wallet_balance}
+      title={'Wallet Balance: ₹' + wallet_balance}
       visible={visible}
       onOk={onSubmit}
       onCancel={onHide}
@@ -38,6 +38,7 @@ const Rebate = (props) => {
             selectedRowKeys={selectedRowKeys}
             selectOnchange={selectOnchange}
             cardcode={cardcode}
+            wallet_balance={'₹' + wallet_balance}
           />
         </Col>
       </Row>
