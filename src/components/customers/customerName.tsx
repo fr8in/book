@@ -3,12 +3,10 @@ import { message } from 'antd'
 import InlineEdit from '../common/inlineEdit'
 
 const UPDATE_CUSTOMER_NAME_MUTATION = gql`
-mutation CustomerNameEdit($name:String,$cardcode:String) {
-  update_customer(_set: {name: $name}, where: {cardcode: {_eq: $cardcode}}) {
-    returning {
-      id
-      name
-    }
+mutation update_customer_name($cardcode: String!, $company_name: String!){
+  update_customer_name(cardcode:$cardcode,company_name:$company_name){
+    status
+    description
   }
 }
 `
@@ -18,8 +16,8 @@ const CustomerName = (props) => {
   const [updateCustomerName] = useMutation(
     UPDATE_CUSTOMER_NAME_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
 
@@ -27,7 +25,7 @@ const CustomerName = (props) => {
     updateCustomerName({
       variables: {
         cardcode,
-        name: text
+        company_name: text
       }
     })
   }
@@ -42,3 +40,4 @@ const CustomerName = (props) => {
 }
 
 export default CustomerName
+
