@@ -103,21 +103,21 @@ const CustomerTrips = (props) => {
       title: 'Receivable',
       width: '8%',
       sorter: (a, b) => (a.receivable > b.receivable ? 1 : -1),
-      render: (record) => get(record, 'trip_receivables_aggregate.aggregate.sum.amount', null)
+      render: (record) => get(record, 'trip_receivables_aggregate.aggregate.sum.amount', 0)
     },
     {
       title: 'Receipts',
       width: '7%',
       sorter: (a, b) => (a.receipts > b.receipts ? 1 : -1),
-      render: (record) => get(record, 'trip_receipts_aggregate.aggregate.sum.amount', null)
+      render: (record) => get(record, 'trip_receipts_aggregate.aggregate.sum.amount', 0)
     },
     {
       title: 'Balance',
       sorter: (a, b) => (a.balance > b.balance ? 1 : -1),
       width: '7%',
       render: (record) => {
-        const receivable = get(record, 'trip_receivables_aggregate.aggregate.sum.amount', null)
-        const receipts = get(record, 'trip_receipts_aggregate.aggregate.sum.amount', null)
+        const receivable = get(record, 'trip_receivables_aggregate.aggregate.sum.amount', 0)
+        const receipts = get(record, 'trip_receipts_aggregate.aggregate.sum.amount', 0)
         return (receivable - receipts)
       }
     },
