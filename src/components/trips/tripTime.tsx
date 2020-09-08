@@ -29,6 +29,15 @@ query($id:Int!){
 }
 `
 
+const GET_PDF = gql`
+query($id:Int!){
+  trip(where:{id:{_eq:$id}})
+  {
+    loading_memo
+  }
+}
+`
+
 const REMOVE_SOUT_MUTATION = gql`
 mutation removeSouceOut($source_out:timestamptz,$id:Int!) {
   update_trip(_set: {source_out: $source_out}, where: {id: {_eq: $id}}) {
@@ -75,16 +84,23 @@ const TripTime = (props) => {
 
   console.log('tripTime error', error)
 
-  let _data = {}
-  if (!loading) {
-    _data = data
-  }
-  const loading_memo = get(_data, 'trip[0].loading_memo', [])
-  console.log('loading_memo', loading_memo)
-  console.log('_data',_data)
+  const [
+    getPdf, 
+    {  loading : pdfloading , data : pdfdata, error : pdferror}
+  ] = useLazyQuery(GET_PDF);
 
-  if (loading_memo) {
-    window.open(loading_memo, '_blank')
+  console.log('tripTime error', error)
+
+  let _pdfdata = {}
+  if (!pdfloading) {
+    _pdfdata = pdfdata
+  }
+  const pdf_loading_memo = get(_pdfdata, 'trip[0].loading_memo', [])
+  console.log('loading_memo', pdf_loading_memo)
+  console.log('_data',_pdfdata)
+
+  if (pdf_loading_memo) {
+    window.open(pdf_loading_memo, '_blank')
   } else { 
     null
    }
@@ -95,6 +111,13 @@ const TripTime = (props) => {
          variables:{id: trip_info.id}
        }) 
     }
+
+    const onPdfClick =()=>{
+      console.log('trip_info.id',trip_info.id)
+      getPdf({
+           variables:{id: trip_info.id}
+         }) 
+      }
 
   const [removeSout] = useMutation(
     REMOVE_SOUT_MUTATION,
@@ -189,7 +212,7 @@ console.log('toPayCheck',toPayCheck)
               <Col xs={8}>
                 <Form.Item label='Loading Memo'>
                   <Space>
-                    <Button type='primary' shape='circle' icon={<FilePdfOutlined />}  />
+                    <Button type='primary' shape='circle' icon={<FilePdfOutlined />} onClick={() => onPdfClick()} />
                     <Button type='primary' shape='circle' icon={<FileWordOutlined />} onClick={() => onWordClick()}/>
                     <Button shape='circle' icon={<MailOutlined />} onClick={() => onShow('mail')} />
                   </Space>
