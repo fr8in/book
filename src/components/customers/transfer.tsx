@@ -1,45 +1,169 @@
-import { Modal, Row, Button, Form, Col, Input, Radio } from 'antd'
+import { useState } from 'react'
+import { Modal, Row, Button, Form, Col, Input, Radio, message } from 'antd'
 import PaymentTraceability from './paymentTraceability'
+import { gql, useMutation, useLazyQuery } from '@apollo/client'
+import get from 'lodash/get'
+
+const CUSTOMER_MAMUL_TRANSFER = gql`
+mutation customer_mamul_transfer(
+  $cardcode: String!, 
+  $walletcode: String!,
+  $amount: Float!,
+  $trip_id: Int!,
+  $created_by: String!,
+  $account_holder_name: String!,
+  $bank_acc_no: String!,
+  $bank_name: String!,
+  $ifsc_code:String!,
+  $customer_incoming_id: Int!,
+  $is_mamul_charges_included: Boolean!
+){
+  customer_mamul_transfer(
+    cardcode: $cardcode, 
+    walletcode: $walletcode, 
+    amount:$amount,
+    trip_id: $trip_id,
+    created_by: $created_by,
+    account_holder_name: $account_holder_name,
+    bank_acc_no: $bank_acc_no,
+    bank_name: $bank_name,
+    ifsc_code: $ifsc_code,
+    customer_incoming_id:$customer_incoming_id, 
+    is_mamul_charges_included: $is_mamul_charges_included
+  ){
+    description
+    status
+  }
+}`
+
+const IFSC_VALIDATION = gql`
+query ifsc_validation($ifsc: String!){
+  bank_detail(ifsc: $ifsc) {
+    bank
+    bankcode
+    branch
+  }
+}`
 
 const Transfer = (props) => {
-  const { visible, onHide ,cardcode,wallet_balance} = props
+  const { visible, onHide, cardcode, walletcode, wallet_balance } = props
 
-  const onSubmit = () => {
-    console.log('data Transfered!')
-    onHide()
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const [selectedRow, setSelectedRow] = useState([])
+  const [disableButton, setDisableButton] = useState(true)
+  const [amount, setAmount] = useState(null)
+  const [form] = Form.useForm()
+
+  const [getBankDetail, { loading, data, error, called }] = useLazyQuery(IFSC_VALIDATION)
+
+  const [customer_mamul_transfer] = useMutation(
+    CUSTOMER_MAMUL_TRANSFER,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted (data) {
+        setDisableButton(false)
+        const status = get(data, 'customer_excess_payment.status', null)
+        const description = get(data, 'customer_mamul_transfer.description', null)
+        if (status === 'OK') {
+          message.success(description || 'Processed!')
+          onHide()
+        } else (message.error(description))
+      }
+    }
+  )
+
+  const validateIFSC = () => {
+    getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc') } })
   }
-  const footerData = (
-    <Row>
-      <Col flex='auto' className='text-left'>
-        <Radio defaultChecked={false}>Include Mamul</Radio>
-        <Radio>Include Special Mamul(System Mamul won't be reduced)</Radio>
-      </Col>
-      <Col flex='90px'>
-        <Button type='primary'>Transfer </Button>
-      </Col>
-    </Row>)
+
+  console.log('IFSC validation Error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+
+  const bank_detail = get(_data, 'bank_detail', null)
+
+  const onSubmit = (form) => {
+    if (amount) {
+      setDisableButton(true)
+      customer_mamul_transfer({
+        variables: {
+          cardcode: cardcode,
+          walletcode: walletcode,
+          customer_incoming_id: selectedRow[0].customer_incoming_id,
+          amount: parseFloat(amount),
+          trip_id: parseInt(form.trip_id),
+          created_by: 'karthik@fr8.in',
+          account_holder_name: form.account_name,
+          bank_acc_no: form.account_number,
+          bank_name: bank_detail.bank,
+          ifsc_code: form.ifsc,
+          is_mamul_charges_included: (form.mamul_include === 'INCLUDE')
+        }
+      })
+    } else { message.error('Enter Amount') }
+  }
+
+  const selectOnchange = (selectedRowKeys, selectedRows) => {
+    setSelectedRowKeys(selectedRowKeys)
+    setSelectedRow(selectedRows)
+    setDisableButton(!!(selectedRows && selectedRows.length === 0))
+    setAmount(null)
+    form.resetFields(['amount'])
+  }
+
+  const rules = [
+    {
+      required: true,
+      message: 'Confirm acccount number required!'
+    },
+    ({ getFieldValue }) => ({
+      validator (rule, value) {
+        if (!value || getFieldValue('account_number') === value) {
+          return Promise.resolve()
+        }
+        return Promise.reject('The account number that you entered do not match!')
+      }
+    })
+  ]
+
+  if (called && error) {
+    message.error('Enter Valid IFSC code')
+    form.resetFields(['ifsc'])
+  }
 
   return (
-
     <Modal
-      title={wallet_balance}
+      title='Transfer to Bank'
       visible={visible}
-      onOk={onSubmit}
       onCancel={onHide}
       width={900}
-      bodyStyle={{ padding: 10 }}
+      bodyStyle={{ padding: 15 }}
       style={{ top: 20 }}
-      footer={footerData}
+      footer={[]}
     >
       <Row className='mb10'>
         <Col xs={24}>
-          <PaymentTraceability cardcode={cardcode} wallet_balance={wallet_balance}/>
+          <PaymentTraceability
+            selectedRowKeys={selectedRowKeys}
+            selectOnchange={selectOnchange}
+            cardcode={cardcode}
+            wallet_balance={'Wallet Balance: ₹' + wallet_balance}
+            amount={amount}
+            setAmount={setAmount}
+            form={form}
+          />
         </Col>
       </Row>
-      <Form layout='vertical'>
+      <Form layout='vertical' form={form} onFinish={onSubmit}>
         <Row gutter={10}>
           <Col xs={8}>
-            <Form.Item label='Account Name'>
+            <Form.Item
+              label='Account Name'
+              name='account_name'
+              rules={[{ required: true, message: 'Account name required!' }]}
+            >
               <Input
                 placeholder='Account Name'
                 disabled={false}
@@ -47,7 +171,11 @@ const Transfer = (props) => {
             </Form.Item>
           </Col>
           <Col xs={8}>
-            <Form.Item label='Account Number'>
+            <Form.Item
+              label='Account Number'
+              name='account_number'
+              rules={[{ required: true, message: 'Account number required!' }]}
+            >
               <Input
                 placeholder='Select Time'
                 disabled={false}
@@ -55,8 +183,13 @@ const Transfer = (props) => {
             </Form.Item>
           </Col>
           <Col xs={8}>
-            <Form.Item label='Confirm Account Number'>
-              <Input
+            <Form.Item
+              label='Confirm Account Number'
+              dependencies={['account_number']}
+              rules={rules}
+              name='confirm'
+            >
+              <Input.Password
                 placeholder='Confirm Account Number'
                 disabled={false}
               />
@@ -65,38 +198,58 @@ const Transfer = (props) => {
         </Row>
         <Row gutter={10}>
           <Col xs={8}>
-            <Form.Item label='IFSC Code'>
+            <Form.Item
+              label='IFSC Code'
+              name='ifsc'
+              rules={[{ required: true, message: 'IFSC required!' }]}
+              extra={get(bank_detail, 'bank', null)}
+            >
               <Input
                 placeholder='IFSC Code'
                 disabled={false}
+                onBlur={validateIFSC}
               />
             </Form.Item>
           </Col>
           <Col xs={8}>
-            <Form.Item label='Amount'>
+            <Form.Item
+              label='Amount'
+              name='amount'
+              initialValue={amount}
+              rules={[{ required: true, message: 'Amount required!' }]}
+            >
               <Input
                 placeholder='Amount'
-                disabled={false}
+                disabled
+                type='number'
               />
             </Form.Item>
           </Col>
           <Col xs={8}>
-            <Form.Item label='loadId'>
+            <Form.Item
+              label='Trip Id'
+              name='trip_id'
+              rules={[{ required: true, message: 'Trip id required!' }]}
+            >
               <Input
-                placeholder='loadId'
+                type='number'
+                placeholder='Trip id'
                 disabled={false}
               />
             </Form.Item>
           </Col>
         </Row>
         <Row>
-          <Col xs={24}>
-            <Form.Item label='Comment'>
-              <Input.TextArea
-                placeholder='Comment'
-                disabled={false}
-              />
+          <Col flex='auto' className='text-left'>
+            <Form.Item name='mamul_include' initialValue='INCLUDE'>
+              <Radio.Group>
+                <Radio value='INCLUDE'>Include Mamul</Radio>
+                <Radio value='NOT_INCLUDE'>Include Special Mamul(System Mamul won't be reduced)</Radio>
+              </Radio.Group>
             </Form.Item>
+          </Col>
+          <Col flex='90px'>
+            <Button type='primary' disabled={disableButton} htmlType='submit'>Transfer</Button>
           </Col>
         </Row>
       </Form>
