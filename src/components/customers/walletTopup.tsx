@@ -52,8 +52,12 @@ const WalletTopup = (props) => {
     {
       onError (error) { message.error(error.toString()) },
       onCompleted (data) {
-        message.success(get(data, 'customer_topup.description', 'Processed!'))
-        onHide()
+        const status = get(data, 'customer_topup.status', null)
+        const description = get(data, 'customer_topup.description', null)
+        if (status === 'OK') {
+          message.success(description || 'Processed!')
+          onHide()
+        } else (message.error(description))
       }
     }
   )
