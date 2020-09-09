@@ -9,12 +9,12 @@ subscription truck_coment($id: Int!){
       id
       name
     }
-    truck_comments(limit:5, order_by:{created_at:desc}){
-      id
-      description
+    last_comment{
       topic
-    	created_at
-      created_by_id
+      description
+      id
+      created_at
+      created_by
     }
   }
 }

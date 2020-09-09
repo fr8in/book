@@ -19,12 +19,12 @@ query trucks(
        where: {truck_status: {name: {_in:$truck_statusName}}}) {
       id
       truck_no
-      truck_comments(limit:1,order_by:{created_at:desc}){
-        id
+      last_comment{
         topic
+        truck_id
         description
         created_at
-        created_by_id
+        created_by
       }
       truck_status {
         id

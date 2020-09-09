@@ -5,11 +5,11 @@ import moment from 'moment'
 const TRIP_COMMENT_QUERY = gql`
   subscription tripComment($id: Int!){
     trip(where:{id:{_eq:$id}}) {
-      trip_comments(limit:5,order_by:{created_at:desc}){
-        id
+      last_comment{
         description
         created_at
         created_by
+        id
       }
     }
   }

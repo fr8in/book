@@ -8,11 +8,12 @@ const PARTNER_COMMENT_SUBSCRIPTION = gql`
       partner_status{
         name
       }
-      partner_comments(limit:5,order_by:{created_at:desc}){
+      last_comment{
         id
-        description
+        partner_id
         created_at
         created_by
+        description
       }
     }
   }
