@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Row, Col, Card, Form, Input, Space, Button, Checkbox, message } from 'antd'
 import {
   FilePdfOutlined,
