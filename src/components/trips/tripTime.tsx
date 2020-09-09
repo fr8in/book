@@ -1,8 +1,7 @@
-import { Row, Col, Card, Form, Tooltip, Input, Space, Button, Checkbox, message } from 'antd'
+import { Row, Col, Card, Form, Input, Space, Button, Checkbox, message } from 'antd'
 import {
   FilePdfOutlined,
   FileWordOutlined,
-  DownloadOutlined,
   MailOutlined,
   DeleteOutlined,
   CloseCircleOutlined
@@ -18,25 +17,21 @@ import DestinationInDate from './tripDestinationIn'
 import DestinationOutDate from './tripDestinationOut'
 import ViewFile from '../common/viewFile'
 import get from 'lodash/get'
-import { gql, useMutation ,useLazyQuery} from '@apollo/client'
+import { gql, useMutation, useLazyQuery } from '@apollo/client'
 
 const GET_WORD = gql`
 query($id:Int!){
-  trip(where:{id:{_eq:$id}})
-  {
+  trip(where:{id:{_eq:$id}}) {
     loading_memo(word:true)
   }
-}
-`
+}`
 
 const GET_PDF = gql`
 query($id:Int!){
-  trip(where:{id:{_eq:$id}})
-  {
+  trip(where:{id:{_eq:$id}}) {
     loading_memo
   }
-}
-`
+}`
 
 const REMOVE_SOUT_MUTATION = gql`
 mutation removeSouceOut($source_out:timestamptz,$id:Int!) {
@@ -71,69 +66,55 @@ mutation insertToPay($to_pay: Float, $comment: String, $trip_id: Int!) {
 `
 
 const TripTime = (props) => {
-
-  const { trip_info} = props
+  const { trip_info } = props
   console.log('trip_info', trip_info)
-  const initial = { checkbox: false, mail: false, deletePO: false,godownReceipt:false }
+  const initial = { checkbox: false, mail: false, deletePO: false, godownReceipt: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
-  const [
-    getWord, 
-    { loading, data , error,called}
-  ] = useLazyQuery(GET_WORD);
+  const [getWord, { loading, data, error, called }] = useLazyQuery(GET_WORD)
+  const [getPdf, { loading: pdfloading, data: pdfdata, error: pdferror, called: pdfcalled }] = useLazyQuery(GET_PDF)
 
   console.log('tripTime error', error)
-
+  console.log('tripTime error', pdferror)
 
   let _data = {}
   if (!loading) {
     _data = data
   }
-  const loading_memo = get(_data, 'trip[0].loading_memo', [])
-  console.log('loading_memo', loading_memo)
-  console.log('_data',_data)
 
-  if (called && loading_memo) {
-    window.open(loading_memo, '_blank')
-  } else { 
-    null
-   }
-
-   const onWordClick =()=>{
-    console.log('trip_info.id',trip_info.id)
-    getWord({
-         variables:{id: trip_info.id}
-       }) 
-    }
-
-  const [
-    getPdf, 
-    {  loading : pdfloading , data : pdfdata, error : pdferror , called : pdfcalled}
-  ] = useLazyQuery(GET_PDF);
-
-  console.log('tripTime error', pdferror)
-
-  
   let _pdfdata = {}
   if (!pdfloading) {
     _pdfdata = pdfdata
   }
-  const pdf_loading_memo = get(_pdfdata, 'trip[0].loading_memo', [])
-  console.log('loading_memo', pdf_loading_memo)
-  console.log('_data',_pdfdata)
 
-  if (pdfcalled && pdf_loading_memo) {
-    window.open(pdf_loading_memo, '_blank')
-  } else { 
-    null
-   }
+  let word_url = get(_data, 'trip[0].loading_memo', [])
+  let pdf_url = get(_pdfdata, 'trip[0].loading_memo', [])
 
-    const onPdfClick =()=>{
-      console.log('trip_info.id',trip_info.id)
-      getPdf({
-           variables:{id: trip_info.id}
-         }) 
+  const onWordClick = () => {
+    console.log('trip_info.id', trip_info.id)
+    getWord({
+      variables: { id: trip_info.id }
+    })
+    setTimeout(() => {
+      if (called && word_url) {
+        window.open(word_url)
+        word_url = null
       }
+    }, 2000)
+  }
+
+  const onPdfClick = () => {
+    console.log('trip_info.id', trip_info.id)
+    getPdf({
+      variables: { id: trip_info.id }
+    })
+    setTimeout(() => {
+      if (pdfcalled && pdf_url) {
+        window.open(pdf_url)
+        pdf_url = null
+      }
+    }, 2000)
+  }
 
   const [removeSout] = useMutation(
     REMOVE_SOUT_MUTATION,
@@ -180,7 +161,7 @@ const TripTime = (props) => {
     insertTopay({
       variables: {
         to_pay: form.to_pay,
-        comment:form.comment ,
+        comment: form.comment,
         trip_id: trip_info.id
       }
     })
@@ -192,14 +173,14 @@ const TripTime = (props) => {
                     trip_info.trip_status.name === 'Confirmed' &&
                     trip_info.trip_status.name === 'Reported at source') &&
                     !trip_info.source_out
-  const process_advance = trip_info.source_in && trip_info.source_out  &&  trip_info.loaded === "N" 
+  const process_advance = trip_info.source_in && trip_info.source_out && trip_info.loaded === 'N'
   const remove_sout = trip_info.trip_status && trip_info.trip_status.name === 'Intransit' && authorized
   const remove_dout = trip_info.trip_status && trip_info.trip_status.name === 'Delivered' && authorized
 
-const toPayCheck = trip_info.source_in && trip_info.source_out && trip_info.destination_in && trip_info.trip_prices[0].to_pay ? true : false
-console.log('toPayCheck',toPayCheck)
+  const toPayCheck = !!(trip_info.source_in && trip_info.source_out && trip_info.destination_in && (trip_info && trip_info.trip_prices[0] ? trip_info.trip_prices[0].to_pay : null))
+  console.log('toPayCheck', toPayCheck)
 
-  const wh_files = trip_info && trip_info.trip_files && trip_info.trip_files.length > 0 ?trip_info.trip_files.filter(file => file.type === 'WH') : null
+  const wh_files = trip_info && trip_info.trip_files && trip_info.trip_files.length > 0 ? trip_info.trip_files.filter(file => file.type === 'WH') : null
   console.log('wh', wh_files)
 
   return (
@@ -228,9 +209,9 @@ console.log('toPayCheck',toPayCheck)
               <Col xs={8}>
                 <Form.Item label='Loading Memo'>
                   <Space>
-                    <Button type='primary' shape='circle' icon={<FilePdfOutlined />} onClick={() => onPdfClick()} />
-                    <Button type='primary' shape='circle' icon={<FileWordOutlined />} onClick={() => onWordClick()}/>
-                    <Button shape='circle' icon={<MailOutlined />} onClick={() => onShow('mail')} />
+                    <Button type='primary' loading={pdfloading} shape='circle' icon={<FilePdfOutlined />} onClick={onPdfClick} />
+                    <Button type='primary' loading={loading} shape='circle' icon={<FileWordOutlined />} onClick={onWordClick} />
+                    {/* <Button shape='circle' icon={<MailOutlined />} onClick={() => onShow('mail')} /> */}
                   </Space>
                 </Form.Item>
               </Col>
@@ -243,7 +224,7 @@ console.log('toPayCheck',toPayCheck)
                     placeholder='To Pay Amount'
                     type='number'
                     disabled={!toPayCheck}
-                     required={toPayCheck}
+                    required={toPayCheck}
                   />
                 </Form.Item>
               </Col>
@@ -253,28 +234,28 @@ console.log('toPayCheck',toPayCheck)
                     id='comment'
                     placeholder='To Pay Comment'
                     disabled={!toPayCheck}
-                     required={toPayCheck}
+                    required={toPayCheck}
                   />
                 </Form.Item>
               </Col>
               <Col xs={4} className='text-right'>
                 <Form.Item label>
-                <Button type='primary'  htmlType='submit'  disabled={!toPayCheck} required={toPayCheck} >Submit</Button>
+                  <Button type='primary' htmlType='submit' disabled={!toPayCheck} required={toPayCheck}>Submit</Button>
                 </Form.Item>
               </Col>
             </Row>
             <Row className='mb15'>
               <Col xs={20}>
-                <Checkbox disabled={trip_info && trip_info.unloaded_private_godown === true ? true : false }  onClick={() => onShow('godownReceipt')} >Unloaded at private godown</Checkbox>
+                <Checkbox disabled={!!(trip_info && trip_info.unloaded_private_godown === true)} onClick={() => onShow('godownReceipt')}>Unloaded at private godown</Checkbox>
               </Col>
               <Col xs={4} className='text-right'>
                 <ViewFile
-                id={trip_info.id}
-                type='trip'
-                folder='warehousereceipt/'
-                file_type='WH'
-                file_list={wh_files}
-              />
+                  id={trip_info.id}
+                  type='trip'
+                  folder='warehousereceipt/'
+                  file_type='WH'
+                  file_list={wh_files}
+                />
               </Col>
             </Row>
             <Row>
@@ -283,7 +264,7 @@ console.log('toPayCheck',toPayCheck)
                   {po_delete &&
                     <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>}
                   {process_advance &&
-                    <Button type='primary' >Process Advance</Button>}
+                    <Button type='primary'>Process Advance</Button>}
                   {remove_sout &&
                     <Button danger icon={<CloseCircleOutlined />} onClick={onSoutRemove}>Sout</Button>}
                   {remove_dout &&
@@ -296,7 +277,7 @@ console.log('toPayCheck',toPayCheck)
       </Row>
       {visible.mail && <SendLoadingMemo visible={visible.mail} onHide={onHide} />}
       {visible.deletePO && <DeletePO visible={visible.deletePO} onHide={onHide} />}
-      {visible.godownReceipt && <GodownReceipt visible={visible.godownReceipt} trip_id={trip_info.id} trip_info={trip_info}  onHide={onHide} />}
+      {visible.godownReceipt && <GodownReceipt visible={visible.godownReceipt} trip_id={trip_info.id} trip_info={trip_info} onHide={onHide} />}
     </Card>
 
   )
