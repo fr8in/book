@@ -55,6 +55,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         name
       }
       partner{
+        id
         cardcode
         name
         drivers {
