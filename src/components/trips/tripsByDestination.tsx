@@ -57,10 +57,10 @@ subscription dashboard_trips_truks($regions: [Int!], $trip_status:String!, $bran
               name
             }
             tat
-            trip_comments(limit:1, order_by: {created_at: desc}) {
+            last_comment{
               description
-              created_by
               created_at
+              created_by
             }
           }
         }

@@ -133,7 +133,7 @@ const Trips = (props) => {
     {
       title: 'Comment',
       render: (text, record) => {
-        const comment = get(record, 'trip_comments[0].description', null)
+        const comment = get(record, 'last_comment.description', null)
         return <Truncate data={comment} length={26} />
       },
       width: props.intransit ? '9%' : '17%'

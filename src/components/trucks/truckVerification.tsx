@@ -19,12 +19,12 @@ query trucks(
        where: {truck_status: {name: {_in:$truck_statusName}}}) {
       id
       truck_no
-      truck_comments(limit:1,order_by:{created_at:desc}){
-        id
+      last_comment{
         topic
+        truck_id
         description
         created_at
-        created_by_id
+        created_by
       }
       truck_status {
         id
@@ -205,8 +205,7 @@ const TruckVerification = (props) => {
         dataIndex: 'reason',
         width: '35%',
         render: (text, record) => {
-          const comment = record.truck_comments && record.truck_comments.length > 0 &&
-        record.truck_comments[0].description ? record.truck_comments[0].description : '-'
+          const comment = record.last_comment && record.last_comment.description 
           return comment && comment.length > 12 ? (
             <Tooltip title={comment}>
               <span> {comment.slice(0, 12) + '...'}</span>

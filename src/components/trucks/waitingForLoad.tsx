@@ -120,7 +120,7 @@ const WaitingForLoad = (props) => {
     {
       title: 'Comment',
       render: (text, record) => {
-        const comment = record.truck_comments && record.truck_comments.length > 0 ? record.truck_comments[0].description : null
+        const comment = record.last_comment && record.last_comment.description 
         return (
           <Truncate data={comment} length={30} />
         )
