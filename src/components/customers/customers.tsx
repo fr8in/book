@@ -243,16 +243,7 @@ const CustomerKyc = (props) => {
       width: '10%',
       render: (text, record) => {
         const statusId = get(record, 'customer.status.id', null)
-        const files = record && record.customer && record.customer.customer_files
-  const pan_doc = files.filter(file => file.type === 'PAN')
-  const pan_files = pan_doc && pan_doc.length > 0 ? pan_doc.map((file, i) => {
-    return ({
-      uid: `${file.type}-${i}`,
-      name: file.file_path,
-      status: 'done'
-    })
-  }) : []
-  console.log('file', pan_doc)
+      const pan_files = record && record.customer && record.customer.customer_files.filter(file => file.type === 'PAN')
         return (
           <Space>
             {pan_files && pan_files.length > 0 ? (
@@ -261,8 +252,8 @@ const CustomerKyc = (props) => {
                size='small'
                 id={record.id}
                 type='customer'
-                file_type='PAN'
                 folder='pan/'
+                file_type='PAN'
                 file_list={pan_files}
               />
             </Space>

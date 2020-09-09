@@ -72,7 +72,7 @@ mutation insertToPay($to_pay: Float, $comment: String, $trip_id: Int!) {
 
 const TripTime = (props) => {
 
-  const { trip_info,trip_id} = props
+  const { trip_info} = props
   console.log('trip_info', trip_info)
   const initial = { checkbox: false, mail: false, deletePO: false,godownReceipt:false }
   const { visible, onShow, onHide } = useShowHide(initial)
@@ -84,13 +84,36 @@ const TripTime = (props) => {
 
   console.log('tripTime error', error)
 
+
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const loading_memo = get(_data, 'trip[0].loading_memo', [])
+  console.log('loading_memo', loading_memo)
+  console.log('_data',_data)
+
+  if (loading_memo) {
+    window.open(loading_memo, '_blank')
+  } else { 
+    null
+   }
+
+   const onWordClick =()=>{
+    console.log('trip_info.id',trip_info.id)
+    getWord({
+         variables:{id: trip_info.id}
+       }) 
+    }
+
   const [
     getPdf, 
-    {  loading : pdfloading , data : pdfdata, error : pdferror}
+    {  loading : pdfloading , data : pdfdata, error : pdferror , called : pdfcalled}
   ] = useLazyQuery(GET_PDF);
 
-  console.log('tripTime error', error)
+  console.log('tripTime error', pdferror)
 
+  
   let _pdfdata = {}
   if (!pdfloading) {
     _pdfdata = pdfdata
@@ -104,13 +127,6 @@ const TripTime = (props) => {
   } else { 
     null
    }
-
-  const onWordClick =()=>{
-    console.log('trip_info.id',trip_info.id)
-    getWord({
-         variables:{id: trip_info.id}
-       }) 
-    }
 
     const onPdfClick =()=>{
       console.log('trip_info.id',trip_info.id)
