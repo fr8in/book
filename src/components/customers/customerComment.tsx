@@ -9,12 +9,11 @@ const CUSTOMER_COMMENT_SUBSCRIPTION = gql`
       status{
         name
       }
-      last_comment{
+      customer_comments(limit:5,order_by:{created_at:desc}){
         id
-        customer_id
+        description
         created_at
         created_by
-        description
       }
     }
   }

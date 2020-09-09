@@ -334,7 +334,7 @@ const CustomerLead = () => {
       title: 'Comment',
       dataIndex: 'comment',
       render: (text, record) => {
-        const comment = get(record, 'customer_comments[0].description', '-')
+        const comment = get(record, 'last_comment.description', '-')
         return <Truncate data={comment} length={20} />
       }
     },

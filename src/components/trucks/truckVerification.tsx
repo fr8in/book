@@ -205,8 +205,7 @@ const TruckVerification = (props) => {
         dataIndex: 'reason',
         width: '35%',
         render: (text, record) => {
-          const comment = record.truck_comments && record.truck_comments.length > 0 &&
-        record.truck_comments[0].description ? record.truck_comments[0].description : '-'
+          const comment = record.last_comment && record.last_comment.description 
           return comment && comment.length > 12 ? (
             <Tooltip title={comment}>
               <span> {comment.slice(0, 12) + '...'}</span>
