@@ -79,7 +79,7 @@ const TripTime = (props) => {
 
   const [
     getWord, 
-    { loading, data , error}
+    { loading, data , error,called}
   ] = useLazyQuery(GET_WORD);
 
   console.log('tripTime error', error)
@@ -93,7 +93,7 @@ const TripTime = (props) => {
   console.log('loading_memo', loading_memo)
   console.log('_data',_data)
 
-  if (loading_memo) {
+  if (called && loading_memo) {
     window.open(loading_memo, '_blank')
   } else { 
     null
@@ -122,7 +122,7 @@ const TripTime = (props) => {
   console.log('loading_memo', pdf_loading_memo)
   console.log('_data',_pdfdata)
 
-  if (pdf_loading_memo) {
+  if (pdfcalled && pdf_loading_memo) {
     window.open(pdf_loading_memo, '_blank')
   } else { 
     null
