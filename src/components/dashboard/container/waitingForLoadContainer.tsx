@@ -42,7 +42,7 @@ subscription dashboard_trips($regions: [Int!], $branches: [Int!], $cities: [Int!
               mobile
             }
             tat
-            truck_comments(limit: 1, order_by: {created_at: desc}) {
+            last_comment{
               description
             }
           }

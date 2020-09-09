@@ -12,8 +12,6 @@ import {
 import {
   CloseOutlined,
   CheckOutlined,
-  EyeOutlined,
-  UploadOutlined,
   SearchOutlined
 } from '@ant-design/icons'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
@@ -35,6 +33,9 @@ const CUSTOMER_REJECT_MUTATION = gql`
     ) {
       id
       name
+      status{
+        name
+      }
     }
   }
 `
@@ -104,14 +105,21 @@ const CustomerKyc = (props) => {
     }
   })
 
-  const onSubmit = (id) => {
+  const onReject = (id) => {
     insertComment({
       variables: {
         status_id: 7,
         id: id
       }
+      // ,
+      // update (cache, data) {
+      //   const _result = data.data.update_customer_by_pk.status
+      //   console.log('cache:', cache, 'data:', data, { data: { [`customer:${_result.name}`]: _result.name } })
+      //   cache.writeData({ data: { [`customer:${_result.name}`]: _result.name } })
+      //   message.success(success)
+      //   localStorage.clear()
+      // }
     })
-    console.log('customers')
   }
 
   const newCustomer = [
@@ -128,12 +136,14 @@ const CustomerKyc = (props) => {
         const company = get(record, 'customer.name', '-')
         const cardcode = get(record, 'customer.cardcode', null)
         return (
-          <LinkComp
-            type='customers'
-            data={company}
-            id={cardcode}
-            length={12}
-          />)
+          cardcode ? (
+            <LinkComp
+              type='customers'
+              data={company}
+              id={cardcode}
+              length={12}
+            />) : company
+        )
       },
       filterDropdown: (
         <div>
@@ -192,10 +202,11 @@ const CustomerKyc = (props) => {
       width: '8%',
       render: (text, record) => {
         const statusId = get(record, 'customer.status.id', null)
+        const mamul = get(record, 'customer.system_mamul', null)
         return (
           <span>
             {statusId === 1 || statusId === 5 ? (
-              `${text || 0}` // TODO get mamul
+              `${mamul || 0}` // TODO get mamul
             ) : statusId === 3 || statusId === 4 ? (
               <Input
                 type='number'
@@ -243,23 +254,23 @@ const CustomerKyc = (props) => {
       width: '10%',
       render: (text, record) => {
         const statusId = get(record, 'customer.status.id', null)
-      const pan_files = record && record.customer && record.customer.customer_files.filter(file => file.type === 'PAN')
+        const pan_files = record && record.customer && record.customer.customer_files.filter(file => file.type === 'PAN')
         return (
           <Space>
             {pan_files && pan_files.length > 0 ? (
-            <Space>
-              <ViewFile
-               size='small'
-                id={record.id}
-                type='customer'
-                folder='pan/'
-                file_type='PAN'
-                file_list={pan_files}
-              />
-            </Space>
-          ) : (
+              <Space>
+                <ViewFile
+                  size='small'
+                  id={record.id}
+                  type='customer'
+                  folder='pan/'
+                  file_type='PAN'
+                  file_list={pan_files}
+                />
+              </Space>
+            ) : (
               <FileUploadOnly
-              size='small'
+                size='small'
                 id={record.id}
                 type='customer'
                 folder='pan/'
@@ -282,7 +293,7 @@ const CustomerKyc = (props) => {
                   title='Are you sure want to Reject the Customer?'
                   okText='Yes'
                   cancelText='No'
-                  onConfirm={() => onSubmit(record.id)}
+                  onConfirm={() => onReject(record.id)}
                 >
                   <Button
                     type='primary'

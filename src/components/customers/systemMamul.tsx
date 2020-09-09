@@ -35,7 +35,7 @@ const SystemMamul = (props) => {
   let mamul_summary = []
   let billed_orders = 0
   if (!loading) {
-    const customer = data.customer[0] ? data.customer[0] : null
+    const customer = data && data.customer[0] ? data.customer[0] : null
     mamul_summary = customer && customer.customer_mamul_summary[0] ? customer.customer_mamul_summary[0] : []
     mamul_summary.row_name = 'Sum'
     const billedOrders = mamul_summary.billed_orders

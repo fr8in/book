@@ -47,7 +47,7 @@ query partners(
     partner_users(limit:1 , where:{is_admin:{_eq:true}}){
       mobile
     }
-    partner_comments(limit:1,order_by:{created_at:desc}){
+    last_comment{
       partner_id
       description
       created_at
