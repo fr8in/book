@@ -26,7 +26,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
           id
           mobile
         }
-        truck_files{
+        truck_files(where: {deleted_at: {_is_null:true}}){
             id
               type
               file_path
@@ -52,7 +52,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
         partner {
           id
           name
-          partner_files{
+          partner_files(where: {deleted_at: {_is_null:true}}){
             id
                type
                file_path

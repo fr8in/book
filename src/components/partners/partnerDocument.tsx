@@ -12,55 +12,17 @@ const PartnerDocument = (props) => {
     console.log(key)
   }
   const files = partnerInfo.partner_files
-  const pan_doc = files.filter(file => file.type === 'PAN')
-  const pan_files = pan_doc && pan_doc.length > 0 ? pan_doc.map((file, i) => {
-    return ({
-      uid: `${file.type}-${i}`,
-      name: file.file_path,
-      status: 'done'
-    })
-  }) : []
-  console.log('file', pan_doc)
 
-  const cheaque_doc = files.filter(file => file.type === 'CL')
-  const cheaque_files = cheaque_doc && cheaque_doc.length > 0 ? cheaque_doc.map((file, i) => {
-    return ({
-      uid: `${file.type}-${i}`,
-      name: file.file_path,
-      status: 'done'
-    })
-  }) : []
-  console.log('file', cheaque_doc)
 
-  const tds_doc = files.filter(file => file.type === 'TDS')
-  const tds_files = tds_doc && tds_doc.length > 0 ? tds_doc.map((file, i) => {
-    return ({
-      uid: `${file.type}-${i}`,
-      name: file.file_path,
-      status: 'done'
-    })
-  }) : []
-  console.log('file', tds_doc)
+  const pan_files = files.filter(file => file.type === 'PAN')
 
-  const agreement_doc = files.filter(file => file.type === 'Agreement')
-  const agreement_files = agreement_doc && agreement_doc.length > 0 ? agreement_doc.map((file, i) => {
-    return ({
-      uid: `${file.type}-${i}`,
-      name: file.file_path,
-      status: 'done'
-    })
-  }) : []
-  console.log('file', agreement_doc)
+  const cheaque_files = files.filter(file => file.type === 'CL')
 
-  const cs_doc = files.filter(file => file.type === 'CS')
-  const cs_files = cs_doc && cs_doc.length > 0 ? cs_doc.map((file, i) => {
-    return ({
-      uid: `${file.type}-${i}`,
-      name: file.file_path,
-      status: 'done'
-    })
-  }) : []
-  console.log('file', cs_doc)
+  const tds_files = files.filter(file => file.type === 'TDS')
+
+  const agreement_files = files.filter(file => file.type === 'AGREEMENT')
+
+  const cs_files = files.filter(file => file.type === 'CS')
 
   return (
     <Tabs onChange={callback} type='card' size='small'>
