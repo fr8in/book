@@ -210,9 +210,9 @@ const TripTime = (props) => {
               <Col xs={8}>
                 <Form.Item label='Loading Memo'>
                   <Space>
-                    <Button type='primary' shape='circle' icon={<FilePdfOutlined />} onClick={onPdfClick} />
-                    <Button type='primary' shape='circle' icon={<FileWordOutlined />} onClick={onWordClick} />
-                    <Button shape='circle' icon={<MailOutlined />} onClick={() => onShow('mail')} />
+                    <Button type='primary' loading={pdfloading} shape='circle' icon={<FilePdfOutlined />} onClick={onPdfClick} />
+                    <Button type='primary' loading={loading} shape='circle' icon={<FileWordOutlined />} onClick={onWordClick} />
+                    {/* <Button shape='circle' icon={<MailOutlined />} onClick={() => onShow('mail')} /> */}
                   </Space>
                 </Form.Item>
               </Col>
