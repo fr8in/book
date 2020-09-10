@@ -26,7 +26,6 @@ subscription customer_users($cardcode: String) {
 
 const Branch = (props) => {
   const { cardcode } = props
-
   const initial = { visible: false, data: null }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
