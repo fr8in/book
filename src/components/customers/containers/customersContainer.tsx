@@ -1,54 +1,71 @@
 import { useState } from 'react'
 import { Row, Col, Card } from 'antd'
 import Customers from '../customers'
-import u from '../../../lib/util'
-import get from 'lodash/get'
 
 import { gql, useQuery } from '@apollo/client'
 
 const CUSTOMERS_QUERY = gql`
-  query customers($offset: Int!, $limit: Int!, $statusId: [Int!], $name: String, $mobile: String) {
-  customer_user(where: {customer: {status: {id: {_in: $statusId}}}, mobile: {_like: $mobile}, name: {_ilike: $name}}, offset: $offset, limit: $limit) {
-    id
-    name
-    mobile
-    customer {
+  query customers(
+    $offset: Int!
+    $limit: Int!
+    $statusId: [Int!]
+    $name: String
+    $mobile: String
+  ) {
+    customer(
+      offset: $offset
+      limit: $limit
+      where: {
+        status: { id: { _in: $statusId } }
+        mobile: { _like: $mobile }
+        name: { _ilike: $name }
+      }
+    ) {
+      id
       cardcode
-      name
-      customer_type_id
-      created_at
-      pan
-      customer_advance_percentage{
+      customer_users {
+        id
         name
       }
-      customer_files{
+      name
+      mobile
+      customer_type_id
+      customer_type{
         id
-        type
-        folder
-        file_path
-        created_at
-        customer_id
+        name
       }
+      created_at
+      pan
+      advance_percentage_id
+      system_mamul
       status {
         id
         name
       }
-      advance_percentage_id
-      customer_type {
-        name
+      customer_files(where:{deleted_at: {_is_null: true}}) {
+        type
+        file_path
+        folder
+        id
+        created_at
       }
     }
-  }
-  customer_user_aggregate(where: {customer: {status: {id: {_in: $statusId}}}, mobile: {_like: $mobile}, name: {_ilike: $name}}) {
-    aggregate {
-      count
+    customer_aggregate(
+      where: {
+        status: { id: { _in: $statusId } }
+        name: { _ilike: $name }
+        mobile: { _like: $mobile }
+      }
+    ) {
+      aggregate {
+        count
+      }
+    }
+    customer_status(order_by: { id: asc }, where:{name:{_neq:"Lead"}}) {
+      id
+      name
     }
   }
-  customer_status(order_by: {id: asc}) {
-    id
-    name
-  }
-}
 `
 
 const CustomersContainer = (props) => {
@@ -58,11 +75,11 @@ const CustomersContainer = (props) => {
     name: null,
     mobile: null,
     offset: 0,
-    limit: u.limit
+    limit: 10
   }
   const [filter, setFilter] = useState(initialFilter)
 
-  const variables = {
+  const customersQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
     statusId: filter.statusId,
@@ -71,24 +88,31 @@ const CustomersContainer = (props) => {
   }
 
   const { loading, error, data } = useQuery(CUSTOMERS_QUERY, {
-    variables: variables,
+    variables: customersQueryVars,
     fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true
   })
 
   console.log('CustomersContainer error', error)
-  let _data = {}
+  var customer = []
+  var customer_status = []
+  var customer_aggregate = 0
   if (!loading) {
-    _data = data
+    customer = data && data.customer
+    customer_status = data && data.customer_status
+    customer_aggregate = data && data.customer_aggregate
   }
-  const customer_user = get(_data, 'customer_user', null)
-  const customer_status = get(_data, 'customer_status', [])
-  const customer_aggregate = get(_data, 'customer_user_aggregate', null)
 
-  const customer_status_list = customer_status && customer_status.filter((data) => data.id !== 8)
+  const customer_status_list =
+    customer_status && customer_status.filter((data) => data.id !== 8)
 
-  const record_count = get(customer_aggregate, 'aggregate.count', 0)
+  const record_count =
+    customer_aggregate &&
+    customer_aggregate.aggregate &&
+    customer_aggregate.aggregate.count
+  const total_page = Math.ceil(record_count / filter.limit)
 
+  console.log('record_count', record_count)
   const onFilter = (value) => {
     setFilter({ ...filter, statusId: value })
   }
@@ -110,9 +134,10 @@ const CustomersContainer = (props) => {
       <Col sm={24}>
         <Card size='small' className='card-body-0 border-top-blue'>
           <Customers
-            customers={customer_user}
+            customers={customer}
             customer_status_list={customer_status_list}
             record_count={record_count}
+            total_page={total_page}
             filter={filter}
             onFilter={onFilter}
             onNameSearch={onNameSearch}

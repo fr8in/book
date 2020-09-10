@@ -24,6 +24,7 @@ import get from 'lodash/get'
 import FileUploadOnly from '../common/fileUploadOnly'
 import ViewFile from '../common/viewFile'
 import LinkComp from '../common/link'
+import isEmpty from 'lodash/isEmpty'
 
 const CUSTOMER_REJECT_MUTATION = gql`
   mutation customerReject($status_id: Int, $id: Int!) {
@@ -53,12 +54,12 @@ const CustomerKyc = (props) => {
     onPageChange
   } = props
 
+  console.log('customers', customers)
+
   const initial = {
     visible: false,
-    data: [],
-    title: null,
     createBranchVisible: false,
-    createBranchData: []
+    createBranchData: null
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const mamulInitial = { mamul: null, selectedId: null }
@@ -70,7 +71,7 @@ const CustomerKyc = (props) => {
     setDefaultMamul({
       ...defaultMamul,
       mamul: givenMamul,
-      selectedId: record.cardcode
+      selectedId: record.id
     })
   }
 
@@ -122,27 +123,42 @@ const CustomerKyc = (props) => {
     })
   }
 
+  const onApproval = (record, pan_files) => {
+    if (!defaultMamul.mamul) {
+      message.error('Enter mamul')
+    } else if (defaultMamul.mamul < 0) {
+      message.error("Mamul can't be negative")
+    } else if (pan_files && pan_files.length === 0) {
+      message.error('PAN document required!')
+    } else {
+      handleShow('createBranchVisible', null, 'createBranchData', record)
+    }
+  }
+
   const newCustomer = [
     {
       title: 'User Name',
-      dataIndex: 'name',
       width: '11%',
-      render: (text, record) => <Truncate data={text} length={14} />
+      render: (text, record) => {
+        const user = get(record, 'customer_users[0].name', '-')
+        return (
+          <Truncate data={user} length={14} />
+        )
+      }
     },
     {
       title: 'Company Name',
+      dataIndex: 'name',
       width: '11%',
       render: (text, record) => {
-        const company = get(record, 'customer.name', '-')
-        const cardcode = get(record, 'customer.cardcode', null)
         return (
-          cardcode ? (
+          record.cardcode ? (
             <LinkComp
               type='customers'
-              data={company}
-              id={cardcode}
+              data={text}
+              id={record.cardcode}
               length={12}
-            />) : company
+            />) : text
         )
       },
       filterDropdown: (
@@ -182,36 +198,36 @@ const CustomerKyc = (props) => {
     {
       title: 'Type',
       width: '8%',
-      render: (text, record) => get(record, 'customer.customer_type.name', '-')
+      render: (text, record) => get(record, 'customer_type.name', '-')
     },
     {
       title: 'Reg Date',
       width: '9%',
       render: (text, record) => {
-        const registered = get(record, 'customer.created_at', '-')
+        const registered = get(record, 'created_at', '-')
         return registered ? moment(registered).format('DD-MMM-YY') : '-'
       }
     },
     {
       title: 'PAN',
       width: '9%',
-      render: (text, record) => get(record, 'customer.pan', '-')
+      render: (text, record) => get(record, 'pan', null)
     },
     {
       title: 'Mamul',
       width: '8%',
       render: (text, record) => {
-        const statusId = get(record, 'customer.status.id', null)
-        const mamul = get(record, 'customer.system_mamul', null)
+        const statusId = get(record, 'status.id', null)
+        const mamul = get(record, 'system_mamul', null)
         return (
           <span>
             {statusId === 1 || statusId === 5 ? (
-              `${mamul || 0}` // TODO get mamul
+              `${mamul || 0}`
             ) : statusId === 3 || statusId === 4 ? (
               <Input
                 type='number'
                 min={0}
-                value={defaultMamul.selectedId === record.cardcode ? defaultMamul.mamul : ''}
+                value={defaultMamul.selectedId === record.id ? defaultMamul.mamul : ''}
                 defaultValue={defaultMamul.mamul}
                 onChange={(e) => onMamul(record, e)}
                 size='small'
@@ -225,8 +241,8 @@ const CustomerKyc = (props) => {
       title: 'Adv %',
       width: '10%',
       render: (text, record) => {
-        const advancePercentage = get(record, 'customer.customer_advance_percentage.name', '-')
-        const advancePercentageId = get(record, 'customer.advance_percentage.id', null)
+        const advancePercentage = get(record, 'customer_advance_percentage.name', '-')
+        const advancePercentageId = get(record, 'customer_advance_percentage.id', null)
         return (
           <CustomerAdvancePercentage
             advancePercentage={advancePercentage}
@@ -238,7 +254,7 @@ const CustomerKyc = (props) => {
     },
     {
       title: 'Status',
-      render: (text, record) => get(record, 'customer.status.name', null),
+      render: (text, record) => get(record, 'status.name', null),
       width: '14%',
       filterDropdown: (
         <Radio.Group
@@ -253,8 +269,8 @@ const CustomerKyc = (props) => {
       title: 'Action',
       width: '10%',
       render: (text, record) => {
-        const statusId = get(record, 'customer.status.id', null)
-        const pan_files = record && record.customer && record.customer.customer_files.filter(file => file.type === 'PAN')
+        const statusId = get(record, 'status.id', null)
+        const pan_files = record && record.customer_files.filter(file => file.type === 'PAN')
         return (
           <Space>
             {pan_files && pan_files.length > 0 ? (
@@ -286,8 +302,7 @@ const CustomerKyc = (props) => {
                   shape='circle'
                   className='btn-success'
                   icon={<CheckOutlined />}
-                  onClick={() =>
-                    handleShow('createBranchVisible', null, null, record)}
+                  onClick={() => onApproval(record, pan_files)}
                 />
                 <Popconfirm
                   title='Are you sure want to Reject the Customer?'
@@ -338,7 +353,8 @@ const CustomerKyc = (props) => {
         <BranchCreation
           visible={object.createBranchVisible}
           onHide={handleHide}
-          data={object.createBranchData}
+          customer_data={object.createBranchData}
+          mamul={defaultMamul.mamul}
         />
       )}
     </>
