@@ -1,10 +1,13 @@
-import React from 'react'
-import { Table, Input } from 'antd'
+import React, {useState} from 'react'
+import { Table, Input, Pagination } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import Truncate from '../../common/truncate'
 import Link from 'next/link'
-
-import pendingDetail from '../../../../mock/approval/approvalPending'
+import { gql, useQuery, useMutation } from '@apollo/client'
+import get from 'lodash/get'
+import moment from 'moment'
+import u from '../../../lib/util'
+import { APPROVALS_QUERY } from '../approvals/container/query/approvalsQuery'
 
 const creditType = [
   { value: 1, text: 'Credit Note' },
@@ -28,14 +31,47 @@ const requestedBy = [
 ]
 
 const ApprovedAndRejected = () => {
+
+  const pendingQueryVars = {
+    offset: 0,
+    limit: u.limit,
+    status: ["APPROVED","REJECTED"]  
+  }
+  const [filter, setFilter] = useState(pendingQueryVars)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const { loading, error, data } = useQuery(
+    APPROVALS_QUERY,
+   {
+     variables: pendingQueryVars,
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  }
+  )
+  console.log('pending error', error)
+  console.log('pending data', data)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+
+  const approvedAndRejected = get(_data, 'trip_credit_debit', null)
+  console.log('approvedAndRejected',approvedAndRejected)
+
+const pageChange = (page, pageSize) => {
+    const newOffset = page * pageSize - filter.limit
+    setCurrentPage(page)
+    setFilter({ ...filter, offset: newOffset })
+  }
+
   const ApprovalPending = [
     {
       title: 'Load ID',
-      dataIndex: 'loadId',
-      key: 'loadId',
+      dataIndex: 'trip_id',
+      key: 'trip_id',
       width: '7%',
       render: (text, record) => (
-        <Link href='/trips/[id]' as={`/trips/${record.loadId} `}>
+        <Link href='/trips/[id]' as={`/trips/${record.trip_id} `}>
           <a>{text}</a>
         </Link>
       ),
@@ -60,30 +96,31 @@ const ApprovedAndRejected = () => {
       dataIndex: 'issueType',
       key: 'issueType',
       filters: issueTypeList,
-      width: '10%'
+      width: '10%',
+      render: (text, record) => <Truncate data={get(record, 'credit_debit_type.name',null)} length={12} />
     },
     {
       title: 'Claim ₹',
-      dataIndex: 'claim',
+      dataIndex: 'amount',
       width: '6%'
     },
     {
       title: 'Approved ₹',
-      dataIndex: 'approved',
+      dataIndex: 'approved_amount',
       key: 'approved',
       width: '8%'
     },
     {
       title: 'Reason',
-      dataIndex: 'reason',
-      key: 'reason',
+      dataIndex: 'comment',
+      key: 'comment',
       width: '11%',
       render: (text, record) => <Truncate data={text} length={18} />
     },
     {
       title: 'Request By',
-      dataIndex: 'requestBy',
-      key: 'requestBy',
+      dataIndex: 'created_by',
+      key: 'created_by',
       filters: requestedBy,
       width: '12%',
       render: (text, record) => <Truncate data={text} length={18} />,
@@ -91,8 +128,8 @@ const ApprovedAndRejected = () => {
         <div>
           <Input
             placeholder='Search'
-            id='requestBy'
-            name='requestBy'
+            id='created_by'
+            name='created_by'
             type='number'
           />
         </div>
@@ -101,38 +138,51 @@ const ApprovedAndRejected = () => {
         <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
       )
     },
-
     {
       title: 'Req.On',
-      dataIndex: 'reqOn',
-      key: 'reqOn',
-      sorter: (a, b) => (a.reqOn > b.reqOn ? 1 : -1),
-      width: '7%'
+      dataIndex: 'created_at',
+      key: 'created_at',
+      sorter: (a, b) => (a.created_at > b.created_at ? 1 : -1),
+      width: '8%',
+      render: (text, record) => {
+        return text ? moment(text).format('DD-MMM-YY') : null
+      }
     },
     {
       title: 'Closed By',
-      dataIndex: 'closedBy',
-      key: 'closedBy',
+      dataIndex: 'approved_by',
+      key: 'approved_by',
       width: '11%',
       render: (text, record) => <Truncate data={text} length={18} />
     },
     {
       title: 'Remarks',
-      dataIndex: 'remarks',
-      key: 'remarks',
+      dataIndex: 'approval_comment',
+      key: 'approval_comment',
       width: '11%',
       render: (text, record) => <Truncate data={text} length={12} />
     }
   ]
 
   return (
+    <>
     <Table
       columns={ApprovalPending}
-      dataSource={pendingDetail}
+      dataSource={approvedAndRejected}
+      rowKey={(record) => record.id}
       size='small'
-      scroll={{ x: 1156, y: 400 }}
+      scroll={{ x: 1156, y: 550 }}
       pagination={false}
     />
+    <Pagination
+            size='small'
+            current={currentPage}
+            pageSize={filter.limit}
+            showSizeChanger={false}
+            onChange={pageChange}
+            className='text-right p10'
+          />
+   </>
   )
 }
 

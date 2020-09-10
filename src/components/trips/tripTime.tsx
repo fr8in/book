@@ -200,13 +200,8 @@ const TripTime = (props) => {
   const remove_sout = trip_info.trip_status && trip_info.trip_status.name === 'Intransit' && authorized
   const remove_dout = trip_info.trip_status && trip_info.trip_status.name === 'Delivered' && authorized
 
-<<<<<<< HEAD
-const toPayCheck = trip_info.source_in && trip_info.source_out && trip_info.destination_in &&trip_info.trip_prices.length > 0 && trip_info.trip_prices[0].to_pay ? true : false
-console.log('toPayCheck',toPayCheck)
-=======
   const toPayCheck = !!(trip_info.source_in && trip_info.source_out && trip_info.destination_in && (trip_info && trip_info.trip_prices[0] ? trip_info.trip_prices[0].to_pay : null))
   console.log('toPayCheck', toPayCheck)
->>>>>>> 574a312044bca19c3c50af9614706e5947df5a61
 
   const wh_files = trip_info && trip_info.trip_files && trip_info.trip_files.length > 0 ? trip_info.trip_files.filter(file => file.type === 'WH') : null
   console.log('wh', wh_files)
@@ -292,11 +287,7 @@ console.log('toPayCheck',toPayCheck)
                   {po_delete &&
                     <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>}
                   {process_advance &&
-<<<<<<< HEAD
                     <Button type='primary' onClick={onProcessAdvance} >Process Advance</Button>}
-=======
-                    <Button type='primary'>Process Advance</Button>}
->>>>>>> 574a312044bca19c3c50af9614706e5947df5a61
                   {remove_sout &&
                     <Button danger icon={<CloseCircleOutlined />} onClick={onSoutRemove}>Sout</Button>}
                   {remove_dout &&

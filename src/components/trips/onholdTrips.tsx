@@ -49,7 +49,7 @@ query partner_onhold($cardcode: String,$exp:float8_comparison_exp) {
 }`
     
 
-const onholdTrips = (props) => {
+const OnholdTrips = (props) => {
 
   const status_list = [
     { value: 1, text: 'Open' },
@@ -192,4 +192,4 @@ const onholdTrips = (props) => {
     </Modal>
   )
 }
-export default onholdTrips
+export default OnholdTrips

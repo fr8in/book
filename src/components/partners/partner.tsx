@@ -14,13 +14,13 @@ const PartnerInfo = (props) => {
   const membership = get(partner, 'partner_memberships[0].membership_type.id', null)
   const number = get(partner, 'partner_users[0].mobile', null)
   const partnerKycStatus = get(partner, 'partner_status.id', null)
-
+console.log('membership',membership)
   return (
     <>
       <Space align='center'>
         <CrownFilled
           style={{
-            color: membership ? '#FFD700' : '#C0C0C0',
+            color: membership === 1 ? '#C0C0C0' : membership === 2 ? '#FFD700' : '#E5E4E2' ,
             fontSize: '18px'
           }}
         />

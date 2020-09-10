@@ -1,9 +1,69 @@
 import { useState } from 'react'
-import { Row, Col, Radio, Input, Select, Form, Button } from 'antd'
+import { Row, Col, Radio, Input, Select, Form, Button, message } from 'antd'
+import { gql, useSubscription, useMutation } from '@apollo/client'
 
-const issueTypeList = [{ label: 'null', value: 1 }]
-const CreditNote = () => {
+const CREDIT_DEBIT_ISSUE_TYPE_SUBSCRIPTION = gql`
+subscription credit_debit_issue_type {
+  credit_debit_type(where: {active: {_eq: true}}) {
+    id
+    active
+    name
+  }
+}
+`
+const CREDIT_DEBIT_NOTES_MUTATION = gql`
+mutation create_credit_debit($credit_debit_type_id: Int, $amount: Float, $comment: String,$trip_id:Int,$type:bpchar,$created_by:String,$credit_debit_status_id:Int) {
+  insert_trip_credit_debit(objects: {credit_debit_type_id: $credit_debit_type_id, amount: $amount, comment: $comment,trip_id:$trip_id,type:$type,created_by:$created_by,credit_debit_status_id:$credit_debit_status_id}){
+    returning {
+      id
+      comment
+      trip_id
+    }
+  }
+}
+`
+const CreditNote = (props) => {
+  const {trip_id} = props
   const [radioType, setRadioType] = useState('Credit Note')
+
+  const { loading, error, data } = useSubscription(
+    CREDIT_DEBIT_ISSUE_TYPE_SUBSCRIPTION
+  )
+  console.log('creditDebitIsuueType error', error)
+  console.log('creditDebitIsuueType data', data)
+
+  const [upadateCreditDebitNote] = useMutation(
+    CREDIT_DEBIT_NOTES_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
+
+  var issue_type = []
+  if (!loading) {
+    issue_type = data.credit_debit_type
+  }
+
+  const issue_type_list = issue_type.map((data) => {
+    return { value: data.id, label: data.name }
+  })
+
+const create_credit_debit = (form) =>{
+  console.log('form',form)
+  upadateCreditDebitNote ({
+    variables:{
+      credit_debit_type_id: form.issue_type,
+      amount: parseFloat(form.amount),
+      comment: form.comment,
+      trip_id: parseInt(trip_id) ,
+      type: radioType === 'Credit Note' ? 'C' : 'D',
+      created_by: "pravalika",
+      credit_debit_status_id: 2
+    }   
+  })
+}
+
   return (
     <>
       <Row className='mb10'>
@@ -15,10 +75,10 @@ const CreditNote = () => {
           <Radio value='Debit Note'>Debit</Radio>
         </Radio.Group>
       </Row>
-      <Form layout='vertical'>
+      <Form layout='vertical' onFinish={create_credit_debit}>
         <Row gutter={10}>
           <Col xs={24} sm={12}>
-            <Form.Item label='Amount'>
+            <Form.Item label='Amount' name='amount'>
               <Input
                 id='amount'
                 maxLength={5}
@@ -27,18 +87,18 @@ const CreditNote = () => {
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
-            <Form.Item label='Issue Type'>
+            <Form.Item label='Issue Type' name='issue_type'>
               <Select
                 id='issueType'
                 placeholder='Select Issue Type'
-                options={issueTypeList}
+                options={issue_type_list}
               />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={10}>
           <Col flex='auto'>
-            <Form.Item label='Comment'>
+            <Form.Item label='Comment' name='comment'>
               <Input
                 id='comment'
                 type='textarea'
@@ -49,7 +109,7 @@ const CreditNote = () => {
           </Col>
           <Col flex='90px'>
             <Form.Item label='save' className='hideLabel'>
-              <Button type='primary'>Submit</Button>
+              <Button type='primary' htmlType='submit'>Submit</Button>
             </Form.Item>
           </Col>
         </Row>
