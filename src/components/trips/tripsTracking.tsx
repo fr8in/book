@@ -258,15 +258,14 @@ const TripsTracking = (props) => {
       title: 'Comment',
       width: '12%',
       render: (text, record) => {
-        const comment = record.trip_comments && record.trip_comments.length > 0 &&
-          record.trip_comments[0].description ? record.trip_comments[0].description : '-'
+        const comment = record.last_comment && record.last_comment.description
         return comment && comment.length > 12 ? (
           <Tooltip title={comment}>
             <span> {comment.slice(0, 12) + '...'}</span>
           </Tooltip>
         ) : (
-          comment
-        )
+            comment
+          )
       }
     },
     {

@@ -66,11 +66,12 @@ subscription partners($cardcode: String, $partner_id: bigint, $ongoing: [String!
       id
       mobile
     }
-    partner_files {
-      file_path
+    partner_files(where: {deleted_at: {_is_null:true}}) {
       id
-      folder
       type
+      folder
+      file_path
+      created_at
     }
     onboarded_by {
       id

@@ -99,7 +99,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         is_price_per_ton
         price_per_ton
       }
-      trip_files{
+      trip_files(where: {deleted_at: {_is_null:true}}){
         id
         type
         file_path

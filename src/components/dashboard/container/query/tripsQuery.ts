@@ -36,9 +36,9 @@ subscription dashboard_trips($regions: [Int!], $branches: [Int!], $cities: [Int!
               name
             }
             tat
-            trip_comments(limit: 1, order_by: {created_at: desc}) {
-              id
+            last_comment{
               description
+              id
             }
             truck {
               truck_no
