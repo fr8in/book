@@ -1,8 +1,8 @@
-
 import { Row, Col, Modal, Button, Input, Select, Form, message } from 'antd'
 import { useMutation, gql, useQuery } from '@apollo/client'
 import { useState } from 'react'
 import CitySelect from '../common/citySelect'
+import get from 'lodash/get'
 
 const CUSTOMER_BRANCH_QUERY = gql`
   query customerbranch{
@@ -23,8 +23,8 @@ mutation CustomerBranchInsert($address: String,$id:Int ,$branch_name: String, $m
 }
 `
 const UPDATE_CUSTOMER_BRANCH_MUTATION = gql`
-mutation CustomerBranchInsert($address: String, $id: Int, $branch_name: String, $mobile: String, $name: String, $customer_id: Int, $pincode: Int, $state_id: Int,$state:String, $city_id: Int,$city:String) {
-  update_customer_branch(_set: {address: $address, branch_name: $branch_name, city_id: $city_id,city:$city, mobile: $mobile, name: $name, pincode: $pincode, state_id: $state_id,state:$state}, where: {customer_id: {_eq: $customer_id}, id: {_eq:  $id}}) {
+mutation CustomerBranchInsert($address: String, $id: Int!, $branch_name: String, $mobile: String, $name: String, $pincode: Int, $state_id: Int,$state:String, $city_id: Int,$city:String) {
+  update_customer_branch(_set: {address: $address, branch_name: $branch_name, city_id: $city_id,city:$city, mobile: $mobile, name: $name, pincode: $pincode, state_id: $state_id,state:$state}, where: { id: {_eq:  $id}}) {
     returning {
       customer_id
       city 
@@ -38,8 +38,7 @@ mutation CustomerBranchInsert($address: String, $id: Int, $branch_name: String, 
 `
 
 const CreateCustomerBranch = (props) => {
-  const { visible, onHide, customerbranches } = props
-  console.log('customerbranches', customerbranches)
+  const { visible, onHide, customerbranches, customer_id } = props
   const initial = { city_id: null, state_name: null }
   const [obj, setObj] = useState(initial)
 
@@ -91,21 +90,38 @@ const CreateCustomerBranch = (props) => {
   }
 
   const onAddBranch = (form) => {
-    console.log('inside form submit', form, obj)
-    insertCustomerBranch({
-      variables: {
-        city_id: obj.city_id,
-        city: form.city.split(',')[0],
-        id: customerbranches,
-        mobile: form.mobile,
-        name: form.name,
-        address: form.address,
-        pincode: form.pincode,
-        state_id: form.state_id,
-        state: obj.state_name,
-        branch_name: form.branch_name
-      }
-    })
+    if (customerbranches) {
+      updateCustomerBranch({
+        variables: {
+          city_id: obj.city_id,
+          city: form.city.split(',')[0],
+          id: customerbranches.id,
+          mobile: form.mobile,
+          name: form.name,
+          address: form.address,
+          pincode: form.pincode,
+          state_id: form.state_id,
+          state: obj.state_name,
+          branch_name: form.branch_name
+        }
+      })
+    }
+    else {
+      insertCustomerBranch({
+        variables: {
+          city_id: obj.city_id,
+          city: form.city.split(',')[0],
+          id: customer_id,
+          mobile: form.mobile,
+          name: form.name,
+          address: form.address,
+          pincode: form.pincode,
+          state_id: form.state_id,
+          state: obj.state_name,
+          branch_name: form.branch_name
+        }
+      })
+    }
   }
 
   return (
@@ -120,13 +136,13 @@ const CreateCustomerBranch = (props) => {
         <Row>
           <Col xs={24}>
             <Form layout='vertical' onFinish={onAddBranch}>
-              <Form.Item name='branch_name' >
+              <Form.Item name='branch_name' initialValue={get(customerbranches, 'branch_name', null)}>
                 <Input placeholder='Branch Name' />
               </Form.Item>
-              <Form.Item name='name'>
+              <Form.Item name='name' initialValue={get(customerbranches, 'name', null)}>
                 <Input placeholder='Name' />
               </Form.Item>
-              <Form.Item name='address'>
+              <Form.Item name='address' initialValue={get(customerbranches, 'address', null)}>
                 <Input placeholder='Building No ,Address' />
               </Form.Item>
               <Row gutter={6}>
@@ -134,6 +150,7 @@ const CreateCustomerBranch = (props) => {
                   <CitySelect
                     label='City'
                     name='city'
+                    initialValue={get(customerbranches, 'city', null)}
                     onChange={onCityChange}
                   />
                 </Col>
@@ -141,20 +158,21 @@ const CreateCustomerBranch = (props) => {
                   <Form.Item
                     label='State'
                     name='state_id'
+                    initialValue={get(customerbranches, 'state_id', null)}
                     rules={[{ required: true, message: 'State is required field' }]}
                   >
-                    <Select defaultValue='' onChange={onStateChange} options={StateList} />
+                    <Select onChange={onStateChange} options={StateList} />
                   </Form.Item>
                 </Col>
               </Row>
               <Row gutter={6}>
                 <Col xs={12}>
-                  <Form.Item name='pincode'>
+                  <Form.Item name='pincode' initialValue={get(customerbranches, 'pincode', null)} >
                     <Input placeholder='Pin Code' />
                   </Form.Item>
                 </Col>
                 <Col xs={12}>
-                  <Form.Item name='mobile'>
+                  <Form.Item name='mobile' initialValue={get(customerbranches, 'mobile', null)}>
                     <Input placeholder='Contact Number' />
                   </Form.Item>
                 </Col>
@@ -174,3 +192,4 @@ const CreateCustomerBranch = (props) => {
 }
 
 export default CreateCustomerBranch
+

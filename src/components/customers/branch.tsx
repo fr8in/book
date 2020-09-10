@@ -1,9 +1,9 @@
 import { Table, Button } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
-import EditBranch from '../customers/createCustomerBranch'
 import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
-import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
+import EditBranch from '../customers/createCustomerBranch'
+import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 
 const CUSTOMER_BRANCH = gql`
 subscription customer_users($cardcode: String) {
@@ -27,11 +27,8 @@ subscription customer_users($cardcode: String) {
 const Branch = (props) => {
   const { cardcode } = props
 
-  const initial = {
-    customerBranchVisible: false,
-    customerBranchData: null
-  }
-  const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+  const initial = { visible: false, data: null }
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
   const { loading, data, error } = useSubscription(
     CUSTOMER_BRANCH,
@@ -90,14 +87,14 @@ const Branch = (props) => {
           <Button
             type='link'
             icon={<EditOutlined />}
-            onClick={() => handleShow('customerBranchVisible', null, 'customerBranchdata', record)}
+            onClick={() => handleShow('visible', null, 'data', record)}
           />
         )
       },
       width: '10%'
     }
   ]
-  console.log('customerbranches={}', object.customerBranchData)
+
   return (
     <>
       <Table
@@ -110,13 +107,12 @@ const Branch = (props) => {
         className='withAction'
         loading={loading}
       />
-      {object.customerBranchVisible && (
+      {object.visible &&
         <EditBranch
-          visible={object.customerBranchVisible}
+          visible={object.visible}
+          customerbranches={object.data}
           onHide={handleHide}
-          customerbranches={object.customerBranchData}
-        />
-      )}
+        />}
     </>
   )
 }
