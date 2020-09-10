@@ -13,16 +13,11 @@ const CUSTOMER_BRANCH_QUERY = gql`
   }
 `
 const INSERT_CUSTOMER_BRANCH_MUTATION = gql`
-mutation CustomerBranchInsert($address: String,$id:Int ,$branch_name: String, $mobile: String, $name: String, $pincode: Int, $state: Int,$city_id:Int) {
-  insert_customer_branch(objects: {customer_id:$id,address: $address, branch_name: $branch_name, mobile: $mobile, name: $name, pincode: $pincode, city_id: $city_id, state_id: $state}) {
+mutation CustomerBranchInsert($address: String,$id:Int ,$branch_name: String, $mobile: String, $name: String, $pincode: Int, $state_id: Int,$state:String, $city_id: Int,$city:String) {
+  insert_customer_branch(objects: {customer_id:$id,address: $address, branch_name: $branch_name, mobile: $mobile, name: $name, pincode: $pincode,state_id: $state_id,state:$state,city_id: $city_id,city:$city}) {
     returning {
       customer_id
-      city{
-        name
-      }
-      state{
-        name
-      }
+      state
     }
   }
 }
@@ -46,7 +41,7 @@ mutation CustomerBranchInsert($address: String, $id: Int, $branch_name: String, 
 const CreateCustomerBranch = (props) => {
   const { visible, onHide, customerbranches } = props
 console.log('customerbranches',customerbranches)
-  const initial = { city_id: null }
+  const initial = { city_id: null,state_name:null}
   const [obj, setObj] = useState(initial)
   
   const { loading, error, data } = useQuery(
@@ -65,6 +60,7 @@ console.log('customerbranches',customerbranches)
       onCompleted () {
         message.success('Updated!!')
         setObj(initial)
+         
       }
     }
   )
@@ -90,27 +86,30 @@ console.log('customerbranches',customerbranches)
   })
 
   const onCityChange = (city_id) => {
-    setObj({ ...obj, city_id: city_id })
+    setObj({ ...obj, city_id: city_id})
   }
+  const onStateChange = (id,option) => {
+    setObj({...obj, state_name:option.label})
+  }
+
+  
 
   const onAddBranch = (form) => {
     console.log('inside form submit', form, obj)
     insertCustomerBranch({
       variables: {
         city_id: obj.city_id,
+        city:form.city.split(',')[0],
         id: customerbranches,
         mobile: form.mobile,
         name: form.name,
         address: form.address,
         pincode: form.pincode,
-        state:form.state,
+        state_id:form.state_id,
+        state:obj.state_name,
         branch_name: form.branch_name
       }
     })
-  }
-
-  const handleChange = (value) => {
-      console.log(`selected ${value}`) 
   }
 
   return (
@@ -138,16 +137,17 @@ console.log('customerbranches',customerbranches)
                 <Col xs={12}>
                   <CitySelect
                     label='City'
+                    name='city'
                     onChange={onCityChange}
                   />
                 </Col>
                 <Col xs={12}>
                   <Form.Item
                     label='State'
-                    name='state'
+                    name= 'state_id' 
                     rules={[{ required: true, message: 'State is required field' }]}
                   >
-                    <Select defaultValue='' onChange={handleChange} options={StateList} />
+                    <Select defaultValue='' onChange={onStateChange} options={StateList} />
                   </Form.Item>
                 </Col>
               </Row>

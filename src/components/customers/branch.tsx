@@ -1,9 +1,10 @@
 import { Table, Button } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 import EditBranch from '../customers/createCustomerBranch'
-import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
+// import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
+import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 
 const CUSTOMER_BRANCH = gql`
 subscription customer_users($cardcode: String) {
@@ -14,12 +15,10 @@ subscription customer_users($cardcode: String) {
         branch_name
         name
         address
-        state {
-         name
-        }
-        city {
-         name
-        }
+        state_id
+        state
+        city
+        city_id
         pincode
         mobile
       }
@@ -31,7 +30,6 @@ const Branch = (props) => {
 
   const initial = {
     customerBranchVisible: false,
-    title: null,
     customerBranchData: null
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
@@ -69,12 +67,12 @@ const Branch = (props) => {
     {
       title: 'City',
       width: '10%',
-      render: (text, record) => get(record, 'city.name', null)
+      render: (text, record) => get(record, 'city', null)
     },
     {
       title: 'State',
       width: '10%',
-      render: (text, record) => get(record, 'state.name', null)
+      render: (text, record) => get(record, 'state', null)
     },
     {
       title: 'Pin',
@@ -88,19 +86,20 @@ const Branch = (props) => {
     },
     {
       title: 'Action',
-      render: (text, record) => (
-        <span>
-          <Button
+      render: (text, record) => {
+        console.log('record',record)
+        return(  
+        <Button
             type='link'
             icon={<EditOutlined />}
-            onClick={() => handleShow('customerBranchVisible', null, 'customerBranchdata', get(record, 'customer_branches.id', null))}
+            onClick={() => handleShow('customerBranchVisible', null, 'customerBranchdata', record)}
           />
-        </span>
-      ),
+        )
+        },
       width: '10%'
     }
   ]
-
+console.log('customerbranches={}',object.customerBranchData)
   return (
     <>
       <Table
@@ -118,7 +117,6 @@ const Branch = (props) => {
           visible={object.customerBranchVisible}
           onHide={handleHide}
           customerbranches={object.customerBranchData}
-          title={object.title}
         />
       )}
     </>
