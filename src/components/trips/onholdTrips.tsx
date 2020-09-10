@@ -1,5 +1,5 @@
-import { Modal, Table } from 'antd'
-import onholdData from '../../../mock/trip/onholdTrips'
+import { Modal, Table, Checkbox } from 'antd'
+import { useState } from 'react'
 import get from 'lodash/get'
 
 import { gql, useQuery } from '@apollo/client'
@@ -49,17 +49,21 @@ query partner_onhold($cardcode: String,$exp:float8_comparison_exp) {
 }`
     
 
-
 const onholdTrips = (props) => {
-  const { visible, onHide ,cardcode} = props
 
-  const statusList = [
+  const status_list = [
     { value: 1, text: 'Open' },
-    { value: 11, text: 'Closed' }
+    { value: 2, text: 'Closed' }
   ]
 
+  const { visible, onHide ,cardcode} = props
+  const [ filter , setFilter ] = useState('')
+  console.log('filter',filter)
   const { loading, error, data } = useQuery(ONHOLD_TRIPS_QUERY, {
-    variables: {cardcode:cardcode},
+    variables: {
+      cardcode:cardcode,
+      exp:filter.length > 1 ? null : filter[0]==="Closed" ? {"_eq": 0} : filter[0]==="Open" ? {"_neq":  0} : null
+    },
     fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true
   })
@@ -77,51 +81,60 @@ const onholdTrips = (props) => {
   console.log('trips',trips)
   console.log('partner',partner)
 
+  
+  const trip_status = status_list.map((data) => {
+    return { value: data.text, label: data.text }
+  })
+  
+     const handleStatusList = (checked) => {
+       console.log('checked',checked)
+      setFilter( checked )
+    }
   const columns = [
     {
       title: 'LoadId',
       dataIndex: 'id',
       sorter: (a, b) => (a.id > b.id ? 1 : -1),
-      width: '6%',
+      width: '7%',
       render: (text, record) => get(record, 'id',null)
     },
     {
       title: 'Source',
       dataIndex: 'name',
-      width: '7%',
+      width: '8%',
       render: (text, record) => get(record, 'source.name',null)
     },
     {
       title: 'Destination',
       dataIndex: 'name',
-      width: '8%',
+      width: '9%',
       render: (text, record) => get(record, 'destination.name',null)
     },
     {
       title: 'Truck',
       dataIndex: 'truck_no',
       sorter: (a, b) => (a.truck_no > b.truck_no ? 1 : -1),
-      width: '8%',
+      width: '9%',
       render: (text, record) => get(record, 'truck.truck_no',null)
     },
     {
       title: 'Type',
       dataIndex: 'type',
-      width: '6%',
+      width: '10%',
       render: (text, record) => get(record, 'truck.truck_type.name',null)
     },
     {
       title: 'Partner',
       dataIndex: 'name',
       sorter: (a, b) => (a.partner > b.partner ? 1 : -1),
-      width: '11%',
+      width: '13%',
       render: (text, record) => get(record, 'partner.name',null)
     },
     {
       title: 'Customer',
       dataIndex: 'name',
       sorter: (a, b) => (a.customer > b.customer ? 1 : -1),
-      width: '13%',
+      width: '16%',
       render: (text, record) => get(record, 'customer.name',null)
     },
     {
@@ -135,7 +148,7 @@ const onholdTrips = (props) => {
       title: 'On-hold',
       dataIndex: 'onhold',
       sorter: (a, b) => (a.onhold > b.onhold ? 1 : -1),
-      width: '10%',
+      width: '8%',
       render: (text, record) => get(record, 'trip_payables_aggregate.aggregate.sum.amount',null)
     },
     {
@@ -147,10 +160,17 @@ const onholdTrips = (props) => {
     {
       title: 'Status',
       dataIndex: 'status',
-      filters: statusList,
       width: '8%',
       render: (text, record) => 
-         get(record, 'trip_payables_aggregate.aggregate.sum.amount',0) !== 0 ? 'open' : 'closed'
+         get(record, 'trip_payables_aggregate.aggregate.sum.amount',0) !== 0 ? 'open' : 'closed',
+      filterDropdown: (
+        <Checkbox.Group
+          options={trip_status}
+          //defaultValue={filter.status_list}
+          onChange={handleStatusList}
+          className='filter-drop-down'
+        />
+      )
     }
   ]
 
