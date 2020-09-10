@@ -5,47 +5,45 @@ import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
 
 const ONHOLD_TRIPS_QUERY = gql`
-query partner_onhold($cardcode: String) {
+query partner_onhold($cardcode: String,$exp:float8_comparison_exp) {
   partner(where: {cardcode: {_eq: $cardcode}}) {
-    trips(where: {_and: [{trip_payables: {name: {_eq: "On-Hold"}}}, {deleted_at: {_is_null: true}}]}) {
+    trips(where: {_and: [{trip_payables: {name: {_eq: "On-Hold"},amount:$exp}}, {deleted_at: {_is_null: true}}]}) {
       id
       paid_tat
-      source{
+      source {
         id
         name
       }
-      destination{
+      destination {
         id
         name
       }
-      truck{
+      trip_prices(limit: 1) {
+        partner_price
+      }
+      truck {
         id
         truck_no
-        truck_type{
+        truck_type {
           id
           name
         }
       }
-      partner{
+      partner {
         id
         name
       }
-      customer{
+      customer {
         id
         name
       }
-      trip_payables_aggregate(where: {_and: 
-        [
-          {name: {_eq: "On-Hold"}}, 
-          {deleted_at: {_is_null: true}}
-        ]}) {
+      trip_payables_aggregate(where: {_and: [{name: {_eq: "On-Hold"}}, {deleted_at: {_is_null: true}}]}) {
         aggregate {
           sum {
             amount
           }
         }
       }
-
     }
   }
 }`
@@ -56,7 +54,7 @@ const onholdTrips = (props) => {
   const { visible, onHide ,cardcode} = props
 
   const statusList = [
-    { value: 1, text: 'Opened' },
+    { value: 1, text: 'Open' },
     { value: 11, text: 'Closed' }
   ]
 
@@ -90,7 +88,7 @@ const onholdTrips = (props) => {
     {
       title: 'Source',
       dataIndex: 'name',
-      width: '8%',
+      width: '7%',
       render: (text, record) => get(record, 'source.name',null)
     },
     {
@@ -116,43 +114,33 @@ const onholdTrips = (props) => {
       title: 'Partner',
       dataIndex: 'name',
       sorter: (a, b) => (a.partner > b.partner ? 1 : -1),
-      width: '8%',
+      width: '11%',
       render: (text, record) => get(record, 'partner.name',null)
     },
     {
       title: 'Customer',
       dataIndex: 'name',
       sorter: (a, b) => (a.customer > b.customer ? 1 : -1),
-      width: '12%',
+      width: '13%',
       render: (text, record) => get(record, 'customer.name',null)
     },
     {
       title: 'Price',
       dataIndex: 'price',
       sorter: (a, b) => (a.price > b.price ? 1 : -1),
-      width: '6%'
+      width: '6%',
+      render: (text, record) => get(record, 'trip_prices[0].partner_price',null)
     },
     {
       title: 'On-hold',
       dataIndex: 'onhold',
       sorter: (a, b) => (a.onhold > b.onhold ? 1 : -1),
-      width: '10%'
-    },
-    {
-      title: 'S/D',
-      dataIndex: 'sd',
-      sorter: (a, b) => (a.sd > b.sd ? 1 : -1),
-      width: '6%'
-    },
-    {
-      title: 'Released',
-      dataIndex: 'released',
-      sorter: (a, b) => (a.released > b.released ? 1 : -1),
-      width: '6%'
+      width: '10%',
+      render: (text, record) => get(record, 'trip_payables_aggregate.aggregate.sum.amount',null)
     },
     {
       title: 'Aging',
-      dataIndex: 'aging',
+      dataIndex: 'paid_tat',
       sorter: (a, b) => (a.aging > b.aging ? 1 : -1),
       width: '6%'
     },
@@ -160,7 +148,9 @@ const onholdTrips = (props) => {
       title: 'Status',
       dataIndex: 'status',
       filters: statusList,
-      width: '12%'
+      width: '8%',
+      render: (text, record) => 
+         get(record, 'trip_payables_aggregate.aggregate.sum.amount',0) !== 0 ? 'open' : 'closed'
     }
   ]
 

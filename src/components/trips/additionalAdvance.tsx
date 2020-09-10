@@ -1,11 +1,50 @@
 import { Table } from 'antd'
-import data from '../../../mock/trip/additionalAdvance'
+import { gql, useQuery} from '@apollo/client'
+import get from 'lodash/get'
 
-const AdditionalAdvance = () => {
+
+const ADDITIONAL_ADVANCE_QUERY = gql`
+query additional_advance($trip_id: Int!) {
+  trip(where: {id: {_eq: $trip_id}}) {
+    additional_advance{
+      id
+      trip_id
+      amount
+      comment
+      created_by
+      created_on
+      payment_mode
+      status
+    }
+  }
+}
+`
+
+const AdditionalAdvance = (props) => {
+
+
+console.log('AD trip_id',props)
+  const { loading, error, data } = useQuery(
+    ADDITIONAL_ADVANCE_QUERY, {
+      variables:{trip_id:props.ad_trip_id} ,
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  })
+
+  console.log('Additional advance error', error)
+
+  var _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const additionalAdvance = get(_data, 'trip[0].additional_advance', [])
+  console.log('additionalAdvance', additionalAdvance)
+
+
   const columns = [
     {
       title: 'Type',
-      dataIndex: 'paymentMode',
+      dataIndex: 'payment_mode',
       width: '8%'
     },
     {
@@ -25,12 +64,12 @@ const AdditionalAdvance = () => {
     },
     {
       title: 'Created By',
-      dataIndex: 'createdBy',
+      dataIndex: 'created_by',
       width: '22%'
     },
     {
       title: 'Created On',
-      dataIndex: 'createdOn',
+      dataIndex: 'created_on',
       render: (text, record) => {
         return text
       },
@@ -43,7 +82,7 @@ const AdditionalAdvance = () => {
         ? (
           <Table
             columns={columns}
-            dataSource={data}
+            dataSource={additionalAdvance}
             rowKey={record => record.id}
             size='small'
             scroll={{ x: 960 }}

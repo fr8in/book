@@ -69,7 +69,14 @@ mutation insertToPay($to_pay: Float, $comment: String, $trip_id: Int!) {
   }
 }
 `
-
+const PROCESS_ADVANCE_MUTATION = gql`
+mutation ($tripId: Int!, $createdBy: String!) {
+  process_partner_advance(trip_id: $tripId, created_by: $createdBy) {
+    description
+    status
+  }
+}
+`
 const TripTime = (props) => {
 
   const { trip_info,trip_id} = props
@@ -99,11 +106,11 @@ const TripTime = (props) => {
   console.log('loading_memo', pdf_loading_memo)
   console.log('_data',_pdfdata)
 
-  if (pdf_loading_memo) {
-    window.open(pdf_loading_memo, '_blank')
-  } else { 
-    null
-   }
+  // if (pdf_loading_memo) {
+  //   window.open(pdf_loading_memo, '_blank')
+  // } else { 
+  //   null
+  //  }
 
   const onWordClick =()=>{
     console.log('trip_info.id',trip_info.id)
@@ -143,6 +150,14 @@ const TripTime = (props) => {
     }
   )
 
+  const [processAdvance] = useMutation(
+    PROCESS_ADVANCE_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
+
   const onSoutRemove = () => {
     removeSout({
       variables: {
@@ -156,6 +171,14 @@ const TripTime = (props) => {
       variables: {
         id: trip_info.id,
         destination_out: null
+      }
+    })
+  }
+  const onProcessAdvance = () => {
+    processAdvance({
+      variables: {
+        tripId: trip_info.id,
+        createdBy: 'shilpa.v@fr8.in'
       }
     })
   }
@@ -180,7 +203,7 @@ const TripTime = (props) => {
   const remove_sout = trip_info.trip_status && trip_info.trip_status.name === 'Intransit' && authorized
   const remove_dout = trip_info.trip_status && trip_info.trip_status.name === 'Delivered' && authorized
 
-const toPayCheck = trip_info.source_in && trip_info.source_out && trip_info.destination_in && trip_info.trip_prices[0].to_pay ? true : false
+const toPayCheck = trip_info.source_in && trip_info.source_out && trip_info.destination_in &&trip_info.trip_prices.length > 0 && trip_info.trip_prices[0].to_pay ? true : false
 console.log('toPayCheck',toPayCheck)
 
   const wh_files = trip_info && trip_info.trip_files && trip_info.trip_files.length > 0 ?trip_info.trip_files.filter(file => file.type === 'WH') : null
@@ -267,7 +290,7 @@ console.log('toPayCheck',toPayCheck)
                   {po_delete &&
                     <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>}
                   {process_advance &&
-                    <Button type='primary' >Process Advance</Button>}
+                    <Button type='primary' onClick={onProcessAdvance} >Process Advance</Button>}
                   {remove_sout &&
                     <Button danger icon={<CloseCircleOutlined />} onClick={onSoutRemove}>Sout</Button>}
                   {remove_dout &&
