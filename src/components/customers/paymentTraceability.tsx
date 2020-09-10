@@ -5,12 +5,14 @@ import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import WalletTopup from './walletTopup'
 import useShowHide from '../../hooks/useShowHide'
+import _ from 'lodash'
 
 const INCOMING_PAYMENT = gql`
 query customer_booking($cardcode: String) {
   customer(where: {cardcode: {_eq: $cardcode}}) {
     id
     cardcode
+    walletcode
     customer_incomings(where: {balance: {_neq: 0}}) {
       id
       created_at
@@ -18,18 +20,19 @@ query customer_booking($cardcode: String) {
       booked
       balance
       comment
+      customer_incoming_id
     }
   }
 }
 `
 const PaymentTraceability = (props) => {
-  const { selectedRowKeys, selectOnchange,cardcode,wallet_balance } = props
+  const { selectedRowKeys, selectOnchange, cardcode, wallet_balance, amount, setAmount, form } = props
   const { visible, onShow, onHide } = useShowHide('')
 
   const { loading, data, error } = useQuery(
     INCOMING_PAYMENT,
     {
-      variables: {cardcode:cardcode} 
+      variables: { cardcode: cardcode }
     }
   )
 
@@ -40,59 +43,65 @@ const PaymentTraceability = (props) => {
     _data = data
   }
 
-  const customer = get(_data, 'customer[0]', [])
-  const customer_incomings = get(customer, 'customer_incomings', 0)
+  const customer = get(_data, 'customer[0]', null)
+  const customer_incomings = get(customer, 'customer_incomings', [])
+  console.log('customer_incomings', customer_incomings)
+  const onAmountChange = (e) => {
+    setAmount(e.target.value)
+    if (form) {
+      form.setFieldsValue({ amount: e.target.value })
+    }
+  }
 
   const columns = [{
     title: 'Date',
     dataIndex: 'created_at',
-    key: 'created_at',
-    width: '15%',
+    width: '12%',
     render: (text, record) => text ? moment(text).format('DD-MMM-YY') : null
   },
   {
     title: 'Amount',
     dataIndex: 'recevied',
-    key: 'recevied',
-    width: '15%'
+    width: '12%',
+    sorter: (a, b) => (a.recevied > b.recevied ? 1 : -1)
   },
   {
     title: 'Booked',
     dataIndex: 'booked',
-    key: 'booked',
-    width: '15%'
+    width: '12%',
+    sorter: (a, b) => (a.booked > b.booked ? 1 : -1)
   },
   {
     title: 'Balance',
     dataIndex: 'balance',
-    key: 'balance',
-    width: '15%'
+    width: '12%',
+    sorter: (a, b) => (a.balance > b.balance ? 1 : -1)
   },
   {
     title: 'Book Now',
-    width: '15%',
+    dataIndex: 'amount',
+    width: '12%',
     render: (text, record) => {
+      const enableSelectedRows = _.includes(selectedRowKeys, record.id)
       return (
-        // selectedRow && selectedRow.length > 0 && selectedRow.find(data => data.key === record.key)
-        <Input />
+        <Input size='small' value={enableSelectedRows ? amount : null} disabled={!enableSelectedRows} onChange={onAmountChange} />
       )
     }
   },
   {
     title: 'Remarks',
     dataIndex: 'comment',
-    key: 'comment',
-    width: '15%',
-    render: (text, record) => <Truncate data={text} length={20} />
+    width: '40%',
+    render: (text, record) => <Truncate data={text} length={36} />
   }
   ]
 
   return (
     <Card
       size='small'
-      className='card-body-0 mb10'
+      className='card-body-0'
       title={wallet_balance}
-      extra={<Button type='primary' size='small' onClick={() => onShow('wallet')} > Wallet Top-up </Button>}
+      extra={<Button type='primary' size='small' onClick={() => onShow('wallet')}> Wallet Top-up </Button>}
     >
       <Table
         rowSelection={{
@@ -104,12 +113,12 @@ const PaymentTraceability = (props) => {
         dataSource={customer_incomings}
         rowKey={(record) => record.id}
         size='small'
-        scroll={{ x: 780, y: 400 }}
+        scroll={{ x: 780, y: 250 }}
         pagination={false}
       />
       {visible.wallet && (
-                <WalletTopup visible={visible.wallet} onHide={onHide}  />
-              )}
+        <WalletTopup visible={visible.wallet} onHide={onHide} walletcode={customer.walletcode} />
+      )}
     </Card>
   )
 }

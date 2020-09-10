@@ -3,6 +3,7 @@ import IncomingPaymentsBooked from './incomingPaymentsBooked'
 import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
+import Truncate from '../common/truncate'
 
 const INCOMING_PAYMENT = gql`
 query customer_booking($cardcode: String) {
@@ -57,33 +58,32 @@ const BookedDetail = (props) => {
   const columns = [{
     title: 'Date',
     dataIndex: 'created_at',
-    key: 'created_at',
-    width: '15%',
+    width: '14%',
     render: (text, render) => text ? moment(text).format('DD-MMM-YY') : '-'
   },
   {
     title: 'Amount',
     dataIndex: 'recevied',
-    key: 'recevied',
-    width: '10%'
+    width: '12%',
+    sorter: (a, b) => (a.recevied > b.recevied ? 1 : -1)
   },
   {
     title: 'Booked',
     dataIndex: 'booked',
-    key: 'booked',
-    width: '10%'
+    width: '12%',
+    sorter: (a, b) => (a.booked > b.booked ? 1 : -1)
   },
   {
     title: 'Balance',
     dataIndex: 'balance',
-    key: 'balance',
-    width: '10%'
+    width: '12%',
+    sorter: (a, b) => (a.balance > b.balance ? 1 : -1)
   },
   {
     title: 'Remarks',
     dataIndex: 'comment',
-    key: 'comment',
-    width: '60%'
+    width: '50%',
+    render: (text, record) => <Truncate data={text} length={40} />
   }]
 
   return (

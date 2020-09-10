@@ -1,6 +1,7 @@
-import { Modal, Form, Input, Select, message, Row, Col, Button, Space } from 'antd'
+import { Modal, Form, Input, Select, message, Row, Col, Button } from 'antd'
 import React from 'react'
 import { gql, useMutation, useQuery } from '@apollo/client'
+import u from '../../lib/util'
 
 const ADD_BRANCH_SUBSCRIPTION = gql`
  query add_branch{
@@ -20,13 +21,15 @@ mutation insert_branch(
   $name: String!,
   $region_id: Int,
   $displayposition: Int,
-  $data: [branch_employee_insert_input!]!
+  $emp_data: [branch_employee_insert_input!]!
+  $target_data: [branch_weekly_target_insert_input!]!
 ) {
   insert_branch(objects: {
-    name: $name, 
-    branch_employees: {data: $data},
+    name: $name,
     region_id: $region_id,
-    displayposition: $displayposition
+    displayposition: $displayposition,
+    branch_employees: {data: $emp_data},
+    branch_weekly_targets: {data: $target_data}
   }) {
     returning{
       id
@@ -82,12 +85,15 @@ const AddBranch = (props) => {
     const bm = [
       { employee_id: form.bm_id, is_manager: true }
     ]
+    const period = u.getWeekNumber(new Date())
+    const target_data = [{ week: period.week, year: period.year, trip_target: form.target }]
     updateBranch({
       variables: {
         name: form.name,
-        data: form.bm_id && form.traffic_id ? bm_traffic : bm,
         region_id: form.region,
-        displayposition: form.display_position
+        displayposition: form.display_position,
+        emp_data: form.bm_id && form.traffic_id ? bm_traffic : bm,
+        target_data: target_data
       }
     })
   }
@@ -104,30 +110,44 @@ const AddBranch = (props) => {
           <Input placeholder='Branch Name' />
         </Form.Item>
         <Form.Item name='bm_id'>
-          <Select placeholder='Branch Manager'>
-            <Select.Option options={employeeList} value='Branch Manager'> </Select.Option>
-          </Select>
+          <Select
+            placeholder='Branch Manager'
+            options={employeeList}
+            optionFilterProp='label'
+            showSearch
+          />
         </Form.Item>
         <Form.Item name='traffic_id'>
-          <Select placeholder='Traffic Coordinator'>
-            <Select.Option options={employeeList} value='Traffic Coordinator'> </Select.Option>
-          </Select>
+          <Select
+            placeholder='Traffic Coordinator'
+            options={employeeList}
+            optionFilterProp='label'
+            showSearch
+          />
         </Form.Item>
         <Form.Item name='display_position'>
           <Input placeholder='Display Position' />
         </Form.Item>
-        <Form.Item name='region'>
-          <Select placeholder='Region'>
-            <Select.Option options={regionList} value='Region'> </Select.Option>
-          </Select>
-        </Form.Item>
-
+        <Row gutter={10}>
+          <Col xs={24} sm={12}>
+            <Form.Item name='region'>
+              <Select
+                placeholder='Region'
+                optionFilterProp='label'
+                options={regionList}
+                showSearch
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Form.Item name='target'>
+              <Input placeholder='Weekly target' type='number' />
+            </Form.Item>
+          </Col>
+        </Row>
         <Row justify='end'>
           <Col xs={24} className='text-right'>
-            <Space>
-              <Button>Cancel</Button>
-              <Button type='primary' htmlType='submit'>Submit</Button>
-            </Space>
+            <Button type='primary' htmlType='submit'>Submit</Button>
           </Col>
         </Row>
       </Form>

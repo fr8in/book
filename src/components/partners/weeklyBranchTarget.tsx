@@ -6,16 +6,31 @@ import get from 'lodash/get'
 import sumBy from 'lodash/sumBy'
 
 const WEEKLY_TARGET_QUERY = gql`
-subscription monthly($week: [Int!], $year: [Int!]) {
-  analytics_weekly_booking(where: {_and: {week: {_in: $week}, year: {_in: $year}}}, order_by: {displayposition: asc}) {
-    trip_actual
-    trip_target
-    branch_id
+subscription monthly($week1: Int!,$week2: Int!,$week3: Int!, $year1: Int!, $year2: Int!, $year3: Int!) {
+  branch(order_by:{displayposition: asc}) {
+    id
+    name
     displayposition
-    week
-    year
-    branch{
-      name
+    week1: weekly_booking(where: {_and: {week: {_eq: $week1}, year: {_eq: $year1}}}) {
+      trip_actual
+      trip_target
+      branch_id
+      week
+      year
+    }
+    week2: weekly_booking(where: {_and: {week: {_eq: $week2}, year: {_eq: $year2}}}) {
+      trip_actual
+      trip_target
+      branch_id
+      week
+      year
+    }
+    week3: weekly_booking(where: {_and: {week: {_eq: $week3}, year: {_eq: $year3}}}) {
+      trip_actual
+      trip_target
+      branch_id
+      week
+      year
     }
   }
 }
@@ -34,7 +49,14 @@ const WeeklyBranchTarget = (props) => {
   const { loading, data, error } = useSubscription(
     WEEKLY_TARGET_QUERY,
     {
-      variables: { week: week, year: year }
+      variables: {
+        week1: week[0],
+        week2: week[1],
+        week3: week[2],
+        year1: year[0],
+        year2: (year.length > 1 ? year[1] : year[0]),
+        year3: (year.length > 1 ? year[1] : year[0])
+      }
     }
   )
 
@@ -43,41 +65,10 @@ const WeeklyBranchTarget = (props) => {
   if (!loading) {
     _data = data
   }
-  const weekly_booking = get(_data, 'analytics_weekly_booking', [])
+  const branch = get(_data, 'branch', [])
 
-  const w1 = weekly_booking.filter(data => data.week === week[0] && data.year === year[0])
-  const w2 = weekly_booking.filter(data => data.week === week[1] && data.year === (year.length > 1 ? year[1] : year[0]))
-  const w3 = weekly_booking.filter(data => data.week === week[2] && data.year === (year.length > 1 ? year[1] : year[0]))
-
-  const weekly_target = w1.map((data, i) => {
-    return ({
-      branch_id: data.branch_id,
-      branch_name: get(data, 'branch.name', null),
-      displayposition: data.displayposition,
-      w1: {
-        week: data.week,
-        year: data.year,
-        trip_actual: data.trip_actual,
-        trip_target: data.trip_target
-      },
-      w2: {
-        week: (w2[i] && w2[i].branch_id) === data.branch_id ? w2[i].week : null,
-        year: (w2[i] && w2[i].branch_id) === data.branch_id ? w2[i].year : null,
-        trip_actual: (w2[i] && w2[i].branch_id) === data.branch_id ? w2[i].trip_actual : null,
-        trip_target: (w2[i] && w2[i].branch_id) === data.branch_id ? w2[i].trip_target : null
-      },
-      w3: {
-        week: (w3[i] && w3[i].branch_id) === data.branch_id ? w3[i].week : null,
-        year: (w3[i] && w3[i].branch_id) === data.branch_id ? w3[i].year : null,
-        trip_actual: (w3[i] && w3[i].branch_id) === data.branch_id ? w3[i].trip_actual : null,
-        trip_target: (w3[i] && w3[i].branch_id) === data.branch_id ? w3[i].trip_target : null
-      }
-    })
-  })
-  console.log('WeeklyBranchTarget weekly_booking', weekly_target)
-
-  const branchTargetWeekly = weekly_target.map(data => {
-    const targetAvg = get(data, 'w1.trip_target', 0) / 7
+  const branchTargetWeekly = branch.map(data => {
+    const targetAvg = get(data, 'week1[0].trip_target', 0) / 7
     const d = new Date()
     const startFromSunday = d.getDay() + 1 // FR8 week start at sunday
     const n = startFromSunday > 7 ? 1 : startFromSunday
@@ -85,12 +76,14 @@ const WeeklyBranchTarget = (props) => {
     return { week_day_target, ...data }
   })
 
-  const w1_actual = sumBy(weekly_target, 'w1.trip_actual')
-  const w1_target = sumBy(weekly_target, 'w1.trip_target')
-  const w2_actual = sumBy(weekly_target, 'w2.trip_actual')
-  const w2_target = sumBy(weekly_target, 'w2.trip_target')
-  const w3_actual = sumBy(weekly_target, 'w3.trip_actual')
-  const w3_target = sumBy(weekly_target, 'w3.trip_target')
+  console.log('WeeklyBranchTarget weekly_booking', branchTargetWeekly)
+
+  const w1_actual = sumBy(branch, 'week1[0].trip_actual')
+  const w1_target = sumBy(branch, 'week1[0].trip_target')
+  const w2_actual = sumBy(branch, 'week2[0].trip_actual')
+  const w2_target = sumBy(branch, 'week2[0].trip_target')
+  const w3_actual = sumBy(branch, 'week3[0].trip_actual')
+  const w3_target = sumBy(branch, 'week3[0].trip_target')
 
   const currentMonthTitle = (
     <Title
@@ -111,7 +104,7 @@ const WeeklyBranchTarget = (props) => {
   const columns = [
     {
       title: 'Branch',
-      dataIndex: 'branch_name',
+      dataIndex: 'name',
       width: '24%'
     },
     {
@@ -119,8 +112,8 @@ const WeeklyBranchTarget = (props) => {
       width: '28%',
       className: 'alignRight',
       render: (text, record) => {
-        const actual = get(record, 'w1.trip_actual')
-        const target = get(record, 'w1.trip_target')
+        const actual = get(record, 'week1[0].trip_actual', 0)
+        const target = get(record, 'week1[0].trip_target', 0)
         return (
           <span>
             {`${actual} / ${record.week_day_target} `}
@@ -134,8 +127,8 @@ const WeeklyBranchTarget = (props) => {
       width: '24%',
       className: 'alignRight',
       render: (text, record) => {
-        const actual = get(record, 'w2.trip_actual')
-        const target = get(record, 'w2.trip_target')
+        const actual = get(record, 'week2[0].trip_actual', 0)
+        const target = get(record, 'week2[0].trip_target', 0)
         return (
           <span>{`${actual} / ${target || 0}`}</span>
         )
@@ -146,8 +139,8 @@ const WeeklyBranchTarget = (props) => {
       width: '24%',
       className: 'alignRight',
       render: (text, record) => {
-        const actual = get(record, 'w3.trip_actual')
-        const target = get(record, 'w3.trip_target')
+        const actual = get(record, 'week3[0].trip_actual', 0)
+        const target = get(record, 'week3[0].trip_target', 0)
         return (
           <span>{`${actual} / ${target || 0}`}</span>
         )
@@ -179,7 +172,7 @@ const WeeklyBranchTarget = (props) => {
         size='small'
         pagination={false}
         scroll={{ x: 400, y: 420 }}
-        rowKey={record => record.branch_id}
+        rowKey={record => record.id}
         className='weeklyTarget'
         loading={loading}
       />
