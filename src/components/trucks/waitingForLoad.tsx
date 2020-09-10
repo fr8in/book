@@ -15,7 +15,7 @@ const WaitingForLoad = (props) => {
     usersVisible: false,
     commentData: [],
     commentVisible: false,
-    poData: [],
+    truckId: [],
     poVisible: false,
     editVisible: false,
     editData: [],
@@ -142,7 +142,7 @@ const WaitingForLoad = (props) => {
               <Button type='link' icon={<WhatsAppOutlined />} />
             </Tooltip> */}
             <Tooltip title='Quick PO'>
-              <Button type='link' icon={<RocketFilled />} onClick={() => handleShow('poVisible', record, 'poData', record)} />
+              <Button type='link' icon={<RocketFilled />} onClick={() => handleShow('poVisible', record, 'truckId', record.id)} />
             </Tooltip>
           </span>
         )
@@ -180,7 +180,7 @@ const WaitingForLoad = (props) => {
       {object.poVisible &&
         <CreatePo
           visible={object.poVisible}
-          po_data={object.poData}
+          truck_id={object.truckId}
           onHide={handleHide}
         />}
 

@@ -3,89 +3,114 @@ import { Modal, Row, Button, Form, Col, Select, Card, Divider, message } from 'a
 import Link from 'next/link'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
+import get from 'lodash/get'
+
+const PO_QUERY = gql`
+query po_query($id: Int!){
+  truck(where:{id: {_eq: $id}}) {
+    id
+    truck_no
+    truck_type{
+      id
+      name
+    }
+    partner{
+      id
+      name
+      partner_advance_percentage{
+        id
+        name
+      }
+    }
+  }
+}`
 
 const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
-  search_customer(args:{search:$search}, where:{customer:{status:{name:{_eq:"Active"}}}}){
+  search_customer(args:{search:$search}){
     id
     description
   }
 }`
-
+//, where:{customer:{status:{name:{_eq:"Active"}}}}
 const CREATE_PO = gql`
-mutation create_po (
-    $po_date: timestamptz,
-    $source_id: Int, 
-    $destination_id: Int, 
-    $customer_id: Int,
-  	$customer_Branch: Int
-    $partner_id:Int,
-    $customer_price: Float,
-  	$partner_price: Float,
-    $ton: float8,
-    $per_ton:float8,
-    $is_per_ton:Boolean, 
-    $mamul: Float,
-    $including_loading: Boolean,
-    $including_unloading: Boolean,
-    $bank:Float,
-    $cash: Float,
-    $to_pay: Float,
-    $truck_id:Int,
-  	$truck_type_id: Int,
-    $driver: String ) {
-  insert_trip(objects: {
-    po_date:$po_date
-    source_id: $source_id, 
-    destination_id: $destination_id, 
-    customer_id: $customer_id,
-    partner_id: $partner_id,
-    truck_id: $truck_id,
-    truck_type_id: $truck_type_id,
-    driver: $driver,
-    customer_branch_id:$customer_Branch,
-    trip_prices: {
-      data: {
-        customer_price: $customer_price,
-        partner_price: $partner_price,
-        ton: $ton,
-        price_per_ton:$per_ton,
-        is_price_per_ton: $is_per_ton,
-        mamul: $mamul,
-        including_loading: $including_loading,
-        including_unloading: $including_unloading,
-        bank: $bank,
-        to_pay:$to_pay,
-        cash:$cash
+  mutation create_po (
+      $po_date: timestamptz,
+      $source_id: Int, 
+      $destination_id: Int, 
+      $customer_id: Int,
+      $customer_Branch: Int
+      $partner_id:Int,
+      $customer_price: Float,
+      $partner_price: Float,
+      $ton: float8,
+      $per_ton:float8,
+      $is_per_ton:Boolean, 
+      $mamul: Float,
+      $including_loading: Boolean,
+      $including_unloading: Boolean,
+      $bank:Float,
+      $cash: Float,
+      $to_pay: Float,
+      $truck_id:Int,
+      $truck_type_id: Int,
+      $driver: String ) {
+    insert_trip(objects: {
+      po_date:$po_date
+      source_id: $source_id, 
+      destination_id: $destination_id, 
+      customer_id: $customer_id,
+      partner_id: $partner_id,
+      truck_id: $truck_id,
+      truck_type_id: $truck_type_id,
+      driver: $driver,
+      customer_branch_id:$customer_Branch,
+      trip_prices: {
+        data: {
+          customer_price: $customer_price,
+          partner_price: $partner_price,
+          ton: $ton,
+          price_per_ton:$per_ton,
+          is_price_per_ton: $is_per_ton,
+          mamul: $mamul,
+          including_loading: $including_loading,
+          including_unloading: $including_unloading,
+          bank: $bank,
+          to_pay:$to_pay,
+          cash:$cash
+        }
+      }
+    }) {
+      returning {
+        id
       }
     }
-  }) {
-    returning {
-      id
-    }
-  }
-}`
+  }`
 
 const CustomerPo = (props) => {
-  const { visible, onHide, po_data } = props
+  const { visible, onHide, truck_id } = props
 
   const [form] = Form.useForm()
-
   const initial = { search: '', customer_id: null, source_id: null, destination_id: null }
   const [obj, setObj] = useState(initial)
 
   const { loading, error, data } = useQuery(
-    CUSTOMER_SEARCH,
+    PO_QUERY,
     {
-      variables: { search: obj.search || '' }
+      variables: { id: truck_id },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
     }
   )
 
-  console.log('CreateExcessLoad Error', error)
-  let _data = {}
-  if (!loading) {
-    _data = data
-  }
-  const customerSearch = _data.search_customer
+  const { loading: search_loading, error: search_error, data: search_data } = useQuery(
+    CUSTOMER_SEARCH,
+    {
+      variables: { search: obj.search || '' },
+      skip: !(obj.search),
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
+  )
 
   const [create_po_mutation] = useMutation(
     CREATE_PO,
@@ -98,6 +123,19 @@ const CustomerPo = (props) => {
       }
     }
   )
+
+  console.log('CreateExcessLoad Search Error', search_error)
+  console.log('CreateExcessLoad Error', error)
+
+  let _search_data = {}
+  if (!search_loading) {
+    _search_data = search_data
+  }
+
+  if (loading) return null
+
+  const customerSearch = get(_search_data, 'search_customer', '')
+  const po_data = get(data, 'truck[0]', null)
 
   const onSubmit = (form) => {
     const loading_charge = form.charge_inclue.includes('Loading')
@@ -149,7 +187,6 @@ const CustomerPo = (props) => {
   const onCusSelect = (value, customer) => {
     setObj({ ...obj, customer_id: customer.key })
   }
-
   const partner_name = po_data && po_data.partner && po_data.partner.name
   return (
     <Modal
