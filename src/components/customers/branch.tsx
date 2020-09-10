@@ -1,7 +1,6 @@
 import { Table, Button } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 import EditBranch from '../customers/createCustomerBranch'
-// import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
@@ -58,7 +57,6 @@ const Branch = (props) => {
       dataIndex: 'name',
       width: '10%'
     },
-
     {
       title: 'Address',
       dataIndex: 'address',
@@ -87,19 +85,19 @@ const Branch = (props) => {
     {
       title: 'Action',
       render: (text, record) => {
-        console.log('record',record)
-        return(  
-        <Button
+        console.log('record', record)
+        return (
+          <Button
             type='link'
             icon={<EditOutlined />}
             onClick={() => handleShow('customerBranchVisible', null, 'customerBranchdata', record)}
           />
         )
-        },
+      },
       width: '10%'
     }
   ]
-console.log('customerbranches={}',object.customerBranchData)
+  console.log('customerbranches={}', object.customerBranchData)
   return (
     <>
       <Table

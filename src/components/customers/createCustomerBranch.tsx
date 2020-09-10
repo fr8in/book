@@ -23,16 +23,15 @@ mutation CustomerBranchInsert($address: String,$id:Int ,$branch_name: String, $m
 }
 `
 const UPDATE_CUSTOMER_BRANCH_MUTATION = gql`
-mutation CustomerBranchInsert($address: String, $id: Int, $branch_name: String, $mobile: String, $name: String, $customer_id: Int, $pincode: Int, $state: Int, $city_id: Int) {
-  update_customer_branch(_set: {address: $address, branch_name: $branch_name, city_id: $city_id, mobile: $mobile, name: $name, pincode: $pincode, state_id: $state}, where: {customer_id: {_eq: $customer_id}, id: {_eq:  $id}}) {
+mutation CustomerBranchInsert($address: String, $id: Int, $branch_name: String, $mobile: String, $name: String, $customer_id: Int, $pincode: Int, $state_id: Int,$state:String, $city_id: Int,$city:String) {
+  update_customer_branch(_set: {address: $address, branch_name: $branch_name, city_id: $city_id,city:$city, mobile: $mobile, name: $name, pincode: $pincode, state_id: $state_id,state:$state}, where: {customer_id: {_eq: $customer_id}, id: {_eq:  $id}}) {
     returning {
       customer_id
-      city {
-        name
-      }
-      state {
-        name
-      }
+      city 
+      city_id
+      state 
+      state_id
+      name
     }
   }
 }
@@ -40,10 +39,10 @@ mutation CustomerBranchInsert($address: String, $id: Int, $branch_name: String, 
 
 const CreateCustomerBranch = (props) => {
   const { visible, onHide, customerbranches } = props
-console.log('customerbranches',customerbranches)
-  const initial = { city_id: null,state_name:null}
+  console.log('customerbranches', customerbranches)
+  const initial = { city_id: null, state_name: null }
   const [obj, setObj] = useState(initial)
-  
+
   const { loading, error, data } = useQuery(
     CUSTOMER_BRANCH_QUERY,
     {
@@ -56,11 +55,10 @@ console.log('customerbranches',customerbranches)
   const [insertCustomerBranch] = useMutation(
     INSERT_CUSTOMER_BRANCH_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() {
         message.success('Updated!!')
         setObj(initial)
-         
       }
     }
   )
@@ -68,8 +66,8 @@ console.log('customerbranches',customerbranches)
   const [updateCustomerBranch] = useMutation(
     UPDATE_CUSTOMER_BRANCH_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() {
         message.success('Updated!!')
         setObj(initial)
       }
@@ -86,27 +84,25 @@ console.log('customerbranches',customerbranches)
   })
 
   const onCityChange = (city_id) => {
-    setObj({ ...obj, city_id: city_id})
+    setObj({ ...obj, city_id: city_id })
   }
-  const onStateChange = (id,option) => {
-    setObj({...obj, state_name:option.label})
+  const onStateChange = (id, option) => {
+    setObj({ ...obj, state_name: option.label })
   }
-
-  
 
   const onAddBranch = (form) => {
     console.log('inside form submit', form, obj)
     insertCustomerBranch({
       variables: {
         city_id: obj.city_id,
-        city:form.city.split(',')[0],
+        city: form.city.split(',')[0],
         id: customerbranches,
         mobile: form.mobile,
         name: form.name,
         address: form.address,
         pincode: form.pincode,
-        state_id:form.state_id,
-        state:obj.state_name,
+        state_id: form.state_id,
+        state: obj.state_name,
         branch_name: form.branch_name
       }
     })
@@ -144,7 +140,7 @@ console.log('customerbranches',customerbranches)
                 <Col xs={12}>
                   <Form.Item
                     label='State'
-                    name= 'state_id' 
+                    name='state_id'
                     rules={[{ required: true, message: 'State is required field' }]}
                   >
                     <Select defaultValue='' onChange={onStateChange} options={StateList} />
