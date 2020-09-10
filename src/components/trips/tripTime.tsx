@@ -249,13 +249,14 @@ const TripTime = (props) => {
                 <Checkbox disabled={!!(trip_info && trip_info.unloaded_private_godown === true)} onClick={() => onShow('godownReceipt')}>Unloaded at private godown</Checkbox>
               </Col>
               <Col xs={4} className='text-right'>
+              {wh_files && wh_files.length > 0 ? (
                 <ViewFile
                   id={trip_info.id}
                   type='trip'
                   folder='warehousereceipt/'
                   file_type='WH'
                   file_list={wh_files}
-                />
+                />) : (null)}
               </Col>
             </Row>
             <Row>
