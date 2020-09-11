@@ -4,6 +4,7 @@ import Link from 'next/link'
 import moment from 'moment'
 import { gql, useMutation } from '@apollo/client'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
+import get from 'lodash/get'
 
 const DELETE_LEAD = gql`
 mutation delete_lead($deleted_at: timestamp, $id: Int){
@@ -71,20 +72,27 @@ const ExcessLoadLead = (props) => {
   },
   {
     title: 'Action',
-    render: (text, record) => (
-      <Space>
-        <Select
-          placeholder='Select Truck'
-        />
-        <Button type='link' icon={<RocketFilled />} />
-        <Tooltip title='Delete'>
-          <Button type='link' danger icon={<DeleteOutlined />} onClick={() => handleShow('cancel_visible', null, 'record', record.id)} />
-        </Tooltip>
-        {/* <Tooltip title='Double Click to Copy Text'>
+    render: (text, record) => {
+      const trucks = get(record, 'partner.trucks', [])
+      const trucks_list = trucks.map((data) => ({ value: data.id, label: data.truck_no }))
+      return (
+        <Space>
+          <Select
+            placeholder='Select truck...'
+            options={trucks_list}
+            optionFilterProp='label'
+            showSearch
+          />
+          <Button type='link' icon={<RocketFilled />} />
+          <Tooltip title='Delete'>
+            <Button type='link' danger icon={<DeleteOutlined />} onClick={() => handleShow('cancel_visible', null, 'record', record.id)} />
+          </Tooltip>
+          {/* <Tooltip title='Double Click to Copy Text'>
           <Button type='link' icon={<WhatsAppOutlined />} />
         </Tooltip> */}
-      </Space>
-    ),
+        </Space>
+      )
+    },
     width: '30%'
   }
   ]
