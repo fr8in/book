@@ -36,7 +36,7 @@ mutation TripDriver($driver_id:Int,$trip_id:Int) {
 `
 
 const Driver = (props) => {
-  const { trip_info } = props
+  const { trip_info ,initialValue} = props
 
   const partner_id = trip_info && trip_info.partner &&  trip_info.partner.id
 
@@ -118,7 +118,7 @@ const Driver = (props) => {
   }
   console.log('drivers', drivers)
   return (
-    <Form.Item label='Driver' name='driver' >
+    <Form.Item label='Driver' name='driver' initialValue={initialValue}>
       <Select
         showSearch
         placeholder='Select or Enter Driver'
