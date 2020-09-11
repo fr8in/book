@@ -174,7 +174,8 @@ const TruckDetailContainer = (props) => {
           }
           extra={
             <Space>
-              <Button type='primary' shape='circle' onClick={() => onShow('poModal')} icon={<SnippetsOutlined />} />
+              {truck_info && truck_info.truck_status && truck_info.truck_status.name && truck_info.truck_status.name === 'Waiting for Load' &&
+                <Button type='primary' shape='circle' onClick={() => onShow('poModal')} icon={<SnippetsOutlined />} />}
               <Tag className='status'>{truck_info && truck_info.truck_status && truck_info.truck_status.name}</Tag>
             </Space>
           }
