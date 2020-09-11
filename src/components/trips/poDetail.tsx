@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Row, Col, Form, DatePicker, Input, Checkbox, Radio, Divider } from 'antd'
+import { Row, Col, Form, DatePicker, Input, Checkbox, Radio, Divider, Select } from 'antd'
 import CitySelect from '../common/citySelect'
 import Loading from '../common/loading'
 import { gql, useQuery } from '@apollo/client'
 import Driver from '../partners/driver'
 import SystemMamul from '../customers/systemMamul'
 import useShowHide from '../../hooks/useShowHide'
+import get from 'lodash/get'
 
 const CUSTOMER_PO_DATA = gql`
 query customers_po($id:Int!){
@@ -15,7 +16,7 @@ query customers_po($id:Int!){
     name
     exception_date
     managed
-    advancePercentage{
+    customer_advance_percentage{
       id
       name
     }
@@ -23,9 +24,7 @@ query customers_po($id:Int!){
       id
       name
     }
-    customer_mamul_summary{
-      system_mamul_avg
-    }
+    system_mamul
     customer_users{
       id
       name
@@ -34,7 +33,7 @@ query customers_po($id:Int!){
   }
 }`
 const PoDetail = (props) => {
-  const { customer_id, po_data, onSourceChange, onDestinationChange, form } = props
+  const { customer_id, po_data, onSourceChange, onDestinationChange, form, driver_id } = props
 
   const initial = {
     part_price: 0,
@@ -65,15 +64,17 @@ const PoDetail = (props) => {
   if (!loading) {
     _data = data
   }
-  const customer = _data && _data.customer ? _data.customer[0] : null
-  const default_mamul = customer && customer.customer_mamul_summary && customer.customer_mamul_summary.length > 0 ? customer.customer_mamul_summary[0].system_mamul_avg : 0
+  const customer = get(_data, 'customer[0]', null)
+  const customer_user = get(customer, 'customer_users', [])
+  const default_mamul = get(customer, 'system_mamul', null)
 
-  console.log('customer', customer)
+  const customer_user_list = customer_user.map((data) => {
+    return { value: data.id, label: `${data.name.slice(0, 10)} - ${data.mobile}` }
+  })
 
   const rate_per_ton = (trip_price.rate_type === 'Rate/Ton')
-  const customer_advance_percentage = customer && customer.advancePercentage && customer.advancePercentage.name
+  const customer_advance_percentage = customer && customer.customer_advance_percentage && customer.customer_advance_percentage.name
   const partner_advance_percentage = po_data && po_data.partner_advance_percentage && po_data.partner_advance_percentage.name
-  console.log('trip_price', trip_price, po_data)
 
   useEffect(() => {
     form.setFieldsValue({ mamul: default_mamul })
@@ -198,9 +199,11 @@ const PoDetail = (props) => {
           </Col>
           <Col xs={12} sm={6}>
             <Form.Item label='Loading Point Contact' name='loading_contact'>
-              <Input
-                placeholder='loading Point Contact'
-                disabled={false}
+              <Select
+                placeholder='Customer Type ....'
+                options={customer_user_list}
+                optionFilterProp='label'
+                showSearch
               />
             </Form.Item>
           </Col>
@@ -350,7 +353,7 @@ const PoDetail = (props) => {
                 </Form.Item>
               </Col>
               <Col xs={12}>
-                <Driver partner_id={po_data.id} />
+                <Driver partner_id={po_data.id} driver_id={driver_id} />
               </Col>
             </Row>
           </Col>

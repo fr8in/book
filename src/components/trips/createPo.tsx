@@ -34,11 +34,10 @@ const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
 //, where:{customer:{status:{name:{_eq:"Active"}}}}
 const CREATE_PO = gql`
   mutation create_po (
-      $po_date: timestamptz,
+      $po_date: timestamp,
       $source_id: Int, 
       $destination_id: Int, 
       $customer_id: Int,
-      $customer_Branch: Int
       $partner_id:Int,
       $customer_price: Float,
       $partner_price: Float,
@@ -53,7 +52,8 @@ const CREATE_PO = gql`
       $to_pay: Float,
       $truck_id:Int,
       $truck_type_id: Int,
-      $driver: String ) {
+      $driver_id: Int,
+      $loading_point_id: Int) {
     insert_trip(objects: {
       po_date:$po_date
       source_id: $source_id, 
@@ -62,8 +62,8 @@ const CREATE_PO = gql`
       partner_id: $partner_id,
       truck_id: $truck_id,
       truck_type_id: $truck_type_id,
-      driver: $driver,
-      customer_branch_id:$customer_Branch,
+      driver_id: $driver_id,
+      loading_point_contact_id: $loading_point_id
       trip_prices: {
         data: {
           customer_price: $customer_price,
@@ -88,6 +88,7 @@ const CREATE_PO = gql`
 
 const CustomerPo = (props) => {
   const { visible, onHide, truck_id } = props
+  const [driver_id, setDriver_id] = useState(null)
 
   const [form] = Form.useForm()
   const initial = { search: '', customer_id: null, source_id: null, destination_id: null }
@@ -125,7 +126,7 @@ const CustomerPo = (props) => {
   )
 
   console.log('CreateExcessLoad Search Error', search_error)
-  console.log('CreateExcessLoad Error', error)
+  console.log('CreateExcessLoad Error', error, driver_id)
 
   let _search_data = {}
   if (!search_loading) {
@@ -151,7 +152,6 @@ const CustomerPo = (props) => {
           source_id: parseInt(obj.source_id, 10),
           destination_id: parseInt(obj.destination_id, 10),
           customer_id: parseInt(obj.customer_id, 10),
-          customer_Branch: null,
           partner_id: po_data && po_data.partner && po_data.partner.id,
           customer_price: parseFloat(form.customer_price),
           partner_price: parseFloat(form.partner_price),
@@ -166,7 +166,8 @@ const CustomerPo = (props) => {
           to_pay: parseFloat(form.to_pay),
           truck_id: po_data && po_data.id,
           truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
-          driver: form.driver
+          driver_id: driver_id,
+          loading_point_id: form.loading_contact
         }
       })
     }
@@ -224,6 +225,7 @@ const CustomerPo = (props) => {
             <div>
               <PoDetail
                 customer_id={obj.customer_id}
+                driver_id={setDriver_id}
                 po_data={po_data && po_data.partner}
                 onSourceChange={onSourceChange}
                 onDestinationChange={onDestinationChange}
