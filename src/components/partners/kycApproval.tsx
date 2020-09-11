@@ -12,8 +12,25 @@ import {
   Space,
   Table
 } from 'antd'
-import { DeleteTwoTone, EyeTwoTone, UploadOutlined } from '@ant-design/icons'
 import LinkComp from '../common/link'
+import FileUploadOnly from '../common/fileUploadOnly'
+import ViewFile from '../common/viewFile'
+import DeleteFile from '../common/deleteFile'
+import { gql, useQuery} from '@apollo/client'
+
+const PARTNERS_SUBSCRIPTION = gql`
+  query create_partner{
+    employee{
+      id
+      email
+    }
+    partner_advance_percentage{
+      id
+      name
+    }
+}
+`
+
 
 const { Option } = Select
 const tableData = [
@@ -21,10 +38,44 @@ const tableData = [
   { truck_no: 'TN03AA0002', type: 'SXL' }
 ]
 const KycApproval = (props) => {
-  const { visible, onHide, data } = props
+  const { visible, onHide, approveData } = props
+
+  const files = approveData.partner_files
+  const pan_files = files.filter(file => file.type === 'PAN')
+
+  const cheaque_files = files.filter(file => file.type === 'CL')
+
+  const tds_files = files.filter(file => file.type === 'TDS')
+
+  const agreement_files = files.filter(file => file.type === 'AGREEMENT')
+
+  const cs_files = files.filter(file => file.type === 'CS')
+
+  const { loading, error, data } = useQuery(
+    PARTNERS_SUBSCRIPTION,
+    {
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
+  )
+  console.log('CreatePartnersContainer error', error)
+
+  var employee = []
+  var partner_advance_percentage = []
+  if (!loading) {
+    partner_advance_percentage = data.partner_advance_percentage
+    employee = data.employee
+  }
+
+  const advancePercentageList = partner_advance_percentage.map((data) => {
+    return { value: data.name, label: data.name }
+  })
+  const employeeList = employee.map((data) => {
+    return { value: data.email, label: data.email }
+  })
 
   const onSubmit = () => {
-    console.log('KYC Approved', data)
+    console.log('KYC Approved', approveData)
     onHide()
   }
 
@@ -71,26 +122,30 @@ const KycApproval = (props) => {
             <Form.Item name='partnerName' label='Partner Name'>
               <LinkComp
                 type='partners'
-                data={data.name}
-                id={data.cardcode}
+                data={approveData.name}
+                id={approveData.cardcode}
               />
             </Form.Item>
           </Col>
           <Col xs={24} sm={6}>
-            <Form.Item name='advancePercentage' label='Advance Percentage'>
-              <Select placeholder='Select Percentage' allowClear>
-                <Option value='Not Found'>Not Found</Option>
+          <Form.Item
+              label='Advance Percentage'
+              name='advance_percentage'
+              rules={[{ required: true }]}
+            >
+              <Select>
+                <Select.Option options={advancePercentageList} value='Advance Percentage' > </Select.Option>
               </Select>
             </Form.Item>
           </Col>
           <Col xs={24} sm={8}>
-            <Form.Item
-              name='On-Boarded By'
-              label='On-Boarded By'
-              rules={[{ required: true }]}
+          <Form.Item
+              label='On Boarded By'
+              name='on_boarded_by'
+              rules={[{ required: true, message: 'On-Boarded By is required field!' }]}
             >
-              <Select placeholder='Select Name' allowClear>
-                <Option value='Not Found'>Not Found</Option>
+              <Select>
+                <Select.Option options={employeeList} value='On Boarded By' > </Select.Option>
               </Select>
             </Form.Item>
           </Col>
@@ -98,35 +153,77 @@ const KycApproval = (props) => {
         <List header={<label>Documents</label>} bordered size='small' className='mb10'>
           <List.Item>
             <Col xs={24} sm={8}>PAN Document</Col>
-            <Col xs={12} sm={12}>{data.pan}</Col>
+            <Col xs={12} sm={12}>{approveData.pan}</Col>
             <Col xs={12} sm={4} className='text-right'>
               <Space>
-                <Button
-                  type='primary'
-                  shape='circle'
-                  icon={<EyeTwoTone />}
-                />
-                <Button
-                  shape='circle'
-                  icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
-                />
+              <span>
+                  {pan_files && pan_files.length > 0 ? (
+                    <Space>
+                      <ViewFile
+                        size='small'
+                        id={approveData.id}
+                        type='partner'
+                        file_type='PAN'
+                        folder='approvals/'
+                        file_list={pan_files}
+                      />
+                      <DeleteFile
+                        size='small'
+                        id={approveData.id}
+                        type='partner'
+                        file_type='PAN'
+                        file_list={pan_files}
+                      />
+                    </Space>
+                  ) : (
+                    <FileUploadOnly
+                      size='small'
+                      id={approveData.id}
+                      type='partner'
+                      folder='approvals/'
+                      file_type='PAN'
+                      file_list={pan_files}
+                    />
+                  )}
+                </span>
               </Space>
             </Col>
           </List.Item>
           <List.Item>
             <Col xs={24} sm={8}>Cheque/Passbook</Col>
-            <Col xs={12} sm={12}>{data.accNo}</Col>
+            <Col xs={12} sm={12}>{approveData.accNo}</Col>
             <Col xs={12} sm={4} className='text-right'>
               <Space>
-                <Button
-                  type='primary'
-                  shape='circle'
-                  icon={<EyeTwoTone />}
-                />
-                <Button
-                  shape='circle'
-                  icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
-                />
+              <span>
+                  {cheaque_files && cheaque_files.length > 0 ? (
+                    <Space>
+                      <ViewFile
+                        size='small'
+                        id={approveData.id}
+                        type='partner'
+                        file_type='CL'
+                        folder='approvals/'
+                        file_list={cheaque_files}
+                      />
+                      <DeleteFile
+                        size='small'
+                        id={approveData.id}
+                        type='partner'
+                        file_type='CL'
+                        file_list={cheaque_files}
+                      />
+                    </Space>
+                  ) : (
+                    <FileUploadOnly
+                      size='small'
+                      id={approveData.id}
+                      type='partner'
+                      folder='approvals/'
+                      file_type='CL'
+                      file_list={cheaque_files}
+                    />
+                  )}
+                </span>
               </Space>
             </Col>
           </List.Item>
@@ -135,15 +232,36 @@ const KycApproval = (props) => {
             <Col xs={12} sm={12}>&nbsp;</Col>
             <Col xs={12} sm={4} className='text-right'>
               <Space>
-                <Button
-                  type='primary'
-                  shape='circle'
-                  icon={<EyeTwoTone />}
-                />
-                <Button
-                  shape='circle'
-                  icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
-                />
+              <span>
+                  {agreement_files && agreement_files.length > 0 ? (
+                    <Space>
+                      <ViewFile
+                        size='small'
+                        id={approveData.id}
+                        type='partner'
+                        file_type='Agreement'
+                        folder='approvals/'
+                        file_list={agreement_files}
+                      />
+                      <DeleteFile
+                        size='small'
+                        id={approveData.id}
+                        type='partner'
+                        file_type='Agreement'
+                        file_list={agreement_files}
+                      />
+                    </Space>
+                  ) : (
+                    <FileUploadOnly
+                      size='small'
+                      id={approveData.id}
+                      type='partner'
+                      folder='approvals/'
+                      file_type='Agreement'
+                      file_list={agreement_files}
+                    />
+                  )}
+                </span>
               </Space>
             </Col>
           </List.Item>
@@ -152,15 +270,36 @@ const KycApproval = (props) => {
             <Col xs={12} sm={12}><Input placeholder='Cibil Score' /></Col>
             <Col xs={12} sm={4} className='text-right'>
               <Space>
-                <Button
-                  type='primary'
-                  shape='circle'
-                  icon={<EyeTwoTone />}
-                />
-                <Button
-                  shape='circle'
-                  icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
-                />
+              <span>
+                  {cs_files && cs_files.length > 0 ? (
+                    <Space>
+                      <ViewFile
+                        size='small'
+                        id={approveData.id}
+                        type='partner'
+                        file_type='CS'
+                        folder='approvals/'
+                        file_list={cs_files}
+                      />
+                      <DeleteFile
+                        size='small'
+                        id={approveData.id}
+                        type='partner'
+                        file_type='CS'
+                        file_list={cs_files}
+                      />
+                    </Space>
+                  ) : (
+                    <FileUploadOnly
+                      size='small'
+                      id={approveData.id}
+                      type='partner'
+                      folder='approvals/'
+                      file_type='CS'
+                      file_list={cs_files}
+                    />
+                  )}
+                </span>
               </Space>
             </Col>
           </List.Item>
@@ -173,7 +312,36 @@ const KycApproval = (props) => {
               </Radio.Group>
             </Col>
             <Col xs={12} sm={4} className='text-right'>
-              <Button shape='circle' icon={<UploadOutlined />} />
+            <span>
+                  {tds_files && tds_files.length > 0 ? (
+                    <Space>
+                      <ViewFile
+                        size='small'
+                        id={approveData.id}
+                        type='partner'
+                        file_type='TDS'
+                        folder='approvals/'
+                        file_list={tds_files}
+                      />
+                      <DeleteFile
+                        size='small'
+                        id={approveData.id}
+                        type='partner'
+                        file_type='TDS'
+                        file_list={tds_files}
+                      />
+                    </Space>
+                  ) : (
+                    <FileUploadOnly
+                      size='small'
+                      id={approveData.id}
+                      type='partner'
+                      folder='approvals/'
+                      file_type='TDS'
+                      file_list={tds_files}
+                    />
+                  )}
+                </span>
             </Col>
           </List.Item>
           <List.Item>

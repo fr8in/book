@@ -275,7 +275,7 @@ const PartnerKyc = (props) => {
         <KycApproval
           visible={object.approvalVisible}
           onHide={handleHide}
-          data={object.approvalData}
+          approveData={object.approvalData}
         />
       )}
       {!loading &&

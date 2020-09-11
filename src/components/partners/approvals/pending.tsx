@@ -10,7 +10,7 @@ import Link from 'next/link'
 import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
 import Comment from '../../trips/tripFeedBack'
 import Approve from './accept'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import PartnerOnBoardedBy from '../partnerOnboardedByName'
@@ -79,7 +79,7 @@ export default function Pending () {
       title: 'Type',
       dataIndex: 'type',
       key: 'type',
-      width: '6%'
+      width: '5%'
     },
     {
       title: 'Issue Type',
@@ -98,7 +98,7 @@ export default function Pending () {
       title: 'Reason',
       dataIndex: 'comment',
       key: 'comment',
-      width: '13%',
+      width: '10%',
       render: (text, record) => <Truncate data={text} length={18} />
     },
     {
@@ -106,24 +106,38 @@ export default function Pending () {
       dataIndex: 'region',
       key: 'region',
       filters: RegionList,
-      width: '7%',
+      width: '6%',
       render: (text, record) => get(record, 'trip.branch.region.name',null)
     },
     {
-      title: 'Request By',
+      title: 'Created By',
       dataIndex: 'created_by',
       key: 'created_by',
       filters: RequestedBy,
-      width: '13%',
+      width: '11%',
       render: (text, record) => <Truncate data={text} length={18} />
     },
-
+    {
+      title: 'Partner Name',
+      dataIndex: 'created_by',
+      key: 'created_by',
+      filters: RequestedBy,
+      width: '12%',
+      render: (text, record) => {
+        return (
+          <Link href='partners/[id]' as={`partners/${get(record, 'trip.partner.cardcode',null)}`}>
+            <a> <Truncate data={get(record, 'trip.partner.cardcode',null) +'-'+ get(record, 'trip.partner.name',null)} length={18} /></a>
+          </Link>
+        )
+      },
+      
+    },
     {
       title: 'Req.On',
       dataIndex: 'created_at',
       key: 'created_at',
       sorter: (a, b) => (a.created_at > b.created_at ? 1 : -1),
-      width: '8%',
+      width: '7%',
       render: (text, record) => {
         return text ? moment(text).format('DD-MMM-YY') : null
       }
@@ -153,12 +167,12 @@ export default function Pending () {
       title: 'Comment',
       dataIndex: 'approval_comment',
       key: 'approval_comment',
-      width: '13%',
+      width: '11%',
       render: (text, record) => <Truncate data={get(record, 'trip.trip_comments[0].description',null)} length={18} />
     },
     {
       title: 'Action',
-      width: '10%',
+      width: '8%',
       render: (text, record) => (
         <Space>
           <Tooltip title='Comment'>
@@ -187,7 +201,7 @@ export default function Pending () {
               danger
               icon={<CloseOutlined />}
               onClick={() =>
-                handleShow('approveVisible', 'Rejected', 'approveData', record)}
+                handleShow('approveVisible', 'Rejected', 'approveData', record.id)}
             />
           </Tooltip>
         </Space>

@@ -29,6 +29,13 @@ query partners(
     name
     cardcode
     pan
+    partner_files(where: {deleted_at: {_is_null:true}}) {
+      id
+      type
+      folder
+      file_path
+      created_at
+    }
     onboarded_by{
       id
       name
