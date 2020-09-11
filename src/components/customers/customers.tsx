@@ -54,8 +54,6 @@ const CustomerKyc = (props) => {
     onPageChange
   } = props
 
-  console.log('customers', customers)
-
   const initial = {
     visible: false,
     createBranchVisible: false,

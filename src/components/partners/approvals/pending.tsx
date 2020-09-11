@@ -7,12 +7,14 @@ import {
 } from '@ant-design/icons'
 import Truncate from '../../common/truncate'
 import Link from 'next/link'
-
 import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
-import pendingDetail from '../../../../mock/approval/approvalPending'
 import Comment from '../../trips/tripFeedBack'
 import Approve from './accept'
-
+import { gql, useQuery, useMutation } from '@apollo/client'
+import get from 'lodash/get'
+import moment from 'moment'
+import PartnerOnBoardedBy from '../partnerOnboardedByName'
+import { APPROVALS_QUERY } from '../approvals/container/query/approvalsQuery'
 const RegionList = [
   { value: 1, text: 'North' },
   { value: 11, text: 'South-1' },
@@ -27,6 +29,8 @@ const RequestedBy = [
   { value: 11, text: 'Fr8' }
 ]
 
+
+
 export default function Pending () {
   const initial = {
     commentData: [],
@@ -37,29 +41,52 @@ export default function Pending () {
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
+  const { loading, error, data } = useQuery(
+    APPROVALS_QUERY,
+   {
+     variables: 
+     {
+      "status": ["PENDING"]
+     },
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  }
+  )
+  console.log('pending error', error)
+  console.log('pending data', data)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+
+  const pending = get(_data, 'trip_credit_debit', null)
+  console.log('pending',pending)
+
+
   const ApprovalPending = [
     {
       title: 'Load ID',
-      dataIndex: 'loadId',
-      key: 'loadId',
+      dataIndex: 'trip_id',
+      key: 'trip_id',
       width: '6%',
-      render: (text, record) => (
-        <Link href='/trips/[id]' as={`/trips/${record.loadId} `}>
+      render: (text, record) => 
+        <Link href='/trips/[id]' as={`/trips/${record.trip_id} `}>
           <a>{text}</a>
         </Link>
-      )
+      
     },
     {
       title: 'Type',
       dataIndex: 'type',
       key: 'type',
-      width: '8%'
+      width: '6%'
     },
     {
       title: 'Issue Type',
       dataIndex: 'issueType',
       key: 'issueType',
-      width: '10%'
+      width: '8%',
+      render: (text, record) => <Truncate data={get(record, 'credit_debit_type.name',null)} length={12} />
     },
     {
       title: 'Amount',
@@ -69,9 +96,9 @@ export default function Pending () {
     },
     {
       title: 'Reason',
-      dataIndex: 'reason',
-      key: 'reason',
-      width: '11%',
+      dataIndex: 'comment',
+      key: 'comment',
+      width: '13%',
       render: (text, record) => <Truncate data={text} length={18} />
     },
     {
@@ -79,12 +106,13 @@ export default function Pending () {
       dataIndex: 'region',
       key: 'region',
       filters: RegionList,
-      width: '7%'
+      width: '7%',
+      render: (text, record) => get(record, 'trip.branch.region.name',null)
     },
     {
       title: 'Request By',
-      dataIndex: 'requestBy',
-      key: 'requestBy',
+      dataIndex: 'created_by',
+      key: 'created_by',
       filters: RequestedBy,
       width: '13%',
       render: (text, record) => <Truncate data={text} length={18} />
@@ -92,17 +120,25 @@ export default function Pending () {
 
     {
       title: 'Req.On',
-      dataIndex: 'reqOn',
-      key: 'reqOn',
-      sorter: (a, b) => (a.reqOn > b.reqOn ? 1 : -1),
-      width: '7%'
+      dataIndex: 'created_at',
+      key: 'created_at',
+      sorter: (a, b) => (a.created_at > b.created_at ? 1 : -1),
+      width: '8%',
+      render: (text, record) => {
+        return text ? moment(text).format('DD-MMM-YY') : null
+      }
     },
     {
       title: 'Responsibility',
       dataIndex: 'responsibility',
       key: 'responsibility',
-      width: '9%',
-      render: (text, record) => <Truncate data={text} length={18} />,
+      width: '10%',
+     render: (text, record) => 
+      <PartnerOnBoardedBy
+     onboardedBy={get(record, 'responsibility.name', '-')}
+     onboardedById={get(record, 'onboarded_by.id', null)}
+     credit_debit_id={record.id}
+   />,
       filterDropdown: (
         <div>
           <Input placeholder='Search' id='id' name='id' type='number' />
@@ -110,14 +146,15 @@ export default function Pending () {
       ),
       filterIcon: (filtered) => (
         <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-      )
+      ),
+      
     },
     {
       title: 'Comment',
-      dataIndex: 'comment',
-      key: 'comment',
+      dataIndex: 'approval_comment',
+      key: 'approval_comment',
       width: '13%',
-      render: (text, record) => <Truncate data={text} length={18} />
+      render: (text, record) => <Truncate data={get(record, 'trip.trip_comments[0].description',null)} length={18} />
     },
     {
       title: 'Action',
@@ -162,9 +199,10 @@ export default function Pending () {
     <>
       <Table
         columns={ApprovalPending}
-        dataSource={pendingDetail}
+        dataSource={pending}
+        rowKey={(record) => record.id}
         size='small'
-        scroll={{ x: 1156, y: 400 }}
+        scroll={{ x: 1156, y: 600 }}
         pagination={false}
         className='withAction'
       />

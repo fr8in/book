@@ -64,7 +64,14 @@ mutation insertToPay($to_pay: Float, $comment: String, $trip_id: Int!) {
   }
 }
 `
-
+const PROCESS_ADVANCE_MUTATION = gql`
+mutation ($tripId: Int!, $createdBy: String!) {
+  process_partner_advance(trip_id: $tripId, created_by: $createdBy) {
+    description
+    status
+  }
+}
+`
 const TripTime = (props) => {
   const { trip_info } = props
   console.log('trip_info', trip_info)
@@ -140,6 +147,14 @@ const TripTime = (props) => {
     }
   )
 
+  const [processAdvance] = useMutation(
+    PROCESS_ADVANCE_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
+
   const onSoutRemove = () => {
     removeSout({
       variables: {
@@ -153,6 +168,14 @@ const TripTime = (props) => {
       variables: {
         id: trip_info.id,
         destination_out: null
+      }
+    })
+  }
+  const onProcessAdvance = () => {
+    processAdvance({
+      variables: {
+        tripId: trip_info.id,
+        createdBy: 'shilpa.v@fr8.in'
       }
     })
   }
@@ -267,7 +290,7 @@ const TripTime = (props) => {
                   {po_delete &&
                     <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>}
                   {process_advance &&
-                    <Button type='primary'>Process Advance</Button>}
+                    <Button type='primary' onClick={onProcessAdvance} >Process Advance</Button>}
                   {remove_sout &&
                     <Button danger icon={<CloseCircleOutlined />} onClick={onSoutRemove}>Sout</Button>}
                   {remove_dout &&
