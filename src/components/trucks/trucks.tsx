@@ -11,7 +11,7 @@ const Trucks = (props) => {
   const initial = {
     usersData: [],
     usersVisible: false,
-    poData: [],
+    truckId: [],
     poVisible: false,
     editVisible: false,
     editData: [],
@@ -130,8 +130,8 @@ const Trucks = (props) => {
                   handleShow(
                     'poVisible',
                     record.partner.name,
-                    'poData',
-                    record.truck_no
+                    'truckId',
+                    record.id
                   )}
               >
                 Assign
@@ -265,7 +265,7 @@ const Trucks = (props) => {
       {object.poVisible && (
         <CreatePo
           visible={object.poVisible}
-          truck_no={object.poData}
+          truck_id={object.truckId}
           onHide={handleHide}
           title={object.title}
         />
