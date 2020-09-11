@@ -1,9 +1,9 @@
 import { Table, Button } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
-import EditBranch from '../customers/createCustomerBranch'
-import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
+import EditBranch from '../customers/createCustomerBranch'
+import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 
 const CUSTOMER_BRANCH = gql`
 subscription customer_users($cardcode: String) {
@@ -14,12 +14,10 @@ subscription customer_users($cardcode: String) {
         branch_name
         name
         address
-        state {
-         name
-        }
-        city {
-         name
-        }
+        state_id
+        state
+        city
+        city_id
         pincode
         mobile
       }
@@ -28,13 +26,8 @@ subscription customer_users($cardcode: String) {
 
 const Branch = (props) => {
   const { cardcode } = props
-
-  const initial = {
-    customerBranchVisible: false,
-    title: null,
-    customerBranchData: null
-  }
-  const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+  const initial = { visible: false, data: null }
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
   const { loading, data, error } = useSubscription(
     CUSTOMER_BRANCH,
@@ -60,7 +53,6 @@ const Branch = (props) => {
       dataIndex: 'name',
       width: '10%'
     },
-
     {
       title: 'Address',
       dataIndex: 'address',
@@ -69,12 +61,12 @@ const Branch = (props) => {
     {
       title: 'City',
       width: '10%',
-      render: (text, record) => get(record, 'city.name', null)
+      render: (text, record) => get(record, 'city', null)
     },
     {
       title: 'State',
       width: '10%',
-      render: (text, record) => get(record, 'state.name', null)
+      render: (text, record) => get(record, 'state', null)
     },
     {
       title: 'Pin',
@@ -88,15 +80,16 @@ const Branch = (props) => {
     },
     {
       title: 'Action',
-      render: (text, record) => (
-        <span>
+      render: (text, record) => {
+        console.log('record', record)
+        return (
           <Button
             type='link'
             icon={<EditOutlined />}
-            onClick={() => handleShow('customerBranchVisible', null, 'customerBranchdata', get(record, 'customer_branches.id', null))}
+            onClick={() => handleShow('visible', null, 'data', record)}
           />
-        </span>
-      ),
+        )
+      },
       width: '10%'
     }
   ]
@@ -113,14 +106,12 @@ const Branch = (props) => {
         className='withAction'
         loading={loading}
       />
-      {object.customerBranchVisible && (
+      {object.visible &&
         <EditBranch
-          visible={object.customerBranchVisible}
+          visible={object.visible}
+          customerbranches={object.data}
           onHide={handleHide}
-          customerbranches={object.customerBranchData}
-          title={object.title}
-        />
-      )}
+        />}
     </>
   )
 }
