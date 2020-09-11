@@ -13,6 +13,16 @@ update_partner(_set:{onboarded_by_id: $onboarded_by_id}, where:{cardcode: {_eq:$
   }
 }
 `
+const UPDATE_CREDIT_RESPONSIBILITY_NAME_MUTATION = gql`
+mutation update_credit_responsibility($responsibility_id:Int!,$id:Int! ){
+  update_trip_credit_debit(_set: {responsibility_id: $responsibility_id}
+    , where: {id: {_eq: $id}}) {
+    returning {
+      id
+    }
+  }
+}
+`
 
 const OnBoardedBy = (props) => {
   const { onboardedById, onboardedBy, cardcode } = props
@@ -31,6 +41,13 @@ const OnBoardedBy = (props) => {
       onCompleted () { message.success('Updated!!') }
     }
   )
+  const [UpdateCreditResponsibilityName] = useMutation(
+    UPDATE_CREDIT_RESPONSIBILITY_NAME_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
 
   if (loading) return null
   console.log('OnBoardedByName error', error)
@@ -41,12 +58,24 @@ const OnBoardedBy = (props) => {
   })
 
   const onChange = (value) => {
-    UpdateOnBoardedByName({
-      variables: {
-        cardcode,
-        onboarded_by_id: value
-      }
-    })
+    if (props.credit_debit_id !== null){
+      UpdateCreditResponsibilityName({
+        variables:
+          {
+            responsibility_id:value,
+            id: props.credit_debit_id
+          }   
+      })
+    }
+    else(
+      UpdateOnBoardedByName({
+        variables: {
+          cardcode,
+          onboarded_by_id: value
+        }
+      })
+    )
+   
   }
 
   return (
