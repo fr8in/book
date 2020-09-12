@@ -114,6 +114,7 @@ const CREATE_PO = gql`
 const CustomerPo = (props) => {
   const { visible, onHide, truck_id } = props
   const [driver_id, setDriver_id] = useState(null)
+  const [disableBtn, setDisableBtn] = useState(false)
 
   const [form] = Form.useForm()
   const initial = { search: '', source_id: null, destination_id: null }
@@ -143,10 +144,14 @@ const CustomerPo = (props) => {
   const [create_po_mutation] = useMutation(
     CREATE_PO,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        message.error(error.toString())
+        setDisableBtn(false)
+      },
       onCompleted () {
         message.success('Load Created!!')
         setObj(initial)
+        setDisableBtn(false)
         onHide()
       }
     }
@@ -179,6 +184,7 @@ const CustomerPo = (props) => {
     if (system_mamul > parseFloat(form.mamul)) {
       message.error('Mamul Should be greater than system mamul!')
     } else {
+      setDisableBtn(true)
       create_po_mutation({
         variables: {
           po_date: form.po_date.toDate(),
@@ -269,7 +275,7 @@ const CustomerPo = (props) => {
               />
               <Divider className='hidden-xs' />
               <div className='text-right'>
-                <Button type='primary' htmlType='submit'>Create</Button>
+                <Button type='primary' htmlType='submit' loading={disableBtn}>Create</Button>
               </div>
             </div>}
         </Card>
