@@ -236,7 +236,7 @@ const PartnerDocument = (props) => {
               <Form.Item
                 label='PAN'
               >
-                <Row justify='end'>
+                <Row >
                   <Col offset={1} sm={16}>
                     <Input placeholder='PAN Number' />
                   </Col>
@@ -258,7 +258,7 @@ const PartnerDocument = (props) => {
               <Form.Item
                 label='Cibil Score'
               >
-                <Row justify='end'>
+                <Row >
                   <Col sm={18}>
                     <Input placeholder='Cibil Score' />
                   </Col>
