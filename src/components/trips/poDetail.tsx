@@ -2,38 +2,13 @@ import { useState, useEffect } from 'react'
 import { Row, Col, Form, DatePicker, Input, Checkbox, Radio, Divider, Select } from 'antd'
 import CitySelect from '../common/citySelect'
 import Loading from '../common/loading'
-import { gql, useQuery } from '@apollo/client'
 import Driver from '../partners/driver'
 import SystemMamul from '../customers/systemMamul'
 import useShowHide from '../../hooks/useShowHide'
 import get from 'lodash/get'
 
-const CUSTOMER_PO_DATA = gql`
-query customers_po($id:Int!){
-  customer(where:{id:{_eq:$id}}){
-    id
-    cardcode
-    name
-    exception_date
-    managed
-    customer_advance_percentage{
-      id
-      name
-    }
-    status{
-      id
-      name
-    }
-    system_mamul
-    customer_users{
-      id
-      name
-      mobile
-    }
-  }
-}`
 const PoDetail = (props) => {
-  const { customer_id, po_data, onSourceChange, onDestinationChange, form, driver_id } = props
+  const { po_data, onSourceChange, onDestinationChange, form, driver_id, customer, loading } = props
 
   const initial = {
     part_price: 0,
@@ -49,22 +24,6 @@ const PoDetail = (props) => {
   const modelInitial = { mamulVisible: false }
   const { visible, onHide, onShow } = useShowHide(modelInitial)
 
-  const { loading, data, error } = useQuery(
-    CUSTOMER_PO_DATA,
-    {
-      variables: { id: parseInt(customer_id) },
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true,
-      skip: !customer_id
-    }
-  )
-
-  console.log('PODetail Error', error)
-  let _data = {}
-  if (!loading) {
-    _data = data
-  }
-  const customer = get(_data, 'customer[0]', null)
   const customer_user = get(customer, 'customer_users', [])
   const default_mamul = get(customer, 'system_mamul', null)
 
@@ -193,12 +152,12 @@ const PoDetail = (props) => {
       <>
         <Row gutter={10}>
           <Col xs={12} sm={6}>
-            <Form.Item label='PO Date' name='po_date'>
+            <Form.Item label='PO Date' name='po_date' rules={[{ required: true }]}>
               <DatePicker style={{ width: '100%' }} />
             </Form.Item>
           </Col>
           <Col xs={12} sm={6}>
-            <Form.Item label='Loading Point Contact' name='loading_contact'>
+            <Form.Item label='Loading Point Contact' name='loading_contact' rules={[{ required: true }]}>
               <Select
                 placeholder='Customer Type ....'
                 options={customer_user_list}
@@ -244,6 +203,7 @@ const PoDetail = (props) => {
                       disabled={false}
                       addonBefore='₹'
                       onChange={onRatePerTon}
+                      type='number'
                     />
                   </Form.Item>
                 </Col>
@@ -254,6 +214,7 @@ const PoDetail = (props) => {
                       disabled={false}
                       addonAfter='Ton'
                       onChange={onTonChange}
+                      type='number'
                     />
                   </Form.Item>
                 </Col>
@@ -266,11 +227,13 @@ const PoDetail = (props) => {
               label='Customer Price'
               extra={`Advance ${customer_advance_percentage}%`}
               name='customer_price'
+              rules={[{ required: true }]}
             >
               <Input
-                placeholder='customerPrice'
+                placeholder='Customer price'
                 disabled={rate_per_ton}
                 onChange={onCustomerPriceChange}
+                type='number'
               />
             </Form.Item>
           </Col>
@@ -283,6 +246,7 @@ const PoDetail = (props) => {
             <Form.Item
               name='mamul'
               label='Mamul Charge'
+              rules={[{ required: true }]}
               extra={
                 <span>System Mamul:&nbsp;
                   <span className='link' onClick={default_mamul ? () => onShow('mamulVisible') : () => {}}>{default_mamul || 0}</span>
@@ -293,6 +257,7 @@ const PoDetail = (props) => {
                 placeholder='mamul'
                 disabled={false}
                 onChange={onMamulChange}
+                type='number'
               />
             </Form.Item>
           </Col>
@@ -305,7 +270,7 @@ const PoDetail = (props) => {
             <Form.Item label='Net Price' name='partner_price'>
               <Input
                 placeholder='Net Price'
-                disabled={false}
+                disabled
               />
             </Form.Item>
           </Col>
@@ -327,6 +292,7 @@ const PoDetail = (props) => {
                   <Input
                     placeholder='Bank'
                     disabled={false}
+                    type='number'
                   />
                 </Form.Item>
               </Col>
@@ -336,6 +302,7 @@ const PoDetail = (props) => {
                     placeholder='Cash'
                     disabled={false}
                     onChange={onCashChange}
+                    type='number'
                   />
                 </Form.Item>
               </Col>
@@ -349,11 +316,12 @@ const PoDetail = (props) => {
                     placeholder='To-Pay'
                     disabled={false}
                     onChange={onToPayChange}
+                    type='number'
                   />
                 </Form.Item>
               </Col>
               <Col xs={12}>
-                <Driver partner_id={po_data.id} driver_id={driver_id} />
+                <Driver partner_id={po_data.id} driver_id={driver_id} required />
               </Col>
             </Row>
           </Col>

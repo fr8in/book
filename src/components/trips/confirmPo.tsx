@@ -5,26 +5,6 @@ import { gql, useQuery, useLazyQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
 import get from 'lodash/get'
 
-const PO_QUERY = gql`
-query po_query($id: Int!){
-  truck(where:{id: {_eq: $id}}) {
-    id
-    truck_no
-    truck_type{
-      id
-      name
-    }
-    partner{
-      id
-      name
-      partner_advance_percentage{
-        id
-        name
-      }
-    }
-  }
-}`
-
 const CUSTOMER_PO_DATA = gql`
 query customers_po($id:Int!){
   customer(where:{id:{_eq:$id}}){

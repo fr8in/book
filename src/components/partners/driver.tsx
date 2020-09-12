@@ -25,7 +25,7 @@ mutation driver_insert($id: Int!, $mobile: String){
 }`
 
 const Driver = (props) => {
-  const { partner_id, driver_id } = props
+  const { partner_id, driver_id, required } = props
   if (!partner_id) return null
 
   const [searchText, setSearchText] = useState('')
@@ -83,9 +83,10 @@ const Driver = (props) => {
   }
   console.log('drivers', drivers)
   return (
-    <Form.Item label='Driver' name='driver'>
+    <Form.Item label='Driver' name='driver' rules={[{ required: required }]}>
       <Select
         showSearch
+        placeholder='Select Driver...'
         onSearch={onSearch}
         onChange={onDriverChange}
       >
