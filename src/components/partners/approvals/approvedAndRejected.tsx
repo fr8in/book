@@ -3,27 +3,78 @@ import { Table, Input, Pagination } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import Truncate from '../../common/truncate'
 import Link from 'next/link'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import u from '../../../lib/util'
-import { APPROVALS_QUERY } from '../approvals/container/query/approvalsQuery'
+
+const APPROVALS_QUERY = gql`
+query trip_credit_debit($status: [String!], $offset: Int, $limit: Int, $region: [String!], $responsibity: String,$created_by:String) {
+  trip_credit_debit(where: {credit_debit_status: {name: {_in: $status}}, trip: {branch: {region: {name: {_in: $region}}}}, responsibility: {name: {_ilike: $responsibity}}, trip_id: {}, created_by: {_ilike: $created_by}}, order_by: {trip_id: desc}, offset: $offset, limit: $limit) {
+    id
+    trip_id
+    type
+    amount
+    approval_comment
+    approved_amount
+    approved_by
+    credit_debit_status {
+      id
+      name
+    }
+    trip {
+      trip_comments(order_by: {id: desc}, limit: 1) {
+        id
+        description
+      }
+      branch {
+        region {
+          name
+        }
+      }
+      partner {
+        cardcode
+        name
+      }
+    }
+    responsibility {
+      id
+      name
+    }
+    comment
+    credit_debit_type {
+      name
+    }
+    created_at
+    created_by
+  }
+  region {
+    name
+    id
+  }
+}
+`
 
 const creditType = [
-  { value: 1, text: 'Credit Note' },
-  { value: 2, text: 'Debit Note' },
-  { value: 3, text: 'Dispute' }
+  { value: 1, text: 'C' },
+  { value: 2, text: 'D' }
 ]
 const issueTypeList = [
-  { value: 1, text: 'Loading Charges' },
-  { value: 2, text: 'Unloading Charges' },
-  { value: 3, text: 'Loading Halting' },
-  { value: 4, text: 'Unloading Halting' },
-  { value: 5, text: 'Commission Fee' },
-  { value: 6, text: 'POD Late Fee' },
-  { value: 7, text: 'POD Missing' },
-  { value: 8, text: 'Price Difference' },
-  { value: 9, text: 'On-Hold' }
+  { value: 1, text: 'KM' },
+  { value: 2, text: 'Others' },
+  { value: 3, text: 'Shortage' },
+  { value: 4, text: 'Loading Charges' },
+  { value: 5, text: 'Unloading Charges' },
+  { value: 6, text: 'Loading Halting' },
+  { value: 7, text: 'Unloading Halting' },
+  { value: 8, text: 'Commission Fee' },
+  { value: 9, text: 'Late Delivery Fee' },
+  { value: 10, text: 'POD Late Fee' },
+  { value: 11, text: 'POD Missing' },
+  { value: 12, text: 'Wrong LR' },
+  { value: 13, text: 'Price Difference' },
+  { value: 14, text: 'On-Hold' },
+  { value: 15, text: 'Halting' }
 ]
 const requestedBy = [
   { value: 1, text: 'Partner' },
@@ -32,18 +83,28 @@ const requestedBy = [
 
 const ApprovedAndRejected = () => {
 
-  const pendingQueryVars = {
+const initial = {
+  created_by:null,
+  offset: 0,
+  limit: u.limit,
+  status: ["APPROVED","REJECTED"],
+}
+
+  
+  const [filter, setFilter] = useState(initial)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const approvalQueryVars = {
     offset: 0,
     limit: u.limit,
-    status: ["APPROVED","REJECTED"]  
+    status: ["APPROVED","REJECTED"],
+    created_by: filter.created_by ? `%${filter.created_by}%` : null 
   }
-  const [filter, setFilter] = useState(pendingQueryVars)
-  const [currentPage, setCurrentPage] = useState(1)
 
   const { loading, error, data } = useQuery(
     APPROVALS_QUERY,
    {
-     variables: pendingQueryVars,
+     variables: approvalQueryVars,
     fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true
   }
@@ -64,6 +125,14 @@ const pageChange = (page, pageSize) => {
     setFilter({ ...filter, offset: newOffset })
   }
 
+  const onCreatedBySearch = (e) => {
+    setCurrentPage(1)
+    setFilter({ ...filter, created_by: e.target.value })
+  }
+
+  function onChange( filters) {
+    console.log('filters', filters);
+  }
   const ApprovalPending = [
     {
       title: 'Load ID',
@@ -89,7 +158,8 @@ const pageChange = (page, pageSize) => {
       dataIndex: 'type',
       key: 'type',
       filters: creditType,
-      width: '8%'
+      width: '8%',
+      onFilter: (value, record) => record && record.type.indexOf(value) === 0,
     },
     {
       title: 'Issue Type',
@@ -97,7 +167,8 @@ const pageChange = (page, pageSize) => {
       key: 'issueType',
       filters: issueTypeList,
       width: '10%',
-      render: (text, record) => <Truncate data={get(record, 'credit_debit_type.name',null)} length={12} />
+      render: (text, record) => <Truncate data={get(record, 'credit_debit_type.name',null)} length={12} />,
+      onFilter: (value, record) => record && record.credit_debit_type && record.credit_debit_type.name.indexOf(value) === 0,
     },
     {
       title: 'Claim ₹',
@@ -131,6 +202,8 @@ const pageChange = (page, pageSize) => {
             id='created_by'
             name='created_by'
             type='number'
+            value={filter.created_by}
+            onChange={onCreatedBySearch}
           />
         </div>
       ),
@@ -169,6 +242,7 @@ const pageChange = (page, pageSize) => {
     <Table
       columns={ApprovalPending}
       dataSource={approvedAndRejected}
+      onChange={onChange}
       rowKey={(record) => record.id}
       size='small'
       scroll={{ x: 1156, y: 550 }}

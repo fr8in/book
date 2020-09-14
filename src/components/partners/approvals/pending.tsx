@@ -1,56 +1,105 @@
-import { Table, Input, Tooltip, Button, Space } from 'antd'
+import { Table, Input, Tooltip, Button, Space, Checkbox } from 'antd'
 import {
   SearchOutlined,
   CommentOutlined,
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
+import { useState } from 'react'
 import Truncate from '../../common/truncate'
 import Link from 'next/link'
 import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
 import Comment from '../../trips/tripFeedBack'
 import Approve from './accept'
-import { useQuery } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import PartnerOnBoardedBy from '../partnerOnboardedByName'
-import { APPROVALS_QUERY } from '../approvals/container/query/approvalsQuery'
+
+const PENDING_QUERY = gql`
+query trip_credit_debit($status: [String!]) {
+  trip_credit_debit(where: {credit_debit_status: {name: {_in: $status}}}, order_by: {trip_id: desc}) {
+    id
+    trip_id
+    type
+    amount
+    approval_comment
+    approved_amount
+    approved_by
+    is_created_by_partner
+    credit_debit_status {
+      id
+      name
+    }
+    trip {
+      last_comment {
+        id
+        description
+      }
+      branch {
+        region {
+          name
+        }
+      }
+      partner {
+        cardcode
+        name
+      }
+    }
+    responsibility {
+      id
+      name
+    }
+    comment
+    credit_debit_type {
+      name
+    }
+    created_at
+    created_by
+  }
+  region {
+    name
+    id
+  }
+}
+`
+
 const RegionList = [
-  { value: 1, text: 'North' },
-  { value: 11, text: 'South-1' },
-  { value: 12, text: 'East-1' },
-  { value: 13, text: 'West-1' },
-  { value: 20, text: 'South-2' },
-  { value: 21, text: 'East-2' },
-  { value: 22, text: 'West-2' }
+  { text: 'North', value: 'North' },
+  { text: 'South-1', value: 'South-1' },
+  { text: 'East-1', value: 'East-1' },
+  { text: 'West-1', value: 'West-1' },
+  { text: 'South-2', value: 'South-2' },
+  { text: 'East-2', value: 'East-2'},
+  { text: 'West-2', value: 'West-2'}
 ]
+
 const RequestedBy = [
   { value: 1, text: 'Partner' },
-  { value: 11, text: 'Fr8' }
+  { value: 2, text: 'Fr8' }
 ]
 
-
-
-export default function Pending () {
+export default function Pending() {
   const initial = {
     commentData: [],
     commentVisible: false,
+    approveData: [],
     approveVisible: false,
     title: null,
-    approveData: []
+    responsibity: null,
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
-
-  const { loading, error, data } = useQuery(
-    APPROVALS_QUERY,
-   {
-     variables: 
-     {
-      "status": ["PENDING"]
-     },
-    fetchPolicy: 'cache-and-network',
-    notifyOnNetworkStatusChange: true
+  const [filter, setFilter] = useState(initial)
+  const approvalQueryVars = {
+    status: ["PENDING"]
   }
+  const { loading, error, data } = useQuery(
+    PENDING_QUERY,
+    {
+      variables: approvalQueryVars,
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
   )
   console.log('pending error', error)
   console.log('pending data', data)
@@ -60,8 +109,19 @@ export default function Pending () {
   }
 
   const pending = get(_data, 'trip_credit_debit', null)
-  console.log('pending',pending)
+  console.log('pending', pending)
 
+
+
+  const handleName = (e) => {
+    console.log('e', e)
+    setFilter({ ...filter, responsibity: e.target.value })
+  }
+
+
+  function onChange( filters) {
+    console.log('filters', filters);
+  }
 
   const ApprovalPending = [
     {
@@ -69,11 +129,10 @@ export default function Pending () {
       dataIndex: 'trip_id',
       key: 'trip_id',
       width: '6%',
-      render: (text, record) => 
+      render: (text, record) =>
         <Link href='/trips/[id]' as={`/trips/${record.trip_id} `}>
           <a>{text}</a>
         </Link>
-      
     },
     {
       title: 'Type',
@@ -86,7 +145,7 @@ export default function Pending () {
       dataIndex: 'issueType',
       key: 'issueType',
       width: '8%',
-      render: (text, record) => <Truncate data={get(record, 'credit_debit_type.name',null)} length={12} />
+      render: (text, record) => <Truncate data={get(record, 'credit_debit_type.name', null)} length={12} />
     },
     {
       title: 'Amount',
@@ -107,7 +166,10 @@ export default function Pending () {
       key: 'region',
       filters: RegionList,
       width: '6%',
-      render: (text, record) => get(record, 'trip.branch.region.name',null)
+      render: (text, record) =>get(record, 'trip.branch.region.name', null),
+      onFilter: (value, record) => record.trip && record.trip.branch && record.trip.branch.region && record.trip.branch.region.name.indexOf(value) === 0,
+        
+     
     },
     {
       title: 'Created By',
@@ -115,22 +177,19 @@ export default function Pending () {
       key: 'created_by',
       filters: RequestedBy,
       width: '11%',
-      render: (text, record) => <Truncate data={text} length={18} />
+      render: (text, record) => <Truncate data={text} length={18} />,
+     onFilter: (value, record) => value === 1 ? record.is_created_by_partner === true : value === 2 ? record.is_created_by_partner === false : record.created_by
     },
     {
       title: 'Partner Name',
-      dataIndex: 'created_by',
-      key: 'created_by',
-      filters: RequestedBy,
       width: '12%',
       render: (text, record) => {
         return (
-          <Link href='partners/[id]' as={`partners/${get(record, 'trip.partner.cardcode',null)}`}>
-            <a> <Truncate data={get(record, 'trip.partner.cardcode',null) +'-'+ get(record, 'trip.partner.name',null)} length={18} /></a>
+          <Link href='partners/[id]' as={`partners/${get(record, 'trip.partner.cardcode', null)}`}>
+            <a> <Truncate data={get(record, 'trip.partner.cardcode', null) + '-' + get(record, 'trip.partner.name', null)} length={18} /></a>
           </Link>
         )
       },
-      
     },
     {
       title: 'Req.On',
@@ -147,28 +206,35 @@ export default function Pending () {
       dataIndex: 'responsibility',
       key: 'responsibility',
       width: '10%',
-     render: (text, record) => 
-      <PartnerOnBoardedBy
-     onboardedBy={get(record, 'responsibility.name', '-')}
-     onboardedById={get(record, 'onboarded_by.id', null)}
-     credit_debit_id={record.id}
-   />,
+      render: (text, record) =>
+        <PartnerOnBoardedBy
+          onboardedBy={get(record, 'responsibility.name', '-')}
+          onboardedById={get(record, 'onboarded_by.id', null)}
+          credit_debit_id={record.id}
+        />,
       filterDropdown: (
         <div>
-          <Input placeholder='Search' id='id' name='id' type='number' />
+          <Input
+            placeholder='Search'
+            id='id'
+            name='id'
+            type='number'
+            value={filter.responsibity}
+            onChange={handleName}
+          />
         </div>
       ),
       filterIcon: (filtered) => (
         <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
       ),
-      
+
     },
     {
       title: 'Comment',
       dataIndex: 'approval_comment',
       key: 'approval_comment',
       width: '11%',
-      render: (text, record) => <Truncate data={get(record, 'trip.trip_comments[0].description',null)} length={18} />
+      render: (text, record) => <Truncate data={get(record, 'trip.trip_comments[0].description', null)} length={18} />
     },
     {
       title: 'Action',
@@ -214,6 +280,7 @@ export default function Pending () {
       <Table
         columns={ApprovalPending}
         dataSource={pending}
+        onChange={onChange}
         rowKey={(record) => record.id}
         size='small'
         scroll={{ x: 1156, y: 600 }}
