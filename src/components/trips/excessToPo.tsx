@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Modal, Form, Select } from 'antd'
-import CreatePo from './createPo'
 import TrucksForPO from './trucksForPO'
 import { gql, useQuery } from '@apollo/client'
+import ConfirmPo from './confirmPo'
 
 const PARTNER_SEARCH_QUERY = gql`query partner_search($search: String){
 search_partner(args:{search:$search}){
@@ -79,7 +79,7 @@ const ExcessToPo = (props) => {
         </Form>
       </Modal>
       {obj.po_visible &&
-        <CreatePo
+        <ConfirmPo
           visible={obj.po_visible}
           truck_id={obj.truck_id}
           record={record}
