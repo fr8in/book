@@ -66,7 +66,7 @@ const WalletStatement = (props) => {
   console.log('statement_group', wallet_statement)
   return (
     <Drawer
-      title={`Wallet: ₹${wallet_balance.toFixed(2)}`}
+      title={`Wallet: ₹${wallet_balance ? wallet_balance.toFixed(2) : 0}`}
       placement='right'
       closable={false}
       onClose={onHide}
