@@ -61,6 +61,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         id
         cardcode
         name
+        walletcode
         drivers {
           id
           mobile

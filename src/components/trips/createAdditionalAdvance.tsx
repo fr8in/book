@@ -1,15 +1,106 @@
 import { useState } from 'react'
-import { Row, Col, Radio, Form, Input, Button } from 'antd'
+import { Row, Col, Radio, Form, Input, Button , message} from 'antd'
+import { gql, useMutation, useLazyQuery } from '@apollo/client'
+import get from 'lodash/get'
 
-const CreateAdditionalAdvance = () => {
+const CREATE_ADDITIONAL_ADVANCE = gql`
+mutation additional_advance($input: AdditionalAdvanceInput) {
+  additional_advance(input: $input) {
+    status
+    description
+  }
+}`
+
+const IFSC_VALIDATION = gql`
+query ifsc_validation($ifsc: String!){
+  bank_detail(ifsc: $ifsc) {
+    bank
+    bankcode
+    branch
+  }
+}`
+
+const CreateAdditionalAdvance = (props) => {
+
+  const {trip_info} = props
+
   const [radioValue, setRadioValue] = useState('WALLET')
+  const [form] = Form.useForm()
+
+  const [getBankDetail, { loading, data, error, called }] = useLazyQuery(IFSC_VALIDATION)
+
   const onRadioChange = (e) => {
     setRadioValue(e.target.value)
   }
+
+
+  const validateIFSC = () => {
+    getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc') } })
+  }
+
+  console.log('IFSC validation Error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+
+  const bank_detail = get(_data, 'bank_detail', null)
+
+  const [createAdditionalAdvance] = useMutation(
+    CREATE_ADDITIONAL_ADVANCE,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Saved!!') }
+    }
+  )
+
+  const onSubmit = (form) => {
+    (radioValue === 'WALLET')  ? (
+    createAdditionalAdvance({
+        variables: {
+          input: {
+            trip_id: trip_info.id,
+            truck_id: trip_info && trip_info.truck && trip_info.truck.id ,
+            amount: parseFloat(form.amount),
+            wallet_code: trip_info && trip_info.partner && trip_info.partner.walletcode ,
+            payment_mode: "WALLET",
+            comment: form.comment,
+            created_by: "pravalika.k@fr8.in"
+          }
+        }
+      })
+     ) :
+    (
+      createAdditionalAdvance({
+        variables: {
+      input: {
+        trip_id: trip_info.id,
+        truck_id: trip_info && trip_info.truck && trip_info.truck.id ,
+        amount: parseFloat(form.amount),
+        wallet_code: trip_info && trip_info.partner && trip_info.partner.walletcode ,
+        payment_mode: "BANK",
+        comment: form.comment,
+        created_by: "pravalika.k@fr8.in",
+        bank_detail: {
+          account_name:form.account_name,
+          account_number:form.account_number,
+          ifsc_code:form.ifsc_code
+        }
+      }
+    }
+  })
+    )
+}
+
+if (called && error) {
+  message.error('Enter Valid IFSC code')
+  form.resetFields(['ifsc'])
+}
+  
   return (
     <Row>
       <Col xs={24}>
-        <Form layout='vertical'>
+        <Form layout='vertical'  form={form} onFinish={onSubmit}>
           <Row className='mb10'>
             <Col xs={24}>
               <Radio.Group
@@ -26,7 +117,7 @@ const CreateAdditionalAdvance = () => {
               <div>
                 <Row gutter={10}>
                   <Col xs={12} sm={8}>
-                    <Form.Item label='Account Name'>
+                    <Form.Item label='Account Name' name='account_name'>
                       <Input
                         id='accountName'
                         required
@@ -34,7 +125,7 @@ const CreateAdditionalAdvance = () => {
                     </Form.Item>
                   </Col>
                   <Col xs={12} sm={8}>
-                    <Form.Item label='Account Number'>
+                    <Form.Item label='Account Number' name='account_number'>
                       <Input
                         id='accountNumber'
                         required
@@ -52,15 +143,16 @@ const CreateAdditionalAdvance = () => {
                 </Row>
                 <Row gutter={10}>
                   <Col xs={12} sm={8}>
-                    <Form.Item label='IFSC Code'>
+                    <Form.Item label='IFSC Code' name='ifsc_code' extra={get(bank_detail, 'bank', null)}>
                       <Input
                         id='ifscCode'
                         required
+                        onBlur={validateIFSC}
                       />
                     </Form.Item>
                   </Col>
                   <Col xs={12} sm={8} className='reduceMarginTop1'>
-                    <Form.Item label='Amount'>
+                    <Form.Item label='Amount' name='amount'>
                       <Input
                         id='bankAmount'
                         required
@@ -70,7 +162,7 @@ const CreateAdditionalAdvance = () => {
                 </Row>
                 <Row gutter={10}>
                   <Col xs={16}>
-                    <Form.Item label='Bank Comment'>
+                    <Form.Item label='Bank Comment' name='comment'>
                       <Input
                         id='bankComment'
                         required
@@ -79,7 +171,7 @@ const CreateAdditionalAdvance = () => {
                   </Col>
                   <Col xs={8}>
                     <Form.Item label='save' className='hideLabel'>
-                      <Button type='primary' disabled={false}>Pay to Bank </Button>
+                      <Button type='primary' disabled={false}  htmlType='submit'>Pay to Bank </Button>
                     </Form.Item>
                   </Col>
                 </Row>
@@ -87,7 +179,7 @@ const CreateAdditionalAdvance = () => {
               ? (
                 <Row gutter={10}>
                   <Col xs={12} sm={8}>
-                    <Form.Item label='Amount' extra='*Limit PO value'>
+                    <Form.Item label='Amount' name='amount' extra='*Limit PO value'>
                       <Input
                         id='walletAmount'
                         required
@@ -97,7 +189,7 @@ const CreateAdditionalAdvance = () => {
                   <Col xs={24}>
                     <Row gutter={10}>
                       <Col xs={16}>
-                        <Form.Item label='Comment'>
+                        <Form.Item label='Comment' name='comment'>
                           <Input
                             id='comment'
                             required
@@ -106,7 +198,7 @@ const CreateAdditionalAdvance = () => {
                       </Col>
                       <Col xs={8}>
                         <Form.Item label='save' className='hideLabel'>
-                          <Button type='primary' className='labelFix' disabled={false}>Pay Wallet</Button>
+                          <Button type='primary' className='labelFix' htmlType='submit' disabled={false}>Pay Wallet</Button>
                         </Form.Item>
                       </Col>
                     </Row>
@@ -117,5 +209,6 @@ const CreateAdditionalAdvance = () => {
     </Row>
   )
 }
+
 
 export default CreateAdditionalAdvance
