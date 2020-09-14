@@ -11,7 +11,10 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       status_at
       destination_in
       destination_out
-     driver_id
+      driver{
+        id
+        mobile
+      }
       delay
       eta
       po_date
@@ -55,8 +58,10 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         name
       }
       partner{
+        id
         cardcode
         name
+        walletcode
         drivers {
           id
           mobile

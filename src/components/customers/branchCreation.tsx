@@ -195,7 +195,7 @@ const BranchCreation = (props) => {
   const onStateChange = (id, options) => {
     setObj({ ...obj, state_name: options.label })
   }
-  console.log('obj', obj)
+
   return (
     <>
       <Modal

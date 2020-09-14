@@ -24,6 +24,7 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
           name
           trips(where: {trip_status: {name: {_eq: $trip_status}}, truck_type:{id: {_in:$truck_type}}, created_by: {_in: $managers}}) {
             id
+            po_date
             source {
               id
               name
@@ -32,19 +33,26 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
               id
               name
             }
-            truck {
-              truck_no
-              truck_type {
-                id
-                name
-              }
+            truck_type{
+              id
+              name
             }
             customer {
+              id
               cardcode
               name
             }
             trip_prices(limit: 1, where:{deleted_at:{_is_null: true}}) {
+              id
               customer_price
+              partner_price
+              mamul
+              is_price_per_ton
+              ton
+              price_per_ton
+              bank
+              cash
+              to_pay
             }
             created_at
             leads(where:{deleted_at:{_is_null:true}}) {
@@ -57,7 +65,7 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
                 partner_users(where: {is_admin: {_eq: true}}) {
                   mobile
                 }
-                trucks(where: {truck_status:{name:{_eq:"Waiting for load"}}}){
+                trucks(where: {truck_status:{name:{_eq:"Waiting for Load"}}}){
                   id
                   truck_no
                 }
@@ -154,7 +162,7 @@ const ExcessLoad = (props) => {
     {
       title: 'Truck Type',
       width: '14%',
-      render: (text, record) => record.truck && record.truck.truck_type && record.truck.truck_type.name
+      render: (text, record) => record && record.truck_type && record.truck_type.name
     },
     {
       title: 'Customer Name',
@@ -200,12 +208,14 @@ const ExcessLoad = (props) => {
       width: '12%'
     }
   ]
-
+  const expander = trips && trips.length > 0 && trips.filter(data => (data.leads && data.leads.length > 0)).map(data => data.id)
+  console.log('expander', expander)
   return (
     <>
       <Table
         columns={columns}
-        expandedRowRender={record => <ExcessLoadLead leads={record.leads} />}
+        expandedRowKeys={expander}
+        expandedRowRender={record => <ExcessLoadLead record={record} />}
         dataSource={trips}
         className='withAction'
         rowKey={record => record.id}
@@ -213,6 +223,7 @@ const ExcessLoad = (props) => {
         scroll={{ x: 1156 }}
         pagination={false}
         loading={loading}
+        expandRowByClick={false}
       />
       {object.cancel_visible &&
         <Modal
@@ -226,7 +237,7 @@ const ExcessLoad = (props) => {
         >
           <p>Load will get cancelled. Do you want to proceed?</p>
         </Modal>}
-      
+
       {object.po_visible &&
         <ExcessToPo
           visible={object.po_visible}

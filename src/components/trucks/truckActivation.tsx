@@ -30,7 +30,7 @@ query trucks($truck_id : Int){
   truck(where: {id: {_eq: $truck_id}}) {
     height
     truck_no
-    truck_files{
+    truck_files(where: {deleted_at: {_is_null:true}}){
       id
        type
        file_path

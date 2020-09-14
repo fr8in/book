@@ -9,6 +9,7 @@ const PARTNER_TRUCKS_QUERY = gql`
 subscription partners($cardcode: String) {
   partner(where: {cardcode: {_eq: $cardcode}}) {
     trucks(where: {truck_status:{name:{_neq: "Rejected"} }}) {
+      id
       truck_no
       truck_type {
         name
@@ -47,7 +48,7 @@ const rowSelection = {
 const TrucksByPartner = (props) => {
   const { cardcode } = props
   const initial = {
-    poData: [],
+    truckId: null,
     poVisible: false,
     title: ''
   }
@@ -114,7 +115,7 @@ const TrucksByPartner = (props) => {
               <span>
                 {source.slice(0, 3) + '-' + destination.slice(0, 3)}
               </span>)
-              : (status === 'Waiting for Load') ? <a type='link' onClick={() => handleShow('poVisible', record.partner, 'poData', record)}>Assign</a>
+              : (status === 'Waiting for Load') ? <a type='link' onClick={() => handleShow('poVisible', record.partner, 'truckId', record.id)}>Assign</a>
                 : 'NA'
           }
           </span>
@@ -142,7 +143,7 @@ const TrucksByPartner = (props) => {
       {object.poVisible &&
         <CreatePo
           visible={object.poVisible}
-          data={object.poData}
+          truck_id={object.truckId}
           onHide={handleHide}
           title={object.title}
         />}

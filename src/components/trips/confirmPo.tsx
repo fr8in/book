@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { Modal, Row, Button, Form, Col, Select, Card, Divider, message } from 'antd'
 import Link from 'next/link'
-import { gql, useQuery, useLazyQuery, useMutation } from '@apollo/client'
+import { gql, useQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
 import get from 'lodash/get'
 
 const PO_QUERY = gql`
-query po_query($id: Int!){
+query po_query($id: Int!, $cus_id: Int!){
   truck(where:{id: {_eq: $id}}) {
     id
     truck_no
@@ -23,11 +23,7 @@ query po_query($id: Int!){
       }
     }
   }
-}`
-
-const CUSTOMER_PO_DATA = gql`
-query customers_po($id:Int!){
-  customer(where:{id:{_eq:$id}}){
+  customer(where:{id:{_eq:$cus_id}}){
     id
     cardcode
     name
@@ -50,71 +46,66 @@ query customers_po($id:Int!){
   }
 }`
 
-const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
-  search_customer(args:{search:$search}){
-    id
-    description
-  }
-}`
-//, where:{customer:{status:{name:{_eq:"Active"}}}}
-const CREATE_PO = gql`
-  mutation create_po (
-      $po_date: timestamp,
-      $source_id: Int, 
-      $destination_id: Int, 
-      $customer_id: Int,
-      $partner_id:Int,
-      $customer_price: Float,
-      $partner_price: Float,
-      $ton: float8,
-      $per_ton:float8,
-      $is_per_ton:Boolean, 
-      $mamul: Float,
-      $including_loading: Boolean,
-      $including_unloading: Boolean,
-      $bank:Float,
-      $cash: Float,
-      $to_pay: Float,
-      $truck_id:Int,
-      $truck_type_id: Int,
-      $driver_id: Int,
-      $loading_point_id: Int) {
-    insert_trip(objects: {
-      po_date:$po_date
-      source_id: $source_id, 
-      destination_id: $destination_id, 
-      customer_id: $customer_id,
-      partner_id: $partner_id,
-      truck_id: $truck_id,
-      truck_type_id: $truck_type_id,
-      driver_id: $driver_id,
-      loading_point_contact_id: $loading_point_id
-      trip_prices: {
-        data: {
-          customer_price: $customer_price,
-          partner_price: $partner_price,
-          ton: $ton,
-          price_per_ton:$per_ton,
-          is_price_per_ton: $is_per_ton,
-          mamul: $mamul,
-          including_loading: $including_loading,
-          including_unloading: $including_unloading,
-          bank: $bank,
-          to_pay:$to_pay,
-          cash:$cash
-        }
-      }
-    }) {
-      returning {
-        id
+const CONFIRM_PO = gql`
+  mutation confirm_po(
+  $trip_id: Int!
+  $truck_id: Int!
+  $partner_id: Int
+  $po_date: timestamp
+  $loading_point_id: Int
+  $source_id: Int!, 
+  $destination_id: Int!, 
+  $customer_id: Int,
+  $truck_type_id: Int,
+  $driver_id: Int
+  $customer_price: Float,
+  $partner_price: Float,
+  $ton: float8,
+  $per_ton:float8,
+  $is_per_ton:Boolean, 
+  $mamul: Float,
+  $including_loading: Boolean,
+  $including_unloading: Boolean,
+  $bank:Float,
+  $cash: Float,
+  $to_pay: Float,
+  ){
+  update_trip(_set:{
+    truck_id: $truck_id
+    partner_id: $partner_id
+    po_date: $po_date
+    loading_point_contact_id: $loading_point_id
+    source_id: $source_id
+    destination_id: $destination_id
+    customer_id: $customer_id,
+    truck_type_id: $truck_type_id,
+    driver_id: $driver_id,
+    trip_prices: {
+      data: {
+        customer_price: $customer_price,
+        partner_price: $partner_price,
+        ton: $ton,
+        price_per_ton:$per_ton,
+        is_price_per_ton: $is_per_ton,
+        mamul: $mamul,
+        including_loading: $including_loading,
+        including_unloading: $including_unloading,
+        bank: $bank,
+        to_pay:$to_pay,
+        cash:$cash
       }
     }
-  }`
+  }, 
+  where:{id:{_eq:$trip_id}}){
+    returning{
+      id
+    }
+  }
+}`
 
-const CreatePo = (props) => {
-  const { visible, onHide, truck_id } = props
+const ConfirmPo = (props) => {
+  const { visible, onHide, truck_id, record } = props
   const [driver_id, setDriver_id] = useState(null)
-  const [disableBtn, setDisableBtn] = useState(false)
 
   const [form] = Form.useForm()
   const initial = { search: '', source_id: null, destination_id: null }
@@ -123,60 +114,31 @@ const CreatePo = (props) => {
   const { loading, error, data } = useQuery(
     PO_QUERY,
     {
-      variables: { id: truck_id },
+      variables: { id: truck_id, cus_id: get(record, 'customer.id', null) },
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
   )
 
-  const { loading: search_loading, error: search_error, data: search_data } = useQuery(
-    CUSTOMER_SEARCH,
+  const [confirm_po_mutation] = useMutation(
+    CONFIRM_PO,
     {
-      variables: { search: obj.search || '' },
-      skip: !(obj.search),
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
-    }
-  )
-
-  const [getCustomerData, { loading: cus_loading, data: cus_data, error: cus_error }] = useLazyQuery(CUSTOMER_PO_DATA)
-
-  const [create_po_mutation] = useMutation(
-    CREATE_PO,
-    {
-      onError (error) {
-        message.error(error.toString())
-        setDisableBtn(false)
-      },
+      onError (error) { message.error(error.toString()) },
       onCompleted () {
         message.success('Load Created!!')
         setObj(initial)
-        setDisableBtn(false)
         onHide()
       }
     }
   )
 
-  console.log('CreateExcessLoad Search Error', search_error)
   console.log('CreateExcessLoad Error', error, driver_id)
-
-  let _search_data = {}
-  if (!search_loading) {
-    _search_data = search_data
-  }
-
-  let _cus_data = {}
-  if (!cus_loading) {
-    _cus_data = cus_data
-  }
-
-  const customer = get(_cus_data, 'customer[0]', null)
-  const system_mamul = get(customer, 'system_mamul', null)
 
   if (loading) return null
 
-  const customerSearch = get(_search_data, 'search_customer', '')
   const po_data = get(data, 'truck[0]', null)
+  const customer = get(data, 'customer[0]', null)
+  const system_mamul = get(customer, 'system_mamul', null)
 
   const onSubmit = (form) => {
     const loading_charge = form.charge_inclue.includes('Loading')
@@ -184,12 +146,11 @@ const CreatePo = (props) => {
     if (system_mamul > parseFloat(form.mamul)) {
       message.error('Mamul Should be greater than system mamul!')
     } else {
-      setDisableBtn(true)
-      create_po_mutation({
+      confirm_po_mutation({
         variables: {
           po_date: form.po_date.toDate(),
-          source_id: parseInt(obj.source_id, 10),
-          destination_id: parseInt(obj.destination_id, 10),
+          source_id: obj.source_id ? parseInt(obj.source_id, 10) : get(record, 'source.id', null),
+          destination_id: obj.destination_id ? parseInt(obj.destination_id, 10) : get(record, 'destination.id', null),
           customer_id: customer.id,
           partner_id: po_data && po_data.partner && po_data.partner.id,
           customer_price: parseFloat(form.customer_price),
@@ -220,15 +181,6 @@ const CreatePo = (props) => {
     setObj({ ...obj, destination_id: city_id })
   }
 
-  const onCusSearch = (value) => {
-    setObj({ ...obj, search: value })
-  }
-
-  const onCusSelect = (value, customer) => {
-    getCustomerData({
-      variables: { id: customer.key }
-    })
-  }
   const partner_name = po_data && po_data.partner && po_data.partner.name
   return (
     <Modal
@@ -246,23 +198,18 @@ const CreatePo = (props) => {
         </Link>
         <Row gutter={10}>
           <Col xs={24} sm={12}>
-            <Form.Item label='Customer' name='customer' rules={[{ required: true }]}>
+            <Form.Item label='Customer' name='customer' initialValue={customer.name}>
               <Select
                 placeholder='Customer'
-                showSearch
-                disabled={false}
-                onSearch={onCusSearch}
-                onChange={onCusSelect}
+                disabled
               >
-                {customerSearch && customerSearch.map(_cus => (
-                  <Select.Option key={_cus.id} value={_cus.description}>{_cus.description}</Select.Option>
-                ))}
+                <Select.Option value={customer.id}>{customer.name}</Select.Option>
               </Select>
             </Form.Item>
           </Col>
         </Row>
         <Card size='small' className='po-card'>
-          {!cus_loading && (customer && customer.id) &&
+          {(customer && customer.id) &&
             <div>
               <PoDetail
                 driver_id={setDriver_id}
@@ -271,11 +218,11 @@ const CreatePo = (props) => {
                 onDestinationChange={onDestinationChange}
                 form={form}
                 customer={customer}
-                loading={cus_loading}
+                record={record}
               />
               <Divider className='hidden-xs' />
               <div className='text-right'>
-                <Button type='primary' htmlType='submit' loading={disableBtn}>Create</Button>
+                <Button type='primary' htmlType='submit'>Create</Button>
               </div>
             </div>}
         </Card>
@@ -284,4 +231,4 @@ const CreatePo = (props) => {
   )
 }
 
-export default CreatePo
+export default ConfirmPo

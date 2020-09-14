@@ -1,79 +1,46 @@
 import { useState, useEffect } from 'react'
-import { Row, Col, Form, DatePicker, Input, Checkbox, Radio, Divider } from 'antd'
+import { Row, Col, Form, DatePicker, Input, Checkbox, Radio, Divider, Select } from 'antd'
 import CitySelect from '../common/citySelect'
 import Loading from '../common/loading'
-import { gql, useQuery } from '@apollo/client'
 import Driver from '../partners/driver'
 import SystemMamul from '../customers/systemMamul'
 import useShowHide from '../../hooks/useShowHide'
+import get from 'lodash/get'
 
-const CUSTOMER_PO_DATA = gql`
-query customers_po($id:Int!){
-  customer(where:{id:{_eq:$id}}){
-    id
-    cardcode
-    name
-    exception_date
-    managed
-    advancePercentage{
-      id
-      name
-    }
-    status{
-      id
-      name
-    }
-    customer_mamul_summary{
-      system_mamul_avg
-    }
-    customer_users{
-      id
-      name
-      mobile
-    }
-  }
-}`
 const PoDetail = (props) => {
-  const { customer_id, po_data, onSourceChange, onDestinationChange, form } = props
+  const { po_data, onSourceChange, onDestinationChange, form, driver_id, customer, loading, record } = props
+
+  const price_type = get(record, 'trip_prices[0].is_price_per_ton', false)
+  const partner_price_data = get(record, 'trip_prices[0].partner_price', 0)
+  const partner_adv = partner_price_data ? partner_price_data * get(po_data, 'partner_advance_percentage.name', 70) : 0
+  const partner_wallet = partner_adv ? (partner_adv - (get(record, 'trip_prices[0].cash', 0) + get(record, 'trip_prices[0].to_pay', 0))) : 0
+  const customer_price_data = get(record, 'trip_prices[0].customer_price', 0)
+  const customer_adv = customer_price_data ? customer_price_data * get(customer, 'customer_advance_percentage.name', 90) : 0
 
   const initial = {
-    part_price: 0,
-    part_adv: 0,
-    part_wallet: 0,
-    part_cash: 0,
-    part_to_pay: 0,
-    rate_type: 'Rate/Trip',
-    cus_adv: 0
+    part_price: get(record, 'trip_prices[0].partner_price', 0),
+    part_adv: partner_adv,
+    part_wallet: partner_wallet,
+    part_cash: get(record, 'trip_prices[0].cash', 0),
+    part_to_pay: get(record, 'trip_prices[0].to_pay', 0),
+    rate_type: price_type ? 'Rate/Ton' : 'Rate/Trip',
+    cus_adv: customer_adv
   }
   const [trip_price, setTrip_price] = useState(initial)
 
   const modelInitial = { mamulVisible: false }
   const { visible, onHide, onShow } = useShowHide(modelInitial)
 
-  const { loading, data, error } = useQuery(
-    CUSTOMER_PO_DATA,
-    {
-      variables: { id: parseInt(customer_id) },
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true,
-      skip: !customer_id
-    }
-  )
+  const customer_user = get(customer, 'customer_users', [])
+  const default_mamul = get(customer, 'system_mamul', null)
 
-  console.log('PODetail Error', error)
-  let _data = {}
-  if (!loading) {
-    _data = data
-  }
-  const customer = _data && _data.customer ? _data.customer[0] : null
-  const default_mamul = customer && customer.customer_mamul_summary && customer.customer_mamul_summary.length > 0 ? customer.customer_mamul_summary[0].system_mamul_avg : 0
-
-  console.log('customer', customer)
+  const customer_user_list = customer_user.map((data) => {
+    return { value: data.id, label: `${data.name.slice(0, 10)} - ${data.mobile}` }
+  })
 
   const rate_per_ton = (trip_price.rate_type === 'Rate/Ton')
-  const customer_advance_percentage = customer && customer.advancePercentage && customer.advancePercentage.name
+  const customer_advance_percentage = customer && customer.customer_advance_percentage && customer.customer_advance_percentage.name
   const partner_advance_percentage = po_data && po_data.partner_advance_percentage && po_data.partner_advance_percentage.name
-  console.log('trip_price', trip_price, po_data)
 
   useEffect(() => {
     form.setFieldsValue({ mamul: default_mamul })
@@ -163,44 +130,51 @@ const PoDetail = (props) => {
 
   const onCashChange = (e) => {
     const { value } = e.target
-    const to_pay = parseInt(form.getFieldValue('to_pay'), 10)
+    const to_pay = form.getFieldValue('to_pay')
     form.setFieldsValue({
-      bank: trip_price.cus_adv - ((value ? parseInt(value) : 0) + (to_pay || 0))
+      bank: trip_price.cus_adv - ((value ? parseInt(value) : 0) + (parseInt(to_pay, 10) || 0))
     })
     setTrip_price({
       ...trip_price,
-      part_wallet: trip_price.part_adv - ((value ? parseInt(value) : 0) + (to_pay || 0)),
+      part_wallet: trip_price.part_adv - ((value ? parseInt(value) : 0) + (parseInt(to_pay, 10) || 0)),
       part_cash: value
     })
   }
 
   const onToPayChange = (e) => {
     const { value } = e.target
-    const cash = parseInt(form.getFieldValue('cash'))
+    const cash = form.getFieldValue('cash')
     form.setFieldsValue({
-      bank: trip_price.cus_adv - ((value ? parseInt(value) : 0) + (cash || 0))
+      bank: trip_price.cus_adv - ((value ? parseInt(value) : 0) + (parseInt(cash, 10) || 0))
     })
     setTrip_price({
       ...trip_price,
-      part_wallet: trip_price.part_adv - ((value ? parseInt(value) : 0) + (cash || 0)),
+      part_wallet: trip_price.part_adv - ((value ? parseInt(value) : 0) + (parseInt(cash, 10) || 0)),
       part_to_pay: value
     })
   }
 
+  const net_price = get(record, 'trip_prices[0].customer_price', 0) - get(record, 'trip_prices[0].mamul', 0)
   return (
     loading ? <Loading /> : (
       <>
         <Row gutter={10}>
           <Col xs={12} sm={6}>
-            <Form.Item label='PO Date' name='po_date'>
+            <Form.Item
+              label='PO Date'
+              name='po_date'
+              rules={[{ required: true }]}
+            >
               <DatePicker style={{ width: '100%' }} />
             </Form.Item>
           </Col>
           <Col xs={12} sm={6}>
-            <Form.Item label='Loading Point Contact' name='loading_contact'>
-              <Input
-                placeholder='loading Point Contact'
-                disabled={false}
+            <Form.Item label='Loading Point Contact' name='loading_contact' rules={[{ required: true }]}>
+              <Select
+                placeholder='Customer Type ....'
+                options={customer_user_list}
+                optionFilterProp='label'
+                showSearch
               />
             </Form.Item>
           </Col>
@@ -210,6 +184,7 @@ const PoDetail = (props) => {
               onChange={onSourceChange}
               required
               name='source'
+              city={get(record, 'source.name', null)}
             />
           </Col>
           <Col xs={24} sm={6}>
@@ -218,13 +193,14 @@ const PoDetail = (props) => {
               onChange={onDestinationChange}
               required
               name='destination'
+              city={get(record, 'destination.name', null)}
             />
           </Col>
         </Row>
         <Divider className='hidden-xs' />
         <Row gutter={10}>
           <Col xs={24} sm={6}>
-            <Form.Item name='trip_rate_type' initialValue='Rate/Trip'>
+            <Form.Item name='trip_rate_type' initialValue={trip_price.rate_type}>
               <Radio.Group onChange={onRadioChange}>
                 <Radio value='Rate/Trip'>Rate/Trip</Radio>
                 <Radio value='Rate/Ton'>Rate/Ton</Radio>
@@ -235,22 +211,24 @@ const PoDetail = (props) => {
             <Col xs={24} sm={12}>
               <Row gutter={10}>
                 <Col xs={12}>
-                  <Form.Item name='per_ton_rate'>
+                  <Form.Item name='per_ton_rate' initialValue={get(record, 'trip_prices[0].price_per_ton', null)}>
                     <Input
                       placeholder='Price'
                       disabled={false}
                       addonBefore='₹'
                       onChange={onRatePerTon}
+                      type='number'
                     />
                   </Form.Item>
                 </Col>
                 <Col xs={12}>
-                  <Form.Item name='ton'>
+                  <Form.Item name='ton' initialValue={get(record, 'trip_prices[0].ton', null)}>
                     <Input
                       placeholder='Ton'
                       disabled={false}
                       addonAfter='Ton'
                       onChange={onTonChange}
+                      type='number'
                     />
                   </Form.Item>
                 </Col>
@@ -263,11 +241,14 @@ const PoDetail = (props) => {
               label='Customer Price'
               extra={`Advance ${customer_advance_percentage}%`}
               name='customer_price'
+              rules={[{ required: true }]}
+              initialValue={get(record, 'trip_prices[0].customer_price', null)}
             >
               <Input
-                placeholder='customerPrice'
+                placeholder='Customer price'
                 disabled={rate_per_ton}
                 onChange={onCustomerPriceChange}
+                type='number'
               />
             </Form.Item>
           </Col>
@@ -280,6 +261,8 @@ const PoDetail = (props) => {
             <Form.Item
               name='mamul'
               label='Mamul Charge'
+              rules={[{ required: true }]}
+              initialValue={get(record, 'trip_prices[0].mamul', null)}
               extra={
                 <span>System Mamul:&nbsp;
                   <span className='link' onClick={default_mamul ? () => onShow('mamulVisible') : () => {}}>{default_mamul || 0}</span>
@@ -290,6 +273,7 @@ const PoDetail = (props) => {
                 placeholder='mamul'
                 disabled={false}
                 onChange={onMamulChange}
+                type='number'
               />
             </Form.Item>
           </Col>
@@ -299,10 +283,10 @@ const PoDetail = (props) => {
             </Form.Item>
           </Col>
           <Col xs={24} sm={6} className='hidden-xs'>
-            <Form.Item label='Net Price' name='partner_price'>
+            <Form.Item label='Net Price' name='partner_price' initialValue={net_price || null}>
               <Input
                 placeholder='Net Price'
-                disabled={false}
+                disabled
               />
             </Form.Item>
           </Col>
@@ -320,19 +304,21 @@ const PoDetail = (props) => {
           <Col xs={24} sm={12}>
             <Row gutter={10}>
               <Col xs={12}>
-                <Form.Item label='Bank' name='bank'>
+                <Form.Item label='Bank' name='bank' initialValue={get(record, 'trip_prices[0].bank', 0)}>
                   <Input
                     placeholder='Bank'
                     disabled={false}
+                    type='number'
                   />
                 </Form.Item>
               </Col>
               <Col xs={12}>
-                <Form.Item label='Cash' name='cash'>
+                <Form.Item label='Cash' name='cash' initialValue={get(record, 'trip_prices[0].cash', 0)}>
                   <Input
                     placeholder='Cash'
                     disabled={false}
                     onChange={onCashChange}
+                    type='number'
                   />
                 </Form.Item>
               </Col>
@@ -341,16 +327,17 @@ const PoDetail = (props) => {
           <Col xs={24} sm={12}>
             <Row gutter={10}>
               <Col xs={12}>
-                <Form.Item label='To-Pay' name='to_pay'>
+                <Form.Item label='To-Pay' name='to_pay' initialValue={get(record, 'trip_prices[0].to_pay', 0)}>
                   <Input
                     placeholder='To-Pay'
                     disabled={false}
                     onChange={onToPayChange}
+                    type='number'
                   />
                 </Form.Item>
               </Col>
               <Col xs={12}>
-                <Driver partner_id={po_data.id} />
+                <Driver partner_id={po_data.id} driver_id={driver_id} required />
               </Col>
             </Row>
           </Col>

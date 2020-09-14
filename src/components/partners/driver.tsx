@@ -25,7 +25,7 @@ mutation driver_insert($id: Int!, $mobile: String){
 }`
 
 const Driver = (props) => {
-  const { partner_id } = props
+  const { partner_id, driver_id, required } = props
   if (!partner_id) return null
 
   const [searchText, setSearchText] = useState('')
@@ -52,13 +52,17 @@ const Driver = (props) => {
     INSERT_PARTNER_DRIVER,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () {
+      onCompleted (data) {
+        console.log('driver data', data)
+        const id = _.get(data, 'insert_driver.returning[0].id', null)
         message.success('Updated!!')
+        driver_id(id)
         setSearchText('')
       }
     }
   )
-  const onDriverChange = value => {
+  const onDriverChange = (value, option) => {
+    console.log('driver option', option)
     const isNew = driver_data && driver_data.filter(_driver => _driver.mobile.search(value) !== -1)
     console.log('mobile', value, (_.isEmpty(isNew)))
     if ((_.isEmpty(isNew))) {
@@ -68,7 +72,7 @@ const Driver = (props) => {
           mobile: value
         }
       })
-    } else return null
+    } else { driver_id(option.key) }
   }
 
   let drivers = []
@@ -79,9 +83,10 @@ const Driver = (props) => {
   }
   console.log('drivers', drivers)
   return (
-    <Form.Item label='Driver' name='driver'>
+    <Form.Item label='Driver' name='driver' rules={[{ required: required }]}>
       <Select
         showSearch
+        placeholder='Select Driver...'
         onSearch={onSearch}
         onChange={onDriverChange}
       >

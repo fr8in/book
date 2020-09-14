@@ -103,7 +103,7 @@ const TripDetailContainer = (props) => {
                   </Collapse>
                   <Collapse accordion className='small mt10'>
                     <Panel header='Additional Advance' key='1'>
-                      <CreateAdditionalAdvance />
+                      <CreateAdditionalAdvance trip_info={trip_info}/>
                       <AdditionalAdvance ad_trip_id={trip_info.id}/>
                     </Panel>
                   </Collapse>

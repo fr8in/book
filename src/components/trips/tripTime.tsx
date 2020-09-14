@@ -206,6 +206,8 @@ const TripTime = (props) => {
   const wh_files = trip_info && trip_info.trip_files && trip_info.trip_files.length > 0 ? trip_info.trip_files.filter(file => file.type === 'WH') : null
   console.log('wh', wh_files)
 
+  const driver_number = trip_info && trip_info.driver && trip_info.driver.mobile
+
   return (
     <Card size='small' className='mt10'>
       <Row>
@@ -219,7 +221,7 @@ const TripTime = (props) => {
                 <SourceOutDate source_out={trip_info.source_out} id={trip_info.id} />
               </Col>
               <Col xs={8}>
-                <Driver trip_info={trip_info} />
+                <Driver trip_info={trip_info} initialValue={driver_number}/>
               </Col>
             </Row>
             <Row gutter={10}>
@@ -272,13 +274,14 @@ const TripTime = (props) => {
                 <Checkbox disabled={!!(trip_info && trip_info.unloaded_private_godown === true)} onClick={() => onShow('godownReceipt')}>Unloaded at private godown</Checkbox>
               </Col>
               <Col xs={4} className='text-right'>
+              {wh_files && wh_files.length > 0 ? (
                 <ViewFile
                   id={trip_info.id}
                   type='trip'
                   folder='warehousereceipt/'
                   file_type='WH'
                   file_list={wh_files}
-                />
+                />) : (null)}
               </Col>
             </Row>
             <Row>
