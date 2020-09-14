@@ -111,7 +111,7 @@ const CREATE_PO = gql`
     }
   }`
 
-const CustomerPo = (props) => {
+const CreatePo = (props) => {
   const { visible, onHide, truck_id } = props
   const [driver_id, setDriver_id] = useState(null)
   const [disableBtn, setDisableBtn] = useState(false)
@@ -284,4 +284,4 @@ const CustomerPo = (props) => {
   )
 }
 
-export default CustomerPo
+export default CreatePo
