@@ -53,7 +53,7 @@ const WalletToBank = (props) => {
   }
   return (
     <Modal
-      title='Wallet Top Up'
+      title='Wallet To Bank'
       visible={visible}
       onCancel={onHide}
       footer={[]}
