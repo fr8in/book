@@ -8,7 +8,7 @@ query partner_po_creation($id:Int!){
     id
     cardcode
     name
-    trucks(where:{truck_status:{name:{_eq:"Waiting for load"}}}){
+    trucks(where:{truck_status:{name:{_eq:"Waiting for Load"}}}){
       id
       truck_no
       truck_type{

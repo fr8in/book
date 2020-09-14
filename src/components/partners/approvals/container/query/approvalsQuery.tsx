@@ -24,6 +24,10 @@ query trip_credit_debit($status:[String!],$offset:Int,$limit:Int){
             name
           }
         }
+        partner {
+          cardcode
+          name
+        }
       }
       responsibility {
         id

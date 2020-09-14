@@ -57,7 +57,7 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
                 partner_users(where: {is_admin: {_eq: true}}) {
                   mobile
                 }
-                trucks(where: {truck_status:{name:{_eq:"Waiting for load"}}}){
+                trucks(where: {truck_status:{name:{_eq:"Waiting for Load"}}}){
                   id
                   truck_no
                 }
@@ -200,11 +200,13 @@ const ExcessLoad = (props) => {
       width: '12%'
     }
   ]
-
+  const expander = trips && trips.length > 0 && trips.filter(data => (data.leads && data.leads.length > 0)).map(data => data.id)
+  console.log('expander', expander)
   return (
     <>
       <Table
         columns={columns}
+        expandedRowKeys={expander}
         expandedRowRender={record => <ExcessLoadLead leads={record.leads} />}
         dataSource={trips}
         className='withAction'
@@ -213,6 +215,7 @@ const ExcessLoad = (props) => {
         scroll={{ x: 1156 }}
         pagination={false}
         loading={loading}
+        expandRowByClick={false}
       />
       {object.cancel_visible &&
         <Modal
@@ -226,7 +229,7 @@ const ExcessLoad = (props) => {
         >
           <p>Load will get cancelled. Do you want to proceed?</p>
         </Modal>}
-      
+
       {object.po_visible &&
         <ExcessToPo
           visible={object.po_visible}

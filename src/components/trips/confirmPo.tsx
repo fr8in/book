@@ -25,96 +25,66 @@ query po_query($id: Int!){
   }
 }`
 
-const CUSTOMER_PO_DATA = gql`
-query customers_po($id:Int!){
-  customer(where:{id:{_eq:$id}}){
-    id
-    cardcode
-    name
-    exception_date
-    managed
-    customer_advance_percentage{
-      id
-      name
+const CONFIRM_PO = gql`
+  mutation confirm_po(
+  $trip_id: Int!
+  $truck_id: Int!
+  $partner_id: Int
+  $po_date: timestamp
+  $loading_point_id: Int
+  $source_id: Int, 
+  $destination_id: Int, 
+  $customer_id: Int,
+  $truck_type_id: Int,
+  $driver_id: Int
+  $customer_price: Float,
+  $partner_price: Float,
+  $ton: float8,
+  $per_ton:float8,
+  $is_per_ton:Boolean, 
+  $mamul: Float,
+  $including_loading: Boolean,
+  $including_unloading: Boolean,
+  $bank:Float,
+  $cash: Float,
+  $to_pay: Float,
+  ){
+  update_trip(_set:{
+    truck_id: $truck_id
+    partner_id: $partner_id
+    po_date: $po_date
+    loading_point_contact_id: $loading_point_id
+    source_id: $source_id
+    destination_id: $destination_id
+    customer_id: $customer_id,
+    truck_type_id: $truck_type_id,
+    driver_id: $driver_id,
+    trip_prices: {
+      data: {
+        customer_price: $customer_price,
+        partner_price: $partner_price,
+        ton: $ton,
+        price_per_ton:$per_ton,
+        is_price_per_ton: $is_per_ton,
+        mamul: $mamul,
+        including_loading: $including_loading,
+        including_unloading: $including_unloading,
+        bank: $bank,
+        to_pay:$to_pay,
+        cash:$cash
+      }
     }
-    status{
+  }, 
+  where:{id:{_eq:$trip_id}}){
+    returning{
       id
-      name
-    }
-    system_mamul
-    customer_users{
-      id
-      name
-      mobile
     }
   }
 }`
 
-const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
-  search_customer(args:{search:$search}){
-    id
-    description
-  }
-}`
-//, where:{customer:{status:{name:{_eq:"Active"}}}}
-const CREATE_PO = gql`
-  mutation create_po (
-      $po_date: timestamp,
-      $source_id: Int, 
-      $destination_id: Int, 
-      $customer_id: Int,
-      $partner_id:Int,
-      $customer_price: Float,
-      $partner_price: Float,
-      $ton: float8,
-      $per_ton:float8,
-      $is_per_ton:Boolean, 
-      $mamul: Float,
-      $including_loading: Boolean,
-      $including_unloading: Boolean,
-      $bank:Float,
-      $cash: Float,
-      $to_pay: Float,
-      $truck_id:Int,
-      $truck_type_id: Int,
-      $driver_id: Int,
-      $loading_point_id: Int) {
-    insert_trip(objects: {
-      po_date:$po_date
-      source_id: $source_id, 
-      destination_id: $destination_id, 
-      customer_id: $customer_id,
-      partner_id: $partner_id,
-      truck_id: $truck_id,
-      truck_type_id: $truck_type_id,
-      driver_id: $driver_id,
-      loading_point_contact_id: $loading_point_id
-      trip_prices: {
-        data: {
-          customer_price: $customer_price,
-          partner_price: $partner_price,
-          ton: $ton,
-          price_per_ton:$per_ton,
-          is_price_per_ton: $is_per_ton,
-          mamul: $mamul,
-          including_loading: $including_loading,
-          including_unloading: $including_unloading,
-          bank: $bank,
-          to_pay:$to_pay,
-          cash:$cash
-        }
-      }
-    }) {
-      returning {
-        id
-      }
-    }
-  }`
-
-const CreatePo = (props) => {
+const ConfirmPo = (props) => {
   const { visible, onHide, truck_id } = props
   const [driver_id, setDriver_id] = useState(null)
-  const [disableBtn, setDisableBtn] = useState(false)
 
   const [form] = Form.useForm()
   const initial = { search: '', source_id: null, destination_id: null }
@@ -144,14 +114,10 @@ const CreatePo = (props) => {
   const [create_po_mutation] = useMutation(
     CREATE_PO,
     {
-      onError (error) {
-        message.error(error.toString())
-        setDisableBtn(false)
-      },
+      onError (error) { message.error(error.toString()) },
       onCompleted () {
         message.success('Load Created!!')
         setObj(initial)
-        setDisableBtn(false)
         onHide()
       }
     }
@@ -184,7 +150,6 @@ const CreatePo = (props) => {
     if (system_mamul > parseFloat(form.mamul)) {
       message.error('Mamul Should be greater than system mamul!')
     } else {
-      setDisableBtn(true)
       create_po_mutation({
         variables: {
           po_date: form.po_date.toDate(),
@@ -275,7 +240,7 @@ const CreatePo = (props) => {
               />
               <Divider className='hidden-xs' />
               <div className='text-right'>
-                <Button type='primary' htmlType='submit' loading={disableBtn}>Create</Button>
+                <Button type='primary' htmlType='submit'>Create</Button>
               </div>
             </div>}
         </Card>
@@ -284,4 +249,4 @@ const CreatePo = (props) => {
   )
 }
 
-export default CreatePo
+export default ConfirmPo

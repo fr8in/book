@@ -5,12 +5,13 @@ import TripDetail from '../../trips/tripsByStages'
 import Truck from '../truck'
 import TruckTimeline from '../truckTimeline'
 import { Row, Col, Button, Card, Divider, Space, Tag, Tabs, message } from 'antd'
-import { CommentOutlined } from '@ant-design/icons'
+import { CommentOutlined, SnippetsOutlined } from '@ant-design/icons'
 import DetailPageHeader from '../../common/detailPageHeader'
 import TruckType from '../../trucks/truckType'
 import TruckNo from '../../trucks/truckNo'
 import useShowHide from '../../../hooks/useShowHide'
 import TruckComment from '../../trucks/truckComment'
+import CreatePo from '../../trips/createPo'
 
 import { gql, useSubscription, useMutation } from '@apollo/client'
 
@@ -173,6 +174,8 @@ const TruckDetailContainer = (props) => {
           }
           extra={
             <Space>
+              {truck_info && truck_info.truck_status && truck_info.truck_status.name && truck_info.truck_status.name === 'Waiting for Load' &&
+                <Button type='primary' shape='circle' onClick={() => onShow('poModal')} icon={<SnippetsOutlined />} />}
               <Tag className='status'>{truck_info && truck_info.truck_status && truck_info.truck_status.name}</Tag>
             </Space>
           }
@@ -224,6 +227,7 @@ const TruckDetailContainer = (props) => {
         </Col>
       </Row>
       {visible.comment && <TruckComment visible={visible.comment} onHide={onHide} id={truck_info.id} truck_status={truck_info && truck_info.truck_status && truck_info.truck_status.name} />}
+      {visible.poModal && <CreatePo visible={visible.poModal} onHide={onHide} truck_id={truck_info.id} />}
     </Card>
   )
 }

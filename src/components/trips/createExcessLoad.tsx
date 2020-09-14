@@ -110,14 +110,14 @@ const CreateExcessLoad = (props) => {
     console.log('Excess load data', form, obj)
     create_excess_load({
       variables: {
-        source_id: obj.source_id,
-        destination_id: obj.destination_id,
-        customer_id: obj.customer_id,
+        source_id: parseInt(obj.source_id, 10),
+        destination_id: parseInt(obj.destination_id, 10),
+        customer_id: parseInt(obj.customer_id, 10),
         customer_price: form.price ? parseFloat(form.price) : null,
         ton: form.ton ? parseFloat(form.ton) : null,
         rate_per_ton: form.ton ? Math.floor(form.price / parseFloat(form.ton)) : null,
         is_per_ton: !!form.ton,
-        truck_type_id: form.truck_type,
+        truck_type_id: parseInt(form.truck_type, 10),
         description: form.comment,
         topic: 'Excess Load Created',
         created_by: 'Karthik'

@@ -20,7 +20,7 @@ console.log('membership',membership)
       <Space align='center'>
         <CrownFilled
           style={{
-            color: membership === 1 ? '#C0C0C0' : membership === 2 ? '#FFD700' : '#E5E4E2' ,
+            color: membership === 1 ? '#C0C0C0' : membership === 2 ? '#FFD700' : '#A0B2C6' ,
             fontSize: '18px'
           }}
         />
