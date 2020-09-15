@@ -68,7 +68,9 @@ const PoDetail = (props) => {
       part_price: netPrice,
       part_adv: Math.floor(part_adv),
       part_wallet: part_adv,
-      cus_adv: Math.floor(cus_adv)
+      cus_adv: Math.floor(cus_adv),
+      part_cash: 0,
+      part_to_pay: 0
     })
   }
 
