@@ -82,7 +82,7 @@ const CitySelect = (props) => {
   const formatCity = (_city) => _city ? `${_city.name}, ${_city.stateName}` : null
 
   return (
-    <Form.Item label={label} name={name} rules={[{ required: required }]} initialValue={formatCity(city)}>
+    <Form.Item label={label} name={name} rules={[{ required: required }]} initialValue={city}>
       <Select
         showSearch
         placeholder={label || 'Select City'}

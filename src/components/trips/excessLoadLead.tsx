@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Table, Tooltip, Button, Select, Space, message, Modal } from 'antd'
 import { RocketFilled, DeleteOutlined, WhatsAppOutlined } from '@ant-design/icons'
 import Link from 'next/link'
@@ -5,6 +6,7 @@ import moment from 'moment'
 import { gql, useMutation } from '@apollo/client'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import get from 'lodash/get'
+import ConfirmPo from '../trips/confirmPo'
 
 const DELETE_LEAD = gql`
 mutation delete_lead($deleted_at: timestamp, $id: Int){
@@ -18,10 +20,12 @@ mutation delete_lead($deleted_at: timestamp, $id: Int){
 `
 
 const ExcessLoadLead = (props) => {
-  const { leads } = props
+  const { record } = props
 
-  const initial = { cancel_visible: false, record: null }
+  const initial = { cancel_visible: false, record: null, po_visible: false, po_data: null }
   const { object, handleShow, handleHide } = useShowHideWithRecord(initial)
+
+  const [truck_id, setTruck_id] = useState(null)
 
   const [delete_lead] = useMutation(
     DELETE_LEAD,
@@ -41,6 +45,14 @@ const ExcessLoadLead = (props) => {
         deleted_at: new Date().toISOString()
       }
     })
+  }
+
+  const onTruckChange = (id) => {
+    setTruck_id(id)
+  }
+
+  const onPoClick = () => {
+    handleShow('po_visible', null, 'po_data', record)
   }
 
   const data = [{
@@ -82,8 +94,11 @@ const ExcessLoadLead = (props) => {
             options={trucks_list}
             optionFilterProp='label'
             showSearch
+            onChange={onTruckChange}
           />
-          <Button type='link' icon={<RocketFilled />} />
+          <Tooltip title='Quick Po'>
+            <Button type='link' icon={<RocketFilled />} onClick={onPoClick} />
+          </Tooltip>
           <Tooltip title='Delete'>
             <Button type='link' danger icon={<DeleteOutlined />} onClick={() => handleShow('cancel_visible', null, 'record', record.id)} />
           </Tooltip>
@@ -101,8 +116,8 @@ const ExcessLoadLead = (props) => {
     <>
       <Table
         columns={data}
-        dataSource={leads}
-        rowKey={record => record.id}
+        dataSource={record.leads}
+        rowKey={record => get(record, 'leads.id', null)}
         size='small'
         scroll={{ x: 1156 }}
         pagination={false}
@@ -120,6 +135,13 @@ const ExcessLoadLead = (props) => {
         >
           <p>Lead will get Deleted. Do you want to proceed?</p>
         </Modal>}
+      {object.po_visible &&
+        <ConfirmPo
+          visible={object.po_visible}
+          truck_id={truck_id}
+          record={object.po_data}
+          onHide={handleHide}
+        />}
     </>
   )
 }

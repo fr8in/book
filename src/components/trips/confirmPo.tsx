@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { Modal, Row, Button, Form, Col, Select, Card, Divider, message } from 'antd'
 import Link from 'next/link'
-import { gql, useQuery, useLazyQuery, useMutation } from '@apollo/client'
+import { gql, useQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
 import get from 'lodash/get'
 
 const PO_QUERY = gql`
-query po_query($id: Int!){
+query po_query($id: Int!, $cus_id: Int!){
   truck(where:{id: {_eq: $id}}) {
     id
     truck_no
@@ -23,6 +23,27 @@ query po_query($id: Int!){
       }
     }
   }
+  customer(where:{id:{_eq:$cus_id}}){
+    id
+    cardcode
+    name
+    exception_date
+    managed
+    customer_advance_percentage{
+      id
+      name
+    }
+    status{
+      id
+      name
+    }
+    system_mamul
+    customer_users{
+      id
+      name
+      mobile
+    }
+  }
 }`
 
 const CONFIRM_PO = gql`
@@ -32,8 +53,8 @@ const CONFIRM_PO = gql`
   $partner_id: Int
   $po_date: timestamp
   $loading_point_id: Int
-  $source_id: Int, 
-  $destination_id: Int, 
+  $source_id: Int!, 
+  $destination_id: Int!, 
   $customer_id: Int,
   $truck_type_id: Int,
   $driver_id: Int
@@ -83,7 +104,7 @@ const CONFIRM_PO = gql`
 }`
 
 const ConfirmPo = (props) => {
-  const { visible, onHide, truck_id } = props
+  const { visible, onHide, truck_id, record } = props
   const [driver_id, setDriver_id] = useState(null)
 
   const [form] = Form.useForm()
@@ -93,26 +114,14 @@ const ConfirmPo = (props) => {
   const { loading, error, data } = useQuery(
     PO_QUERY,
     {
-      variables: { id: truck_id },
+      variables: { id: truck_id, cus_id: get(record, 'customer.id', null) },
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
   )
 
-  const { loading: search_loading, error: search_error, data: search_data } = useQuery(
-    CUSTOMER_SEARCH,
-    {
-      variables: { search: obj.search || '' },
-      skip: !(obj.search),
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
-    }
-  )
-
-  const [getCustomerData, { loading: cus_loading, data: cus_data, error: cus_error }] = useLazyQuery(CUSTOMER_PO_DATA)
-
-  const [create_po_mutation] = useMutation(
-    CREATE_PO,
+  const [confirm_po_mutation] = useMutation(
+    CONFIRM_PO,
     {
       onError (error) { message.error(error.toString()) },
       onCompleted () {
@@ -123,26 +132,13 @@ const ConfirmPo = (props) => {
     }
   )
 
-  console.log('CreateExcessLoad Search Error', search_error)
   console.log('CreateExcessLoad Error', error, driver_id)
-
-  let _search_data = {}
-  if (!search_loading) {
-    _search_data = search_data
-  }
-
-  let _cus_data = {}
-  if (!cus_loading) {
-    _cus_data = cus_data
-  }
-
-  const customer = get(_cus_data, 'customer[0]', null)
-  const system_mamul = get(customer, 'system_mamul', null)
 
   if (loading) return null
 
-  const customerSearch = get(_search_data, 'search_customer', '')
   const po_data = get(data, 'truck[0]', null)
+  const customer = get(data, 'customer[0]', null)
+  const system_mamul = get(customer, 'system_mamul', null)
 
   const onSubmit = (form) => {
     const loading_charge = form.charge_inclue.includes('Loading')
@@ -150,11 +146,11 @@ const ConfirmPo = (props) => {
     if (system_mamul > parseFloat(form.mamul)) {
       message.error('Mamul Should be greater than system mamul!')
     } else {
-      create_po_mutation({
+      confirm_po_mutation({
         variables: {
           po_date: form.po_date.toDate(),
-          source_id: parseInt(obj.source_id, 10),
-          destination_id: parseInt(obj.destination_id, 10),
+          source_id: obj.source_id ? parseInt(obj.source_id, 10) : get(record, 'source.id', null),
+          destination_id: obj.destination_id ? parseInt(obj.destination_id, 10) : get(record, 'destination.id', null),
           customer_id: customer.id,
           partner_id: po_data && po_data.partner && po_data.partner.id,
           customer_price: parseFloat(form.customer_price),
@@ -185,15 +181,6 @@ const ConfirmPo = (props) => {
     setObj({ ...obj, destination_id: city_id })
   }
 
-  const onCusSearch = (value) => {
-    setObj({ ...obj, search: value })
-  }
-
-  const onCusSelect = (value, customer) => {
-    getCustomerData({
-      variables: { id: customer.key }
-    })
-  }
   const partner_name = po_data && po_data.partner && po_data.partner.name
   return (
     <Modal
@@ -211,23 +198,18 @@ const ConfirmPo = (props) => {
         </Link>
         <Row gutter={10}>
           <Col xs={24} sm={12}>
-            <Form.Item label='Customer' name='customer' rules={[{ required: true }]}>
+            <Form.Item label='Customer' name='customer' initialValue={customer.name}>
               <Select
                 placeholder='Customer'
-                showSearch
-                disabled={false}
-                onSearch={onCusSearch}
-                onChange={onCusSelect}
+                disabled
               >
-                {customerSearch && customerSearch.map(_cus => (
-                  <Select.Option key={_cus.id} value={_cus.description}>{_cus.description}</Select.Option>
-                ))}
+                <Select.Option value={customer.id}>{customer.name}</Select.Option>
               </Select>
             </Form.Item>
           </Col>
         </Row>
         <Card size='small' className='po-card'>
-          {!cus_loading && (customer && customer.id) &&
+          {(customer && customer.id) &&
             <div>
               <PoDetail
                 driver_id={setDriver_id}
@@ -236,7 +218,7 @@ const ConfirmPo = (props) => {
                 onDestinationChange={onDestinationChange}
                 form={form}
                 customer={customer}
-                loading={cus_loading}
+                record={record}
               />
               <Divider className='hidden-xs' />
               <div className='text-right'>

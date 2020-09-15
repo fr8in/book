@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { Row, Col, Card, Tabs, Button, Space, Tooltip } from 'antd'
-import { CarOutlined, WalletOutlined, FileTextOutlined, MailOutlined, PlusCircleOutlined } from '@ant-design/icons'
+import { CarOutlined, WalletOutlined, FileTextOutlined, MailOutlined, PlusCircleOutlined, BankOutlined } from '@ant-design/icons'
 import DetailPageHeader from '../../common/detailPageHeader'
 import HeaderInfo from '../partner'
 import WalletStatus from '../walletStatus'
@@ -28,6 +28,7 @@ import ReportEmail from '../reportEmail'
 import WalletStatement from '../walletStatement'
 import Loading from '../../common/loading'
 import PartnerTripContainer from './partnerTripContainer'
+import WalletToBank from '../walletToBank'
 const TabPane = Tabs.TabPane
 
 const on_going = ['Confirmed', 'Reported at source', 'Intransit', 'Reported at destination', 'Delivery onhold']
@@ -42,7 +43,7 @@ const PartnerDetailContainer = (props) => {
     setKey(key)
   }
 
-  const initial = { topUp: false, reportMail: false, statememt: false }
+  const initial = { topUp: false, reportMail: false, statememt: false, walletToBank: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
   const { cardcode, partner_id } = props
@@ -87,6 +88,9 @@ const PartnerDetailContainer = (props) => {
                 title={<HeaderInfo partner={partner_info} />}
                 extra={
                   <Space>
+                    <Tooltip title='Wallet to Bank'>
+                      <Button icon={<BankOutlined />} shape='circle' onClick={() => onShow('walletToBank')} />
+                    </Tooltip>
                     <Tooltip title='Account Statement'>
                       <Button icon={<MailOutlined />} shape='circle' onClick={() => onShow('reportMail')} />
                     </Tooltip>
@@ -201,6 +205,7 @@ const PartnerDetailContainer = (props) => {
             </Row>
           </Card>
         </Col>
+        {visible.walletToBank && <WalletToBank visible={visible.walletToBank} onHide={onHide} walletcode={partner_info.walletcode} />}
         {visible.topUp && <WalletTopUp visible={visible.topUp} onHide={onHide} partner_id={partner_info.id} />}
         {visible.reportMail && <ReportEmail visible={visible.reportMail} onHide={onHide} />}
         {visible.statement && <WalletStatement visible={visible.statement} onHide={onHide} cardcode={partner_info.cardcode} />}
