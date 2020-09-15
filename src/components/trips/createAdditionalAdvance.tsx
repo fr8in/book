@@ -50,7 +50,13 @@ const CreateAdditionalAdvance = (props) => {
     CREATE_ADDITIONAL_ADVANCE,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Saved!!') }
+      onCompleted (data) {
+        const status = get(data, 'additional_advance.status', null)
+        const description = get(data, 'additional_advance.description', null)
+        if (status === 'OK') {
+          message.success(description || 'Processed!')
+        } else (message.error(description))
+      }
     }
   )
 
@@ -63,7 +69,7 @@ const CreateAdditionalAdvance = (props) => {
             truck_id: trip_info && trip_info.truck && trip_info.truck.id ,
             amount: parseFloat(form.amount),
             wallet_code: trip_info && trip_info.partner && trip_info.partner.walletcode ,
-            payment_mode: "WALLET",
+            payment_mode: radioValue,
             comment: form.comment,
             created_by: "pravalika.k@fr8.in"
           }
@@ -78,19 +84,35 @@ const CreateAdditionalAdvance = (props) => {
         truck_id: trip_info && trip_info.truck && trip_info.truck.id ,
         amount: parseFloat(form.amount),
         wallet_code: trip_info && trip_info.partner && trip_info.partner.walletcode ,
-        payment_mode: "BANK",
+        payment_mode: radioValue,
         comment: form.comment,
         created_by: "pravalika.k@fr8.in",
         bank_detail: {
           account_name:form.account_name,
           account_number:form.account_number,
-          ifsc_code:form.ifsc_code
+          ifsc_code:form.ifsc
         }
       }
     }
   })
     )
 }
+
+const rules = [
+  {
+    required: true,
+    message: 'Confirm acccount number required!'
+  },
+  ({ getFieldValue }) => ({
+    validator (rule, value) {
+      if (!value || getFieldValue('account_number') === value) {
+        return Promise.resolve()
+      }
+      return Promise.reject('The account number that you entered do not match!')
+    }
+  })
+]
+
 
 if (called && error) {
   message.error('Enter Valid IFSC code')
@@ -125,7 +147,7 @@ if (called && error) {
                     </Form.Item>
                   </Col>
                   <Col xs={12} sm={8}>
-                    <Form.Item label='Account Number' name='account_number'>
+                    <Form.Item label='Account Number' name='account_number'  >
                       <Input
                         id='accountNumber'
                         required
@@ -133,7 +155,7 @@ if (called && error) {
                     </Form.Item>
                   </Col>
                   <Col xs={12} sm={8}>
-                    <Form.Item label='Confirm Account Number'>
+                    <Form.Item label='Confirm Account Number' rules={rules}   dependencies={['account_number']}    name='confirm'>
                       <Input
                         id='confirmAccountNumber'
                         required
@@ -143,7 +165,7 @@ if (called && error) {
                 </Row>
                 <Row gutter={10}>
                   <Col xs={12} sm={8}>
-                    <Form.Item label='IFSC Code' name='ifsc_code' extra={get(bank_detail, 'bank', null)}>
+                    <Form.Item label='IFSC Code' name='ifsc' extra={get(bank_detail, 'bank', null)} rules={[{ required: true, message: 'IFSC required!' }]}>
                       <Input
                         id='ifscCode'
                         required
