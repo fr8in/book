@@ -3,7 +3,7 @@ import { Button, Card } from 'antd'
 import Link from 'next/link'
 import Partners from '../partners'
 import u from '../../../lib/util'
-
+import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
 
 const PARTNERS_QUERY = gql`
@@ -29,6 +29,12 @@ query partners(
     name
     cardcode
     pan
+    gst
+    cibil
+    onboarded_by_id
+    partner_advance_percentage_id
+    emi
+    tds_percentage_id
     partner_files(where: {deleted_at: {_is_null:true}}) {
       id
       type
@@ -112,19 +118,18 @@ const PartnerContainer = () => {
   )
 
   console.log('PartnersContainer error', error)
-  var partner = []
-  var partner_status = []
-  var partner_aggregate = 0
-  var region = []
+
+  let _data = {}
   if (!loading) {
-    partner = data && data.partner
-    partner_status = data && data.partner_status
-    partner_aggregate = data && data.partner_aggregate
-    region = data && data.region
+    _data = data
   }
+  const partner = get(_data, 'partner', [])
+  const partner_status = get(_data, 'partner_status', [])
+  const partner_aggregate = get(_data, 'partner_aggregate', 0)
+  const region = get(_data, 'region', [])
   console.log('partner_aggregate', partner_aggregate)
 
-  const record_count = partner_aggregate && partner_aggregate.aggregate && partner_aggregate.aggregate.count
+  const record_count = get(partner_aggregate, 'aggregate.count', 0)
 
   console.log('record_count', record_count)
 

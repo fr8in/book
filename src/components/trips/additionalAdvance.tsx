@@ -4,9 +4,9 @@ import get from 'lodash/get'
 
 
 const ADDITIONAL_ADVANCE_QUERY = gql`
-query additional_advance($trip_id: Int!) {
-  trip(where: {id: {_eq: $trip_id}}) {
-    additional_advance{
+query additional_advance($trip_id: Int_comparison_exp!) {
+  trip(where: {id: $trip_id}) {
+    additional_advance {
       id
       trip_id
       amount
@@ -18,6 +18,7 @@ query additional_advance($trip_id: Int!) {
     }
   }
 }
+
 `
 
 const AdditionalAdvance = (props) => {
@@ -26,7 +27,7 @@ const AdditionalAdvance = (props) => {
 console.log('AD trip_id',props)
   const { loading, error, data } = useQuery(
     ADDITIONAL_ADVANCE_QUERY, {
-      variables:{trip_id:props.ad_trip_id} ,
+      variables:{trip_id:{'_eq':props.ad_trip_id}} ,
     fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true
   })
@@ -78,7 +79,7 @@ console.log('AD trip_id',props)
   ]
   return (
     <div className='additonalAdv'>
-      {data && data.length > 0
+      {additionalAdvance && additionalAdvance.length > 0
         ? (
           <Table
             columns={columns}

@@ -2,6 +2,7 @@ import { Row, Col, Card } from 'antd'
 import Trucks from '../trucks'
 import { useState } from 'react'
 import u from '../../../lib/util'
+import get from 'lodash/get'
 
 import { gql, useQuery } from '@apollo/client'
 
@@ -94,21 +95,17 @@ const TruckContainer = () => {
   })
 
   console.log('TrucksContainer error', error)
-  var truck = []
-  var truck_status = []
 
-  var truck_aggregate = 0
-
+  let _data = {}
   if (!loading) {
-    truck = data.truck
-    truck_status = data.truck_status
-
-    truck_aggregate = data && data.truck_aggregate
+    _data = data
   }
+  const truck = get(_data, 'truck', [])
+  const truck_status = get(_data, 'truck_status', [])
+  const truck_aggregate = get(_data, 'truck_aggregate', null)
   const truck_status_list = truck_status.filter((data) => data.id !== 10)
 
-  const record_count =
-    truck_aggregate.aggregate && truck_aggregate.aggregate.count
+  const record_count = get(truck_aggregate, 'aggregate.count', 0)
 
   console.log('record_count', record_count)
   const onFilter = (value) => {

@@ -66,7 +66,7 @@ mutation insertToPay($to_pay: Float, $comment: String, $trip_id: Int!) {
 `
 const PROCESS_ADVANCE_MUTATION = gql`
 mutation ($tripId: Int!, $createdBy: String!) {
-  process_partner_advance(trip_id: $tripId, created_by: $createdBy) {
+  partner_advance(trip_id: $tripId, created_by: $createdBy) {
     description
     status
   }
@@ -196,7 +196,7 @@ const TripTime = (props) => {
                     trip_info.trip_status.name === 'Confirmed' &&
                     trip_info.trip_status.name === 'Reported at source') &&
                     !trip_info.source_out
-  const process_advance = trip_info.source_in && trip_info.source_out && trip_info.loaded === 'N'
+  const process_advance = trip_info.source_in && trip_info.source_out && (trip_info.loaded === 'N' || !trip_info.loaded)
   const remove_sout = trip_info.trip_status && trip_info.trip_status.name === 'Intransit' && authorized
   const remove_dout = trip_info.trip_status && trip_info.trip_status.name === 'Delivered' && authorized
 
@@ -265,7 +265,7 @@ const TripTime = (props) => {
               </Col>
               <Col xs={4} className='text-right'>
                 <Form.Item label>
-                  <Button type='primary' htmlType='submit' disabled={!toPayCheck} required={toPayCheck}>Submit</Button>
+                  <Button type='primary' htmlType='submit' disabled={!toPayCheck}>Submit</Button>
                 </Form.Item>
               </Col>
             </Row>

@@ -55,14 +55,14 @@ const AddTruckContainer = (props) => {
 
   console.log('AddTruck error', error)
 
-  var partner_info = {}
-  var truck_type = []
+  let _data = {}
 
   if (!loading) {
-    const { partner } = data
-    partner_info = partner[0] ? partner[0] : { name: 'ID does not exist' }
-    truck_type = data.truck_type
+    _data = data
   }
+
+  const partner_info = get(_data, 'partner[0]', { name: 'ID does not exist' })
+  const truck_type = get(_data, 'truck_type', [])
 
   const typeList = truck_type.map((data) => {
     return { value: data.id, label: data.name }

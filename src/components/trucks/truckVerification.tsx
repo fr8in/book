@@ -7,6 +7,7 @@ import TruckActivation from '../trucks/truckActivation'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import { gql, useQuery } from '@apollo/client'
 import u from '../../lib/util'
+import get from 'lodash/get'
 
 const TRUCKS_QUERY = gql`
 query trucks(
@@ -79,23 +80,19 @@ const TruckVerification = (props) => {
 
   console.log('TrucksVerification error', error)
 
-  var truck = []
-  var truck_aggregate = 0
-  var truck_status = []
-  var truck_info = {}
+  let _data = {}
   if (!loading) {
-    truck = data && data.truck
-    truck_aggregate = data && data.truck_aggregate
-    truck_status = data && data.truck_status
-    truck_info = truck[0] ? truck[0] : { name: 'ID does not exist' }
+    _data = data
   }
+
+  const truck = get(_data, 'truck', [])
+  const truck_info = get(_data, 'truck[0]', { name: 'ID does not exist' })
+  const truck_aggregate = get(_data, 'truck_aggregate', 0)
+  const truck_status = get(_data, 'truck_status', [])
 
   const truck_status_name = truck_info && truck_info.truck_status && truck_info.truck_status.name
 
-  const record_count =
-    truck_aggregate &&
-    truck_aggregate.aggregate &&
-    truck_aggregate.aggregate.count
+  const record_count = get(truck_aggregate, 'aggregate.count', 0)
 
   console.log('record_count', record_count)
 
@@ -205,7 +202,7 @@ const TruckVerification = (props) => {
         dataIndex: 'reason',
         width: '35%',
         render: (text, record) => {
-          const comment = record.last_comment && record.last_comment.description 
+          const comment = record.last_comment && record.last_comment.description
           return comment && comment.length > 12 ? (
             <Tooltip title={comment}>
               <span> {comment.slice(0, 12) + '...'}</span>

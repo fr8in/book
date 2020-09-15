@@ -36,7 +36,7 @@ mutation TruckDriver($driver_id:Int,$truck_id:Int) {
 `
 
 const Driver = (props) => {
-  const { partner_id, driverChange, initialValue ,truck_id} = props
+  const { partner_id, driverChange, initialValue , truck_id } = props
   if (!partner_id) return null
 
   const [searchText, setSearchText] = useState('')
@@ -56,9 +56,7 @@ const Driver = (props) => {
   console.log('Driver error', error)
   console.log('data', _data)
 
-  const driver_data = _data && _data.partner && _data.partner.length > 0 &&
-                        _data.partner[0].drivers && _data.partner[0].drivers.length > 0
-    ? _data.partner[0].drivers : []
+  const driver_data = get(_data, 'partner[0].drivers', [])
 
   console.log('driver_data', driver_data)
 
@@ -69,7 +67,7 @@ const Driver = (props) => {
       onCompleted (data) {
         const value = get(data, 'insert_driver.returning', [])
         setSearchText('')
-       truck_id ? onDriverUpdate(value[0].id) : driverChange(value[0].id)
+        truck_id ? onDriverUpdate(value[0].id) : driverChange(value[0].id)
       }
     }
   )
@@ -102,7 +100,7 @@ const Driver = (props) => {
         }
       })
     } else {
-      truck_id ? onDriverUpdate(driver.key) :   driverChange(driver.key)
+      truck_id ? onDriverUpdate(driver.key) : driverChange(driver.key)
     }
   }
 

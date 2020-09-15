@@ -1,6 +1,6 @@
-import React from 'react'
 import { Select, Form } from 'antd'
 import { gql, useQuery } from '@apollo/client'
+import get from 'lodash/get'
 
 const TRUCKS_FOR_PO_QUERY = gql`
 query partner_po_creation($id:Int!){
@@ -36,8 +36,8 @@ const TrucksForPO = (props) => {
     _data = data
   }
   console.log('TrucksForPO data', _data)
-  const partner = _data && _data.partner && _data.partner.length > 0 ? _data.partner[0] : null
-  const truck_list = partner && partner.trucks ? partner.trucks : []
+  const partner = get(_data, 'partner[0]', null)
+  const truck_list = get(partner, 'trucks', [])
 
   const onTruckSelect = (value, Item) => {
     const selectd_truck = truck_list && truck_list.filter(t => t.id === parseInt(Item.key, 10))

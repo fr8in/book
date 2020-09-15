@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Modal, Button, Input, Form, Row, Col, Select, message } from 'antd'
 import CitySelect from '../common/citySelect'
 import { gql, useQuery, useMutation } from '@apollo/client'
+import get from 'lodash/get'
 
 const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
   search_customer(args:{search:$search}){
@@ -71,8 +72,8 @@ const CreateExcessLoad = (props) => {
   if (!loading) {
     _data = data
   }
-  const customerSearch = _data.search_customer
-  const truck_type = _data.truck_type
+  const customerSearch = get(_data, 'search_customer', null)
+  const truck_type = get(_data, 'truck_type', [])
 
   const truck_type_list = truck_type && truck_type.map(truck => {
     return ({ value: truck.id, label: truck.name })

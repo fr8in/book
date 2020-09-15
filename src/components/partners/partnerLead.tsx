@@ -14,6 +14,7 @@ import Comment from '../../components/partners/comment'
 import InlineCitySelect from '../common/inlineCitySelect'
 import u from '../../lib/util'
 import Truncate from '../common/truncate'
+import get from 'lodash/get'
 
 const PARTNERS_LEAD_QUERY = gql`
 query partner_lead(
@@ -153,7 +154,7 @@ const PartnerLead = (props) => {
     // channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} ,
     // _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ? null :  {id: {_is_null:true }} }
   }
-  //console.log('filter.no_comment ', filter.no_comment, filter.no_comment && filter.no_comment.length > 0)
+  // console.log('filter.no_comment ', filter.no_comment, filter.no_comment && filter.no_comment.length > 0)
   const partnerQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
@@ -225,25 +226,18 @@ const PartnerLead = (props) => {
     })
   }
 
-  var partners = []
-  var partner_aggregate = 0
-  var partner_status = []
-  var channel = []
+  let _data = {}
 
   if (!loading) {
-    partners = data && data.partner
-    partner_aggregate = data && data.partner_aggregate
-    partner_status = data && data.partner_status
-    channel = data && data.channel
+    _data = data
   }
-  console.log('partners list', partners)
-  console.log('channel', channel)
 
-  const record_count =
-    partner_aggregate &&
-    partner_aggregate.aggregate &&
-    partner_aggregate.aggregate.count
-  console.log('record_count', record_count)
+  const partners = get(_data, 'partner', [])
+  const partner_aggregate = get(_data, 'partner_aggregate', 0)
+  const partner_status = get(_data, 'partner_status', [])
+  const channel = get(_data, 'channel', [])
+
+  const record_count = get(partner_aggregate, 'aggregate.count', 0)
 
   const partners_status = partner_status.map((data) => {
     return { value: data.name, label: data.name }

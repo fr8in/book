@@ -19,7 +19,7 @@ mutation partner_bank_transfer_track(
 }`
 
 const WalletToBank = (props) => {
-  const { visible, onHide, walletcode } = props
+  const { visible, onHide, walletcode, balance } = props
   const [disableButton, setDisableButton] = useState(false)
 
   const [partner_bank_transfer_track] = useMutation(
@@ -58,12 +58,12 @@ const WalletToBank = (props) => {
       onCancel={onHide}
       footer={[]}
     >
-      <Form onFinish={onSubmit} layout='vertical' className='text-right'>
-        <Form.Item label='Amount' name='amount' rules={[{ required: true }]}>
+      <Form onFinish={onSubmit} layout='vertical'>
+        <Form.Item label='Amount' name='amount' rules={[{ required: true }]} extra={`Balance: ₹${balance}`}>
           <Input type='number' placeholder='Amount' />
         </Form.Item>
-        <Form.Item>
-          <Button type='primary' loading={disableButton} htmlType='submit'>Top Up</Button>
+        <Form.Item className='text-right'>
+          <Button type='primary' loading={disableButton} htmlType='submit'>Pay to Bank</Button>
         </Form.Item>
       </Form>
     </Modal>
