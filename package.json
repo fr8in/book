@@ -5,13 +5,12 @@
   "license": "UNLICENSED",
   "scripts": {
     "local": "next",
-    "build": "next build",
-    "start": "next start",
+    "build": "yarn && next build",
+    "start": "next start -p $PORT",
     "preoffline": "cp stages/offline.yml serverless.yml",
-    "predev": "cp stages/dev.yml serverless.yml",
     "preprod": "cp stages/prod.yml serverless.yml",
     "offline": "sls offline --stage offline --CORE http://prodcore.southeastasia.azurecontainer.io/v1/graphql",
-    "dev": "sls deploy --stage dev --CORE ${DEV_CORE}",
+    "dev": "pm2 start ecosystem.config.js",
     "prod": "sls deploy --stage prod --CORE ${CORE}",
     "test": "jest --watchAll --setupFiles dotenv/config"
   },
