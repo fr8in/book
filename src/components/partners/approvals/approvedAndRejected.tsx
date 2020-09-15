@@ -3,7 +3,7 @@ import { Table, Input, Pagination, Checkbox } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import Truncate from '../../common/truncate'
 import Link from 'next/link'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useQuery, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import u from '../../../lib/util'
@@ -46,8 +46,13 @@ query trip_credit_debit(
       name
     }
   }
+}
+`
+const CREDIT_DEBIT_TYPE_SUBSCRIPTION = gql`
+subscription credit_debit_type{
   credit_debit_type {
     id
+    active
     name
   }
 }
@@ -59,15 +64,15 @@ const creditDebitType = [
 ]
 
 const ApprovedAndRejected = () => {
-
   const initial = {
     offset: 0,
     limit: u.limit,
     trip_id: null,
     type: null,
-    issue_type: null,
+    issue_type: [],
     created_by: null,
   }
+
   const [filter, setFilter] = useState(initial)
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -89,26 +94,31 @@ const ApprovedAndRejected = () => {
       notifyOnNetworkStatusChange: true
     }
   )
-  console.log('pending error', error)
-  console.log('pending data', data)
+  console.log('approvedRejected error', error)
+  console.log('approvedRejected data', data)
+
+  const { data: issueType } = useSubscription(
+    CREDIT_DEBIT_TYPE_SUBSCRIPTION,
+  )
+  console.log('approvedRejected issueType', issueType)
 
   let _data = {}
   if (!loading) {
     _data = data
   }
-
   const approvedAndRejected = get(_data, 'trip_credit_debit', null)
-  const credit_debit_type = get(_data, 'credit_debit_type', [])
   console.log('approvedAndRejected', approvedAndRejected)
-  console.log('creditDebitType', credit_debit_type)
 
-  const issueTypeList = credit_debit_type.map((data) => {
-    return { value: data.name, label: data.name }
+  const List = issueType && issueType.credit_debit_type.length > 0 ? issueType.credit_debit_type : []
+  console.log('List', List)
+  const issueTypeList = List.map((issueType) => {
+    return { value: issueType.name, label: issueType.name }
   })
+  console.log('issueTypeList', issueTypeList)
+
   const creditDebitList = creditDebitType.map((data) => {
     return { value: data.text, label: data.text }
   })
-
 
   const pageChange = (page, pageSize) => {
     const newOffset = page * pageSize - filter.limit
@@ -119,10 +129,10 @@ const ApprovedAndRejected = () => {
     setCurrentPage(1)
     setFilter({ ...filter, trip_id: e.target.value })
   }
-  const onIssueTypeFilter = (name) => {
-    console.log('name', name)
+  const onIssueTypeFilter = (checked) => {
+    console.log('name', checked)
     setCurrentPage(1)
-    setFilter({ ...filter, issue_type: name, offset: 0 })
+    setFilter({ ...filter, issue_type: checked, offset: 0 })
   }
   const onTypeFilter = (checked) => {
     console.log('checked', checked)
@@ -170,7 +180,7 @@ const ApprovedAndRejected = () => {
       filterDropdown: (
         <Checkbox.Group
           options={creditDebitList}
-           defaultValue={filter.type}
+          defaultValue={filter.type}
           onChange={onTypeFilter}
           className='filter-drop-down'
         />
