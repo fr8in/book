@@ -29,6 +29,12 @@ query partners(
     name
     cardcode
     pan
+    gst
+    cibil
+    onboarded_by_id
+    partner_advance_percentage_id
+    emi
+    tds_percentage_id
     partner_files(where: {deleted_at: {_is_null:true}}) {
       id
       type
