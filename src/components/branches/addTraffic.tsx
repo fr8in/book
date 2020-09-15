@@ -144,7 +144,7 @@ const AddTraffic = (props) => {
         return (
           <Radio
             checked={record.is_manager}
-            onChange={(e) => onIsManagerChange(e, record.id, branch_data.id)}
+            onChange={(e) => onIsManagerChange(e, record.id)}
           >
             {name}
           </Radio>
