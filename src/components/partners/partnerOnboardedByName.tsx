@@ -50,7 +50,7 @@ const OnBoardedBy = (props) => {
   )
 
   if (loading) return null
-  console.log('OnBoardedByName error', error)
+ // console.log('OnBoardedByName error', error)
 
   const { employee } = data
   const empList = employee.map(data => {

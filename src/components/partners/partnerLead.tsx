@@ -153,7 +153,7 @@ const PartnerLead = (props) => {
     // channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} ,
     // _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ? null :  {id: {_is_null:true }} }
   }
-  console.log('filter.no_comment ', filter.no_comment, filter.no_comment && filter.no_comment.length > 0)
+  //console.log('filter.no_comment ', filter.no_comment, filter.no_comment && filter.no_comment.length > 0)
   const partnerQueryVars = {
     offset: filter.offset,
     limit: filter.limit,

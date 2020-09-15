@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { Table, Input, Pagination } from 'antd'
+import { Table, Input, Pagination , Checkbox} from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import Truncate from '../../common/truncate'
 import Link from 'next/link'
@@ -9,8 +9,8 @@ import moment from 'moment'
 import u from '../../../lib/util'
 
 const APPROVALS_QUERY = gql`
-query trip_credit_debit($status: [String!], $offset: Int, $limit: Int, $region: [String!], $responsibity: String,$created_by:String) {
-  trip_credit_debit(where: {credit_debit_status: {name: {_in: $status}}, trip: {branch: {region: {name: {_in: $region}}}}, responsibility: {name: {_ilike: $responsibity}}, trip_id: {}, created_by: {_ilike: $created_by}}, order_by: {trip_id: desc}, offset: $offset, limit: $limit) {
+query trip_credit_debit($status: [String!], $offset: Int, $limit: Int, $created_by: String, $type: [String!],$creditType:[bpchar!]) {
+  trip_credit_debit(where: {credit_debit_status: {name: {_in: $status}}, created_by: {_ilike: $created_by}, credit_debit_type: {name: {_in: $type}}, type: {_in: $creditType}}, order_by: {trip_id: desc}, offset: $offset, limit: $limit) {
     id
     trip_id
     type
@@ -23,10 +23,6 @@ query trip_credit_debit($status: [String!], $offset: Int, $limit: Int, $region: 
       name
     }
     trip {
-      trip_comments(order_by: {id: desc}, limit: 1) {
-        id
-        description
-      }
       branch {
         region {
           name
@@ -48,37 +44,17 @@ query trip_credit_debit($status: [String!], $offset: Int, $limit: Int, $region: 
     created_at
     created_by
   }
-  region {
-    name
+  credit_debit_type {
     id
+    name
   }
 }
+
 `
 
 const creditType = [
   { value: 1, text: 'C' },
   { value: 2, text: 'D' }
-]
-const issueTypeList = [
-  { value: 1, text: 'KM' },
-  { value: 2, text: 'Others' },
-  { value: 3, text: 'Shortage' },
-  { value: 4, text: 'Loading Charges' },
-  { value: 5, text: 'Unloading Charges' },
-  { value: 6, text: 'Loading Halting' },
-  { value: 7, text: 'Unloading Halting' },
-  { value: 8, text: 'Commission Fee' },
-  { value: 9, text: 'Late Delivery Fee' },
-  { value: 10, text: 'POD Late Fee' },
-  { value: 11, text: 'POD Missing' },
-  { value: 12, text: 'Wrong LR' },
-  { value: 13, text: 'Price Difference' },
-  { value: 14, text: 'On-Hold' },
-  { value: 15, text: 'Halting' }
-]
-const requestedBy = [
-  { value: 1, text: 'Partner' },
-  { value: 2, text: 'Fr8' }
 ]
 
 const ApprovedAndRejected = () => {
@@ -87,10 +63,9 @@ const initial = {
   created_by:null,
   offset: 0,
   limit: u.limit,
-  status: ["APPROVED","REJECTED"],
-}
-
-  
+  type:null,
+  creditType:null
+} 
   const [filter, setFilter] = useState(initial)
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -98,8 +73,10 @@ const initial = {
     offset: 0,
     limit: u.limit,
     status: ["APPROVED","REJECTED"],
-    created_by: filter.created_by ? `%${filter.created_by}%` : null 
-  }
+    created_by: filter.created_by ? `%${filter.created_by}%` : null, 
+    type: filter.type && filter.type.length > 0 ? filter.type : null,
+    creditType: filter.creditType &&  filter.creditType.length > 0 ?  filter.creditType : null
+  } 
 
   const { loading, error, data } = useQuery(
     APPROVALS_QUERY,
@@ -117,22 +94,40 @@ const initial = {
   }
 
   const approvedAndRejected = get(_data, 'trip_credit_debit', null)
+  const credit_debit_type = get(_data, 'credit_debit_type', [])
   console.log('approvedAndRejected',approvedAndRejected)
+  console.log('creditDebitType',credit_debit_type)
 
+const typeList = credit_debit_type.map((data) => {
+  return { value: data.name, label: data.name }
+})
+console.log('typeList',typeList)
+
+
+const creditDebitList = creditType.map((data) => {
+    return { value: data.text, label: data.text }
+   })
 const pageChange = (page, pageSize) => {
     const newOffset = page * pageSize - filter.limit
     setCurrentPage(page)
     setFilter({ ...filter, offset: newOffset })
+  }
+  const handleCreditDebitFilter = (checked) => {
+    console.log('checked', checked)
+    setCurrentPage(1)
+    setFilter({ ...filter, creditType: checked, offset: 0 })
   }
 
   const onCreatedBySearch = (e) => {
     setCurrentPage(1)
     setFilter({ ...filter, created_by: e.target.value })
   }
-
-  function onChange( filters) {
-    console.log('filters', filters);
+  const onTypeFilter = (name) => {
+    console.log('name',name)
+    setCurrentPage(1)
+    setFilter({ ...filter, type: name ,offset: 0 })
   }
+  
   const ApprovalPending = [
     {
       title: 'Load ID',
@@ -160,15 +155,30 @@ const pageChange = (page, pageSize) => {
       filters: creditType,
       width: '8%',
       onFilter: (value, record) => record && record.type.indexOf(value) === 0,
+      filterDropdown: (
+        <Checkbox.Group
+          options={creditDebitList}
+          // defaultValue={filter.creditType}
+           onChange={handleCreditDebitFilter}
+           className='filter-drop-down'
+        />
+      )
     },
     {
       title: 'Issue Type',
       dataIndex: 'issueType',
       key: 'issueType',
-      filters: issueTypeList,
+      //filters: issueTypeList,
       width: '10%',
       render: (text, record) => <Truncate data={get(record, 'credit_debit_type.name',null)} length={12} />,
-      onFilter: (value, record) => record && record.credit_debit_type && record.credit_debit_type.name.indexOf(value) === 0,
+      filterDropdown: (
+        <Checkbox.Group
+          options={typeList}
+          //defaultValue={filter.type}
+          onChange={onTypeFilter}
+          className='filter-drop-down'
+        />
+      ),
     },
     {
       title: 'Claim ₹',
@@ -192,7 +202,6 @@ const pageChange = (page, pageSize) => {
       title: 'Request By',
       dataIndex: 'created_by',
       key: 'created_by',
-      filters: requestedBy,
       width: '12%',
       render: (text, record) => <Truncate data={text} length={18} />,
       filterDropdown: (
@@ -201,7 +210,6 @@ const pageChange = (page, pageSize) => {
             placeholder='Search'
             id='created_by'
             name='created_by'
-            type='number'
             value={filter.created_by}
             onChange={onCreatedBySearch}
           />
@@ -242,8 +250,8 @@ const pageChange = (page, pageSize) => {
     <Table
       columns={ApprovalPending}
       dataSource={approvedAndRejected}
-      onChange={onChange}
       rowKey={(record) => record.id}
+      loading={loading}
       size='small'
       scroll={{ x: 1156, y: 550 }}
       pagination={false}

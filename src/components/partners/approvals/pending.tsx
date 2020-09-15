@@ -5,19 +5,19 @@ import {
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Truncate from '../../common/truncate'
 import Link from 'next/link'
 import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
 import Comment from '../../trips/tripFeedBack'
 import Approve from './accept'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import PartnerOnBoardedBy from '../partnerOnboardedByName'
 
-const PENDING_QUERY = gql`
-query trip_credit_debit($status: [String!]) {
+const PENDING_SUBSCRIPTION = gql`
+subscription trip_credit_debit($status: [String!]) {
   trip_credit_debit(where: {credit_debit_status: {name: {_in: $status}}}, order_by: {trip_id: desc}) {
     id
     trip_id
@@ -57,11 +57,8 @@ query trip_credit_debit($status: [String!]) {
     created_at
     created_by
   }
-  region {
-    name
-    id
-  }
 }
+
 `
 
 const RegionList = [
@@ -87,18 +84,19 @@ export default function Pending() {
     approveVisible: false,
     title: null,
     responsibity: null,
+    searchText: null,
+    pending: []
   }
+
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const [filter, setFilter] = useState(initial)
   const approvalQueryVars = {
     status: ["PENDING"]
   }
-  const { loading, error, data } = useQuery(
-    PENDING_QUERY,
+  const { loading, error, data } = useSubscription(
+    PENDING_SUBSCRIPTION,
     {
       variables: approvalQueryVars,
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
     }
   )
   console.log('pending error', error)
@@ -106,22 +104,37 @@ export default function Pending() {
   let _data = {}
   if (!loading) {
     _data = data
-  }
+    }
+    const pending_list = get(_data, 'trip_credit_debit', null)
+    console.log('pending_list',pending_list)
+  // useEffect(() => {  
+  //  setFilter({...filter, pending:pending_list})
+ 
+  // });
+  useEffect(() => {
+    setFilter({...filter, pending:pending_list});
+}, [pending_list])
 
-  const pending = get(_data, 'trip_credit_debit', null)
-  console.log('pending', pending)
-
-
-
-  const handleName = (e) => {
-    console.log('e', e)
-    setFilter({ ...filter, responsibity: e.target.value })
-  }
-
+  
+const onSearch = (e) =>{
+setFilter({...filter, searchText: e.target.value})
+        const searchText = e.target.value;
+        console.log('searchText',filter)
+        if (searchText.length >= 3) {
+            const regex = new RegExp(searchText, 'gi');
+            const removeNull = filter.pending.filter(record => record.responsibility != null)
+            const newData = removeNull.filter(record => record.responsibility.name.match(regex))
+            const result = newData ? newData : filter.pending
+            setFilter({...filter, pending: result });
+        } else {
+          setFilter({...filter,pending: pending_list})
+        }
+}
 
   function onChange( filters) {
     console.log('filters', filters);
   }
+
 
   const ApprovalPending = [
     {
@@ -218,9 +231,9 @@ export default function Pending() {
             placeholder='Search'
             id='id'
             name='id'
-            type='number'
-            value={filter.responsibity}
-            onChange={handleName}
+           // value={filter.pending}
+            onChange={onSearch}
+      
           />
         </div>
       ),
@@ -234,7 +247,7 @@ export default function Pending() {
       dataIndex: 'approval_comment',
       key: 'approval_comment',
       width: '11%',
-      render: (text, record) => <Truncate data={get(record, 'trip.trip_comments[0].description', null)} length={18} />
+      render: (text, record) => <Truncate data={get(record, 'trip.last_comment.description', null)} length={18} />
     },
     {
       title: 'Action',
@@ -279,7 +292,7 @@ export default function Pending() {
     <>
       <Table
         columns={ApprovalPending}
-        dataSource={pending}
+        dataSource={filter.pending}
         onChange={onChange}
         rowKey={(record) => record.id}
         size='small'
