@@ -5,7 +5,7 @@ import CitySelect from '../common/citySelect'
 import get from 'lodash/get'
 
 const CUSTOMER_BRANCH_QUERY = gql`
-  query customerbranch{
+  query customer_branch{
     state{
       id
       name
@@ -13,7 +13,7 @@ const CUSTOMER_BRANCH_QUERY = gql`
   }
 `
 const INSERT_CUSTOMER_BRANCH_MUTATION = gql`
-mutation CustomerBranchInsert($address: String,$id:Int ,$branch_name: String, $mobile: String, $name: String, $pincode: Int, $state_id: Int,$state:String, $city_id: Int,$city:String) {
+mutation customer_branch_insert($address: String,$id:Int ,$branch_name: String, $mobile: String, $name: String, $pincode: Int, $state_id: Int,$state:String, $city_id: Int,$city:String) {
   insert_customer_branch(objects: {customer_id:$id,address: $address, branch_name: $branch_name, mobile: $mobile, name: $name, pincode: $pincode,state_id: $state_id,state:$state,city_id: $city_id,city:$city}) {
     returning {
       customer_id
@@ -23,7 +23,7 @@ mutation CustomerBranchInsert($address: String,$id:Int ,$branch_name: String, $m
 }
 `
 const UPDATE_CUSTOMER_BRANCH_MUTATION = gql`
-mutation CustomerBranchInsert($address: String, $id: Int!, $branch_name: String, $mobile: String, $name: String, $pincode: Int, $state_id: Int,$state:String, $city_id: Int,$city:String) {
+mutation customer_branch_update($address: String, $id: Int!, $branch_name: String, $mobile: String, $name: String, $pincode: Int, $state_id: Int,$state:String, $city_id: Int,$city:String) {
   update_customer_branch(_set: {address: $address, branch_name: $branch_name, city_id: $city_id,city:$city, mobile: $mobile, name: $name, pincode: $pincode, state_id: $state_id,state:$state}, where: { id: {_eq:  $id}}) {
     returning {
       customer_id

@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
-  subscription customers($cardcode: String, $ongoing: [String!], $delivered: [String!], $invoiced: [String!], $recieved: [String!]) {
+  subscription customers_detail($cardcode: String, $ongoing: [String!], $delivered: [String!], $invoiced: [String!], $recieved: [String!]) {
   customer(where: {cardcode: {_eq: $cardcode}}) {
     ongoing: trips_aggregate(where: {trip_status: {name: {_in: $ongoing}}}) {
       aggregate {

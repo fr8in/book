@@ -3,7 +3,7 @@ import { message } from 'antd'
 import InlineEdit from '../common/inlineEdit'
 
 const UPDATE_CUSTOMER_GST_MUTATION = gql`
-mutation CustomerGstEdit($gst:String,$cardcode:String) {
+mutation customer_gst_edit($gst:String,$cardcode:String) {
   update_customer(_set: {gst: $gst}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id

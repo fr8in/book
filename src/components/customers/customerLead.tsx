@@ -14,7 +14,7 @@ import Truncate from '../common/truncate'
 import get from 'lodash/get'
 
 const CUSTOMERS_LEAD_QUERY = gql`
-query customers( $offset: Int!
+query customers_lead( $offset: Int!
   $limit: Int!
   $customer_status_name:[String!]
   $channel_name:[String!]

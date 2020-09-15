@@ -19,7 +19,7 @@ const CUSTOMER_COMMENT_SUBSCRIPTION = gql`
   }
 `
 const INSERT_CUSTOMER_COMMENT_MUTATION = gql`
-  mutation customer_comment($description:String, $topic:String, $customer_id: Int, $created_by:String ) {
+  mutation customer_comment_insert($description:String, $topic:String, $customer_id: Int, $created_by:String ) {
     insert_customer_comment(objects: {description: $description, customer_id: $customer_id, topic: $topic, created_by:$created_by}) {
       returning {
         description

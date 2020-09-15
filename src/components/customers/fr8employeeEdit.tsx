@@ -4,7 +4,7 @@ import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
 
 const EMPLOYEE_QUERY = gql`
-  query fr8Employee{
+  query fr8_employee{
     employee{
         id
         name
@@ -13,7 +13,7 @@ const EMPLOYEE_QUERY = gql`
 }
 `
 const UPDATE_BRABCH_EMPLOYEE_MUTATION = gql`
-mutation ($branch_id: Int, $employee_id: Int) {
+mutation fr8_employee_edit($branch_id: Int, $employee_id: Int) {
   update_branch_employee(where: {branch_id: {_eq: $branch_id}, is_manager: {_eq: true}}, _set: {employee_id: $employee_id}) {
     returning {
       employee {
