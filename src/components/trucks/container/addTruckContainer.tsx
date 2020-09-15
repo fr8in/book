@@ -9,7 +9,7 @@ import get from 'lodash/get'
 import { useRouter } from 'next/router'
 
 const ADD_TRUCK_QUERY = gql`
-query addTruck ( $cardcode: String!){
+query add_truck ( $cardcode: String!){
   partner(where: {cardcode: {_eq: $cardcode}}) {
     id
     cardcode

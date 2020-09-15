@@ -3,7 +3,7 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 
 const TRUCKS_TYPE_QUERY = gql`
-  query truckType{
+  query truck_type{
   truck_type{
       id
       name
@@ -11,7 +11,7 @@ const TRUCKS_TYPE_QUERY = gql`
 }
 `
 const UPDATE_TRUCK_TYPE_MUTATION = gql`
-mutation TruckTypeEdit($truck_type_id:Int,$truck_no:String) {
+mutation truck_type_edit($truck_type_id:Int,$truck_no:String) {
     update_truck(_set:{truck_type_id: $truck_type_id}, where:{truck_no: {_eq:$truck_no}}) {
       returning{
         id

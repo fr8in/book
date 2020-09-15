@@ -9,7 +9,7 @@ import { gql, useQuery } from '@apollo/client'
 import u from '../../lib/util'
 
 const TRUCKS_QUERY = gql`
-query trucks(
+query trucks_verification(
   $offset: Int!
   $limit: Int!
   $truck_statusName: [String!]){
@@ -45,8 +45,7 @@ query trucks(
       id
       name
     }
-  }
-  
+  } 
 `
 
 const TruckVerification = (props) => {

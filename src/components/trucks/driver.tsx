@@ -26,7 +26,7 @@ mutation driver_insert($id: Int!, $mobile: String){
 }`
 
 const UPDATE_TRUCK_DRIVER_MUTATION = gql`
-mutation TruckDriver($driver_id:Int,$truck_id:Int) {
+mutation truck_driver_update($driver_id:Int,$truck_id:Int) {
   update_truck(_set: {driver_id: $driver_id}, where: {id: {_eq: $truck_id}}){
     returning{
       id

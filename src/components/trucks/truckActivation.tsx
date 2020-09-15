@@ -22,7 +22,7 @@ import ViewFile from '../common/viewFile'
 import { useState } from 'react'
 
 const TRUCKS_QUERY = gql`
-query trucks($truck_id : Int){
+query truck_activation($truck_id : Int){
   truck_type {
     id
     name
@@ -59,7 +59,7 @@ query trucks($truck_id : Int){
 `
 
 const UPDATE_TRUCK_ACTIVATION_MUTATION = gql`
-mutation TruckActivation($available_at:timestamptz,$id:Int,$city_id:Int,$truck_type_id:Int,$truck_status_id:Int) {
+mutation truck_activation($available_at:timestamptz,$id:Int,$city_id:Int,$truck_type_id:Int,$truck_status_id:Int) {
   update_truck(_set: {available_at: $available_at, city_id:$city_id, truck_type_id:$truck_type_id,truck_status_id:$truck_status_id}, where: {id: {_eq: $id}}) {
     returning {
       id

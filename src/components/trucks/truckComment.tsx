@@ -3,7 +3,7 @@ import { gql, useMutation, useSubscription } from '@apollo/client'
 import moment from 'moment'
 
 const TRUCK_COMMENT = gql`
-subscription truck_coment($id: Int!){
+subscription truck_comment($id: Int!){
   truck(where:{id:{_eq:$id}}){
     truck_status{
       id
@@ -20,7 +20,7 @@ subscription truck_coment($id: Int!){
 }
 `
 const INSERT_TRUCK_COMMENT_MUTATION = gql`
-mutation TruckComment($description:String, $topic:String, $truck_id: Int, $created_by_id:Int ) {
+mutation truck_comment($description:String, $topic:String, $truck_id: Int, $created_by_id:Int ) {
   insert_truck_comment(objects: {description: $description, truck_id: $truck_id, topic: $topic, created_by_id: $created_by_id}) {
     returning {
       id
