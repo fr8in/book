@@ -4,7 +4,7 @@ import moment from 'moment'
 import { gql, useMutation } from '@apollo/client'
 
 const INSERT_TRIP_COMMENT_MUTATION = gql`
-mutation TripComment($description:String, $topic:String, $trip_id: Int, $created_by:String) {
+mutation trip_comment($description:String, $topic:String, $trip_id: Int, $created_by:String) {
   insert_trip_comment(objects: {description: $description, trip_id: $trip_id, topic: $topic, created_by: $created_by}) {
     returning {
       id

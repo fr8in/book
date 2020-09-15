@@ -3,7 +3,7 @@ import { gql, useMutation } from '@apollo/client'
 import FileUploadOnly from '../common/fileUploadOnly'
 
 const PRIVATE_GODWON_MUTATION = gql`
-mutation updatePrivateGodown($id: Int!, $private_godown_address: jsonb,$unloaded_private_godown:Boolean) {
+mutation update_private_godown($id: Int!, $private_godown_address: jsonb,$unloaded_private_godown:Boolean) {
   update_trip(_set: {private_godown_address: $private_godown_address,unloaded_private_godown: $unloaded_private_godown}, where: {id: {_eq: $id}}) {
     returning {
       id

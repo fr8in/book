@@ -11,7 +11,7 @@ import InvoicedContainer from '../containers/invoicedContainer'
 import AllTripsContainer from './allTripsContainer'
 
 const TRIPS_COUNT_QUERY = gql`
-query trips($all_trip: trip_bool_exp, $delivered_trip: trip_bool_exp, $pod_verified_trip: trip_bool_exp, $invoiced_trip: trip_bool_exp) {
+query trips_count($all_trip: trip_bool_exp, $delivered_trip: trip_bool_exp, $pod_verified_trip: trip_bool_exp, $invoiced_trip: trip_bool_exp) {
   trip_count: trip_aggregate(where: $all_trip) {
     aggregate {
       count

@@ -3,7 +3,7 @@ import { gql, useMutation } from '@apollo/client'
 import { useState } from 'react'
 
 const CUSTOMER_MUTATION = gql`
-mutation insertTripPrice($trip_id: Int, $customer_price: Float, $mamul: Float, $bank: Float, $cash: Float, $to_pay: Float, $comment: String, $partner_price: Float, $ton: float8, $price_per_ton: float8, $is_price_per_ton: Boolean) {
+mutation insert_trip_price($trip_id: Int, $customer_price: Float, $mamul: Float, $bank: Float, $cash: Float, $to_pay: Float, $comment: String, $partner_price: Float, $ton: float8, $price_per_ton: float8, $is_price_per_ton: Boolean) {
   insert_trip_price(objects: {
     trip_id: $trip_id, 
     customer_price: $customer_price, 
