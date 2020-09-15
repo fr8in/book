@@ -11,7 +11,6 @@ import {
   DatePicker,
   Space
 } from 'antd'
-import { EyeTwoTone } from '@ant-design/icons'
 import moment from 'moment'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import CitySelect from '../common/citySelect'
@@ -20,6 +19,7 @@ import FileUploadOnly from '../common/fileUploadOnly'
 import DeleteFile from '../common/deleteFile'
 import ViewFile from '../common/viewFile'
 import { useState } from 'react'
+import get from 'lodash/get'
 
 const TRUCKS_QUERY = gql`
 query trucks($truck_id : Int){
@@ -97,22 +97,21 @@ const TruckActivation = (props) => {
     }
   )
 
-  var truck_type = []
-  var truck_info = {}
+  let _data = {}
 
   if (!loading) {
-    truck_type = data && data.truck_type
-    const { truck } = data
-    truck_info = truck[0] ? truck[0] : { name: 'ID does not exist' }
+    _data = data
   }
+  const truck_info = get(_data, 'truck[0]', { name: 'ID does not exist' })
+  const truck_type = get(_data, 'truck_type', [])
   const onboarded_by = truck_info && truck_info.partner && truck_info.partner.onboarded_by && truck_info.partner.onboarded_by.email
   console.log('onboarded_by', onboarded_by)
   const partner_mobile = truck_info && truck_info.partner && truck_info.partner.partner_users && truck_info.partner.partner_users.mobile
-  
-  const rc_files  = truck_info && truck_info.truck_files && truck_info.truck_files.filter(file => file.type === 'RC')
-  const vaahan_files  = truck_info && truck_info.truck_files && truck_info.truck_files.filter(file => file.type === 'vaahan')
 
-  console.log('rc_files',rc_files)
+  const rc_files = truck_info && truck_info.truck_files && truck_info.truck_files.filter(file => file.type === 'RC')
+  const vaahan_files = truck_info && truck_info.truck_files && truck_info.truck_files.filter(file => file.type === 'vaahan')
+
+  console.log('rc_files', rc_files)
 
   const typeList = truck_type.map((data) => {
     return { value: data.id, label: data.name }
@@ -129,7 +128,7 @@ const TruckActivation = (props) => {
         id: truck_id,
         truck_status_id: 5,
         available_at: form.available_at,
-        city_id:parseInt(city.city_id,10),
+        city_id: parseInt(city.city_id, 10),
         truck_type_id: parseInt(form.truck_type_id, 10)
       }
     })
@@ -169,31 +168,31 @@ const TruckActivation = (props) => {
                 </Col>
                 <Col xs={24} sm={12}>
                   <Form.Item label='RC'>
-                  <Space>
-          {rc_files && rc_files.length > 0 ? (
-            <Space>
-              <ViewFile
-                id={truck_id}
-                type='truck'
-                file_type='RC'
-                folder='approvals/'
-                file_list={rc_files}
-              />
-              <DeleteFile
-                id={truck_id}
-                type='truck'
-                file_type='RC'
-                file_list={rc_files}
-              />
-            </Space>)
-            : (
-              <FileUploadOnly
-                id={truck_id}
-                type='truck'
-                folder='approvals/'
-                file_type='RC'
-              />)}
-              </Space>
+                    <Space>
+                      {rc_files && rc_files.length > 0 ? (
+                        <Space>
+                          <ViewFile
+                            id={truck_id}
+                            type='truck'
+                            file_type='RC'
+                            folder='approvals/'
+                            file_list={rc_files}
+                          />
+                          <DeleteFile
+                            id={truck_id}
+                            type='truck'
+                            file_type='RC'
+                            file_list={rc_files}
+                          />
+                        </Space>)
+                        : (
+                          <FileUploadOnly
+                            id={truck_id}
+                            type='truck'
+                            folder='approvals/'
+                            file_type='RC'
+                          />)}
+                    </Space>
                   </Form.Item>
                 </Col>
               </Row>
@@ -205,31 +204,31 @@ const TruckActivation = (props) => {
                 </Col>
                 <Col xs={24} sm={12}>
                   <Form.Item label='Vaahan Screen'>
-                  <Space>
-          {vaahan_files && vaahan_files.length > 0 ? (
-            <Space>
-              <ViewFile
-                id={truck_id}
-                type='truck'
-                file_type='vaahan'
-                folder='approvals/'
-                file_list={vaahan_files}
-              />
-              <DeleteFile
-                id={truck_id}
-                type='truck'
-                file_type='vaahan'
-                file_list={vaahan_files}
-              />
-            </Space>)
-            : (
-              <FileUploadOnly
-                id={truck_id}
-                type='truck'
-                folder='approvals/'
-                file_type='vaahan'
-              />)}
-              </Space>
+                    <Space>
+                      {vaahan_files && vaahan_files.length > 0 ? (
+                        <Space>
+                          <ViewFile
+                            id={truck_id}
+                            type='truck'
+                            file_type='vaahan'
+                            folder='approvals/'
+                            file_list={vaahan_files}
+                          />
+                          <DeleteFile
+                            id={truck_id}
+                            type='truck'
+                            file_type='vaahan'
+                            file_list={vaahan_files}
+                          />
+                        </Space>)
+                        : (
+                          <FileUploadOnly
+                            id={truck_id}
+                            type='truck'
+                            folder='approvals/'
+                            file_type='vaahan'
+                          />)}
+                    </Space>
                   </Form.Item>
                 </Col>
               </Row>
@@ -240,7 +239,7 @@ const TruckActivation = (props) => {
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={12}>
-                  <CitySelect label='Available City'   onChange={onCityChange}/>
+                  <CitySelect label='Available City' onChange={onCityChange} />
                 </Col>
               </Row>
               <Row>

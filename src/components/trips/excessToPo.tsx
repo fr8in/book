@@ -3,6 +3,7 @@ import { Modal, Form, Select } from 'antd'
 import TrucksForPO from './trucksForPO'
 import { gql, useQuery } from '@apollo/client'
 import ConfirmPo from './confirmPo'
+import get from 'lodash/get'
 
 const PARTNER_SEARCH_QUERY = gql`query partner_search($search: String){
 search_partner(args:{search:$search}){
@@ -34,7 +35,7 @@ const ExcessToPo = (props) => {
   if (!loading) {
     _data = data
   }
-  const partnerSearch = _data.search_partner
+  const partnerSearch = get(_data, 'search_partner', null)
 
   const onPartnerSearch = (value) => {
     setObj({ ...obj, search: value })

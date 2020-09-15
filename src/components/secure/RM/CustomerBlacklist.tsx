@@ -27,10 +27,10 @@ const Blacklist = ({ cardcode, statusId, disabled = true }) => {
         statusId: checked ? customerStatus.Blacklisted : customerStatus.Active,
       },
       update(cache, data) {
-        //console.log('cache:', cache, 'data: ', ç)
-        const _result = data.data.update_customer.returning[0]
-        cache.writeData({ data: { [`customer:${_result.id}`]: _result } })
-        localStorage.clear()
+        console.log('cache:', cache, 'data: ', data)
+        // const _result = data.data.update_customer.returning[0]
+        // cache.writeData({ data: { [`customer:${_result.id}`]: _result } })
+        // localStorage.clear()
       }
 
     })

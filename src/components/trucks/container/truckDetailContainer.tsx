@@ -12,6 +12,7 @@ import TruckNo from '../../trucks/truckNo'
 import useShowHide from '../../../hooks/useShowHide'
 import TruckComment from '../../trucks/truckComment'
 import CreatePo from '../../trips/createPo'
+import get from 'lodash/get'
 
 import { gql, useSubscription, useMutation } from '@apollo/client'
 
@@ -131,7 +132,7 @@ const TruckDetailContainer = (props) => {
   if (!loading) {
     _data = data
   }
-  const truck_info = _data && _data.truck && _data.truck.length > 0 ? _data.truck[0] : { name: 'ID does not exist' }
+  const truck_info = get(_data, 'truck[0]', { name: 'ID does not exist' })
 
   const status_check = truck_info && truck_info.truck_status && truck_info.truck_status.name === 'Deactivated'
 

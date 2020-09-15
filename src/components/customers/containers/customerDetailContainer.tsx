@@ -68,20 +68,17 @@ const CustomerDetailContainer = (props) => {
   )
 
   console.log('CustomerDetailContainer Error', error)
-  let customer_info = {}
-  let ongoing_count = 0
-  let delivered_count = 0
-  let invoiced_count = 0
-  let recieved_count = 0
+  let _data = {}
 
   if (!loading) {
-    const { customer } = data
-    customer_info = customer && customer[0] ? customer[0] : { name: 'ID does not exist' }
-    ongoing_count = get(customer_info, 'ongoing.aggregate.count', 0)
-    delivered_count = get(customer_info, 'delivered.aggregate.count', 0)
-    invoiced_count = get(customer_info, 'invoiced.aggregate.count', 0)
-    recieved_count = get(customer_info, 'recieved.aggregate.count', 0)
+    _data = data
   }
+
+  const customer_info = get(_data, 'customer[0]', { name: 'ID does not exist' })
+  const ongoing_count = get(customer_info, 'ongoing.aggregate.count', 0)
+  const delivered_count = get(customer_info, 'delivered.aggregate.count', 0)
+  const invoiced_count = get(customer_info, 'invoiced.aggregate.count', 0)
+  const recieved_count = get(customer_info, 'recieved.aggregate.count', 0)
 
   return (
     loading ? <Loading /> : (
@@ -96,7 +93,7 @@ const CustomerDetailContainer = (props) => {
                   <Space>
                     <CustomerName
                       cardcode={cardcode}
-                      name={customer_info.name}
+                      name={customer_info && customer_info.name}
                       loading={loading}
                     />
                     <h4>{cardcode}</h4>
@@ -175,7 +172,7 @@ const CustomerDetailContainer = (props) => {
                       tab={<TitleWithCount name='Incoming' value={0} />}
                       key='5'
                     >
-                      <IncomingPayments cardcode={cardcode} id={customer_info.id} />
+                      <IncomingPayments cardcode={cardcode} id={customer_info && customer_info.id} />
                     </TabPane>
                     <TabPane tab='Users' key='6'>
                       <Row justify='end' className='m5'>
@@ -197,7 +194,7 @@ const CustomerDetailContainer = (props) => {
                       <Branch cardcode={cardcode} />
                     </TabPane>
                     <TabPane tab='FR8 Branch' key='8'>
-                      <Fr8Branch cardcode={cardcode} id={customer_info.id} />
+                      <Fr8Branch cardcode={cardcode} id={customer_info && customer_info.id} />
                     </TabPane>
                     <TabPane tab='Details' key='9'>
                       <Row className='p10'>
@@ -213,17 +210,17 @@ const CustomerDetailContainer = (props) => {
                 </Card>
               </Col>
               {visible.addUser && (
-                <CustomerUser visible={visible.addUser} onHide={onHide} customer={customer_info.id} />
+                <CustomerUser visible={visible.addUser} onHide={onHide} customer={customer_info && customer_info.id} />
               )}
               {visible.addBranch && (
-                <CustomerBranch visible={visible.addBranch} onHide={onHide} customer_id={customer_info.id} />
+                <CustomerBranch visible={visible.addBranch} onHide={onHide} customer_id={customer_info && customer_info.id} />
               )}
               {visible.transfer && (
                 <Transfer
                   visible={visible.transfer}
                   onHide={onHide}
                   cardcode={cardcode}
-                  walletcode={customer_info.walletcode}
+                  walletcode={customer_info && customer_info.walletcode}
                   wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)}
                 />
               )}
@@ -232,12 +229,12 @@ const CustomerDetailContainer = (props) => {
                   visible={visible.rebate}
                   onHide={onHide}
                   cardcode={cardcode}
-                  walletcode={customer_info.walletcode}
+                  walletcode={customer_info && customer_info.walletcode}
                   wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)}
                 />
               )}
               {visible.wallet && (
-                <WalletTopup visible={visible.wallet} onHide={onHide} walletcode={customer_info.walletcode} />
+                <WalletTopup visible={visible.wallet} onHide={onHide} walletcode={customer_info && customer_info.walletcode} />
               )}
               {visible.showModal && (
                 <AccStmtMail visible={visible.showModal} onHide={onHide} />

@@ -29,10 +29,12 @@ const CustomerPrice = (props) => {
 
   const [form] = Form.useForm()
 
-  const customer_advance_percentage = trip_price.customer_advance_percentage || 90
-  const customer_advance = (trip_price.customer_price - trip_price.mamul) * customer_advance_percentage / 100
+  const customer_advance_percentage = trip_price.customer_advance_percentage || 90 // TODO
 
-  const initial = { partner_price: trip_price.partner_price, advance: customer_advance }
+  const initial = {
+    partner_price: trip_price.partner_price,
+    advance: (trip_price.customer_price - trip_price.mamul) * customer_advance_percentage / 100
+  }
   const [price, setPrice] = useState(initial)
 
   const [insertTripPrice] = useMutation(
@@ -112,18 +114,18 @@ const CustomerPrice = (props) => {
     form.setFieldsValue({
       bank: bank > 0 ? bank : 0
     })
-    setPrice({ ...price, partner_price: netPrice, advance: parseFloat(cus_adv) })
+    setPrice({ ...price, partner_price: netPrice, advance: cus_adv })
   }
   const onCashChange = (e) => {
     const { value } = e.target
-    const bank = parseFloat(price.advance) - (parseFloat(value) + parseFloat(form.getFieldValue('to_pay')))
+    const bank = price.advance - (parseFloat(value) + parseFloat(form.getFieldValue('to_pay')))
     form.setFieldsValue({
       bank: bank > 0 ? bank : 0
     })
   }
   const onToPayChange = (e) => {
     const { value } = e.target
-    const bank = parseFloat(price.advance) - (parseFloat(value) + parseFloat(form.getFieldValue('cash')))
+    const bank = price.advance - (parseFloat(value) + parseFloat(form.getFieldValue('cash')))
     console.log('bank', bank)
     form.setFieldsValue({
       bank: bank > 0 ? bank : 0
