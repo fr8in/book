@@ -6,7 +6,7 @@ import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
 
 const PAID_QUERY = gql`
-query partners($offset: Int, $limit: Int,$trip_status_value:[String!], $cardcode: String){
+query paid_trip($offset: Int, $limit: Int,$trip_status_value:[String!], $cardcode: String){
   partner( where: {cardcode: {_eq: $cardcode}}){
     id
     cardcode

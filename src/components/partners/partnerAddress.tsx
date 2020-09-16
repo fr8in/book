@@ -3,7 +3,7 @@ import { LeftOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 
 const UPDATE_PARTNER_ADDRESS_MUTATION = gql`
-mutation address_update($address:jsonb, $cardcode:String){
+mutation update_address($address:jsonb, $cardcode:String){
   update_partner(_set:{address: $address} where: {cardcode:{_eq:$cardcode}}){
     returning{
       id
@@ -18,8 +18,8 @@ const EditAddress = (props) => {
   const [updatePartnerAddress] = useMutation(
     UPDATE_PARTNER_ADDRESS_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
 
