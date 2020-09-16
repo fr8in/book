@@ -19,6 +19,7 @@ import ViewFile from '../common/viewFile'
 import DeleteFile from '../common/deleteFile'
 import { gql, useQuery,useMutation} from '@apollo/client'
 import { useState } from 'react'
+import get from 'lodash/get'
 
 const PARTNERS_SUBSCRIPTION = gql`
   query create_partner{
@@ -43,6 +44,15 @@ mutation($onboarded_by_id:Int,$partner_advance_percentage_id:Int,$gst:String,$ci
 }
 `
 
+const CREATE_PARTNER_CODE_MUTATION = gql`
+mutation create_partner_code($name: String!, $partner_id: Int!, $pay_terms_code: Int!) {
+  create_partner_code(name: $name, partner_id: $partner_id, pay_terms_code: $pay_terms_code) {
+    description
+    status
+  }
+}
+`
+
 const { Option } = Select
 const tableData = [
   { truck_no: 'TN03AA0001', type: 'MXL' },
@@ -50,6 +60,7 @@ const tableData = [
 ]
 const KycApproval = (props) => {
   const { visible, onHide, approveData } = props
+  const [form] = Form.useForm()
 
   const files = approveData.partner_files
   const pan_files = files.filter(file => file.type === 'PAN')
@@ -76,6 +87,22 @@ const KycApproval = (props) => {
     {
       onError (error) { message.error(error.toString()) },
       onCompleted () { message.success('Saved!!') }
+    }
+  )
+
+  const [createPartnerCode] = useMutation(
+    CREATE_PARTNER_CODE_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted (data) {
+        const status = get(data, 'create_partner_code.status', null)
+        const description = get(data, 'create_partner_code.description', null)
+        if (status === 'OK') {
+          message.success(description || 'Code created!')
+          onPartnerApprovalSubmit()
+        } else (message.error(description))
+      }
+     
     }
   )
 
@@ -118,16 +145,27 @@ const KycApproval = (props) => {
     }
   ]
 
-  const onPartnerApprovalSubmit = (form) => {
+  const onPartnerApprovalSubmit = () => {
     console.log('Traffic Added',approveData.id)
     updatePartnerApproval({
       variables: {
         id: approveData.id,
         partner_status_id: 4,
-        gst: form.gst,
-        cibil:form.cibil,
-        onboarded_by_id: parseInt(form.onboarded_by_id, 10),
-        partner_advance_percentage_id:parseInt(form.partner_advance_percentage_id,10)
+        gst: form.getFieldValue('gst'),
+        cibil:form.getFieldValue('cibil'),
+        onboarded_by_id: form.getFieldValue('onboarded_by_id'),
+        partner_advance_percentage_id:form.getFieldValue('partner_advance_percentage_id')
+      }
+    })
+  }
+
+  const onCreatePartnerCodeSubmit = () => {
+    console.log('Traffic Added',approveData.id)
+    createPartnerCode({
+      variables: {
+        name: approveData.name,
+        pay_terms_code: approveData.partner_advance_percentage_id,
+        partner_id: approveData.id
       }
     })
   }
@@ -144,7 +182,7 @@ const KycApproval = (props) => {
        null
       ]}
     >
-      <Form layout='horizontal' onFinish={onPartnerApprovalSubmit}>
+      <Form layout='horizontal' onFinish={onCreatePartnerCodeSubmit} form={form}>
         <Row gutter={10}>
           <Col xs={24} sm={6}>
             <Form.Item name='partnerName' label='Partner Name'>
