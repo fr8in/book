@@ -33,7 +33,7 @@ approve_credit(
 `
 
 const Approve = (props) => {
-  const { visible, onHide, data, title } = props
+  const { visible, onHide, item_id, title } = props
 
   const [rejectCredit] = useMutation(
     REJECT_CREDIT_MUTATION, {
@@ -51,32 +51,34 @@ const Approve = (props) => {
     },
     onCompleted() {
       message.success('Updated!!')
+      onHide()
     }
   })
 
   const onSubmit = (form) => {
-    console.log('Fastag Amount Reversed!', data)
-    onHide()
-    if (title === 'Rejected') {
-      rejectCredit({
-        variables: {
-          id: data,
-          remarks: form.remarks
-        }
-      })
-    }
-    else {
+    console.log('Fastag Amount Reversed!', form)
+    
+    if (title === 'Approved') {
       creditApproval({
         variables:{
-          id: data, 
+          id: item_id, 
           approved_by: "jay",
           approved_amount: parseFloat(form.amount),
           approved_comment: form.remarks
         }
       })
     }
+    else {
+      rejectCredit({
+        variables: {
+          id: item_id,
+          remarks: form.remarks
+        }
+      })
+      
+    }
   }
-  console.log('id', data)
+  console.log('id', item_id)
 
   return (
     <Modal
@@ -86,28 +88,16 @@ const Approve = (props) => {
     >
       <Form layout='vertical' onFinish={onSubmit} >
         {title === 'Approved' && (
-          <Form.Item label='Amount' name='amount' >
-             <Input
-                        id='amount'
-                        required
-                      />
-            <p>Claim Amount: </p>
+          <Form.Item label='Amount' name='amount' rules={[{ required: true }]} extra={`Claim Amount: ${0}`}>
+             <Input placeholder='Approved amount' />
           </Form.Item>
         )}
         <Form.Item label='Remarks' name='remarks' rules={[{ required: true }]}>
           <Input placeholder='Remarks' />
         </Form.Item>
-        <Row justify='end'>
-
-          <Form.Item>
-            <Space>
-              <Button type='primary' size='middle' onClick={onHide}>Cancel</Button>
+          <Form.Item className='text-right'>          
               <Button type='primary' size='middle' htmlType='submit'>Submit</Button>
-            </Space>
           </Form.Item>
-
-        </Row>
-
       </Form>
     </Modal>
   )
