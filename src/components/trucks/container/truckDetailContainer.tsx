@@ -44,6 +44,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
           description
           created_at
           created_by_id
+          created_by
         } 
         truck_type{
           name
