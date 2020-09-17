@@ -19,7 +19,7 @@ const PARTNERS_SUBSCRIPTION = gql`
 `
 
 const INSERT_PARTNER_MUTATION = gql`
-  mutation partner_create(
+  mutation create_partner(
     $name: String, $email: String, $cibil: Int, $address: jsonb, 
     $pin_code: Int, $account_number: String, $ifsc_code: String, 
     $mobile: String, $pan_no: String, $contact_name: String, 
@@ -66,8 +66,8 @@ const PartnerProfile = () => {
   const [updatePartner] = useMutation(
     INSERT_PARTNER_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
 
@@ -199,12 +199,12 @@ const PartnerProfile = () => {
           </Col>
           <Col xs={24} sm={5}>
             <Form.Item
-            label='State'
-            name='state'
-            rules={[{ required: true, message: 'State is required field!' }]}
-          >
-            <Input placeholder='State' />
-          </Form.Item>
+              label='State'
+              name='state'
+              rules={[{ required: true, message: 'State is required field!' }]}
+            >
+              <Input placeholder='State' />
+            </Form.Item>
           </Col>
           <Col xs={24} sm={4}>
             <Form.Item
@@ -316,7 +316,7 @@ const PartnerProfile = () => {
           <Space>
             <Button>Cancel</Button>
             <Button type='primary' htmlType='submit'>Submit</Button>
-        </Space>
+          </Space>
         </Col>
       </Row>
     </Form>

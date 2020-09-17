@@ -14,7 +14,7 @@ const useWindowSize = () => {
 
   useEffect(() => {
     if (!isClient) {
-      return false
+      return null
     }
 
     function handleResize () {

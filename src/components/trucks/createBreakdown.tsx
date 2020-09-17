@@ -3,6 +3,7 @@ import { useMutation, gql, useQuery } from '@apollo/client'
 import moment from 'moment'
 import { useState } from 'react'
 import CitySelect from '../common/citySelect'
+import get from 'lodash/get'
 
 const CREATE_BREAKDOWN = gql`
 query create_breakdown($id: Int!){
@@ -47,12 +48,12 @@ const CreateBreakdown = (props) => {
 
   console.log('CreateBreakdown Error', error)
 
-  var _data = {}
+  let _data = {}
 
   if (!loading) {
     _data = data
   }
-  const truck_info = _data && _data.truck && _data.truck.length > 0 ? _data.truck[0] : { name: 'ID does not exist' }
+  const truck_info = get(_data, 'truck[0]', { name: 'ID does not exist' })
 
   const truck_status = truck_info && truck_info.truck_status && truck_info.truck_status.name
   console.log('truck_status', truck_status)

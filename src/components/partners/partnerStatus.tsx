@@ -2,7 +2,7 @@ import { Checkbox, Row, Col, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 
 const UPDATE_PARTNER_BLACKLIST_MUTATION = gql`
-mutation PartnerBlacklist($partner_status_id:Int,$cardcode:String){
+mutation partner_blacklist($partner_status_id:Int,$cardcode:String){
   update_partner( _set: {partner_status_id: $partner_status_id }, where: {cardcode:{_eq: $cardcode}} 
   ){
     returning{
@@ -13,7 +13,7 @@ mutation PartnerBlacklist($partner_status_id:Int,$cardcode:String){
 }
 `
 const UPDATE_PARTNER_DE_ACTIVATE_MUTATION = gql`
-mutation PartnerDeActivate($partner_status_id:Int,$cardcode:String){
+mutation partner_de_activate($partner_status_id:Int,$cardcode:String){
   update_partner( _set: {partner_status_id: $partner_status_id}, where: {cardcode:{_eq: $cardcode}} 
   ){
     returning{
@@ -25,7 +25,7 @@ mutation PartnerDeActivate($partner_status_id:Int,$cardcode:String){
 `
 
 const UPDATE_PARTNER_DND_MUTATION = gql`
-mutation PartnerDnd($dnd:Boolean,$cardcode:String) {
+mutation partner_dnd($dnd:Boolean,$cardcode:String) {
   update_partner(_set: {dnd: $dnd}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       cardcode
@@ -46,8 +46,8 @@ const PartnerStatus = (props) => {
   const [updateBlacklist] = useMutation(
     UPDATE_PARTNER_BLACKLIST_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
   const blacklistChange = (e) => {
@@ -62,8 +62,8 @@ const PartnerStatus = (props) => {
   const [updateDeactivate] = useMutation(
     UPDATE_PARTNER_DE_ACTIVATE_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
   const deActivateChange = (e) => {
@@ -78,8 +78,8 @@ const PartnerStatus = (props) => {
   const [updateDnd] = useMutation(
     UPDATE_PARTNER_DND_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
   const dndChange = (e) => {

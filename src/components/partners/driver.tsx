@@ -1,7 +1,8 @@
 import { message, Select, Form } from 'antd'
 import { useMutation, useQuery, gql } from '@apollo/client'
 import { useState } from 'react'
-import _ from 'lodash'
+import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
 
 const { Option } = Select
 
@@ -43,10 +44,7 @@ const Driver = (props) => {
   }
 
   console.log('Driver error', error)
-  console.log('data', _data)
-  const driver_data = _data && _data.partner && _data.partner.length > 0 &&
-                        _data.partner[0].drivers && _data.partner[0].drivers.length > 0
-    ? _data.partner[0].drivers : []
+  const driver_data = get(_data, 'partner[0].drivers', [])
 
   const [insertDriver] = useMutation(
     INSERT_PARTNER_DRIVER,
@@ -54,7 +52,7 @@ const Driver = (props) => {
       onError (error) { message.error(error.toString()) },
       onCompleted (data) {
         console.log('driver data', data)
-        const id = _.get(data, 'insert_driver.returning[0].id', null)
+        const id = get(data, 'insert_driver.returning[0].id', null)
         message.success('Updated!!')
         driver_id(id)
         setSearchText('')
@@ -64,8 +62,8 @@ const Driver = (props) => {
   const onDriverChange = (value, option) => {
     console.log('driver option', option)
     const isNew = driver_data && driver_data.filter(_driver => _driver.mobile.search(value) !== -1)
-    console.log('mobile', value, (_.isEmpty(isNew)))
-    if ((_.isEmpty(isNew))) {
+    console.log('mobile', value, (isEmpty(isNew)))
+    if ((isEmpty(isNew))) {
       insertDriver({
         variables: {
           id: partner_id,

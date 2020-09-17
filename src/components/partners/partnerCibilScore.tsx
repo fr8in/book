@@ -3,7 +3,7 @@ import { message } from 'antd'
 import InlineEdit from '../common/inlineEdit'
 
 const UPDATE_CIBIL_SCORE_MUTATION = gql`
-mutation PartnerCibilScoreEdit($cibil:String,$cardcode:String) {
+mutation partner_cibil_score_edit($cibil:String,$cardcode:String) {
   update_partner(_set: {cibil: $cibil}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id
@@ -18,8 +18,8 @@ const PartnerCibilScore = (props) => {
   const [updateCibilScore] = useMutation(
     UPDATE_CIBIL_SCORE_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
 

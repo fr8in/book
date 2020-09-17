@@ -36,9 +36,9 @@ mutation trip_driver($driver_id:Int,$trip_id:Int) {
 `
 
 const Driver = (props) => {
-  const { trip_info ,initialValue} = props
+  const { trip_info , initialValue } = props
 
-  const partner_id = trip_info && trip_info.partner &&  trip_info.partner.id
+  const partner_id = trip_info && trip_info.partner && trip_info.partner.id
 
   if (!partner_id) return null
 
@@ -59,9 +59,7 @@ const Driver = (props) => {
   console.log('Driver error', error)
   console.log('data', _data)
 
-  const driver_data = _data && _data.partner && _data.partner.length > 0 &&
-                        _data.partner[0].drivers && _data.partner[0].drivers.length > 0
-    ? _data.partner[0].drivers : []
+  const driver_data = get(_data, 'partner[0].drivers', [])
 
   console.log('driver_data', driver_data)
 
@@ -72,7 +70,7 @@ const Driver = (props) => {
       onCompleted (data) {
         const value = get(data, 'insert_driver.returning', [])
         setSearchText('')
-       onDriverUpdate(value[0].id) 
+        onDriverUpdate(value[0].id)
       }
     }
   )
@@ -86,7 +84,7 @@ const Driver = (props) => {
   )
 
   const onDriverUpdate = id => {
-    console.log('trip_info.id',trip_info.id)
+    console.log('trip_info.id', trip_info.id)
     updateTruckDriver({
       variables: {
         trip_id: trip_info.id,
@@ -106,7 +104,7 @@ const Driver = (props) => {
         }
       })
     } else {
-      onDriverUpdate(driver.key) 
+      onDriverUpdate(driver.key)
     }
   }
 

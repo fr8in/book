@@ -3,7 +3,7 @@ import { message } from 'antd'
 import InlineEdit from '../common/inlineEdit'
 
 const UPDATE_PARTNER_PAN_MUTATION = gql`
-mutation PartnerPanEdit($pan:String,$cardcode:String) {
+mutation partner_pan_edit($pan:String,$cardcode:String) {
   update_partner(_set: {pan: $pan}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id
@@ -18,8 +18,8 @@ const PartnerPan = (props) => {
   const [updatePan] = useMutation(
     UPDATE_PARTNER_PAN_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
 

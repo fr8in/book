@@ -11,17 +11,61 @@ subscription credit_debit_issue_type {
   }
 }
 `
-const CREDIT_DEBIT_NOTES_MUTATION = gql`
-mutation create_credit_debit($credit_debit_type_id: Int, $amount: Float, $comment: String,$trip_id:Int,$type:bpchar,$created_by:String,$credit_debit_status_id:Int) {
-  insert_trip_credit_debit(objects: {credit_debit_type_id: $credit_debit_type_id, amount: $amount, comment: $comment,trip_id:$trip_id,type:$type,created_by:$created_by,credit_debit_status_id:$credit_debit_status_id}){
-    returning {
-      id
-      comment
-      trip_id
-    }
-  }
+// const CREDIT_DEBIT_NOTES_MUTATION = gql`
+// mutation create_credit_debit($credit_debit_type_id: Int, $amount: Float, $comment: String,$trip_id:Int,$type:bpchar,$created_by:String,$credit_debit_status_id:Int) {
+//   insert_trip_credit_debit(objects: {credit_debit_type_id: $credit_debit_type_id, amount: $amount, comment: $comment,trip_id:$trip_id,type:$type,created_by:$created_by,credit_debit_status_id:$credit_debit_status_id}){
+//     returning {
+//       id
+//       comment
+//       trip_id
+//     }
+//   }
+// }
+// `
+
+const CREATE_CREDIT_MUTATION = gql`
+mutation create_credit_track(
+  $trip_id: Int!
+  $created_by: String!
+  $credit_debit_type_id: Int!
+  $comment: String!
+$amount: Float!
+) {
+create_credit_track(
+  trip_id: $trip_id
+  created_by: $created_by
+  credit_debit_type_id: $credit_debit_type_id
+  comment: $comment
+  amount: $amount
+)
+{
+  success
+  message
+}
 }
 `
+const CREATE_DEBIT_MUTATION = gql`
+mutation create_debit_track(
+  $trip_id: Int!
+  $created_by: String!
+  $credit_debit_type_id: Int!
+  $comment: String!
+$amount: Float!
+) {
+create_debit_track(
+  trip_id: $trip_id
+  created_by: $created_by
+  credit_debit_type_id: $credit_debit_type_id
+  comment: $comment
+  amount: $amount
+)
+{
+  success
+  message
+}
+}
+`
+
 const CreditNote = (props) => {
   const {trip_id} = props
   const [radioType, setRadioType] = useState('Credit Note')
@@ -32,8 +76,15 @@ const CreditNote = (props) => {
   console.log('creditDebitIsuueType error', error)
   console.log('creditDebitIsuueType data', data)
 
-  const [upadateCreditDebitNote] = useMutation(
-    CREDIT_DEBIT_NOTES_MUTATION,
+  const [upadateCreditNote] = useMutation(
+    CREATE_CREDIT_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
+  const [upadateDebitNote] = useMutation(
+    CREATE_DEBIT_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
       onCompleted () { message.success('Updated!!') }
@@ -51,17 +102,28 @@ const CreditNote = (props) => {
 
 const create_credit_debit = (form) =>{
   console.log('form',form)
-  upadateCreditDebitNote ({
-    variables:{
-      credit_debit_type_id: form.issue_type,
-      amount: parseFloat(form.amount),
-      comment: form.comment,
-      trip_id: parseInt(trip_id) ,
-      type: radioType === 'Credit Note' ? 'C' : 'D',
-      created_by: "pravalika",
-      credit_debit_status_id: 2
-    }   
-  })
+  if (radioType === 'C'){
+    upadateCreditNote ({
+      variables:{
+        credit_debit_type_id: form.issue_type,
+        amount: parseFloat(form.amount),
+        comment: form.comment,
+        trip_id: parseInt(trip_id) ,
+        created_by: "pravalika"
+      }   
+    })
+  }
+  else{
+    upadateDebitNote ({
+      variables:{
+        credit_debit_type_id: form.issue_type,
+        amount: parseFloat(form.amount),
+        comment: form.comment,
+        trip_id: parseInt(trip_id) ,
+        created_by: "pravalika"
+      }   
+    })
+  }
 }
 
   return (

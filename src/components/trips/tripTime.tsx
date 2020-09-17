@@ -265,7 +265,7 @@ const TripTime = (props) => {
               </Col>
               <Col xs={4} className='text-right'>
                 <Form.Item label>
-                  <Button type='primary' htmlType='submit' disabled={!toPayCheck} required={toPayCheck}>Submit</Button>
+                  <Button type='primary' htmlType='submit' disabled={!toPayCheck}>Submit</Button>
                 </Form.Item>
               </Col>
             </Row>

@@ -14,7 +14,7 @@ export default {
     // Get first day of year
     var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
     // Calculate full weeks to nearest Thursday
-    var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+    var weekNo = Math.ceil((((d - Number(yearStart)) / 86400000) + 1) / 7)
     return { year: d.getUTCFullYear(), week: weekNo }
   }
 

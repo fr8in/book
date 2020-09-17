@@ -1,6 +1,7 @@
 import React from 'react'
 import { Modal, Table, Button } from 'antd'
 import { gql, useSubscription } from '@apollo/client'
+import get from 'lodash/get'
 
 const SYSTEM_MAMUL = gql`subscription customer_mamul_summary($cardcode: String!) {
   customer(where: {cardcode: {_eq: $cardcode}}) {
@@ -32,14 +33,11 @@ const SystemMamul = (props) => {
 
   console.log('SystemMamul Error', error)
   const customer_mamul_summary = []
-  let mamul_summary = []
-  let billed_orders = 0
   if (!loading) {
-    const customer = data && data.customer[0] ? data.customer[0] : null
-    mamul_summary = customer && customer.customer_mamul_summary[0] ? customer.customer_mamul_summary[0] : []
-    mamul_summary.row_name = 'Sum'
+    const customer = get(data, 'customer[0]', null)
+    const mamul_summary = get(customer, 'customer_mamul_summary[0]', []).map(data => ({ ...data, row_name: 'Sum' }))
     const billedOrders = mamul_summary.billed_orders
-    billed_orders = billedOrders === 0 ? 1 : billedOrders
+    const billed_orders = billedOrders === 0 ? 1 : billedOrders
     const mamul_summary_avg = {
       id: mamul_summary.id + 1,
       billed_orders: (mamul_summary.billed_orders) / billed_orders,

@@ -3,7 +3,7 @@ import { Row, Button, Input, message, Space } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 
 const INSERT_PARTNER_REJECT_MUTATION = gql`
-mutation partnerKycReject ($description:String, $topic:String, $partner_id: Int, $created_by:String, $partner_status_id:Int,$id:Int! ){
+mutation partner_kyc_reject ($description:String, $topic:String, $partner_id: Int, $created_by:String, $partner_status_id:Int,$id:Int! ){
   insert_partner_comment(objects:{partner_id:$partner_id,topic:$topic,description:$description,created_by:$created_by})
     {
       returning
@@ -27,8 +27,8 @@ const KycReject = (props) => {
   const [insertComment] = useMutation(
     INSERT_PARTNER_REJECT_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() {
         message.success('Updated!!')
         onHide()
       }

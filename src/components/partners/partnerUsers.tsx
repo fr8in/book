@@ -4,7 +4,7 @@ import { PhoneOutlined, DeleteOutlined } from '@ant-design/icons'
 import { useSubscription, useMutation, gql } from '@apollo/client'
 
 const PARTNER_USERS_SUBSCRIPTION = gql`
-subscription partnerUser($cardcode: String){
+subscription partner_user($cardcode: String){
   partner(where:{cardcode:{_eq:$cardcode}}){
     partner_users{
       id
@@ -16,7 +16,7 @@ subscription partnerUser($cardcode: String){
 }
 `
 const INSERT_PARTNER_USERS_MUTATION = gql`
-mutation PartneruserInsert($name:String,$is_admin:Boolean,$mobile:String,$email:String,$partner_id:Int) {
+mutation partner_user_insert($name:String,$is_admin:Boolean,$mobile:String,$email:String,$partner_id:Int) {
   insert_partner_user(
     objects: {
       name: $name,
@@ -58,8 +58,8 @@ const PartnerUsers = (props) => {
   const [insertPartnerUser] = useMutation(
     INSERT_PARTNER_USERS_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() {
         message.success('Updated!!')
         form.resetFields()
       }
@@ -69,8 +69,8 @@ const PartnerUsers = (props) => {
   const [deletePartnerUser] = useMutation(
     DELETE_PARTNER_USER_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
 
