@@ -80,17 +80,35 @@ const CreditNote = (props) => {
     CREATE_CREDIT_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted (data) 
+      { 
+        console.log('credit data', data)
+        if (data.create_credit_track.message){
+          message.success(data.create_credit_track && data.create_credit_track.message)
+        }
+        else{
+          message.success(data.create_credit_track && data.create_credit_track.message)
+        } 
+      }
     }
   )
   const [upadateDebitNote] = useMutation(
     CREATE_DEBIT_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted (data) 
+      { 
+        console.log('debit data',data)
+        if (data.create_debit_track.success){
+          message.success(data.create_debit_track && data.create_debit_track.message) 
+        }
+        else{
+          message.error(data.create_debit_track && data.create_debit_track.message)
+       }
+      }
     }
   )
-
+  
   var issue_type = []
   if (!loading) {
     issue_type = data.credit_debit_type
@@ -102,7 +120,7 @@ const CreditNote = (props) => {
 
 const create_credit_debit = (form) =>{
   console.log('form',form)
-  if (radioType === 'C'){
+  if (radioType === 'Credit Note'){
     upadateCreditNote ({
       variables:{
         credit_debit_type_id: form.issue_type,
@@ -113,7 +131,7 @@ const create_credit_debit = (form) =>{
       }   
     })
   }
-  else{
+  if(radioType === 'Debit Note'){
     upadateDebitNote ({
       variables:{
         credit_debit_type_id: form.issue_type,
@@ -140,11 +158,10 @@ const create_credit_debit = (form) =>{
       <Form layout='vertical' onFinish={create_credit_debit}>
         <Row gutter={10}>
           <Col xs={24} sm={12}>
-            <Form.Item label='Amount' >
+            <Form.Item label='Amount' name='amount' rules={[{ required: true }]} >
               <Input
-                id='amount'
+               placeholder='amount'
                 maxLength={5}
-                required
               />
             </Form.Item>
           </Col>
@@ -160,12 +177,9 @@ const create_credit_debit = (form) =>{
         </Row>
         <Row gutter={10}>
           <Col flex='auto'>
-            <Form.Item label='Comment' name='comment'>
+            <Form.Item label='Comment' name='comment' rules={[{ required: true }]}>
               <Input
-                id='comment'
-                type='textarea'
-                required
-                name='comment'
+                placeholder='textarea'
               />
             </Form.Item>
           </Col>
