@@ -7,22 +7,23 @@ import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 
 const CUSTOMER_BRANCH = gql`
 subscription customer_branch($cardcode: String) {
-  customer(where: { cardcode: { _eq: $cardcode } }) {
+  customer(where: {cardcode: {_eq: $cardcode}}) {
     id
-     customer_branches {
-        id
-        branch_name
-        name
-        address
-        state_id
-        state
-        city
-        city_id
-        pincode
-        mobile
-      }
+    customer_offices {
+      id
+      branch_name
+      name
+      address
+      state_id
+      state
+      city
+      city_id
+      pincode
+      mobile
+    }
   }
-}`
+}
+`
 
 const Branch = (props) => {
   const { cardcode } = props
@@ -40,7 +41,7 @@ const Branch = (props) => {
     _data = data
   }
 
-  const customer_branches = get(_data, 'customer[0].customer_branches', [])
+  const customer_branches = get(_data, 'customer[0].customer_offices', [])
 
   const column = [
     {
