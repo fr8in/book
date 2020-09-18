@@ -20,7 +20,7 @@ const DeliveredContainer = () => {
   const [filter, setFilter] = useState(initialFilter)
 
   const where = {
-    _and: [{ trip_status: { name: { _in: filter.trip_statusName } }, pod_verified_at: { _is_null: true } }],
+    _and: [{ trip_status: { name: { _in: filter.trip_statusName } }, pod_verified_at: { _is_null: false } }],
     id: { _in: filter.id ? filter.id : null },
     partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
     customer: { name: { _ilike: filter.customername ? `%${filter.customername}%` : null } },

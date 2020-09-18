@@ -45,7 +45,7 @@ const DeliveredContainer = (props) => {
     }
   )
   console.log('DeliveredContainer error', error)
-  var _data = {}
+  let _data = {}
   if (!loading) {
     _data = data
   }
@@ -53,7 +53,7 @@ const DeliveredContainer = (props) => {
   const trip = get(_data, 'trip', [])
   // for pagination
   const record_count = get(_data, 'rows.aggregate.count', 0)
-
+  console.log('record_count', record_count)
   // for filter options
   const trip_status = get(_data, 'trip_status', [])
 

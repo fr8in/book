@@ -10,11 +10,11 @@ const PaymentPending = [
         type: '32 Ft MXL',
         customerName: 'Shiva',
         userName: 'Babu',
-        status: 'Received Advance',
+        status: 'Recieved Advance',
         price: 40000,
         soPrice: 23000,
         balance: 10000,
-        received: 13000,
+        recieved: 13000,
         aging: 0
     },
     {
@@ -28,11 +28,11 @@ const PaymentPending = [
         type: '32 Ft MXL',
         customerName: 'Shiva',
         userName: 'Babu',
-        status: 'Received Advance',
+        status: 'Recieved Advance',
         price: 42000,
         soPrice: 24000,
         balance: 10000,
-        received: 14000,
+        recieved: 14000,
         aging: 0
     },
     {
@@ -46,11 +46,11 @@ const PaymentPending = [
         type: '32 Ft MXL',
         customerName: 'Shiva',
         userName: 'Babu',
-        status: 'Received Advance',
+        status: 'Recieved Advance',
         price: 44000,
         soPrice: 25000,
         balance: 10000,
-        received: 15000,
+        recieved: 15000,
         aging: 0
     },
     {
@@ -64,11 +64,11 @@ const PaymentPending = [
         type: '32 Ft MXL',
         customerName: 'Shiva',
         userName: 'Babu',
-        status: 'Received Advance',
+        status: 'Recieved Advance',
         price: 46000,
         soPrice: 26000,
         balance: 10000,
-        received: 16000,
+        recieved: 16000,
         aging: 0
     },
     {
@@ -82,11 +82,11 @@ const PaymentPending = [
         type: '32 Ft MXL',
         customerName: 'Shiva',
         userName: 'Babu',
-        status: 'Received Advance',
+        status: 'Recieved Advance',
         price: 48000,
         soPrice: 27000,
         balance: 10000,
-        received: 17000,
+        recieved: 17000,
         aging: 0
     }
     ]

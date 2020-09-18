@@ -15,7 +15,7 @@ const DeliveredContainer = (props) => {
     destinationname: null,
     truckno: null,
     id: null,
-    trip_statusName: ['Invoiced', 'Paid', 'Received', 'Closed']
+    trip_statusName: ['Invoiced', 'Paid', 'Recieved', 'Closed']
   }
   const [filter, setFilter] = useState(initialFilter)
 
