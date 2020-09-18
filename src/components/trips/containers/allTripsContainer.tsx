@@ -46,7 +46,7 @@ query trips(
     km    
     tat
     customer_price
-    partner_price
+    partner_price 
   }
 }`
 

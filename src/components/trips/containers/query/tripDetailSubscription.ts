@@ -46,7 +46,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         mode
         created_at
       }
-      trip_comments{
+      trip_comment{
         id
         description
         topic
@@ -87,14 +87,12 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         id
         name
       }
-      trip_prices(limit:1, where:{deleted_at:{_is_null:true}})
-      {
-        id
+      
         customer_price
         partner_price
         cash
         to_pay
-        comment
+        
         bank
         mamul
         including_loading
@@ -103,13 +101,13 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         ton
         is_price_per_ton
         price_per_ton
-      }
-      trip_files(where: {deleted_at: {_is_null:true}}){
-        id
-        type
-        file_path
-        folder
-      }
+      
+      #trip_files(where: {deleted_at: {_is_null:true}}){
+       # id
+       # type
+       # file_path
+       # folder
+      #}
     }
   }
 `

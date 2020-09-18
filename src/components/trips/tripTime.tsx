@@ -200,8 +200,8 @@ const TripTime = (props) => {
   const remove_sout = trip_info.trip_status && trip_info.trip_status.name === 'Intransit' && authorized
   const remove_dout = trip_info.trip_status && trip_info.trip_status.name === 'Delivered' && authorized
 
-  const toPayCheck = !!(trip_info.source_in && trip_info.source_out && trip_info.destination_in && (trip_info && trip_info.trip_prices[0] ? trip_info.trip_prices[0].to_pay : null))
-  console.log('toPayCheck', toPayCheck)
+  // const toPayCheck = !!(trip_info.source_in && trip_info.source_out && trip_info.destination_in && (trip_info && trip_info.trip_prices[0] ? trip_info.trip_prices[0].to_pay : null))
+  // console.log('toPayCheck', toPayCheck)
 
   const wh_files = trip_info && trip_info.trip_files && trip_info.trip_files.length > 0 ? trip_info.trip_files.filter(file => file.type === 'WH') : null
   console.log('wh', wh_files)
@@ -241,7 +241,7 @@ const TripTime = (props) => {
                 </Form.Item>
               </Col>
             </Row>
-            <Row gutter={10}>
+            {/* <Row gutter={10}>
               <Col xs={8}>
                 <Form.Item label='To-Pay Amount' name='to_pay'>
                   <Input
@@ -268,7 +268,7 @@ const TripTime = (props) => {
                   <Button type='primary' htmlType='submit' disabled={!toPayCheck}>Submit</Button>
                 </Form.Item>
               </Col>
-            </Row>
+            </Row> */}
             <Row className='mb15'>
               <Col xs={20}>
                 <Checkbox disabled={!!(trip_info && trip_info.unloaded_private_godown === true)} onClick={() => onShow('godownReceipt')}>Unloaded at private godown</Checkbox>

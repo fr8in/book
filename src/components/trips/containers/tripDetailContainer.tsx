@@ -48,8 +48,9 @@ const TripDetailContainer = (props) => {
       <small className='text-gray normal'>{get(trip_info, 'truck.truck_type.name', null)}</small>
     </h3>)
 
-  const trip_prices = get(trip_info, 'trip_prices', [])
-  const trip_price = isEmpty(trip_prices) ? null : trip_prices[0]
+  // const trip_prices = get(trip_info, 'trip_prices', [])
+  // const trip_price = isEmpty(trip_prices) ? null : trip_prices[0]
+  // trip_prices={trip_price}
 
   return (
     <>
@@ -70,7 +71,7 @@ const TripDetailContainer = (props) => {
         >
           <Row gutter={10}>
             <Col xs={24} sm={24} md={14}>
-              <TripInfo trip_info={trip_info} trip_prices={trip_price} trip_id={trip_info.id} />
+              <TripInfo trip_info={trip_info}  trip_id={trip_info.id} />
               <Collapse accordion className='small mt10'>
                 <Panel header='Trip LR' key='1'>
                   <TripLr trip_info={trip_info} />
@@ -128,7 +129,7 @@ const TripDetailContainer = (props) => {
                   </Collapse>
                 </TabPane>
                 <TabPane tab='Timeline' key='3'>
-                  <TripComment trip_id={trip_info.id} comments={trip_info.trip_comments} trip_status={get(trip_info, 'trip_status.name', null)} />
+                  <TripComment trip_id={trip_info.id} comments={trip_info.trip_comment} trip_status={get(trip_info, 'trip_status.name', null)} />
                 </TabPane>
               </Tabs>
             </Col>
