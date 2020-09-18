@@ -40,10 +40,8 @@ subscription customer_trip_list($cardcode: String, $trip_status: [String!],$limi
       # trip_pod_status{
       #   name
       # }
-      trip_prices(where:{deleted_at:{_is_null: true}}){
-        customer_price
+       customer_price
         partner_price
-      }
     }
   }
 }`
@@ -154,13 +152,13 @@ const CustomerClosedTrips = (props) => {
       title: 'SO Price',
       width: '8%',
       sorter: (a, b) => (a.customer_price > b.customer_price ? 1 : -1),
-      render: (record) => get(record, 'trip_prices[0].customer_price', null)
+      render: (record) => get(record, 'customer_price', null)
     },
     {
       title: 'PO Price',
       width: '7%',
       sorter: (a, b) => (a.partner_price > b.partner_price ? 1 : -1),
-      render: (record) => get(record, 'trip_prices[0].partner_price', null)
+      render: (record) => get(record, 'partner_price', null)
     },
     {
       title: 'Status',
