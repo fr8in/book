@@ -19,7 +19,6 @@ import { useSubscription } from '@apollo/client'
 import { TRIP_DETAIL_SUBSCRIPTION } from './query/tripDetailSubscription'
 import DetailPageHeader from '../../common/detailPageHeader'
 import get from 'lodash/get'
-import isEmpty from 'lodash/isEmpty'
 import Loading from '../../common/loading'
 
 const { TabPane } = Tabs
@@ -40,17 +39,12 @@ const TripDetailContainer = (props) => {
   }
   console.log('TripDetailContainer Error', error)
   const trip_info = get(_data, 'trip[0]', 'ID does not exist')
-
   const title = (
     <h3>
       <span className='text-primary'>{trip_info.id}</span>
       <span>{` ${get(trip_info, 'source.name', null)} - ${get(trip_info, 'destination.name', null)} `}</span>
       <small className='text-gray normal'>{get(trip_info, 'truck.truck_type.name', null)}</small>
     </h3>)
-
-  // const trip_prices = get(trip_info, 'trip_prices', [])
-  // const trip_price = isEmpty(trip_prices) ? null : trip_prices[0]
-  // trip_prices={trip_price}
 
   return (
     <>
@@ -71,7 +65,7 @@ const TripDetailContainer = (props) => {
         >
           <Row gutter={10}>
             <Col xs={24} sm={24} md={14}>
-              <TripInfo trip_info={trip_info}  trip_id={trip_info.id} />
+              <TripInfo trip_info={trip_info} trip_id={trip_info.id} />
               <Collapse accordion className='small mt10'>
                 <Panel header='Trip LR' key='1'>
                   <TripLr trip_info={trip_info} />
@@ -104,32 +98,32 @@ const TripDetailContainer = (props) => {
                   </Collapse>
                   <Collapse accordion className='small mt10'>
                     <Panel header='Additional Advance' key='1'>
-                      <CreateAdditionalAdvance trip_info={trip_info}/>
-                      <AdditionalAdvance ad_trip_id={trip_info.id}/>
+                      <CreateAdditionalAdvance trip_info={trip_info} />
+                      <AdditionalAdvance ad_trip_id={trip_info.id} />
                     </Panel>
                   </Collapse>
                 </TabPane>
                 <TabPane tab='Payment' key='2'>
                   <Collapse accordion className='small box-0'>
                     <Panel header={<span>Partner - Payables</span>} key='1'>
-                      <Payables trip_pay={trip_info} />
+                      <Payables trip_id={trip_id} />
                     </Panel>
                   </Collapse>
                   <Collapse accordion className='small box-0 mt10'>
                     <Panel header={<span>Customer - Receivables</span>} key='1'>
-                      <Receivables trip_id={trip_id} trip_pay={trip_info} />
+                      <Receivables trip_id={trip_id} />
                       <CustomerPayments />
                     </Panel>
                   </Collapse>
                   <Collapse accordion className='small mt10'>
                     <Panel header='Credit/Debit Note' key='1'>
-                      <CreditNote trip_id={trip_id}/>
+                      <CreditNote trip_id={trip_id} />
                       <CreditNoteTable />
                     </Panel>
                   </Collapse>
                 </TabPane>
                 <TabPane tab='Timeline' key='3'>
-                  <TripComment trip_id={trip_info.id} comments={trip_info.trip_comment} trip_status={get(trip_info, 'trip_status.name', null)} />
+                  <TripComment trip_id={trip_info.id} trip_status={get(trip_info, 'trip_status.name', null)} />
                 </TabPane>
               </Tabs>
             </Col>

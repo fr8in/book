@@ -6,13 +6,28 @@ import { EditTwoTone } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
 import CustomerPrice from '../trips/customerPrice'
 import moment from 'moment'
+import get from 'lodash/get'
 
 const TripInfo = (props) => {
-  const { trip_info, trip_prices, trip_id } = props
+  const { trip_info, trip_id } = props
   const initial = { price: false }
   const { visible, onShow, onHide } = useShowHide(initial)
-  // const { data } = props
 
+  const trip_prices = {
+    customer_price: trip_info.customer_price,
+    partner_price: trip_info.partner_price,
+    cash: trip_info.cash,
+    to_pay: trip_info.to_pay,
+    bank: trip_info.bank,
+    mamul: trip_info.mamul,
+    including_loading: trip_info.including_loading,
+    including_unloading: trip_info.including_unloading,
+    ton: trip_info.ton,
+    is_price_per_ton: trip_info.is_price_per_ton,
+    price_per_ton: trip_info.price_per_ton,
+    customer_advance_percentage: trip_info.customer_advance_percentage,
+    partner_advance_percentage: get(trip_info, 'partner_advance_percentage.name', null)
+  }
   console.log('trip_price', trip_prices)
   return (
     <Row>

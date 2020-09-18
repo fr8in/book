@@ -1,7 +1,21 @@
 import { useState } from 'react'
 import { Timeline, Row, Col, Input, Button, Card, message } from 'antd'
 import moment from 'moment'
-import { gql, useMutation } from '@apollo/client'
+import { gql, useMutation, useSubscription } from '@apollo/client'
+import get from 'lodash/get'
+
+const TRIP_COMMENTS = gql`
+subscription trip_comments($id: Int!) {
+  trip(where: {id: {_eq:$id}}){
+      trip_comments{
+        id
+        description
+        topic
+        created_by
+        created_at
+      }
+  }
+}`
 
 const INSERT_TRIP_COMMENT_MUTATION = gql`
 mutation trip_comment($description:String, $topic:String, $trip_id: Int, $created_by:String) {
@@ -12,13 +26,19 @@ mutation trip_comment($description:String, $topic:String, $trip_id: Int, $create
       trip_id
     }
   }
-}
-`
+}`
 
 const TripComment = (props) => {
-  const { trip_id, comments,trip_status } = props
+  const { trip_id, trip_status } = props
 
   const [tripComment, setTripComment] = useState('')
+
+  const { loading, data, error } = useSubscription(
+    TRIP_COMMENTS,
+    {
+      variables: { id: trip_id }
+    }
+  )
 
   const [insertComment] = useMutation(
     INSERT_TRIP_COMMENT_MUTATION,
@@ -28,10 +48,17 @@ const TripComment = (props) => {
     }
   )
 
+  console.log('TripComment Error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+
+  const comments = get(_data, 'trip[0].trip_comments', [])
   const handleChange = (e) => {
     setTripComment(e.target.value)
   }
-  console.log('tripComment', tripComment)
+  console.log('tripComment', comments)
 
   const onSubmit = () => {
     insertComment({
@@ -46,7 +73,7 @@ const TripComment = (props) => {
 
   return (
     <Card size='small'>
-      <Row>
+      <Row className='scroll-box mb10 pt10'>
         <Col xs={24} className='timeLine'>
           {comments && comments.length > 0
             ? comments.map((comments, i) => {
