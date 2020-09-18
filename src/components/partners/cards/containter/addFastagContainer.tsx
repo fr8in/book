@@ -25,10 +25,11 @@ query partner($partner_id:Int){
 `
 const ADD_FASTAG_MUTATION = gql`
 mutation add_tag($truckId:Int!,$createdBy:String!,$tagId:String!,$partnerId:Int!,$truckNo:String!){
-  add_fastag(truck_id:$truckId,created_by:$createdBy,tag_id:$tagId,partner_id:$partnerId,truck_no:$truckNo){ status
+  add_fastag(truck_id:$truckId,created_by:$createdBy,tag_id:$tagId,partner_id:$partnerId,truck_no:$truckNo){ 
+    status
     description
-}}
-`
+  }
+}`
 const AddFastagContainer = () => {
   const initial = { search: '', partner_id: null }
   const [obj, setObj] = useState(initial)

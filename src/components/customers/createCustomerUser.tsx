@@ -26,8 +26,8 @@ const CreateCustomerUser = (props) => {
   const [insertcustomerUser] = useMutation(
     INSERT_CUSTOMER_USERS_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () {
         message.success('Updated!!')
       }
     }

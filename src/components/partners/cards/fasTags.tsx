@@ -14,7 +14,7 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import get from 'lodash/get'
 
 const FASTAG_QUERY = gql`
-query all($partner_id: Int!) {
+query FastagsByPartner($partner_id: Int!) {
   partner(where: {id: {_eq: $partner_id}}) {
     fastags {
       mobile

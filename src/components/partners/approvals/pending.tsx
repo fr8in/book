@@ -306,7 +306,7 @@ const Pending = () => {
         <Approve
           visible={object.approveVisible}
           onHide={handleHide}
-          data={object.approveData}
+          item_id={object.approveData}
           title={object.title}
         />
       )}

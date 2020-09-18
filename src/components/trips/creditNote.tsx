@@ -109,7 +109,7 @@ const create_credit_debit = (form) =>{
         amount: parseFloat(form.amount),
         comment: form.comment,
         trip_id: parseInt(trip_id) ,
-        created_by: "pravalika"
+        created_by: "jay"
       }   
     })
   }
@@ -120,7 +120,7 @@ const create_credit_debit = (form) =>{
         amount: parseFloat(form.amount),
         comment: form.comment,
         trip_id: parseInt(trip_id) ,
-        created_by: "pravalika"
+        created_by: "jay"
       }   
     })
   }
@@ -140,7 +140,7 @@ const create_credit_debit = (form) =>{
       <Form layout='vertical' onFinish={create_credit_debit}>
         <Row gutter={10}>
           <Col xs={24} sm={12}>
-            <Form.Item label='Amount' name='amount'>
+            <Form.Item label='Amount' >
               <Input
                 id='amount'
                 maxLength={5}

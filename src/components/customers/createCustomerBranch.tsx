@@ -54,8 +54,8 @@ const CreateCustomerBranch = (props) => {
   const [insertCustomerBranch] = useMutation(
     INSERT_CUSTOMER_BRANCH_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () {
         message.success('Updated!!')
         setObj(initial)
       }
@@ -65,8 +65,8 @@ const CreateCustomerBranch = (props) => {
   const [updateCustomerBranch] = useMutation(
     UPDATE_CUSTOMER_BRANCH_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () {
         message.success('Updated!!')
         setObj(initial)
       }
@@ -105,8 +105,7 @@ const CreateCustomerBranch = (props) => {
           branch_name: form.branch_name
         }
       })
-    }
-    else {
+    } else {
       insertCustomerBranch({
         variables: {
           city_id: obj.city_id,
@@ -167,7 +166,7 @@ const CreateCustomerBranch = (props) => {
               </Row>
               <Row gutter={6}>
                 <Col xs={12}>
-                  <Form.Item name='pincode' initialValue={get(customerbranches, 'pincode', null)} >
+                  <Form.Item name='pincode' initialValue={get(customerbranches, 'pincode', null)}>
                     <Input placeholder='Pin Code' />
                   </Form.Item>
                 </Col>
@@ -179,7 +178,6 @@ const CreateCustomerBranch = (props) => {
               </Row>
               <Row justify='end'>
                 <Form.Item>
-                  <Button key='back' onClick={onHide}>Cancel</Button>
                   <Button type='primary' htmlType='submit'>Save</Button>
                 </Form.Item>
               </Row>
@@ -192,4 +190,3 @@ const CreateCustomerBranch = (props) => {
 }
 
 export default CreateCustomerBranch
-
