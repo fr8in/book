@@ -4,7 +4,7 @@ import { gql, useMutation } from '@apollo/client'
 import Driver from '../trucks/driver'
 
 const UPDATE_TRUCK_INFO_MUTATION = gql`
-mutation TruckInfo($length:float8,$breadth:float8,$height:float8,$id:Int!) {
+mutation truck_info($length:float8,$breadth:float8,$height:float8,$id:Int!) {
   update_truck(_set: {length:$length,breadth:$breadth,height:$height}, where: {id: {_eq:$id }}){
     returning{
       id

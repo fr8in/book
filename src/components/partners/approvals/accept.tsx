@@ -18,17 +18,16 @@ mutation approve_credit(
   $approved_by: String!
   $approved_amount: Float!
   $approved_comment: String!
-) {
-approve_credit(
-  id: $id
-  approved_by: $approved_by
-  approved_amount: $approved_amount
-  approved_comment: $approved_comment
-)
-{
-  success
-  message
-}
+){
+  approve_credit(
+    id: $id
+    approved_by: $approved_by
+    approved_amount: $approved_amount
+    approved_comment: $approved_comment
+  ){
+    success
+    message
+  }
 }
 `
 
@@ -37,45 +36,43 @@ const Approve = (props) => {
 
   const [rejectCredit] = useMutation(
     REJECT_CREDIT_MUTATION, {
-    onError(error) {
-      message.error(error.toString())
-    },
-    onCompleted() {
-      message.success('Updated!!')
-    }
-  })
+      onError (error) {
+        message.error(error.toString())
+      },
+      onCompleted () {
+        message.success('Updated!!')
+      }
+    })
   const [creditApproval] = useMutation(
     CREDIT_APPROVAL_MUTATION, {
-    onError(error) {
-      message.error(error.toString())
-    },
-    onCompleted() {
-      message.success('Updated!!')
-      onHide()
-    }
-  })
+      onError (error) {
+        message.error(error.toString())
+      },
+      onCompleted () {
+        message.success('Updated!!')
+        onHide()
+      }
+    })
 
   const onSubmit = (form) => {
     console.log('Fastag Amount Reversed!', form)
-    
+
     if (title === 'Approved') {
       creditApproval({
-        variables:{
-          id: item_id, 
-          approved_by: "jay",
+        variables: {
+          id: item_id,
+          approved_by: 'jay',
           approved_amount: parseFloat(form.amount),
           approved_comment: form.remarks
         }
       })
-    }
-    else {
+    } else {
       rejectCredit({
         variables: {
           id: item_id,
           remarks: form.remarks
         }
       })
-      
     }
   }
   console.log('id', item_id)
@@ -86,18 +83,18 @@ const Approve = (props) => {
       visible={visible}
       footer={null}
     >
-      <Form layout='vertical' onFinish={onSubmit} >
+      <Form layout='vertical' onFinish={onSubmit}>
         {title === 'Approved' && (
           <Form.Item label='Amount' name='amount' rules={[{ required: true }]} extra={`Claim Amount: ${0}`}>
-             <Input placeholder='Approved amount' />
+            <Input placeholder='Approved amount' />
           </Form.Item>
         )}
         <Form.Item label='Remarks' name='remarks' rules={[{ required: true }]}>
           <Input placeholder='Remarks' />
         </Form.Item>
-          <Form.Item className='text-right'>          
-              <Button type='primary' size='middle' htmlType='submit'>Submit</Button>
-          </Form.Item>
+        <Form.Item className='text-right'>
+          <Button type='primary' size='middle' htmlType='submit'>Submit</Button>
+        </Form.Item>
       </Form>
     </Modal>
   )

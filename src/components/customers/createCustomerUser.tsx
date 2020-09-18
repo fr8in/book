@@ -3,7 +3,7 @@ import { Row, Col, Modal, Button, Input, Form, message } from 'antd'
 import { useMutation, gql } from '@apollo/client'
 
 const INSERT_CUSTOMER_USERS_MUTATION = gql`
-mutation CustomeruserInsert($name:String,$mobile:String,$email:String,$customer_id:Int,) {
+mutation customer_user_insert($name:String,$mobile:String,$email:String,$customer_id:Int,) {
   insert_customer_user(
     objects: {
       name: $name, 
@@ -26,8 +26,8 @@ const CreateCustomerUser = (props) => {
   const [insertcustomerUser] = useMutation(
     INSERT_CUSTOMER_USERS_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () {
         message.success('Updated!!')
       }
     }

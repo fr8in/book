@@ -16,7 +16,7 @@ subscription customer_users($cardcode: String!) {
 }`
 
 const DELETE_CUSTOMER_USER_MUTATION = gql`
-mutation customer_usersDelete($id:Int) {
+mutation customer_users_delete($id:Int) {
   delete_customer_user( where: {id: {_eq:$id}}) {
     returning {
       id

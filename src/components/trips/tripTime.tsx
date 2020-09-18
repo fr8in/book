@@ -20,21 +20,21 @@ import get from 'lodash/get'
 import { gql, useMutation, useLazyQuery } from '@apollo/client'
 
 const GET_WORD = gql`
-query($id:Int!){
+query loading_memo($id:Int!){
   trip(where:{id:{_eq:$id}}) {
     loading_memo(word:true)
   }
 }`
 
 const GET_PDF = gql`
-query($id:Int!){
+query loading_memo_pdf($id:Int!){
   trip(where:{id:{_eq:$id}}) {
     loading_memo
   }
 }`
 
 const REMOVE_SOUT_MUTATION = gql`
-mutation removeSouceOut($source_out:timestamptz,$id:Int!) {
+mutation remove_souce_out($source_out:timestamptz,$id:Int!) {
   update_trip(_set: {source_out: $source_out}, where: {id: {_eq: $id}}) {
     returning {
       id
@@ -45,7 +45,7 @@ mutation removeSouceOut($source_out:timestamptz,$id:Int!) {
 `
 
 const REMOVE_DOUT_MUTATION = gql`
-mutation removeDestinationOut($destination_out:timestamptz,$id:Int!) {
+mutation remove_destination_out($destination_out:timestamptz,$id:Int!) {
   update_trip(_set: {destination_out: $destination_out}, where: {id: {_eq: $id}}) {
     returning {
       id
@@ -55,7 +55,7 @@ mutation removeDestinationOut($destination_out:timestamptz,$id:Int!) {
 }
 `
 const TO_PAY_MUTATION = gql`
-mutation insertToPay($to_pay: Float, $comment: String, $trip_id: Int!) {
+mutation insert_to_pay($to_pay: Float, $comment: String, $trip_id: Int!) {
   insert_trip_price(objects: {to_pay: $to_pay, comment:$comment, trip_id: $trip_id}) {
     returning {
       to_pay
@@ -65,7 +65,7 @@ mutation insertToPay($to_pay: Float, $comment: String, $trip_id: Int!) {
 }
 `
 const PROCESS_ADVANCE_MUTATION = gql`
-mutation ($tripId: Int!, $createdBy: String!) {
+mutation process_advance ($tripId: Int!, $createdBy: String!) {
   partner_advance(trip_id: $tripId, created_by: $createdBy) {
     description
     status

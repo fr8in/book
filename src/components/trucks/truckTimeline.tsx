@@ -24,7 +24,7 @@ const TruckTimeline = (props) => {
                       <Col span={24}>
                         <span>{data.description}</span>
                         <span className='pull-right'>
-                          {data.created_by_id}
+                          {data.created_by}
                         </span>
                       </Col>
                       <Col span={24}>

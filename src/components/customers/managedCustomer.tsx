@@ -2,7 +2,7 @@ import { Checkbox, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 
 const UPDATE_CUSTOMER_MANAGED_MUTATION = gql`
-mutation customerManaged($managed:Boolean,$cardcode:String) {
+mutation customer_managed($managed:Boolean,$cardcode:String) {
   update_customer(_set: {managed: $managed}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id

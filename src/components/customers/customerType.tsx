@@ -4,7 +4,7 @@ import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
 
 const CUSTOMERS_TYPE_QUERY = gql`
-  query customerType{
+  query customer_type{
   customer_type{
     id
     name
@@ -12,7 +12,7 @@ const CUSTOMERS_TYPE_QUERY = gql`
 }
 `
 const UPDATE_CUSTOMER_TYPE_MUTATION = gql`
-mutation customerException($type_id:Int,$cardcode:String) {
+mutation customer_type_update($type_id:Int,$cardcode:String) {
   update_customer(_set: {customer_type_id: $type_id}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id

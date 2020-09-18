@@ -2,7 +2,7 @@ import { gql, useMutation } from '@apollo/client'
 import { Switch, Tooltip, message } from 'antd'
 
 const UPDATE_CUSTOMER_BLACKLIST_MUTATION = gql`
-mutation customerBlacklist($status_id:Int,$cardcode:String) {
+mutation customer_blacklist($status_id:Int,$cardcode:String) {
   update_customer(_set: {status_id: $status_id}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id

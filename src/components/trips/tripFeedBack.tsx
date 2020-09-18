@@ -3,7 +3,7 @@ import { gql, useSubscription, useMutation } from '@apollo/client'
 import moment from 'moment'
 
 const TRIP_COMMENT_QUERY = gql`
-  subscription tripComment($id: Int!){
+  subscription trip_comment($id: Int!){
     trip(where:{id:{_eq:$id}}) {
       trip_comments(limit:5,order_by:{created_at:desc}){
         id
@@ -16,7 +16,7 @@ const TRIP_COMMENT_QUERY = gql`
 `
 
 const INSERT_TRIP_COMMENT_MUTATION = gql`
-mutation TripComment($description:String, $topic:String, $trip_id: Int, $created_by:String ) {
+mutation trip_comment_insert($description:String, $topic:String, $trip_id: Int, $created_by:String ) {
   insert_trip_comment(objects: {description: $description, trip_id: $trip_id, topic: $topic, created_by: $created_by}) {
     returning {
       description

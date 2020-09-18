@@ -11,7 +11,7 @@ import InvoicedContainer from '../containers/invoicedContainer'
 import AllTripsContainer from './allTripsContainer'
 
 const TRIPS_COUNT_QUERY = gql`
-query trips($all_trip: trip_bool_exp, $delivered_trip: trip_bool_exp, $pod_verified_trip: trip_bool_exp, $invoiced_trip: trip_bool_exp) {
+query trips_count($all_trip: trip_bool_exp, $delivered_trip: trip_bool_exp, $pod_verified_trip: trip_bool_exp, $invoiced_trip: trip_bool_exp) {
   trip_count: trip_aggregate(where: $all_trip) {
     aggregate {
       count
@@ -45,9 +45,9 @@ const TripsContainer = () => {
 
   const aggrigation = {
     all_trip: { _and: [{ trip_status: { name: { _in: ['Delivered', 'Invoiced', 'Paid', 'Received', 'Closed'] } } }] },
-    delivered_trip: { _and: [{ trip_status: { name: { _in: ['Delivered'] } } }/* , { trip_pod_status: { name: { _neq: 'POD Verified' } } } */] },
-    pod_verified_trip: { _and: [{ trip_status: { name: { _in: ['Delivered'] } } }/* , { trip_pod_status: { name: { _eq: 'POD Verified' } } } */] },
-    invoiced_trip: { _and: [{ trip_status: { name: { _in: ['Invoiced', 'Paid', 'Received', 'Closed'] } } }/* , { trip_pod_status: { name: { _neq: 'POD Dispatched' } } } */] }
+    delivered_trip: { _and: [{ trip_status: { name: { _in: ['Delivered'] } }, pod_verified_at: { _is_null: true } }] },
+    pod_verified_trip: { _and: [{ trip_status: { name: { _in: ['Delivered'] } }, pod_verified_at: { _is_null: false } }] },
+    invoiced_trip: { _and: [{ trip_status: { name: { _in: ['Invoiced', 'Paid', 'Received', 'Closed'] } }, pod_dispatched_at: { _is_null: false } }] }
   }
 
   const variables = {
@@ -71,8 +71,7 @@ const TripsContainer = () => {
   if (!loading) {
     _data = data
   }
-  // all trip data
-  const trip = get(_data, 'trip', [])
+  console.log('_data', _data)
   // trip count for tab
   const all_count = get(_data, 'trip_count.aggregate.count', 0)
   const delivered_count = get(_data, 'delivered.aggregate.count', 0)

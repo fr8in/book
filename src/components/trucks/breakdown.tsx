@@ -7,7 +7,7 @@ import CreateBreakdown from './createBreakdown'
 import u from '../../lib/util'
 
 const TRUCK_BREAKDOWN_QUERY = gql`
-query ($truck_status_name: [String!], $offset: Int!, $limit: Int! ,$onboarded_by: [String!]) {
+query truck_breakdown($truck_status_name: [String!], $offset: Int!, $limit: Int! ,$onboarded_by: [String!]) {
   
   rows: truck_aggregate(where: {truck_status: {name: {_in: $truck_status_name}}, city: {branch: {branch_employees: {employee: {email: {_in: $onboarded_by}}}}}}) {
     aggregate {
@@ -31,7 +31,6 @@ query ($truck_status_name: [String!], $offset: Int!, $limit: Int! ,$onboarded_by
     }
   }
 }
-
 `
 
 const Breakdown = (props) => {
