@@ -45,12 +45,8 @@ query trips(
     }
     km    
     tat
-    trip_prices(limit:1, where:{deleted_at:{_is_null:true}})
-    {
-      id
-      customer_price
-      partner_price
-    }
+    customer_price
+    partner_price 
   }
 }`
 

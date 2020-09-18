@@ -271,9 +271,10 @@ const Trips = (props) => {
       render: (record) => {
         console.log()
         return (
-          record.trip_prices &&
-          record.trip_prices.length > 0 &&
-          record.trip_prices[0].customer_price
+          // record.trip_prices &&
+          // record.trip_prices.length > 0 &&
+          // record.trip_prices[0].customer_price
+          record.customer_price
         )
       },
       width: '8%'
@@ -282,9 +283,10 @@ const Trips = (props) => {
       title: 'PO Price',
       render: (record) => {
         return (
-          record.trip_prices &&
-          record.trip_prices.length > 0 &&
-          record.trip_prices[0].partner_price
+          // record.trip_prices &&
+          // record.trip_prices.length > 0 &&
+          // record.trip_prices[0].partner_price
+          record.partner_price
         )
       },
       width: '8%'

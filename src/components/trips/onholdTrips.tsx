@@ -18,9 +18,7 @@ query partner_onhold($cardcode: String,$exp:float8_comparison_exp) {
         id
         name
       }
-      trip_prices(limit: 1) {
-        partner_price
-      }
+      partner_price
       truck {
         id
         truck_no
@@ -142,7 +140,7 @@ const OnholdTrips = (props) => {
       dataIndex: 'price',
       sorter: (a, b) => (a.price > b.price ? 1 : -1),
       width: '6%',
-      render: (text, record) => get(record, 'trip_prices[0].partner_price',null)
+      render: (text, record) => get(record, 'partner_price',null)
     },
     {
       title: 'On-hold',

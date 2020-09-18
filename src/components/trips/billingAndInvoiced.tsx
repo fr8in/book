@@ -13,20 +13,17 @@ subscription customer_billing($cardcode: String!, $id: Int!) {
       id
       gst
       hsn
-      customer_branch {
+      customer_office {
         id
         branch_name
         name
         address
         pincode
         mobile
-        state {
-          id
-          name
-        }
+        state 
       }
     }
-    customer_branches{
+    customer_offices{
       id
       name
       branch_name
@@ -36,9 +33,9 @@ subscription customer_billing($cardcode: String!, $id: Int!) {
 
 const UPDATE_TRIP_CUSTOMER_BRANCH = gql`
 mutation update_trip_customer_branch($branch_id: Int, $id:Int!){
-  update_trip(_set:{customer_branch_id: $branch_id}, where:{id:{_eq:$id}}){
+  update_trip(_set:{customer_office_id: $branch_id}, where:{id:{_eq:$id}}){
     returning{
-      customer_branch{
+      customer_office{
         id
         name
         branch_name
@@ -88,7 +85,7 @@ const BillingAndInvoiced = (props) => {
   const customer = data && data.customer ? data.customer[0] : null
   const trip = customer && customer.trips ? customer.trips[0] : null
   const customer_branch = trip && trip.customer_branch ? trip.customer_branch : null
-  const customer_branches = customer && customer.customer_branches ? customer.customer_branches : []
+  const customer_branches = customer && customer.customer_offices ? customer.customer_offices : []
 
   const onBranchChange = (value, branch) => {
     update_trip_customer_branch({
