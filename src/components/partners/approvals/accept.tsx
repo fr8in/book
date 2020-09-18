@@ -18,17 +18,16 @@ mutation approve_credit(
   $approved_by: String!
   $approved_amount: Float!
   $approved_comment: String!
-) {
-approve_credit(
-  id: $id
-  approved_by: $approved_by
-  approved_amount: $approved_amount
-  approved_comment: $approved_comment
-)
-{
-  success
-  message
-}
+){
+  approve_credit(
+    id: $id
+    approved_by: $approved_by
+    approved_amount: $approved_amount
+    approved_comment: $approved_comment
+  ){
+    success
+    message
+  }
 }
 `
 
@@ -37,22 +36,22 @@ const Approve = (props) => {
 
   const [rejectCredit] = useMutation(
     REJECT_CREDIT_MUTATION, {
-    onError(error) {
-      message.error(error.toString())
-    },
-    onCompleted() {
-      message.success('Updated!!')
-    }
-  })
+      onError (error) {
+        message.error(error.toString())
+      },
+      onCompleted () {
+        message.success('Updated!!')
+      }
+    })
   const [creditApproval] = useMutation(
     CREDIT_APPROVAL_MUTATION, {
-    onError(error) {
-      message.error(error.toString())
-    },
-    onCompleted() {
-      message.success('Updated!!')
-    }
-  })
+      onError (error) {
+        message.error(error.toString())
+      },
+      onCompleted () {
+        message.success('Updated!!')
+      }
+    })
 
   const onSubmit = (form) => {
     console.log('Fastag Amount Reversed!', data)
@@ -64,12 +63,11 @@ const Approve = (props) => {
           remarks: form.remarks
         }
       })
-    }
-    else {
+    } else {
       creditApproval({
-        variables:{
-          id: data, 
-          approved_by: "jay",
+        variables: {
+          id: data,
+          approved_by: 'jay',
           approved_amount: parseFloat(form.amount),
           approved_comment: form.remarks
         }
@@ -84,13 +82,13 @@ const Approve = (props) => {
       visible={visible}
       footer={null}
     >
-      <Form layout='vertical' onFinish={onSubmit} >
+      <Form layout='vertical' onFinish={onSubmit}>
         {title === 'Approved' && (
-          <Form.Item label='Amount' name='amount' >
-             <Input
-                        id='amount'
-                        required
-                      />
+          <Form.Item label='Amount' name='amount'>
+            <Input
+              id='amount'
+              required
+             />
             <p>Claim Amount: </p>
           </Form.Item>
         )}

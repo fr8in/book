@@ -1,5 +1,5 @@
 import { message } from 'antd'
-import { gql, useQuery,useMutation } from '@apollo/client'
+import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
 
@@ -25,7 +25,7 @@ mutation ($branch_id: Int, $employee_id: Int) {
 `
 
 const Fr8Employee = (props) => {
-  const { employee ,id} = props
+  const { employee, id } = props
   const { loading, error, data } = useQuery(
     EMPLOYEE_QUERY,
     {
@@ -41,11 +41,11 @@ const Fr8Employee = (props) => {
 
   const [updateTruckNo] = useMutation(
     UPDATE_BRABCH_EMPLOYEE_MUTATION,
-  {
-    onError (error) { message.error(error.toString()) },
-    onCompleted () { message.success('Saved!!') }
-  }
-)
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Saved!!') }
+    }
+  )
 
   const employees = get(_data, 'employee', [])
   const emplist = employees.map(data => {
