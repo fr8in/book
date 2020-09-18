@@ -1,10 +1,10 @@
 import { Drawer, Row, Col } from 'antd'
-import { gql, useSubscription } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import Loading from '../common/loading'
 import get from 'lodash/get'
 
 const PARTNER_WALLET_STATEMENT_QUERY = gql`
-subscription partner_wallet_statement($cardcode: String) {
+query partner_wallet_statement($cardcode: String) {
   partner(where: {cardcode: {_eq: $cardcode}}) {
     cardcode
     partner_wallet_statement_aggregate {
@@ -31,7 +31,7 @@ subscription partner_wallet_statement($cardcode: String) {
 const WalletStatement = (props) => {
   const { visible, onHide, cardcode } = props
 
-  const { loading, error, data } = useSubscription(
+  const { loading, error, data } = useQuery(
     PARTNER_WALLET_STATEMENT_QUERY,
     {
       variables: { cardcode: cardcode }

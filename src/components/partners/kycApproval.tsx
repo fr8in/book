@@ -17,12 +17,12 @@ import LinkComp from '../common/link'
 import FileUploadOnly from '../common/fileUploadOnly'
 import ViewFile from '../common/viewFile'
 import DeleteFile from '../common/deleteFile'
-import { gql, useQuery,useMutation} from '@apollo/client'
+import { gql, useSubscription,useMutation} from '@apollo/client'
 import { useState } from 'react'
 import get from 'lodash/get'
 
 const PARTNERS_SUBSCRIPTION = gql`
-  query create_partner{
+  subscription create_partner{
     employee{
       id
       email
@@ -35,7 +35,7 @@ const PARTNERS_SUBSCRIPTION = gql`
 `
 
 const UPDATE_PARTNER_APPOVAL_MUTATION = gql`
-mutation($onboarded_by_id:Int,$partner_advance_percentage_id:Int,$gst:String,$cibil:String,$emi:Boolean,$id:Int,$partner_status_id:Int){
+mutation update_partner_approval($onboarded_by_id:Int,$partner_advance_percentage_id:Int,$gst:String,$cibil:String,$emi:Boolean,$id:Int,$partner_status_id:Int){
   update_partner(_set: {onboarded_by_id:$onboarded_by_id, partner_advance_percentage_id:$partner_advance_percentage_id, gst:$gst, cibil:$cibil, emi:$emi,partner_status_id:$partner_status_id}, where: {id: {_eq:$id}}) {
     returning {
       id
@@ -73,12 +73,8 @@ const KycApproval = (props) => {
 
   const cs_files = files.filter(file => file.type === 'CS')
 
-  const { loading, error, data } = useQuery(
+  const { loading, error, data } = useSubscription(
     PARTNERS_SUBSCRIPTION,
-    {
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
-    }
   )
   console.log('CreatePartnersContainer error', error)
 
