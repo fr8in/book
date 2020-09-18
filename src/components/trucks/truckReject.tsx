@@ -3,7 +3,7 @@ import { Modal, Button, Input, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 
 const INSERT_TRUCK_REJECT_MUTATION = gql`
-mutation truckReject ($description:String, $topic:String, $truck_id: Int, $created_by_id:Int, $truck_status_id:Int,$id:Int! ){
+mutation truck_reject ($description:String, $topic:String, $truck_id: Int, $created_by_id:Int, $truck_status_id:Int,$id:Int! ){
   insert_truck_comment(objects: {truck_id:$truck_id, topic: $topic, description: $description, created_by_id: $created_by_id}) {
     returning {
       id

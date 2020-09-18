@@ -6,7 +6,7 @@ import EditBranch from '../customers/createCustomerBranch'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 
 const CUSTOMER_BRANCH = gql`
-subscription customer_users($cardcode: String) {
+subscription customer_branch($cardcode: String) {
   customer(where: { cardcode: { _eq: $cardcode } }) {
     id
      customer_branches {

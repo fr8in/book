@@ -50,6 +50,9 @@ query partner_lead(
     partner_status{
       name
     }
+    last_comment{
+      description
+    }
     partner_comments{
       created_at
       description
@@ -404,8 +407,7 @@ const PartnerLead = (props) => {
       dataIndex: 'comment',
       width: '13%',
       render: (text, record) => {
-        const comment = record.partner_comments && record.partner_comments.length > 0 &&
-          record.partner_comments[0].description ? record.partner_comments[0].description : '-'
+        const comment = record.last_comment && record.last_comment.description 
         return <Truncate data={comment} length={20} />
       },
       filterDropdown: (

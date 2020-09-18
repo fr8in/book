@@ -3,7 +3,7 @@ import { gql, useMutation } from '@apollo/client'
 import FileUpload from '../common/fileUpload'
 
 const BILLING_COMMENT_MUTATION = gql`
-mutation updateBillingComment($id: Int!, $billing_remarks: String){
+mutation update_billing_comment($id: Int!, $billing_remarks: String){
   update_trip(_set: {billing_remarks: $billing_remarks}, where: {id: {_eq:$id}}) {
     returning {
       billing_remarks

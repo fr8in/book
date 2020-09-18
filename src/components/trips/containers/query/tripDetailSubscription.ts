@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 export const TRIP_DETAIL_SUBSCRIPTION = gql`
-  subscription trips($id: Int) {
+  subscription trips_detail($id: Int) {
     trip(where: {id:{_eq:$id}}){
       id
       order_date

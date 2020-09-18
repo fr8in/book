@@ -4,7 +4,7 @@ import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
 
 const CUSTOMERS_ADVANCE_PERCENTAGE_QUERY = gql`
-  query customerAdvancePercentage{
+  query customer_advance_percentage{
   customer_advance_percentage{
     id
     name
@@ -12,7 +12,7 @@ const CUSTOMERS_ADVANCE_PERCENTAGE_QUERY = gql`
 }
 `
 const UPDATE_CUSTOMER_ADVANCE_MUTATION = gql`
-mutation CustomerAdvaceUpdate($advance_percentage_id:Int,$cardcode:String) {
+mutation customer_advace_update($advance_percentage_id:Int,$cardcode:String) {
   update_customer(_set: {advance_percentage_id: $advance_percentage_id}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id

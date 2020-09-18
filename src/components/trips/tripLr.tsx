@@ -6,7 +6,7 @@ import DeleteFile from '../common/deleteFile'
 import ViewFile from '../common/viewFile'
 
 const UPDATE_LR_MUTATION = gql`
-mutation lrNumberUpdate ($lr: jsonb, $id: Int!){
+mutation lr_number_update ($lr: jsonb, $id: Int!){
   update_trip(_set: {lr: $lr}, where: {id: {_eq: $id}}) {
     returning {
       id
@@ -16,7 +16,7 @@ mutation lrNumberUpdate ($lr: jsonb, $id: Int!){
 }`
 
 const UPDATE_CUSTOMER_CONFIRMATION_MUTATION = gql`
-mutation updateCustomerConfirmation ($customer_confirmation: Boolean, $id: Int!){
+mutation update_customer_confirmation ($customer_confirmation: Boolean, $id: Int!){
   update_trip(_set: {customer_confirmation: $customer_confirmation}, where: {id: {_eq: $id}}) {
     returning {
       id

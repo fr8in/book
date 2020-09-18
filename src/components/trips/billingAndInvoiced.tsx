@@ -6,7 +6,7 @@ import { gql, useSubscription, useQuery, useMutation } from '@apollo/client'
 import Loading from '../common/loading'
 
 const CUSTOMER_BILLING_ADDRESS_FOR_INVOICE = gql`
-subscription customerBilling($cardcode: String!, $id: Int!) {
+subscription customer_billing($cardcode: String!, $id: Int!) {
   customer(where: {cardcode: {_eq: $cardcode}}) {
     id
     trips(where: {id: {_eq: $id}}) {
