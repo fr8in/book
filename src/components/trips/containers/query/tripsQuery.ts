@@ -1,20 +1,18 @@
 import { gql } from '@apollo/client'
 
 export const TRIPS_QUERY = gql`
-query trips(
-  $offset: Int!, 
-  $limit: Int!,
-  $trip_statusName: [String!],
-  $where: trip_bool_exp){
-  rows: trip_aggregate(where: $where) {
-    aggregate {
-      count
-    }
-  }
-  trip_status(where: {name: {_in: $trip_statusName}}) {
+query trips{
+  trip_status {
     id
     name
   }
+}  
+`
+export const TRIPS = gql`
+subscription trips(
+  $offset: Int!, 
+  $limit: Int!,
+  $where: trip_bool_exp){
   trip(offset: $offset, limit: $limit, where:$where)
     {
     id
