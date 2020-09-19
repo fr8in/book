@@ -41,11 +41,11 @@ query trips(
     }
     km    
     tat
-    # last_comment{
-    #   description
-    #   created_at
-    #   created_by
-    # }
+    last_comment{
+      description
+      created_at
+      created_by
+     }
   }
 }  
 `
