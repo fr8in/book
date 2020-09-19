@@ -18,7 +18,7 @@ import PartnerOnBoardedBy from '../partnerOnboardedByName'
 
 const PENDING_SUBSCRIPTION = gql`
 subscription trip_credit_debit($status: [String!]) {
-  trip_credit_debit(where: {credit_debit_status: {name: {_in: $status}}}, order_by: {trip_id: desc}) {
+  trip_credit_debit(where: {credit_debit_status: {name: {_in: $status}}}, order_by: {created_at: desc}) {
     id
     trip_id
     type
@@ -253,7 +253,7 @@ const Pending = () => {
             <Button
               type='link'
               icon={<CommentOutlined />}
-              onClick={() => handleShow('commentVisible', null, 'commentData', record.previousComment)}
+              onClick={() => handleShow('commentVisible', null, 'commentData', record.trip_id)}
             />
           </Tooltip>
           <Tooltip title='Accept'>
@@ -298,7 +298,7 @@ const Pending = () => {
       {object.commentVisible && (
         <Comment
           visible={object.commentVisible}
-          data={object.commentData}
+          tripid={object.commentData}
           onHide={handleHide}
         />
       )}

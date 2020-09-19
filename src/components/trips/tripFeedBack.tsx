@@ -28,6 +28,7 @@ mutation trip_comment_insert($description:String, $topic:String, $trip_id: Int, 
 
 const Tripcomment = (props) => {
   const { visible, tripid, onHide } = props
+  console.log('tripid',tripid)
   const [form] = Form.useForm()
 
   const { loading, error, data } = useSubscription(
@@ -63,7 +64,7 @@ const Tripcomment = (props) => {
     })
   }
 
-  const { trip_comments } = data.trip[0] ? data.trip[0] : []
+  const { trip_comments } = data && data.trip[0] ? data.trip[0] : []
 
   const columns = [{
     title: 'Comments',
