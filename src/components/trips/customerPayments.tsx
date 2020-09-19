@@ -25,7 +25,7 @@ const CustomerPayments = () => {
     width: '20%'
   },
   {
-    title: 'Received',
+    title: 'Recieved',
     dataIndex: 'recevied',
     render: (text, record) => text || 0,
     width: '20%'
@@ -77,7 +77,7 @@ const CustomerPayments = () => {
         size='small'
       />
       <div className='payableHead'>
-        <h4 className='text-center'>100% payment received from customer</h4>
+        <h4 className='text-center'>100% payment recieved from customer</h4>
       </div>
       {visible.edit && <EditModal visible={visible.edit} onHide={onHide} />}
     </>

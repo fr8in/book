@@ -26,7 +26,7 @@ mutation driver_insert($id: Int!, $mobile: String){
 }`
 
 const UPDATE_TRUCK_DRIVER_MUTATION = gql`
-mutation TripDriver($driver_id:Int,$trip_id:Int) {
+mutation trip_driver($driver_id:Int,$trip_id:Int) {
   update_trip(_set: {driver_id: $driver_id}, where: {id: {_eq: $trip_id}}){
     returning{
       id
@@ -36,7 +36,7 @@ mutation TripDriver($driver_id:Int,$trip_id:Int) {
 `
 
 const Driver = (props) => {
-  const { trip_info , initialValue } = props
+  const { trip_info, initialValue } = props
 
   const partner_id = trip_info && trip_info.partner && trip_info.partner.id
 
@@ -57,11 +57,8 @@ const Driver = (props) => {
   }
 
   console.log('Driver error', error)
-  console.log('data', _data)
 
   const driver_data = get(_data, 'partner[0].drivers', [])
-
-  console.log('driver_data', driver_data)
 
   const [insertDriver] = useMutation(
     INSERT_PARTNER_DRIVER,
@@ -114,7 +111,7 @@ const Driver = (props) => {
   } else {
     drivers = driver_data && driver_data.filter(_driver => _driver.mobile.search(searchText) !== -1)
   }
-  console.log('drivers', drivers)
+
   return (
     <Form.Item label='Driver' name='driver' initialValue={initialValue}>
       <Select

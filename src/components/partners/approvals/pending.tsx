@@ -18,14 +18,14 @@ import PartnerOnBoardedBy from '../partnerOnboardedByName'
 
 const PENDING_SUBSCRIPTION = gql`
 subscription trip_credit_debit($status: [String!]) {
-  trip_credit_debit(where: {credit_debit_status: {name: {_in: $status}}}, order_by: {trip_id: desc}) {
+  trip_credit_debit(where: {credit_debit_status: {name: {_in: $status}}}, order_by: {created_at: desc}) {
     id
     trip_id
     type
     amount
-    approval_comment
-    approved_amount
-    approved_by
+    comment
+    created_at
+    created_by
     is_created_by_partner
     credit_debit_status {
       id
@@ -50,15 +50,11 @@ subscription trip_credit_debit($status: [String!]) {
       id
       name
     }
-    comment
     credit_debit_type {
       name
     }
-    created_at
-    created_by
   }
 }
-
 `
 
 const RegionList = [
@@ -67,8 +63,8 @@ const RegionList = [
   { text: 'East-1', value: 'East-1' },
   { text: 'West-1', value: 'West-1' },
   { text: 'South-2', value: 'South-2' },
-  { text: 'East-2', value: 'East-2'},
-  { text: 'West-2', value: 'West-2'}
+  { text: 'East-2', value: 'East-2' },
+  { text: 'West-2', value: 'West-2' }
 ]
 
 const RequestedBy = [
@@ -76,7 +72,7 @@ const RequestedBy = [
   { value: 2, text: 'Fr8' }
 ]
 
-export default function Pending() {
+const Pending = () => {
   const initial = {
     commentData: [],
     commentVisible: false,
@@ -90,51 +86,49 @@ export default function Pending() {
 
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const [filter, setFilter] = useState(initial)
-  const approvalQueryVars = {
-    status: ["PENDING"]
-  }
+
   const { loading, error, data } = useSubscription(
     PENDING_SUBSCRIPTION,
     {
-      variables: approvalQueryVars,
+      variables: {
+        status: ["PENDING"]
+      },
     }
   )
   console.log('pending error', error)
   console.log('pending data', data)
+
   let _data = {}
   if (!loading) {
     _data = data
-    }
-    const pending_list = get(_data, 'trip_credit_debit', null)
-    console.log('pending_list',pending_list)
-  // useEffect(() => {  
-  //  setFilter({...filter, pending:pending_list})
- 
-  // });
-  useEffect(() => {
-    setFilter({...filter, pending:pending_list});
-}, [pending_list])
-
-  
-const onSearch = (e) =>{
-setFilter({...filter, searchText: e.target.value})
-        const searchText = e.target.value;
-        console.log('searchText',filter)
-        if (searchText.length >= 3) {
-            const regex = new RegExp(searchText, 'gi');
-            const removeNull = filter.pending.filter(record => record.responsibility != null)
-            const newData = removeNull.filter(record => record.responsibility.name.match(regex))
-            const result = newData ? newData : filter.pending
-            setFilter({...filter, pending: result });
-        } else {
-          setFilter({...filter,pending: pending_list})
-        }
-}
-
-  function onChange( filters) {
-    console.log('filters', filters);
   }
 
+  const pending_list = get(_data, 'trip_credit_debit', null)
+  console.log('pending_list', pending_list)
+
+  useEffect(() => {
+    setFilter({ ...filter, pending: pending_list });
+  }, [pending_list])
+
+
+  const onSearch = (e) => {
+    setFilter({ ...filter, searchText: e.target.value })
+    const searchText = e.target.value;
+    console.log('searchText', filter)
+    if (searchText.length >= 3) {
+      const regex = new RegExp(searchText, 'gi');
+      const removeNull = filter.pending.filter(record => record.responsibility != null)
+      const newData = removeNull.filter(record => record.responsibility.name.match(regex))
+      const result = newData ? newData : filter.pending
+      setFilter({ ...filter, pending: result });
+    } else {
+      setFilter({ ...filter, pending: pending_list })
+    }
+  }
+
+  function onChange(filters) {
+    console.log('filters', filters);
+  }
 
   const ApprovalPending = [
     {
@@ -179,10 +173,10 @@ setFilter({...filter, searchText: e.target.value})
       key: 'region',
       filters: RegionList,
       width: '6%',
-      render: (text, record) =>get(record, 'trip.branch.region.name', null),
+      render: (text, record) => get(record, 'trip.branch.region.name', null),
       onFilter: (value, record) => record.trip && record.trip.branch && record.trip.branch.region && record.trip.branch.region.name.indexOf(value) === 0,
-        
-     
+
+
     },
     {
       title: 'Created By',
@@ -191,10 +185,12 @@ setFilter({...filter, searchText: e.target.value})
       filters: RequestedBy,
       width: '11%',
       render: (text, record) => <Truncate data={text} length={18} />,
-     onFilter: (value, record) => value === 1 ? record.is_created_by_partner === true : value === 2 ? record.is_created_by_partner === false : record.created_by
+      onFilter: (value, record) => value === 1 ? record.is_created_by_partner === true : value === 2 ? record.is_created_by_partner === false : record.created_by
     },
     {
       title: 'Partner Name',
+      dataIndex: 'partner',
+      key: 'partner',
       width: '12%',
       render: (text, record) => {
         return (
@@ -231,9 +227,8 @@ setFilter({...filter, searchText: e.target.value})
             placeholder='Search'
             id='id'
             name='id'
-           // value={filter.pending}
             onChange={onSearch}
-      
+
           />
         </div>
       ),
@@ -244,8 +239,8 @@ setFilter({...filter, searchText: e.target.value})
     },
     {
       title: 'Comment',
-      dataIndex: 'approval_comment',
-      key: 'approval_comment',
+      dataIndex: 'last_comment',
+      key: 'last_comment',
       width: '11%',
       render: (text, record) => <Truncate data={get(record, 'trip.last_comment.description', null)} length={18} />
     },
@@ -258,7 +253,7 @@ setFilter({...filter, searchText: e.target.value})
             <Button
               type='link'
               icon={<CommentOutlined />}
-              onClick={() => handleShow('commentVisible', null, 'commentData', record.previousComment)}
+              onClick={() => handleShow('commentVisible', null, 'commentData', record.trip_id)}
             />
           </Tooltip>
           <Tooltip title='Accept'>
@@ -269,7 +264,7 @@ setFilter({...filter, searchText: e.target.value})
               className='btn-success'
               icon={<CheckOutlined />}
               onClick={() =>
-                handleShow('approveVisible', 'Approved', 'approveData', record)}
+                handleShow('approveVisible', 'Approved', 'approveData', record.id)}
             />
           </Tooltip>
           <Tooltip title='Decline'>
@@ -303,7 +298,7 @@ setFilter({...filter, searchText: e.target.value})
       {object.commentVisible && (
         <Comment
           visible={object.commentVisible}
-          data={object.commentData}
+          tripid={object.commentData}
           onHide={handleHide}
         />
       )}
@@ -311,10 +306,12 @@ setFilter({...filter, searchText: e.target.value})
         <Approve
           visible={object.approveVisible}
           onHide={handleHide}
-          data={object.approveData}
+          item_id={object.approveData}
           title={object.title}
         />
       )}
     </>
   )
 }
+
+export default Pending

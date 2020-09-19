@@ -17,7 +17,7 @@ const PARTNERS_LEAD_SUBSCRIPTION = gql`
 `
 
 const INSERT_PARTNER_LEAD_MUTATION = gql`
-  mutation partner_lead_create(
+  mutation create_partner_lead(
     $name: String,
     $mobile: String,
     $contact_name: String,
@@ -75,8 +75,8 @@ const CreateLead = (props) => {
   const [updatePartnerLeadAddress] = useMutation(
     INSERT_PARTNER_LEAD_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() {
         message.success('Updated!!')
         setObj(initial)
       }
@@ -97,7 +97,7 @@ const CreateLead = (props) => {
   const employeeList = employee.map((data) => {
     return { value: data.id, label: data.email }
   })
-  function handleChange (value) {
+  function handleChange(value) {
     console.log(`selected ${value}`)
   }
   const handleCommentChange = (e) => {

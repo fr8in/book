@@ -20,7 +20,7 @@ const DeliveredContainer = (props) => {
   const [filter, setFilter] = useState(initialFilter)
 
   const where = {
-    _and: [{ trip_status: { name: { _in: filter.trip_statusName && filter.trip_statusName.length > 0 ? filter.trip_statusName : initialFilter.trip_statusName } } }/* ,{ trip_pod_status: { name: { _neq: 'POD Verified' } } } */],
+    _and: [{ trip_status: { name: { _in: filter.trip_statusName && filter.trip_statusName.length > 0 ? filter.trip_statusName : initialFilter.trip_statusName } }, pod_verified_at: { _is_null: true } }],
     id: { _in: filter.id ? filter.id : null },
     partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
     customer: { name: { _ilike: filter.customername ? `%${filter.customername}%` : null } },
@@ -45,7 +45,7 @@ const DeliveredContainer = (props) => {
     }
   )
   console.log('DeliveredContainer error', error)
-  var _data = {}
+  let _data = {}
   if (!loading) {
     _data = data
   }
@@ -53,7 +53,7 @@ const DeliveredContainer = (props) => {
   const trip = get(_data, 'trip', [])
   // for pagination
   const record_count = get(_data, 'rows.aggregate.count', 0)
-
+  console.log('record_count', record_count)
   // for filter options
   const trip_status = get(_data, 'trip_status', [])
 

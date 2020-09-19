@@ -3,7 +3,7 @@ import { LeftOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 
 const UPDATE_PARTNER_BANK_MUTATION = gql`
-mutation partnerBankEdit ($account_number:String,$ifsc_code:String,$acconnt_holder:String,$cardcode:String){
+mutation partner_bank_edit ($account_number:String,$ifsc_code:String,$acconnt_holder:String,$cardcode:String){
   update_partner(_set:{
     account_number: $account_number,
     ifsc_code: $ifsc_code,
@@ -22,8 +22,8 @@ const EditBank = (props) => {
   const [updatePartnerBank] = useMutation(
     UPDATE_PARTNER_BANK_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
   const onBankSubmit = (form) => {

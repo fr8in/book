@@ -1,6 +1,7 @@
 import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import InlineEdit from '../common/inlineEdit'
+import get from 'lodash/get'
 
 const UPDATE_CUSTOMER_NAME_MUTATION = gql`
 mutation update_customer_name($cardcode: String!, $company_name: String!){
@@ -17,7 +18,13 @@ const CustomerName = (props) => {
     UPDATE_CUSTOMER_NAME_MUTATION,
     {
       onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onCompleted(data) {
+        const status = get(data, 'update_customer_name.status', null)
+        const description = get(data, 'update_customer_name.description', null)
+        if (status === 'OK') {
+          message.success(description || 'Updated!')
+        } else (message.error(description))
+      }
     }
   )
 

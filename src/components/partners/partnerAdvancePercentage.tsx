@@ -4,7 +4,7 @@ import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
 
 const PARTNER_ADVANCE_PERCENTAGE_SUBSCRIPTION = gql`
-  query partnerAdvancePercentage{
+  query partner_advance_percentage{
    partner_advance_percentage{
     id
     name
@@ -12,7 +12,7 @@ const PARTNER_ADVANCE_PERCENTAGE_SUBSCRIPTION = gql`
 }
 `
 const UPDATE_PARTNER_ADVANCE_PERCENTAGE_MUTATION = gql`
-mutation partnerAdvancePercentage($partner_advance_percentage_id:Int,$cardcode:String) {
+mutation partner_advance_percentage($partner_advance_percentage_id:Int,$cardcode:String) {
   update_partner(_set:{partner_advance_percentage_id:$partner_advance_percentage_id }, where:{cardcode:{_eq:$cardcode}}){
     returning{
       id
@@ -35,8 +35,8 @@ const AdvancePercentage = (props) => {
   const [UpdateAdvancePercentage] = useMutation(
     UPDATE_PARTNER_ADVANCE_PERCENTAGE_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
 

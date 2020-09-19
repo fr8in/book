@@ -3,7 +3,7 @@ import TripsByStages from '../../trips/tripsByStages'
 import get from 'lodash/get'
 
 const PARTNER_TRIP_QUERY = gql`
-subscription partners($cardcode: String, $trip_status_value: [String!]) {
+subscription partner_trip($cardcode: String, $trip_status_value: [String!]) {
   partner(where: {cardcode: {_eq: $cardcode}}) {
     trips(where: {trip_status: {name: {_in: $trip_status_value}}}) {
       id

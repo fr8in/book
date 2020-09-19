@@ -3,7 +3,7 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 
 const ALL_EMPLOYEE = gql`
-  query allEmployee {
+  query all_employee {
   employee{
     id
     email
@@ -11,7 +11,7 @@ const ALL_EMPLOYEE = gql`
 }
 `
 const UPDATE_CUSTOMER_PAYMENT_MANAGER_MUTATION = gql`
-mutation customerPaymentManager($payment_manager_id:Int,$cardcode:String) {
+mutation customer_payment_manager($payment_manager_id:Int,$cardcode:String) {
   update_customer(_set: {payment_manager_id: $payment_manager_id}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id

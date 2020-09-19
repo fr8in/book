@@ -6,7 +6,7 @@ import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 
 const PARTNER_TRUCKS_QUERY = gql`
-subscription partners($cardcode: String) {
+subscription partners_truck($cardcode: String) {
   partner(where: {cardcode: {_eq: $cardcode}}) {
     trucks(where: {truck_status:{name:{_neq: "Rejected"} }}) {
       id

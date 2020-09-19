@@ -45,7 +45,7 @@ query trips(
       description
       created_at
       created_by
-    }
+     }
   }
 }  
 `

@@ -27,7 +27,7 @@ import LinkComp from '../common/link'
 import isEmpty from 'lodash/isEmpty'
 
 const CUSTOMER_REJECT_MUTATION = gql`
-  mutation customerReject($status_id: Int, $id: Int!) {
+  mutation customer_reject($status_id: Int, $id: Int!) {
     update_customer_by_pk(
       pk_columns: { id: $id }
       _set: { status_id: $status_id }

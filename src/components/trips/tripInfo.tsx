@@ -6,13 +6,28 @@ import { EditTwoTone } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
 import CustomerPrice from '../trips/customerPrice'
 import moment from 'moment'
+import get from 'lodash/get'
 
 const TripInfo = (props) => {
-  const { trip_info, trip_prices, trip_id } = props
+  const { trip_info, trip_id } = props
   const initial = { price: false }
   const { visible, onShow, onHide } = useShowHide(initial)
-  // const { data } = props
 
+  const trip_prices = {
+    customer_price: trip_info.customer_price,
+    partner_price: trip_info.partner_price,
+    cash: trip_info.cash,
+    to_pay: trip_info.to_pay,
+    bank: trip_info.bank,
+    mamul: trip_info.mamul,
+    including_loading: trip_info.including_loading,
+    including_unloading: trip_info.including_unloading,
+    ton: trip_info.ton,
+    is_price_per_ton: trip_info.is_price_per_ton,
+    price_per_ton: trip_info.price_per_ton,
+    customer_advance_percentage: trip_info.customer_advance_percentage,
+    partner_advance_percentage: get(trip_info, 'partner_advance_percentage.name', null)
+  }
   console.log('trip_price', trip_prices)
   return (
     <Row>
@@ -70,15 +85,15 @@ const TripInfo = (props) => {
             <LabelWithData
               label='Customer Price'
               data={
-                <p>{trip_prices && trip_prices.customer_price ? trip_prices.customer_price : null}
+                <p>{trip_info && trip_info.customer_price ? trip_info.customer_price : null}
                   <EditTwoTone onClick={() => onShow('price')} />
                 </p>
               }
               labelSpan={10}
             />
-            <LabelWithData label='Cash' data={trip_prices && trip_prices.cash ? trip_prices.cash : 0} labelSpan={10} />
-            <LabelWithData label='To Pay' data={trip_prices && trip_prices.to_pay ? trip_prices.to_pay : 0} labelSpan={10} />
-            <LabelWithData label='Mamul' data={trip_prices && trip_prices.mamul ? trip_prices.mamul : 0} labelSpan={10} />
+            <LabelWithData label='Cash' data={trip_info && trip_info.cash ? trip_info.cash : 0} labelSpan={10} />
+            <LabelWithData label='To Pay' data={trip_info && trip_info.to_pay ? trip_info.to_pay : 0} labelSpan={10} />
+            <LabelWithData label='Mamul' data={trip_info && trip_info.mamul ? trip_info.mamul : 0} labelSpan={10} />
           </Col>
           <Col sm={24} md={12}>
             <LabelWithData
@@ -87,9 +102,9 @@ const TripInfo = (props) => {
               ) : ''} labelSpan={10}
             />
             <LabelWithData label='Delay' data={trip_info.delay} labelSpan={10} />
-            <LabelWithData label='Partner Price' data={trip_prices && trip_prices.partner_price ? trip_prices.partner_price : 0} labelSpan={10} />
-            <LabelWithData label='Including loading' data={trip_prices && trip_prices.including_loading === true ? 'Yes' : 'No'} labelSpan={10} />
-            <LabelWithData label='Including Unloading' data={trip_prices && trip_prices.including_unloading === true ? 'yes' : 'No'} labelSpan={10} />
+            <LabelWithData label='Partner Price' data={trip_info && trip_info.partner_price ? trip_info.partner_price : 0} labelSpan={10} />
+            <LabelWithData label='Including loading' data={trip_info && trip_info.including_loading === true ? 'Yes' : 'No'} labelSpan={10} />
+            <LabelWithData label='Including Unloading' data={trip_info && trip_info.including_unloading === true ? 'yes' : 'No'} labelSpan={10} />
           </Col>
         </Row>
       </Col>

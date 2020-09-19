@@ -17,7 +17,7 @@ import get from 'lodash/get'
 import { gql, useSubscription, useMutation } from '@apollo/client'
 
 const TRUCK_DETAIL_SUBSCRIPTION = gql`
-  subscription trucks($truck_no: String,$trip_status_id:[Int!]) {
+  subscription truck_detail($truck_no: String,$trip_status_id:[Int!]) {
     truck(where: {truck_no: {_eq: $truck_no}}) {
         id
         truck_no
@@ -44,6 +44,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
           description
           created_at
           created_by_id
+          created_by
         } 
         truck_type{
           name
@@ -87,7 +88,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
 `
 
 const INSERT_TRUCK_REJECT_MUTATION = gql`
-mutation truckReject ( $truck_status_id:Int,$id:Int! ){
+mutation truck_reject ( $truck_status_id:Int,$id:Int! ){
   update_truck_by_pk(pk_columns: {id: $id}, _set: {truck_status_id:$truck_status_id}) {
     id
   }

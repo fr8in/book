@@ -2,7 +2,7 @@ import { Switch, Tooltip, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 
 const UPDATE_PARTNER_WALLET_STATUS_MUTATION = gql`
-mutation partnerWalletStatus($wallet_block:Boolean,$cardcode:String) {
+mutation partner_wallet_status($wallet_block:Boolean,$cardcode:String) {
   update_partner(_set: {wallet_block:$wallet_block}, where: {cardcode: {_eq:$cardcode}}) {
     returning {
       id
@@ -16,8 +16,8 @@ const PartnerStatus = (props) => {
   const [updateStatusId] = useMutation(
     UPDATE_PARTNER_WALLET_STATUS_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
 

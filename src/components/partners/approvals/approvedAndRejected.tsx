@@ -1,16 +1,33 @@
-import React, {useState} from 'react'
-import { Table, Input, Pagination , Checkbox} from 'antd'
+import React, { useState } from 'react'
+import { Table, Input, Pagination, Checkbox } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import Truncate from '../../common/truncate'
 import Link from 'next/link'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useQuery, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import u from '../../../lib/util'
 
-const APPROVALS_QUERY = gql`
-query trip_credit_debit($status: [String!], $offset: Int, $limit: Int, $created_by: String, $type: [String!],$creditType:[bpchar!]) {
-  trip_credit_debit(where: {credit_debit_status: {name: {_in: $status}}, created_by: {_ilike: $created_by}, credit_debit_type: {name: {_in: $type}}, type: {_in: $creditType}}, order_by: {trip_id: desc}, offset: $offset, limit: $limit) {
+const APPROVED_REJECTED_QUERY = gql`
+query trip_credit_debit(
+  $status: [String!], 
+  $offset: Int, 
+  $limit: Int, 
+  $created_by: String, 
+  $issue_type: [String!], 
+  $type: [bpchar!], 
+  $trip_id: [Int!]) 
+  {
+  trip_credit_debit(
+    order_by: {trip_id: desc}, 
+    offset: $offset, limit: $limit,
+    where: {
+      credit_debit_status: {name: {_in: $status}}, 
+      created_by: {_ilike: $created_by}, 
+      credit_debit_type: {name: {_in: $issue_type}}, 
+      type: {_in: $type}, 
+      trip_id: {_in: $trip_id}
+    }) {
     id
     trip_id
     type
@@ -18,122 +35,121 @@ query trip_credit_debit($status: [String!], $offset: Int, $limit: Int, $created_
     approval_comment
     approved_amount
     approved_by
+    created_at
+    created_by
+    comment
     credit_debit_status {
       id
       name
     }
-    trip {
-      branch {
-        region {
-          name
-        }
-      }
-      partner {
-        cardcode
-        name
-      }
-    }
-    responsibility {
-      id
-      name
-    }
-    comment
     credit_debit_type {
       name
     }
-    created_at
-    created_by
   }
+}
+`
+const CREDIT_DEBIT_TYPE_SUBSCRIPTION = gql`
+subscription credit_debit_type{
   credit_debit_type {
     id
+    active
     name
   }
 }
-
 `
 
-const creditType = [
+const creditDebitType = [
   { value: 1, text: 'C' },
   { value: 2, text: 'D' }
 ]
 
 const ApprovedAndRejected = () => {
+  const initial = {
+    offset: 0,
+    limit: u.limit,
+    trip_id: null,
+    type: null,
+    issue_type: [],
+    created_by: null,
+  }
 
-const initial = {
-  created_by:null,
-  offset: 0,
-  limit: u.limit,
-  type:null,
-  creditType:null
-} 
   const [filter, setFilter] = useState(initial)
   const [currentPage, setCurrentPage] = useState(1)
 
   const approvalQueryVars = {
     offset: 0,
     limit: u.limit,
-    status: ["APPROVED","REJECTED"],
-    created_by: filter.created_by ? `%${filter.created_by}%` : null, 
+    status: ["APPROVED", "REJECTED"],
+    trip_id: filter.trip_id && filter.trip_id.length > 0 ? filter.trip_id : null,
     type: filter.type && filter.type.length > 0 ? filter.type : null,
-    creditType: filter.creditType &&  filter.creditType.length > 0 ?  filter.creditType : null
-  } 
+    issue_type: filter.issue_type && filter.issue_type.length > 0 ? filter.issue_type : null,
+    created_by: filter.created_by ? `%${filter.created_by}%` : null
+  }
 
   const { loading, error, data } = useQuery(
-    APPROVALS_QUERY,
-   {
-     variables: approvalQueryVars,
-    fetchPolicy: 'cache-and-network',
-    notifyOnNetworkStatusChange: true
-  }
+    APPROVED_REJECTED_QUERY,
+    {
+      variables: approvalQueryVars,
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
   )
-  console.log('pending error', error)
-  console.log('pending data', data)
+  console.log('approvedRejected error', error)
+  console.log('approvedRejected data', data)
+
+  const { data: issueType } = useSubscription(
+    CREDIT_DEBIT_TYPE_SUBSCRIPTION,
+  )
+  console.log('approvedRejected issueType', issueType)
+
   let _data = {}
   if (!loading) {
     _data = data
   }
-
   const approvedAndRejected = get(_data, 'trip_credit_debit', null)
-  const credit_debit_type = get(_data, 'credit_debit_type', [])
-  console.log('approvedAndRejected',approvedAndRejected)
-  console.log('creditDebitType',credit_debit_type)
+  console.log('approvedAndRejected', approvedAndRejected)
 
-const typeList = credit_debit_type.map((data) => {
-  return { value: data.name, label: data.name }
-})
-console.log('typeList',typeList)
+  const List = issueType && issueType.credit_debit_type.length > 0 ? issueType.credit_debit_type : []
+  console.log('List', List)
+  const issueTypeList = List.map((issueType) => {
+    return { value: issueType.name, label: issueType.name }
+  })
+  console.log('issueTypeList', issueTypeList)
 
-
-const creditDebitList = creditType.map((data) => {
+  const creditDebitList = creditDebitType.map((data) => {
     return { value: data.text, label: data.text }
-   })
-const pageChange = (page, pageSize) => {
+  })
+
+  const pageChange = (page, pageSize) => {
     const newOffset = page * pageSize - filter.limit
     setCurrentPage(page)
     setFilter({ ...filter, offset: newOffset })
   }
-  const handleCreditDebitFilter = (checked) => {
+  const onTripIdSearch = (e) => {
+    setCurrentPage(1)
+    setFilter({ ...filter, trip_id: e.target.value })
+  }
+  const onIssueTypeFilter = (checked) => {
+    console.log('name', checked)
+    setCurrentPage(1)
+    setFilter({ ...filter, issue_type: checked, offset: 0 })
+  }
+  const onTypeFilter = (checked) => {
     console.log('checked', checked)
     setCurrentPage(1)
-    setFilter({ ...filter, creditType: checked, offset: 0 })
+    setFilter({ ...filter, type: checked, offset: 0 })
   }
-
   const onCreatedBySearch = (e) => {
     setCurrentPage(1)
     setFilter({ ...filter, created_by: e.target.value })
   }
-  const onTypeFilter = (name) => {
-    console.log('name',name)
-    setCurrentPage(1)
-    setFilter({ ...filter, type: name ,offset: 0 })
-  }
-  
+
   const ApprovalPending = [
     {
       title: 'Load ID',
       dataIndex: 'trip_id',
       key: 'trip_id',
-      width: '7%',
+      width: '8%',
       render: (text, record) => (
         <Link href='/trips/[id]' as={`/trips/${record.trip_id} `}>
           <a>{text}</a>
@@ -141,7 +157,13 @@ const pageChange = (page, pageSize) => {
       ),
       filterDropdown: (
         <div>
-          <Input placeholder='Search' id='id' name='id' type='number' />
+          <Input
+            placeholder='Search'
+            id='id'
+            name='id'
+            type='number'
+            onChange={onTripIdSearch}
+          />
         </div>
       ),
       filterIcon: (filtered) => (
@@ -152,15 +174,15 @@ const pageChange = (page, pageSize) => {
       title: 'Type',
       dataIndex: 'type',
       key: 'type',
-      filters: creditType,
-      width: '8%',
+      filters: creditDebitType,
+      width: '7%',
       onFilter: (value, record) => record && record.type.indexOf(value) === 0,
       filterDropdown: (
         <Checkbox.Group
           options={creditDebitList}
-          // defaultValue={filter.creditType}
-           onChange={handleCreditDebitFilter}
-           className='filter-drop-down'
+          defaultValue={filter.type}
+          onChange={onTypeFilter}
+          className='filter-drop-down'
         />
       )
     },
@@ -168,14 +190,13 @@ const pageChange = (page, pageSize) => {
       title: 'Issue Type',
       dataIndex: 'issueType',
       key: 'issueType',
-      //filters: issueTypeList,
       width: '10%',
-      render: (text, record) => <Truncate data={get(record, 'credit_debit_type.name',null)} length={12} />,
+      render: (text, record) => <Truncate data={get(record, 'credit_debit_type.name', null)} length={12} />,
       filterDropdown: (
         <Checkbox.Group
-          options={typeList}
-          //defaultValue={filter.type}
-          onChange={onTypeFilter}
+          options={issueTypeList}
+          defaultValue={filter.issue_type}
+          onChange={onIssueTypeFilter}
           className='filter-drop-down'
         />
       ),
@@ -183,7 +204,7 @@ const pageChange = (page, pageSize) => {
     {
       title: 'Claim ₹',
       dataIndex: 'amount',
-      width: '6%'
+      width: '8%'
     },
     {
       title: 'Approved ₹',
@@ -195,14 +216,14 @@ const pageChange = (page, pageSize) => {
       title: 'Reason',
       dataIndex: 'comment',
       key: 'comment',
-      width: '11%',
+      width: '13%',
       render: (text, record) => <Truncate data={text} length={18} />
     },
     {
       title: 'Request By',
       dataIndex: 'created_by',
       key: 'created_by',
-      width: '12%',
+      width: '13%',
       render: (text, record) => <Truncate data={text} length={18} />,
       filterDropdown: (
         <div>
@@ -233,38 +254,38 @@ const pageChange = (page, pageSize) => {
       title: 'Closed By',
       dataIndex: 'approved_by',
       key: 'approved_by',
-      width: '11%',
+      width: '12%',
       render: (text, record) => <Truncate data={text} length={18} />
     },
     {
       title: 'Remarks',
       dataIndex: 'approval_comment',
       key: 'approval_comment',
-      width: '11%',
+      width: '13%',
       render: (text, record) => <Truncate data={text} length={12} />
     }
   ]
 
   return (
     <>
-    <Table
-      columns={ApprovalPending}
-      dataSource={approvedAndRejected}
-      rowKey={(record) => record.id}
-      loading={loading}
-      size='small'
-      scroll={{ x: 1156, y: 550 }}
-      pagination={false}
-    />
-    <Pagination
-            size='small'
-            current={currentPage}
-            pageSize={filter.limit}
-            showSizeChanger={false}
-            onChange={pageChange}
-            className='text-right p10'
-          />
-   </>
+      <Table
+        columns={ApprovalPending}
+        dataSource={approvedAndRejected}
+        rowKey={(record) => record.id}
+        loading={loading}
+        size='small'
+        scroll={{ x: 1156, y: 550 }}
+        pagination={false}
+      />
+      <Pagination
+        size='small'
+        current={currentPage}
+        pageSize={filter.limit}
+        showSizeChanger={false}
+        onChange={pageChange}
+        className='text-right p10'
+      />
+    </>
   )
 }
 

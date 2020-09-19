@@ -15,12 +15,12 @@ const DeliveredContainer = (props) => {
     destinationname: null,
     truckno: null,
     id: null,
-    trip_statusName: ['Invoiced', 'Paid']
+    trip_statusName: ['Invoiced', 'Paid', 'Recieved', 'Closed']
   }
   const [filter, setFilter] = useState(initialFilter)
 
   const where = {
-    _and: [{ trip_status: { name: { _in: filter.trip_statusName && filter.trip_statusName.length > 0 ? filter.trip_statusName : initialFilter.trip_statusName } } }/* , { trip_pod_status: { name: { _neq: 'POD Dispatched' } } } */],
+    _and: [{ trip_status: { name: { _in: filter.trip_statusName && filter.trip_statusName.length > 0 ? filter.trip_statusName : initialFilter.trip_statusName } }, pod_dispatched_at: { _is_null: false } }],
     id: { _in: filter.id ? filter.id : null },
     partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
     customer: { name: { _ilike: filter.customername ? `%${filter.customername}%` : null } },

@@ -10,7 +10,7 @@ import u from '../../lib/util'
 import get from 'lodash/get'
 
 const TRUCKS_QUERY = gql`
-query trucks(
+query trucks_verification(
   $offset: Int!
   $limit: Int!
   $truck_statusName: [String!]){
@@ -46,8 +46,7 @@ query trucks(
       id
       name
     }
-  }
-  
+  } 
 `
 
 const TruckVerification = (props) => {

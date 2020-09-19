@@ -1,12 +1,50 @@
 import { Table, Row, Col } from 'antd'
 import moment from 'moment'
-import _ from 'lodash'
+import { gql, useSubscription } from '@apollo/client'
+import get from 'lodash/get'
+import sumBy from 'lodash/sumBy'
+
+const TRIP_PAYABLES = gql`
+subscription trip_payables($id: Int!) {
+  trip(where: {id: {_eq: $id}}) {
+    trip_payables {
+      id
+      name
+      amount
+      ordering
+      created_at
+    }
+    trip_payments {
+      id
+      refno
+      amount
+      transaction_type
+      mode
+      created_at
+    }
+  }
+}`
 
 const Payables = (props) => {
-  const { trip_pay } = props
+  const { trip_id } = props
 
-  const payables = _.sumBy(trip_pay.trip_payables, 'amount').toFixed(2)
-  const payments = _.sumBy(trip_pay.trip_payments, 'amount').toFixed(2)
+  const { loading, data, error } = useSubscription(
+    TRIP_PAYABLES,
+    {
+      variables: { id: trip_id }
+    }
+  )
+
+  console.log('Payables Error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+
+  const trip_pay = get(_data, 'trip[0]', [])
+
+  const payables = sumBy(trip_pay.trip_payables, 'amount').toFixed(2)
+  const payments = sumBy(trip_pay.trip_payments, 'amount').toFixed(2)
 
   const payablesColumn = [
     {
@@ -54,6 +92,7 @@ const Payables = (props) => {
         columns={payablesColumn}
         pagination={false}
         size='small'
+        rowKey={record => record.id}
       />
       <Row className='payableHead' gutter={6}>
         <Col xs={12}><b>Payments</b></Col>
@@ -67,6 +106,7 @@ const Payables = (props) => {
         scroll={{ x: '300' }}
         pagination={false}
         size='small'
+        rowKey={record => record.id}
       />
     </>
   )
