@@ -5,6 +5,7 @@ import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
+import FinalBooking from './finalBooking'
 
 const TRIP_CUSTOMER_PENDING_PAYMENTS = gql`
 query customerPaymentData($trip_id: Int!) {
@@ -102,6 +103,17 @@ const CustomerPaymentsContainer = (props) => {
           visible={object.adv_visible}
           title={object.title}
           pending_data={object.adv_data}
+          onHide={handleHide}
+          cardcode={cardcode}
+          mamul={mamul}
+          price={price}
+          trip_id={trip_id}
+        />}
+      {object.final_visible &&
+        <FinalBooking
+          visible={object.final_visible}
+          title={object.title}
+          pending_data={object.final_data}
           onHide={handleHide}
           cardcode={cardcode}
           mamul={mamul}
