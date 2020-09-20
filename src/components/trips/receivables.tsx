@@ -12,7 +12,6 @@ subscription trips_receivables($id: Int!) {
         id
         name
         amount
-        ordering
         created_at
       }
       trip_receipts{
@@ -23,8 +22,7 @@ subscription trips_receivables($id: Int!) {
         created_at
       }
   }
-}
-`
+}`
 
 const Receivables = (props) => {
   const { trip_id } = props

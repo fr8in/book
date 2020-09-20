@@ -6,8 +6,7 @@ import get from 'lodash/get'
 
 const CUSTOMER_MAMUL_TRANSFER = gql`
 mutation customer_mamul_transfer(
-  $cardcode: String!, 
-  $walletcode: String!,
+  $customer_id: Int!,
   $amount: Float!,
   $trip_id: Int!,
   $created_by: String!,
@@ -15,12 +14,11 @@ mutation customer_mamul_transfer(
   $bank_acc_no: String!,
   $bank_name: String!,
   $ifsc_code:String!,
-  $customer_incoming_id: Int!,
+  $doc_entry: Int!,
   $is_mamul_charges_included: Boolean!
 ){
   customer_mamul_transfer(
-    cardcode: $cardcode, 
-    walletcode: $walletcode, 
+    customer_id: $customer_id, 
     amount:$amount,
     trip_id: $trip_id,
     created_by: $created_by,
@@ -28,7 +26,7 @@ mutation customer_mamul_transfer(
     bank_acc_no: $bank_acc_no,
     bank_name: $bank_name,
     ifsc_code: $ifsc_code,
-    customer_incoming_id:$customer_incoming_id, 
+    doc_entry:$doc_entry,
     is_mamul_charges_included: $is_mamul_charges_included
   ){
     description
@@ -46,7 +44,7 @@ query ifsc_validation($ifsc: String!){
 }`
 
 const Transfer = (props) => {
-  const { visible, onHide, cardcode, walletcode, wallet_balance } = props
+  const { visible, onHide, cardcode, customer_id } = props
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
@@ -89,9 +87,8 @@ const Transfer = (props) => {
       setDisableButton(true)
       customer_mamul_transfer({
         variables: {
-          cardcode: cardcode,
-          walletcode: walletcode,
-          customer_incoming_id: selectedRow[0].customer_incoming_id,
+          customer_id: customer_id,
+          doc_entry: selectedRow[0].customer_incoming_id,
           amount: parseFloat(amount),
           trip_id: parseInt(form.trip_id),
           created_by: 'karthik@fr8.in',
@@ -149,7 +146,6 @@ const Transfer = (props) => {
             selectedRowKeys={selectedRowKeys}
             selectOnchange={selectOnchange}
             cardcode={cardcode}
-            wallet_balance={'Wallet Balance: ₹' + wallet_balance}
             amount={amount}
             setAmount={setAmount}
             form={form}

@@ -5,21 +5,22 @@ import get from 'lodash/get'
 
 const WALLET_TO_BANK = gql`
 mutation partner_bank_transfer_track(
+  $partner_id: Int!,
   $amount: Float!,
   $created_by: String!,
-  $walletcode: String!
 ){
   partner_bank_transfer_track(
+    partner_id: $partner_id,
     amount: $amount, 
-    created_by:$created_by, 
-    wallet_code: $walletcode){
+    created_by:$created_by
+  ){
     status
     description
   }
 }`
 
 const WalletToBank = (props) => {
-  const { visible, onHide, walletcode, balance } = props
+  const { visible, onHide, partner_id, balance } = props
   const [disableButton, setDisableButton] = useState(false)
 
   const [partner_bank_transfer_track] = useMutation(
@@ -45,9 +46,9 @@ const WalletToBank = (props) => {
     setDisableButton(true)
     partner_bank_transfer_track({
       variables: {
+        partner_id: partner_id,
         amount: parseFloat(form.amount),
-        created_by: 'Karthik@fr8.in',
-        walletcode: walletcode
+        created_by: 'Karthik@fr8.in'
       }
     })
   }

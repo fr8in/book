@@ -13,6 +13,9 @@ query customer_booking($cardcode: String) {
     id
     cardcode
     walletcode
+    customer_accounting {
+      wallet_balance
+    }
     customer_incomings(where: {balance: {_neq: 0}}) {
       id
       created_at
@@ -26,7 +29,7 @@ query customer_booking($cardcode: String) {
 }
 `
 const PaymentTraceability = (props) => {
-  const { selectedRowKeys, selectOnchange, cardcode, wallet_balance, amount, setAmount, form } = props
+  const { selectedRowKeys, selectOnchange, cardcode, amount, setAmount, form } = props
   const { visible, onShow, onHide } = useShowHide('')
 
   const { loading, data, error } = useQuery(
@@ -45,6 +48,7 @@ const PaymentTraceability = (props) => {
 
   const customer = get(_data, 'customer[0]', null)
   const customer_incomings = get(customer, 'customer_incomings', [])
+  const wallet_balance = get(customer, 'customer_accounting.wallet_balance', 0)
   console.log('customer_incomings', customer_incomings)
   const onAmountChange = (e) => {
     setAmount(e.target.value)
@@ -92,7 +96,7 @@ const PaymentTraceability = (props) => {
     title: 'Remarks',
     dataIndex: 'comment',
     width: '40%',
-    render: (text, record) => <Truncate data={text} length={36} />
+    render: (text, record) => <Truncate data={text} length={32} />
   }
   ]
 
@@ -100,7 +104,7 @@ const PaymentTraceability = (props) => {
     <Card
       size='small'
       className='card-body-0'
-      title={wallet_balance}
+      title={'Wallet Balance: ₹' + wallet_balance}
       extra={<Button type='primary' size='small' onClick={() => onShow('wallet')}> Wallet Top-up </Button>}
     >
       <Table

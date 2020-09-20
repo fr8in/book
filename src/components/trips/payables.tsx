@@ -11,7 +11,6 @@ subscription trip_payables($id: Int!) {
       id
       name
       amount
-      ordering
       created_at
     }
     trip_payments {

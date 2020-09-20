@@ -58,7 +58,7 @@ insert_trip(objects: {
 `
 
 const CreateExcessLoad = (props) => {
-  const initial = { search: '', customer_id: null, source_id: null, destination_id: null }
+  const initial = { search: '', customer_id: null, source_id: null, destination_id: null, disableButton: false }
   const [obj, setObj] = useState(initial)
 
   const { loading, error, data } = useQuery(
@@ -109,6 +109,7 @@ const CreateExcessLoad = (props) => {
 
   const onCreateLoad = (form) => {
     console.log('Excess load data', form, obj)
+    setObj({ ...obj, disableButton: true })
     create_excess_load({
       variables: {
         source_id: parseInt(obj.source_id, 10),
@@ -202,7 +203,7 @@ const CreateExcessLoad = (props) => {
           />
         </Form.Item>
         <Form.Item className='text-right'>
-          <Button type='primary' htmlType='submit'>Create Load</Button>
+          <Button type='primary' htmlType='submit' loading={obj.disableButton}>Create Load</Button>
         </Form.Item>
       </Form>
     </Modal>

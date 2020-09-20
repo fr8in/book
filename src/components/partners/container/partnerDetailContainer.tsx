@@ -209,7 +209,7 @@ const PartnerDetailContainer = (props) => {
           <WalletToBank
             visible={visible.walletToBank}
             onHide={onHide}
-            walletcode={partner_info.walletcode}
+            partner_id={partner_info.id}
             balance={get(partner_info, 'partner_accounting.wallet_balance', 0)}
           />}
         {visible.topUp && <WalletTopUp visible={visible.topUp} onHide={onHide} partner_id={partner_info.id} />}

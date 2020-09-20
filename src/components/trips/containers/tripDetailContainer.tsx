@@ -12,7 +12,7 @@ import CreateAdditionalAdvance from '../createAdditionalAdvance'
 import AdditionalAdvance from '../additionalAdvance'
 import Payables from '../payables'
 import Receivables from '../receivables'
-import CustomerPayments from '../customerPayments'
+import CustomerPayments from '../customerPaymentsContainer'
 import CreditNote from '../creditNote'
 import CreditNoteTable from '../creditNoteTable'
 import { useSubscription } from '@apollo/client'
@@ -112,7 +112,13 @@ const TripDetailContainer = (props) => {
                   <Collapse accordion className='small box-0 mt10'>
                     <Panel header={<span>Customer - Receivables</span>} key='1'>
                       <Receivables trip_id={trip_id} />
-                      <CustomerPayments />
+                      <CustomerPayments
+                        trip_id={trip_id}
+                        status={get(trip_info, 'trip_status.name', null)}
+                        cardcode={get(trip_info, 'customer.cardcode', null)}
+                        mamul={get(trip_info, 'mamul', 0)}
+                        price={get(trip_info, 'partner_price', 0)}
+                      />
                     </Panel>
                   </Collapse>
                   <Collapse accordion className='small mt10'>
