@@ -74,6 +74,7 @@ const AdvanceBooking = (props) => {
       title={`${title} Booking`}
       visible={visible}
       onCancel={onHide}
+      maskClosable={false}
       bodyStyle={{ paddingBottom: 0 }}
       width={850}
       footer={[]}
