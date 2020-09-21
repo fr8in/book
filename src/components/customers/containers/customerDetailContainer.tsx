@@ -232,7 +232,7 @@ const CustomerDetailContainer = (props) => {
                 />
               )}
               {visible.wallet && (
-                <WalletTopup visible={visible.wallet} onHide={onHide} walletcode={customer_info && customer_info.walletcode} />
+                <WalletTopup visible={visible.wallet} onHide={onHide} customer_id={customer_info && customer_info.id} />
               )}
               {visible.showModal && (
                 <AccStmtMail visible={visible.showModal} onHide={onHide} />

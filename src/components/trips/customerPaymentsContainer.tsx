@@ -6,6 +6,7 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import FinalBooking from './finalBooking'
+import AdditionalInvoiceBooking from './additionalInvoiceBooking'
 
 const TRIP_CUSTOMER_PENDING_PAYMENTS = gql`
 query customerPaymentData($trip_id: Int!) {
@@ -15,7 +16,7 @@ query customerPaymentData($trip_id: Int!) {
     base_Advance_DocNum
     base_Advance_DocEntry
     amount
-    recevied
+    received
     pending
   }
   trip_sap_customer_invoice_pending(trip_id: $trip_id) {
@@ -23,7 +24,7 @@ query customerPaymentData($trip_id: Int!) {
     cardCode
     status
     amount
-    recevied
+    received
     pending
   }
   trip_sap_customer_balance_pending(trip_id: $trip_id) {
@@ -35,12 +36,14 @@ query customerPaymentData($trip_id: Int!) {
     freight
     received
     balance
+    doctype
+    invoicetype
   }
 }`
 
 const CustomerPaymentsContainer = (props) => {
   const { trip_id, status, cardcode, mamul, price } = props
-  const initial = { adv_visible: false, final_visible: false, title: null, adv_data: null, final_data: null }
+  const initial = { adv_visible: false, final_visible: false, title: null, adv_data: null, final_data: null, add_inv_visible: false, add_inv_data: null }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
   const { loading, error, data } = useQuery(
@@ -59,6 +62,14 @@ const CustomerPaymentsContainer = (props) => {
   const advance_pending = get(_data, 'trip_sap_customer_advance_pending', [])
   const invoice_pending = get(_data, 'trip_sap_customer_invoice_pending', [])
   const balance_pending = get(_data, 'trip_sap_customer_balance_pending', [])
+
+  const onFinalShow = (record) => {
+    if (record && record.doctype === 'S') {
+      handleShow('add_inv_visible', 'Final', 'add_inv_data', record)
+    } else {
+      handleShow('final_visible', 'Final', 'final_data', record)
+    }
+  }
   return (
     <>
       {!isEmpty(advance_pending) &&
@@ -90,7 +101,7 @@ const CustomerPaymentsContainer = (props) => {
             <CustomerPayments
               dataSource={balance_pending}
               type_name='Final'
-              onShow={() => handleShow('final_visible', 'Final', 'final_data', balance_pending[0])}
+              onShow={onFinalShow}
             />
           </Col>
         </Row>}
@@ -114,6 +125,16 @@ const CustomerPaymentsContainer = (props) => {
           visible={object.final_visible}
           title={object.title}
           pending_data={object.final_data}
+          onHide={handleHide}
+          cardcode={cardcode}
+          mamul={mamul}
+          price={price}
+          trip_id={trip_id}
+        />}
+      {object.add_inv_visible &&
+        <AdditionalInvoiceBooking
+          visible={object.add_inv_visible}
+          pending_data={object.add_inv_data}
           onHide={handleHide}
           cardcode={cardcode}
           mamul={mamul}

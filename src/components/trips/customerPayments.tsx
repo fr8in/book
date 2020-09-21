@@ -6,8 +6,7 @@ const CustomerPayments = (props) => {
 
   const column = [{
     title: 'Type',
-    dataIndex: 'type',
-    render: () => type_name + ' Pending',
+    render: (record) => (record && record.invoicetype) ? record.invoicetype : (type_name + ' Pending'),
     width: '26%'
   },
   {
@@ -20,24 +19,29 @@ const CustomerPayments = (props) => {
   },
   {
     title: 'Amount',
-    dataIndex: 'amount',
-    width: '18%'
+    width: '16%',
+    render: (text, record) => {
+      const amount = (type_name === 'Final') ? record.freight : record.amount
+      return amount
+    }
   },
   {
     title: 'Recieved',
-    dataIndex: 'recevied',
-    render: (text, record) => text || 0,
-    width: '18%'
+    width: '16%',
+    render: (text, record) => record.received
   },
   {
     title: 'Balance',
-    dataIndex: 'pending',
-    width: '20%'
+    width: '18%',
+    render: (text, record) => {
+      const pending = (type_name === 'Final') ? record.balance : record.pending
+      return pending
+    }
   },
   {
     title: 'Edit',
-    dataIndex: 'edit',
-    render: () => <EditTwoTone onClick={onShow} />
+    width: '6%',
+    render: (record) => <EditTwoTone onClick={(type_name === 'Final') ? () => onShow(record) : onShow} />
   }]
 
   return (

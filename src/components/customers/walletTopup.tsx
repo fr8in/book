@@ -21,13 +21,13 @@ mutation customer_topup(
   $transno: Int!
   $originno: Int!
   $created_by: String!
-  $walletcode: String!
+  $customer_id: Int!
 ) {
   customer_topup(
     transno: $transno
     originno: $originno
     created_by: $created_by
-    walletcode: $walletcode
+    customer_id: $customer_id
   ) {
     status
     description
@@ -35,7 +35,7 @@ mutation customer_topup(
 }`
 
 const WalletTopup = (props) => {
-  const { visible, onHide, walletcode } = props
+  const { visible, onHide, customer_id } = props
   const [search, setSearch] = useState(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
@@ -79,7 +79,7 @@ const WalletTopup = (props) => {
         transno: selectedRow[0].transno,
         originno: selectedRow[0].originno,
         created_by: 'karthik.fr8.in',
-        walletcode: walletcode
+        customer_id: customer_id
       }
     })
   }
