@@ -146,7 +146,7 @@ const ApprovedAndRejected = () => {
 
   const ApprovalPending = [
     {
-      title: 'Load ID',
+      title: '#',
       dataIndex: 'trip_id',
       key: 'trip_id',
       width: '8%',
