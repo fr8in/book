@@ -48,6 +48,7 @@ mutation customer_final_payment(
   $destination_halting_write_off: Float!
   $tds_filed_by_fr8: Float!
   $header: String
+  $comment: String!
 ) {
   customer_final_payment(
     trip_id: $trip_id, 
@@ -67,7 +68,8 @@ mutation customer_final_payment(
     source_halting_write_off: $source_halting_write_off, 
     destination_halting_write_off: $destination_halting_write_off,
     tds_filed_by_fr8: $tds_filed_by_fr8, 
-    header: $header
+    header: $header,
+    comment: $comment
   ) {
     status
     description
@@ -194,7 +196,8 @@ const FinalBooking = (props) => {
           source_halting_write_off: floatVal(form.loading_halting),
           destination_halting_write_off: floatVal(form.unloading_halting),
           tds_filed_by_fr8: floatVal(form.tds_fr8),
-          header: header
+          header: header,
+          comment: form.comment
         }
       })
     }
