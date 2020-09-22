@@ -23,7 +23,7 @@ mutation customer_additional_invoice(
     write_off_docentry: $write_off_docentry,  
     created_by: $created_by,
     loading_charge_write_off: $loading_charge_write_off,
-    source_halting_write_off: $unloading_charge_write_off, 
+    source_halting_write_off: $unloading_charge_write_off,
     unloading_charge_write_off: $source_halting_write_off,
     destination_halting_write_off: $destination_halting_write_off
   ) {
@@ -77,9 +77,9 @@ const AdditionalInvoiceBooking = (props) => {
         write_off_docentry: pending_data.docentry,
         created_by: 'karthik@fr8.in',
         loading_charge_write_off: pending_data.invoicetype === 'Loading Charges' ? writeOff : null,
-        source_halting_write_off: pending_data.invoicetype === 'Source Halting' ? writeOff : null,
+        source_halting_write_off: pending_data.invoicetype === 'Loading Halting' ? writeOff : null,
         unloading_charge_write_off: pending_data.invoicetype === 'Unloading Charges' ? writeOff : null,
-        destination_halting_write_off: pending_data.invoicetype === 'Destination Halting' ? writeOff : null
+        destination_halting_write_off: pending_data.invoicetype === 'Unloading Halting' ? writeOff : null
       }
     })
   }
