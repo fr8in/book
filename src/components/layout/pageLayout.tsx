@@ -12,12 +12,12 @@ import Loading from '../../components/common/loading'
 const { Header, Content } = Layout
 
 const PageLayout = (props) => {
-  if(props.authState.status === 'out') {
+  if (props.authState.status === 'out') {
     Router.push('/login')
-    return <Loading />
-      } else if(props.authState.status !== 'in') {
-return <Loading  />
-      }
+    return <Loading main />
+  } else if (props.authState.status !== 'in') {
+    return <Loading main />
+  }
   const initialFilter = {
     now: new Date().toISOString(),
     regions: null,
