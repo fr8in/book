@@ -8,7 +8,7 @@ const CUSTOMER_ADDITIONAL_INVOICE = gql`
 mutation customer_additional_invoice(
     $trip_id: Int!, 
     $docentry: Int!,
-    $wallet: Float!, 
+    $wallet_amount: Float!, 
     $write_off_docentry: Int!
     $created_by: String!, 
     $loading_charge_write_off: Float, 
@@ -19,7 +19,7 @@ mutation customer_additional_invoice(
   customer_additional_invoice(
     trip_id: $trip_id, 
     docentry: $docentry,
-    wallet_amount: $wallet, 
+    wallet_amount: $wallet_amount, 
     write_off_docentry: $write_off_docentry,  
     created_by: $created_by,
     loading_charge_write_off: $loading_charge_write_off,
