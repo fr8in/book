@@ -1,9 +1,9 @@
 import PageLayout from '../../components/layout/pageLayout'
 import AddFastagContainer from '../../components/partners/cards/containter/addFastagContainer'
 
-const AddFastag = () => {
+const AddFastag = (props) => {
   return (
-    <PageLayout title='AddFastag'>
+    <PageLayout {...props} title='AddFastag'>
       <AddFastagContainer />
     </PageLayout>
   )

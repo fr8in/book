@@ -3,7 +3,7 @@ import PartnerDetailContainer from '../../components/partners/container/partnerD
 
 const Partner = (props) => { 
   return (
-    <PageLayout title={`Partner - ${props.id}`}>
+    <PageLayout {...props} title={`Partner - ${props.id}`}>
         <PartnerDetailContainer cardcode={props.id} />
     </PageLayout>
   )

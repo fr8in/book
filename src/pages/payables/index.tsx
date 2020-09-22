@@ -1,9 +1,9 @@
 import PageLayout from '../../components/layout/pageLayout'
 import PayablesContainer from '../../components/partners/payables/container/payablesContainer'
 
-const Payables = () => {
+const Payables = (props) => {
   return (
-    <PageLayout title='Payables'>
+    <PageLayout {...props} title='Payables'>
       <PayablesContainer />
     </PageLayout>
   )

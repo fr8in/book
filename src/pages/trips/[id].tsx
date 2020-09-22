@@ -3,7 +3,7 @@ import TripDetailContainer from '../../components/trips/containers/tripDetailCon
 
 const TripDetail = (props) => {
   return (
-    <PageLayout title={`Trip - ${props.id}`}>
+    <PageLayout {...props} title={`Trip - ${props.id}`}>
       <TripDetailContainer trip_id={props.id} />
     </PageLayout>
   )

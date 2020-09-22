@@ -79,14 +79,21 @@ const initApolloClient = (initialState, ctx) => {
  * @returns {(PageComponent: ReactNode) => ReactNode}
  */
 export const withApollo = ({ ssr = false } = {}) => (PageComponent) => {
-  const WithApollo = ({ apolloClient, apolloState, ...pageProps }) => {
-    let client
-    if (apolloClient) {
-      // Happens on: getDataFromTree & next.js ssr
-      client = apolloClient
-    } else {
-      // Happens on: next.js csr
-      client = initApolloClient(apolloState, undefined)
+    const WithApollo = ({ apolloClient, apolloState, ...pageProps }) => {
+        let client
+        if (apolloClient ) {
+            // Happens on: getDataFromTree & next.js ssr
+            client = apolloClient
+        } else {
+            // Happens on: next.js csr
+            client = initApolloClient(apolloState, undefined)
+        }
+
+        return (
+            <ApolloProvider client={client} >
+                <PageComponent {...pageProps} />
+            </ApolloProvider>
+        )
     }
 
     return (
