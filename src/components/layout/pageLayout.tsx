@@ -14,9 +14,9 @@ const { Header, Content } = Layout
 const PageLayout = (props) => {
   if (props.authState.status === 'out') {
     Router.push('/login')
-    return <Loading main />
+    return <Loading preloading />
   } else if (props.authState.status !== 'in') {
-    return <Loading main />
+    return <Loading preloading />
   }
   const initialFilter = {
     now: new Date().toISOString(),
