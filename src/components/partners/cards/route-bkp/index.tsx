@@ -1,9 +1,9 @@
 import PageLayout from '../../../layout/pageLayout'
 import CardsContainer from '../containter/cardsContainer'
 
-const Cards = () => {
+const Cards = (props) => {
   return (
-    <PageLayout title='Cards'>
+    <PageLayout {...props} title='Cards'>
       <CardsContainer />
     </PageLayout>
   )

@@ -3,7 +3,7 @@ import AddTruckContainer from '../../../components/trucks/container/addTruckCont
 
 const AddTruck = (props) => {
   return (
-    <PageLayout title={`Truck - ${props.id}`}>
+    <PageLayout {...props} title={`Truck - ${props.id}`}>
       <AddTruckContainer cardcode={props.id}/>
     </PageLayout>
   )

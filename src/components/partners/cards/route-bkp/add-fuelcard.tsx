@@ -1,9 +1,9 @@
 import PageLayout from '../../../layout/pageLayout'
 import AddFuelContainer from '../containter/addFuelcardContainer'
 
-const AddFuel = () => {
+const AddFuel = (props) => {
   return (
-    <PageLayout title='AddFuel'>
+    <PageLayout {...props} title='AddFuel'>
       <AddFuelContainer />
     </PageLayout>
   )

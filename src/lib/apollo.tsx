@@ -81,7 +81,7 @@ const initApolloClient = (initialState, ctx) => {
 export const withApollo = ({ ssr = false } = {}) => (PageComponent) => {
     const WithApollo = ({ apolloClient, apolloState, ...pageProps }) => {
         let client
-        if (apolloClient) {
+        if (apolloClient ) {
             // Happens on: getDataFromTree & next.js ssr
             client = apolloClient
         } else {

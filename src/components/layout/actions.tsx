@@ -14,6 +14,9 @@ import GlobalSearch from '../dashboard/globalSearch'
 import Ssh from '../dashboard/ssh'
 import { useQuery, gql } from '@apollo/client'
 import _ from 'lodash'
+import React from "react";
+import {signOut} from '../../lib/auth'
+
 
 const { Panel } = Collapse
 const CheckBoxGroup = Checkbox.Group
@@ -119,18 +122,20 @@ const Actions = (props) => {
   const onCheckBoxChange = (value, name) => {
     setFilter({ ...filter, [name]: value })
     onFilter({ ...filter, [name]: value })
-  }
+  };
 
   const onClear = (e, name) => {
     e.stopPropagation()
     setFilter({ ...filter, [name]: null })
     onFilter({ ...filter, [name]: null })
-  }
+  };
+  
  
   const user = (
     <Menu>
       <Menu.Item key='0'>
-        <Link href='/login'><a><LogoutOutlined /> Logout</a></Link>
+        <Button icon={<LogoutOutlined />} onClick={signOut}>Logout</Button>
+        {/*<Link href='/login'><a><LogoutOutlined /> Logout</a></Link>*/}
       </Menu.Item>
     </Menu>
   )

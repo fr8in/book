@@ -3,7 +3,7 @@ import CustomerDetailContainer from '../../components/customers/containers/custo
 
 const Customer = (props) => {
   return (
-    <PageLayout title={`Customer - ${props.id}`}>
+    <PageLayout {...props} title={`Customer - ${props.id}`}>
       <CustomerDetailContainer cardcode={props.id} />
     </PageLayout>
   )

@@ -1,9 +1,9 @@
 import PageLayout from '../../components/layout/pageLayout'
 import BranchesContainer from '../../components/branches/container/branchesContainer'
 
-const Branches = () => {
+const Branches = (props) => {
   return (
-    <PageLayout title='Branches'>
+    <PageLayout {...props} title='Branches'>
       <BranchesContainer />
     </PageLayout>
   )

@@ -6,10 +6,18 @@ import Link from 'next/link'
 import '../../styles/site.less'
 import Actions from './actions'
 import Nav from './nav'
+import Router from 'next/router'
+import Loading from '../../components/common/loading'
 
 const { Header, Content } = Layout
 
 const PageLayout = (props) => {
+  if(props.authState.status === 'out') {
+    Router.push('/login')
+    return <Loading />
+      } else if(props.authState.status !== 'in') {
+return <Loading  />
+      }
   const initialFilter = {
     now: new Date().toISOString(),
     regions: null,
@@ -19,7 +27,6 @@ const PageLayout = (props) => {
     types: null
   }
   const [filters, setFilters] = useState(initialFilter)
-
   return (
     <Layout id='page'>
       <Header className='siteLayout'>

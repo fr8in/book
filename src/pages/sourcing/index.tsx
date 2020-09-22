@@ -1,9 +1,9 @@
 import PageLayout from '../../components/layout/pageLayout'
 import SourcingContainer from '../../components/sourcing/container/sourcingContainer'
 
-const Sourcing = () => {
+const Sourcing = (props) => {
   return (
-    <PageLayout title='Sourcing'>
+    <PageLayout {...props} title='Sourcing'>
       <SourcingContainer />
     </PageLayout>
   )

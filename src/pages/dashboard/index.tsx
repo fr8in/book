@@ -3,7 +3,7 @@ import DashboardContainer from '../../components/dashboard/container/dashboardCo
 
 const Dashboard = (props) => {
   return (
-    <PageLayout title='Dashboard'>
+    <PageLayout {...props} title='Dashboard'>
       <DashboardContainer />
     </PageLayout>
   )

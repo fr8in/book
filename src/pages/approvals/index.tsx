@@ -1,9 +1,9 @@
 import PageLayout from '../../components/layout/pageLayout'
 import ApprovalsContainer from '../../components/partners/approvals/container/approvalsContainer'
 
-const Approvals = () => {
+const Approvals = (props) => {
   return (
-    <PageLayout title='Approval'>
+    <PageLayout {...props} title='Approval'>
       <ApprovalsContainer />
     </PageLayout>
   )
