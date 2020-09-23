@@ -11,17 +11,6 @@ subscription credit_debit_issue_type {
   }
 }
 `
-// const CREDIT_DEBIT_NOTES_MUTATION = gql`
-// mutation create_credit_debit($credit_debit_type_id: Int, $amount: Float, $comment: String,$trip_id:Int,$type:bpchar,$created_by:String,$credit_debit_status_id:Int) {
-//   insert_trip_credit_debit(objects: {credit_debit_type_id: $credit_debit_type_id, amount: $amount, comment: $comment,trip_id:$trip_id,type:$type,created_by:$created_by,credit_debit_status_id:$credit_debit_status_id}){
-//     returning {
-//       id
-//       comment
-//       trip_id
-//     }
-//   }
-// }
-// `
 
 const CREATE_CREDIT_MUTATION = gql`
 mutation create_credit_track(
