@@ -1,9 +1,10 @@
 import { Modal, Button, Row, Col, DatePicker, Space, Input, Form, Radio, message, Table } from 'antd'
 import { useMutation, gql, useQuery } from '@apollo/client'
 import moment from 'moment'
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import CitySelect from '../common/citySelect'
 import get from 'lodash/get'
+import userContext from '../../lib/userContaxt'
 
 const CREATE_BREAKDOWN = gql`
 query create_breakdown($id: Int!){
@@ -39,7 +40,7 @@ const CreateBreakdown = (props) => {
   const { visible, onHide, id } = props
 
   const initial = { city_id: null }
-
+  const context = useContext(userContext)
   const [city, setCity] = useState(initial)
 
   const { loading, data, error } = useQuery(
@@ -79,7 +80,7 @@ const CreateBreakdown = (props) => {
       variables: {
         truck_id: id,
         id: id,
-        created_by: 'deva@fr8.in',
+        created_by: context.email,
         description: form.comment,
         topic: truck_status,
         city_id: parseInt(city.city_id, 10)

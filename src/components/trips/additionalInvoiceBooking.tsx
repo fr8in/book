@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { Modal, Button, Row, Col, Input, message, Table, Card, Divider } from 'antd'
 import get from 'lodash/get'
 import PaymentTraceability from '../customers/paymentTraceability'
 import { gql, useMutation } from '@apollo/client'
+import userContext from '../../lib/userContaxt'
 
 const CUSTOMER_ADDITIONAL_INVOICE = gql`
 mutation customer_additional_invoice(
@@ -39,6 +40,7 @@ const AdditionalInvoiceBooking = (props) => {
   const [selectedRow, setSelectedRow] = useState([])
   const [disableButton, setDisableButton] = useState(false)
   const [amount, setAmount] = useState(null)
+  const context = useContext(userContext)
 
   const [customer_additional_invoice] = useMutation(
     CUSTOMER_ADDITIONAL_INVOICE,
@@ -75,7 +77,7 @@ const AdditionalInvoiceBooking = (props) => {
         docentry: selectedRow[0].customer_incoming_id,
         wallet_amount: amount ? parseInt(amount) : 0,
         write_off_docentry: pending_data.docentry,
-        created_by: 'karthik@fr8.in',
+        created_by: context.email,
         loading_charge_write_off: pending_data.invoicetype === 'Loading Charges' ? writeOff : null,
         source_halting_write_off: pending_data.invoicetype === 'Loading Halting' ? writeOff : null,
         unloading_charge_write_off: pending_data.invoicetype === 'Unloading Charges' ? writeOff : null,

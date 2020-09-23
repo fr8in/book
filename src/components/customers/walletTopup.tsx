@@ -1,9 +1,10 @@
 import { Modal, Row, Col, Button, message, Input, Table } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { gql, useQuery, useMutation } from '@apollo/client'
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import sumBy from 'lodash/sumBy'
 import get from 'lodash/get'
+import userContext from '../../lib/userContaxt'
 
 const CUSTOMER_INCOMING_PAYMENTS = gql`
 query  bank_incoming($search:String){
@@ -40,6 +41,7 @@ const WalletTopup = (props) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
   const [disableButton, setDisableButton] = useState(true)
+  const context = useContext(userContext)
 
   const { loading, data, error } = useQuery(
     CUSTOMER_INCOMING_PAYMENTS,
@@ -78,7 +80,7 @@ const WalletTopup = (props) => {
       variables: {
         transno: selectedRow[0].transno,
         originno: selectedRow[0].originno,
-        created_by: 'karthik.fr8.in',
+        created_by: context.email,
         customer_id: customer_id
       }
     })

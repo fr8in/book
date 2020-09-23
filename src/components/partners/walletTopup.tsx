@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect,useContext } from 'react'
 import { Modal, Table, Row, Button, Col, Radio, message } from 'antd'
 import _ from 'lodash'
 import { gql, useQuery, useMutation } from '@apollo/client'
+import userContext from '../../lib/userContaxt'
 
 const PARTNER_MANUAL_TOPUP = gql`
 query partner_invoiced($id: Int!){
@@ -34,6 +35,7 @@ const walletTopup = (props) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedTopUps, setSelectedTopUps] = useState([])
   const [total, setTotal] = useState(0)
+  const context = useContext(userContext)
 
   const { loading, data, error } = useQuery(
     PARTNER_MANUAL_TOPUP,
@@ -74,7 +76,7 @@ const walletTopup = (props) => {
   const onSubmit = () => {
     partner_manual_topup({
       variables: {
-        created_by: 'jay@fr8.in',
+        created_by: context.email,
         topups: selectedTopUps.map(data => {
           return {
             docnum: data.docnum,

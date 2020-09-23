@@ -1,9 +1,10 @@
 
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { Modal, Button, Input, Form, Row, Col, Select, message } from 'antd'
 import CitySelect from '../common/citySelect'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import get from 'lodash/get'
+import userContext from '../../lib/userContaxt'
 
 const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
   search_customer(args:{search:$search}){
@@ -57,7 +58,8 @@ insert_trip(objects: {
 const CreateExcessLoad = (props) => {
   const initial = { search: '', customer_id: null, source_id: null, destination_id: null, disableButton: false }
   const [obj, setObj] = useState(initial)
-
+  const context = useContext(userContext)
+  
   const { loading, error, data } = useQuery(
     CUSTOMER_SEARCH,
     {
@@ -119,7 +121,7 @@ const CreateExcessLoad = (props) => {
         truck_type_id: parseInt(form.truck_type, 10),
         description: form.comment,
         topic: 'Excess Load Created',
-        created_by: 'Karthik'
+        created_by: context.email
       }
     })
   }

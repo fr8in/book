@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { Row, Button, Input, message, Space } from 'antd'
 import { gql, useMutation } from '@apollo/client'
+import userContext from '../../lib/userContaxt'
 
 const INSERT_PARTNER_REJECT_MUTATION = gql`
 mutation partner_kyc_reject ($description:String, $topic:String, $partner_id: Int, $created_by:String, $partner_status_id:Int,$id:Int! ){
@@ -22,6 +23,7 @@ const KycReject = (props) => {
   const { partner_id } = props
   const { onHide } = props
   const [userComment, setUserComment] = useState('')
+  const context = useContext(userContext)
 
   console.log('partner_id', partner_id)
   const [insertComment] = useMutation(
@@ -43,7 +45,7 @@ const KycReject = (props) => {
     insertComment({
       variables: {
         partner_id: partner_id,
-        created_by: 'shilpa',
+        created_by: context.email,
         description: userComment,
         topic: 'Kyc Rejected',
         partner_status_id: 3,

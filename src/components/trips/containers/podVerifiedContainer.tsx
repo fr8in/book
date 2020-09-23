@@ -34,10 +34,14 @@ const DeliveredContainer = () => {
     limit: filter.limit,
     where: where
   }
+  const status_fliter={
+    trip_statusName: initialFilter.trip_statusName
+  }
 
   const { loading, error, data } = useQuery(
     TRIPS_QUERY,
     {
+      variables: status_fliter,
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }

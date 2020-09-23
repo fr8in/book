@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { Row, Col, Radio, Input, Select, Form, Button, message } from 'antd'
 import { gql, useSubscription, useMutation } from '@apollo/client'
+import userContext from '../../lib/userContaxt'
 
 const CREDIT_DEBIT_ISSUE_TYPE_SUBSCRIPTION = gql`
 subscription credit_debit_issue_type {
@@ -69,6 +70,7 @@ create_debit_track(
 const CreditNote = (props) => {
   const {trip_id} = props
   const [radioType, setRadioType] = useState('Credit Note')
+  const context = useContext(userContext)
 
   const { loading, error, data } = useSubscription(
     CREDIT_DEBIT_ISSUE_TYPE_SUBSCRIPTION
@@ -127,7 +129,7 @@ const create_credit_debit = (form) =>{
         amount: parseFloat(form.amount),
         comment: form.comment,
         trip_id: parseInt(trip_id) ,
-        created_by: "jay"
+        created_by: context.email
       }   
     })
   }
@@ -138,7 +140,7 @@ const create_credit_debit = (form) =>{
         amount: parseFloat(form.amount),
         comment: form.comment,
         trip_id: parseInt(trip_id) ,
-        created_by: "jay"
+        created_by: context.email
       }   
     })
   }
