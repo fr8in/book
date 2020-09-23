@@ -1,6 +1,8 @@
+import { useContext } from 'react'
 import { Row, Col, Table, Input, Button, message, Form } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import moment from 'moment'
+import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
 
 const CUSTOMER_COMMENT_SUBSCRIPTION = gql`
@@ -30,7 +32,7 @@ const INSERT_CUSTOMER_COMMENT_MUTATION = gql`
 `
 const customerComment = (props) => {
   const { customer_id } = props
-
+  const context = useContext(userContext)
   const [form] = Form.useForm()
 
   const { loading, error, data } = useQuery(
@@ -64,7 +66,7 @@ const customerComment = (props) => {
     insertComment({
       variables: {
         customer_id: customer_id,
-        created_by: 'shilpa@fr8.in',
+        created_by: context.email,
         description: form.comment,
         topic: customer_status_name
       }

@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Timeline, Row, Col, Input, Button, Card, message } from 'antd'
 import moment from 'moment'
 import { gql, useMutation, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
+import userContext from '../../lib/userContaxt'
 
 const TRIP_COMMENTS = gql`
 subscription trip_comments($id: Int!) {
@@ -30,7 +31,7 @@ mutation trip_comment($description:String, $topic:String, $trip_id: Int, $create
 
 const TripComment = (props) => {
   const { trip_id, trip_status } = props
-
+  const context = useContext(userContext)
   const [tripComment, setTripComment] = useState('')
 
   const { loading, data, error } = useSubscription(
@@ -64,7 +65,7 @@ const TripComment = (props) => {
     insertComment({
       variables: {
         trip_id: trip_id,
-        created_by: 'deva@fr8.in',
+        created_by: context.email,
         description: tripComment,
         topic: trip_status
       }

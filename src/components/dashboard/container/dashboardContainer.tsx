@@ -13,12 +13,10 @@ import WaitingForLoadContainer from './waitingForLoadContainer'
 import Orders from '../../reports/orders'
 import Revenue from '../../reports/revenue'
 import Progress from '../../reports/progress'
-
 const { TabPane } = Tabs
 
 const DashboardContainer = (props) => {
   const { filters } = props
-  console.log('filters', filters)
   const initial = { excessLoad: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
