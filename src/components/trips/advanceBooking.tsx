@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { Modal, Button, Row, Col, Form, Input, message } from 'antd'
 import get from 'lodash/get'
 import PaymentTraceability from '../customers/paymentTraceability'
 import { gql, useMutation } from '@apollo/client'
+import userContext from '../../lib/userContaxt'
 
 const CUSTOMER_ADVANCE = gql`
 mutation customer_advance(
@@ -32,6 +33,7 @@ const AdvanceBooking = (props) => {
   const [disableButton, setDisableButton] = useState(false)
   const [amount, setAmount] = useState(null)
   const [cash, setCash] = useState(null)
+  const context = useContext(userContext)
 
   const [customer_advance_booking] = useMutation(
     CUSTOMER_ADVANCE,
@@ -64,7 +66,7 @@ const AdvanceBooking = (props) => {
         wallet: parseFloat(amount),
         cash: parseFloat(form.cash),
         docentry: selectedRow[0].customer_incoming_id,
-        created_by: 'karthik@fr8.in'
+        created_by: context.email
       }
     })
   }

@@ -17,6 +17,8 @@ import DestinationOutDate from './tripDestinationOut'
 import ViewFile from '../common/viewFile'
 import get from 'lodash/get'
 import { gql, useMutation, useLazyQuery } from '@apollo/client'
+import { useContext } from 'react'
+import userContext from '../../lib/userContaxt'
 
 const GET_WORD = gql`
 query loading_memo($id:Int!){
@@ -75,6 +77,7 @@ const TripTime = (props) => {
   const { trip_info } = props
   const initial = { checkbox: false, mail: false, deletePO: false, godownReceipt: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+  const context = useContext(userContext)
 
   const [getWord, { loading, data, error, called }] = useLazyQuery(GET_WORD)
   const [getPdf, { loading: pdfloading, data: pdfdata, error: pdferror, called: pdfcalled }] = useLazyQuery(GET_PDF)
@@ -171,7 +174,7 @@ const TripTime = (props) => {
     processAdvance({
       variables: {
         tripId: trip_info.id,
-        createdBy: 'shilpa.v@fr8.in'
+        createdBy: context.email
       }
     })
   }

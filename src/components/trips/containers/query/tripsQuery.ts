@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const TRIPS_QUERY = gql`
-query trips{
-  trip_status {
+query trips($trip_statusName:[String!]){
+  trip_status (where: {name: {_in: $trip_statusName}}){
     id
     name
   }
