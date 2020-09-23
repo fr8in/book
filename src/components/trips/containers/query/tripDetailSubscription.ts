@@ -9,6 +9,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       source_out
       loaded
       status_at
+      pod_verified_at
       destination_in
       destination_out
       driver{
@@ -18,6 +19,8 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       delay
       eta
       po_date
+      ap
+      ar
       unloaded_private_godown
       lr
       customer_confirmation
@@ -71,12 +74,12 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       ton
       is_price_per_ton
       price_per_ton
-      #trip_files(where: {deleted_at: {_is_null:true}}){
-       # id
-       # type
-       # file_path
-       # folder
-      #}
+      trip_files(where: {deleted_at: {_is_null:true}}){
+       id
+       type
+       file_path
+       folder
+      }
     }
   }
 `
