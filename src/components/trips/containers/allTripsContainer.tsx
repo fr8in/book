@@ -45,12 +45,8 @@ query trips(
     }
     km    
     tat
-    trip_prices(limit:1, where:{deleted_at:{_is_null:true}})
-    {
-      id
-      customer_price
-      partner_price
-    }
+    customer_price
+    partner_price 
   }
 }`
 
@@ -64,7 +60,7 @@ const AllTripsContainer = (props) => {
     destinationname: null,
     truckno: null,
     id: null,
-    trip_statusName: ['Delivered', 'Invoiced', 'Paid', 'Received', 'Closed']
+    trip_statusName: ['Delivered', 'Invoiced', 'Paid', 'Recieved', 'Closed']
   }
   const [filter, setFilter] = useState(initialFilter)
 
@@ -74,8 +70,8 @@ const AllTripsContainer = (props) => {
     partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
     customer: { name: { _ilike: filter.customername ? `%${filter.customername}%` : null } },
     source: { name: { _ilike: filter.sourcename ? `%${filter.sourcename}%` : null } },
-    destination: { name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } }
-    // truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } }
+    destination: { name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } },
+    truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } }
   }
 
   const variables = {

@@ -220,8 +220,7 @@ const CustomerDetailContainer = (props) => {
                   visible={visible.transfer}
                   onHide={onHide}
                   cardcode={cardcode}
-                  walletcode={customer_info && customer_info.walletcode}
-                  wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)}
+                  customer_id={customer_info && customer_info.id}
                 />
               )}
               {visible.rebate && (
@@ -230,11 +229,10 @@ const CustomerDetailContainer = (props) => {
                   onHide={onHide}
                   cardcode={cardcode}
                   walletcode={customer_info && customer_info.walletcode}
-                  wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)}
                 />
               )}
               {visible.wallet && (
-                <WalletTopup visible={visible.wallet} onHide={onHide} walletcode={customer_info && customer_info.walletcode} />
+                <WalletTopup visible={visible.wallet} onHide={onHide} customer_id={customer_info && customer_info.id} />
               )}
               {visible.showModal && (
                 <AccStmtMail visible={visible.showModal} onHide={onHide} />

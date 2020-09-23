@@ -1,13 +1,49 @@
 import { Table, Row, Col } from 'antd'
 import moment from 'moment'
-import _ from 'lodash'
 import Truncate from '../common/truncate'
+import { gql, useSubscription } from '@apollo/client'
+import get from 'lodash/get'
+import sumBy from 'lodash/sumBy'
+
+const TRIP_RECEIBABLES = gql`
+subscription trips_receivables($id: Int!) {
+  trip(where: {id: {_eq:$id}}){
+      trip_receivables {
+        id
+        name
+        amount
+        created_at
+      }
+      trip_receipts{
+        id
+        amount
+        comment
+        mode
+        created_at
+      }
+  }
+}`
 
 const Receivables = (props) => {
-  const { trip_pay } = props
+  const { trip_id } = props
 
-  const receivables = _.sumBy(trip_pay.trip_receivables, 'amount').toFixed(2)
-  const receipts = _.sumBy(trip_pay.trip_receipts, 'amount').toFixed(2)
+  const { loading, data, error } = useSubscription(
+    TRIP_RECEIBABLES,
+    {
+      variables: { id: trip_id }
+    }
+  )
+
+  console.log('Receivables Error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+
+  const trip_pay = get(_data, 'trip[0]', [])
+
+  const receivables = sumBy(trip_pay.trip_receivables, 'amount').toFixed(2)
+  const receipts = sumBy(trip_pay.trip_receipts, 'amount').toFixed(2)
 
   const customerChargeColumns = [
     {
@@ -63,6 +99,7 @@ const Receivables = (props) => {
         columns={customerChargeColumns}
         pagination={false}
         size='small'
+        rowKey={record => record.id}
       />
       <Row className='payableHead' gutter={6}>
         <Col xs={12}><b>Receipts</b></Col>
@@ -76,6 +113,7 @@ const Receivables = (props) => {
         dataSource={trip_pay.trip_receipts}
         pagination={false}
         size='small'
+        rowKey={record => record.id}
       />
     </>
   )

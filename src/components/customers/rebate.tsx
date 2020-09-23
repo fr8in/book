@@ -13,7 +13,7 @@ mutation customer_excess_payment($cardcode: String!, $walletcode: String!, $cust
 }`
 
 const Rebate = (props) => {
-  const { visible, onHide, cardcode, walletcode, wallet_balance } = props
+  const { visible, onHide, cardcode, walletcode } = props
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
   const [disableButton, setDisableButton] = useState(true)
@@ -72,7 +72,6 @@ const Rebate = (props) => {
             selectedRowKeys={selectedRowKeys}
             selectOnchange={selectOnchange}
             cardcode={cardcode}
-            wallet_balance={'Wallet Balance: ₹' + wallet_balance}
             amount={amount}
             setAmount={setAmount}
           />

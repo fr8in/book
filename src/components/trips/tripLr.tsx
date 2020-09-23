@@ -67,7 +67,7 @@ const TripLr = (props) => {
 
   const disableLr = trip_info.trip_status && trip_info.trip_status.name === 'Invoiced' &&
                     trip_info.trip_status.name === 'Paid' &&
-                    trip_info.trip_status.name === 'Received' &&
+                    trip_info.trip_status.name === 'Recieved' &&
                     trip_info.trip_status.name === 'Closed'
   console.log('lr', lr_files)
   return (

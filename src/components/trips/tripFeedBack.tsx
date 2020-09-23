@@ -1,6 +1,8 @@
+import { useContext } from 'react'
 import { Modal, Button, Row, Input, Col, Table, message, Tooltip, Form } from 'antd'
 import { gql, useSubscription, useMutation } from '@apollo/client'
 import moment from 'moment'
+import userContext from '../../lib/userContaxt'
 
 const TRIP_COMMENT_QUERY = gql`
   subscription trip_comment($id: Int!){
@@ -23,12 +25,12 @@ mutation trip_comment_insert($description:String, $topic:String, $trip_id: Int, 
       trip_id
     }
   }
-}
-`
+}`
 
 const Tripcomment = (props) => {
   const { visible, tripid, onHide } = props
-  console.log('tripid',tripid)
+  const context = useContext(userContext)
+
   const [form] = Form.useForm()
 
   const { loading, error, data } = useSubscription(
@@ -57,7 +59,7 @@ const Tripcomment = (props) => {
     InsertComment({
       variables: {
         trip_id: tripid,
-        created_by: 'babu@Fr8Branch.in',
+        created_by: context.email,
         description: form.comment,
         topic: 'text'
       }

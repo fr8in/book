@@ -1,31 +1,30 @@
-import React from 'react'
-import App from 'next/app'
+import React, { useState, useEffect } from 'react'
+// import App from 'next/app'
 import 'antd/dist/antd.less'
 import '../styles/global.less'
 
 import LoginLayout from '../components/layout/loginLayout'
 import { withApollo } from '../lib/apollo'
 
+import { auth } from '../lib/auth'
 
-class MyApp extends App {
-
-  render () {
-
-    const { Component, pageProps, router } = this.props
-
-    if (router.pathname.startsWith('/login')) {
-      return (
-        <LoginLayout>
-          <Component {...pageProps} />
-        </LoginLayout>
-      )
-    }
-
+const MyApp = (props) => {
+  const [authState, setAuthState] = useState({ status: 'loading' })
+  useEffect(() => {
+    return auth(setAuthState)
+  }, [])
+  const { Component, pageProps, router } = props
+  if (router.pathname.startsWith('/login')) {
     return (
-     
-        <Component {...pageProps}  />
+      <LoginLayout authState={authState}>
+        <Component {...pageProps} />
+      </LoginLayout>
     )
   }
+
+  return (
+    <Component {...pageProps} authState={authState} />
+  )
 }
 
 export default withApollo({ ssr: true })(MyApp)

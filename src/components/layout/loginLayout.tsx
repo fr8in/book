@@ -1,7 +1,17 @@
 import Head from 'next/head'
 import '../../styles/login.less'
+import Router from 'next/router'
+import Loading from '../common/loading'
 
-const LoginLayout = (props) => {
+
+const Auth = (props) => {
+  if(props.authState.status === 'in') {
+    Router.push('/')
+    return  <Loading  />
+      }
+      else if(props.authState.status !== 'out') {
+       return  <Loading  />
+              }
   return (
     <>
       <Head>
@@ -17,4 +27,4 @@ const LoginLayout = (props) => {
   )
 }
 
-export default LoginLayout
+export default Auth

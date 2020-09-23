@@ -2,9 +2,9 @@
 import PageLayout from '../../components/layout/pageLayout'
 import TrucksList from '../../components/trucks/container/truckContainer'
 
-const Trucks = () => {
+const Trucks = (props) => {
   return (
-    <PageLayout title='Trucks'>
+    <PageLayout {...props} title='Trucks'>
       <TrucksList />
     </PageLayout>
   )

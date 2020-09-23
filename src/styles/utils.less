@@ -2,6 +2,7 @@
 .m0 {margin: 0;}
 .mb0 {margin-bottom: 0;}
 .mb10 {margin-bottom: 10px;}
+.mtb10 {margin-top: 10px; margin-bottom: 10px;}
 .mb15 {margin-bottom: 15px;}
 .mt5 {margin-top: 5px !important;}
 .mt10 {margin-top: 10px !important;}
@@ -14,6 +15,7 @@
 .pl10 { padding-left: 10px !important;}
 .pl15 { padding-left: 15px !important;}
 .pt0 { padding-top: 0 !important}
+.pt10 { padding-top: 10px !important}
 // Bold and Underline
 .b { font-weight: bold;}
 .u { text-decoration: underline;}
@@ -24,6 +26,7 @@
 .border-top-dark { border-top: solid 2px @dark-blue}
 // Text color 
 .text-primary { color: @primary }
+.text-body { color: rgba(0, 0, 0, 0.65) }
 .text-gray { color: lighten(@gray, 15%) }
 // Text align
 .text-right { text-align: right;}
@@ -32,6 +35,33 @@
 // Floats 
 .pull-right { float: right }
 .pull-left { float: left }
+// font size
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-weight: bold;
+}
+.h1 {
+    font-size: 24px;
+}
+.h2 {
+    font-size: 20px;
+}
+.h3 {
+    font-size: 18px;
+}
+.h4 {
+    font-size: 14px;
+}
+.h5 {
+    font-size: 12px;
+}
+.h6 {
+    font-size: 11px;
+}
+// Scroll Box
+.scroll-box {
+    height: 300px;
+    overflow-y: auto;
+}
 // Show Hide
 .hideLabel {
     .ant-form-item-label { visibility: hidden }

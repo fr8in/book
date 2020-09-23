@@ -3,16 +3,16 @@ import { Modal, Input, Radio, Button, Form, Select, Tag, message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 
 const POD_RECEIPT_BY_EMP_MUTATION = gql`
-mutation trip_pod_courier_update($objects: [trip_pod_receipt_insert_input!]!, $trip_ids: [Int!], $pod_status_id: Int!) {
+mutation trip_pod_courier_update($objects: [trip_pod_receipt_insert_input!]!, $trip_ids: [Int!], $pod_time: trip_set_input!) {
 insert_trip_pod_receipt(objects: $objects) {
   returning {
       id
     }
   }
-  update_trip(where: {id:{_in:$trip_ids}}, _set:{trip_pod_status_id: $pod_status_id }){
+  update_trip(where: {id:{_in:$trip_ids}}, _set:$pod_time){
     returning{
       id
-      trip_pod_status_id
+      pod_verified_at
     }
     affected_rows
   }
@@ -110,11 +110,12 @@ const PodReceiptAndDispatch = (props) => {
   }) : null
 
   const onPodReceiptDispatchSubmit = () => {
+    const now = new Date().toISOString()
     updatePodCourierDetail({
       variables: {
         objects: (selectValue === 'Internal') ? empObjects : docketObjects,
         trip_ids: trip_ids,
-        pod_status_id: podDispatch ? 2 : 1
+        pod_time: podDispatch ? { pod_dispatched_at: now } : { pod_verified_at: now }
       }
     })
   }

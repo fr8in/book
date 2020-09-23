@@ -2,7 +2,7 @@ import DashboardMain from './dashboard'
 // import { useEffect, useState } from 'react'
 // import Router from 'next/router'
 
-const Dashboard = () => {
+const Dashboard = (props) => {
   // const [loggedIn, setLoggedIn] = useState(false)
 
   // useEffect(() => {
@@ -11,7 +11,7 @@ const Dashboard = () => {
   // }, [loggedIn])
 
   return (
-    <DashboardMain />
+    <DashboardMain {...props} />
   )
 }
 export default Dashboard

@@ -1,9 +1,9 @@
 import PageLayout from '../../components/layout/pageLayout'
 import PartnersContainer from '../../components/partners/container/partnersContainer'
 
-const Partners = () => {
+const Partners = (props) => {
   return (
-    <PageLayout title='Partner'>
+    <PageLayout {...props} title='Partner'>
       <PartnersContainer />
     </PageLayout>
 

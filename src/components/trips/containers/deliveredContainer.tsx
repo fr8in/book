@@ -1,6 +1,6 @@
 import TripsTracking from '../tripsTracking'
-import { useQuery } from '@apollo/client'
-import { TRIPS_QUERY } from './query/tripsQuery'
+import { useQuery, useSubscription } from '@apollo/client'
+import { TRIPS_QUERY, TRIPS } from './query/tripsQuery'
 import { useState } from 'react'
 import get from 'lodash/get'
 import u from '../../../lib/util'
@@ -33,24 +33,38 @@ const DeliveredContainer = (props) => {
     offset: filter.offset,
     limit: filter.limit,
     where: where,
+  }
+
+  const status_fliter={
     trip_statusName: initialFilter.trip_statusName
   }
 
   const { loading, error, data } = useQuery(
     TRIPS_QUERY,
     {
-      variables: variables,
+      variables: status_fliter,
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
   )
   console.log('DeliveredContainer error', error)
-  var _data = {}
+
+  const { data: tripsdata } = useSubscription(
+    TRIPS,
+    {
+      variables: variables
+    }
+  )
+
+  let _data = {}
+  let _tripdata = {}
   if (!loading) {
     _data = data
+    _tripdata = tripsdata
   }
   // all trip data
-  const trip = get(_data, 'trip', [])
+  const trip = get(_tripdata, 'trip', [])
+
   // for pagination
   const record_count = get(_data, 'rows.aggregate.count', 0)
 
@@ -76,7 +90,7 @@ const DeliveredContainer = (props) => {
     setFilter({ ...filter, truckno: value, offset: 0 })
   }
   const onFilter = (value) => {
-    setFilter({ ...filter, trip_statusName: value, offset: 0 })
+    setFilter({ ...filter, trip_statusName: value })
   }
   const onTripIdSearch = (value) => {
     setFilter({ ...filter, id: value, offset: 0 })

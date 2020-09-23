@@ -1,7 +1,9 @@
 import { Row, Col, Form, Input, Button, Select, Space, Card, message } from 'antd'
 import { gql, useQuery, useMutation, useLazyQuery } from '@apollo/client'
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import get from 'lodash/get'
+import userContext from '../../../../lib/userContaxt'
+
 const { Option } = Select
 
 const PARTNER_SEARCH = gql`
@@ -34,6 +36,7 @@ const AddFastagContainer = () => {
   const initial = { search: '', partner_id: null }
   const [obj, setObj] = useState(initial)
   const [truck_id, setTruck_id] = useState('')
+  const context = useContext(userContext)
   const { loading, error, data } = useQuery(
     PARTNER_SEARCH,
     {
@@ -86,7 +89,7 @@ const AddFastagContainer = () => {
         tagId: form.tag_id,
         truckNo: form.truck_no,
         partnerId: obj.partner_id,
-        createdBy: 'pravalika.k@fr8.in'
+        createdBy: context.email
       }
     })
   }

@@ -22,6 +22,34 @@ a, .link {
   display: flex;
   justify-content: center;
   align-items: center;
+  &.preloading {
+    height: 100vh;
+    background: repeating-linear-gradient(
+                    -45deg,
+                    rgba(0,0,0,0.02), 
+                    rgba(0,0,0,0.02) 2px,
+                    transparent 2px, /* Transparent beginning at pixel 2 */
+                    transparent 10px /* Transparent ending at pixel 12 (10 + 2) */
+                ), linear-gradient(to top, @dark-blue, @deep-blue);
+    background-size: cover;
+    h1 {
+      font-size: 48px;
+      color: @white;
+      margin-bottom: 0;
+      line-height: normal;
+      letter-spacing: 4px;
+      font-weight: 600;
+      text-shadow: @text-shadow-dark;
+      > span {
+          color: @primary
+      }
+    }
+    p {
+      color: darken(@tertiary, 5%);
+      text-shadow: @text-shadow-dark;
+      margin-bottom: 25px;
+    }
+  }
 }
 .brand {
   height: 64px;
@@ -364,6 +392,12 @@ a, .link {
     height: 320px;
     border: 1px solid @border-light;
   }
+}
+
+.radio-block {
+  display: block;
+  height: 30px;
+  line-height: 30px;
 }
 
 @media only screen and (max-width: 767px) {

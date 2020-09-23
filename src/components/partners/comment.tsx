@@ -1,6 +1,8 @@
 import { Row, Col, Table, Input, Button, message, Form } from 'antd'
 import { gql, useMutation, useSubscription } from '@apollo/client'
 import moment from 'moment'
+import { useContext } from 'react'
+import userContext from '../../lib/userContaxt'
 
 const PARTNER_COMMENT_SUBSCRIPTION = gql`
   subscription partner_comment($id: Int!){
@@ -29,7 +31,7 @@ const INSERT_PARTNER_COMMENT_MUTATION = gql`
 `
 const Comment = (props) => {
   const { partner_id } = props
-
+  const context = useContext(userContext)
   const [form] = Form.useForm()
 
   const { loading, error, data } = useSubscription(
@@ -59,7 +61,7 @@ const Comment = (props) => {
     insertComment({
       variables: {
         partner_id: partner_id,
-        created_by: 'shilpa@fr8.in',
+        created_by: context.email,
         description: form.comment,
         topic: partner_status_name
       }

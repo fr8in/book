@@ -66,8 +66,8 @@ const CREATE_PO = gql`
       $partner_id:Int,
       $customer_price: Float,
       $partner_price: Float,
-      $ton: float8,
-      $per_ton:float8,
+      $ton: Float,
+      $per_ton:Float,
       $is_per_ton:Boolean, 
       $mamul: Float,
       $including_loading: Boolean,
@@ -89,21 +89,17 @@ const CREATE_PO = gql`
       truck_type_id: $truck_type_id,
       driver_id: $driver_id,
       loading_point_contact_id: $loading_point_id
-      trip_prices: {
-        data: {
-          customer_price: $customer_price,
-          partner_price: $partner_price,
-          ton: $ton,
-          price_per_ton:$per_ton,
-          is_price_per_ton: $is_per_ton,
-          mamul: $mamul,
-          including_loading: $including_loading,
-          including_unloading: $including_unloading,
-          bank: $bank,
-          to_pay:$to_pay,
-          cash:$cash
-        }
-      }
+      customer_price: $customer_price,
+      partner_price: $partner_price,
+      ton: $ton,
+      price_per_ton:$per_ton,
+      is_price_per_ton: $is_per_ton,
+      mamul: $mamul,
+      including_loading: $including_loading,
+      including_unloading: $including_unloading,
+      bank: $bank,
+      to_pay:$to_pay,
+      cash:$cash
     }) {
       returning {
         id

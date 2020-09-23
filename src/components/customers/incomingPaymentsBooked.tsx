@@ -12,7 +12,7 @@ const IncomingPaymentsBooked = (props) => {
       render: (text, render) => text ? moment(text).format('DD-MMM-YY') : '-'
     },
     {
-      title: 'Load Id',
+      title: '#',
       dataIndex: 'trip_id',
       width: '20%'
     },

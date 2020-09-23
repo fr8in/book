@@ -5,7 +5,7 @@ import Payables from '../../../../mock/payables/payables'
 const DownPayment = () => {
   const DownPayment = [
     {
-      title: 'Load ID',
+      title: '#',
       dataIndex: 'loadId',
       key: 'loadId',
       width: '4%',

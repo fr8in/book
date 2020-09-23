@@ -1,4 +1,4 @@
-import { Card, Table, Button, Input } from 'antd'
+import { Card, Table, Button, Input, message } from 'antd'
 import moment from 'moment'
 import Truncate from '../common/truncate'
 import { gql, useQuery } from '@apollo/client'
@@ -13,6 +13,9 @@ query customer_booking($cardcode: String) {
     id
     cardcode
     walletcode
+    customer_accounting {
+      wallet_balance
+    }
     customer_incomings(where: {balance: {_neq: 0}}) {
       id
       created_at
@@ -26,7 +29,7 @@ query customer_booking($cardcode: String) {
 }
 `
 const PaymentTraceability = (props) => {
-  const { selectedRowKeys, selectOnchange, cardcode, wallet_balance, amount, setAmount, form } = props
+  const { selectedRowKeys, selectOnchange, cardcode, amount, setAmount, form } = props
   const { visible, onShow, onHide } = useShowHide('')
 
   const { loading, data, error } = useQuery(
@@ -45,11 +48,17 @@ const PaymentTraceability = (props) => {
 
   const customer = get(_data, 'customer[0]', null)
   const customer_incomings = get(customer, 'customer_incomings', [])
-  console.log('customer_incomings', customer_incomings)
-  const onAmountChange = (e) => {
-    setAmount(e.target.value)
-    if (form) {
-      form.setFieldsValue({ amount: e.target.value })
+  const wallet_balance = get(customer, 'customer_accounting.wallet_balance', 0)
+
+  const onAmountChange = (e, balance) => {
+    const value = parseFloat(e.target.value) || 0
+    if (value > balance) {
+      message.error(`Don't enter more than ₹${balance}`)
+    } else {
+      setAmount(value)
+      if (form) {
+        form.setFieldsValue({ amount: value })
+      }
     }
   }
 
@@ -84,7 +93,13 @@ const PaymentTraceability = (props) => {
     render: (text, record) => {
       const enableSelectedRows = _.includes(selectedRowKeys, record.id)
       return (
-        <Input size='small' value={enableSelectedRows ? amount : null} disabled={!enableSelectedRows} onChange={onAmountChange} />
+        <Input
+          type='number'
+          size='small'
+          value={enableSelectedRows ? amount : null}
+          disabled={!enableSelectedRows}
+          onChange={(e) => onAmountChange(e, record.balance)}
+        />
       )
     }
   },
@@ -92,7 +107,7 @@ const PaymentTraceability = (props) => {
     title: 'Remarks',
     dataIndex: 'comment',
     width: '40%',
-    render: (text, record) => <Truncate data={text} length={36} />
+    render: (text, record) => <Truncate data={text} length={32} />
   }
   ]
 
@@ -100,7 +115,7 @@ const PaymentTraceability = (props) => {
     <Card
       size='small'
       className='card-body-0'
-      title={wallet_balance}
+      title={'Wallet Balance: ₹' + wallet_balance}
       extra={<Button type='primary' size='small' onClick={() => onShow('wallet')}> Wallet Top-up </Button>}
     >
       <Table
@@ -117,7 +132,7 @@ const PaymentTraceability = (props) => {
         pagination={false}
       />
       {visible.wallet && (
-        <WalletTopup visible={visible.wallet} onHide={onHide} walletcode={customer.walletcode} />
+        <WalletTopup visible={visible.wallet} onHide={onHide} customer_id={customer.id} />
       )}
     </Card>
   )

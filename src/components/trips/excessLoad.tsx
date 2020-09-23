@@ -42,18 +42,7 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
               cardcode
               name
             }
-            trip_prices(limit: 1, where:{deleted_at:{_is_null: true}}) {
-              id
-              customer_price
-              partner_price
-              mamul
-              is_price_per_ton
-              ton
-              price_per_ton
-              bank
-              cash
-              to_pay
-            }
+            customer_price
             created_at
             leads(where:{deleted_at:{_is_null:true}}) {
               id
@@ -182,7 +171,7 @@ const ExcessLoad = (props) => {
     {
       title: 'S0 Price',
       width: '10%',
-      render: (text, record) => record.trip_prices && record.trip_prices.length > 0 && record.trip_prices[0].customer_price ? record.trip_prices[0].customer_price : ''
+      render: (text, record) => record.customer_price
     },
     {
       title: 'Created On',

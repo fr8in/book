@@ -1,5 +1,7 @@
 import { Modal, Button, Input, Row, Form, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
+import { useContext } from 'react'
+import userContext from '../../lib/userContaxt'
 
 const INSERT_ANNOUNCEMENT_MUTATION = gql`
 mutation create_announcement($title: String, $description: String, $createdBy: String, $createdAt: timestamp) {
@@ -18,6 +20,7 @@ mutation create_announcement($title: String, $description: String, $createdBy: S
 `
 const CreateAnnouncenment = (props) => {
   const { visible, onHide } = props
+  const context = useContext(userContext)
 
   const [updateAnnouncement] = useMutation(
     INSERT_ANNOUNCEMENT_MUTATION,
@@ -34,7 +37,7 @@ const CreateAnnouncenment = (props) => {
     updateAnnouncement({
       variables: {
         title: form.title,
-        createdBy: 'karthi@fr8.in',
+        createdBy: context.email,
         description: form.description,
         createdAt: 'now'
       }

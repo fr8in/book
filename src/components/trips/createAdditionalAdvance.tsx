@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { Row, Col, Radio, Form, Input, Button , message} from 'antd'
 import { gql, useMutation, useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
+import userContext from '../../lib/userContaxt'
 
 const CREATE_ADDITIONAL_ADVANCE = gql`
 mutation additional_advance($input: AdditionalAdvanceInput) {
@@ -26,6 +27,7 @@ const CreateAdditionalAdvance = (props) => {
 
   const [radioValue, setRadioValue] = useState('WALLET')
   const [form] = Form.useForm()
+  const context = useContext(userContext)
 
   const [getBankDetail, { loading, data, error, called }] = useLazyQuery(IFSC_VALIDATION)
 
@@ -71,7 +73,7 @@ const CreateAdditionalAdvance = (props) => {
             wallet_code: trip_info && trip_info.partner && trip_info.partner.walletcode ,
             payment_mode: radioValue,
             comment: form.comment,
-            created_by: "pravalika.k@fr8.in"
+            created_by: context.email
           }
         }
       })
@@ -86,7 +88,7 @@ const CreateAdditionalAdvance = (props) => {
         wallet_code: trip_info && trip_info.partner && trip_info.partner.walletcode ,
         payment_mode: radioValue,
         comment: form.comment,
-        created_by: "pravalika.k@fr8.in",
+        created_by: context.email,
         bank_detail: {
           account_name:form.account_name,
           account_number:form.account_number,

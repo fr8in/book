@@ -2,8 +2,9 @@ import React from 'react'
 import { Modal, Button, Input, Row, Col, Form, Select, message } from 'antd'
 import { PrinterOutlined } from '@ant-design/icons'
 import Link from 'next/link'
-import { gql, useSubscription, useQuery, useMutation } from '@apollo/client'
+import { gql, useSubscription, useMutation } from '@apollo/client'
 import Loading from '../common/loading'
+import get from 'lodash/get'
 
 const CUSTOMER_BILLING_ADDRESS_FOR_INVOICE = gql`
 subscription customer_billing($cardcode: String!, $id: Int!) {
@@ -13,20 +14,17 @@ subscription customer_billing($cardcode: String!, $id: Int!) {
       id
       gst
       hsn
-      customer_branch {
+      customer_office {
         id
         branch_name
         name
         address
         pincode
         mobile
-        state {
-          id
-          name
-        }
+        state 
       }
     }
-    customer_branches{
+    customer_offices{
       id
       name
       branch_name
@@ -36,9 +34,9 @@ subscription customer_billing($cardcode: String!, $id: Int!) {
 
 const UPDATE_TRIP_CUSTOMER_BRANCH = gql`
 mutation update_trip_customer_branch($branch_id: Int, $id:Int!){
-  update_trip(_set:{customer_branch_id: $branch_id}, where:{id:{_eq:$id}}){
+  update_trip(_set:{customer_office_id: $branch_id}, where:{id:{_eq:$id}}){
     returning{
-      customer_branch{
+      customer_office{
         id
         name
         branch_name
@@ -84,11 +82,14 @@ const BillingAndInvoiced = (props) => {
   )
 
   console.log('TripDetailContainer Error', error)
-  if (loading) return null
-  const customer = data && data.customer ? data.customer[0] : null
-  const trip = customer && customer.trips ? customer.trips[0] : null
-  const customer_branch = trip && trip.customer_branch ? trip.customer_branch : null
-  const customer_branches = customer && customer.customer_branches ? customer.customer_branches : []
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const customer = get(_data, 'customer[0]', null)
+  const trip = get(customer, 'trips[0]', null)
+  const customer_branch = get(trip, 'customer_office', null)
+  const customer_branches = get(customer, 'customer_offices', [])
 
   const onBranchChange = (value, branch) => {
     update_trip_customer_branch({
@@ -142,7 +143,7 @@ const BillingAndInvoiced = (props) => {
                         onChange={onBranchChange}
                       >
                         {customer_branches && customer_branches.map(_branch => (
-                          <Select.Option key={_branch.id} value={_branch.branch_name}>{_branch.branch_name}</Select.Option>
+                          <Select.Option key={_branch.id} value={_branch.id}>{_branch.name}</Select.Option>
                         ))}
                       </Select>
                     </Form.Item>

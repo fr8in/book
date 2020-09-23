@@ -1,8 +1,7 @@
-import { Row, Col, Card, Form, Input, Space, Button, Checkbox, message } from 'antd'
+import { Row, Col, Card, Form, Space, Button, Checkbox, message } from 'antd'
 import {
   FilePdfOutlined,
   FileWordOutlined,
-  MailOutlined,
   DeleteOutlined,
   CloseCircleOutlined
 } from '@ant-design/icons'
@@ -18,6 +17,8 @@ import DestinationOutDate from './tripDestinationOut'
 import ViewFile from '../common/viewFile'
 import get from 'lodash/get'
 import { gql, useMutation, useLazyQuery } from '@apollo/client'
+import { useContext } from 'react'
+import userContext from '../../lib/userContaxt'
 
 const GET_WORD = gql`
 query loading_memo($id:Int!){
@@ -74,9 +75,9 @@ mutation process_advance ($tripId: Int!, $createdBy: String!) {
 `
 const TripTime = (props) => {
   const { trip_info } = props
-  console.log('trip_info', trip_info)
   const initial = { checkbox: false, mail: false, deletePO: false, godownReceipt: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+  const context = useContext(userContext)
 
   const [getWord, { loading, data, error, called }] = useLazyQuery(GET_WORD)
   const [getPdf, { loading: pdfloading, data: pdfdata, error: pdferror, called: pdfcalled }] = useLazyQuery(GET_PDF)
@@ -98,7 +99,6 @@ const TripTime = (props) => {
   let pdf_url = get(_pdfdata, 'trip[0].loading_memo', [])
 
   const onWordClick = () => {
-    console.log('trip_info.id', trip_info.id)
     getWord({
       variables: { id: trip_info.id }
     })
@@ -111,7 +111,6 @@ const TripTime = (props) => {
   }
 
   const onPdfClick = () => {
-    console.log('trip_info.id', trip_info.id)
     getPdf({
       variables: { id: trip_info.id }
     })
@@ -175,7 +174,7 @@ const TripTime = (props) => {
     processAdvance({
       variables: {
         tripId: trip_info.id,
-        createdBy: 'shilpa.v@fr8.in'
+        createdBy: context.email
       }
     })
   }
@@ -200,11 +199,10 @@ const TripTime = (props) => {
   const remove_sout = trip_info.trip_status && trip_info.trip_status.name === 'Intransit' && authorized
   const remove_dout = trip_info.trip_status && trip_info.trip_status.name === 'Delivered' && authorized
 
-  const toPayCheck = !!(trip_info.source_in && trip_info.source_out && trip_info.destination_in && (trip_info && trip_info.trip_prices[0] ? trip_info.trip_prices[0].to_pay : null))
-  console.log('toPayCheck', toPayCheck)
+  // const toPayCheck = !!(trip_info.source_in && trip_info.source_out && trip_info.destination_in && (trip_info && trip_info.trip_prices[0] ? trip_info.trip_prices[0].to_pay : null))
+  // console.log('toPayCheck', toPayCheck)
 
   const wh_files = trip_info && trip_info.trip_files && trip_info.trip_files.length > 0 ? trip_info.trip_files.filter(file => file.type === 'WH') : null
-  console.log('wh', wh_files)
 
   const driver_number = trip_info && trip_info.driver && trip_info.driver.mobile
 
@@ -221,7 +219,7 @@ const TripTime = (props) => {
                 <SourceOutDate source_out={trip_info.source_out} id={trip_info.id} />
               </Col>
               <Col xs={8}>
-                <Driver trip_info={trip_info} initialValue={driver_number}/>
+                <Driver trip_info={trip_info} initialValue={driver_number} />
               </Col>
             </Row>
             <Row gutter={10}>
@@ -241,7 +239,7 @@ const TripTime = (props) => {
                 </Form.Item>
               </Col>
             </Row>
-            <Row gutter={10}>
+            {/* <Row gutter={10}>
               <Col xs={8}>
                 <Form.Item label='To-Pay Amount' name='to_pay'>
                   <Input
@@ -268,20 +266,20 @@ const TripTime = (props) => {
                   <Button type='primary' htmlType='submit' disabled={!toPayCheck}>Submit</Button>
                 </Form.Item>
               </Col>
-            </Row>
+            </Row> */}
             <Row className='mb15'>
               <Col xs={20}>
                 <Checkbox disabled={!!(trip_info && trip_info.unloaded_private_godown === true)} onClick={() => onShow('godownReceipt')}>Unloaded at private godown</Checkbox>
               </Col>
               <Col xs={4} className='text-right'>
-              {wh_files && wh_files.length > 0 ? (
-                <ViewFile
-                  id={trip_info.id}
-                  type='trip'
-                  folder='warehousereceipt/'
-                  file_type='WH'
-                  file_list={wh_files}
-                />) : (null)}
+                {wh_files && wh_files.length > 0 ? (
+                  <ViewFile
+                    id={trip_info.id}
+                    type='trip'
+                    folder='warehousereceipt/'
+                    file_type='WH'
+                    file_list={wh_files}
+                  />) : (null)}
               </Col>
             </Row>
             <Row>
@@ -290,7 +288,7 @@ const TripTime = (props) => {
                   {po_delete &&
                     <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>}
                   {process_advance &&
-                    <Button type='primary' onClick={onProcessAdvance} >Process Advance</Button>}
+                    <Button type='primary' onClick={onProcessAdvance}>Process Advance</Button>}
                   {remove_sout &&
                     <Button danger icon={<CloseCircleOutlined />} onClick={onSoutRemove}>Sout</Button>}
                   {remove_dout &&
