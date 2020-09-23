@@ -16,13 +16,14 @@ const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
   }
 }`
 
-const EXCESS_LOAD_MUTATION = gql`mutation create_excees_load (
+const EXCESS_LOAD_MUTATION = gql`
+mutation create_excees_load (
   $source_id: Int, 
   $destination_id: Int, 
   $customer_id: Int, 
   $customer_price: Float, 
-  $ton: float8,
-  $rate_per_ton:float8,
+  $ton: Float,
+  $rate_per_ton:Float,
   $is_per_ton:Boolean, 
   $truck_type_id:Int,
   $description:String,
@@ -34,14 +35,10 @@ insert_trip(objects: {
   destination_id: $destination_id, 
   customer_id: $customer_id,
   truck_type_id: $truck_type_id,
-  trip_prices: {
-    data: {
-      customer_price: $customer_price,
-      ton: $ton,
-      price_per_ton:$rate_per_ton,
-      is_price_per_ton: $is_per_ton
-    }
-  }
+  customer_price: $customer_price,
+  ton: $ton,
+  price_per_ton:$rate_per_ton,
+  is_price_per_ton: $is_per_ton
   trip_comments:{
     data:{
       description:$description,
