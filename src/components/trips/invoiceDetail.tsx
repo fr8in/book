@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Row, Button, message } from 'antd'
+import { Row, Button, message, Divider } from 'antd'
 import LabelAndData from '../common/labelAndData'
 import { gql, useMutation } from '@apollo/client'
 import get from 'lodash/get'
@@ -72,14 +72,14 @@ const InvoiceDetail = (props) => {
       <Row>
         <LabelAndData
           label={<p className='mb5 h5 text-body'>{`Partner (AP: ${ap})`}</p>}
-          data={<Button danger loading={disableAP} onClick={onAPCancel}>AP cancel</Button>}
+          data={<Button danger disabled={ar} loading={disableAP} onClick={onAPCancel}>AP cancel</Button>}
         />
         <LabelAndData
           label={<p className='mb5 h5 text-body'>{`Customer (AR: ${ar})`}</p>}
           data={<Button danger loading={disableAR} onClick={onARCancel}>AR cancel</Button>}
         />
       </Row>
-      <br />
+      <Divider />
       <Row>
         <h4>Comment : </h4>
       </Row>

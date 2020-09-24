@@ -1,9 +1,22 @@
 import { Modal, Button, Row, Col, Form, Input, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import userContext from '../../lib/userContaxt'
 
 const CUSTOMER_MUTATION = gql`
-mutation insert_trip_price($trip_id: Int, $customer_price: Float, $mamul: Float, $bank: Float, $cash: Float, $to_pay: Float, $comment: String, $partner_price: Float, $ton: float8, $price_per_ton: float8, $is_price_per_ton: Boolean) {
+mutation insert_trip_price(
+  $trip_id: Int, 
+  $customer_price: Float, 
+  $mamul: Float, 
+  $bank: Float, 
+  $cash: Float, 
+  $to_pay: Float, 
+  $comment: String,
+  $created_by: String,
+  $partner_price: Float, 
+  $ton: float8, 
+  $price_per_ton: float8,
+  $is_price_per_ton: Boolean) {
   insert_trip_price(objects: {
     trip_id: $trip_id, 
     customer_price: $customer_price, 
@@ -11,7 +24,13 @@ mutation insert_trip_price($trip_id: Int, $customer_price: Float, $mamul: Float,
     bank: $bank, 
     cash: $cash, 
     to_pay: $to_pay, 
-    comment: $comment, 
+    comment: {
+      data:{
+        trip_id: $trip_id,
+        description: $comment,
+        created_by: $created_by
+      }
+    }, 
     partner_price: $partner_price, 
     ton: $ton, 
     is_price_per_ton: $is_price_per_ton, 
@@ -28,8 +47,8 @@ const CustomerPrice = (props) => {
   const { visible, onHide, trip_id, trip_price } = props
 
   const [form] = Form.useForm()
-
-  const customer_advance_percentage = trip_price.customer_advance_percentage || 90 // TODO
+  const context = useContext(userContext)
+  const customer_advance_percentage = trip_price.customer_advance_percentage
 
   const initial = {
     partner_price: trip_price.partner_price,
@@ -59,6 +78,7 @@ const CustomerPrice = (props) => {
         cash: parseFloat(form.cash),
         to_pay: parseFloat(form.to_pay),
         comment: form.comment,
+        created_by: context.email,
         partner_price: parseFloat(price.partner_price),
         ton: form.ton ? parseInt(form.ton, 10) : null,
         is_price_per_ton: !!form.ton,

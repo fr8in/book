@@ -90,10 +90,10 @@ const TripDetailContainer = (props) => {
                   {trip_status_name === 'Delivered' && trip_info.pod_verified_at &&
                     <Collapse accordion className='small box-0 mt10'>
                       <Panel header='Invoice' key='1'>
-                        <TripInvoice />
+                        <TripInvoice trip_info={trip_info} />
                       </Panel>
                     </Collapse>}
-                  {trip_status_id >= '12' && // After invoiced
+                  {trip_status_id >= 12 && // After invoiced
                     <Collapse accordion className='small mt10'>
                       <Panel header='Invoice Detail' key='1'>
                         <InvoiceDetail

@@ -23,6 +23,8 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       ar
       unloaded_private_godown
       lr
+      lr_incentive
+      pod_incentive
       customer_confirmation
       customer{
         cardcode
@@ -74,6 +76,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       ton
       is_price_per_ton
       price_per_ton
+      billing_remarks
       trip_files(where: {deleted_at: {_is_null:true}}){
        id
        type

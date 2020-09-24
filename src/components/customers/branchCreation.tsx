@@ -29,7 +29,7 @@ mutation create_customer_cardcode($company_name: String!, $customer_id: Int!){
 }`
 
 const CREATE_CUSTOMER_BRANCH = gql`
-mutation insert_customer_branch(
+mutation insert_customer_office(
   $name: String!
   $branch_name: String!
   $customer_id: Int!
@@ -40,7 +40,7 @@ mutation insert_customer_branch(
   $city_id: Int
   $pincode: Int
 ){
-  insert_customer_branch(objects:{
+  insert_customer_office(objects:{
     name: $name,
     branch_name: $branch_name
     customer_id: $customer_id

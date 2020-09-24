@@ -205,7 +205,8 @@ const TripTime = (props) => {
   const wh_files = trip_info && trip_info.trip_files && trip_info.trip_files.length > 0 ? trip_info.trip_files.filter(file => file.type === 'WH') : null
 
   const driver_number = trip_info && trip_info.driver && trip_info.driver.mobile
-
+  const trip_status_id = get(trip_info, 'trip_status.id', null)
+  const trip_status = (trip_status_id >= 9)
   return (
     <Card size='small' className='mt10'>
       <Row>
@@ -219,7 +220,7 @@ const TripTime = (props) => {
                 <SourceOutDate source_out={trip_info.source_out} id={trip_info.id} />
               </Col>
               <Col xs={8}>
-                <Driver trip_info={trip_info} initialValue={driver_number} />
+                <Driver trip_info={trip_info} initialValue={driver_number} disable={trip_status} />
               </Col>
             </Row>
             <Row gutter={10}>
