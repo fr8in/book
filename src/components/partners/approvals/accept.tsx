@@ -41,6 +41,7 @@ const Approve = (props) => {
       },
       onCompleted () {
         message.success('Updated!!')
+        onHide()
       }
     })
   const [creditApproval] = useMutation(
@@ -60,7 +61,7 @@ const Approve = (props) => {
     if (title === 'Approved') {
       creditApproval({
         variables: {
-          id: item_id,
+          id: item_id.id,
           approved_by: 'jay',
           approved_amount: parseFloat(form.amount),
           approved_comment: form.remarks
@@ -85,7 +86,7 @@ const Approve = (props) => {
     >
       <Form layout='vertical' onFinish={onSubmit}>
         {title === 'Approved' && (
-          <Form.Item label='Amount' name='amount' rules={[{ required: true }]} extra={`Claim Amount: ${0}`}>
+          <Form.Item label='Amount' name='amount' rules={[{ required: true }]} extra={`Claim Amount: ${item_id.amount}`}>
             <Input placeholder='Approved amount' />
           </Form.Item>
         )}

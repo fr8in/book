@@ -264,7 +264,7 @@ const Pending = () => {
               className='btn-success'
               icon={<CheckOutlined />}
               onClick={() =>
-                handleShow('approveVisible', 'Approved', 'approveData', record.id)}
+                handleShow('approveVisible', 'Approved', 'approveData', record)}
             />
           </Tooltip>
           <Tooltip title='Decline'>

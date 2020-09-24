@@ -130,8 +130,8 @@ const TripDetailContainer = (props) => {
                   </Collapse>
                   <Collapse accordion className='small mt10'>
                     <Panel header='Credit/Debit Note' key='1'>
-                      <CreditNote trip_id={trip_id} />
-                      <CreditNoteTable />
+                      <CreditNote trip_id={trip_id}/>
+                      <CreditNoteTable trip_id={trip_id}/>
                     </Panel>
                   </Collapse>
                 </TabPane>
