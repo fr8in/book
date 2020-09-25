@@ -1,6 +1,5 @@
 import { Table, Pagination, Radio, Input } from 'antd'
 import { useState } from 'react'
-import Link from 'next/link'
 import { EditTwoTone, SearchOutlined } from '@ant-design/icons'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
 import PartnerUsers from '../partners/partnerUsers'
