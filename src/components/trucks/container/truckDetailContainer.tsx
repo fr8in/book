@@ -143,7 +143,7 @@ const TruckDetailContainer = (props) => {
     console.log('truck_id', truck_info.id)
     updateStatus({
       variables: {
-        truck_status_id: status_check ? 1 : 7,
+        truck_status_id: status_check ? 5 : 6,
         id: truck_info.id
       }
     })
