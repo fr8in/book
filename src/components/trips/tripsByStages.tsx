@@ -57,18 +57,18 @@ const TripsByStages = (props) => {
       title: 'Source',
       dataIndex: 'source',
       width: '15%',
-      render: (text, record) => record.source.name
+      render: (text, record) => get(record, 'source.name', '-')
     },
     {
       title: 'Destination',
       width: '15%',
-      render: (text, record) => record.destination.name
+      render: (text, record) => get(record, 'destination.name', '-')
     },
     truckPage ? {
       title: 'Km',
       dataIndex: 'km',
       width: '13%',
-      render: (text, record) => record.km
+      render: (text, record) => (record.km || '-')
     }
       : {
         title: 'SourceIn',
@@ -80,13 +80,13 @@ const TripsByStages = (props) => {
       title: 'Status',
       dataIndex: 'status',
       width: '10%',
-      render: (text, record) => record.trip_status.name
+      render: (text, record) => get(record, 'trip_status.name', '-')
     },
     truckPage ? {
       title: 'AVG KM/Day',
       dataIndex: 'avg',
       width: '12%',
-      render: (text, record) => record.avg_km_day
+      render: (text, record) => (record.avg_km_day || '-')
     } : {}
 
   ]

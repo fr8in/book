@@ -13,12 +13,10 @@ import WaitingForLoadContainer from './waitingForLoadContainer'
 import Orders from '../../reports/orders'
 import Revenue from '../../reports/revenue'
 import Progress from '../../reports/progress'
-
 const { TabPane } = Tabs
 
 const DashboardContainer = (props) => {
   const { filters } = props
-  console.log('filters', filters)
   const initial = { excessLoad: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
@@ -110,12 +108,12 @@ const DashboardContainer = (props) => {
                 defaultActiveKey='1'
                 tabBarExtraContent={
                   <Space>
-                    <Button size='small' shape='circle' type='primary' className='btn-success' icon={<WhatsAppOutlined />} />
+                    {/* <Button size='small' shape='circle' type='primary' className='btn-success' icon={<WhatsAppOutlined />} /> */}
                     <Button size='small' type='primary' shape='circle' icon={<CarOutlined />} onClick={() => onShow('excessLoad')} />
                   </Space>
                 }
               >
-                <TabPane tab={<TitleWithCount name='Unloading' value={unloading_count} />} key='1'>
+                <TabPane tab={<TitleWithCount name='Unloading(S)' value={unloading_count} />} key='1'>
                   <TripsContainer filters={filters} trip_status='Reported at destination' />
                 </TabPane>
                 <TabPane disabled={truck_tab_disable} tab={<TitleWithCount name='WF.Load' value={truck_current_count + '/' + truck_count} />} key='2'>
@@ -130,7 +128,7 @@ const DashboardContainer = (props) => {
                 <TabPane tab={<TitleWithCount name='Loading' value={loading_count} />} key='5'>
                   <TripsContainer filters={filters} trip_status='Reported at source' />
                 </TabPane>
-                <TabPane tab={<TitleWithCount name='Intransit' value={intransit_count} />} key='6'>
+                <TabPane tab={<TitleWithCount name='Intransit(S)' value={intransit_count} />} key='6'>
                   <TripsContainer filters={filters} trip_status='Intransit' intransit />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Intransit(D)' value={intransit_d_count} />} key='7'>

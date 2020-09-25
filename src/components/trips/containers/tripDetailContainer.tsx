@@ -33,11 +33,11 @@ const TripDetailContainer = (props) => {
       variables: { id: trip_id }
     }
   )
+  console.log('TripDetailContainer Error', error)
   let _data = {}
   if (!loading) {
     _data = data
   }
-  console.log('TripDetailContainer Error', error)
   const trip_info = get(_data, 'trip[0]', 'ID does not exist')
   const title = (
     <h3>
@@ -45,7 +45,8 @@ const TripDetailContainer = (props) => {
       <span>{` ${get(trip_info, 'source.name', null)} - ${get(trip_info, 'destination.name', null)} `}</span>
       <small className='text-gray normal'>{get(trip_info, 'truck.truck_type.name', null)}</small>
     </h3>)
-
+  const trip_status_name = get(trip_info, 'trip_status.name', null)
+  const trip_status_id = get(trip_info, 'trip_status.id', null)
   return (
     <>
       {loading ? <Loading /> : (
@@ -86,16 +87,22 @@ const TripDetailContainer = (props) => {
                       <TripPod trip_id={trip_info.id} trip_info={trip_info} />
                     </Panel>
                   </Collapse>
-                  <Collapse accordion className='small box-0 mt10'>
-                    <Panel header='Invoice' key='1'>
-                      <TripInvoice />
-                    </Panel>
-                  </Collapse>
-                  <Collapse accordion className='small mt10'>
-                    <Panel header='Invoice Detail' key='1'>
-                      <InvoiceDetail />
-                    </Panel>
-                  </Collapse>
+                  {(trip_status_name === 'Delivered' || trip_status_name === 'POD Verified') && trip_info.pod_verified_at &&
+                    <Collapse accordion className='small box-0 mt10'>
+                      <Panel header='Invoice' key='1'>
+                        <TripInvoice trip_info={trip_info} />
+                      </Panel>
+                    </Collapse>}
+                  {trip_status_id >= 12 && // After invoiced
+                    <Collapse accordion className='small mt10'>
+                      <Panel header='Invoice Detail' key='1'>
+                        <InvoiceDetail
+                          ap={trip_info.ap}
+                          ar={trip_info.ar}
+                          trip_id={trip_id}
+                        />
+                      </Panel>
+                    </Collapse>}
                   <Collapse accordion className='small mt10'>
                     <Panel header='Additional Advance' key='1'>
                       <CreateAdditionalAdvance trip_info={trip_info} />
@@ -124,7 +131,7 @@ const TripDetailContainer = (props) => {
                   <Collapse accordion className='small mt10'>
                     <Panel header='Credit/Debit Note' key='1'>
                       <CreditNote trip_id={trip_id} />
-                      <CreditNoteTable />
+                      <CreditNoteTable trip_id={trip_id} />
                     </Panel>
                   </Collapse>
                 </TabPane>

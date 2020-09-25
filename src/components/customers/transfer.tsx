@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { Modal, Row, Button, Form, Col, Input, Radio, message } from 'antd'
 import PaymentTraceability from './paymentTraceability'
 import { gql, useMutation, useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
+import userContext from '../../lib/userContaxt'
 
 const CUSTOMER_MAMUL_TRANSFER = gql`
 mutation customer_mamul_transfer(
@@ -51,6 +52,7 @@ const Transfer = (props) => {
   const [disableButton, setDisableButton] = useState(true)
   const [amount, setAmount] = useState(null)
   const [form] = Form.useForm()
+  const context = useContext(userContext)
 
   const [getBankDetail, { loading, data, error, called }] = useLazyQuery(IFSC_VALIDATION)
 
@@ -91,7 +93,7 @@ const Transfer = (props) => {
           doc_entry: selectedRow[0].customer_incoming_id,
           amount: parseFloat(amount),
           trip_id: parseInt(form.trip_id),
-          created_by: 'karthik@fr8.in',
+          created_by: context.email,
           account_holder_name: form.account_name,
           bank_acc_no: form.account_number,
           bank_name: bank_detail.bank,

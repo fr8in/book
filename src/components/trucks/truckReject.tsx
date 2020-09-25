@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { Modal, Button, Input, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
+import userContext from '../../lib/userContaxt'
 
 const INSERT_TRUCK_REJECT_MUTATION = gql`
-mutation truck_reject ($description:String, $topic:String, $truck_id: Int, $created_by_id:Int, $truck_status_id:Int,$id:Int! ){
-  insert_truck_comment(objects: {truck_id:$truck_id, topic: $topic, description: $description, created_by_id: $created_by_id}) {
+mutation truck_reject ($description:String, $topic:String, $truck_id: Int, $created_by:Int, $truck_status_id:Int,$id:Int! ){
+  insert_truck_comment(objects: {truck_id:$truck_id, topic: $topic, description: $description, created_by: $created_by}) {
     returning {
       id
     }
@@ -18,6 +19,7 @@ const TruckReject = (props) => {
   const { visible, onHide, truck_id } = props
 
   const [rejectComment, setRejectComment] = useState('')
+  const context = useContext(userContext)
 
   const [insertComment] = useMutation(
     INSERT_TRUCK_REJECT_MUTATION,
@@ -35,7 +37,7 @@ const TruckReject = (props) => {
     insertComment({
       variables: {
         truck_id: truck_id,
-        created_by_id: 110,
+        created_by: context.email,
         description: rejectComment,
         topic: 'text',
         truck_status_id: 12,

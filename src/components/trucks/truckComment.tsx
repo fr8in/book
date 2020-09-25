@@ -1,6 +1,8 @@
 import { Row, Col, Modal, Form, Button, Input, message, Table, Tooltip } from 'antd'
 import { gql, useMutation, useSubscription } from '@apollo/client'
 import moment from 'moment'
+import { useContext } from 'react'
+import userContext from '../../lib/userContaxt'
 
 const TRUCK_COMMENT = gql`
 subscription truck_comment($id: Int!){
@@ -35,6 +37,7 @@ const TruckComment = (props) => {
   const { visible, onHide, id } = props
 
   const [form] = Form.useForm()
+  const context = useContext(userContext)
 
   const { loading, data, error } = useSubscription(
     TRUCK_COMMENT, { variables: { id } }
@@ -64,7 +67,7 @@ const TruckComment = (props) => {
     insertComment({
       variables: {
         truck_id: id,
-        created_by: 'deva@fr8.in',
+        created_by: context.email,
         description: form.comment,
         topic: truck_status.name
       }

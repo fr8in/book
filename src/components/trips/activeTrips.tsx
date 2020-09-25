@@ -22,7 +22,7 @@ const Trips = (props) => {
 
   const columns = [
     {
-      title: '#',
+      title: 'ID',
       dataIndex: 'id',
       render: (text, record) => {
         return (

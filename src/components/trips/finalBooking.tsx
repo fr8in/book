@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { Modal, Button, Row, Col, Form, Input, message, Collapse, Divider, Radio } from 'antd'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import PaymentTraceability from '../customers/paymentTraceability'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import useShowHide from '../../hooks/useShowHide'
+import userContext from '../../lib/userContaxt'
 
 const { Panel } = Collapse
 
@@ -90,6 +91,7 @@ const FinalBooking = (props) => {
   const [header, setHeader] = useState(null)
   const initial = { total: 0, debit: 0, rebate: 0 }
   const [calc, setCalc] = useState(initial)
+  const context = useContext(userContext)
 
   const [customer_final_payment] = useMutation(
     CUSTOMER_FINAL,
@@ -184,7 +186,7 @@ const FinalBooking = (props) => {
           docentry: selectedRow[0].customer_incoming_id,
           cash: floatVal(form.cash),
           rebate: floatVal(form.rebate),
-          created_by: 'karthik.@fr8.in',
+          created_by: context.email,
           shortage_write_off: floatVal(form.sortage),
           pod_delay_missing_write_off: floatVal(form.pod_delay),
           late_delivery_write_off: floatVal(form.late_delivery),

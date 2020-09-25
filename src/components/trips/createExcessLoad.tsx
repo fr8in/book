@@ -1,9 +1,10 @@
 
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { Modal, Button, Input, Form, Row, Col, Select, message } from 'antd'
 import CitySelect from '../common/citySelect'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import get from 'lodash/get'
+import userContext from '../../lib/userContaxt'
 
 const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
   search_customer(args:{search:$search}){
@@ -16,13 +17,14 @@ const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
   }
 }`
 
-const EXCESS_LOAD_MUTATION = gql`mutation create_excees_load (
+const EXCESS_LOAD_MUTATION = gql`
+mutation create_excees_load (
   $source_id: Int, 
   $destination_id: Int, 
   $customer_id: Int, 
   $customer_price: Float, 
-  $ton: float8,
-  $rate_per_ton:float8,
+  $ton: Float,
+  $rate_per_ton:Float,
   $is_per_ton:Boolean, 
   $truck_type_id:Int,
   $description:String,
@@ -34,14 +36,10 @@ insert_trip(objects: {
   destination_id: $destination_id, 
   customer_id: $customer_id,
   truck_type_id: $truck_type_id,
-  trip_prices: {
-    data: {
-      customer_price: $customer_price,
-      ton: $ton,
-      price_per_ton:$rate_per_ton,
-      is_price_per_ton: $is_per_ton
-    }
-  }
+  customer_price: $customer_price,
+  ton: $ton,
+  price_per_ton:$rate_per_ton,
+  is_price_per_ton: $is_per_ton
   trip_comments:{
     data:{
       description:$description,
@@ -60,7 +58,8 @@ insert_trip(objects: {
 const CreateExcessLoad = (props) => {
   const initial = { search: '', customer_id: null, source_id: null, destination_id: null, disableButton: false }
   const [obj, setObj] = useState(initial)
-
+  const context = useContext(userContext)
+  
   const { loading, error, data } = useQuery(
     CUSTOMER_SEARCH,
     {
@@ -122,7 +121,7 @@ const CreateExcessLoad = (props) => {
         truck_type_id: parseInt(form.truck_type, 10),
         description: form.comment,
         topic: 'Excess Load Created',
-        created_by: 'Karthik'
+        created_by: context.email
       }
     })
   }

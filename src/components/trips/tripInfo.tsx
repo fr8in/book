@@ -28,7 +28,6 @@ const TripInfo = (props) => {
     customer_advance_percentage: trip_info.customer_advance_percentage,
     partner_advance_percentage: get(trip_info, 'partner_advance_percentage.name', null)
   }
-  console.log('trip_price', trip_prices)
   return (
     <Row>
       <Col xs={24}>

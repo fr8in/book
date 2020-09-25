@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { Modal, Button, Input, Row, Col, Form, Select, message } from 'antd'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import CitySelect from '../common/citySelect'
+import userContext from '../../lib/userContaxt'
 
 const PARTNERS_LEAD_SUBSCRIPTION = gql`
   query create_partner_lead{
@@ -63,6 +64,7 @@ const CreateLead = (props) => {
   const { visible, onHide } = props
   const [userComment, setUserComment] = useState('')
   const [obj, setObj] = useState(initial)
+  const context = useContext(userContext)
   const { loading, error, data } = useQuery(
     PARTNERS_LEAD_SUBSCRIPTION,
     {
@@ -118,7 +120,7 @@ const CreateLead = (props) => {
         partner_status_id: 8,
         channel_id: form.channel,
         onboarded_by_id: form.employee,
-        created_by: 'karthi@fr8.in',
+        created_by: context.email,
         description: userComment,
         topic: 'Lead'
       }

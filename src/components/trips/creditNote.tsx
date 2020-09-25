@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { Row, Col, Radio, Input, Select, Form, Button, message } from 'antd'
 import { gql, useSubscription, useMutation } from '@apollo/client'
+import userContext from '../../lib/userContaxt'
 
 const CREDIT_DEBIT_ISSUE_TYPE_SUBSCRIPTION = gql`
 subscription credit_debit_issue_type {
@@ -11,17 +12,6 @@ subscription credit_debit_issue_type {
   }
 }
 `
-// const CREDIT_DEBIT_NOTES_MUTATION = gql`
-// mutation create_credit_debit($credit_debit_type_id: Int, $amount: Float, $comment: String,$trip_id:Int,$type:bpchar,$created_by:String,$credit_debit_status_id:Int) {
-//   insert_trip_credit_debit(objects: {credit_debit_type_id: $credit_debit_type_id, amount: $amount, comment: $comment,trip_id:$trip_id,type:$type,created_by:$created_by,credit_debit_status_id:$credit_debit_status_id}){
-//     returning {
-//       id
-//       comment
-//       trip_id
-//     }
-//   }
-// }
-// `
 
 const CREATE_CREDIT_MUTATION = gql`
 mutation create_credit_track(
@@ -69,6 +59,7 @@ create_debit_track(
 const CreditNote = (props) => {
   const {trip_id} = props
   const [radioType, setRadioType] = useState('Credit Note')
+  const context = useContext(userContext)
 
   const { loading, error, data } = useSubscription(
     CREDIT_DEBIT_ISSUE_TYPE_SUBSCRIPTION
@@ -127,7 +118,7 @@ const create_credit_debit = (form) =>{
         amount: parseFloat(form.amount),
         comment: form.comment,
         trip_id: parseInt(trip_id) ,
-        created_by: "jay"
+        created_by: context.email
       }   
     })
   }
@@ -138,7 +129,7 @@ const create_credit_debit = (form) =>{
         amount: parseFloat(form.amount),
         comment: form.comment,
         trip_id: parseInt(trip_id) ,
-        created_by: "jay"
+        created_by: context.email
       }   
     })
   }

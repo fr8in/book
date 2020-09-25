@@ -1,11 +1,12 @@
 import { Table, Pagination, Radio, Input } from 'antd'
 import { useState } from 'react'
-import Link from 'next/link'
 import { EditTwoTone, SearchOutlined } from '@ant-design/icons'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
 import PartnerUsers from '../partners/partnerUsers'
 import CreatePo from '../../components/trips/createPo'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
+import get from 'lodash/get'
+import LinkComp from '../common/link'
 
 const Trucks = (props) => {
   const initial = {
@@ -33,13 +34,13 @@ const Trucks = (props) => {
   } = props
   console.log(props)
 
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {},
-    getCheckboxProps: (record) => ({
-      disabled: record.name === 'Disabled User',
-      name: record.name
-    })
-  }
+  // const rowSelection = {
+  //   onChange: (selectedRowKeys, selectedRows) => {},
+  //   getCheckboxProps: (record) => ({
+  //     disabled: record.name === 'Disabled User',
+  //     name: record.name
+  //   })
+  // }
 
   const pageChange = (page, pageSize) => {
     const newOffset = page * pageSize - filter.limit
@@ -66,24 +67,22 @@ const Trucks = (props) => {
   const columns = [
     {
       title: 'Truck No',
-      dataIndex: 'truck_no',
+      width: '20%',
       render: (text, record) => {
         return (
-          <Link href='trucks/[id]' as={`trucks/${record.truck_no}`}>
-            <a>
-              {record.truck_no}-{record.truck_type && record.truck_type.name}
-            </a>
-          </Link>
+          <LinkComp
+            type='trucks'
+            data={`${record.truck_no} - ${get(record, 'truck_type.name', null)}`}
+            id={record.truck_no}
+          />
         )
       },
       filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search TruckNo'
-            value={filter.truck_no}
-            onChange={handleTruckNo}
-          />
-        </div>
+        <Input
+          placeholder='Search TruckNo'
+          value={filter.truck_no}
+          onChange={handleTruckNo}
+        />
       ),
       filterIcon: () => (
         <SearchOutlined
@@ -93,46 +92,37 @@ const Trucks = (props) => {
     },
     {
       title: 'Trip ID',
-      dataIndex: 'id',
+      width: '8%',
       render: (text, record) => {
-        const id = record && record.trips && record.trips[0] ? record.trips[0].id : null
+        const id = get(record, 'trips[0].id', null)
         return (
           <span>
-            {id && (
-              <Link href='/trips/[id]' as={`/trips/${id} `}>
-                <a>{id}</a>
-              </Link>
-            )}
+            {id && <LinkComp type='trips' data={id} id={id} />}
           </span>
         )
       }
     },
     {
       title: 'Trip',
+      width: '8%',
       render: (text, record) => {
-        const id = record && record.trips && record.trips[0] ? record.trips[0].id : null
-        const source =
-          record && record.trips && record.trips[0] && record.trips[0].source
-            ? record.trips[0].source.name
-            : null
-        const destination =
-          record && record.trips && record.trips[0] && record.trips[0].destination
-            ? record.trips[0].destination.name
-            : null
+        const id = get(record, 'trips[0].id', null)
+        const source = get(record, 'trips[0].source.name', null)
+        const destination = get(record, 'trips[0].destination.name', null)
+        const status = get(record, ' truck_status.id', null)
         return (
           <span>
             {id ? (
+<<<<<<< HEAD
               <span>{source && source.slice(0, 3) ? source && source.slice(0, 3) : null + '-' +  destination && destination.slice(0, 3) ? destination && destination.slice(0, 3) : null}</span> 
             ) : record.truck_status.id === 5 ? (
+=======
+              <span>{(source && source.slice(0, 3)) + '-' + (destination && destination.slice(0, 3))}</span>
+            ) : status === 5 ? (
+>>>>>>> 514f5387b19949ce40fd316347300b061bc4254b
               <a
                 className='link'
-                onClick={() =>
-                  handleShow(
-                    'poVisible',
-                    record.partner.name,
-                    'truckId',
-                    record.id
-                  )}
+                onClick={() => handleShow('poVisible', record.partner.name, 'truckId', record.id)}
               >
                 Assign
               </a>
@@ -145,12 +135,12 @@ const Trucks = (props) => {
     },
     {
       title: 'Partner',
-      dataIndex: 'name',
+      width: '14%',
       render: (text, record) => {
+        const cardcode = get(record, 'partner.cardcode', null)
+        const name = get(record, 'partner.name', null)
         return (
-          <Link href='partners/[id]' as={`partners/${record.partner.cardcode}`}>
-            <a>{record.partner.name}</a>
-          </Link>
+          <LinkComp type='partners' data={name} id={cardcode} length={20} />
         )
       },
 
@@ -171,30 +161,23 @@ const Trucks = (props) => {
     },
     {
       title: 'Phone No',
-      dataIndex: 'mobile',
+      width: '10%',
       render: (text, record) => {
-        const number =
-          record.partner &&
-          record.partner.partner_users &&
-          record.partner.partner_users.length > 0 &&
-          record.partner.partner_users[0].mobile
-            ? record.partner.partner_users[0].mobile
-            : '-'
+        const mobile = get(record, 'partner.partner_users[0].mobile', '-')
         return (
           <span
             className='link'
             onClick={() =>
               handleShow('usersVisible', null, 'usersData', record.partner)}
           >
-            {number}
+            {mobile}
           </span>
         )
       }
     },
     {
       title: 'Status',
-      render: (text, record) =>
-        record.truck_status && record.truck_status.name,
+      render: (text, record) => record.truck_status && record.truck_status.name,
       width: '14%',
       filterDropdown: (
         <Radio.Group
@@ -207,12 +190,14 @@ const Trucks = (props) => {
     },
     {
       title: 'City',
+      width: '14%',
       render: (text, record) => {
         return record.city && record.city.name
       }
     },
     {
       title: '',
+      width: '3%',
       render: (text, record) => (
         <EditTwoTone
           onClick={() =>
@@ -229,7 +214,7 @@ const Trucks = (props) => {
         dataSource={trucks}
         rowKey={(record) => record.id}
         size='small'
-        scroll={{ x: 1156 }}
+        scroll={{ x: 1156, y: 500 }}
         pagination={false}
         loading={loading}
       />
