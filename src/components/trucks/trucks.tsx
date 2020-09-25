@@ -113,13 +113,8 @@ const Trucks = (props) => {
         return (
           <span>
             {id ? (
-<<<<<<< HEAD
               <span>{source && source.slice(0, 3) ? source && source.slice(0, 3) : null + '-' +  destination && destination.slice(0, 3) ? destination && destination.slice(0, 3) : null}</span> 
             ) : record.truck_status.id === 5 ? (
-=======
-              <span>{(source && source.slice(0, 3)) + '-' + (destination && destination.slice(0, 3))}</span>
-            ) : status === 5 ? (
->>>>>>> 514f5387b19949ce40fd316347300b061bc4254b
               <a
                 className='link'
                 onClick={() => handleShow('poVisible', record.partner.name, 'truckId', record.id)}
