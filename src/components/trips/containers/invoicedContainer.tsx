@@ -1,6 +1,6 @@
 import TripsTracking from '../tripsTracking'
-import { useQuery,useSubscription } from '@apollo/client'
-import { TRIPS_QUERY,TRIPS } from './query/tripsQuery'
+import { useQuery, useSubscription } from '@apollo/client'
+import { TRIPS_QUERY, TRIPS } from './query/tripsQuery'
 import { useState } from 'react'
 import get from 'lodash/get'
 import u from '../../../lib/util'
@@ -35,11 +35,12 @@ const DeliveredContainer = (props) => {
     where: where
   }
 
-  const status_fliter={
-    trip_statusName: initialFilter.trip_statusName
+  const status_fliter = {
+    trip_statusName: initialFilter.trip_statusName,
+    where: where
   }
 
-  const { loading, error, data } = useQuery(
+  const { loading: sloading, error: serror, data } = useQuery(
     TRIPS_QUERY,
     {
       variables: status_fliter,
@@ -47,19 +48,22 @@ const DeliveredContainer = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
-  console.log('DeliveredContainer error', error)
-  const { data: tripsdata} = useSubscription(
+  const { data: tripsdata, loading, error } = useSubscription(
     TRIPS,
     {
       variables: variables
     }
   )
+  console.log('DeliveredContainer error', error)
+  console.log('DeliveredContainer Status Error', serror)
 
-  var _data = {}
-  var _tripsdata={}
+  let _tripsdata = {}
   if (!loading) {
+    _tripsdata = tripsdata
+  }
+  let _data = {}
+  if (!sloading) {
     _data = data
-    _tripsdata=tripsdata
   }
   // all trip data
   const trip = get(_tripsdata, 'trip', [])
