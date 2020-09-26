@@ -48,6 +48,7 @@ query partners(
     }
     created_at
     partner_status{
+      id
       name
     }
      city {
@@ -91,7 +92,7 @@ query partners(
 
 const PartnerContainer = () => {
   const initialFilter = {
-    partner_statusId: [6],
+    partner_statusId: [1],
     region: null,
     offset: 0,
     limit: u.limit,

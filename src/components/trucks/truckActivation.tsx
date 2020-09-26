@@ -12,7 +12,7 @@ import {
   Space
 } from 'antd'
 import moment from 'moment'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { gql, useSubscription, useMutation } from '@apollo/client'
 import CitySelect from '../common/citySelect'
 import Loading from '../common/loading'
 import FileUploadOnly from '../common/fileUploadOnly'
@@ -22,11 +22,7 @@ import { useState } from 'react'
 import get from 'lodash/get'
 
 const TRUCKS_QUERY = gql`
-query truck_activation($truck_id : Int){
-  truck_type {
-    id
-    name
-  }
+subscription truck_activation($truck_id : Int){
   truck(where: {id: {_eq: $truck_id}}) {
     height
     truck_no
@@ -35,7 +31,7 @@ query truck_activation($truck_id : Int){
        type
        file_path
        folder
- }
+    }
     truck_type{
       id
       name
@@ -55,8 +51,7 @@ query truck_activation($truck_id : Int){
       }
     }
   }
-}
-`
+}`
 
 const UPDATE_TRUCK_ACTIVATION_MUTATION = gql`
 mutation truck_activation($available_at:timestamptz,$id:Int,$city_id:Int,$truck_type_id:Int,$truck_status_id:Int) {
@@ -65,27 +60,22 @@ mutation truck_activation($available_at:timestamptz,$id:Int,$city_id:Int,$truck_
       id
     }
   }
-}
-`
+}`
 
 const onChange = (date, dateString) => {
   console.log(date, dateString)
 }
 
 const TruckActivation = (props) => {
-  const { visible, onHide, truck_id, title } = props
+  const { visible, onHide, truck_id, title, truck_type } = props
 
   const initial = { city_id: null }
 
   const [city, setCity] = useState(initial)
 
-  const { loading, error, data } = useQuery(
+  const { loading, error, data } = useSubscription(
     TRUCKS_QUERY,
-    {
-      variables: { truck_id: truck_id },
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
-    }
+    { variables: { truck_id: truck_id } }
   )
   console.log('TrucksActivation error', error)
 
@@ -103,7 +93,6 @@ const TruckActivation = (props) => {
     _data = data
   }
   const truck_info = get(_data, 'truck[0]', { name: 'ID does not exist' })
-  const truck_type = get(_data, 'truck_type', [])
   const onboarded_by = truck_info && truck_info.partner && truck_info.partner.onboarded_by && truck_info.partner.onboarded_by.email
   console.log('onboarded_by', onboarded_by)
   const partner_mobile = truck_info && truck_info.partner && truck_info.partner.partner_users && truck_info.partner.partner_users.mobile
@@ -111,7 +100,7 @@ const TruckActivation = (props) => {
   const rc_files = truck_info && truck_info.truck_files && truck_info.truck_files.filter(file => file.type === 'RC')
   const vaahan_files = truck_info && truck_info.truck_files && truck_info.truck_files.filter(file => file.type === 'vaahan')
 
-  console.log('rc_files', rc_files)
+  console.log('rc_files', rc_files, truck_info.truck_files)
 
   const typeList = truck_type.map((data) => {
     return { value: data.id, label: data.name }

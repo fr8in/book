@@ -115,7 +115,7 @@ const PartnerDetailContainer = (props) => {
               <Col xs={24} sm={16} md={16}>
                 <BasicDetail partnerInfo={partner_info} />
               </Col>
-              <Col xs={24} sm={8} md={8}>
+              <Col xs={24} sm={8} md={8} className='text-right'>
                 <PartnerStatus partnerInfo={partner_info} />
               </Col>
             </Row>

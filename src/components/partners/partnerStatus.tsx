@@ -1,4 +1,4 @@
-import { Checkbox, Row, Col, message } from 'antd'
+import { Checkbox, Space, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 
 const UPDATE_PARTNER_BLACKLIST_MUTATION = gql`
@@ -46,8 +46,8 @@ const PartnerStatus = (props) => {
   const [updateBlacklist] = useMutation(
     UPDATE_PARTNER_BLACKLIST_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
   const blacklistChange = (e) => {
@@ -62,8 +62,8 @@ const PartnerStatus = (props) => {
   const [updateDeactivate] = useMutation(
     UPDATE_PARTNER_DE_ACTIVATE_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
   const deActivateChange = (e) => {
@@ -78,8 +78,8 @@ const PartnerStatus = (props) => {
   const [updateDnd] = useMutation(
     UPDATE_PARTNER_DND_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
   const dndChange = (e) => {
@@ -92,35 +92,29 @@ const PartnerStatus = (props) => {
   }
 
   return (
-    <Row>
-      <Col xs={8}>
-        <Checkbox
-          checked={is_blacklisted}
-          disabled={!admin && is_blacklisted}
-          onChange={blacklistChange}
-        >
+    <Space>
+      <Checkbox
+        checked={is_blacklisted}
+        disabled={!admin && is_blacklisted}
+        onChange={blacklistChange}
+      >
           BlackList
-        </Checkbox>
-      </Col>
-      <Col xs={9}>
-        <Checkbox
-          checked={is_deactivate}
-          disabled={is_blacklisted}
-          onChange={deActivateChange}
-        >
+      </Checkbox>
+      <Checkbox
+        checked={is_deactivate}
+        disabled={is_blacklisted}
+        onChange={deActivateChange}
+      >
           De-activate
-        </Checkbox>
-      </Col>
-      <Col xs={7}>
-        <Checkbox
-          checked={partnerInfo.dnd}
-          disabled={is_blacklisted || is_deactivate}
-          onChange={dndChange}
-        >
+      </Checkbox>
+      <Checkbox
+        checked={partnerInfo.dnd}
+        disabled={is_blacklisted || is_deactivate}
+        onChange={dndChange}
+      >
           DND
-        </Checkbox>
-      </Col>
-    </Row>
+      </Checkbox>
+    </Space>
   )
 }
 
