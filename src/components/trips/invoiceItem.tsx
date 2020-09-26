@@ -2,22 +2,25 @@ import { useState } from 'react'
 import { Row, Col, Checkbox, Form, Input } from 'antd'
 
 const InvoiceItem = (props) => {
-  const { item_label, halting_label, amount, value, checkbox, dayInput, days_name, field_name, spl_name } = props
+  const { item_label, halting_label, amount, value, checkbox, dayInput, days_name, field_name, spl_name, form, disable } = props
   const [checked, setChecked] = useState(false)
   const onChange = e => {
     setChecked(e.target.checked)
+    if (form) {
+      form.resetFields([days_name])
+    }
   }
   const disable_field = checkbox && !checked
   return (
     <Row gutter={6} className='item'>
       <Col flex='auto'>
         {checkbox &&
-          <b><Checkbox checked={checked} onChange={onChange} disabled={false} /></b>}
+          <b><Checkbox checked={checked} onChange={onChange} disabled={disable} /></b>}
         <label>{item_label}</label>
         {dayInput &&
           <Form.Item name={days_name}>
             <Input
-              disabled={!disable_field}
+              disabled={!disable_field || disable}
               placeholder='Days'
               type='number'
               min='0'
@@ -39,7 +42,7 @@ const InvoiceItem = (props) => {
                 placeholder='Amount'
                 type='number'
                 min='0'
-                disabled={disable_field}
+                disabled={disable_field || disable}
                 size='small'
               />
             </Form.Item>
@@ -52,7 +55,7 @@ const InvoiceItem = (props) => {
                   placeholder='Amount'
                   type='number'
                   min='0'
-                  disabled={false}
+                  disabled={disable}
                   size='small'
                 />
               </Form.Item>

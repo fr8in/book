@@ -39,6 +39,7 @@ subscription partner_detail($cardcode: String, $partner_id: bigint, $ongoing: [S
     name
     cardcode
     account_number
+    display_account_number
     virtual_account
     partner_advance_percentage_id
     gst
@@ -53,11 +54,6 @@ subscription partner_detail($cardcode: String, $partner_id: bigint, $ongoing: [S
     dnd
     cibil
     final_payment_date
-    city {
-      state {
-        name
-      }
-    }
     bank {
       id
       name
@@ -97,11 +93,14 @@ subscription partner_detail($cardcode: String, $partner_id: bigint, $ongoing: [S
     }
     city {
       name
-        branch {
-          region {
-            name
-          }
+      state {
+        name
+      }
+      branch {
+        region {
+          name
         }
       }
+    }
   }
 }`

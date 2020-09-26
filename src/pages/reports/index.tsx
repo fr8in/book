@@ -4,7 +4,7 @@ import PageLayout from '../../components/layout/pageLayout'
 const Reports = (props) => {
   return (
     <PageLayout {...props} title='Reports'>
-              Reports
+      <p>Reports</p>
     </PageLayout>
   )
 }

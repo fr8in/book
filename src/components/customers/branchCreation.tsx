@@ -183,7 +183,7 @@ const BranchCreation = (props) => {
         customer_type_id: form.getFieldValue('customer_type'),
         onboarded_by_id: form.getFieldValue('onboardedby_id'),
         payment_manager_id: form.getFieldValue('payment_manager_id'),
-        system_mamul: mamul
+        mamul: parseInt(mamul)
       }
     })
   }

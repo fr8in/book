@@ -39,10 +39,18 @@ mutation calculate_onHold(
     trip_id: $trip_id
   ) {
     commission
-    advance_percentage
-    commission_percentage
     customer_balance
     onHold
+    customer_halting{
+      destination_halting
+      source_halting
+    }
+    partner_halting{
+      destination_halting
+      source_halting
+    }
+    advance_percentage
+    commission_percentage
   }
 }`
 
@@ -110,15 +118,24 @@ const TripInvoice = (props) => {
         const commission = get(data, 'calculate_onHold.commission', null)
         const balance = get(data, 'calculate_onHold.customer_balance', null)
         const on_hold = get(data, 'calculate_onHold.onHold', null)
-        setCalc({
-          ...calc,
-          completed: true,
-          balance,
-          commission,
-          on_hold,
-          loading_clac: false
-        })
-        message.success('calculated!')
+        const cus_l_halting = get(data, 'calculate_onHold.customer_halting.source_halting', null)
+        const l_halting = get(data, 'calculate_onHold.partner_halting.source_halting', null)
+        const cus_un_halting = get(data, 'calculate_onHold.customer_halting.destination_halting', null)
+        const un_halting = get(data, 'calculate_onHold.partner_halting.destination_halting', null)
+
+        setCalc({ ...calc, completed: true, balance, commission, on_hold, loading_clac: false })
+
+        if (form.getFieldValue('loading_days')) {
+          form.setFieldsValue({ loading_halting: l_halting })
+        } else {
+          form.setFieldsValue({ loading_halting: l_halting, customer_loading_halting: cus_l_halting })
+        }
+        if (form.getFieldValue('unloading_days')) {
+          form.setFieldsValue({ unloading_halting: un_halting })
+        } else {
+          form.setFieldsValue({ unloading_halting: un_halting, customer_unloading_halting: cus_un_halting })
+        }
+        message.success('Calculated!')
       }
     }
   )
@@ -139,24 +156,32 @@ const TripInvoice = (props) => {
 
   const floatVal = (value) => value ? parseFloat(value) : 0
   const onCalcutation = () => {
-    setCalc({ ...calc, loading_clac: true })
-    calculate_onHold({
-      variables: {
-        trip_id: trip_info.id,
-        source_halting_days: floatVal(form.getFieldValue('loading_days')) || null, // must be value or null don't send zero
-        destination_halting_days: floatVal(form.getFieldValue('unloading_days')) || null, // must be value or null don't send zero
-        cus_source_halting: floatVal(form.getFieldValue('customer_loading_halting')) || floatVal(form.getFieldValue('loading_halting')),
-        cus_destination_halting: floatVal(form.getFieldValue('customer_unloading_halting')) || floatVal(form.getFieldValue('unloading_halting')),
-        cus_loading_charge: floatVal(form.getFieldValue('loading_charge')),
-        cus_unloading_charge: floatVal(form.getFieldValue('unloading_charge')),
-        cus_other_charge: floatVal(form.getFieldValue('other_charge')),
-        part_source_halting: floatVal(form.getFieldValue('loading_halting')),
-        part_destination_halting: floatVal(form.getFieldValue('unloading_halting')),
-        part_loading_charge: floatVal(form.getFieldValue('loading_charge')),
-        part_unloading_charge: floatVal(form.getFieldValue('unloading_charge')),
-        part_other_charge: floatVal(form.getFieldValue('other_charge'))
-      }
-    })
+    if (trip_info.billing_remarks && !form.getFieldValue('remarks')) {
+      message.error('Confirm other charges booked for Customer/Partner')
+    } else if (form.getFieldValue('customer_loading_halting') && (form.getFieldValue('customer_loading_halting') < form.getFieldValue('loading_halting'))) {
+      message.error('Partner loading halting should be less than customer loading halting')
+    } else if (form.getFieldValue('customer_unloading_halting') && (form.getFieldValue('customer_unloading_halting') < form.getFieldValue('unloading_halting'))) {
+      message.error('Partner unloading halting should be less than customer unloading halting')
+    } else {
+      setCalc({ ...calc, loading_clac: true })
+      calculate_onHold({
+        variables: {
+          trip_id: trip_info.id,
+          source_halting_days: floatVal(form.getFieldValue('loading_days')) || null, // must be value or null don't send zero
+          destination_halting_days: floatVal(form.getFieldValue('unloading_days')) || null, // must be value or null don't send zero
+          cus_source_halting: floatVal(form.getFieldValue('customer_loading_halting')) || floatVal(form.getFieldValue('loading_halting')),
+          cus_destination_halting: floatVal(form.getFieldValue('customer_unloading_halting')) || floatVal(form.getFieldValue('unloading_halting')),
+          cus_loading_charge: floatVal(form.getFieldValue('loading_charge')),
+          cus_unloading_charge: floatVal(form.getFieldValue('unloading_charge')),
+          cus_other_charge: floatVal(form.getFieldValue('other_charge')),
+          part_source_halting: floatVal(form.getFieldValue('loading_halting')),
+          part_destination_halting: floatVal(form.getFieldValue('unloading_halting')),
+          part_loading_charge: floatVal(form.getFieldValue('loading_charge')),
+          part_unloading_charge: floatVal(form.getFieldValue('unloading_charge')),
+          part_other_charge: floatVal(form.getFieldValue('other_charge'))
+        }
+      })
+    }
   }
   const onInvoiceSubmit = (form) => {
     create_invoice({
@@ -200,36 +225,43 @@ const TripInvoice = (props) => {
       />
       <InvoiceItem
         checkbox
+        form={form}
         item_label='Loading Halting'
         dayInput
         days_name='loading_days'
         field_name='loading_halting'
         halting_label='Customer Loading Halting'
         spl_name='customer_loading_halting'
+        disable={calc.completed}
       />
       <InvoiceItem
         checkbox
         item_label='Unloading Halting'
+        form={form}
         dayInput
         days_name='unloading_days'
         field_name='unloading_halting'
         halting_label='Customer Unloading Halting'
         spl_name='customer_unloading_halting'
+        disable={calc.completed}
       />
       <InvoiceItem
         chargeIncluded
         item_label='Loading Charge'
         field_name='loading_charge'
         fInitialValue={0}
+        disable={calc.completed}
       />
       <InvoiceItem
         chargeIncluded={false}
         item_label='Unloading Charge'
         field_name='unloading_charge'
+        disable={calc.completed}
       />
       <InvoiceItem
         item_label='Other Charge'
         field_name='other_charge'
+        disable={calc.completed}
       />
       <InvoiceItem
         item_label='LR Incentive'
@@ -246,19 +278,18 @@ const TripInvoice = (props) => {
           <InvoiceItem
             item_label='Customer Balance'
             amount
-            value={calc.balance}
+            value={calc.balance ? calc.balance.toFixed(2) : 0}
           />
           <InvoiceItem
             item_label='Commission Fee'
             amount
-            value={calc.commission}
+            value={calc.commission ? calc.commission.toFixed(2) : 0}
           />
           <InvoiceItem
             item_label='On Hold'
             amount
-            value={calc.on_hold}
+            value={calc.on_hold ? calc.on_hold.toFixed(2) : 0}
           />
-
           <Form.Item className='item' name='comment' rules={[{ required: true }]}>
             <Input.TextArea
               placeholder='Comment'
@@ -266,8 +297,8 @@ const TripInvoice = (props) => {
           </Form.Item>
         </>}
       {trip_info.billing_remarks &&
-        <Form.Item className='item' name='remarks' rules={[{ required: true }]}>
-          <Checkbox checked={false}>
+        <Form.Item className='item' name='remarks' valuePropName='checked'>
+          <Checkbox disabled={calc.completed}>
                 Confirm other charges booked for Customer/Partner
           </Checkbox>
         </Form.Item>}
@@ -282,6 +313,7 @@ const TripInvoice = (props) => {
               ghost
               onClick={onCalcutation}
               loading={calc.loading_clac}
+              disabled={calc.completed}
             >
               Calculate On-Hold
             </Button>

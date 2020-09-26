@@ -87,7 +87,7 @@ const TripDetailContainer = (props) => {
                       <TripPod trip_id={trip_info.id} trip_info={trip_info} />
                     </Panel>
                   </Collapse>
-                  {trip_status_name === 'Delivered' && trip_info.pod_verified_at &&
+                  {(trip_status_name === 'Delivered' || trip_status_name === 'POD Verified') && trip_info.pod_verified_at &&
                     <Collapse accordion className='small box-0 mt10'>
                       <Panel header='Invoice' key='1'>
                         <TripInvoice trip_info={trip_info} />
@@ -130,8 +130,8 @@ const TripDetailContainer = (props) => {
                   </Collapse>
                   <Collapse accordion className='small mt10'>
                     <Panel header='Credit/Debit Note' key='1'>
-                      <CreditNote trip_id={trip_id}/>
-                      <CreditNoteTable trip_id={trip_id}/>
+                      <CreditNote trip_id={trip_id} />
+                      <CreditNoteTable trip_id={trip_id} />
                     </Panel>
                   </Collapse>
                 </TabPane>
