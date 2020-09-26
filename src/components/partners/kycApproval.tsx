@@ -61,6 +61,7 @@ const tableData = [
 const KycApproval = (props) => {
   const { visible, onHide, approveData } = props
   const [form] = Form.useForm()
+  const [disableButton, setDisableButton] = useState(false)
 
   const files = approveData.partner_files
   const pan_files = files.filter(file => file.type === 'PAN')
@@ -81,16 +82,23 @@ const KycApproval = (props) => {
   const [updatePartnerApproval] = useMutation(
     UPDATE_PARTNER_APPOVAL_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Saved!!') }
+      onError (error) {
+        setDisableButton(false)
+         message.error(error.toString()) },
+      onCompleted () {
+        setDisableButton(false)
+         message.success('Saved!!') }
     }
   )
 
   const [createPartnerCode] = useMutation(
     CREATE_PARTNER_CODE_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+         message.error(error.toString()) },
       onCompleted (data) {
+        setDisableButton(false)
         const status = get(data, 'create_partner_code.status', null)
         const description = get(data, 'create_partner_code.description', null)
         if (status === 'OK') {
@@ -142,6 +150,7 @@ const KycApproval = (props) => {
   ]
 
   const onPartnerApprovalSubmit = () => {
+    setDisableButton(true)
     console.log('Traffic Added',approveData.id)
     updatePartnerApproval({
       variables: {
@@ -156,6 +165,7 @@ const KycApproval = (props) => {
   }
 
   const onCreatePartnerCodeSubmit = () => {
+    setDisableButton(true)
     console.log('Traffic Added',approveData.id)
     createPartnerCode({
       variables: {
@@ -438,7 +448,7 @@ const KycApproval = (props) => {
          <Button key='back' onClick={onHide}>
             Close
         </Button>,
-        <Button key='submit' type='primary' htmlType='submit'>
+        <Button key='submit' type='primary' loading={disableButton} htmlType='submit'>
             Approve KYC
         </Button>
       </Form>

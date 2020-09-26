@@ -49,6 +49,7 @@ const CustomerPrice = (props) => {
   const [form] = Form.useForm()
   const context = useContext(userContext)
   const customer_advance_percentage = trip_price.customer_advance_percentage
+  const [disableButton, setDisableButton] = useState(false)
 
   const initial = {
     partner_price: trip_price.partner_price,
@@ -59,8 +60,11 @@ const CustomerPrice = (props) => {
   const [insertTripPrice] = useMutation(
     CUSTOMER_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted () {
+        setDisableButton(false)
         message.success('Updated!!')
         onHide()
       }
@@ -68,6 +72,7 @@ const CustomerPrice = (props) => {
   )
 
   const onCustomerPriceSubmit = (form) => {
+    setDisableButton(true)
     console.log('inside form submit', form)
     insertTripPrice({
       variables: {
@@ -249,7 +254,7 @@ const CustomerPrice = (props) => {
             <h4>Partner Price: {price.partner_price}</h4>
           </Col>
           <Col flex='100px' className='text-right'>
-            <Button type='primary' htmlType='submit'>Update</Button>
+            <Button type='primary' loading={disableButton} htmlType='submit'>Update</Button>
           </Col>
         </Row>
       </Form>

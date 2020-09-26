@@ -1,5 +1,6 @@
 import { Row, Col, Card, Input, Form, Button, Select, Space, message } from 'antd'
 import { gql, useMutation, useQuery } from '@apollo/client'
+import { useState } from 'react'
 
 const PARTNERS_SUBSCRIPTION = gql`
   query create_partner{
@@ -54,6 +55,9 @@ const INSERT_PARTNER_MUTATION = gql`
 `
 
 const PartnerProfile = () => {
+  const [disableButton, setDisableButton] = useState(false)
+
+
   const { loading, error, data } = useQuery(
     PARTNERS_SUBSCRIPTION,
     {
@@ -66,8 +70,12 @@ const PartnerProfile = () => {
   const [updatePartner] = useMutation(
     INSERT_PARTNER_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError(error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
+      onCompleted() {
+        setDisableButton(false)
+        message.success('Updated!!') }
     }
   )
 
@@ -91,6 +99,7 @@ const PartnerProfile = () => {
   })
 
   const onPartnerChange = (form) => {
+    setDisableButton(true)
     console.log('inside form submit', form)
     const address = {
       no: form.no,
@@ -315,7 +324,7 @@ const PartnerProfile = () => {
         <Col xs={24} className='text-right'>
           <Space>
             <Button>Cancel</Button>
-            <Button type='primary' htmlType='submit'>Submit</Button>
+            <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
           </Space>
         </Col>
       </Row>

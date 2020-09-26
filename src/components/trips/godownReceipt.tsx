@@ -1,6 +1,7 @@
 import { Modal, Button, Row, Col, Form, Input, message } from 'antd';
 import { gql, useMutation } from '@apollo/client'
 import FileUploadOnly from '../common/fileUploadOnly'
+import { useState } from 'react'
 
 const PRIVATE_GODWON_MUTATION = gql`
 mutation update_private_godown($id: Int!, $private_godown_address: jsonb,$unloaded_private_godown:Boolean) {
@@ -16,17 +17,24 @@ mutation update_private_godown($id: Int!, $private_godown_address: jsonb,$unload
 const CheckBoxModal = (props) => {
   const { visible, onHide, trip_id,trip_info } = props
 
+  const [disableButton, setDisableButton] = useState(false)
+
   console.log('trip_info', trip_id)
 
   const [insertTopay] = useMutation(
     PRIVATE_GODWON_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError(error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
+      onCompleted() {
+        setDisableButton(false)
+        message.success('Updated!!') }
     }
   )
 
   const onPrivateGodown = (form) => {
+    setDisableButton(true)
     console.log('form', form)
     const private_godown_address = {
       no: form.no,
@@ -123,7 +131,7 @@ const CheckBoxModal = (props) => {
             </Col>
           </Row>
           <Row justify='end'>
-            <Button key="Update" htmlType='submit' type="primary">
+            <Button key="Update" htmlType='submit' loading={disableButton} type="primary">
               Save
           </Button>,
           <Button key='back'>

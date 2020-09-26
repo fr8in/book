@@ -65,6 +65,8 @@ const CreateLead = (props) => {
   const [userComment, setUserComment] = useState('')
   const [obj, setObj] = useState(initial)
   const context = useContext(userContext)
+  const [disableButton, setDisableButton] = useState(false)
+
   const { loading, error, data } = useQuery(
     PARTNERS_LEAD_SUBSCRIPTION,
     {
@@ -77,8 +79,11 @@ const CreateLead = (props) => {
   const [updatePartnerLeadAddress] = useMutation(
     INSERT_PARTNER_LEAD_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
+      onError(error) { 
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted() {
+        setDisableButton(false)
         message.success('Updated!!')
         setObj(initial)
       }
@@ -110,6 +115,7 @@ const CreateLead = (props) => {
   }
 
   const onPartnerLeadChange = (form) => {
+    setDisableButton(true)
     console.log('inside form submit', form, obj)
     updatePartnerLeadAddress({
       variables: {
@@ -183,7 +189,7 @@ const CreateLead = (props) => {
           />
         </Form.Item>
         <Row justify='end'>
-          <Button type='primary' key='back' htmlType='submit'> Submit </Button>
+          <Button type='primary' key='back' loading={disableButton} htmlType='submit'> Submit </Button>
         </Row>
       </Form>
     </Modal>

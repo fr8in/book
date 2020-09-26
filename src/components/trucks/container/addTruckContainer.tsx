@@ -36,6 +36,7 @@ const AddTruckContainer = (props) => {
   const [city_id, setCity_id] = useState(null)
   const [driver_id, setDriver_id] = useState(null)
   const router = useRouter()
+  const [disableButton, setDisableButton] = useState(false)
 
   const onCityChange = (city_id) => {
     setCity_id(city_id)
@@ -71,8 +72,11 @@ const AddTruckContainer = (props) => {
   const [insertTruck] = useMutation(
     INSERT_ADD_TRUCK_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted (data) {
+        setDisableButton(false)
         const value = get(data, 'insert_truck.returning', [])
         message.success('Updated!!')
         const url = '/trucks/[id]'
@@ -83,6 +87,7 @@ const AddTruckContainer = (props) => {
   )
 
   const onSubmit = (form) => {
+    setDisableButton(true)
     console.log('id', form)
     insertTruck({
       variables: {
@@ -177,7 +182,7 @@ const AddTruckContainer = (props) => {
             <Link href='/partners/[id]' as={`/partners/${cardcode}`}>
               <Button icon={<LeftOutlined />}>Back</Button>
             </Link>
-            <Button type='primary' htmlType='submit'>Submit</Button>
+            <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
           </Space>
         </Row>
       </Form>

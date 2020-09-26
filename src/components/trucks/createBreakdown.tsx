@@ -42,6 +42,7 @@ const CreateBreakdown = (props) => {
   const initial = { city_id: null }
   const context = useContext(userContext)
   const [city, setCity] = useState(initial)
+  const [disableButton, setDisableButton] = useState(false)
 
   const { loading, data, error } = useQuery(
     CREATE_BREAKDOWN, { variables: { id } }
@@ -62,8 +63,11 @@ const CreateBreakdown = (props) => {
   const [insertUpdateCreateBreakdown] = useMutation(
     INSERT_UPDATE_CREATE_BREAKDOWN_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted () {
+        setDisableButton(false)
         message.success('Updated!!')
         onHide()
       }
@@ -75,6 +79,7 @@ const CreateBreakdown = (props) => {
   }
 
   const onCreateBreakdown = (form) => {
+    setDisableButton(true)
     console.log('id', id, city)
     insertUpdateCreateBreakdown({
       variables: {
@@ -167,7 +172,7 @@ const CreateBreakdown = (props) => {
             <Form.Item>
               <Space>
                 <Button key='back' onClick={onHide}>Close</Button>
-                <Button type='primary' key='submit' htmlType='submit'>Save</Button>
+                <Button type='primary' key='submit' loading={disableButton} htmlType='submit'>Save</Button>
               </Space>
             </Form.Item>
           </Row>

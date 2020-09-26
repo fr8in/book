@@ -78,6 +78,7 @@ const TruckActivation = (props) => {
   const initial = { city_id: null }
 
   const [city, setCity] = useState(initial)
+  const [disableButton, setDisableButton] = useState(false)
 
   const { loading, error, data } = useQuery(
     TRUCKS_QUERY,
@@ -92,8 +93,12 @@ const TruckActivation = (props) => {
   const [updateTruckActivation] = useMutation(
     UPDATE_TRUCK_ACTIVATION_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Saved!!') }
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
+      onCompleted () {
+        setDisableButton(false)
+        message.success('Saved!!') }
     }
   )
 
@@ -122,6 +127,7 @@ const TruckActivation = (props) => {
   }
 
   const onTruckActivationSubmit = (form) => {
+    setDisableButton(true)
     console.log('Traffic Added', truck_id)
     updateTruckActivation({
       variables: {
@@ -253,7 +259,7 @@ const TruckActivation = (props) => {
                   <div>On-boarded by: {onboarded_by}</div>
                 </Col>
                 <Col xs={24} sm={12} className='text-right'>
-                  <Button type='primary' key='submit' htmlType='submit'>
+                  <Button type='primary' key='submit' loading={disableButton} htmlType='submit'>
                       Activate Truck
                   </Button>
                 </Col>

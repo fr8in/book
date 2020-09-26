@@ -37,6 +37,8 @@ const AddFastagContainer = () => {
   const [obj, setObj] = useState(initial)
   const [truck_id, setTruck_id] = useState('')
   const context = useContext(userContext)
+  const [disableButton, setDisableButton] = useState(false)
+
   const { loading, error, data } = useQuery(
     PARTNER_SEARCH,
     {
@@ -54,8 +56,12 @@ const AddFastagContainer = () => {
   const [AddFastag] = useMutation(
     ADD_FASTAG_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
+      onCompleted () {
+        setDisableButton(false)
+        message.success('Updated!!') }
     }
   )
 
@@ -83,6 +89,7 @@ const AddFastagContainer = () => {
   }
 
   const onChange = (form) => {
+    setDisableButton(true)
     AddFastag({
       variables: {
         truckId: parseInt(truck_id, 10),
@@ -158,7 +165,7 @@ const AddFastagContainer = () => {
             <Form.Item className='text-right'>
               <Space>
                 <Button htmlType='button'>Cancel</Button>
-                <Button type='primary' htmlType='submit'>Submit</Button>
+                <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
               </Space>
             </Form.Item>
           </Form>

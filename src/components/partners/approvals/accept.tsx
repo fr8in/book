@@ -1,6 +1,7 @@
 import { Modal, Form, Input, message, Button, Row, Space } from 'antd'
 import React from 'react'
 import { gql, useMutation } from '@apollo/client'
+import { useState } from 'react'
 
 const REJECT_CREDIT_MUTATION = gql`
 mutation reject_credit($id:Int!,$remarks:String){
@@ -34,12 +35,17 @@ mutation approve_credit(
 const Approve = (props) => {
   const { visible, onHide, item_id, title } = props
 
+  const [disableButton, setDisableButton] = useState(false)
+
+
   const [rejectCredit] = useMutation(
     REJECT_CREDIT_MUTATION, {
       onError (error) {
+        setDisableButton(false)
         message.error(error.toString())
       },
       onCompleted () {
+        setDisableButton(false)
         message.success('Updated!!')
         onHide()
       }
@@ -47,9 +53,11 @@ const Approve = (props) => {
   const [creditApproval] = useMutation(
     CREDIT_APPROVAL_MUTATION, {
       onError (error) {
+        setDisableButton(false)
         message.error(error.toString())
       },
       onCompleted () {
+        setDisableButton(false)
         message.success('Updated!!')
         onHide()
       }
@@ -57,7 +65,7 @@ const Approve = (props) => {
 
   const onSubmit = (form) => {
     console.log('Fastag Amount Reversed!', form)
-
+    setDisableButton(true)
     if (title === 'Approved') {
       creditApproval({
         variables: {
@@ -94,7 +102,7 @@ const Approve = (props) => {
           <Input placeholder='Remarks' />
         </Form.Item>
         <Form.Item className='text-right'>
-          <Button type='primary' size='middle' htmlType='submit'>Submit</Button>
+          <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>Submit</Button>
         </Form.Item>
       </Form>
     </Modal>

@@ -2,6 +2,7 @@
 import { Row, Col, Form, Input, Button, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import Driver from '../trucks/driver'
+import { useState } from 'react'
 
 const UPDATE_TRUCK_INFO_MUTATION = gql`
 mutation truck_info($length:float8,$breadth:float8,$height:float8,$id:Int!) {
@@ -18,9 +19,8 @@ mutation truck_info($length:float8,$breadth:float8,$height:float8,$id:Int!) {
 
 const TruckInfo = (props) => {
   const { truck_info, id, loading, partner_id } = props
-
-  console.log('truck_info', truck_info)
-
+  const [disableButton, setDisableButton] = useState(false)
+  
   const driver_number = truck_info && truck_info.driver && truck_info.driver.mobile
 
   console.log('driver_number', driver_number)
@@ -28,12 +28,17 @@ const TruckInfo = (props) => {
   const [updateTruckInfo] = useMutation(
     UPDATE_TRUCK_INFO_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Saved!!') }
+      onError (error) { 
+        setDisableButton(false)
+        message.error(error.toString()) },
+      onCompleted () {
+        setDisableButton(false)
+        message.success('Saved!!') }
     }
   )
 
   const onDimensionSubmit = (form) => {
+    setDisableButton(true)
     updateTruckInfo({
       variables: {
         id: id,
@@ -91,7 +96,7 @@ const TruckInfo = (props) => {
                 </Col>
                 <Col span={6}>
                   <Form.Item label='save' name='save' className='hideLabel'>
-                    <Button type='primary' htmlType='submit'>Save</Button>
+                    <Button type='primary' loading={disableButton} htmlType='submit'>Save</Button>
                   </Form.Item>
                 </Col>
               </Row>

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { gql, useSubscription, useMutation } from '@apollo/client'
 import Loading from '../common/loading'
 import get from 'lodash/get'
+import { useState } from 'react'
 
 const CUSTOMER_BILLING_ADDRESS_FOR_INVOICE = gql`
 subscription customer_billing($cardcode: String!, $id: Int!) {
@@ -58,6 +59,8 @@ mutation update_trip_gst_hsn($gst: String, $hsn:String, $id:Int!){
 const BillingAndInvoiced = (props) => {
   const { visible, onHide, cardcode, trip_id } = props
 
+  const [disableButton, setDisableButton] = useState(false)
+
   const { loading, error, data } = useSubscription(
     CUSTOMER_BILLING_ADDRESS_FOR_INVOICE,
     {
@@ -76,8 +79,12 @@ const BillingAndInvoiced = (props) => {
   const [update_trip_gst_hsn] = useMutation(
     UPDATE_TRIP_GST_HSN,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError (error) {
+        setDisableButton(false)
+         message.error(error.toString()) },
+      onCompleted () { 
+        setDisableButton(false)
+        message.success('Updated!!') }
     }
   )
 
@@ -101,6 +108,7 @@ const BillingAndInvoiced = (props) => {
   }
 
   const onGstHsnChange = (form) => {
+    setDisableButton(true)
     update_trip_gst_hsn({
       variables: {
         id: trip_id,
@@ -199,7 +207,7 @@ const BillingAndInvoiced = (props) => {
               </Col>
             </Row>
             <Row justify='end'>
-              <Button type='primary' icon={<PrinterOutlined />} htmlType='submit'> Save & Print Invoice</Button>
+              <Button type='primary' icon={<PrinterOutlined />} loading={disableButton} htmlType='submit'> Save & Print Invoice</Button>
             </Row>
           </Form>)}
       </Modal>
