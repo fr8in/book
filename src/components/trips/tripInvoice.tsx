@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Row, Col, Input, Button, Checkbox, Space, Form, message } from 'antd'
 import InvoiceItem from './invoiceItem'
 import get from 'lodash/get'
 import { gql, useMutation } from '@apollo/client'
+import userContext from '../../lib/userContaxt'
 
 const CALCULATE_ONHOLD = gql`
 mutation calculate_onHold(
@@ -69,6 +70,9 @@ mutation create_invoice(
   $part_other_charge: Float
   $part_source_halting: Float
   $part_unloading_charge: Float
+  $topic: String
+  $description: String
+  $createdBy: String
 ){
   create_invoice(
      customer_charge: {
@@ -86,7 +90,10 @@ mutation create_invoice(
     }, 
     destination_halting_days: $destination_halting_days, 
     source_halting_days: $source_halting_days, 
-    trip_id: $trip_id
+    trip_id: $trip_id,
+    topic: $topic,
+    description: $description,
+    createdBy: $createdBy
   ){
     success
     message
@@ -95,6 +102,7 @@ mutation create_invoice(
 
 const TripInvoice = (props) => {
   const { trip_info } = props
+  const context = useContext(userContext)
 
   const initial = {
     completed: false,
@@ -143,13 +151,20 @@ const TripInvoice = (props) => {
   const [create_invoice] = useMutation(
     CREATE_INVOICE,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        message.error(error.toString())
+        setCalc({ ...calc, loading_submit: false })
+      },
       onCompleted (data) {
         const success = get(data, 'create_invoice.success', null)
         const description = get(data, 'create_invoice.message', null)
         if (success) {
+          setCalc({ ...calc, loading_submit: false })
           message.success(description || 'Processed!')
-        } else (message.error(description))
+        } else {
+          setCalc({ ...calc, loading_submit: false })
+          message.error(description)
+        }
       }
     }
   )
@@ -184,6 +199,7 @@ const TripInvoice = (props) => {
     }
   }
   const onInvoiceSubmit = (form) => {
+    setCalc({ ...calc, loading_submit: true })
     create_invoice({
       variables: {
         trip_id: trip_info.id,
@@ -198,7 +214,10 @@ const TripInvoice = (props) => {
         part_destination_halting: floatVal(form.unloading_halting),
         part_loading_charge: floatVal(form.loading_charge),
         part_unloading_charge: floatVal(form.unloading_charge),
-        part_other_charge: floatVal(form.other_charge)
+        part_other_charge: floatVal(form.other_charge),
+        topic: 'Invoiced',
+        description: form.comment,
+        createdBy: context.email
       }
     })
   }
