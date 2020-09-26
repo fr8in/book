@@ -298,7 +298,7 @@ const TripInvoice = (props) => {
         </>}
       {trip_info.billing_remarks &&
         <Form.Item className='item' name='remarks' valuePropName='checked'>
-          <Checkbox>
+          <Checkbox disabled={calc.completed}>
                 Confirm other charges booked for Customer/Partner
           </Checkbox>
         </Form.Item>}
