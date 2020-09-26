@@ -37,6 +37,10 @@ const CUSTOMERS_QUERY = gql`
       created_at
       pan
       advance_percentage_id
+      customer_advance_percentage{
+        name
+        id
+      }
       system_mamul
       status {
         id

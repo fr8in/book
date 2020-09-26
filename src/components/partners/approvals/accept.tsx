@@ -1,6 +1,8 @@
 import { Modal, Form, Input, message, Button, Row, Space } from 'antd'
 import React from 'react'
 import { gql, useMutation } from '@apollo/client'
+import { useContext } from 'react'
+import userContext from '../../../lib/userContaxt'
 
 const REJECT_CREDIT_MUTATION = gql`
 mutation reject_credit($id:Int!,$remarks:String){
@@ -33,6 +35,7 @@ mutation approve_credit(
 
 const Approve = (props) => {
   const { visible, onHide, item_id, title } = props
+  const context = useContext(userContext)
 
   const [rejectCredit] = useMutation(
     REJECT_CREDIT_MUTATION, {
@@ -62,7 +65,7 @@ const Approve = (props) => {
       creditApproval({
         variables: {
           id: item_id.id,
-          approved_by: 'jay',
+          approved_by: context.email,
           approved_amount: parseFloat(form.amount),
           approved_comment: form.remarks
         }
