@@ -229,7 +229,7 @@ const PartnerDocument = (props) => {
               <Form.Item
                 label='Name'
               >
-                <Col offset={1} sm={17}>
+                <Col offset={2} sm={16}>
                   <Input placeholder='Name' />
                 </Col>
               </Form.Item>
@@ -237,7 +237,7 @@ const PartnerDocument = (props) => {
                 label='PAN'
               >
                 <Row >
-                  <Col offset={1} sm={16}>
+                  <Col offset={2} sm={16}>
                     <Input placeholder='PAN Number' />
                   </Col>
                   <Col offset={3} sm={3}>
@@ -262,7 +262,7 @@ const PartnerDocument = (props) => {
                   <Col sm={18}>
                     <Input placeholder='Cibil Score' />
                   </Col>
-                  <Col offset={3} sm={3}>
+                  <Col offset={3} sm={2}>
                     <Space>
                       <Button
                         type='primary'
