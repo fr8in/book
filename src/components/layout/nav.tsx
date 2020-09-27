@@ -5,7 +5,7 @@ import {
   CarOutlined,
   SmileOutlined,
   TeamOutlined,
-  CreditCardOutlined,
+  // CreditCardOutlined,
   NodeIndexOutlined,
   CopyOutlined,
   LineChartOutlined,

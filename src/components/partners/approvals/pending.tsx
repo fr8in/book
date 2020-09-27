@@ -15,6 +15,7 @@ import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import PartnerOnBoardedBy from '../partnerOnboardedByName'
+import LinkComp from '../../common/link'
 
 const PENDING_SUBSCRIPTION = gql`
 subscription trip_credit_debit($status: [String!]) {
@@ -91,12 +92,11 @@ const Pending = () => {
     PENDING_SUBSCRIPTION,
     {
       variables: {
-        status: ["PENDING"]
-      },
+        status: ['PENDING']
+      }
     }
   )
   console.log('pending error', error)
-  console.log('pending data', data)
 
   let _data = {}
   if (!loading) {
@@ -107,27 +107,26 @@ const Pending = () => {
   console.log('pending_list', pending_list)
 
   useEffect(() => {
-    setFilter({ ...filter, pending: pending_list });
+    setFilter({ ...filter, pending: pending_list })
   }, [pending_list])
-
 
   const onSearch = (e) => {
     setFilter({ ...filter, searchText: e.target.value })
-    const searchText = e.target.value;
+    const searchText = e.target.value
     console.log('searchText', filter)
     if (searchText.length >= 3) {
-      const regex = new RegExp(searchText, 'gi');
+      const regex = new RegExp(searchText, 'gi')
       const removeNull = filter.pending.filter(record => record.responsibility != null)
       const newData = removeNull.filter(record => record.responsibility.name.match(regex))
-      const result = newData ? newData : filter.pending
-      setFilter({ ...filter, pending: result });
+      const result = newData || filter.pending
+      setFilter({ ...filter, pending: result })
     } else {
       setFilter({ ...filter, pending: pending_list })
     }
   }
 
-  function onChange(filters) {
-    console.log('filters', filters);
+  function onChange (filters) {
+    console.log('filters', filters)
   }
 
   const ApprovalPending = [
@@ -145,14 +144,14 @@ const Pending = () => {
       title: 'Type',
       dataIndex: 'type',
       key: 'type',
-      width: '5%'
+      width: '4%'
     },
     {
       title: 'Issue Type',
       dataIndex: 'issueType',
       key: 'issueType',
       width: '8%',
-      render: (text, record) => <Truncate data={get(record, 'credit_debit_type.name', null)} length={12} />
+      render: (text, record) => <Truncate data={get(record, 'credit_debit_type.name', null)} length={10} />
     },
     {
       title: 'Amount',
@@ -164,8 +163,8 @@ const Pending = () => {
       title: 'Reason',
       dataIndex: 'comment',
       key: 'comment',
-      width: '10%',
-      render: (text, record) => <Truncate data={text} length={18} />
+      width: '11%',
+      render: (text, record) => <Truncate data={text} length={13} />
     },
     {
       title: 'Region',
@@ -174,8 +173,7 @@ const Pending = () => {
       filters: RegionList,
       width: '6%',
       render: (text, record) => get(record, 'trip.branch.region.name', null),
-      onFilter: (value, record) => record.trip && record.trip.branch && record.trip.branch.region && record.trip.branch.region.name.indexOf(value) === 0,
-
+      onFilter: (value, record) => record.trip && record.trip.branch && record.trip.branch.region && record.trip.branch.region.name.indexOf(value) === 0
 
     },
     {
@@ -184,7 +182,7 @@ const Pending = () => {
       key: 'created_by',
       filters: RequestedBy,
       width: '11%',
-      render: (text, record) => <Truncate data={text} length={18} />,
+      render: (text, record) => <Truncate data={text} length={15} />,
       onFilter: (value, record) => value === 1 ? record.is_created_by_partner === true : value === 2 ? record.is_created_by_partner === false : record.created_by
     },
     {
@@ -194,11 +192,14 @@ const Pending = () => {
       width: '12%',
       render: (text, record) => {
         return (
-          <Link href='partners/[id]' as={`partners/${get(record, 'trip.partner.cardcode', null)}`}>
-            <a> <Truncate data={get(record, 'trip.partner.cardcode', null) + '-' + get(record, 'trip.partner.name', null)} length={18} /></a>
-          </Link>
+          <LinkComp
+            type='partners'
+            data={get(record, 'trip.partner.cardcode', null) + '-' + get(record, 'trip.partner.name', null)}
+            id={get(record, 'trip.partner.cardcode', null)}
+            length={14}
+          />
         )
-      },
+      }
     },
     {
       title: 'Req.On',
@@ -234,7 +235,7 @@ const Pending = () => {
       ),
       filterIcon: (filtered) => (
         <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-      ),
+      )
 
     },
     {
@@ -242,7 +243,7 @@ const Pending = () => {
       dataIndex: 'last_comment',
       key: 'last_comment',
       width: '11%',
-      render: (text, record) => <Truncate data={get(record, 'trip.last_comment.description', null)} length={18} />
+      render: (text, record) => <Truncate data={get(record, 'trip.last_comment.description', null)} length={15} />
     },
     {
       title: 'Action',
@@ -294,6 +295,7 @@ const Pending = () => {
         scroll={{ x: 1156, y: 600 }}
         pagination={false}
         className='withAction'
+        loading={loading}
       />
       {object.commentVisible && (
         <Comment

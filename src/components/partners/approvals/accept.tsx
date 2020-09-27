@@ -89,6 +89,7 @@ const Approve = (props) => {
     <Modal
       title={title}
       visible={visible}
+      onCancel={onHide}
       footer={null}
     >
       <Form layout='vertical' onFinish={onSubmit}>
