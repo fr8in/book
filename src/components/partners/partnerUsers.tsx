@@ -2,6 +2,7 @@
 import { Modal, Button, Row, Input, Col, Table, Popconfirm, Form, message } from 'antd'
 import { PhoneOutlined, DeleteOutlined } from '@ant-design/icons'
 import { useSubscription, useMutation, gql } from '@apollo/client'
+import { useState } from 'react'
 
 const PARTNER_USERS_SUBSCRIPTION = gql`
 subscription partner_user($cardcode: String){
@@ -47,6 +48,7 @@ const PartnerUsers = (props) => {
   const { visible, partner, onHide, title } = props
 
   const [form] = Form.useForm()
+  const [disableButton, setDisableButton] = useState(false)
 
   const { loading, error, data } = useSubscription(
     PARTNER_USERS_SUBSCRIPTION,
@@ -58,8 +60,11 @@ const PartnerUsers = (props) => {
   const [insertPartnerUser] = useMutation(
     INSERT_PARTNER_USERS_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
+      onError(error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted() {
+        setDisableButton(false)
         message.success('Updated!!')
         form.resetFields()
       }
@@ -78,6 +83,7 @@ const PartnerUsers = (props) => {
   console.log('PartnerUsers error', error)
 
   const onAddUser = (form) => {
+    setDisableButton(true)
     insertPartnerUser({
       variables: {
         partner_id: partner.id,
@@ -154,7 +160,7 @@ const PartnerUsers = (props) => {
             </Form.Item>
           </Col>
           <Col flex='90px'>
-            <Button type='primary' htmlType='submit'>Add User</Button>
+            <Button type='primary' loading={disableButton} htmlType='submit'>Add User</Button>
           </Col>
         </Row>
       </Form>

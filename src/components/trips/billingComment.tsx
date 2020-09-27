@@ -2,6 +2,7 @@ import { Row, Col, Form, Input, Button, message, Divider } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import FileUpload from '../common/fileUpload'
 import get from 'lodash/get'
+import { useState } from 'react'
 
 const BILLING_COMMENT_MUTATION = gql`
 mutation update_billing_comment($id: Int!, $billing_remarks: String){
@@ -16,15 +17,22 @@ mutation update_billing_comment($id: Int!, $billing_remarks: String){
 const BillingComment = (props) => {
   const { trip_id, trip_info } = props
 
+  const [disableButton, setDisableButton] = useState(false)
+
   const [billingRemarks] = useMutation(
     BILLING_COMMENT_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
+      onCompleted () {
+        setDisableButton(false)
+        message.success('Updated!!') }
     }
   )
 
   const billingRemark = (form) => {
+    setDisableButton(true)
     console.log('form', form)
     billingRemarks({
       variables: {
@@ -74,7 +82,7 @@ const BillingComment = (props) => {
                 </Col>
                 <Col flex='80px'>
                   <Form.Item label='save' className='hideLabel'>
-                    <Button htmlType='submit' type='primary' disabled={trip_status}>Save</Button>
+                    <Button htmlType='submit' type='primary' loading={disableButton} disabled={trip_status}>Save</Button>
                   </Form.Item>
                 </Col>
               </Row>

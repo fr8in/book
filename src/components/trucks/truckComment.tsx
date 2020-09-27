@@ -3,6 +3,7 @@ import { gql, useMutation, useSubscription } from '@apollo/client'
 import moment from 'moment'
 import { useContext } from 'react'
 import userContext from '../../lib/userContaxt'
+import { useState } from 'react'
 
 const TRUCK_COMMENT = gql`
 subscription truck_comment($id: Int!){
@@ -38,6 +39,7 @@ const TruckComment = (props) => {
 
   const [form] = Form.useForm()
   const context = useContext(userContext)
+  const [disableButton, setDisableButton] = useState(false)
 
   const { loading, data, error } = useSubscription(
     TRUCK_COMMENT, { variables: { id } }
@@ -54,8 +56,11 @@ const TruckComment = (props) => {
   const [insertComment] = useMutation(
     INSERT_TRUCK_COMMENT_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted () {
+        setDisableButton(false)
         message.success('Updated!!')
         form.resetFields()
       }
@@ -63,6 +68,7 @@ const TruckComment = (props) => {
   )
 
   const onSubmit = (form) => {
+    setDisableButton(true)
     console.log('id', id)
     insertComment({
       variables: {
@@ -115,7 +121,7 @@ const TruckComment = (props) => {
             </Col>
             <Col flex='80px'>
               <Form.Item>
-                <Button type='primary' htmlType='submit'>Submit</Button>
+                <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
               </Form.Item>
             </Col>
           </Row>

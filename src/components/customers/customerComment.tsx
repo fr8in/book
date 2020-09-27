@@ -4,6 +4,7 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import moment from 'moment'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
+import { useState } from 'react'
 
 const CUSTOMER_COMMENT_SUBSCRIPTION = gql`
   query customer_comment($id: Int!){
@@ -34,6 +35,7 @@ const customerComment = (props) => {
   const { customer_id } = props
   const context = useContext(userContext)
   const [form] = Form.useForm()
+  const [disableButton, setDisableButton] = useState(false)
 
   const { loading, error, data } = useQuery(
     CUSTOMER_COMMENT_SUBSCRIPTION,
@@ -46,8 +48,11 @@ const customerComment = (props) => {
   const [insertComment] = useMutation(
     INSERT_CUSTOMER_COMMENT_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+         message.error(error.toString()) },
       onCompleted () {
+        setDisableButton(false)
         message.success('Updated!!')
         form.resetFields()
       }
@@ -63,6 +68,7 @@ const customerComment = (props) => {
   const customer_comments = get(_data, 'customer[0].customer_comments', [])
 
   const onSubmit = (form) => {
+    setDisableButton(true)
     insertComment({
       variables: {
         customer_id: customer_id,
@@ -104,7 +110,7 @@ const customerComment = (props) => {
           </Col>
           <Col xs={4}>
             <Form.Item>
-              <Button type='primary' htmlType='submit'>Submit</Button>
+              <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
             </Form.Item>
           </Col>
         </Row>

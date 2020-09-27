@@ -41,6 +41,7 @@ const CreateCustomerBranch = (props) => {
   const { visible, onHide, customerbranches, customer_id } = props
   const initial = { city_id: null, state_name: null }
   const [obj, setObj] = useState(initial)
+  const [disableButton, setDisableButton] = useState(false)
 
   const { loading, error, data } = useQuery(
     CUSTOMER_BRANCH_QUERY,
@@ -54,8 +55,11 @@ const CreateCustomerBranch = (props) => {
   const [insertCustomerBranch] = useMutation(
     INSERT_CUSTOMER_BRANCH_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted () {
+        setDisableButton(false)
         message.success('Updated!!')
         setObj(initial)
       }
@@ -65,8 +69,11 @@ const CreateCustomerBranch = (props) => {
   const [updateCustomerBranch] = useMutation(
     UPDATE_CUSTOMER_BRANCH_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+         message.error(error.toString()) },
       onCompleted () {
+        setDisableButton(false)
         message.success('Updated!!')
         setObj(initial)
       }
@@ -91,6 +98,7 @@ const CreateCustomerBranch = (props) => {
 
   const onAddBranch = (form) => {
     if (customerbranches) {
+      setDisableButton(true)
       updateCustomerBranch({
         variables: {
           city_id: obj.city_id,
@@ -106,6 +114,7 @@ const CreateCustomerBranch = (props) => {
         }
       })
     } else {
+      setDisableButton(true)
       insertCustomerBranch({
         variables: {
           city_id: obj.city_id,
@@ -178,7 +187,7 @@ const CreateCustomerBranch = (props) => {
               </Row>
               <Row justify='end'>
                 <Form.Item>
-                  <Button type='primary' htmlType='submit'>Save</Button>
+                  <Button type='primary' htmlType='submit' loading={disableButton}>Save</Button>
                 </Form.Item>
               </Row>
             </Form>

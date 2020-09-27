@@ -1,6 +1,7 @@
 import { Modal, Button, Input, Row, Form, Space, message } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
+import { useState } from 'react'
 
 const UPDATE_PARTNER_ADDRESS_MUTATION = gql`
 mutation update_address($address:jsonb, $cardcode:String){
@@ -15,15 +16,22 @@ mutation update_address($address:jsonb, $cardcode:String){
 const EditAddress = (props) => {
   const { visible, onHide, cardcode } = props
 
+  const [disableButton, setDisableButton] = useState(false)
+
   const [updatePartnerAddress] = useMutation(
     UPDATE_PARTNER_ADDRESS_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError(error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
+      onCompleted() {
+        setDisableButton(false)
+        message.success('Updated!!') }
     }
   )
 
   const onAddressSubmit = (form) => {
+    setDisableButton(true)
     console.log('inside form submit', form)
     const address = {
       no: form.no,
@@ -67,7 +75,7 @@ const EditAddress = (props) => {
           <Row justify='end'>
             <Space>
               <Button type='primary' icon={<LeftOutlined />} onClick={onHide}> Back </Button>
-              <Button type='primary' key='back' htmlType='submit'> Save </Button>
+              <Button type='primary' key='back' loading={disableButton} htmlType='submit'> Save </Button>
             </Space>
           </Row>
         </Form>

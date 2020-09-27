@@ -60,6 +60,7 @@ const CreditNote = (props) => {
   const {trip_id} = props
   const [radioType, setRadioType] = useState('Credit Note')
   const context = useContext(userContext)
+  const [disableButton, setDisableButton] = useState(false)
 
   const { loading, error, data } = useSubscription(
     CREDIT_DEBIT_ISSUE_TYPE_SUBSCRIPTION
@@ -70,9 +71,12 @@ const CreditNote = (props) => {
   const [upadateCreditNote] = useMutation(
     CREATE_CREDIT_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted (data) 
       { 
+        setDisableButton(false)
         console.log('credit data', data)
         if (data.create_credit_track.message){
           message.success(data.create_credit_track && data.create_credit_track.message)
@@ -86,9 +90,12 @@ const CreditNote = (props) => {
   const [upadateDebitNote] = useMutation(
     CREATE_DEBIT_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted (data) 
       { 
+        setDisableButton(false)
         console.log('debit data',data)
         if (data.create_debit_track.success){
           message.success(data.create_debit_track && data.create_debit_track.message) 
@@ -112,6 +119,7 @@ const CreditNote = (props) => {
 const create_credit_debit = (form) =>{
   console.log('form',form)
   if (radioType === 'Credit Note'){
+    setDisableButton(true)
     upadateCreditNote ({
       variables:{
         credit_debit_type_id: form.issue_type,
@@ -123,6 +131,7 @@ const create_credit_debit = (form) =>{
     })
   }
   if(radioType === 'Debit Note'){
+    setDisableButton(true)
     upadateDebitNote ({
       variables:{
         credit_debit_type_id: form.issue_type,
@@ -176,7 +185,7 @@ const create_credit_debit = (form) =>{
           </Col>
           <Col flex='90px'>
             <Form.Item label='save' className='hideLabel'>
-              <Button type='primary' htmlType='submit'>Submit</Button>
+              <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
             </Form.Item>
           </Col>
         </Row>

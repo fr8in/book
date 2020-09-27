@@ -22,7 +22,9 @@ const Rebate = (props) => {
   const [excess_payment_booking] = useMutation(
     CUSTOMER_EXCESS_PAYMENT,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+         message.error(error.toString()) },
       onCompleted (data) {
         setDisableButton(false)
         const status = get(data, 'customer_excess_payment.status', null)

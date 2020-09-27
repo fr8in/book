@@ -1,6 +1,7 @@
 
 import { Row, Col, Modal, Button, Input, Form, message } from 'antd'
 import { useMutation, gql } from '@apollo/client'
+import { useState } from 'react'
 
 const INSERT_CUSTOMER_USERS_MUTATION = gql`
 mutation customer_user_insert($name:String,$mobile:String,$email:String,$customer_id:Int,) {
@@ -23,17 +24,23 @@ mutation customer_user_insert($name:String,$mobile:String,$email:String,$custome
 const CreateCustomerUser = (props) => {
   const { visible, onHide, customer } = props
 
+  const [disableButton, setDisableButton] = useState(false)
+
   const [insertcustomerUser] = useMutation(
     INSERT_CUSTOMER_USERS_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) { 
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted () {
+        setDisableButton(false)
         message.success('Updated!!')
       }
     }
   )
 
   const onAddUser = (form) => {
+    setDisableButton(true)
     insertcustomerUser({
       variables: {
         customer_id: customer,
@@ -67,7 +74,7 @@ const CreateCustomerUser = (props) => {
             <Row justify='end'>
               <Form.Item>
                 <Button key='back' onClick={onHide}>Cancel</Button>
-                <Button type='primary' htmlType='submit'>Save</Button>
+                <Button type='primary' loading={disableButton} htmlType='submit'>Save</Button>
               </Form.Item>
             </Row>
           </Form>

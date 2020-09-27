@@ -24,13 +24,17 @@ const KycReject = (props) => {
   const { onHide } = props
   const [userComment, setUserComment] = useState('')
   const context = useContext(userContext)
+  const [disableButton, setDisableButton] = useState(false)
 
   console.log('partner_id', partner_id)
   const [insertComment] = useMutation(
     INSERT_PARTNER_REJECT_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
+      onError(error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted() {
+        setDisableButton(false)
         message.success('Updated!!')
         onHide()
       }
@@ -42,6 +46,7 @@ const KycReject = (props) => {
   console.log('userComment', userComment)
 
   const onSubmit = () => {
+    setDisableButton(true)
     insertComment({
       variables: {
         partner_id: partner_id,
@@ -67,7 +72,7 @@ const KycReject = (props) => {
       <Row justify='end'>
         <Space>
           <Button onClick={onHide}>Cancel</Button>
-          <Button type='primary' onClick={onSubmit}>Ok</Button>
+          <Button type='primary'  loading={disableButton} onClick={onSubmit}>Ok</Button>
         </Space>
       </Row>
     </>

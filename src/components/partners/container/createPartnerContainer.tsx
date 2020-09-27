@@ -68,6 +68,8 @@ const INSERT_PARTNER_MUTATION = gql`
 const CreatePartner = () => {
   const [city, setCity] = useState(null)
   const [form] = Form.useForm()
+  const [disableButton, setDisableButton] = useState(false)
+
 
   const { loading, error, data } = useQuery(
     PARTNERS_SUBSCRIPTION,
@@ -96,8 +98,12 @@ const CreatePartner = () => {
   const [updatePartner] = useMutation(
     INSERT_PARTNER_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted (data) { message.success('Created!!') }
+      onError(error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
+      onCompleted() {
+        setDisableButton(false)
+        message.success('Updated!!') }
     }
   )
 
@@ -122,6 +128,7 @@ const CreatePartner = () => {
   })
 
   const onPartnerChange = (form) => {
+    setDisableButton(true)
     console.log('inside form submit', form)
     const address = {
       no: form.no,
@@ -372,7 +379,7 @@ const CreatePartner = () => {
             <Link href='/partners'>
               <Button>Back</Button>
             </Link>
-            <Button type='primary' htmlType='submit'>Submit</Button>
+            <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
           </Space>
         </Col>
       </Row>

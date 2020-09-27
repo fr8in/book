@@ -70,7 +70,9 @@ const Transfer = (props) => {
   const [customer_mamul_transfer] = useMutation(
     CUSTOMER_MAMUL_TRANSFER,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) { 
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted (data) {
         setDisableButton(false)
         const status = get(data, 'customer_mamul_transfer.status', null)

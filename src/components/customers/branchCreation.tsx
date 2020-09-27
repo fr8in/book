@@ -122,7 +122,9 @@ const BranchCreation = (props) => {
   const [update_customer] = useMutation(
     UPDATE_CUSTOMER,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) { 
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted () {
         message.success('Updated!')
         setDisableButton(false)

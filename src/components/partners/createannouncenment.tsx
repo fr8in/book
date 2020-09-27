@@ -2,6 +2,7 @@ import { Modal, Button, Input, Row, Form, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import { useContext } from 'react'
 import userContext from '../../lib/userContaxt'
+import { useState } from 'react'
 
 const INSERT_ANNOUNCEMENT_MUTATION = gql`
 mutation create_announcement($title: String, $description: String, $createdBy: String, $createdAt: timestamp) {
@@ -21,12 +22,16 @@ mutation create_announcement($title: String, $description: String, $createdBy: S
 const CreateAnnouncenment = (props) => {
   const { visible, onHide } = props
   const context = useContext(userContext)
+  const [disableButton, setDisableButton] = useState(false)
 
   const [updateAnnouncement] = useMutation(
     INSERT_ANNOUNCEMENT_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+         message.error(error.toString()) },
       onCompleted () {
+        setDisableButton(false)
         message.success('Updated!!')
         onHide()
       }
@@ -34,6 +39,7 @@ const CreateAnnouncenment = (props) => {
   )
 
   const onChange = (form) => {
+    setDisableButton(true)
     updateAnnouncement({
       variables: {
         title: form.title,
@@ -59,7 +65,7 @@ const CreateAnnouncenment = (props) => {
           <Input.TextArea placeholder='Description' />
         </Form.Item>
         <Row justify='end'>
-          <Button type='primary' htmlType='submit'>Publish</Button>
+          <Button type='primary' loading={disableButton} htmlType='submit'>Publish</Button>
         </Row>
       </Form>
     </Modal>
