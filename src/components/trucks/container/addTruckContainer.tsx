@@ -74,7 +74,7 @@ const AddTruckContainer = (props) => {
       onError (error) { message.error(error.toString()) },
       onCompleted (data) {
         const value = get(data, 'insert_truck.returning', [])
-        message.success('Updated!!')
+        message.success('Created!!')
         const url = '/trucks/[id]'
         const as = `/trucks/${value[0].truck_no}`
         router.push(url, as, 'shallow')
