@@ -18,16 +18,6 @@ const SYSTEM_MAMUL = gql`subscription customer_mamul_summary($cardcode: String!)
       pending_balance_180
       pending_balance_60_120
       write_off_charge
-
-      # mamul_charge_sum
-      # writeoff_others_sum
-      # pending_balance_category1
-      # pending_balance_category2
-      # pending_balance_category3
-      # system_mamul
-      # system_mamul_avg
-      # track_mamul
-      # mamul_difference
     }
   }
 }`
