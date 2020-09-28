@@ -18,6 +18,11 @@ query trip_credit_debit(
   $type: [bpchar!], 
   $trip_id: [Int!]) 
   {
+    trip_credit_debit_aggregate(where:{credit_debit_status:{name:{_in:["APPROVED","REJECTED"]}}}){
+      aggregate{
+        count
+      }
+    }
   trip_credit_debit(
     order_by: {trip_id: desc}, 
     offset: $offset, limit: $limit,
@@ -77,8 +82,8 @@ const ApprovedAndRejected = () => {
   const [currentPage, setCurrentPage] = useState(1)
 
   const approvalQueryVars = {
-    offset: 0,
-    limit: u.limit,
+    offset: filter.offset,
+    limit: filter.limit,
     status: ["APPROVED", "REJECTED"],
     trip_id: filter.trip_id && filter.trip_id.length > 0 ? filter.trip_id : null,
     type: filter.type && filter.type.length > 0 ? filter.type : null,
@@ -119,11 +124,16 @@ const ApprovedAndRejected = () => {
   const creditDebitList = creditDebitType.map((data) => {
     return { value: data.text, label: data.text }
   })
+  const record_count = get(_data, 'trip_credit_debit_aggregate.aggregate.count', 0)
+  console.log('record_count s',record_count)
 
+  const onPageChange = (value) => {
+    setFilter({ ...filter, offset: value })
+  }
   const pageChange = (page, pageSize) => {
     const newOffset = page * pageSize - filter.limit
     setCurrentPage(page)
-    setFilter({ ...filter, offset: newOffset })
+    onPageChange(newOffset)
   }
   const onTripIdSearch = (e) => {
     setCurrentPage(1)
@@ -277,14 +287,16 @@ const ApprovedAndRejected = () => {
         scroll={{ x: 1156, y: 550 }}
         pagination={false}
       />
+      {!loading && record_count ? (
       <Pagination
         size='small'
         current={currentPage}
         pageSize={filter.limit}
         showSizeChanger={false}
+        total={record_count}
         onChange={pageChange}
         className='text-right p10'
-      />
+      />) : null}
     </>
   )
 }
