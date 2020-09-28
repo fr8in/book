@@ -34,7 +34,6 @@ const SystemMamul = (props) => {
   if (!loading) {
     const customer = get(data, 'customer[0]', null)
     const mamul_summary = get(customer, 'customer_mamul_summary', null)
-    console.log('mamul_summary', mamul_summary, data)
     const billedOrders = mamul_summary.billed_orders
     const billed_orders = billedOrders === 0 ? 1 : billedOrders
     const mamul_summary_avg = {
