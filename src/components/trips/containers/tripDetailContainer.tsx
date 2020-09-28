@@ -128,12 +128,13 @@ const TripDetailContainer = (props) => {
                       />
                     </Panel>
                   </Collapse>
+                  {trip_status_name !== 'Closed' &&
                   <Collapse accordion className='small mt10'>
                     <Panel header='Credit/Debit Note' key='1'>
                       <CreditNote trip_id={trip_id} />
                       <CreditNoteTable trip_id={trip_id} />
                     </Panel>
-                  </Collapse>
+                  </Collapse>}
                 </TabPane>
                 <TabPane tab='Timeline' key='3'>
                   <TripComment trip_id={trip_info.id} trip_status={get(trip_info, 'trip_status.name', null)} />

@@ -185,7 +185,7 @@ const PartnerLead = (props) => {
   const onSubmit = (id) => {
     insertComment({
       variables: {
-        partner_status_id: 3,
+        partner_status_id: 2,
         id: id
       }
     })
