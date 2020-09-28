@@ -3,6 +3,8 @@ import { Modal, Button, Row, Input, Col, Table, message, Tooltip, Form } from 'a
 import { gql, useSubscription, useMutation } from '@apollo/client'
 import moment from 'moment'
 import userContext from '../../lib/userContaxt'
+import { useState } from 'react'
+
 
 const TRIP_COMMENT_QUERY = gql`
   subscription trip_comment($id: Int!){
@@ -30,6 +32,7 @@ mutation trip_comment_insert($description:String, $topic:String, $trip_id: Int, 
 const Tripcomment = (props) => {
   const { visible, tripid, onHide } = props
   const context = useContext(userContext)
+  const [disableButton, setDisableButton] = useState(false)
 
   const [form] = Form.useForm()
 
@@ -43,8 +46,11 @@ const Tripcomment = (props) => {
   const [InsertComment] = useMutation(
     INSERT_TRIP_COMMENT_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted () {
+        setDisableButton(false)
         message.success('Updated!!')
         form.resetFields()
         onHide()
@@ -56,6 +62,7 @@ const Tripcomment = (props) => {
   console.log('tripComment error', error)
 
   const onSubmit = (form) => {
+    setDisableButton(true)
     InsertComment({
       variables: {
         trip_id: tripid,
@@ -111,7 +118,7 @@ const Tripcomment = (props) => {
           </Col>
           <Col xs={4}>
             <Form.Item>
-              <Button type='primary' htmlType='submit'>Submit</Button>
+              <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
             </Form.Item>
           </Col>
         </Row>

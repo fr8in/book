@@ -1,6 +1,7 @@
 import { Modal, Button, Input, Row, Form, Space, message } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
+import { useState } from 'react'
 
 const UPDATE_PARTNER_BANK_MUTATION = gql`
 mutation partner_bank_edit ($account_number:String,$ifsc_code:String,$acconnt_holder:String,$cardcode:String){
@@ -19,14 +20,21 @@ mutation partner_bank_edit ($account_number:String,$ifsc_code:String,$acconnt_ho
 const EditBank = (props) => {
   const { visible, onHide, cardcode } = props
 
+  const [disableButton, setDisableButton] = useState(false)
+
   const [updatePartnerBank] = useMutation(
     UPDATE_PARTNER_BANK_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError(error) { 
+        setDisableButton(false)
+        message.error(error.toString()) },
+      onCompleted() { 
+        setDisableButton(false)
+        message.success('Updated!!') }
     }
   )
   const onBankSubmit = (form) => {
+    setDisableButton(true)
     updatePartnerBank({
       variables: {
         cardcode: cardcode,
@@ -65,7 +73,7 @@ const EditBank = (props) => {
           <Row justify='end'>
             <Space>
               <Button type='primary' icon={<LeftOutlined />} onClick={onHide}> Back </Button>
-              <Button type='primary' key='back' htmlType='submit'> Save </Button>
+              <Button type='primary' key='back' loading={disableButton} htmlType='submit'> Save </Button>
             </Space>
           </Row>
         </Form>

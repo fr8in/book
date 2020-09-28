@@ -1,4 +1,4 @@
-import { useState, useEffect,useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { Modal, Table, Row, Button, Col, Radio, message } from 'antd'
 import _ from 'lodash'
 import { gql, useQuery, useMutation } from '@apollo/client'
@@ -34,6 +34,7 @@ const walletTopup = (props) => {
   const [invocedTrips, setInvoicedTrips] = useState([])
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedTopUps, setSelectedTopUps] = useState([])
+  const [disbleBtn, setDisbleBtn] = useState(false)
   const [total, setTotal] = useState(0)
   const context = useContext(userContext)
 
@@ -47,10 +48,21 @@ const walletTopup = (props) => {
   const [partner_manual_topup] = useMutation(
     MANUAL_TOPUP_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        message.error(error.toString())
+        setDisbleBtn(false)
+      },
       onCompleted (data) {
-        message.success(_.get(data, 'partner_manual_topup.description', 'Processed!'))
-        onHide()
+        const status = _.get(data, 'partner_manual_topup.status', null)
+        const description = _.get(data, 'partner_manual_topup.description', null)
+        if (status === 'OK') {
+          setDisbleBtn(false)
+          message.success(description || 'Processed!')
+          onHide()
+        } else {
+          setDisbleBtn(false)
+          message.error(description)
+        }
       }
     }
   )
@@ -74,12 +86,13 @@ const walletTopup = (props) => {
   }, [loading])
 
   const onSubmit = () => {
+    setDisbleBtn(true)
     partner_manual_topup({
       variables: {
         created_by: context.email,
         topups: selectedTopUps.map(data => {
           return {
-            docnum: data.docnum,
+            docnum: data.docnum.toString(),
             is_with_deduction: data.is_with_deduction === '2%'
           }
         })
@@ -192,7 +205,7 @@ const walletTopup = (props) => {
           </Col>
           <Col flex='180'>
             <Button onClick={onHide}>Cancel</Button>
-            <Button type='primary' onClick={onSubmit}>Top Up</Button>
+            <Button type='primary' onClick={onSubmit} loading={disbleBtn}>Top Up</Button>
           </Col>
         </Row>
       }

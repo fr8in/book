@@ -1,5 +1,9 @@
+import { useState } from 'react'
 import { Row, Col, Card, Input, Form, Button, Select, Space, message } from 'antd'
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { gql, useMutation, useQuery, useLazyQuery } from '@apollo/client'
+import get from 'lodash/get'
+import CitySelect from '../../common/citySelect'
+import Link from 'next/link'
 
 const PARTNERS_SUBSCRIPTION = gql`
   query create_partner{
@@ -11,17 +15,25 @@ const PARTNERS_SUBSCRIPTION = gql`
       id
       name
     }
-    city{
+    state{
       id
-      name    
+      name
     }
   }
 `
+const IFSC_VALIDATION = gql`
+query ifsc_validation($ifsc: String!){
+  bank_detail(ifsc: $ifsc) {
+    bank
+    bankcode
+    branch
+  }
+}`
 
 const INSERT_PARTNER_MUTATION = gql`
   mutation create_partner(
-    $name: String, $email: String, $cibil: Int, $address: jsonb, 
-    $pin_code: Int, $account_number: String, $ifsc_code: String, 
+    $name: String, $email: String, $cibil: String, $address: jsonb, 
+    $account_number: String, $ifsc_code: String, 
     $mobile: String, $pan_no: String, $contact_name: String, 
     $acconnt_holder: String, $partner_status_id:Int,$city_id:Int,
     $partner_advance_percentage_id:Int,$onboarded_by_id:Int) 
@@ -53,7 +65,12 @@ const INSERT_PARTNER_MUTATION = gql`
   }
 `
 
-const PartnerProfile = () => {
+const CreatePartner = () => {
+  const [city, setCity] = useState(null)
+  const [form] = Form.useForm()
+  const [disableButton, setDisableButton] = useState(false)
+
+
   const { loading, error, data } = useQuery(
     PARTNERS_SUBSCRIPTION,
     {
@@ -61,29 +78,49 @@ const PartnerProfile = () => {
       notifyOnNetworkStatusChange: true
     }
   )
+
+  const [getBankDetail, { data: l_data, error: l_error }] = useLazyQuery(
+    IFSC_VALIDATION,
+    {
+      onError (error) {
+        message.error(`Invalid IFSC: ${error}`)
+        form.resetFields(['ifsc'])
+      },
+      onCompleted (data) {
+        const bank_detail = get(data, 'bank_detail', null)
+        form.setFieldsValue({ bank_name: get(bank_detail, 'bank', ''), branch_name: get(bank_detail, 'branch', '') })
+        message.success(`Bank name: ${get(bank_detail, 'bank', '')}!!`)
+      }
+    }
+  )
   console.log('CreatePartnersContainer error', error)
 
   const [updatePartner] = useMutation(
     INSERT_PARTNER_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError(error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
+      onCompleted() {
+        setDisableButton(false)
+        message.success('Updated!!') }
     }
   )
 
-  var employee = []
-  var city = []
-  var partner_advance_percentage = []
+  let _data = {}
   if (!loading) {
-    partner_advance_percentage = data.partner_advance_percentage
-    city = data.city
-    employee = data.employee
+    _data = data
   }
 
-  const advancePercentageList = partner_advance_percentage.map((data) => {
-    return { value: data.id, label: data.name }
+  const partner_advance_percentage = get(_data, 'partner_advance_percentage', [])
+  const employee = get(_data, 'employee', [])
+  const state = get(_data, 'state', [])
+
+  const state_list = state.map((data) => {
+    return { value: data.name, label: data.name }
   })
-  const cityList = city.map((data) => {
+
+  const advancePercentageList = partner_advance_percentage.map((data) => {
     return { value: data.id, label: data.name }
   })
   const employeeList = employee.map((data) => {
@@ -91,11 +128,12 @@ const PartnerProfile = () => {
   })
 
   const onPartnerChange = (form) => {
+    setDisableButton(true)
     console.log('inside form submit', form)
     const address = {
       no: form.no,
       address: form.address,
-      city: form.city,
+      city: form.city.split(',')[0],
       state: form.state,
       pin_code: form.pin_code
     }
@@ -109,25 +147,50 @@ const PartnerProfile = () => {
         cibil: form.cibil,
         account_number: form.account_no,
         acconnt_holder: form.account_holder_name,
-        ifsc_code: form.ifsc_code,
+        ifsc_code: form.ifsc,
         address: address,
         partner_status_id: 6,
         partner_advance_percentage_id: form.advance_percentage,
-        city_id: form.city,
+        city_id: parseInt(city),
         onboarded_by_id: form.on_boarded_by
       }
     })
   }
 
+  const validateIFSC = () => {
+    getBankDetail(
+      { variables: { ifsc: form.getFieldValue('ifsc') } }
+    )
+  }
+
+  const onCityChange = (city_id) => {
+    setCity(city_id)
+  }
+
+  const rules = [
+    {
+      required: true,
+      message: 'Confirm acccount number required!'
+    },
+    ({ getFieldValue }) => ({
+      validator (rule, value) {
+        if (!value || getFieldValue('account_no') === value) {
+          return Promise.resolve()
+        }
+        return Promise.reject('The account number not matched!')
+      }
+    })
+  ]
+
   return (
-    <Form layout='vertical' onFinish={onPartnerChange}>
+    <Form layout='vertical' onFinish={onPartnerChange} form={form}>
       <Card size='small' title='Personal Details' className='border-top-blue mb10'>
         <Row gutter={10}>
           <Col xs={24} sm={5}>
             <Form.Item
               label='Partner Name (Should be RC name)'
               name='name'
-              rules={[{ required: true, message: 'Partner Name(Should be RC name) is required field!' }]}
+              rules={[{ required: true, message: 'Name is required field!' }]}
             >
               <Input placeholder='PartnerName' />
             </Form.Item>
@@ -136,7 +199,7 @@ const PartnerProfile = () => {
             <Form.Item
               label='Contact Person'
               name='contact_name'
-              rules={[{ required: true, message: 'Contact Person is required field!' }]}
+              rules={[{ required: true, message: 'Contact name is required field!' }]}
             >
               <Input placeholder='Contact Person' />
             </Form.Item>
@@ -145,7 +208,7 @@ const PartnerProfile = () => {
             <Form.Item
               label='Phone Number'
               name='mobile'
-              rules={[{ required: true, message: 'Mobile Number is required field' }]}
+              rules={[{ required: true, message: 'Mobile is required field' }]}
             >
               <Input placeholder='Phone Number' />
             </Form.Item>
@@ -163,7 +226,7 @@ const PartnerProfile = () => {
             <Form.Item
               label='Pan Number'
               name='pan_no'
-              rules={[{ required: true, message: 'Pan Number is required field' }]}
+              rules={[{ required: true, message: 'Pan is required field' }]}
             >
               <Input placeholder='Pan Number' />
             </Form.Item>
@@ -203,7 +266,12 @@ const PartnerProfile = () => {
               name='state'
               rules={[{ required: true, message: 'State is required field!' }]}
             >
-              <Input placeholder='State' />
+              <Select
+                placeholder='Select State'
+                options={state_list}
+                optionFilterProp='label'
+                showSearch
+              />
             </Form.Item>
           </Col>
           <Col xs={24} sm={4}>
@@ -240,10 +308,11 @@ const PartnerProfile = () => {
           <Col xs={24} sm={5}>
             <Form.Item
               label='Re-enter Account No'
-              name='re_enter_account_no'
-              rules={[{ required: true, message: 'Re-enter Account No is required field!' }]}
+              name='confirm'
+              dependencies={['account_no']}
+              rules={rules}
             >
-              <Input placeholder='Confirm Account No' />
+              <Input.Password placeholder='Confirm Account No' />
             </Form.Item>
           </Col>
         </Row>
@@ -251,24 +320,20 @@ const PartnerProfile = () => {
           <Col xs={24} sm={5}>
             <Form.Item
               label='IFSC Code'
-              name='ifsc_code'
+              name='ifsc'
               rules={[{ required: true, message: 'IFSC Code is required field!' }]}
             >
-              <Input placeholder='IFSC Code' />
+              <Input placeholder='IFSC Code' onBlur={validateIFSC} />
             </Form.Item>
           </Col>
           <Col xs={24} sm={5}>
-            <Form.Item
-              label='Bank Name'
-            >
-              <Input placeholder='Bank Name' />
+            <Form.Item label='Bank Name' name='bank_name'>
+              <Input placeholder='Bank Name' disabled />
             </Form.Item>
           </Col>
           <Col xs={24} sm={5}>
-            <Form.Item
-              label='Branch Name'
-            >
-              <Input placeholder='Branch Name' />
+            <Form.Item label='Branch Name' name='branch_name'>
+              <Input placeholder='Branch Name' disabled />
             </Form.Item>
           </Col>
         </Row>
@@ -281,21 +346,16 @@ const PartnerProfile = () => {
               name='advance_percentage'
               rules={[{ required: true }]}
             >
-              <Select>
-                <Select.Option options={advancePercentageList} value='Advance Percentage' disabled> </Select.Option>
-              </Select>
+              <Select
+                placeholder='Advance Percentage'
+                options={advancePercentageList}
+                optionFilterProp='label'
+                showSearch
+              />
             </Form.Item>
           </Col>
           <Col xs={24} sm={5}>
-            <Form.Item
-              label='City'
-              name='city'
-              rules={[{ required: true, message: 'City is required field!' }]}
-            >
-              <Select>
-                <Select.Option options={cityList} value='City'> </Select.Option>
-              </Select>
-            </Form.Item>
+            <CitySelect onChange={onCityChange} label='City' name='city' required />
           </Col>
           <Col xs={24} sm={5}>
             <Form.Item
@@ -303,23 +363,27 @@ const PartnerProfile = () => {
               name='on_boarded_by'
               rules={[{ required: true, message: 'On-Boarded By is required field!' }]}
             >
-              <Select>
-                <Select.Option options={employeeList} value='On Boarded By'> </Select.Option>
-              </Select>
+              <Select
+                placeholder='On Boarded By'
+                options={employeeList}
+                optionFilterProp='label'
+                showSearch
+              />
             </Form.Item>
           </Col>
         </Row>
       </Card>
-
       <Row justify='end'>
         <Col xs={24} className='text-right'>
           <Space>
-            <Button>Cancel</Button>
-            <Button type='primary' htmlType='submit'>Submit</Button>
+            <Link href='/partners'>
+              <Button>Back</Button>
+            </Link>
+            <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
           </Space>
         </Col>
       </Row>
     </Form>
   )
 }
-export default PartnerProfile
+export default CreatePartner

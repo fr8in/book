@@ -106,6 +106,7 @@ const ConfirmPo = (props) => {
   const [form] = Form.useForm()
   const initial = { search: '', source_id: null, destination_id: null }
   const [obj, setObj] = useState(initial)
+  const [disableButton, setDisableButton] = useState(false)
 
   const { loading, error, data } = useQuery(
     PO_QUERY,
@@ -119,8 +120,11 @@ const ConfirmPo = (props) => {
   const [confirm_po_mutation] = useMutation(
     CONFIRM_PO,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted () {
+        setDisableButton(false)
         message.success('Load Created!!')
         setObj(initial)
         onHide()
@@ -137,6 +141,7 @@ const ConfirmPo = (props) => {
   const system_mamul = get(customer, 'system_mamul', null)
 
   const onSubmit = (form) => {
+    setDisableButton(true)
     const loading_charge = form.charge_inclue.includes('Loading')
     const unloading_charge = form.charge_inclue.includes('Unloading')
     if (system_mamul > parseFloat(form.mamul)) {
@@ -218,7 +223,7 @@ const ConfirmPo = (props) => {
               />
               <Divider className='hidden-xs' />
               <div className='text-right'>
-                <Button type='primary' htmlType='submit'>Create</Button>
+                <Button type='primary' loading={disableButton} htmlType='submit'>Create</Button>
               </div>
             </div>}
         </Card>

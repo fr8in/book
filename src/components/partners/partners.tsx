@@ -1,4 +1,4 @@
-import { Table, Tooltip, Button, Badge, Space, Modal, Pagination, Radio, Input } from 'antd'
+import { Table, Tooltip, Button, Space, Modal, Pagination, Radio, Input } from 'antd'
 import {
   CommentOutlined,
   CheckOutlined,
@@ -13,13 +13,7 @@ import KycApproval from '../partners/kycApproval'
 import { useState } from 'react'
 import moment from 'moment'
 import Truncate from '../common/truncate'
-
-const truck_count = [
-  { value: 1, text: '0' },
-  { value: 2, text: '1-5' },
-  { value: 3, text: '>5' },
-  { value: 4, text: 'All' }
-]
+import get from 'lodash/get'
 
 const PartnerKyc = (props) => {
   const {
@@ -47,7 +41,6 @@ const PartnerKyc = (props) => {
     rejectData: []
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
-  const value = { reject: false }
 
   const handleStatus = (e) => {
     onFilter(e.target.value)
@@ -92,13 +85,11 @@ const PartnerKyc = (props) => {
         )
       },
       filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search Partner'
-            value={filter.cardcode}
-            onChange={handleCardCode}
-          />
-        </div>
+        <Input
+          placeholder='Search Partner'
+          value={filter.cardcode}
+          onChange={handleCardCode}
+        />
       ),
       filterIcon: () => <SearchOutlined style={{ color: filter.cardcode ? '#1890ff' : undefined }} />
     },
@@ -106,38 +97,26 @@ const PartnerKyc = (props) => {
       title: 'Partner',
       dataIndex: 'name',
       width: '10%',
-      render: (text, record) => {
-        return (
-          <span>
-            <Badge dot style={{ backgroundColor: '#28a745' }} />
-            <Truncate data={text} length={12} />
-          </span>
-        )
-      },
+      render: (text, record) => <Truncate data={text} length={12} />,
       filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search Partner'
-            value={filter.name}
-            onChange={handleName}
-          />
-        </div>
+        <Input
+          placeholder='Search Partner'
+          value={filter.name}
+          onChange={handleName}
+        />
       ),
       filterIcon: () => <SearchOutlined style={{ color: filter.name ? '#1890ff' : undefined }} />
     },
     {
       title: 'On Boarded By',
       width: '10%',
-      render: (text, record) => {
-        const onboarded_by = record.onboarded_by && record.onboarded_by.name
-        return <Truncate data={onboarded_by} length={12} />
-      }
+      render: (text, record) => <Truncate data={get(record, 'onboarded_by.name', null)} length={12} />
     },
     {
       title: 'Region',
       width: '7%',
       filters: region_list,
-      render: (text, record) => record.city && record.city.branch && record.city.branch.region.name,
+      render: (text, record) => get(record, 'city.branch.region.name', '-'),
       filterDropdown: (
         <Radio.Group
           options={regions}
@@ -152,8 +131,7 @@ const PartnerKyc = (props) => {
       title: 'Contact No',
       width: '9%',
       render: (text, record) => {
-        const number = record.partner_users && record.partner_users.length > 0 &&
-        record.partner_users[0].mobile ? record.partner_users[0].mobile : '-'
+        const number = get(record, 'partner_users[0].mobile', '-')
         return (number)
       }
 
@@ -169,10 +147,8 @@ const PartnerKyc = (props) => {
     {
       title: 'Trucks',
       width: '7%',
-      filters: truck_count,
       render: (text, record) => {
-        const truckCount = record.trucks_aggregate && record.trucks_aggregate.aggregate &&
-          record.trucks_aggregate.aggregate.count ? record.trucks_aggregate.aggregate.count : '-'
+        const truckCount = get(record, 'trucks_aggregate.aggregate.count', '-')
         return (truckCount)
       }
     },
@@ -183,7 +159,7 @@ const PartnerKyc = (props) => {
     },
     {
       title: 'Status',
-      render: (text, record) => record.partner_status && record.partner_status.name,
+      render: (text, record) => get(record, 'partner_status.name', null),
       width: '10%',
       filterDropdown: (
         <Radio.Group
@@ -197,45 +173,47 @@ const PartnerKyc = (props) => {
     {
       title: 'Comment',
       width: '12%',
-      render: (text, record) => {
-        const comment = record.last_comment && record.last_comment.description 
-        return <Truncate data={comment} length={12} />
-      }
-
+      render: (text, record) => <Truncate data={get(record, 'last_comment.description', '-')} length={12} />
     },
     {
       title: 'Action',
       dataIndex: 'action',
       width: '9%',
-      render: (text, record) => (
-        <Space>
-          <Tooltip title='Comment'>
-            <Button
-              type='link'
-              icon={<CommentOutlined />}
-              onClick={() => handleShow('commentVisible', null, 'commentData', record.id)}
-            />
-          </Tooltip>
-          <Button
-            type='primary'
-            size='small'
-            shape='circle'
-            className='btn-success'
-            icon={<CheckOutlined />}
-            onClick={() =>
-              handleShow('approvalVisible', null, 'approvalData', record)}
-          />
-          <Button
-            type='primary'
-            size='small'
-            shape='circle'
-            danger
-            icon={<CloseOutlined />}
-            onClick={() =>
-              handleShow('rejectVisible', null, 'rejectData', record.id)}
-          />
-        </Space>
-      )
+      render: (text, record) => {
+        const partner_status = get(record, 'partner_status.name', null)
+        return (
+          <Space>
+            <Tooltip title='Comment'>
+              <Button
+                type='link'
+                icon={<CommentOutlined />}
+                onClick={() => handleShow('commentVisible', null, 'commentData', record.id)}
+              />
+            </Tooltip>
+            {(partner_status === 'Verification' || partner_status === 'Reverification') &&
+              <>
+                <Button
+                  type='primary'
+                  size='small'
+                  shape='circle'
+                  className='btn-success'
+                  icon={<CheckOutlined />}
+                  onClick={() =>
+                    handleShow('approvalVisible', null, 'approvalData', record)}
+                />
+                <Button
+                  type='primary'
+                  size='small'
+                  shape='circle'
+                  danger
+                  icon={<CloseOutlined />}
+                  onClick={() =>
+                    handleShow('rejectVisible', null, 'rejectData', record.id)}
+                />
+              </>}
+          </Space>
+        )
+      }
     }
   ]
 

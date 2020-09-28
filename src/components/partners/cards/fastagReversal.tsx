@@ -1,6 +1,7 @@
 import { Modal, Form, Input, message, Row, Col, Button, Space } from 'antd'
 import React from 'react'
 import { gql, useMutation } from '@apollo/client'
+import { useState } from 'react'
 
 const UPDATE_FASTAG_REVERSE_MUTATION = gql`
 mutation tag_reversal(
@@ -27,14 +28,21 @@ mutation tag_reversal(
 const FastagReversal = (props) => {
   const { visible, onHide, fastag, token } = props
 
+  const [disableButton, setDisableButton] = useState(false)
+
   const [reverse_fastag] = useMutation(
     UPDATE_FASTAG_REVERSE_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
+      onCompleted () { 
+        setDisableButton(false)
+        message.success('Updated!!') }
     }
   )
   const onSubmit = (form) => {
+    setDisableButton(true)
     console.log('form', form)
     reverse_fastag({
       variables: {
@@ -69,7 +77,7 @@ const FastagReversal = (props) => {
           <Col xs={24} className='text-right'>
             <Space>
               <Button>Cancel</Button>
-              <Button type='primary' htmlType='submit'>Ok</Button>
+              <Button type='primary' loading={disableButton} htmlType='submit'>Ok</Button>
             </Space>
           </Col>
         </Row>

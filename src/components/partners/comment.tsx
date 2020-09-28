@@ -3,6 +3,7 @@ import { gql, useMutation, useSubscription } from '@apollo/client'
 import moment from 'moment'
 import { useContext } from 'react'
 import userContext from '../../lib/userContaxt'
+import { useState } from 'react'
 
 const PARTNER_COMMENT_SUBSCRIPTION = gql`
   subscription partner_comment($id: Int!){
@@ -33,6 +34,7 @@ const Comment = (props) => {
   const { partner_id } = props
   const context = useContext(userContext)
   const [form] = Form.useForm()
+  const [disableButton, setDisableButton] = useState(false)
 
   const { loading, error, data } = useSubscription(
     PARTNER_COMMENT_SUBSCRIPTION,
@@ -44,8 +46,11 @@ const Comment = (props) => {
   const [insertComment] = useMutation(
     INSERT_PARTNER_COMMENT_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) { 
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted () {
+        setDisableButton(false)
         message.success('Updated!!')
         form.resetFields()
       }
@@ -58,6 +63,7 @@ const Comment = (props) => {
   const { partner_comments } = data.partner && data.partner[0] ? data.partner[0] : []
 
   const onSubmit = (form) => {
+    setDisableButton(true)
     insertComment({
       variables: {
         partner_id: partner_id,
@@ -99,7 +105,7 @@ const Comment = (props) => {
           </Col>
           <Col xs={4}>
             <Form.Item>
-              <Button type='primary' htmlType='submit'>Submit</Button>
+              <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
             </Form.Item>
           </Col>
         </Row>

@@ -3,6 +3,7 @@ import { Row, Col, Card } from 'antd'
 import Customers from '../customers'
 import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
+import u from '../../../lib/util'
 
 const CUSTOMERS_QUERY = gql`
   query customers(
@@ -37,6 +38,10 @@ const CUSTOMERS_QUERY = gql`
       created_at
       pan
       advance_percentage_id
+      customer_advance_percentage{
+        name
+        id
+      }
       system_mamul
       status {
         id
@@ -75,7 +80,7 @@ const CustomersContainer = (props) => {
     name: null,
     mobile: null,
     offset: 0,
-    limit: 10
+    limit: u.limit
   }
   const [filter, setFilter] = useState(initialFilter)
 

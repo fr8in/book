@@ -13,14 +13,15 @@ const PartnerInfo = (props) => {
 
   const membership = get(partner, 'partner_memberships[0].membership_type.id', null)
   const number = get(partner, 'partner_users[0].mobile', null)
+  const id = get(partner, 'partner_users[0].id', null)
   const partnerKycStatus = get(partner, 'partner_status.id', null)
-console.log('membership',membership)
+  console.log('partner', partner)
   return (
     <>
       <Space align='center'>
         <CrownFilled
           style={{
-            color: membership === 1 ? '#C0C0C0' : membership === 2 ? '#FFD700' : '#A0B2C6' ,
+            color: membership === 1 ? '#C0C0C0' : membership === 2 ? '#FFD700' : '#97b9ff',
             fontSize: '18px'
           }}
         />
@@ -36,7 +37,7 @@ console.log('membership',membership)
           loading={loading}
         />
         <h4>{partner.cardcode}</h4>
-        <h4><PartnerUser mobile={number} loading={loading} /></h4>
+        <h4><PartnerUser mobile={number} loading={loading} id={id} /></h4>
         <Button
           shape='circle'
           size='small'

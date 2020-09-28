@@ -1,4 +1,4 @@
-import { Row, Col, Card, Form, Space, Button, Checkbox, message } from 'antd'
+import { Row, Col, Card, Form, Space, Button, Checkbox, message, Input } from 'antd'
 import {
   FilePdfOutlined,
   FileWordOutlined,
@@ -16,6 +16,7 @@ import DestinationInDate from './tripDestinationIn'
 import DestinationOutDate from './tripDestinationOut'
 import ViewFile from '../common/viewFile'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
 import { gql, useMutation, useLazyQuery } from '@apollo/client'
 import { useContext } from 'react'
 import userContext from '../../lib/userContaxt'
@@ -190,27 +191,25 @@ const TripTime = (props) => {
   }
 
   const authorized = true // TODO
-  const po_delete = (trip_info.trip_status &&
-                    trip_info.trip_status.name === 'Assigned' &&
-                    trip_info.trip_status.name === 'Confirmed' &&
-                    trip_info.trip_status.name === 'Reported at source') &&
-                    !trip_info.source_out
+  const trip_status_name = get(trip_info, 'trip_status.name', null)
+  const po_delete = (trip_status_name === 'Assigned' && trip_status_name === 'Confirmed' && trip_status_name === 'Reported at source') && !trip_info.source_out
   const process_advance = trip_info.source_in && trip_info.source_out && (trip_info.loaded === 'N' || !trip_info.loaded)
-  const remove_sout = trip_info.trip_status && trip_info.trip_status.name === 'Intransit' && authorized
-  const remove_dout = trip_info.trip_status && trip_info.trip_status.name === 'Delivered' && authorized
+  const remove_sout = trip_status_name === 'Intransit' && authorized
+  const remove_dout = trip_status_name === 'Delivered' && authorized
 
-  // const toPayCheck = !!(trip_info.source_in && trip_info.source_out && trip_info.destination_in && (trip_info && trip_info.trip_prices[0] ? trip_info.trip_prices[0].to_pay : null))
-  // console.log('toPayCheck', toPayCheck)
+  const toPayCheck = !!(trip_info.source_in && trip_info.source_out && trip_info.destination_in && get(trip_info, 'trip_prices[0].to_pay', null))
+  console.log('toPayCheck', toPayCheck)
+  const trip_files = get(trip_info, 'trip_files', [])
+  const wh_files = !isEmpty(trip_files) ? trip_files.filter(file => file.type === 'WH') : null
 
-  const wh_files = trip_info && trip_info.trip_files && trip_info.trip_files.length > 0 ? trip_info.trip_files.filter(file => file.type === 'WH') : null
-
-  const driver_number = trip_info && trip_info.driver && trip_info.driver.mobile
-
+  const driver_number = get(trip_info, 'driver.mobile', null)
+  const trip_status_id = get(trip_info, 'trip_status.id', null)
+  const after_deliverd = (trip_status_id >= 9)
   return (
     <Card size='small' className='mt10'>
       <Row>
         <Col xs={24}>
-          <Form layout='vertical' onFinish={getToPay}>
+          <Form layout='vertical'>
             <Row gutter={10}>
               <Col xs={8}>
                 <SourceInDate source_in={trip_info.source_in} id={trip_info.id} />
@@ -219,7 +218,7 @@ const TripTime = (props) => {
                 <SourceOutDate source_out={trip_info.source_out} id={trip_info.id} />
               </Col>
               <Col xs={8}>
-                <Driver trip_info={trip_info} initialValue={driver_number} />
+                <Driver trip_info={trip_info} initialValue={driver_number} disable={after_deliverd} />
               </Col>
             </Row>
             <Row gutter={10}>
@@ -239,11 +238,12 @@ const TripTime = (props) => {
                 </Form.Item>
               </Col>
             </Row>
-            {/* <Row gutter={10}>
+          </Form>
+          <Form layout='vertical' onFinish={getToPay}>
+            <Row gutter={10}>
               <Col xs={8}>
                 <Form.Item label='To-Pay Amount' name='to_pay'>
                   <Input
-                    id='toPay'
                     placeholder='To Pay Amount'
                     type='number'
                     disabled={!toPayCheck}
@@ -254,7 +254,6 @@ const TripTime = (props) => {
               <Col xs={12}>
                 <Form.Item label='To-Pay Comment' name='comment'>
                   <Input
-                    id='comment'
                     placeholder='To Pay Comment'
                     disabled={!toPayCheck}
                     required={toPayCheck}
@@ -266,37 +265,38 @@ const TripTime = (props) => {
                   <Button type='primary' htmlType='submit' disabled={!toPayCheck}>Submit</Button>
                 </Form.Item>
               </Col>
-            </Row> */}
-            <Row className='mb15'>
-              <Col xs={20}>
-                <Checkbox disabled={!!(trip_info && trip_info.unloaded_private_godown === true)} onClick={() => onShow('godownReceipt')}>Unloaded at private godown</Checkbox>
-              </Col>
-              <Col xs={4} className='text-right'>
-                {wh_files && wh_files.length > 0 ? (
-                  <ViewFile
-                    id={trip_info.id}
-                    type='trip'
-                    folder='warehousereceipt/'
-                    file_type='WH'
-                    file_list={wh_files}
-                  />) : (null)}
-              </Col>
-            </Row>
-            <Row>
-              <Col xs={16}>
-                <Space>
-                  {po_delete &&
-                    <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>}
-                  {process_advance &&
-                    <Button type='primary' onClick={onProcessAdvance}>Process Advance</Button>}
-                  {remove_sout &&
-                    <Button danger icon={<CloseCircleOutlined />} onClick={onSoutRemove}>Sout</Button>}
-                  {remove_dout &&
-                    <Button danger icon={<CloseCircleOutlined />} onClick={onDoutRemove}>Dout</Button>}
-                </Space>
-              </Col>
             </Row>
           </Form>
+          <Row className='mb15'>
+            <Col xs={20}>
+              <Checkbox disabled={!!(trip_info && trip_info.unloaded_private_godown === true)} onClick={() => onShow('godownReceipt')}>Unloaded at private godown</Checkbox>
+            </Col>
+            <Col xs={4} className='text-right'>
+              {wh_files && wh_files.length > 0 ? (
+                <ViewFile
+                  id={trip_info.id}
+                  type='trip'
+                  folder='warehousereceipt/'
+                  file_type='WH'
+                  file_list={wh_files}
+                />) : (null)}
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={16}>
+              <Space>
+                {po_delete &&
+                  <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>}
+                {process_advance &&
+                  <Button type='primary' onClick={onProcessAdvance}>Process Advance</Button>}
+                {remove_sout &&
+                  <Button danger icon={<CloseCircleOutlined />} onClick={onSoutRemove}>Sout</Button>}
+                {remove_dout &&
+                  <Button danger icon={<CloseCircleOutlined />} onClick={onDoutRemove}>Dout</Button>}
+              </Space>
+            </Col>
+          </Row>
+
         </Col>
       </Row>
       {visible.mail && <SendLoadingMemo visible={visible.mail} onHide={onHide} />}

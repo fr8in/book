@@ -54,12 +54,25 @@ const Transfer = (props) => {
   const [form] = Form.useForm()
   const context = useContext(userContext)
 
-  const [getBankDetail, { loading, data, error, called }] = useLazyQuery(IFSC_VALIDATION)
+  const [getBankDetail, { loading, data, error }] = useLazyQuery(
+    IFSC_VALIDATION,
+    {
+      onError (error) {
+        message.error(`Invalid IFSC: ${error}`)
+        form.resetFields(['ifsc'])
+      },
+      onCompleted (data) {
+        message.success(`Bank name: ${get(bank_detail, 'bank', '')}!!`)
+      }
+    }
+  )
 
   const [customer_mamul_transfer] = useMutation(
     CUSTOMER_MAMUL_TRANSFER,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) { 
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted (data) {
         setDisableButton(false)
         const status = get(data, 'customer_mamul_transfer.status', null)
@@ -122,15 +135,10 @@ const Transfer = (props) => {
         if (!value || getFieldValue('account_number') === value) {
           return Promise.resolve()
         }
-        return Promise.reject('The account number that you entered do not match!')
+        return Promise.reject('The account number not matched!')
       }
     })
   ]
-
-  if (called && error) {
-    message.error('Enter Valid IFSC code')
-    form.resetFields(['ifsc'])
-  }
 
   return (
     <Modal
@@ -175,7 +183,7 @@ const Transfer = (props) => {
               rules={[{ required: true, message: 'Account number required!' }]}
             >
               <Input
-                placeholder='Select Time'
+                placeholder='Select Account Number'
                 disabled={false}
               />
             </Form.Item>

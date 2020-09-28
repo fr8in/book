@@ -2,6 +2,7 @@ import { Modal, Form, Input, Select, message, Row, Col, Button } from 'antd'
 import React from 'react'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import u from '../../lib/util'
+import { useState } from 'react'
 
 const ADD_BRANCH_SUBSCRIPTION = gql`
  query add_branch{
@@ -42,6 +43,8 @@ mutation insert_branch(
 const AddBranch = (props) => {
   const { visible, onHide } = props
 
+  const [disableButton, setDisableButton] = useState(false)
+
   const { loading, error, data } = useQuery(
     ADD_BRANCH_SUBSCRIPTION,
     {
@@ -54,8 +57,11 @@ const AddBranch = (props) => {
   const [updateBranch] = useMutation(
     INSERT_BRANCH_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted () {
+        setDisableButton(false)
         message.success('Updated!!')
         onHide()
       }
@@ -78,6 +84,7 @@ const AddBranch = (props) => {
   })
 
   const onSubmit = (form) => {
+    setDisableButton(true)
     const bm_traffic = [
       { employee_id: form.bm_id, is_manager: true },
       { employee_id: form.traffic_id, is_manager: false }
@@ -147,7 +154,7 @@ const AddBranch = (props) => {
         </Row>
         <Row justify='end'>
           <Col xs={24} className='text-right'>
-            <Button type='primary' htmlType='submit'>Submit</Button>
+            <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
           </Col>
         </Row>
       </Form>

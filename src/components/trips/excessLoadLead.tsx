@@ -61,8 +61,8 @@ const ExcessLoadLead = (props) => {
     key: 'partner',
     width: '30%',
     render: (text, record) => {
-      const cardcode = record.partner && record.partner.cardcode
-      const name = record.partner && record.partner.name
+      const cardcode = get(record, 'partner.cardcode', null)
+      const name = get(record, 'partner.name', null)
       return (
         <Link href='/partners/[id]' as={`/partners/${cardcode} `}>
           {name && name.length > 12
@@ -74,7 +74,7 @@ const ExcessLoadLead = (props) => {
   {
     title: 'Partner No',
     width: '20%',
-    render: (text, record) => record.partner && record.partner.partner_users && record.partner.partner_users[0].mobile
+    render: (text, record) => get(record, 'partner.partner_users[0].mobile', '-')
   },
   {
     title: 'Date',
@@ -97,7 +97,7 @@ const ExcessLoadLead = (props) => {
             onChange={onTruckChange}
           />
           <Tooltip title='Quick Po'>
-            <Button type='link' icon={<RocketFilled />} onClick={onPoClick} />
+            <Button type='link' icon={<RocketFilled />} disabled={!truck_id} onClick={onPoClick} />
           </Tooltip>
           <Tooltip title='Delete'>
             <Button type='link' danger icon={<DeleteOutlined />} onClick={() => handleShow('cancel_visible', null, 'record', record.id)} />

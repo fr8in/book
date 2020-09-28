@@ -39,9 +39,9 @@ subscription monthly($week1: Int!,$week2: Int!,$week3: Int!, $year1: Int!, $year
 const WeeklyBranchTarget = (props) => {
   const { visible, onHide } = props
 
-  const cw = moment('2020-08-18').format('ww yyyy').split(' ') // Current Week
-  const lw = moment('2020-08-18').subtract(1, 'weeks').format('ww yyyy').split(' ') // Last Week
-  const blw = moment('2020-08-18').subtract(2, 'weeks').format('ww yyyy').split(' ') // Before Last Week
+  const cw = moment().format('ww yyyy').split(' ') // Current Week
+  const lw = moment().subtract(1, 'weeks').format('ww yyyy').split(' ') // Last Week
+  const blw = moment().subtract(2, 'weeks').format('ww yyyy').split(' ') // Before Last Week
 
   const week = [parseInt(cw[0], 10), parseInt(lw[0], 10), parseInt(blw[0], 10)]
   const year = (cw[1] === blw[1]) ? [parseInt(cw[1], 10)] : [parseInt(cw[1], 10), parseInt(blw[1], 10)]
@@ -88,17 +88,17 @@ const WeeklyBranchTarget = (props) => {
   const currentMonthTitle = (
     <Title
       name={<div>{`W - ${week[0]}`}</div>}
-      data={w1_actual + '/' + w1_target}
+      data={`${w1_actual || 0} / ${w1_target || 0}`}
     />)
   const lastMonthTitle = (
     <Title
       name={<div>{`W - ${week[1]}`}</div>}
-      data={w2_actual + '/' + w2_target}
+      data={`${w2_actual || 0} / ${w2_target || 0}`}
     />)
   const beforeLastMonthTitle = (
     <Title
       name={<div>{`W - ${week[2]}`}</div>}
-      data={w3_actual + '/' + w3_target}
+      data={`${w3_actual || 0} / ${w3_target || 0}`}
     />)
 
   const columns = [

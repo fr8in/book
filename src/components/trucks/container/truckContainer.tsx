@@ -71,7 +71,7 @@ const TRUCKS_QUERY = gql`
 
 const TruckContainer = () => {
   const initialFilter = {
-    truck_statusId: [1],
+    truck_statusId: [5],
     name: null,
     truckno: null,
     offset: 0,

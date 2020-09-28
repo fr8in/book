@@ -35,7 +35,8 @@ const DeliveredContainer = () => {
     where: where
   }
   const status_fliter={
-    trip_statusName: initialFilter.trip_statusName
+    trip_statusName: initialFilter.trip_statusName,
+    where: where
   }
 
   const { loading, error, data } = useQuery(

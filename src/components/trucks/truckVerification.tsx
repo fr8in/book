@@ -5,54 +5,51 @@ import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import TruckReject from '../../components/trucks/truckReject'
 import TruckActivation from '../trucks/truckActivation'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
-import { gql, useQuery } from '@apollo/client'
-import u from '../../lib/util'
+import { gql, useQuery, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
+import Truncate from '../common/truncate'
+import LinkComp from '../common/link'
 
 const TRUCKS_QUERY = gql`
-query trucks_verification(
-  $offset: Int!
-  $limit: Int!
-  $truck_statusName: [String!]){
-    truck(
-      offset: $offset
-      limit: $limit
-       where: {truck_status: {name: {_in:$truck_statusName}}}) {
-      id
-      truck_no
-      last_comment{
-        topic
-        truck_id
-        description
-        created_at
-        created_by
-      }
-      truck_status {
-        id
-        name
-      }
-      partner {
-        id
-        cardcode
-        name
-      }
+query trucks_{
+  truck_type {
+    id
+    name
+  }
+  truck_status(where:{name: {_in: ["Verification","Rejected"]}}, order_by: {id: asc}) {
+    id
+    name
+  }
+} 
+`
+const TRUCKS_SUBSCRIPTION = gql`
+subscription trucks_verification(
+$truck_statusName: [String!]){
+  truck(
+      where: {truck_status: {name: {_in:$truck_statusName}}}) {
+    id
+    truck_no
+    last_comment{
+      topic
+      truck_id
+      description
+      created_at
+      created_by
     }
-    truck_aggregate(  where: {truck_status: {name: {_in: ["Verification","Rejected"],}}}){
-      aggregate{
-        count
-     }
-    }
-    truck_status(where:{name: {_in: ["Verification","Rejected"]}}, order_by: {id: asc}) {
+    truck_status {
       id
       name
     }
-  } 
-`
+    partner {
+      id
+      cardcode
+      name
+    }
+  }
+}`
 
 const TruckVerification = (props) => {
   const initial = {
-    offset: 0,
-    limit: u.limit,
     truckActivationVisible: false,
     truckActivationData: [],
     truckRejectVisible: false,
@@ -61,101 +58,80 @@ const TruckVerification = (props) => {
   }
 
   const [filter, setFilter] = useState(initial)
-  const [currentPage, setCurrentPage] = useState(1)
 
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
-  const truckQueryVars = {
-    offset: filter.offset,
-    limit: filter.limit,
+  const variables = {
     truck_statusName: filter.truck_statusName
   }
 
   const { loading, error, data } = useQuery(TRUCKS_QUERY, {
-    variables: truckQueryVars,
     fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true
   })
 
-  console.log('TrucksVerification error', error)
+  const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
+    TRUCKS_SUBSCRIPTION,
+    { variables: variables }
+  )
+
+  console.log('TrucksVerification error', error, s_error)
 
   let _data = {}
   if (!loading) {
     _data = data
   }
-
-  const truck = get(_data, 'truck', [])
-  const truck_info = get(_data, 'truck[0]', { name: 'ID does not exist' })
-  const truck_aggregate = get(_data, 'truck_aggregate', 0)
   const truck_status = get(_data, 'truck_status', [])
+  const truck_type = get(_data, 'truck_type', [])
 
-  const truck_status_name = truck_info && truck_info.truck_status && truck_info.truck_status.name
-
-  const record_count = get(truck_aggregate, 'aggregate.count', 0)
-
-  console.log('record_count', record_count)
+  let _s_data = {}
+  if (!s_loading) {
+    _s_data = s_data
+  }
+  const truck = get(_s_data, 'truck', [])
+  const truck_info = get(_s_data, 'truck[0]', { name: 'ID does not exist' })
+  const truck_status_name = get(truck_info, 'truck_status.name', null)
 
   const trucksStatus = truck_status.map((data) => {
     return { value: data.name, label: data.name }
   })
 
-  console.log('truckStatus', trucksStatus)
-
-  const onPageChange = (value) => {
-    setFilter({ ...filter, offset: value })
-  }
-
   const onFilter = (value) => {
-    setFilter({ ...filter, truck_statusName: value, offset: 0 })
-  }
-
-  const pageChange = (page, pageSize) => {
-    const newOffset = page * pageSize - filter.limit
-    setCurrentPage(page)
-    onPageChange(newOffset)
+    setFilter({ ...filter, truck_statusName: value })
   }
 
   const handleStatus = (checked) => {
     onFilter(checked)
-    setCurrentPage(1)
   }
 
   const columnsCurrent = [
     {
       title: 'Truck No',
-      dataIndex: 'truck_no',
       render: (text, record) => {
+        const truck_no = get(record, 'truck_no', null)
         return (
-          <Link href='trucks/[id]' as={`trucks/${record.truck_no}`}>
-            <a>{record.truck_no}</a>
-          </Link>
+          <LinkComp type='trucks' data={truck_no} id={truck_no} />
         )
       },
       width: '10%'
     },
     {
       title: 'Partner Code',
-      dataIndex: 'code',
       render: (text, record) => {
+        const cardcode = get(record, 'partner.cardcode', null)
         return (
-          <Link href='partners/[id]' as={`partners/${record.partner && record.partner.cardcode}`}>
-            <a>{record.partner && record.partner.cardcode}</a>
-          </Link>
+          <LinkComp type='partners' data={cardcode} id={cardcode} />
         )
       },
       width: '10%'
     },
     {
       title: 'Partner',
-      dataIndex: 'partner',
       width: '18%',
-      render: (text, record) => {
-        return record.partner && record.partner.name
-      }
+      render: (text, record) => <Truncate data={get(record, 'partner.name', '-')} length={26} />
     },
     {
       title: 'Truck Status',
-      dataIndex: 'status',
       width: '17%',
       filterDropdown: (
         <Checkbox.Group
@@ -165,9 +141,7 @@ const TruckVerification = (props) => {
           className='filter-drop-down'
         />
       ),
-      render: (text, record) => {
-        return record.truck_status && record.truck_status.name
-      }
+      render: (text, record) => get(record, 'truck_status.name', '-')
     },
     {
       title: 'Action',
@@ -198,18 +172,8 @@ const TruckVerification = (props) => {
     truck_status_name === 'Rejected'
       ? {
         title: 'Reject Reason',
-        dataIndex: 'reason',
         width: '35%',
-        render: (text, record) => {
-          const comment = record.last_comment && record.last_comment.description
-          return comment && comment.length > 12 ? (
-            <Tooltip title={comment}>
-              <span> {comment.slice(0, 12) + '...'}</span>
-            </Tooltip>
-          ) : (
-            comment
-          )
-        }
+        render: (text, record) => <Truncate data={get(record, 'last_comment.description', null)} length={50} />
       } : {}
   ]
   return (
@@ -222,23 +186,14 @@ const TruckVerification = (props) => {
         scroll={{ x: 1150 }}
         pagination={false}
         className='withAction'
+        loading={s_loading}
       />
-      {!loading && record_count
-        ? (
-          <Pagination
-            size='small'
-            current={currentPage}
-            pageSize={filter.limit}
-            showSizeChanger={false}
-            total={record_count}
-            onChange={pageChange}
-            className='text-right p10'
-          />) : null}
       {object.truckActivationVisible && (
         <TruckActivation
           visible={object.truckActivationVisible}
           onHide={handleHide}
           truck_id={object.truckActivationData}
+          truck_type={truck_type}
         />
       )}
       {object.truckRejectVisible && (

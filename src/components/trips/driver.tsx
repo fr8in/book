@@ -36,7 +36,7 @@ mutation trip_driver($driver_id:Int,$trip_id:Int) {
 `
 
 const Driver = (props) => {
-  const { trip_info, initialValue } = props
+  const { trip_info, initialValue, disable } = props
 
   const partner_id = trip_info && trip_info.partner && trip_info.partner.id
 
@@ -119,6 +119,7 @@ const Driver = (props) => {
         placeholder='Select or Enter Driver'
         onSearch={onSearch}
         onChange={onDriverChange}
+        disabled={disable}
       >
         {drivers && drivers.map(_driver => (
           <Option key={_driver.id} value={_driver.mobile}>{_driver.mobile}</Option>

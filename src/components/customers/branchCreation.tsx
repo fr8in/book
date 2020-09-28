@@ -29,7 +29,7 @@ mutation create_customer_cardcode($company_name: String!, $customer_id: Int!){
 }`
 
 const CREATE_CUSTOMER_BRANCH = gql`
-mutation insert_customer_branch(
+mutation insert_customer_office(
   $name: String!
   $branch_name: String!
   $customer_id: Int!
@@ -40,7 +40,7 @@ mutation insert_customer_branch(
   $city_id: Int
   $pincode: Int
 ){
-  insert_customer_branch(objects:{
+  insert_customer_office(objects:{
     name: $name,
     branch_name: $branch_name
     customer_id: $customer_id
@@ -122,7 +122,9 @@ const BranchCreation = (props) => {
   const [update_customer] = useMutation(
     UPDATE_CUSTOMER,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) { 
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted () {
         message.success('Updated!')
         setDisableButton(false)
@@ -183,7 +185,7 @@ const BranchCreation = (props) => {
         customer_type_id: form.getFieldValue('customer_type'),
         onboarded_by_id: form.getFieldValue('onboardedby_id'),
         payment_manager_id: form.getFieldValue('payment_manager_id'),
-        system_mamul: mamul
+        mamul: parseInt(mamul)
       }
     })
   }
