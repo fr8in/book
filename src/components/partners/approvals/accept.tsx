@@ -1,4 +1,4 @@
-import { Modal, Form, Input, message, Button, Row, Space } from 'antd'
+import { Modal, Form, Input, message, Button } from 'antd'
 import React from 'react'
 import { gql, useMutation } from '@apollo/client'
 
@@ -16,14 +16,14 @@ const CREDIT_APPROVAL_MUTATION = gql`
 mutation approve_credit(
   $id: Int!
   $approved_by: String!
-  $approved_amount: Float!
-  $approved_comment: String!
+  $approved_amount: Float! 
+  $remarks: String!
 ){
   approve_credit(
     id: $id
     approved_by: $approved_by
     approved_amount: $approved_amount
-    approved_comment: $approved_comment
+    approved_comment: $remarks
   ){
     success
     message
@@ -64,7 +64,7 @@ const Approve = (props) => {
           id: item_id.id,
           approved_by: 'jay',
           approved_amount: parseFloat(form.amount),
-          approved_comment: form.remarks
+          remarks: form.remarks
         }
       })
     } else {
