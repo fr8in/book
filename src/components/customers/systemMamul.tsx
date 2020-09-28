@@ -61,7 +61,6 @@ const SystemMamul = (props) => {
     customer_mamul_summary.push(mamul_summary)
     customer_mamul_summary.push(mamul_summary_avg)
   }
-console.log('customer_mamul_summary', customer_mamul_summary)
   const columns = [
     {
       title: '',
