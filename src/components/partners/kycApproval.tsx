@@ -17,12 +17,12 @@ import LinkComp from '../common/link'
 import FileUploadOnly from '../common/fileUploadOnly'
 import ViewFile from '../common/viewFile'
 import DeleteFile from '../common/deleteFile'
-import { gql, useSubscription,useMutation} from '@apollo/client'
+import { gql,useMutation,useQuery} from '@apollo/client'
 import { useState } from 'react'
 import get from 'lodash/get'
 
 const PARTNERS_SUBSCRIPTION = gql`
-  subscription create_partner{
+  query create_partner{
     employee{
       id
       email
@@ -45,12 +45,13 @@ mutation update_partner_approval($onboarded_by_id:Int,$partner_advance_percentag
 `
 
 const CREATE_PARTNER_CODE_MUTATION = gql`
-mutation create_partner_code($name: String!, $partner_id: Int!, $pay_terms_code: Int!) {
-  create_partner_code(name: $name, partner_id: $partner_id, pay_terms_code: $pay_terms_code) {
+mutation create_partner_code($name: String!, $partner_id: Int!, $pay_terms_code: Int!,$pan_no:String!) {
+  create_partner_code(name: $name, partner_id: $partner_id, pay_terms_code: $pay_terms_code, pan_no:$pan_no) {
     description
     status
   }
 }
+
 `
 
 const { Option } = Select
@@ -74,8 +75,8 @@ const KycApproval = (props) => {
 
   const cs_files = files.filter(file => file.type === 'CS')
 
-  const { loading, error, data } = useSubscription(
-    PARTNERS_SUBSCRIPTION,
+  const { loading, error, data } = useQuery(
+    PARTNERS_SUBSCRIPTION,{ notifyOnNetworkStatusChange: true }
   )
   console.log('CreatePartnersContainer error', error)
 
@@ -171,7 +172,8 @@ const KycApproval = (props) => {
       variables: {
         name: approveData.name,
         pay_terms_code: approveData.partner_advance_percentage_id,
-        partner_id: approveData.id
+        partner_id: approveData.id,
+        pan_no:approveData.pan
       }
     })
   }
@@ -310,7 +312,7 @@ const KycApproval = (props) => {
                         size='small'
                         id={approveData.id}
                         type='partner'
-                        file_type='Agreement'
+                        file_type='AGREEMENT'
                         folder='approvals/'
                         file_list={agreement_files}
                       />
@@ -318,7 +320,7 @@ const KycApproval = (props) => {
                         size='small'
                         id={approveData.id}
                         type='partner'
-                        file_type='Agreement'
+                        file_type='AGREEMENT'
                         file_list={agreement_files}
                       />
                     </Space>
@@ -328,7 +330,7 @@ const KycApproval = (props) => {
                       id={approveData.id}
                       type='partner'
                       folder='approvals/'
-                      file_type='Agreement'
+                      file_type='AGREEMENT'
                       file_list={agreement_files}
                     />
                   )}

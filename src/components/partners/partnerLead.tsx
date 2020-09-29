@@ -144,7 +144,7 @@ const PartnerLead = (props) => {
   console.log('onboarded_by', onboarded_by)
   const where = {
     partner_users: filter.mobile ? { mobile: { _like: `%${filter.mobile}%` } } : null,
-    // city: filter.city_name && {name:{ _ilike: `%${filter.city_name}%`}} ,
+    city: filter.city_name && {name:{ _ilike: `%${filter.city_name}%`}} ,
     onboarded_by: { email: { _ilike: filter.owner_name ? `%${filter.owner_name}%` : null, _in: onboarded_by || null } },
     partner_status: { name: { _in: filter.partner_status_name && filter.partner_status_name.length > 0 ? filter.partner_status_name : null } }
     // channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}},

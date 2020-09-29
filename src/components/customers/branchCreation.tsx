@@ -62,15 +62,17 @@ mutation update_customer(
   $onboarded_by_id: Int
   $payment_manager_id: Int
   $customer_type_id: Int
-  $mamul: Int) {
+  $mamul: Int
+  $id:Int!) {
   update_customer(_set: {
       customer_type_id: $customer_type_id, 
       onboarded_by_id: $onboarded_by_id, 
       payment_manager_id: $payment_manager_id, 
-      system_mamul: $mamul
+      system_mamul: $mamul,
+      status_id: 5
     }, 
     where: {
-      id: {_eq: 4940}
+      id: {_eq:$id}
     }) {
     returning {
       id
@@ -185,7 +187,8 @@ const BranchCreation = (props) => {
         customer_type_id: form.getFieldValue('customer_type'),
         onboarded_by_id: form.getFieldValue('onboardedby_id'),
         payment_manager_id: form.getFieldValue('payment_manager_id'),
-        mamul: parseInt(mamul)
+        mamul: parseInt(mamul),
+        id:customer_data.id
       }
     })
   }
