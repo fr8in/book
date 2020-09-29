@@ -11,15 +11,13 @@ const SYSTEM_MAMUL = gql`subscription customer_mamul_summary($cardcode: String!)
       cardcode
       closed_orders
       billed_orders
-      mamul_charge_sum
-      writeoff_others_sum
-      pending_balance_category1
-      pending_balance_category2
-      pending_balance_category3
+      mamul_charge
       system_mamul
-      system_mamul_avg
-      track_mamul
-      mamul_difference
+      avg_system_mamul
+      pending_balance_120_180
+      pending_balance_180
+      pending_balance_60_120
+      write_off_charge
     }
   }
 }`
@@ -35,30 +33,29 @@ const SystemMamul = (props) => {
   const customer_mamul_summary = []
   if (!loading) {
     const customer = get(data, 'customer[0]', null)
-    const mamul_summary = get(customer, 'customer_mamul_summary[0]', []).map(data => ({ ...data, row_name: 'Sum' }))
+    const mamul_summary = get(customer, 'customer_mamul_summary', null)
     const billedOrders = mamul_summary.billed_orders
     const billed_orders = billedOrders === 0 ? 1 : billedOrders
     const mamul_summary_avg = {
       id: mamul_summary.id + 1,
       billed_orders: (mamul_summary.billed_orders) / billed_orders,
-      mamul_charge_sum: (mamul_summary.mamul_charge_sum) / billed_orders,
-      writeoff_others_sum: (mamul_summary.writeoff_others_sum) / billed_orders,
-      pending_balance_category1: ((mamul_summary.pending_balance_category1) * 0.25) / billed_orders,
-      pending_balance_category2: ((mamul_summary.pending_balance_category2) * 0.5) / billed_orders,
-      pending_balance_category3: ((mamul_summary.pending_balance_category3) * 1) / billed_orders,
-      system_mamul: mamul_summary.system_mamul_avg,
+      mamul_charge: (mamul_summary.mamul_charge) / billed_orders,
+      write_off_charge: (mamul_summary.write_off_charge) / billed_orders,
+      pending_balance_60_120: ((mamul_summary.pending_balance_60_120) * 0.25) / billed_orders,
+      pending_balance_120_180: ((mamul_summary.pending_balance_120_180) * 0.5) / billed_orders,
+      pending_balance_180: ((mamul_summary.pending_balance_180) * 1) / billed_orders,
+      system_mamul: mamul_summary.avg_system_mamul,
       row_name: 'Avg'
     }
     customer_mamul_summary.push(mamul_summary)
     customer_mamul_summary.push(mamul_summary_avg)
   }
-
   const columns = [
     {
       title: '',
       dataIndex: 'row_name',
       width: '5%',
-      render: (text, record) => <span style={{ color: 'color: #cccccc' }}>{text}</span>
+      render: (text, record) => text || 'Sum'
     },
     {
       title: 'Billed',
@@ -67,31 +64,31 @@ const SystemMamul = (props) => {
     },
     {
       title: 'Mamul',
-      dataIndex: 'mamul_charge_sum',
+      dataIndex: 'mamul_charge',
       width: '9%',
       render: (text, record) => text ? text.toFixed(2) : 0
     },
     {
       title: 'WriteOff',
-      dataIndex: 'writeoff_others_sum',
+      dataIndex: 'write_off_charge',
       width: '10%',
       render: (text, record) => text ? text.toFixed(2) : 0
     },
     {
       title: 'Balance[60-120]',
-      dataIndex: 'pending_balance_category1',
+      dataIndex: 'pending_balance_60_120',
       width: '15%',
       render: (text, record) => text ? text.toFixed(2) : 0
     },
     {
       title: 'Balance[120-180]',
-      dataIndex: 'pending_balance_category2',
+      dataIndex: 'pending_balance_120_180',
       width: '15%',
       render: (text, record) => text ? text.toFixed(2) : 0
     },
     {
       title: 'Balance[>180]',
-      dataIndex: 'pending_balance_category3',
+      dataIndex: 'pending_balance_180',
       width: '13%',
       render: (text, record) => text ? text.toFixed(2) : 0
     },

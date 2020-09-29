@@ -3,19 +3,15 @@ import { Col, Button, Menu, Dropdown, Drawer, Space, Checkbox, Collapse, Typogra
 import {
   UserOutlined,
   SearchOutlined,
-  CodeOutlined,
   FilterFilled,
   BankFilled,
   LogoutOutlined
 } from '@ant-design/icons'
-import Link from 'next/link'
 import useShowHide from '../../hooks/useShowHide'
 import GlobalSearch from '../dashboard/globalSearch'
-import Ssh from '../dashboard/ssh'
 import { useQuery, gql } from '@apollo/client'
-import _ from 'lodash'
-import React from "react";
 import {signOut} from '../../lib/auth'
+import BankBalance from './bankBalance'
 
 
 const { Panel } = Collapse
@@ -79,7 +75,7 @@ const Actions = (props) => {
   }
   const { loading, data, error } = useQuery(GLOBAL_FILTER, { variables })
 
-  console.log('Actions filter', filter, initialFilter)
+  console.log('Actions Error', error)
   let region_options = []
   //2nd level branch_options 
   let branch_options = []
@@ -112,13 +108,15 @@ const Actions = (props) => {
             _connected_city_trucks_total = _connected_city_trucks_total + _city.trucks_total?.aggregate.count
             _connected_city_trucks_current = _connected_city_trucks_current + _city.trucks_current?.aggregate.count
           })
-          connected_city_options.push({ label: <span>{_connected_city.name + '    '}<Text disabled>{_connected_city_trucks_current + '/' + _connected_city_trucks_total}</Text></span>, value: _connected_city.id, })
+          connected_city_options.push({ label: <span>{_connected_city.name + '    '}<Text disabled>{_connected_city_trucks_current + '/' + _connected_city_trucks_total}</Text></span>, value: _connected_city.id })
         })
-        branch_options.push({ label: <span>{_branch.name + '    '}<Text disabled>{_branch_trucks_current + '/' + _branch_trucks_total}</Text></span>, value: _branch.id, })
+        branch_options.push({ label: <span>{_branch.name + '    '}<Text disabled>{_branch_trucks_current + '/' + _branch_trucks_total}</Text></span>, value: _branch.id, order: _branch.displayposition })
       })
       region_options.push({ label: <span>{_region.name + '    '}<Text disabled>{_region_trucks_current + '/' + _region_trucks_total}</Text></span>, value: _region.id, })
     })
   }
+
+  const branch_options_sort = branch_options.sort((a,b)=> a.order - b.order)
 
   const onCheckBoxChange = (value, name) => {
     setFilter({ ...filter, [name]: value })
@@ -136,15 +134,7 @@ const Actions = (props) => {
     <Menu>
       <Menu.Item key='0'>
         <Button icon={<LogoutOutlined />} onClick={signOut}>Logout</Button>
-        {/*<Link href='/login'><a><LogoutOutlined /> Logout</a></Link>*/}
       </Menu.Item>
-    </Menu>
-  )
-  const account = (
-    <Menu>
-      <Menu.Item key='0'>ICICI <b>₹{'7,70,027'}</b></Menu.Item>
-      <Menu.Item key='1'>YesBank <b>₹{'48266'}</b></Menu.Item>
-      <Menu.Item key='2'>Reliance <b>₹{'1,87,694'}</b></Menu.Item>
     </Menu>
   )
 
@@ -153,10 +143,9 @@ const Actions = (props) => {
       <Space>
         <Button size='small' type='ghost' shape='circle' icon={<FilterFilled />} onClick={() => onShow('filter')} />
         <Button size='small' type='ghost' shape='circle' icon={<SearchOutlined />} onClick={() => onShow('search')} />
-        <Dropdown overlay={account} trigger={['click']} placement='bottomRight'>
+        <Dropdown overlay={<BankBalance />} trigger={['click']} placement='bottomRight'>
           <Button size='small' type='ghost' shape='circle' icon={<BankFilled />} />
         </Dropdown>
-        {/* <Button size='small' type='ghost' shape='circle' icon={<CodeOutlined />} onClick={() => onShow('ssh')} /> */}
         <Dropdown overlay={user} trigger={['click']} placement='bottomRight'>
           <Button size='small' type='primary' shape='circle' icon={<UserOutlined />} />
         </Dropdown>
@@ -181,7 +170,7 @@ const Actions = (props) => {
               header={<b>Branch</b>} key="branch" 
               extra={filter.branches && filter.branches.length > 0 ? <Clear onClear={(e) => onClear(e, 'branches')}/> : ''}
             >
-              <CheckBoxGroup options={branch_options} value={filter.branches} onChange={(value) => onCheckBoxChange(value, 'branches')} />
+              <CheckBoxGroup options={branch_options_sort} value={filter.branches} onChange={(value) => onCheckBoxChange(value, 'branches')} />
             </Panel>
             <Panel 
               header={<b>City</b>} key="city" 
@@ -206,9 +195,6 @@ const Actions = (props) => {
 
       {visible.search &&
         <GlobalSearch visible={visible.search} onHide={onHide} />}
-
-      {visible.ssh &&
-        <Ssh visible={visible.ssh} onHide={onHide} />}
     </Col>
   )
 }
