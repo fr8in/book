@@ -9,16 +9,19 @@ import get from 'lodash/get'
 
 const PoDetail = (props) => {
   const { po_data, onSourceChange, onDestinationChange, form, driver_id, customer, loading, record } = props
-console.log('record po', record)
+
+  const customer_user = get(customer, 'customer_users', [])
+  const default_mamul = get(customer, 'system_mamul', 0)
+  const net_price_calc = get(record, 'customer_price', 0) - default_mamul
+  const net_price = net_price_calc > 0 ? net_price_calc : null
   const price_type = get(record, 'is_price_per_ton', false)
-  const partner_price_data = get(record, 'partner_price', 0)
-  const partner_adv = partner_price_data ? partner_price_data * get(po_data, 'partner_advance_percentage.name', 70) : 0
+  const customer_price_data = get(record, 'customer_price', null)
+  const partner_adv = net_price ? net_price * get(po_data, 'partner_advance_percentage.name', null) / 100 : 0
   const partner_wallet = partner_adv ? (partner_adv - (get(record, 'cash', 0) + get(record, 'to_pay', 0))) : 0
-  const customer_price_data = get(record, 'customer_price', 0) || get(record, 'customer_price', 0)
-  const customer_adv = customer_price_data ? customer_price_data * get(customer, 'customer_advance_percentage.name', 90) : 0
+  const customer_adv = customer_price_data ? customer_price_data * get(customer, 'customer_advance_percentage.name', null) / 100 : 0
 
   const initial = {
-    part_price: partner_price_data,
+    part_price: net_price,
     part_adv: partner_adv,
     part_wallet: partner_wallet,
     part_cash: get(record, 'cash', 0),
@@ -30,9 +33,6 @@ console.log('record po', record)
 
   const modelInitial = { mamulVisible: false }
   const { visible, onHide, onShow } = useShowHide(modelInitial)
-
-  const customer_user = get(customer, 'customer_users', [])
-  const default_mamul = get(customer, 'system_mamul', null)
 
   const customer_user_list = customer_user.map((data) => {
     return { value: data.id, label: `${data.name.slice(0, 10)} - ${data.mobile}` }
@@ -156,7 +156,6 @@ console.log('record po', record)
     })
   }
 
-  const net_price = get(record, 'customer_price', 0) - get(record, 'mamul', 0)
   return (
     loading ? <Loading /> : (
       <>
@@ -173,7 +172,7 @@ console.log('record po', record)
           <Col xs={12} sm={6}>
             <Form.Item label='Loading Point Contact' name='loading_contact' rules={[{ required: true }]}>
               <Select
-                placeholder='Customer Type ....'
+                placeholder='Customer contact...'
                 options={customer_user_list}
                 optionFilterProp='label'
                 showSearch
@@ -306,7 +305,7 @@ console.log('record po', record)
           <Col xs={24} sm={12}>
             <Row gutter={10}>
               <Col xs={12}>
-                <Form.Item label='Bank' name='bank' initialValue={get(record, 'bank', 0)}>
+                <Form.Item label='Bank' name='bank' initialValue={get(record, 'bank', 0) || trip_price.cus_adv}>
                   <Input
                     placeholder='Bank'
                     disabled={false}

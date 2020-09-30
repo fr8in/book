@@ -29,7 +29,10 @@ const PageLayout = (props) => {
     types: null
   }
   const [filters, setFilters] = useState(initialFilter)
-  const user = get(props, 'authState.user', null)
+  const email = get(props, 'authState.user.email', null)
+  const roles = get(props, 'authState.roles', null)
+  const user = { email, roles }
+
   return (
     <userContext.Provider value={user}>
       <Layout id='page'>

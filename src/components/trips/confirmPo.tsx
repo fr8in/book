@@ -71,12 +71,13 @@ const CONFIRM_PO = gql`
   $to_pay: Float,
   ){
   update_trip(_set:{
-    truck_id: $truck_id
-    partner_id: $partner_id
-    po_date: $po_date
-    loading_point_contact_id: $loading_point_id
-    source_id: $source_id
-    destination_id: $destination_id
+    truck_id: $truck_id,
+    partner_id: $partner_id,
+    po_date: $po_date,
+    loading_point_contact_id: $loading_point_id,
+    customer_office_id: $loading_point_id,
+    source_id: $source_id,
+    destination_id: $destination_id,
     customer_id: $customer_id,
     truck_type_id: $truck_type_id,
     driver_id: $driver_id,
@@ -101,6 +102,7 @@ const CONFIRM_PO = gql`
 
 const ConfirmPo = (props) => {
   const { visible, onHide, truck_id, record } = props
+  console.log('trip.id', record)
   const [driver_id, setDriver_id] = useState(null)
 
   const [form] = Form.useForm()
@@ -142,14 +144,15 @@ const ConfirmPo = (props) => {
   const system_mamul = get(customer, 'system_mamul', null)
 
   const onSubmit = (form) => {
-    setDisableButton(true)
     const loading_charge = form.charge_inclue.includes('Loading')
     const unloading_charge = form.charge_inclue.includes('Unloading')
     if (system_mamul > parseFloat(form.mamul)) {
       message.error('Mamul Should be greater than system mamul!')
     } else {
+      setDisableButton(true)
       confirm_po_mutation({
         variables: {
+          trip_id: record.id,
           po_date: form.po_date.toDate(),
           source_id: obj.source_id ? parseInt(obj.source_id, 10) : get(record, 'source.id', null),
           destination_id: obj.destination_id ? parseInt(obj.destination_id, 10) : get(record, 'destination.id', null),
@@ -183,7 +186,7 @@ const ConfirmPo = (props) => {
     setObj({ ...obj, destination_id: city_id })
   }
 
-  const partner_name = po_data && po_data.partner && po_data.partner.name
+  const partner_name = get(po_data, 'partner.name', null)
   return (
     <Modal
       visible={visible}

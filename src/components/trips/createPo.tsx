@@ -88,7 +88,8 @@ const CREATE_PO = gql`
       truck_id: $truck_id,
       truck_type_id: $truck_type_id,
       driver_id: $driver_id,
-      loading_point_contact_id: $loading_point_id
+      loading_point_contact_id: $loading_point_id,
+      customer_office_id: $loading_point_id,
       customer_price: $customer_price,
       partner_price: $partner_price,
       ton: $ton,

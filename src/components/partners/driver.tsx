@@ -79,7 +79,6 @@ const Driver = (props) => {
   } else {
     drivers = driver_data && driver_data.filter(_driver => _driver.mobile.search(searchText) !== -1)
   }
-  console.log('drivers', drivers)
   return (
     <Form.Item label='Driver' name='driver' rules={[{ required: required }]}>
       <Select

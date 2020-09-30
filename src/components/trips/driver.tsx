@@ -81,7 +81,6 @@ const Driver = (props) => {
   )
 
   const onDriverUpdate = id => {
-    console.log('trip_info.id', trip_info.id)
     updateTruckDriver({
       variables: {
         trip_id: trip_info.id,
