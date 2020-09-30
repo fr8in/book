@@ -1,11 +1,12 @@
 import { ApolloClient, InMemoryCache, HttpLink, split } from '@apollo/client'
 import { WebSocketLink } from '@apollo/client/link/ws'
 import { getMainDefinition } from '@apollo/client/utilities'
+import { setContext } from '@apollo/client/link/context'
 // import WebSocket from 'ws';
 
 const isBrowser = typeof window !== 'undefined'
 const wsLink = isBrowser ? new WebSocketLink({
-  uri: 'ws://prodcore.southeastasia.azurecontainer.io/v1/graphql',
+  uri: 'ws://fr8core.southeastasia.azurecontainer.io/v1/graphql',
   options: {
     reconnect: true
   }
@@ -13,9 +14,21 @@ const wsLink = isBrowser ? new WebSocketLink({
 }) : null
 console.log(' process.browser: ', process.browser)
 const httpLink = new HttpLink({
-  uri: process.env.CORE || 'http://prodcore.southeastasia.azurecontainer.io/v1/graphql',
+  uri: process.env.CORE || 'http://fr8core.southeastasia.azurecontainer.io/v1/graphql',
   credentials: 'same-origin' // Additional fetch() options like `credentials` or `headers`
 })
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = localStorage.getItem('token')
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : ''
+    }
+  }
+})
+
 const link = isBrowser ? split(
   ({ query }) => {
     const definition = getMainDefinition(query)
@@ -33,7 +46,7 @@ export default function createApolloClient (initialState, ctx) {
   // use it to extract auth headers (ctx.req) or similar.
   return new ApolloClient({
     ssrMode: Boolean(ctx),
-    link,
+    link: authLink.concat(link),
     cache: new InMemoryCache().restore(initialState)
   })
 }

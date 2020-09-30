@@ -31,6 +31,7 @@ const auth = (setAuthState) => {
           // roles.include(account_manager)
           console.log('roles', roles)
           setAuthState({ status: 'in', user, token, roles })
+          localStorage.setItem('token', token)
         } else {
           // Check if refresh is required.
           const metadataRef = firebase
@@ -47,6 +48,7 @@ const auth = (setAuthState) => {
             console.log('hasuraClaimm', hasuraClaim)
             if (hasuraClaim) {
               setAuthState({ status: 'in', user, token })
+              localStorage.setItem('token', token)
             } else {
               await firebase.auth().signOut()
               setAuthState({ status: 'out' })
