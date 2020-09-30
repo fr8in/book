@@ -9,20 +9,20 @@ import get from 'lodash/get'
 
 const PoDetail = (props) => {
   const { po_data, onSourceChange, onDestinationChange, form, driver_id, customer, loading, record } = props
-
-  const price_type = get(record, 'trip_prices[0].is_price_per_ton', false)
-  const partner_price_data = get(record, 'trip_prices[0].partner_price', 0)
+console.log('record po', record)
+  const price_type = get(record, 'is_price_per_ton', false)
+  const partner_price_data = get(record, 'partner_price', 0)
   const partner_adv = partner_price_data ? partner_price_data * get(po_data, 'partner_advance_percentage.name', 70) : 0
-  const partner_wallet = partner_adv ? (partner_adv - (get(record, 'trip_prices[0].cash', 0) + get(record, 'trip_prices[0].to_pay', 0))) : 0
-  const customer_price_data = get(record, 'trip_prices[0].customer_price', 0)
+  const partner_wallet = partner_adv ? (partner_adv - (get(record, 'cash', 0) + get(record, 'to_pay', 0))) : 0
+  const customer_price_data = get(record, 'customer_price', 0) || get(record, 'customer_price', 0)
   const customer_adv = customer_price_data ? customer_price_data * get(customer, 'customer_advance_percentage.name', 90) : 0
 
   const initial = {
-    part_price: get(record, 'trip_prices[0].partner_price', 0),
+    part_price: partner_price_data,
     part_adv: partner_adv,
     part_wallet: partner_wallet,
-    part_cash: get(record, 'trip_prices[0].cash', 0),
-    part_to_pay: get(record, 'trip_prices[0].to_pay', 0),
+    part_cash: get(record, 'cash', 0),
+    part_to_pay: get(record, 'to_pay', 0),
     rate_type: price_type ? 'Rate/Ton' : 'Rate/Trip',
     cus_adv: customer_adv
   }
@@ -156,7 +156,7 @@ const PoDetail = (props) => {
     })
   }
 
-  const net_price = get(record, 'trip_prices[0].customer_price', 0) - get(record, 'trip_prices[0].mamul', 0)
+  const net_price = get(record, 'customer_price', 0) - get(record, 'mamul', 0)
   return (
     loading ? <Loading /> : (
       <>
@@ -213,7 +213,7 @@ const PoDetail = (props) => {
             <Col xs={24} sm={12}>
               <Row gutter={10}>
                 <Col xs={12}>
-                  <Form.Item name='per_ton_rate' initialValue={get(record, 'trip_prices[0].price_per_ton', null)}>
+                  <Form.Item name='per_ton_rate' initialValue={get(record, 'price_per_ton', null)}>
                     <Input
                       placeholder='Price'
                       disabled={false}
@@ -224,7 +224,7 @@ const PoDetail = (props) => {
                   </Form.Item>
                 </Col>
                 <Col xs={12}>
-                  <Form.Item name='ton' initialValue={get(record, 'trip_prices[0].ton', null)}>
+                  <Form.Item name='ton' initialValue={get(record, 'ton', null)}>
                     <Input
                       placeholder='Ton'
                       disabled={false}
@@ -244,7 +244,7 @@ const PoDetail = (props) => {
               extra={`Advance ${customer_advance_percentage}%`}
               name='customer_price'
               rules={[{ required: true }]}
-              initialValue={get(record, 'trip_prices[0].customer_price', null)}
+              initialValue={customer_price_data}
             >
               <Input
                 placeholder='Customer price'
@@ -264,7 +264,7 @@ const PoDetail = (props) => {
               name='mamul'
               label='Mamul Charge'
               rules={[{ required: true }]}
-              initialValue={get(record, 'trip_prices[0].mamul', null)}
+              initialValue={get(record, 'mamul', null)}
               extra={
                 <span>System Mamul:&nbsp;
                   <span className='link' onClick={default_mamul ? () => onShow('mamulVisible') : () => {}}>{default_mamul || 0}</span>
@@ -306,7 +306,7 @@ const PoDetail = (props) => {
           <Col xs={24} sm={12}>
             <Row gutter={10}>
               <Col xs={12}>
-                <Form.Item label='Bank' name='bank' initialValue={get(record, 'trip_prices[0].bank', 0)}>
+                <Form.Item label='Bank' name='bank' initialValue={get(record, 'bank', 0)}>
                   <Input
                     placeholder='Bank'
                     disabled={false}
@@ -315,7 +315,7 @@ const PoDetail = (props) => {
                 </Form.Item>
               </Col>
               <Col xs={12}>
-                <Form.Item label='Cash' name='cash' initialValue={get(record, 'trip_prices[0].cash', 0)}>
+                <Form.Item label='Cash' name='cash' initialValue={get(record, 'cash', 0)}>
                   <Input
                     placeholder='Cash'
                     disabled={false}
@@ -329,7 +329,7 @@ const PoDetail = (props) => {
           <Col xs={24} sm={12}>
             <Row gutter={10}>
               <Col xs={12}>
-                <Form.Item label='To-Pay' name='to_pay' initialValue={get(record, 'trip_prices[0].to_pay', 0)}>
+                <Form.Item label='To-Pay' name='to_pay' initialValue={get(record, 'to_pay', 0)}>
                   <Input
                     placeholder='To-Pay'
                     disabled={false}

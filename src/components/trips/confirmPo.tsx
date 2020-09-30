@@ -122,7 +122,8 @@ const ConfirmPo = (props) => {
     {
       onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
+        message.error(error.toString())
+      },
       onCompleted () {
         setDisableButton(false)
         message.success('Load Created!!')
@@ -132,7 +133,7 @@ const ConfirmPo = (props) => {
     }
   )
 
-  console.log('CreateExcessLoad Error', error, driver_id)
+  console.log('CreateExcessLoad Error', error)
 
   if (loading) return null
 
