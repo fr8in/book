@@ -206,6 +206,7 @@ const OutGoing = (props) => {
     }
   ]
 
+  
   return (
     <Table
       columns={OutGoing}
