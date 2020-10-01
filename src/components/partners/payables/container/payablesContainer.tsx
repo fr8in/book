@@ -1,96 +1,63 @@
-import DownPayment from '../downPayment'
-import ICICIBankOutgoing from '../iciciBankOutgoing'
-import StmtEmail from '../stmtMail'
-import React, { useState } from 'react'
-import { Tabs, Row, Col, Card, Input, Button, DatePicker, Space } from 'antd'
 
-import { DownloadOutlined, MailOutlined } from '@ant-design/icons'
-import useShowHide from '../../../../hooks/useShowHide'
-const { Search } = Input
+import ICICIBankOutgoing from '../iciciBankOutgoing'
+import React, { useState } from 'react'
+import { Tabs, Row, Col, Card, Input, Button, DatePicker, Space,message } from 'antd'
+import { DownloadOutlined } from '@ant-design/icons'
+import { gql,useMutation} from '@apollo/client'
+import moment from 'moment'
+
 const { RangePicker } = DatePicker
+
+const DATE_SELECT_MUTATION = gql`
+mutation syncCustomeramul($start_date:String!,$end_date:String!) {
+  icici_statement(start_date:$start_date,end_date:$end_date)
+}`
 
 const TabPane = Tabs.TabPane
 const PayablesContainer = () => {
-  const initial = { showModal: false }
-  const { visible, onShow, onHide } = useShowHide(initial)
   const [dates, setDates] = useState([])
+  
   const disabledDate = (current) => {
     if (!dates || dates.length === 0) {
       return false
     }
-    const tooLate = dates[0] && current.diff(dates[0], 'days') > 7
-    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 7
-    return tooEarly || tooLate
+    const tooLate = dates[0] && current.diff(dates[0], 'days') > 30
+    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30
+    const isNotGreaterThanToday = current && current > moment().endOf("day")
+    return ( isNotGreaterThanToday || (tooEarly || tooLate) )
   }
+  const [updateDate] = useMutation(
+    DATE_SELECT_MUTATION,
+    {
+      onError(error) { message.error(error.toString()) },
+      onCompleted(data) {
+      const url = data && data.icici_statement
+      console.log('url', url) 
+      window.open (url ,'icici_statement' )
+      message.success('Updated!!')
+     }
+    }
+  )  
+
+  const onConfirm = () => { 
+    updateDate({
+    variables: {
+      start_date: moment().format("DD-MM-YYYY"),
+      end_date:moment().format("DD-MM-YYYY")
+    }
+  })
+  }
+  
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
       <Tabs
         tabBarExtraContent={
-          <Button
-            title='Add Branch'
-            shape='circle'
-            type='primary'
-            icon={<MailOutlined />}
-            onClick={() => onShow('showModal')}
-          />
-        }
-      >
-        <TabPane tab='Down Payment' key='1'>
-          <Row justify='end' className='m5'>
-            <Col flex='190px'>
-              <Search
-                size='small'
-                placeholder='Search...'
-                onSearch={(value) => console.log(value)}
-                enterButton
-              />
-            </Col>
-          </Row>
-          <DownPayment />
-        </TabPane>
-        <TabPane tab='Outgoing' key='2'>
-          <Row justify='end' className='m5'>
-            <Col flex='190px'>
-              <Search
-                size='small'
-                placeholder='Search...'
-                onSearch={(value) => console.log(value)}
-                enterButton
-              />
-            </Col>
-          </Row>
-          <DownPayment />
-        </TabPane>
-        <TabPane tab='Bank Transfer' key='3'>
-          <Row justify='end' className='m5'>
-            <Col flex='190px'>
-              <Search
-                size='small'
-                placeholder='Search...'
-                onSearch={(value) => console.log(value)}
-                enterButton
-              />
-            </Col>
-          </Row>
-          <DownPayment />
-        </TabPane>
-        <TabPane tab='icici Bank Outgoing' key='4'>
-          <Row justify='end' className='m5'>
-            <Col flex='190px'>
-              <Search
-                size='small'
-                placeholder='Search...'
-                onSearch={(value) => console.log(value)}
-                enterButton
-              />
-            </Col>
-          </Row>
-          <Row justify='start' className='m5'>
-            <Space>
+          <Space>
               <Col flex='230px'>
                 <RangePicker
                   size='small'
-                  disabledDate={disabledDate}
+                  format='DD-MM-YYYY'
+                  disabledDate={(current) => disabledDate(current)}
                   onCalendarChange={(value) => {
                     setDates(value)
                   }}
@@ -98,21 +65,16 @@ const PayablesContainer = () => {
               </Col>
               <Col>
                 <Button size='small'>
-                  <DownloadOutlined />
+                  <DownloadOutlined onClick={() => onConfirm() }/>
                 </Button>
               </Col>
             </Space>
-          </Row>
-
+        }
+      >
+        <TabPane tab='ICIC Bank Outgoing' >
           <ICICIBankOutgoing />
         </TabPane>
       </Tabs>
-      {visible.showModal && (
-        <StmtEmail
-          visible={visible.showModal}
-          onHide={onHide}
-        />
-      )}
     </Card>
   )
 }
