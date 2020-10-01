@@ -14,18 +14,18 @@ const TripInfo = (props) => {
   const { visible, onShow, onHide } = useShowHide(initial)
 
   const trip_prices = {
-    customer_price: trip_info.customer_price,
-    partner_price: trip_info.partner_price,
-    cash: trip_info.cash,
-    to_pay: trip_info.to_pay,
-    bank: trip_info.bank,
-    mamul: trip_info.mamul,
-    including_loading: trip_info.including_loading,
-    including_unloading: trip_info.including_unloading,
-    ton: trip_info.ton,
-    is_price_per_ton: trip_info.is_price_per_ton,
-    price_per_ton: trip_info.price_per_ton,
-    customer_advance_percentage: trip_info.customer_advance_percentage,
+    customer_price: get(trip_info, 'customer_price', 0),
+    partner_price: get(trip_info, 'partner_price', 0),
+    cash: get(trip_info, 'cash', 0),
+    to_pay: get(trip_info, 'to_pay', 0),
+    bank: get(trip_info, 'bank', 0),
+    mamul: get(trip_info, 'mamul', 0),
+    including_loading: get(trip_info, 'including_loading', 0),
+    including_unloading: get(trip_info, 'including_unloading', 0),
+    ton: get(trip_info, 'ton', 0),
+    is_price_per_ton: get(trip_info, 'is_price_per_ton', 0),
+    price_per_ton: get(trip_info, 'price_per_ton', 0),
+    customer_advance_percentage: get(trip_info, 'customer_advance_percentage', null),
     partner_advance_percentage: get(trip_info, 'partner_advance_percentage.name', null)
   }
   return (
@@ -38,8 +38,8 @@ const TripInfo = (props) => {
                 smSpan={12}
                 label={<p className='mb0 b'>Customer</p>}
                 data={
-                  <Link href='/customers/[id]' as={`/customers/${trip_info.customer && trip_info.customer.cardcode}`}>
-                    <a>{trip_info.customer && trip_info.customer.name}</a>
+                  <Link href='/customers/[id]' as={`/customers/${get(trip_info, 'customer.cardcode', null)}`}>
+                    <a>{get(trip_info, 'customer.name', '-')}</a>
                   </Link>
                 }
               />
@@ -47,8 +47,8 @@ const TripInfo = (props) => {
                 smSpan={12}
                 label={<p className='mb0 b'>Partner</p>}
                 data={
-                  <Link href='/partners/[id]' as={`/partners/${trip_info.partner && trip_info.partner.cardcode}`}>
-                    <a>{trip_info.partner && trip_info.partner.name}</a>
+                  <Link href='/partners/[id]' as={`/partners/${get(trip_info, 'partner.cardcode', null)}`}>
+                    <a>{get(trip_info, 'partner.name', '-')}</a>
                   </Link>
                 }
               />
@@ -60,8 +60,8 @@ const TripInfo = (props) => {
                 smSpan={24}
                 label={<p className='mb0 b'>Truck No</p>}
                 data={
-                  <Link href='/trucks/[id]' as={`/trucks/${trip_info.truck && trip_info.truck.truck_no}`}>
-                    <a>{trip_info.truck && trip_info.truck.truck_no}</a>
+                  <Link href='/trucks/[id]' as={`/trucks/${get(trip_info, 'truck.truck_no', null)}`}>
+                    <a>{get(trip_info, 'truck.truck_no', '-')}</a>
                   </Link>
                 }
               />
@@ -72,38 +72,40 @@ const TripInfo = (props) => {
         <Row>
           <Col sm={24} md={12}>
             <LabelWithData
-              label='Order Date' data={trip_info.order_date ? (
-                moment(trip_info.order_date).format('DD-MMM-YYYY hh:mm')
+              label='Order Date' data={trip_info && trip_info.order_date ? (
+                moment(trip_info.order_date).format('DD-MMM-YY hh:mm')
               ) : ''} labelSpan={10}
             />
             <LabelWithData
-              label='ETA' data={trip_info.eta ? (
-                moment(trip_info.eta).format('DD-MMM-YYYY hh:mm')
+              label='ETA' data={trip_info && trip_info.eta ? (
+                moment(trip_info.eta).format('DD-MMM-YY hh:mm')
               ) : ''} labelSpan={10}
             />
             <LabelWithData
               label='Customer Price'
               data={
-                <p>{trip_info && trip_info.customer_price ? trip_info.customer_price : null}
+                <p className='mb0'>
+                  {get(trip_info, 'customer_price', null)}{' '}
                   <EditTwoTone onClick={() => onShow('price')} />
                 </p>
               }
               labelSpan={10}
             />
-            <LabelWithData label='Cash' data={trip_info && trip_info.cash ? trip_info.cash : 0} labelSpan={10} />
-            <LabelWithData label='To Pay' data={trip_info && trip_info.to_pay ? trip_info.to_pay : 0} labelSpan={10} />
-            <LabelWithData label='Mamul' data={trip_info && trip_info.mamul ? trip_info.mamul : 0} labelSpan={10} />
+            <LabelWithData label='Cash' data={get(trip_info, 'cash', 0)} labelSpan={10} />
+            <LabelWithData label='To Pay' data={get(trip_info, 'to_pay', 0)} labelSpan={10} />
+            <LabelWithData label='Mamul' data={get(trip_info, 'mamul', 0)} labelSpan={10} />
           </Col>
           <Col sm={24} md={12}>
             <LabelWithData
               label='PO Date' data={trip_info.po_date ? (
-                moment(trip_info.po_date).format('DD-MMM-YYYY hh:mm')
+                moment(trip_info.po_date).format('DD-MMM-YY hh:mm')
               ) : ''} labelSpan={10}
             />
-            <LabelWithData label='Delay' data={trip_info.delay} labelSpan={10} />
-            <LabelWithData label='Partner Price' data={trip_info && trip_info.partner_price ? trip_info.partner_price : 0} labelSpan={10} />
-            <LabelWithData label='Including loading' data={trip_info && trip_info.including_loading === true ? 'Yes' : 'No'} labelSpan={10} />
-            <LabelWithData label='Including Unloading' data={trip_info && trip_info.including_unloading === true ? 'yes' : 'No'} labelSpan={10} />
+            <LabelWithData label='Delay' data={get(trip_info, 'delay', 0)} labelSpan={10} />
+            <LabelWithData label='Partner Price' data={get(trip_info, 'partner_price', 0)} labelSpan={10} />
+            <LabelWithData label='Trip KM' data={get(trip_info, 'km', '-')} labelSpan={10} />
+            <LabelWithData label='Including loading' data={get(trip_info, 'including_loading', null) ? 'Yes' : 'No'} labelSpan={10} />
+            <LabelWithData label='Including Unloading' data={get(trip_info, 'including_unloading', null) ? 'Yes' : 'No'} labelSpan={10} />
           </Col>
         </Row>
       </Col>
