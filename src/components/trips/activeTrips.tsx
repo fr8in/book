@@ -112,9 +112,24 @@ const Trips = (props) => {
     },
     {
       title: 'TAT',
-      dataIndex: 'tat',
-      sorter: (a, b) => a.tat > b.tat ? 1 : -1,
-      render: (text, record) => text && text ? text : 0,
+      render: (text, record) => {
+        const status = get(record, 'trip_status.name', null)
+        return (
+          (status === 'Assigned' || status === 'Confirmed') ? record.confirmed_tat
+            : status === 'Reported at source' ? record.loading_tat
+              : status === 'Intransit' ? record.intransit_tat
+                : status === 'Reported at destination' ? record.unloading_tat : null
+        )
+      },
+      sorter: (a, b) => {
+        const status = get(a, 'trip_status.name', null)
+        return (
+          (status === 'Assigned' || status === 'Confirmed') ? a.confirmed_tat > b.confirmed_tat ? 1 : -1
+            : status === 'Reported at source' ? a.loading_tat > b.loading_tat ? 1 : -1
+              : status === 'Intransit' ? a.intransit_tat > b.intransit_tat ? 1 : -1
+                : status === 'Reported at destination' ? a.unloading_tat > b.unloading_tat ? 1 : -1 : null
+        )
+      },
       width: '4%'
     },
     props.intransit ? {

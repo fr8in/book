@@ -42,8 +42,13 @@ subscription trips(
     trip_status{
       name
     }
-    km    
-    tat
+    km
+    pod_verified_at
+    pod_dispatched_at
+    delivered_tat
+    pod_verified_tat
+    pod_dispatched_tat
+    invoiced_tat
     last_comment{
       description
       created_at
