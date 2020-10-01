@@ -86,7 +86,7 @@ const CustomerPrice = (props) => {
         price_per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
         comment: form.comment,
         created_by: context.email,
-        topic: 'Trip Price Update'
+        topic: 'Trip Price Changed'
       }
     })
   }
