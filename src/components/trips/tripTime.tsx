@@ -1,9 +1,10 @@
-import { Row, Col, Card, Form, Space, Button, Checkbox, message, Input } from 'antd'
+import { Row, Col, Card, Form, Space, Button, Checkbox, message, Modal } from 'antd'
 import {
   FilePdfOutlined,
   FileWordOutlined,
   DeleteOutlined,
-  CloseCircleOutlined
+  CloseCircleOutlined,
+  FileTextOutlined
 } from '@ant-design/icons'
 import SendLoadingMemo from './sendLoadingMemo'
 import useShowHide from '../../hooks/useShowHide'
@@ -20,6 +21,7 @@ import isEmpty from 'lodash/isEmpty'
 import { gql, useMutation, useLazyQuery } from '@apollo/client'
 import { useContext } from 'react'
 import userContext from '../../lib/userContaxt'
+import LabelWithData from '../common/labelWithData'
 
 const GET_WORD = gql`
 query loading_memo($id:Int!){
@@ -36,49 +38,39 @@ query loading_memo_pdf($id:Int!){
 }`
 
 const REMOVE_SOUT_MUTATION = gql`
-mutation remove_souce_out($source_out:timestamptz,$id:Int!) {
+mutation remove_souce_out($source_out:timestamp,$id:Int!) {
   update_trip(_set: {source_out: $source_out}, where: {id: {_eq: $id}}) {
     returning {
       id
       source_out
     }
   }
-}
-`
+}`
 
 const REMOVE_DOUT_MUTATION = gql`
-mutation remove_destination_out($destination_out:timestamptz,$id:Int!) {
+mutation remove_destination_out($destination_out:timestamp,$id:Int!) {
   update_trip(_set: {destination_out: $destination_out}, where: {id: {_eq: $id}}) {
     returning {
       id
       destination_out
     }
   }
-}
-`
-const TO_PAY_MUTATION = gql`
-mutation insert_to_pay($to_pay: Float, $comment: String, $trip_id: Int!) {
-  insert_trip_price(objects: {to_pay: $to_pay, comment:$comment, trip_id: $trip_id}) {
-    returning {
-      to_pay
-      comment
-    }
-  }
-}
-`
+}`
+
 const PROCESS_ADVANCE_MUTATION = gql`
 mutation process_advance ($tripId: Int!, $createdBy: String!) {
   partner_advance(trip_id: $tripId, created_by: $createdBy) {
     description
     status
   }
-}
-`
+}`
+
 const TripTime = (props) => {
   const { trip_info } = props
-  const initial = { checkbox: false, mail: false, deletePO: false, godownReceipt: false }
+  const initial = { checkbox: false, mail: false, deletePO: false, godownReceipt: false, wh_detail: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   const context = useContext(userContext)
+  const [form] = Form.useForm()
 
   const [getWord, { loading, data, error, called }] = useLazyQuery(GET_WORD)
   const [getPdf, { loading: pdfloading, data: pdfdata, error: pdferror, called: pdfcalled }] = useLazyQuery(GET_PDF)
@@ -127,7 +119,10 @@ const TripTime = (props) => {
     REMOVE_SOUT_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () {
+        message.success('Updated!!')
+        form.resetFields(['source_out_date'])
+      }
     }
   )
 
@@ -135,15 +130,10 @@ const TripTime = (props) => {
     REMOVE_DOUT_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
-    }
-  )
-
-  const [insertTopay] = useMutation(
-    TO_PAY_MUTATION,
-    {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () {
+        message.success('Updated!!')
+        form.resetFields(['destination_out_date'])
+      }
     }
   )
 
@@ -151,7 +141,13 @@ const TripTime = (props) => {
     PROCESS_ADVANCE_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted (data) {
+        const status = get(data, 'process_advance.status', null)
+        const description = get(data, 'process_advance.description', null)
+        if (status === 'OK') {
+          message.success(description || 'Advance Processed!')
+        } else (message.error(description))
+      }
     }
   )
 
@@ -179,40 +175,29 @@ const TripTime = (props) => {
       }
     })
   }
-  const getToPay = (form) => {
-    console.log('form', form)
-    insertTopay({
-      variables: {
-        to_pay: form.to_pay,
-        comment: form.comment,
-        trip_id: trip_info.id
-      }
-    })
-  }
 
   const authorized = true // TODO
   const trip_status_name = get(trip_info, 'trip_status.name', null)
-  const po_delete = (trip_status_name === 'Assigned' && trip_status_name === 'Confirmed' && trip_status_name === 'Reported at source') && !trip_info.source_out
-  const process_advance = trip_info.source_in && trip_info.source_out && (trip_info.loaded === 'N' || !trip_info.loaded)
+  const po_delete = (trip_status_name === 'Assigned' || trip_status_name === 'Confirmed' || trip_status_name === 'Reported at source') && !trip_info.source_out
+  const process_advance = trip_info.source_in && trip_info.source_out && (trip_info.loaded === 'No')
   const remove_sout = trip_status_name === 'Intransit' && authorized
   const remove_dout = trip_status_name === 'Delivered' && authorized
 
-  const toPayCheck = !!(trip_info.source_in && trip_info.source_out && trip_info.destination_in && get(trip_info, 'trip_prices[0].to_pay', null))
-  console.log('toPayCheck', toPayCheck)
   const trip_files = get(trip_info, 'trip_files', [])
   const wh_files = !isEmpty(trip_files) ? trip_files.filter(file => file.type === 'WH') : null
 
   const driver_number = get(trip_info, 'driver.mobile', null)
   const trip_status_id = get(trip_info, 'trip_status.id', null)
   const after_deliverd = (trip_status_id >= 9)
+  const wh_update = (trip_status_id <= 4)
   return (
     <Card size='small' className='mt10'>
       <Row>
         <Col xs={24}>
-          <Form layout='vertical'>
+          <Form layout='vertical' form={form}>
             <Row gutter={10}>
               <Col xs={8}>
-                <SourceInDate source_in={trip_info.source_in} id={trip_info.id} />
+                <SourceInDate source_in={trip_info.source_in} id={trip_info.id} form={form} />
               </Col>
               <Col xs={8}>
                 <SourceOutDate source_out={trip_info.source_out} id={trip_info.id} />
@@ -233,57 +218,41 @@ const TripTime = (props) => {
                   <Space>
                     <Button type='primary' loading={pdfloading} shape='circle' icon={<FilePdfOutlined />} onClick={onPdfClick} />
                     <Button type='primary' loading={loading} shape='circle' icon={<FileWordOutlined />} onClick={onWordClick} />
-                    {/* <Button shape='circle' icon={<MailOutlined />} onClick={() => onShow('mail')} /> */}
                   </Space>
                 </Form.Item>
               </Col>
             </Row>
           </Form>
-          <Form layout='vertical' onFinish={getToPay}>
-            <Row gutter={10}>
-              <Col xs={8}>
-                <Form.Item label='To-Pay Amount' name='to_pay'>
-                  <Input
-                    placeholder='To Pay Amount'
-                    type='number'
-                    disabled={!toPayCheck}
-                    required={toPayCheck}
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={12}>
-                <Form.Item label='To-Pay Comment' name='comment'>
-                  <Input
-                    placeholder='To Pay Comment'
-                    disabled={!toPayCheck}
-                    required={toPayCheck}
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={4} className='text-right'>
-                <Form.Item label>
-                  <Button type='primary' htmlType='submit' disabled={!toPayCheck}>Submit</Button>
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
-          <Row className='mb15'>
+          <Row className='mb5'>
             <Col xs={20}>
-              <Checkbox disabled={!!(trip_info && trip_info.unloaded_private_godown === true)} onClick={() => onShow('godownReceipt')}>Unloaded at private godown</Checkbox>
+              <Checkbox
+                checked={get(trip_info, 'unloaded_private_godown', false)}
+                disabled={wh_update || get(trip_info, 'unloaded_private_godown', false)}
+                onClick={get(trip_info, 'unloaded_private_godown', false) ? () => {} : () => onShow('godownReceipt')}
+              >Unloaded at private godown
+              </Checkbox>
             </Col>
             <Col xs={4} className='text-right'>
-              {wh_files && wh_files.length > 0 ? (
-                <ViewFile
-                  id={trip_info.id}
-                  type='trip'
-                  folder='warehousereceipt/'
-                  file_type='WH'
-                  file_list={wh_files}
-                />) : (null)}
+              {get(trip_info, 'unloaded_private_godown', false) &&
+                <Space>
+                  <Button
+                    shape='circle'
+                    onClick={() => onShow('wh_detail')}
+                    icon={<FileTextOutlined />}
+                  />
+                  {wh_files && wh_files.length > 0 ? (
+                    <ViewFile
+                      id={trip_info.id}
+                      type='trip'
+                      folder='warehousereceipt/'
+                      file_type='WH'
+                      file_list={wh_files}
+                    />) : null}
+                </Space>}
             </Col>
           </Row>
           <Row>
-            <Col xs={16}>
+            <Col xs={24}>
               <Space>
                 {po_delete &&
                   <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>}
@@ -302,6 +271,22 @@ const TripTime = (props) => {
       {visible.mail && <SendLoadingMemo visible={visible.mail} onHide={onHide} />}
       {visible.deletePO && <DeletePO visible={visible.deletePO} onHide={onHide} />}
       {visible.godownReceipt && <GodownReceipt visible={visible.godownReceipt} trip_id={trip_info.id} trip_info={trip_info} onHide={onHide} />}
+      {visible.wh_detail &&
+        <Modal
+          title='Godown Address'
+          visible={visible.wh_detail}
+          onCancel={onHide}
+          footer={null}
+        >
+          {get(trip_info, 'private_godown_address', false) &&
+            <div>
+              <LabelWithData label='Building No' data={get(trip_info, 'private_godown_address.no', '-')} labelSpan={8} />
+              <LabelWithData label='Address' data={get(trip_info, 'private_godown_address.address', '-')} labelSpan={8} />
+              <LabelWithData label='City' data={get(trip_info, 'private_godown_address.city', '-')} labelSpan={8} />
+              <LabelWithData label='Pin Code' data={get(trip_info, 'private_godown_address.pin_code', '-')} labelSpan={8} />
+              <LabelWithData label='State' data={get(trip_info, 'private_godown_address.state', '-')} labelSpan={8} />
+            </div>}
+        </Modal>}
     </Card>
 
   )

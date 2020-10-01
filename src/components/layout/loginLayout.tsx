@@ -3,15 +3,13 @@ import '../../styles/login.less'
 import Router from 'next/router'
 import Loading from '../common/loading'
 
-
 const Auth = (props) => {
-  if(props.authState.status === 'in') {
+  if (props.authState.status === 'in') {
     Router.push('/')
-    return  <Loading  />
-      }
-      else if(props.authState.status !== 'out') {
-       return  <Loading  />
-              }
+    return <Loading preloading />
+  } else if (props.authState.status !== 'out') {
+    return <Loading preloading />
+  }
   return (
     <>
       <Head>

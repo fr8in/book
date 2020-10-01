@@ -1,5 +1,5 @@
 
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import { Modal, Button, Input, Form, Row, Col, Select, message } from 'antd'
 import CitySelect from '../common/citySelect'
 import { gql, useQuery, useMutation } from '@apollo/client'
@@ -11,7 +11,7 @@ const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
     id
     description
   }
-  truck_type{
+  truck_type(where:{active:{_eq:true}}){
     id
     name
   }
@@ -59,7 +59,7 @@ const CreateExcessLoad = (props) => {
   const initial = { search: '', customer_id: null, source_id: null, destination_id: null, disableButton: false }
   const [obj, setObj] = useState(initial)
   const context = useContext(userContext)
-  
+
   const { loading, error, data } = useQuery(
     CUSTOMER_SEARCH,
     {
@@ -81,7 +81,11 @@ const CreateExcessLoad = (props) => {
   const [create_excess_load] = useMutation(
     EXCESS_LOAD_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        console.log('excess error', error)
+        message.error(error.toString())
+        setObj({ ...obj, disableButton: false })
+      },
       onCompleted () {
         message.success('Updated!!')
         setObj(initial)
@@ -107,7 +111,6 @@ const CreateExcessLoad = (props) => {
   }
 
   const onCreateLoad = (form) => {
-    console.log('Excess load data', form, obj)
     setObj({ ...obj, disableButton: true })
     create_excess_load({
       variables: {

@@ -4,41 +4,39 @@ import { useState, useContext } from 'react'
 import userContext from '../../lib/userContaxt'
 
 const CUSTOMER_MUTATION = gql`
-mutation insert_trip_price(
+mutation update_trip_price(
   $trip_id: Int, 
   $customer_price: Float, 
   $mamul: Float, 
   $bank: Float, 
   $cash: Float, 
   $to_pay: Float, 
-  $comment: String,
-  $created_by: String,
   $partner_price: Float, 
-  $ton: float8, 
-  $price_per_ton: float8,
-  $is_price_per_ton: Boolean) {
-  insert_trip_price(objects: {
-    trip_id: $trip_id, 
-    customer_price: $customer_price, 
-    mamul: $mamul, 
-    bank: $bank, 
-    cash: $cash, 
-    to_pay: $to_pay, 
-    comment: {
-      data:{
-        trip_id: $trip_id,
-        description: $comment,
-        created_by: $created_by
-      }
-    }, 
-    partner_price: $partner_price, 
-    ton: $ton, 
-    is_price_per_ton: $is_price_per_ton, 
-    price_per_ton: $price_per_ton
-  }) {
+  $ton: Float, 
+  $price_per_ton: Float,
+  $is_price_per_ton: Boolean,
+	$comment: String,
+  $created_by: String,
+  $topic: String) {
+  update_trip(
+    _set:{
+      customer_price: $customer_price, 
+      mamul: $mamul, 
+      bank: $bank, 
+      cash: $cash, 
+      to_pay: $to_pay,  
+      partner_price: $partner_price, 
+      ton: $ton, 
+      is_price_per_ton: $is_price_per_ton, 
+      price_per_ton: $price_per_ton
+    }
+    where: { id: {_eq: $trip_id}}) {
     returning {
       id
     }
+  }
+  insert_trip_comment(objects:{trip_id: $trip_id, description: $comment, topic: $topic, created_by: $created_by}){
+    returning{ id trip_id }
   }
 }
 `
@@ -62,7 +60,8 @@ const CustomerPrice = (props) => {
     {
       onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
+        message.error(error.toString())
+      },
       onCompleted () {
         setDisableButton(false)
         message.success('Updated!!')
@@ -73,7 +72,6 @@ const CustomerPrice = (props) => {
 
   const onCustomerPriceSubmit = (form) => {
     setDisableButton(true)
-    console.log('inside form submit', form)
     insertTripPrice({
       variables: {
         trip_id: trip_id,
@@ -82,12 +80,13 @@ const CustomerPrice = (props) => {
         bank: parseFloat(form.bank),
         cash: parseFloat(form.cash),
         to_pay: parseFloat(form.to_pay),
-        comment: form.comment,
-        created_by: context.email,
         partner_price: parseFloat(price.partner_price),
         ton: form.ton ? parseInt(form.ton, 10) : null,
         is_price_per_ton: !!form.ton,
-        price_per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null
+        price_per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
+        comment: form.comment,
+        created_by: context.email,
+        topic: 'Trip Price Changed'
       }
     })
   }

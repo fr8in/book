@@ -1,7 +1,7 @@
-import { Row, Col, Card, Tabs, Button, Space } from 'antd'
+import { Row, Col, Card, Tabs, Button } from 'antd'
 import TripsContainer from './dashboardTripsContainer'
 import TripsByDestination from '../../trips/tripsByDestination'
-import { WhatsAppOutlined, CarOutlined } from '@ant-design/icons'
+import { CarOutlined } from '@ant-design/icons'
 import ExcessLoad from '../../trips/excessLoad'
 import TitleWithCount from '../../common/titleWithCount'
 import useShowHide from '../../../hooks/useShowHide'
@@ -107,10 +107,7 @@ const DashboardContainer = (props) => {
               <Tabs
                 defaultActiveKey='1'
                 tabBarExtraContent={
-                  <Space>
-                    {/* <Button size='small' shape='circle' type='primary' className='btn-success' icon={<WhatsAppOutlined />} /> */}
-                    <Button size='small' type='primary' shape='circle' icon={<CarOutlined />} onClick={() => onShow('excessLoad')} />
-                  </Space>
+                  <Button size='small' type='primary' shape='circle' icon={<CarOutlined />} onClick={() => onShow('excessLoad')} />
                 }
               >
                 <TabPane tab={<TitleWithCount name='Unloading(S)' value={unloading_count} />} key='1'>

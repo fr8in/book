@@ -3,7 +3,7 @@ import { message } from 'antd'
 import DateUpdater from '../common/dateUpdater'
 
 const UPDATE_TRIP_DESTINATIONIN_MUTATION = gql`
-mutation trip_destination_in($destination_in:timestamptz,$id:Int) {
+mutation trip_destination_in($destination_in:timestamp,$id:Int) {
     update_trip(_set: {destination_in:$destination_in}, where: {id:{_eq:$id}}) {
       returning {
         id

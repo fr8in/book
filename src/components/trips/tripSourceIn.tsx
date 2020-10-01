@@ -20,7 +20,9 @@ const SourceInDate = (props) => {
     UPDATE_TRIP_SOURCEIN_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () {
+        message.success('Updated!!')
+      }
     }
   )
 

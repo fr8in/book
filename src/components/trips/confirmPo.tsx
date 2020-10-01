@@ -122,7 +122,8 @@ const ConfirmPo = (props) => {
     {
       onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
+        message.error(error.toString())
+      },
       onCompleted () {
         setDisableButton(false)
         message.success('Load Created!!')
@@ -132,7 +133,7 @@ const ConfirmPo = (props) => {
     }
   )
 
-  console.log('CreateExcessLoad Error', error, driver_id)
+  console.log('CreateExcessLoad Error', error)
 
   if (loading) return null
 
@@ -149,6 +150,7 @@ const ConfirmPo = (props) => {
     } else {
       confirm_po_mutation({
         variables: {
+          trip_id: record.id,
           po_date: form.po_date.toDate(),
           source_id: obj.source_id ? parseInt(obj.source_id, 10) : get(record, 'source.id', null),
           destination_id: obj.destination_id ? parseInt(obj.destination_id, 10) : get(record, 'destination.id', null),
