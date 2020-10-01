@@ -6,6 +6,7 @@ import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
 import TripFeedBack from '../trips/tripFeedBack'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import PodReceiptAndDispatch from '../trips/podReceiptAndDispatch'
+import get from 'lodash/get'
 
 const TripsTracking = (props) => {
   const initial = {
@@ -250,8 +251,17 @@ const TripsTracking = (props) => {
     },
     {
       title: 'Aging',
-      dataIndex: 'tat',
-      key: 'tat',
+      render: (text, record) => {
+        const status = get(record, 'trip_status.name', null)
+        const pod_verified = get(record, 'pod_verified_at', null)
+        const pod_dispatched = get(record, 'pod_dispatched_at', null)
+        return (
+          status === 'Delivered' ? record.delivered_tat
+            : (status === 'Delivered' && pod_verified) ? record.pod_verified_tat
+              : status === 'Invoiced' ? record.invoiced_tat
+                : (status === 'Invoiced' && pod_dispatched) ? record.pod_dispatched_tat : null
+        )
+      },
       width: '8%'
     },
     {
@@ -264,8 +274,8 @@ const TripsTracking = (props) => {
             <span> {comment.slice(0, 12) + '...'}</span>
           </Tooltip>
         ) : (
-            comment
-          )
+          comment
+        )
       }
     },
     {

@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Table, Tooltip, Input, Pagination, Checkbox } from 'antd'
-import Link from 'next/link'
 import moment from 'moment'
 import { SearchOutlined } from '@ant-design/icons'
+import get from 'lodash/get'
+import LinkComp from '../common/link'
+import Truncate from '../common/truncate'
 
 const Trips = (props) => {
   const {
@@ -66,21 +68,13 @@ const Trips = (props) => {
       title: 'ID',
       dataIndex: 'id',
       width: '7%',
-      render: (text, record) => {
-        return (
-          <Link href='/trips/[id]' as={`/trips/${record.id} `}>
-            <a>{text}</a>
-          </Link>
-        )
-      },
+      render: (text, record) => <LinkComp type='trips' data={text} id={record.id} />,
       filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search TripId'
-            value={filter.id}
-            onChange={handleTripId}
-          />
-        </div>
+        <Input
+          placeholder='Search TripId'
+          value={filter.id}
+          onChange={handleTripId}
+        />
       ),
       filterIcon: () => (
         <SearchOutlined style={{ color: filter.id ? '#1890ff' : undefined }} />
@@ -94,37 +88,24 @@ const Trips = (props) => {
       ),
       dataIndex: 'order_date',
       key: 'order_date',
-      render: (text, record) => {
-        return text ? moment(text).format('DD-MMM-YY') : ''
-      },
+      render: (text, record) => text ? moment(text).format('DD-MMM-YY') : '',
       width: '8%'
     },
     {
       title: 'Customer',
       render: (text, record) => {
-        const cardcode = record.customer && record.customer.cardcode
+        const cardcode = get(record, 'customer.cardcode', null)
+        const name = get(record, 'customer.name', null)
         return (
-          <Link href='/customers/[id]' as={`/customers/${cardcode} `}>
-            {record.customer &&
-            record.customer.name &&
-            record.customer.name.length > 12 ? (
-              <Tooltip title={record.customer && record.customer.name}>
-                  <a>{record.customer.name.slice(0, 12) + '...'}</a>
-                </Tooltip>
-              ) : (
-                <a>{record.customer && record.customer.name}</a>
-              )}
-          </Link>
+          <LinkComp type='customers' data={name} id={cardcode} length={12} />
         )
       },
       filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search Customer Name'
-            value={filter.customername}
-            onChange={handleCustomerName}
-          />
-        </div>
+        <Input
+          placeholder='Search Customer Name'
+          value={filter.customername}
+          onChange={handleCustomerName}
+        />
       ),
       filterIcon: () => (
         <SearchOutlined
@@ -136,33 +117,18 @@ const Trips = (props) => {
     {
       title: 'Partner',
       render: (text, record) => {
+        const cardcode = get(record, 'partner.cardcode', null)
+        const name = get(record, 'partner.name', null)
         return (
-          <Link
-            href='/partners/[id]'
-            as={`/partners/${record.partner && record.partner.cardcode} `}
-          >
-            {record.partner &&
-            record.partner.name &&
-            record.partner.name.length > 12 ? (
-              <Tooltip title={record.partner && record.partner.name}>
-                  <a>
-                    {record.partner && record.partner.name.slice(0, 12) + '...'}
-                  </a>
-                </Tooltip>
-              ) : (
-                <a>{record.partner && record.partner.name}</a>
-              )}
-          </Link>
+          <LinkComp type='partners' data={name} id={cardcode} length={12} />
         )
       },
       filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search Partner Name'
-            value={filter.partnername}
-            onChange={handlePartnerName}
-          />
-        </div>
+        <Input
+          placeholder='Search Partner Name'
+          value={filter.partnername}
+          onChange={handlePartnerName}
+        />
       ),
       filterIcon: () => (
         <SearchOutlined
@@ -174,23 +140,17 @@ const Trips = (props) => {
     {
       title: 'Truck',
       render: (text, record) => {
+        const truck_no = get(record, 'truck.truck_no', null)
         return (
-          <Link
-            href='/trucks/[id]'
-            as={`/trucks/${record.truck && record.truck.truck_no} `}
-          >
-            <a>{record.truck && record.truck.truck_no}</a>
-          </Link>
+          <LinkComp type='trucks' data={truck_no} id={truck_no} />
         )
       },
       filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search Truck'
-            value={filter.truck_no}
-            onChange={handleTruckNo}
-          />
-        </div>
+        <Input
+          placeholder='Search Truck'
+          value={filter.truck_no}
+          onChange={handleTruckNo}
+        />
       ),
       filterIcon: () => (
         <SearchOutlined
@@ -202,23 +162,13 @@ const Trips = (props) => {
     {
       title: 'Source',
       width: '9%',
-      render: (text, record) => {
-        return text > 8 ? (
-          <Tooltip title={record.source.name}>
-            <span>{record.source.name.slice(0, 8) + '...'}</span>
-          </Tooltip>
-        ) : (
-          record.source.name
-        )
-      },
+      render: (text, record) => <Truncate data={get(record, 'source.name', '')} length={10} />,
       filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search Source City'
-            value={filter.sourcename}
-            onChange={handleSourceName}
-          />
-        </div>
+        <Input
+          placeholder='Search Source City'
+          value={filter.sourcename}
+          onChange={handleSourceName}
+        />
       ),
       filterIcon: () => (
         <SearchOutlined
@@ -229,23 +179,13 @@ const Trips = (props) => {
     {
       title: 'Destination',
       width: '10%',
-      render: (text, record) => {
-        return text > 8 ? (
-          <Tooltip title={record.destination.name}>
-            <span>{record.destination.name.slice(0, 8) + '...'}</span>
-          </Tooltip>
-        ) : (
-          record.destination.name
-        )
-      },
+      render: (text, record) => <Truncate data={get(record, 'destination.name', '')} length={10} />,
       filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search Destination City'
-            value={filter.destinationname}
-            onChange={handleDestinationName}
-          />
-        </div>
+        <Input
+          placeholder='Search Destination City'
+          value={filter.destinationname}
+          onChange={handleDestinationName}
+        />
       ),
       filterIcon: () => (
         <SearchOutlined
@@ -255,7 +195,7 @@ const Trips = (props) => {
     },
     {
       title: 'Status',
-      render: (text, record) => record.trip_status && record.trip_status.name,
+      render: (text, record) => get(record, 'trip_status.name', ''),
       width: '10%',
       filterDropdown: (
         <Checkbox.Group
