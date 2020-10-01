@@ -150,6 +150,7 @@ const ConfirmPo = (props) => {
     } else {
       confirm_po_mutation({
         variables: {
+          trip_id: record.id,
           po_date: form.po_date.toDate(),
           source_id: obj.source_id ? parseInt(obj.source_id, 10) : get(record, 'source.id', null),
           destination_id: obj.destination_id ? parseInt(obj.destination_id, 10) : get(record, 'destination.id', null),
