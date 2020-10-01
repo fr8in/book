@@ -81,7 +81,7 @@ const Payables = (props) => {
   return (
     <>
       <Row className='payableHead' gutter={6}>
-        <Col xs={12}><b>Paymentable</b></Col>
+        <Col xs={12}><b>Payables</b></Col>
         <Col xs={12} className='text-right'>
           <b>{payables}</b>
         </Col>

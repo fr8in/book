@@ -36,26 +36,25 @@ query loading_memo_pdf($id:Int!){
 }`
 
 const REMOVE_SOUT_MUTATION = gql`
-mutation remove_souce_out($source_out:timestamptz,$id:Int!) {
+mutation remove_souce_out($source_out:timestamp,$id:Int!) {
   update_trip(_set: {source_out: $source_out}, where: {id: {_eq: $id}}) {
     returning {
       id
       source_out
     }
   }
-}
-`
+}`
 
 const REMOVE_DOUT_MUTATION = gql`
-mutation remove_destination_out($destination_out:timestamptz,$id:Int!) {
+mutation remove_destination_out($destination_out:timestamp,$id:Int!) {
   update_trip(_set: {destination_out: $destination_out}, where: {id: {_eq: $id}}) {
     returning {
       id
       destination_out
     }
   }
-}
-`
+}`
+
 const TO_PAY_MUTATION = gql`
 mutation insert_to_pay($to_pay: Float, $comment: String, $trip_id: Int!) {
   insert_trip_price(objects: {to_pay: $to_pay, comment:$comment, trip_id: $trip_id}) {
@@ -64,16 +63,16 @@ mutation insert_to_pay($to_pay: Float, $comment: String, $trip_id: Int!) {
       comment
     }
   }
-}
-`
+}`
+
 const PROCESS_ADVANCE_MUTATION = gql`
 mutation process_advance ($tripId: Int!, $createdBy: String!) {
   partner_advance(trip_id: $tripId, created_by: $createdBy) {
     description
     status
   }
-}
-`
+}`
+
 const TripTime = (props) => {
   const { trip_info } = props
   const initial = { checkbox: false, mail: false, deletePO: false, godownReceipt: false }
