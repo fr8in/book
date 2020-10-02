@@ -1,11 +1,12 @@
 import React from 'react'
-import { Table, Input, Row, Col, Button, Space, Tooltip,message } from 'antd'
-import { CheckCircleTwoTone } from '@ant-design/icons'
-import { gql,useMutation,useQuery} from '@apollo/client'
-import {useState,useContext}  from 'react'
+import { Table, Button, message } from 'antd'
+import { gql, useMutation, useQuery } from '@apollo/client'
+import { useContext } from 'react'
 import userContext from '../../../lib/userContaxt'
 import Truncate from '../../common/truncate'
 import get from 'lodash/get'
+import moment from 'moment'
+import EditableCell from '../../common/editableCell'
 
 const pendingTransaction = gql`
 query pendingTransaction {
@@ -36,7 +37,7 @@ mutation updateReferenceNumber ($doc_num:String!,$bank_reference_number:String!)
   }
 `
 
-const Execute_Transfer= gql`
+const Execute_Transfer = gql`
 mutation executeTransfer($doc_num:String!,$updated_by:String!) {
   execute_transfer(doc_num:$doc_num, updated_by:$updated_by) {
     description
@@ -45,19 +46,20 @@ mutation executeTransfer($doc_num:String!,$updated_by:String!) {
 }`
 
 const OutGoing = (props) => {
-  const [state, setState] = useState('')
+  const { label } = props
   const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(
-    pendingTransaction,{ notifyOnNetworkStatusChange: true}
+    pendingTransaction, { notifyOnNetworkStatusChange: true }
   )
   console.log('pendingTransaction error', error)
 
-  var pendingtransaction = []
+  var _data = []
   if (!loading) {
-    pendingtransaction = data.pending_transaction
+    _data = data
   }
- console.log('pendingtransaction',pendingtransaction)
+
+  const pendingtransaction = get(_data, 'pending_transaction', [])
 
   const [updateReferenceNumber] = useMutation(
     UPDATE_REFERENCE_NUMBER_MUTATION,
@@ -71,31 +73,28 @@ const OutGoing = (props) => {
     Execute_Transfer,
     {
       onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!')
+      onCompleted() {
+        message.success('Updated!!')
       }
     }
   )
-  const handleChange = (record,e) => {
-    setState(e.target.value)
-  }
-  console.log('refno', state)
 
-   const onConfirm = (record,docNum) => {
+  const onConfirm = (value, docNum) => {
     updateReferenceNumber({
-    variables: {
-      doc_num: docNum.toString(),
-      bank_reference_number:state
-    }
-  })
+      variables: {
+        doc_num: docNum.toString(),
+        bank_reference_number: value
+      }
+    })
   }
 
-  const onSubmit = (record,docNum) => {
+  const onSubmit = (record, docNum) => {
     executeTransfer({
-        variables: {
-          doc_num:docNum.toString(),
-          updated_by: context.email
-        }
-      })
+      variables: {
+        doc_num: docNum.toString(),
+        updated_by: context.email
+      }
+    })
   }
 
   const OutGoing = [
@@ -104,14 +103,16 @@ const OutGoing = (props) => {
       dataIndex: 'docNum',
       key: 'docNum',
       sorter: (a, b) => (a.docNum > b.docNum ? 1 : -1),
-      width: '6%'
+      width: '8%'
     },
     {
       title: 'DocDate',
-      dataIndex: 'docDate',
-      key: 'docDate',
       sorter: (a, b) => (a.docDate > b.docDate ? 1 : -1),
-      width: '9%'
+      width: '8%',
+      render: (text, record) => {
+        const DocDate = get(record, 'docDate', '-')
+        return (DocDate ? moment(DocDate).format('DD-MMM-YY') : null)
+      }
     },
     {
       title: 'Vendor Code',
@@ -122,11 +123,11 @@ const OutGoing = (props) => {
     {
       title: 'Vendor Name',
       sorter: (a, b) => (a.partner_name > b.partner_name ? 1 : -1),
-      width: '9%',
+      width: '10%',
       render: (text, record) => {
         const user = get(record, 'partner_name', '-')
         return (
-          <Truncate data={user} length={14} />
+          <Truncate data={user} length={10} />
         )
       }
     },
@@ -167,46 +168,37 @@ const OutGoing = (props) => {
       render: (text, record) => {
         const user = get(record, 'payable_status', '-')
         return (
-          <Truncate data={user} length={14} />
+          <Truncate data={user} length={12} />
         )
       }
     },
     {
       title: 'Ref Number',
-      width: '11%',
-      render: (text,record) => {
-      return(
-        <Row className='m5'>
-          <Space>
-            <Col flex='100px'>
-              <Input size='small' value={state} 
-                 onChange={(e) => handleChange(record.docNum,e)} />
-            </Col>
-            <Col>
-              <CheckCircleTwoTone  onClick={() => onConfirm(record,record.docNum)} />
-            </Col>
-          </Space>
-        </Row>
-      )}
+      width: '10%',
+      render: (text, record, value) => {
+        return (
+          <EditableCell onSubmit={() => onConfirm(value, record.docNum)} label={label} />
+        )
+      }
     },
     {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      width: '10%',
-      render: (text,record) => {
-        return(
-          <Button size='small'  type='primary' onClick={()=> onSubmit(record,record.docNum)}
-          disabled={!(record.bank_name === "ICICI Bank") || ! record.account_no}
-           >
-          Execute Transfer
+      width: '7%',
+      render: (text, record) => {
+        return (
+          <Button size='small' type='primary' onClick={() => onSubmit(record, record.docNum)}
+            disabled={!(record.bank_name === "ICICI Bank") || !record.account_no}
+          >
+            Execute
           </Button>
-      )
+        )
       }
     }
   ]
 
-  
+
   return (
     <Table
       columns={OutGoing}
