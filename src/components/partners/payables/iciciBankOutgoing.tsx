@@ -6,7 +6,7 @@ import userContext from '../../../lib/userContaxt'
 import Truncate from '../../common/truncate'
 import get from 'lodash/get'
 import moment from 'moment'
-import EditableCell from '../../common/editableCell'
+import Refno from './refNum'
 
 const pendingTransaction = gql`
 query pendingTransaction {
@@ -24,18 +24,6 @@ query pendingTransaction {
     bank_name
   }
 }`
-
-const UPDATE_REFERENCE_NUMBER_MUTATION = gql`
-mutation updateReferenceNumber ($doc_num:String!,$bank_reference_number:String!){
-    update_pending_transaction(
-      doc_num: $doc_num
-      bank_reference_number: $bank_reference_number
-    ) {
-      description
-      status
-    }
-  }
-`
 
 const Execute_Transfer = gql`
 mutation executeTransfer($doc_num:String!,$updated_by:String!) {
@@ -61,14 +49,6 @@ const OutGoing = (props) => {
 
   const pendingtransaction = get(_data, 'pending_transaction', [])
 
-  const [updateReferenceNumber] = useMutation(
-    UPDATE_REFERENCE_NUMBER_MUTATION,
-    {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
-    }
-  )
-
   const [executeTransfer] = useMutation(
     Execute_Transfer,
     {
@@ -78,15 +58,6 @@ const OutGoing = (props) => {
       }
     }
   )
-
-  const onConfirm = (value, docNum) => {
-    updateReferenceNumber({
-      variables: {
-        doc_num: docNum.toString(),
-        bank_reference_number: value
-      }
-    })
-  }
 
   const onSubmit = (record, docNum) => {
     executeTransfer({
@@ -175,9 +146,9 @@ const OutGoing = (props) => {
     {
       title: 'Ref Number',
       width: '10%',
-      render: (text, record, value) => {
+      render: (text, record ) => {
         return (
-          <EditableCell onSubmit={() => onConfirm(value, record.docNum)} label={label} />
+          <Refno id={record.docNum} label={label} />
         )
       }
     },
