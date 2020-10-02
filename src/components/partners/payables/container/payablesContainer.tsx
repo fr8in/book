@@ -5,6 +5,7 @@ import { Tabs, Space, Card, Button, DatePicker, message } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 import moment from 'moment'
+import isEmpty from 'lodash/isEmpty'
 
 const { RangePicker } = DatePicker
 
@@ -32,19 +33,22 @@ const PayablesContainer = () => {
       onError (error) { message.error(error.toString()) },
       onCompleted (data) {
         const url = data && data.icici_statement
-        console.log('url', url)
         window.open(url, 'icici_statement')
         message.success('Updated!!')
       }
     }
   )
   const onConfirm = () => {
-    icici_statement({
-      variables: {
-        start_date: dates[0].toDate(),
-        end_date: dates[1].toDate()
-      }
-    })
+    if (!isEmpty(dates)) {
+      icici_statement({
+        variables: {
+          start_date: dates[0].toDate(),
+          end_date: dates[1].toDate()
+        }
+      })
+    } else {
+      message.error('Select Start date and End date!')
+    }
   }
 
   return (
