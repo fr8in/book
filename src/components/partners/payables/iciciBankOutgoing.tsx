@@ -1,7 +1,7 @@
-import React from 'react'
-import { Table, Button, message } from 'antd'
-import { gql, useMutation, useQuery } from '@apollo/client'
 import { useContext } from 'react'
+import { Table, Button, message, Tooltip } from 'antd'
+import { gql, useMutation, useQuery } from '@apollo/client'
+
 import userContext from '../../../lib/userContaxt'
 import Truncate from '../../common/truncate'
 import get from 'lodash/get'
@@ -52,8 +52,8 @@ const OutGoing = (props) => {
   const [executeTransfer] = useMutation(
     Execute_Transfer,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () {
         message.success('Updated!!')
       }
     }
@@ -68,9 +68,9 @@ const OutGoing = (props) => {
     })
   }
 
-  const OutGoing = [
+  const columns = [
     {
-      title: 'Outgoing No',
+      title: <Tooltip title='Outgoing No'>O.No</Tooltip>,
       dataIndex: 'docNum',
       key: 'docNum',
       sorter: (a, b) => (a.docNum > b.docNum ? 1 : -1),
@@ -109,7 +109,7 @@ const OutGoing = (props) => {
       width: '7%'
     },
     {
-      title: 'Tran Type',
+      title: <Tooltip title='Transaction Type'>T.Type</Tooltip>,
       dataIndex: 'transfer_type',
       key: 'transfer_type',
       width: '5%'
@@ -146,7 +146,7 @@ const OutGoing = (props) => {
     {
       title: 'Ref Number',
       width: '10%',
-      render: (text, record ) => {
+      render: (text, record) => {
         return (
           <Refno id={record.docNum} label={label} />
         )
@@ -159,8 +159,9 @@ const OutGoing = (props) => {
       width: '7%',
       render: (text, record) => {
         return (
-          <Button size='small' type='primary' onClick={() => onSubmit(record, record.docNum)}
-            disabled={!(record.bank_name === "ICICI Bank") || !record.account_no}
+          <Button
+            size='small' type='primary' onClick={() => onSubmit(record, record.docNum)}
+            disabled={!(record.bank_name === 'ICICI Bank') || !record.account_no}
           >
             Execute
           </Button>
@@ -169,14 +170,14 @@ const OutGoing = (props) => {
     }
   ]
 
-
   return (
     <Table
-      columns={OutGoing}
+      columns={columns}
       dataSource={pendingtransaction}
       size='small'
       scroll={{ x: 1156, y: 400 }}
       pagination={false}
+      rowKey={(record) => record.docNum}
     />
   )
 }
