@@ -37,12 +37,32 @@ query loading_memo_pdf($id:Int!){
   }
 }`
 
+const REMOVE_SIN_MUTATION = gql`
+mutation remove_souce_out($source_in:timestamp,$id:Int!) {
+  update_trip(_set: {source_in: $source_in}, where: {id: {_eq: $id}}) {
+    returning {
+      id
+      source_out
+    }
+  }
+}`
+
 const REMOVE_SOUT_MUTATION = gql`
 mutation remove_souce_out($source_out:timestamp,$id:Int!) {
   update_trip(_set: {source_out: $source_out}, where: {id: {_eq: $id}}) {
     returning {
       id
       source_out
+    }
+  }
+}`
+
+const REMOVE_DIN_MUTATION = gql`
+mutation remove_destination_out($destination_in:timestamp,$id:Int!) {
+  update_trip(_set: {destination_in: $destination_in}, where: {id: {_eq: $id}}) {
+    returning {
+      id
+      destination_out
     }
   }
 }`
@@ -115,24 +135,44 @@ const TripTime = (props) => {
     }, 2000)
   }
 
+  const [removeSin] = useMutation(
+    REMOVE_SIN_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () {
+        message.success('Updated!!')
+        form.resetFields()
+      }
+    }
+  )
   const [removeSout] = useMutation(
     REMOVE_SOUT_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
       onCompleted () {
         message.success('Updated!!')
-        form.resetFields(['source_out_date'])
+        form.resetFields()
       }
     }
   )
 
+  const [removeDin] = useMutation(
+    REMOVE_DIN_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () {
+        message.success('Updated!!')
+        form.resetFields()
+      }
+    }
+  )
   const [removeDout] = useMutation(
     REMOVE_DOUT_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
       onCompleted () {
         message.success('Updated!!')
-        form.resetFields(['destination_out_date'])
+        form.resetFields()
       }
     }
   )
@@ -151,11 +191,27 @@ const TripTime = (props) => {
     }
   )
 
+  const onSinRemove = () => {
+    removeSin({
+      variables: {
+        id: trip_info.id,
+        source_in: null
+      }
+    })
+  }
   const onSoutRemove = () => {
     removeSout({
       variables: {
         id: trip_info.id,
         source_out: null
+      }
+    })
+  }
+  const onDinRemove = () => {
+    removeDin({
+      variables: {
+        id: trip_info.id,
+        destination_in: null
       }
     })
   }
@@ -180,7 +236,9 @@ const TripTime = (props) => {
   const trip_status_name = get(trip_info, 'trip_status.name', null)
   const po_delete = (trip_status_name === 'Assigned' || trip_status_name === 'Confirmed' || trip_status_name === 'Reported at source') && !trip_info.source_out
   const process_advance = trip_info.source_in && trip_info.source_out && (trip_info.loaded === 'No')
+  const remove_sin = trip_status_name === 'Reported at source' && authorized
   const remove_sout = trip_status_name === 'Intransit' && authorized
+  const remove_din = trip_status_name === 'Reported at destination' && authorized
   const remove_dout = trip_status_name === 'Delivered' && authorized
 
   const trip_files = get(trip_info, 'trip_files', [])
@@ -258,10 +316,14 @@ const TripTime = (props) => {
                   <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>}
                 {process_advance &&
                   <Button type='primary' onClick={onProcessAdvance}>Process Advance</Button>}
+                {remove_sin &&
+                  <Button danger icon={<CloseCircleOutlined />} onClick={onSinRemove}>S-In</Button>}
                 {remove_sout &&
-                  <Button danger icon={<CloseCircleOutlined />} onClick={onSoutRemove}>Sout</Button>}
+                  <Button danger icon={<CloseCircleOutlined />} onClick={onSoutRemove}>S-Out</Button>}
+                {remove_din &&
+                  <Button danger icon={<CloseCircleOutlined />} onClick={onDinRemove}>D-In</Button>}
                 {remove_dout &&
-                  <Button danger icon={<CloseCircleOutlined />} onClick={onDoutRemove}>Dout</Button>}
+                  <Button danger icon={<CloseCircleOutlined />} onClick={onDoutRemove}>D-Out</Button>}
               </Space>
             </Col>
           </Row>
