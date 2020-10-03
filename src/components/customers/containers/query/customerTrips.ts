@@ -6,6 +6,7 @@ query customer_trip_list($cardcode: String, $trip_status: [String!]) {
     trips(where:{trip_status:{name:{_in:$trip_status}}} order_by:{trip_receipts_aggregate:{sum:{amount:asc_nulls_first}}}) {
       id
       order_date
+      pod_dispatched_at
       truck {
         truck_no
         truck_type {

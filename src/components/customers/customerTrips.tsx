@@ -95,9 +95,10 @@ const CustomerTrips = (props) => {
       render: (text, record) => <Truncate data={get(record, 'trip_status.name', '-')} length={15} />
     } : {},
     delivered ? {
-      title: 'Pod Status',
+      title: 'Pod Dispatched',
       width: '11%',
-      render: (text, record) => <Truncate data={get(record, 'trip_pod_status.name', '-')} length={15} />
+      dataIndex: 'pod_dispatched_at',
+      render:  (text, record) => text ? moment(text).format('DD-MMM-YY') : '-' 
     } : {},
     {
       title: 'Receivable',
