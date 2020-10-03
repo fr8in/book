@@ -29,17 +29,17 @@ const SystemMamul = (props) => {
   const customer_mamul_summary = []
   if (!loading) {
     const mamul_summary = get(data, 'accounting_customer_mamul[0]', null)
-    const billedOrders = mamul_summary.billed_order
+    const billedOrders = get(mamul_summary, 'billed_order', 0)
     const billed_order = billedOrders === 0 ? 1 : billedOrders
     const mamul_summary_avg = {
-      id: mamul_summary.id + 1,
-      billed_order: (mamul_summary.billed_order) / billed_order,
-      mamul_charge: (mamul_summary.mamul_charge) / billed_order,
-      write_off_charge: (mamul_summary.write_off_charge) / billed_order,
-      pending_balance_60_120: ((mamul_summary.pending_balance_60_120) * 0.25) / billed_order,
-      pending_balance_120_180: ((mamul_summary.pending_balance_120_180) * 0.5) / billed_order,
-      pending_balance_180: ((mamul_summary.pending_balance_180) * 1) / billed_order,
-      system_mamul: mamul_summary.avg_system_mamul,
+      id: get(mamul_summary, 'id', 0) + 1,
+      billed_order: 1,
+      mamul_charge: get(mamul_summary, 'mamul_charge', 0) / billed_order,
+      write_off_charge: get(mamul_summary, 'write_off_charge', 0) / billed_order,
+      pending_balance_60_120: (get(mamul_summary, 'pending_balance_60_120', 0) * 0.25) / billed_order,
+      pending_balance_120_180: (get(mamul_summary, 'pending_balance_120_180', 0) * 0.5) / billed_order,
+      pending_balance_180: (get(mamul_summary, 'pending_balance_180', 0) * 1) / billed_order,
+      system_mamul: get(mamul_summary, 'avg_system_mamul', 0),
       row_name: 'Avg'
     }
     customer_mamul_summary.push(mamul_summary)
@@ -109,7 +109,7 @@ const SystemMamul = (props) => {
         <Table
           columns={columns}
           dataSource={customer_mamul_summary}
-          rowKey={record => record.id}
+          rowKey={record => get(record, 'id', null)}
           scroll={{ x: 1000, y: 200 }}
           size='small'
           pagination={false}

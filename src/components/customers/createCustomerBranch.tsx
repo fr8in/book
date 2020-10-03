@@ -57,7 +57,8 @@ const CreateCustomerBranch = (props) => {
     {
       onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
+        message.error(error.toString())
+      },
       onCompleted () {
         setDisableButton(false)
         message.success('Updated!!')
@@ -71,7 +72,8 @@ const CreateCustomerBranch = (props) => {
     {
       onError (error) {
         setDisableButton(false)
-         message.error(error.toString()) },
+        message.error(error.toString())
+      },
       onCompleted () {
         setDisableButton(false)
         message.success('Updated!!')
@@ -158,7 +160,7 @@ const CreateCustomerBranch = (props) => {
                   <CitySelect
                     label='City'
                     name='city'
-                    initialValue={get(customerbranches, 'city', null)}
+                    city={get(customerbranches, 'city', null)}
                     onChange={onCityChange}
                   />
                 </Col>
@@ -166,7 +168,7 @@ const CreateCustomerBranch = (props) => {
                   <Form.Item
                     label='State'
                     name='state_id'
-                    initialValue={get(customerbranches, 'state_id', null)}
+                    initialValue={get(customerbranches, 'state', null)}
                     rules={[{ required: true, message: 'State is required field' }]}
                   >
                     <Select onChange={onStateChange} options={StateList} />
