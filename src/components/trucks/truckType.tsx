@@ -4,7 +4,7 @@ import InlineSelect from '../common/inlineSelect'
 
 const TRUCKS_TYPE_QUERY = gql`
   query truck_type{
-  truck_type{
+  truck_type(where:{active:{_eq:true}}) {
       id
       name
   }

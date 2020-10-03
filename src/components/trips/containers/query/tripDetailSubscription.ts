@@ -12,6 +12,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       pod_verified_at
       destination_in
       destination_out
+      km
       driver{
         id
         mobile
@@ -22,6 +23,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       ap
       ar
       unloaded_private_godown
+      private_godown_address
       lr
       lr_incentive
       pod_incentive

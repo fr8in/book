@@ -3,22 +3,18 @@ import { Modal, Table, Button } from 'antd'
 import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 
-const SYSTEM_MAMUL = gql`subscription customer_mamul_summary($cardcode: String!) {
-  customer(where: {cardcode: {_eq: $cardcode}}) {
+const SYSTEM_MAMUL = gql`
+subscription customer_mamul_summary($cardcode: String!) {
+  accounting_customer_mamul(where: {cardcode: {_eq: $cardcode}}) {
     cardcode
-    customer_mamul_summary {
-      id
-      cardcode
-      closed_orders
-      billed_orders
-      mamul_charge
-      system_mamul
-      avg_system_mamul
-      pending_balance_120_180
-      pending_balance_180
-      pending_balance_60_120
-      write_off_charge
-    }
+    billed_order
+    closed_order
+    mamul_charge
+    avg_system_mamul
+    pending_balance_120_180
+    pending_balance_180
+    pending_balance_60_120
+    write_off_charge
   }
 }`
 
@@ -32,18 +28,17 @@ const SystemMamul = (props) => {
   console.log('SystemMamul Error', error)
   const customer_mamul_summary = []
   if (!loading) {
-    const customer = get(data, 'customer[0]', null)
-    const mamul_summary = get(customer, 'customer_mamul_summary', null)
-    const billedOrders = mamul_summary.billed_orders
-    const billed_orders = billedOrders === 0 ? 1 : billedOrders
+    const mamul_summary = get(data, 'accounting_customer_mamul[0]', null)
+    const billedOrders = mamul_summary.billed_order
+    const billed_order = billedOrders === 0 ? 1 : billedOrders
     const mamul_summary_avg = {
       id: mamul_summary.id + 1,
-      billed_orders: (mamul_summary.billed_orders) / billed_orders,
-      mamul_charge: (mamul_summary.mamul_charge) / billed_orders,
-      write_off_charge: (mamul_summary.write_off_charge) / billed_orders,
-      pending_balance_60_120: ((mamul_summary.pending_balance_60_120) * 0.25) / billed_orders,
-      pending_balance_120_180: ((mamul_summary.pending_balance_120_180) * 0.5) / billed_orders,
-      pending_balance_180: ((mamul_summary.pending_balance_180) * 1) / billed_orders,
+      billed_order: (mamul_summary.billed_order) / billed_order,
+      mamul_charge: (mamul_summary.mamul_charge) / billed_order,
+      write_off_charge: (mamul_summary.write_off_charge) / billed_order,
+      pending_balance_60_120: ((mamul_summary.pending_balance_60_120) * 0.25) / billed_order,
+      pending_balance_120_180: ((mamul_summary.pending_balance_120_180) * 0.5) / billed_order,
+      pending_balance_180: ((mamul_summary.pending_balance_180) * 1) / billed_order,
       system_mamul: mamul_summary.avg_system_mamul,
       row_name: 'Avg'
     }
@@ -59,7 +54,7 @@ const SystemMamul = (props) => {
     },
     {
       title: 'Billed',
-      dataIndex: 'billed_orders',
+      dataIndex: 'billed_order',
       width: '8%'
     },
     {

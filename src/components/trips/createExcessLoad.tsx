@@ -11,7 +11,7 @@ const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
     id
     description
   }
-  truck_type{
+  truck_type(where:{active:{_eq:true}}){
     id
     name
   }
@@ -83,7 +83,6 @@ const CreateExcessLoad = (props) => {
     {
       onError (error) {
         console.log('excess error', error)
-        // const err = get(error, )
         message.error(error.toString())
         setObj({ ...obj, disableButton: false })
       },
@@ -112,7 +111,6 @@ const CreateExcessLoad = (props) => {
   }
 
   const onCreateLoad = (form) => {
-    console.log('Excess load data', form, obj)
     setObj({ ...obj, disableButton: true })
     create_excess_load({
       variables: {
