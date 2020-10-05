@@ -71,7 +71,6 @@ const TripsContainer = () => {
   if (!loading) {
     _data = data
   }
-  console.log('_data', _data)
   // trip count for tab
   const all_count = get(_data, 'trip_count.aggregate.count', 0)
   const delivered_count = get(_data, 'delivered.aggregate.count', 0)
