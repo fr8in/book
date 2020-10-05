@@ -25,7 +25,6 @@ const CityPricing = () => {
     _data = data
   }
   const citymapping = get(_data, 'city', [])
-  console.log('city', citymapping)
 
   const CityPricing = [
     {
@@ -56,6 +55,8 @@ const CityPricing = () => {
       size='small'
       scroll={{ x: 1156, y: 400 }}
       pagination={false}
+      rowKey={(record) => record.id}
+      loading={loading}
     />
   )
 }
