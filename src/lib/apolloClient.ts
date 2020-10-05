@@ -8,7 +8,18 @@ const isBrowser = typeof window !== 'undefined'
 const wsLink = isBrowser ? new WebSocketLink({
   uri: 'ws://fr8core.southeastasia.azurecontainer.io/v1/graphql',
   options: {
-    reconnect: true
+    reconnect: true,
+    connectionParams: async () => {
+      const token = await localStorage.getItem('token')
+      console.log('token', token)
+      if (token) {
+        return {
+          headers: {
+            authorization: token ? `Bearer ${token}` : ''
+          }
+        }
+      }
+    }
   }
   // webSocketImpl: WebSocket
 }) : null
