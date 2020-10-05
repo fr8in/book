@@ -1,11 +1,12 @@
 import { Modal, Button, Row, Col, Form, Input, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import FileUploadOnly from '../common/fileUploadOnly'
-import { useState } from 'react'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 
 const PRIVATE_GODWON_MUTATION = gql`
-mutation update_private_godown($id: Int!, $private_godown_address: jsonb,$unloaded_private_godown:Boolean) {
-  update_trip(_set: {private_godown_address: $private_godown_address,unloaded_private_godown: $unloaded_private_godown}, where: {id: {_eq: $id}}) {
+mutation update_private_godown($id: Int!, $private_godown_address: jsonb,$unloaded_private_godown:Boolean,$updated_by: String!) {
+  update_trip(_set: {private_godown_address: $private_godown_address,unloaded_private_godown: $unloaded_private_godown,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
     }
@@ -18,6 +19,7 @@ const CheckBoxModal = (props) => {
   const { visible, onHide, trip_id, trip_info } = props
 
   const [disableButton, setDisableButton] = useState(false)
+  const context = useContext(userContext)
 
   console.log('trip_info', trip_id)
 
@@ -49,7 +51,8 @@ const CheckBoxModal = (props) => {
       variables: {
         id: trip_id,
         private_godown_address: private_godown_address,
-        unloaded_private_godown: true
+        unloaded_private_godown: true,
+        updated_by: context.email
       }
     })
   }

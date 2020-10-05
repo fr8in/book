@@ -26,7 +26,8 @@ const EditAddress = (props) => {
       },
       onCompleted () {
         setDisableButton(false)
-        message.success('Updated!!')
+        message.success('Updated!!') 
+        onHide()
       }
     }
   )

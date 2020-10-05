@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { gql, useSubscription, useMutation } from '@apollo/client'
 import Loading from '../common/loading'
 import get from 'lodash/get'
-import { useState } from 'react'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 
 const CUSTOMER_BILLING_ADDRESS_FOR_INVOICE = gql`
 subscription customer_billing($cardcode: String!, $id: Int!) {
@@ -34,10 +35,10 @@ subscription customer_billing($cardcode: String!, $id: Int!) {
 }`
 
 const UPDATE_TRIP_CUSTOMER_BRANCH = gql`
-mutation update_trip_customer_branch($branch_id: Int, $id:Int!){
-  update_trip(_set:{customer_office_id: $branch_id}, where:{id:{_eq:$id}}){
-    returning{
-      customer_office{
+mutation update_trip_customer_branch($branch_id: Int, $id: Int!,$updated_by: String!) {
+  update_trip(_set: {customer_office_id: $branch_id, updated_by:$updated_by}, where: {id: {_eq: $id}}) {
+    returning {
+      customer_office {
         id
         name
         branch_name
@@ -47,8 +48,8 @@ mutation update_trip_customer_branch($branch_id: Int, $id:Int!){
 }`
 
 const UPDATE_TRIP_GST_HSN = gql`
-mutation update_trip_gst_hsn($gst: String, $hsn:String, $id:Int!){
-  update_trip(_set:{gst:$gst, hsn:$hsn}, where:{id:{_eq:$id}}){
+mutation update_trip_gst_hsn($gst: String, $hsn:String, $id:Int!,$updated_by:String!){
+  update_trip(_set:{gst:$gst, hsn:$hsn,updated_by:$updated_by}, where:{id:{_eq:$id}}){
     returning{
       gst
       hsn
@@ -60,6 +61,7 @@ const BillingAndInvoiced = (props) => {
   const { visible, onHide, cardcode, trip_id } = props
 
   const [disableButton, setDisableButton] = useState(false)
+  const context = useContext(userContext)
 
   const { loading, error, data } = useSubscription(
     CUSTOMER_BILLING_ADDRESS_FOR_INVOICE,
@@ -102,7 +104,8 @@ const BillingAndInvoiced = (props) => {
     update_trip_customer_branch({
       variables: {
         id: trip_id,
-        branch_id: parseInt(branch.key)
+        branch_id: parseInt(branch.key),
+        updated_by: context.email,
       }
     })
   }
@@ -113,7 +116,8 @@ const BillingAndInvoiced = (props) => {
       variables: {
         id: trip_id,
         gst: form.gst,
-        hsn: form.hsn
+        hsn: form.hsn,
+        updated_by: context.email,
       }
     })
   }

@@ -20,7 +20,7 @@ query  bank_incoming($search:String){
 const CUSTOMER_TOPUP_MUTATION = gql`
 mutation customer_topup(
   $transno: Int!
-  $originno: Int!
+  $originno: String!
   $created_by: String!
   $customer_id: Int!
 ) {
@@ -79,7 +79,7 @@ const WalletTopup = (props) => {
     customer_topup({
       variables: {
         transno: selectedRow[0].transno,
-        originno: selectedRow[0].originno,
+        originno: selectedRow[0].originno.toString(),
         created_by: context.email,
         customer_id: customer_id
       }

@@ -32,6 +32,7 @@ const EditBank = (props) => {
       onCompleted () {
         setDisableButton(false)
         message.success('Updated!!')
+        onHide()
       }
     }
   )

@@ -1,6 +1,7 @@
 import { message, Select, Form } from 'antd'
 import { useMutation, useQuery, gql } from '@apollo/client'
-import { useState } from 'react'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 import get from 'lodash/get'
 import _ from 'lodash'
 
@@ -17,8 +18,8 @@ query partner_driver($id:Int!){
   }`
 
 const INSERT_PARTNER_DRIVER = gql`
-mutation driver_insert($id: Int!, $mobile: String){
-  insert_driver(objects:{partner_id: $id, mobile:$mobile }){
+mutation driver_insert($id: Int!, $mobile: String,$created_by: String!){
+  insert_driver(objects:{partner_id: $id, mobile:$mobile,created_by:$created_by}){
     returning{
       id
     }
@@ -26,8 +27,8 @@ mutation driver_insert($id: Int!, $mobile: String){
 }`
 
 const UPDATE_TRUCK_DRIVER_MUTATION = gql`
-mutation trip_driver($driver_id:Int,$trip_id:Int) {
-  update_trip(_set: {driver_id: $driver_id}, where: {id: {_eq: $trip_id}}){
+mutation trip_driver($driver_id:Int,$trip_id:Int,$updated_by: String!) {
+  update_trip(_set: {driver_id: $driver_id,updated_by:$updated_by}, where: {id: {_eq: $trip_id}}){
     returning{
       id
     }
@@ -43,6 +44,7 @@ const Driver = (props) => {
   if (!partner_id) return null
 
   const [searchText, setSearchText] = useState('')
+  const context = useContext(userContext)
   const onSearch = (value) => {
     setSearchText(value.substring(0, 10))
   }
@@ -84,7 +86,8 @@ const Driver = (props) => {
     updateTruckDriver({
       variables: {
         trip_id: trip_info.id,
-        driver_id: id
+        driver_id: id,
+        updated_by: context.email
       }
     })
   }
@@ -96,7 +99,8 @@ const Driver = (props) => {
       insertDriver({
         variables: {
           id: partner_id,
-          mobile: value
+          mobile: value,
+          created_by: context.email
         }
       })
     } else {

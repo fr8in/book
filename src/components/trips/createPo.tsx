@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { Modal, Row, Button, Form, Col, Select, Card, Divider, message } from 'antd'
 import Link from 'next/link'
 import { gql, useQuery, useLazyQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
 import get from 'lodash/get'
+import userContext from '../../lib/userContaxt'
 
 const PO_QUERY = gql`
 query po_query($id: Int!){
@@ -61,6 +62,7 @@ const CREATE_PO = gql`
   mutation create_po (
       $po_date: timestamp,
       $source_id: Int, 
+      $created_by: String!
       $destination_id: Int, 
       $customer_id: Int,
       $partner_id:Int,
@@ -82,6 +84,7 @@ const CREATE_PO = gql`
     insert_trip(objects: {
       po_date:$po_date
       source_id: $source_id, 
+      created_by: $created_by
       destination_id: $destination_id, 
       customer_id: $customer_id,
       partner_id: $partner_id,
@@ -116,6 +119,7 @@ const CreatePo = (props) => {
   const [form] = Form.useForm()
   const initial = { search: '', source_id: null, destination_id: null }
   const [obj, setObj] = useState(initial)
+  const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(
     PO_QUERY,
@@ -203,6 +207,7 @@ const CreatePo = (props) => {
           truck_id: po_data && po_data.id,
           truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
           driver_id: driver_id,
+          created_by: context.email,
           loading_point_id: form.loading_contact
         }
       })

@@ -7,6 +7,8 @@ import _ from 'lodash'
 import moment from 'moment'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import ExcessToPo from '../trips/excessToPo'
+import userContext from '../../lib/userContaxt'
+import {useContext } from 'react'
 
 const EXCESS_LOAD = gql`
 subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$trip_status: String, $truck_type:[Int!], $managers: [Int!]) {
@@ -69,8 +71,8 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
 `
 
 const CANCEL_LOAD_MUTATION = gql`
-mutation cancel_Excess_load($trip_status_id: Int!, $id: Int!){
-  update_trip(_set: {trip_status_id: $trip_status_id}, where:{id: {_eq: $id}}) {
+mutation cancel_Excess_load($trip_status_id: Int!, $id: Int!,$updated_by: String!){
+  update_trip(_set: {trip_status_id: $trip_status_id,updated_by:$updated_by}, where:{id: {_eq: $id}}) {
     returning{
       trip_status_id
     }
@@ -82,6 +84,7 @@ const ExcessLoad = (props) => {
 
   const initial = { cancel_visible: false, po_visible: false, record: null }
   const { object, handleShow, handleHide } = useShowHideWithRecord(initial)
+  const context = useContext(userContext)
 
   const variables = {
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
@@ -120,7 +123,8 @@ const ExcessLoad = (props) => {
     cancel_load({
       variables: {
         id: id,
-        trip_status_id: 7
+        trip_status_id: 7,
+        updated_by: context.email
       }
     })
   }

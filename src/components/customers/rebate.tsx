@@ -5,15 +5,16 @@ import { gql, useMutation } from '@apollo/client'
 import get from 'lodash/get'
 
 const CUSTOMER_EXCESS_PAYMENT = gql`
-mutation customer_excess_payment($cardcode: String!, $walletcode: String!, $customer_incoming_id: Int!, $amount: Float! ){
-  customer_excess_payment(cardcode: $cardcode, walletcode: $walletcode, customer_incoming_id:$customer_incoming_id, amount:$amount){
+mutation customer_excess_payment ($amount:Float!,$customer_id:Int!,$doc_entry:Int!){
+  customer_excess_payment( amount: $amount, customer_id:$customer_id , doc_entry:$doc_entry) {
     description
     status
   }
-}`
+}
+`
 
 const Rebate = (props) => {
-  const { visible, onHide, cardcode, walletcode } = props
+  const { visible, onHide, cardcode, customer_id } = props
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
   const [disableButton, setDisableButton] = useState(true)
@@ -42,9 +43,8 @@ const Rebate = (props) => {
       setDisableButton(true)
       excess_payment_booking({
         variables: {
-          cardcode: cardcode,
-          walletcode: walletcode,
-          customer_incoming_id: selectedRow[0].customer_incoming_id,
+          customer_id: customer_id,
+          doc_entry: selectedRow[0].customer_incoming_id,
           amount: parseFloat(amount)
         }
       })
