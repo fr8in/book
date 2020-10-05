@@ -30,7 +30,9 @@ const EditBank = (props) => {
         message.error(error.toString()) },
       onCompleted() { 
         setDisableButton(false)
-        message.success('Updated!!') }
+        message.success('Updated!!') 
+        onHide()
+      }
     }
   )
   const onBankSubmit = (form) => {

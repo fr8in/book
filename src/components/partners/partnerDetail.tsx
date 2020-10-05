@@ -27,7 +27,7 @@ const PartnerDetail = (props) => {
          ${address.address || null},
          ${address.city || null},
          ${address.state || null},
-         ${address.pincode || null}`
+         ${address.pin_code || null}`
   const cardcode = partnerDetail.cardcode
   return (
     <Row gutter={8}>
@@ -64,7 +64,7 @@ const PartnerDetail = (props) => {
         />
         <LabelWithData
           label='State'
-          data={<span>{partnerDetail.city && partnerDetail.city.state && partnerDetail.city.state.name }</span>}
+          data={<span>{partnerDetail.city && partnerDetail.city.state && partnerDetail.city.state.name}</span>}
           labelSpan={10}
           dataSpan={14}
         />
@@ -81,65 +81,66 @@ const PartnerDetail = (props) => {
         />
         <LabelWithData
           label='Account Number '
-          data={<span>{partnerDetail.display_account_number}</span>}
+          data=
+            {<span>{partnerDetail.account_number}</span>}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData
-          label='IFSC Code'
-          data={<span>{partnerDetail.ifsc_code}</span>}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Cibil Score '
-          data={
-            <span>
-              <CibilScore cardcode={cardcode} cibil={partnerDetail.cibil} loading={loading} />
-            </span>
-          }
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label=' TDS %'
-          data={<span>{_.get(partnerDetail, 'tds_percentage.name', '-')}</span>}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label=' GST'
-          data={<span><Gst cardcode={cardcode} gst={partnerDetail.gst || '-'} loading={loading} /></span>}
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Advance Percentage'
-          data={
-            <AdvancePercentage
-              advance={_.get(partnerDetail, 'partner_advance_percentage.name', null)}
-              advance_id={_.get(partnerDetail, 'partner_advance_percentage.id', null)}
-              cardcode={cardcode}
+              label='IFSC Code'
+              data={<span>{partnerDetail.ifsc_code}</span>}
+              labelSpan={10}
+              dataSpan={14}
             />
-          }
-          labelSpan={10}
-          dataSpan={14}
-        />
+            <LabelWithData
+              label='Cibil Score '
+              data={
+                <span>
+                  <CibilScore cardcode={cardcode} cibil={partnerDetail.cibil} loading={loading} />
+                </span>
+              }
+              labelSpan={10}
+              dataSpan={14}
+            />
+            <LabelWithData
+              label=' TDS %'
+              data={<span>{_.get(partnerDetail, 'tds_percentage.name', '-')}</span>}
+              labelSpan={10}
+              dataSpan={14}
+            />
+            <LabelWithData
+              label=' GST'
+              data={<span><Gst cardcode={cardcode} gst={partnerDetail.gst || '-'} loading={loading} /></span>}
+              labelSpan={10}
+              dataSpan={14}
+            />
+            <LabelWithData
+              label='Advance Percentage'
+              data={
+                <AdvancePercentage
+                  advance={_.get(partnerDetail, 'partner_advance_percentage.name', null)}
+                  advance_id={_.get(partnerDetail, 'partner_advance_percentage.id', null)}
+                  cardcode={cardcode}
+                />
+              }
+              labelSpan={10}
+              dataSpan={14}
+            />
 
-        {object.addressVisible &&
-          <EditAddress
-            visible={object.addressVisible}
-            cardcode={object.address}
-            onHide={handleHide}
-            title={object.title}
-          />}
-        {object.bankVisible &&
-          <EditBank
-            visible={object.bankVisible}
-            cardcode={object.bank}
-            onHide={handleHide}
-            title={object.title}
-          />}
+            {object.addressVisible &&
+              <EditAddress
+                visible={object.addressVisible}
+                cardcode={object.address}
+                onHide={handleHide}
+                title={object.title}
+              />}
+            {object.bankVisible &&
+              <EditBank
+                visible={object.bankVisible}
+                cardcode={object.bank}
+                onHide={handleHide}
+                title={object.title}
+              />}
       </Col>
     </Row>
 
