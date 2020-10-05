@@ -229,6 +229,7 @@ const CustomerDetailContainer = (props) => {
                   onHide={onHide}
                   cardcode={cardcode}
                   walletcode={customer_info && customer_info.walletcode}
+                  customer_id={customer_info && customer_info.id}
                 />
               )}
               {visible.wallet && (
