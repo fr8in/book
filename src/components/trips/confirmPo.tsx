@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 import { Modal, Row, Button, Form, Col, Select, Card, Divider, message } from 'antd'
 import Link from 'next/link'
 import { gql, useQuery, useMutation } from '@apollo/client'
@@ -49,6 +50,7 @@ query po_query($id: Int!, $cus_id: Int!){
 const CONFIRM_PO = gql`
   mutation confirm_po(
   $trip_id: Int!
+  $updated_by: String!
   $truck_id: Int!
   $partner_id: Int
   $po_date: timestamp
@@ -73,6 +75,7 @@ const CONFIRM_PO = gql`
   update_trip(_set:{
     truck_id: $truck_id
     partner_id: $partner_id
+    updated_by:$updated_by
     po_date: $po_date
     loading_point_contact_id: $loading_point_id
     source_id: $source_id
@@ -107,6 +110,7 @@ const ConfirmPo = (props) => {
   const initial = { search: '', source_id: null, destination_id: null }
   const [obj, setObj] = useState(initial)
   const [disableButton, setDisableButton] = useState(false)
+  const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(
     PO_QUERY,
@@ -170,6 +174,7 @@ const ConfirmPo = (props) => {
           truck_id: po_data && po_data.id,
           truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
           driver_id: driver_id,
+          updated_by: context.email,
           loading_point_id: form.loading_contact
         }
       })

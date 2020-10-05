@@ -6,6 +6,7 @@ import userContext from '../../lib/userContaxt'
 const CUSTOMER_MUTATION = gql`
 mutation update_trip_price(
   $trip_id: Int, 
+  $updated_by: String!
   $customer_price: Float, 
   $mamul: Float, 
   $bank: Float, 
@@ -22,6 +23,7 @@ mutation update_trip_price(
     _set:{
       customer_price: $customer_price, 
       mamul: $mamul, 
+      updated_by:$updated_by
       bank: $bank, 
       cash: $cash, 
       to_pay: $to_pay,  
@@ -86,6 +88,7 @@ const CustomerPrice = (props) => {
         price_per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
         comment: form.comment,
         created_by: context.email,
+        updated_by: context.email,
         topic: 'Trip Price Changed'
       }
     })

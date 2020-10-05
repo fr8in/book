@@ -4,10 +4,12 @@ import { gql, useMutation } from '@apollo/client'
 import FileUploadOnly from '../common/fileUploadOnly'
 import DeleteFile from '../common/deleteFile'
 import ViewFile from '../common/viewFile'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 
 const UPDATE_LR_MUTATION = gql`
-mutation lr_number_update ($lr: jsonb, $id: Int!){
-  update_trip(_set: {lr: $lr}, where: {id: {_eq: $id}}) {
+mutation lr_number_update ($lr: jsonb, $id: Int!,$updated_by: String!){
+  update_trip(_set: {lr: $lr,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
       lr
@@ -16,8 +18,8 @@ mutation lr_number_update ($lr: jsonb, $id: Int!){
 }`
 
 const UPDATE_CUSTOMER_CONFIRMATION_MUTATION = gql`
-mutation update_customer_confirmation ($customer_confirmation: Boolean, $id: Int!){
-  update_trip(_set: {customer_confirmation: $customer_confirmation}, where: {id: {_eq: $id}}) {
+mutation update_customer_confirmation ($customer_confirmation: Boolean, $id: Int!,$updated_by: String!){
+  update_trip(_set: {customer_confirmation: $customer_confirmation,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
       customer_confirmation
@@ -27,6 +29,8 @@ mutation update_customer_confirmation ($customer_confirmation: Boolean, $id: Int
 
 const TripLr = (props) => {
   const { trip_info } = props
+
+  const context = useContext(userContext)
 
   const [updateLrNumber] = useMutation(
     UPDATE_LR_MUTATION,
@@ -48,7 +52,8 @@ const TripLr = (props) => {
     updateLrNumber({
       variables: {
         id: trip_info.id,
-        lr: value
+        lr: value,
+        updated_by: context.email
       }
     })
   }
@@ -58,7 +63,8 @@ const TripLr = (props) => {
     updateCustomerConfirmation({
       variables: {
         id: trip_info.id,
-        customer_confirmation: e.target.checked
+        customer_confirmation: e.target.checked,
+        updated_by: context.email
       }
     })
   }

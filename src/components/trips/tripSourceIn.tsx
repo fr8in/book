@@ -1,10 +1,12 @@
 import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import DateUpdater from '../common/dateUpdater'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 
 const UPDATE_TRIP_SOURCEIN_MUTATION = gql`
-mutation trip_source_in($source_in:timestamp,$id:Int) {
-    update_trip(_set: {source_in:$source_in}, where: {id:{_eq:$id}}) {
+mutation trip_source_in($source_in:timestamp,$id:Int,$updated_by: String!) {
+    update_trip(_set: {source_in:$source_in,updated_by:$updated_by}, where: {id:{_eq:$id}}) {
       returning {
         id
         source_in
@@ -15,6 +17,8 @@ mutation trip_source_in($source_in:timestamp,$id:Int) {
 
 const SourceInDate = (props) => {
   const { source_in, id } = props
+
+  const context = useContext(userContext)
 
   const [updateSourceIn] = useMutation(
     UPDATE_TRIP_SOURCEIN_MUTATION,
@@ -30,7 +34,8 @@ const SourceInDate = (props) => {
     updateSourceIn({
       variables: {
         id,
-        source_in: dateString
+        source_in: dateString,
+        updated_by: context.email
       }
     })
   }
