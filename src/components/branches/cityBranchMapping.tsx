@@ -16,7 +16,7 @@ subscription{
   }
 }
 `
-const CityPricing = () => {
+const CityBranchMapping = () => {
   const { loading, error, data } = useSubscription(CITY_QUERY)
   console.log('error', error)
 
@@ -26,7 +26,7 @@ const CityPricing = () => {
   }
   const citymapping = get(_data, 'city', [])
 
-  const CityPricing = [
+  const column = [
     {
       title: 'City',
       dataIndex: 'name',
@@ -50,7 +50,7 @@ const CityPricing = () => {
 
   return (
     <Table
-      columns={CityPricing}
+      columns={column}
       dataSource={citymapping}
       size='small'
       scroll={{ x: 1156, y: 400 }}
@@ -61,4 +61,4 @@ const CityPricing = () => {
   )
 }
 
-export default CityPricing
+export default CityBranchMapping
