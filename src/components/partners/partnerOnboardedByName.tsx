@@ -25,7 +25,7 @@ mutation update_credit_responsibility($responsibility_id:Int!,$id:Int! ){
 `
 
 const OnBoardedBy = (props) => {
-  const { onboardedById, onboardedBy, cardcode } = props
+  const { onboardedById, onboardedBy, cardcode ,credit_debit_id} = props
 
   const { loading, error, data } = useQuery(
     ALL_EMPLOYEE,
@@ -58,7 +58,9 @@ const OnBoardedBy = (props) => {
   })
 
   const onChange = (value) => {
-    if (props.credit_debit_id !== null){
+    console.log('credit_debit_id',credit_debit_id)
+    if (credit_debit_id !== undefined)
+    {
       UpdateCreditResponsibilityName({
         variables:
           {

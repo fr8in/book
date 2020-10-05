@@ -19,13 +19,13 @@ mutation approve_credit(
   $id: Int!
   $approved_by: String!
   $approved_amount: Float! 
-  $remarks: String!
+  $approval_comment: String!
 ){
   approve_credit(
     id: $id
     approved_by: $approved_by
     approved_amount: $approved_amount
-    approved_comment: $remarks
+    approval_comment: $approval_comment
   ){
     success
     message
@@ -72,7 +72,7 @@ const Approve = (props) => {
           id: item_id.id,
           approved_by: context.email,
           approved_amount: parseFloat(form.amount),
-          remarks: form.remarks
+          approval_comment: form.remarks
         }
       })
     } else {
