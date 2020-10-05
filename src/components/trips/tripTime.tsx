@@ -38,8 +38,8 @@ query loading_memo_pdf($id:Int!){
 }`
 
 const REMOVE_SIN_MUTATION = gql`
-mutation remove_souce_out($source_in:timestamp,$id:Int!) {
-  update_trip(_set: {source_in: $source_in}, where: {id: {_eq: $id}}) {
+mutation remove_souce_out($source_in:timestamp,$id:Int!,$updated_by: String!) {
+  update_trip(_set: {source_in: $source_in,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
       source_out
@@ -48,8 +48,8 @@ mutation remove_souce_out($source_in:timestamp,$id:Int!) {
 }`
 
 const REMOVE_SOUT_MUTATION = gql`
-mutation remove_souce_out($source_out:timestamp,$id:Int!) {
-  update_trip(_set: {source_out: $source_out}, where: {id: {_eq: $id}}) {
+mutation remove_souce_out($source_out:timestamp,$id:Int!,$updated_by: String!) {
+  update_trip(_set: {source_out: $source_out,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
       source_out
@@ -58,8 +58,8 @@ mutation remove_souce_out($source_out:timestamp,$id:Int!) {
 }`
 
 const REMOVE_DIN_MUTATION = gql`
-mutation remove_destination_out($destination_in:timestamp,$id:Int!) {
-  update_trip(_set: {destination_in: $destination_in}, where: {id: {_eq: $id}}) {
+mutation remove_destination_out($destination_in:timestamp,$id:Int!,$updated_by: String!) {
+  update_trip(_set: {destination_in: $destination_in,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
       destination_out
@@ -68,8 +68,8 @@ mutation remove_destination_out($destination_in:timestamp,$id:Int!) {
 }`
 
 const REMOVE_DOUT_MUTATION = gql`
-mutation remove_destination_out($destination_out:timestamp,$id:Int!) {
-  update_trip(_set: {destination_out: $destination_out}, where: {id: {_eq: $id}}) {
+mutation remove_destination_out($destination_out:timestamp,$id:Int!,$updated_by: String!) {
+  update_trip(_set: {destination_out: $destination_out,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
       destination_out
@@ -195,7 +195,8 @@ const TripTime = (props) => {
     removeSin({
       variables: {
         id: trip_info.id,
-        source_in: null
+        source_in: null,
+        updated_by: context.email
       }
     })
   }
@@ -203,7 +204,8 @@ const TripTime = (props) => {
     removeSout({
       variables: {
         id: trip_info.id,
-        source_out: null
+        source_out: null,
+        updated_by: context.email
       }
     })
   }
@@ -211,7 +213,8 @@ const TripTime = (props) => {
     removeDin({
       variables: {
         id: trip_info.id,
-        destination_in: null
+        destination_in: null,
+        updated_by: context.email
       }
     })
   }
@@ -219,7 +222,8 @@ const TripTime = (props) => {
     removeDout({
       variables: {
         id: trip_info.id,
-        destination_out: null
+        destination_out: null,
+        updated_by: context.email
       }
     })
   }

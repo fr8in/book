@@ -2,11 +2,12 @@ import { Row, Col, Form, Input, Button, message, Divider } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import FileUpload from '../common/fileUpload'
 import get from 'lodash/get'
-import { useState } from 'react'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 
 const BILLING_COMMENT_MUTATION = gql`
-mutation update_billing_comment($id: Int!, $billing_remarks: String){
-  update_trip(_set: {billing_remarks: $billing_remarks}, where: {id: {_eq:$id}}) {
+mutation update_billing_comment($id: Int!, $billing_remarks: String,$updated_by: String!){
+  update_trip(_set: {billing_remarks: $billing_remarks,updated_by:$updated_by}, where: {id: {_eq:$id}}) {
     returning {
       billing_remarks
     }
@@ -18,6 +19,7 @@ const BillingComment = (props) => {
   const { trip_id, trip_info } = props
 
   const [disableButton, setDisableButton] = useState(false)
+  const context = useContext(userContext)
 
   const [billingRemarks] = useMutation(
     BILLING_COMMENT_MUTATION,
@@ -37,7 +39,8 @@ const BillingComment = (props) => {
     billingRemarks({
       variables: {
         id: trip_id,
-        billing_remarks: form.billing_remarks
+        billing_remarks: form.billing_remarks,
+        updated_by: context.email
       }
     })
   }
