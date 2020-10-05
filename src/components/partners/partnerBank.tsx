@@ -25,12 +25,14 @@ const EditBank = (props) => {
   const [updatePartnerBank] = useMutation(
     UPDATE_PARTNER_BANK_MUTATION,
     {
-      onError(error) { 
+      onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
-      onCompleted() { 
+        message.error(error.toString())
+      },
+      onCompleted () {
         setDisableButton(false)
-        message.success('Updated!!') }
+        message.success('Updated!!')
+      }
     }
   )
   const onBankSubmit = (form) => {

@@ -32,15 +32,6 @@ const Trucks = (props) => {
     truck_status_list,
     onFilter
   } = props
-  console.log(props)
-
-  // const rowSelection = {
-  //   onChange: (selectedRowKeys, selectedRows) => {},
-  //   getCheckboxProps: (record) => ({
-  //     disabled: record.name === 'Disabled User',
-  //     name: record.name
-  //   })
-  // }
 
   const pageChange = (page, pageSize) => {
     const newOffset = page * pageSize - filter.limit
@@ -204,7 +195,6 @@ const Trucks = (props) => {
   return (
     <>
       <Table
-        // rowSelection={{ ...rowSelection }}
         columns={columns}
         dataSource={trucks}
         rowKey={(record) => record.id}

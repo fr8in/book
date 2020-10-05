@@ -28,7 +28,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
           id
           mobile
         }
-        truck_files(where: {deleted_at: {_is_null:true}}){
+        truck_files {
             id
               type
               file_path
@@ -55,7 +55,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
         partner {
           id
           name
-          partner_files(where: {deleted_at: {_is_null:true}}){
+          partner_files{
             id
                type
                file_path
@@ -66,7 +66,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
           }
           cardcode
         }
-        trips (where: {trip_status_id: {_in: $trip_status_id}}) {
+        trips {
           id
           order_date
           km

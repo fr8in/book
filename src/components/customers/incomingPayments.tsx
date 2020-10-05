@@ -50,8 +50,6 @@ const IncomingPayments = (props) => {
   const customer = get(_data, 'customer[0]', [])
   const customer_incomings = get(customer, 'customer_incomings', 0)
 
-  console.log('customer', customer_incomings)
-
   const columns = [
     {
       title: 'Date',

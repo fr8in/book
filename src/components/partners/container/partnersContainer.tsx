@@ -35,7 +35,7 @@ query partners(
     partner_advance_percentage_id
     emi
     tds_percentage_id
-    partner_files(where: {deleted_at: {_is_null:true}}) {
+    partner_files {
       id
       type
       folder

@@ -10,7 +10,9 @@ const InlineSelect = (props) => {
 
   const onChange = (value) => {
     handleChange(value)
-    onHide()
+    setTimeout(() => {
+      onHide()
+    }, 1000)
   }
 
   return (

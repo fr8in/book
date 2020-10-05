@@ -35,8 +35,8 @@ const AdvancePercentage = (props) => {
   const [UpdateAdvancePercentage] = useMutation(
     UPDATE_PARTNER_ADVANCE_PERCENTAGE_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
 

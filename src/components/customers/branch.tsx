@@ -82,7 +82,6 @@ const Branch = (props) => {
     {
       title: 'Action',
       render: (text, record) => {
-        console.log('record', record)
         return (
           <Button
             type='link'

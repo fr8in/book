@@ -1,5 +1,4 @@
-import { Modal, Button, Input, Row, Form, Space, message } from 'antd'
-import { LeftOutlined } from '@ant-design/icons'
+import { Modal, Button, Input, Row, Form, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import { useState } from 'react'
 
@@ -21,12 +20,14 @@ const EditAddress = (props) => {
   const [updatePartnerAddress] = useMutation(
     UPDATE_PARTNER_ADDRESS_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
-      onCompleted() {
+        message.error(error.toString())
+      },
+      onCompleted () {
         setDisableButton(false)
-        message.success('Updated!!') }
+        message.success('Updated!!')
+      }
     }
   )
 
@@ -73,10 +74,7 @@ const EditAddress = (props) => {
             <Input placeholder='Pin Code' />
           </Form.Item>
           <Row justify='end'>
-            <Space>
-              <Button type='primary' icon={<LeftOutlined />} onClick={onHide}> Back </Button>
-              <Button type='primary' key='back' loading={disableButton} htmlType='submit'> Save </Button>
-            </Space>
+            <Button type='primary' loading={disableButton} htmlType='submit'> Save </Button>
           </Row>
         </Form>
       </Modal>

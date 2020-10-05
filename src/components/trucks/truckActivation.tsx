@@ -26,7 +26,7 @@ subscription truck_activation($truck_id : Int){
   truck(where: {id: {_eq: $truck_id}}) {
     height
     truck_no
-    truck_files(where: {deleted_at: {_is_null:true}}){
+    truck_files {
       id
        type
        file_path

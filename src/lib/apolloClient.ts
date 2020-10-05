@@ -11,7 +11,6 @@ const wsLink = isBrowser ? new WebSocketLink({
     reconnect: true,
     connectionParams: async () => {
       const token = await localStorage.getItem('token')
-      console.log('token', token)
       if (token) {
         return {
           headers: {

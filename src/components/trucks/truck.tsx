@@ -6,7 +6,6 @@ import { PhoneOutlined } from '@ant-design/icons'
 
 const Truck = (props) => {
   const { truck_info } = props
-  console.log('id', props)
 
   const callNow = data => {
     window.location.href = 'tel:' + data

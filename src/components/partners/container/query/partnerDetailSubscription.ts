@@ -62,7 +62,7 @@ subscription partner_detail($cardcode: String, $partner_id: bigint, $ongoing: [S
       id
       mobile
     }
-    partner_files(where: {deleted_at: {_is_null:true}}) {
+    partner_files {
       id
       type
       folder

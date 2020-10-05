@@ -54,11 +54,7 @@ const Driver = (props) => {
   }
 
   console.log('Driver error', error)
-  console.log('data', _data)
-
   const driver_data = get(_data, 'partner[0].drivers', [])
-
-  console.log('driver_data', driver_data)
 
   const [insertDriver] = useMutation(
     INSERT_PARTNER_DRIVER,
@@ -110,7 +106,6 @@ const Driver = (props) => {
   } else {
     drivers = driver_data && driver_data.filter(_driver => _driver.mobile.search(searchText) !== -1)
   }
-  console.log('drivers', drivers)
   return (
     <Form.Item label='Driver' name='driver' initialValue={initialValue}>
       <Select

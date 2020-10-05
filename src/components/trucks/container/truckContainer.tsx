@@ -107,7 +107,6 @@ const TruckContainer = () => {
 
   const record_count = get(truck_aggregate, 'aggregate.count', 0)
 
-  console.log('record_count', record_count)
   const onFilter = (value) => {
     setFilter({ ...filter, truck_statusId: value })
   }

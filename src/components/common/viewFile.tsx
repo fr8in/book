@@ -12,9 +12,8 @@ const FILE_DOWNLOAD_MUTATION = gql`
   `
 
 const ViewFile = (props) => {
-  const { type, id, folder, file_type, file_list, size } = props
+  const { folder, file_type, file_list, size } = props
   const file = file_list && file_list.length > 0 ? file_list[0].file_path : null
-  console.log('file_list', file_list, file)
   const previewInitial = { visible: false, image: '', title: '', ext: '' }
   const [preview, setPreview] = useState(previewInitial)
 
