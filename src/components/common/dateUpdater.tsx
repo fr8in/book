@@ -21,6 +21,7 @@ const DateUpdater = (props) => {
         style={{ width: '100%' }}
         disabled={!!dateValue}
         onChange={handleChange}
+        value={dateValue !== '' ? moment(dateValue) : null}
       />
     </Form.Item>
   )

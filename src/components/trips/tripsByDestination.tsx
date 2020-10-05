@@ -56,7 +56,12 @@ subscription dashboard_trips_truks($regions: [Int!], $trip_status:String!, $bran
               id
               name
             }
-            tat
+            trip_status{
+              id
+              name
+            }
+            intransit_tat
+            unloading_tat
             last_comment{
               description
               created_at

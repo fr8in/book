@@ -96,7 +96,7 @@ const Breakdown = (props) => {
     {
       title: 'Company',
       dataIndex: 'company',
-      sorter: true,
+      sorter: (a, b) => (a.partner.name > b.partner.name ? 1 : -1),
       width: '35%',
       render: (text, record) => {
         return (

@@ -149,7 +149,7 @@ const CreatePartner = () => {
         acconnt_holder: form.account_holder_name,
         ifsc_code: form.ifsc,
         address: address,
-        partner_status_id: 6,
+        partner_status_id: 1,
         partner_advance_percentage_id: form.advance_percentage,
         city_id: parseInt(city),
         onboarded_by_id: form.on_boarded_by

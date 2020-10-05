@@ -35,7 +35,14 @@ subscription dashboard_trips($regions: [Int!], $branches: [Int!], $cities: [Int!
               id
               name
             }
-            tat
+            trip_status{
+              id
+              name
+            }
+            confirmed_tat
+            loading_tat
+            intransit_tat
+            unloading_tat
             last_comment{
               description
               id

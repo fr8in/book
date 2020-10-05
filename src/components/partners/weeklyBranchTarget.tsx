@@ -76,8 +76,6 @@ const WeeklyBranchTarget = (props) => {
     return { week_day_target, ...data }
   })
 
-  console.log('WeeklyBranchTarget weekly_booking', branchTargetWeekly)
-
   const w1_actual = sumBy(branch, 'week1[0].trip_actual')
   const w1_target = sumBy(branch, 'week1[0].trip_target')
   const w2_actual = sumBy(branch, 'week2[0].trip_actual')

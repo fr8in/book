@@ -57,7 +57,7 @@ const Branch = (props) => {
     {
       title: 'Address',
       dataIndex: 'address',
-      width: '15%'
+      width: '25%'
     },
     {
       title: 'City',
@@ -72,12 +72,12 @@ const Branch = (props) => {
     {
       title: 'Pin',
       dataIndex: 'pincode',
-      width: '10%'
+      width: '8%'
     },
     {
       title: 'Contact No',
       dataIndex: 'mobile',
-      width: '10%'
+      width: '8%'
     },
     {
       title: 'Action',
@@ -91,7 +91,7 @@ const Branch = (props) => {
           />
         )
       },
-      width: '10%'
+      width: '4%'
     }
   ]
 

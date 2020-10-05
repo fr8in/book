@@ -29,12 +29,14 @@ const CreateCustomerUser = (props) => {
   const [insertcustomerUser] = useMutation(
     INSERT_CUSTOMER_USERS_MUTATION,
     {
-      onError (error) { 
+      onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
+        message.error(error.toString())
+      },
       onCompleted () {
         setDisableButton(false)
         message.success('Updated!!')
+        onHide()
       }
     }
   )
@@ -73,7 +75,6 @@ const CreateCustomerUser = (props) => {
             </Form.Item>
             <Row justify='end'>
               <Form.Item>
-                <Button key='back' onClick={onHide}>Cancel</Button>
                 <Button type='primary' loading={disableButton} htmlType='submit'>Save</Button>
               </Form.Item>
             </Row>

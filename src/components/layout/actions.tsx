@@ -108,13 +108,15 @@ const Actions = (props) => {
             _connected_city_trucks_total = _connected_city_trucks_total + _city.trucks_total?.aggregate.count
             _connected_city_trucks_current = _connected_city_trucks_current + _city.trucks_current?.aggregate.count
           })
-          connected_city_options.push({ label: <span>{_connected_city.name + '    '}<Text disabled>{_connected_city_trucks_current + '/' + _connected_city_trucks_total}</Text></span>, value: _connected_city.id, })
+          connected_city_options.push({ label: <span>{_connected_city.name + '    '}<Text disabled>{_connected_city_trucks_current + '/' + _connected_city_trucks_total}</Text></span>, value: _connected_city.id })
         })
-        branch_options.push({ label: <span>{_branch.name + '    '}<Text disabled>{_branch_trucks_current + '/' + _branch_trucks_total}</Text></span>, value: _branch.id, })
+        branch_options.push({ label: <span>{_branch.name + '    '}<Text disabled>{_branch_trucks_current + '/' + _branch_trucks_total}</Text></span>, value: _branch.id, order: _branch.displayposition })
       })
       region_options.push({ label: <span>{_region.name + '    '}<Text disabled>{_region_trucks_current + '/' + _region_trucks_total}</Text></span>, value: _region.id, })
     })
   }
+
+  const branch_options_sort = branch_options.sort((a,b)=> a.order - b.order)
 
   const onCheckBoxChange = (value, name) => {
     setFilter({ ...filter, [name]: value })
@@ -168,7 +170,7 @@ const Actions = (props) => {
               header={<b>Branch</b>} key="branch" 
               extra={filter.branches && filter.branches.length > 0 ? <Clear onClear={(e) => onClear(e, 'branches')}/> : ''}
             >
-              <CheckBoxGroup options={branch_options} value={filter.branches} onChange={(value) => onCheckBoxChange(value, 'branches')} />
+              <CheckBoxGroup options={branch_options_sort} value={filter.branches} onChange={(value) => onCheckBoxChange(value, 'branches')} />
             </Panel>
             <Panel 
               header={<b>City</b>} key="city" 

@@ -153,7 +153,7 @@ const PartnerDocument = (props) => {
                         size='small'
                         id={partnerInfo.id}
                         type='partner'
-                        file_type='Agreement'
+                        file_type='AGREEMENT'
                         folder='approvals/'
                         file_list={agreement_files}
                       />
@@ -161,7 +161,7 @@ const PartnerDocument = (props) => {
                         size='small'
                         id={partnerInfo.id}
                         type='partner'
-                        file_type='Agreement'
+                        file_type='AGREEMENT'
                         file_list={agreement_files}
                       />
                     </Space>
@@ -171,7 +171,7 @@ const PartnerDocument = (props) => {
                       id={partnerInfo.id}
                       type='partner'
                       folder='approvals/'
-                      file_type='Agreement'
+                      file_type='AGREEMENT'
                       file_list={agreement_files}
                     />
                   )}
