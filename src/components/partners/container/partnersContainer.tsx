@@ -35,6 +35,12 @@ query partners(
     partner_advance_percentage_id
     emi
     tds_percentage_id
+    trucks {
+      truck_no
+      truck_type{
+        name
+      }
+    }
     partner_files {
       id
       type
