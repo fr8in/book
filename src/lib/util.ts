@@ -1,10 +1,4 @@
 export default {
-  objSort: (a, b) => {
-    const A = a.displayPosition
-    const B = b.displayPosition
-
-    return (A > B) ? 1 : -1
-  },
   limit: 100,
   getWeekNumber: (d) => {
     d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()))
@@ -16,6 +10,16 @@ export default {
     // Calculate full weeks to nearest Thursday
     var weekNo = Math.ceil((((d - Number(yearStart)) / 86400000) + 1) / 7)
     return { year: d.getUTCFullYear(), week: weekNo }
+  },
+  role: {
+    admin: 'admin',
+    rm: 'rm',
+    accounts_manager: 'accounts_manager',
+    billing_manager: 'billing_manager',
+    partner_manager: 'partner_manager',
+    partner_support: 'partner_support',
+    accounts: 'accounts',
+    onboarding: 'onboarding',
+    billing: 'billing'
   }
-
 }

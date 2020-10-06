@@ -1,4 +1,4 @@
-import { Modal, Button, Row, Col, Form, Input, message } from 'antd'
+import { Modal, Button, Row, Col, Form, Input, message, Divider } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import { useState, useContext } from 'react'
 import userContext from '../../lib/userContaxt'
@@ -44,16 +44,17 @@ mutation update_trip_price(
 `
 
 const CustomerPrice = (props) => {
-  const { visible, onHide, trip_id, trip_price } = props
+  const { visible, onHide, trip_id, trip_price, loaded } = props
 
   const [form] = Form.useForm()
   const context = useContext(userContext)
-  const customer_advance_percentage = trip_price.customer_advance_percentage
+  const customer_advance_percentage = trip_price.customer_advance_percentage || 90
   const [disableButton, setDisableButton] = useState(false)
 
   const initial = {
     partner_price: trip_price.partner_price,
-    advance: (trip_price.customer_price - trip_price.mamul) * customer_advance_percentage / 100
+    advance: trip_price.bank || (trip_price.customer_price - trip_price.mamul) * customer_advance_percentage / 100,
+    adv_percentage: customer_advance_percentage
   }
   const [price, setPrice] = useState(initial)
 
@@ -145,31 +146,44 @@ const CustomerPrice = (props) => {
   }
   const onCashChange = (e) => {
     const { value } = e.target
-    const bank = price.advance - (parseFloat(value) + parseFloat(form.getFieldValue('to_pay')))
     form.setFieldsValue({
-      bank: bank > 0 ? bank : 0
+      to_pay: (parseFloat(form.getFieldValue('p_total')) - (value ? parseFloat(value) : 0))
     })
   }
-  const onToPayChange = (e) => {
+  const onTotalChange = (e) => {
     const { value } = e.target
-    const bank = price.advance - (parseFloat(value) + parseFloat(form.getFieldValue('cash')))
-    console.log('bank', bank)
+    const bank = price.advance - ((value ? parseFloat(value) : 0))
     form.setFieldsValue({
-      bank: bank > 0 ? bank : 0
+      bank: bank > 0 ? bank : 0,
+      to_pay: (value ? parseFloat(value) : 0),
+      f_total: (parseFloat(form.getFieldValue('customer_price')) - (value ? parseFloat(value) : 0)),
+      cash: 0,
+      balance: (parseFloat(form.getFieldValue('customer_price')) - (value ? parseFloat(value) : 0)) - (bank > 0 ? bank : 0)
     })
   }
 
+  const onBankChange = (e) => {
+    const { value } = e.target
+    const advance = (form.getFieldValue('customer_price') - (parseFloat(form.getFieldValue('f_total')) - (value ? parseFloat(value) : 0)))
+    const balance = (parseFloat(form.getFieldValue('f_total')) - (value ? parseFloat(value) : 0))
+    const adv_percentage = Math.floor(((form.getFieldValue('customer_price') - balance) * 100) / form.getFieldValue('customer_price'))
+    form.setFieldsValue({
+      balance: balance
+    })
+    setPrice({ ...price, advance, adv_percentage })
+  }
   return (
     <Modal
-      title={`Customer Price Change - Advance (${customer_advance_percentage}%): ${price.advance}`}
+      title='Customer Price Change'
       visible={visible}
       onCancel={onHide}
+      bodyStyle={{ paddingBottom: 0 }}
       footer={[]}
     >
       <Form layout='vertical' onFinish={onCustomerPriceSubmit} form={form}>
         {trip_price.is_price_per_ton &&
           <Row gutter={10}>
-            <Col sm={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 label='Per Ton Price'
                 name='price_per_ton'
@@ -179,7 +193,7 @@ const CustomerPrice = (props) => {
                 <Input placeholder='Customer Price' onChange={onPerTonPriceChange} />
               </Form.Item>
             </Col>
-            <Col sm={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 label='No.of Ton'
                 name='ton'
@@ -191,7 +205,7 @@ const CustomerPrice = (props) => {
             </Col>
           </Row>}
         <Row gutter={10}>
-          <Col sm={12}>
+          <Col xs={24} sm={12}>
             <Form.Item
               label='Customer Price'
               name='customer_price'
@@ -201,7 +215,7 @@ const CustomerPrice = (props) => {
               <Input placeholder='Customer Price' disabled={trip_price.is_price_per_ton} onChange={onCustomerPriceChange} />
             </Form.Item>
           </Col>
-          <Col sm={12}>
+          <Col xs={24} sm={12}>
             <Form.Item
               label='Mamul Charge'
               name='mamul'
@@ -211,38 +225,72 @@ const CustomerPrice = (props) => {
             </Form.Item>
           </Col>
         </Row>
+        <Divider />
+        <h4>Customer Payment to</h4>
         <Row gutter={10}>
-          <Col sm={8}>
+          <Col xs={24} sm={12}>
             <Form.Item
-              label='Bank'
-              name='bank'
-              rules={[{ required: true, message: 'Bank value is required field!' }]}
-              initialValue={trip_price.bank || 0}
+              label='Partner'
+              name='p_total'
+              initialValue={(parseInt(trip_price.to_pay) + parseInt(trip_price.cash)) || 0}
             >
-              <Input placeholder='Bank' disabled />
+              <Input placeholder='Total' onChange={onTotalChange} disabled={loaded} />
             </Form.Item>
+            <Row gutter={10}>
+              <Col sm={12}>
+                <Form.Item
+                  label='Advance'
+                  name='cash'
+                  rules={[{ required: true, message: 'Cash is required field!' }]}
+                  initialValue={trip_price.cash || 0}
+                >
+                  <Input placeholder='Cash' onChange={onCashChange} disabled={loaded} />
+                </Form.Item>
+              </Col>
+              <Col sm={12}>
+                <Form.Item
+                  label='Balance'
+                  name='to_pay'
+                  rules={[{ required: true, message: 'To-Pay is required field!' }]}
+                  initialValue={trip_price.to_pay || 0}
+                >
+                  <Input placeholder='To-pay' disabled />
+                </Form.Item>
+              </Col>
+            </Row>
           </Col>
-          <Col sm={8}>
+          <Col xs={24} sm={12}>
             <Form.Item
-              label='Cash'
-              name='cash'
-              rules={[{ required: true, message: 'Cash is required field!' }]}
-              initialValue={trip_price.cash || 0}
+              label='FR8'
+              name='f_total'
+              initialValue={trip_price.customer_price || 0}
             >
-              <Input placeholder='Cash' onChange={onCashChange} />
+              <Input placeholder='Total' disabled />
             </Form.Item>
-          </Col>
-          <Col sm={8}>
-            <Form.Item
-              label='To-Pay'
-              name='to_pay'
-              rules={[{ required: true, message: 'To-Pay is required field!' }]}
-              initialValue={trip_price.to_pay || 0}
-            >
-              <Input placeholder='To-pay' onChange={onToPayChange} />
-            </Form.Item>
+            <Row gutter={10}>
+              <Col sm={12}>
+                <Form.Item
+                  label='Advance'
+                  name='bank'
+                  rules={[{ required: true, message: 'Bank value is required field!' }]}
+                  initialValue={trip_price.bank || 0}
+                >
+                  <Input placeholder='Bank' disabled={loaded} onChange={onBankChange} />
+                </Form.Item>
+              </Col>
+              <Col sm={12}>
+                <Form.Item
+                  label='Balance'
+                  name='balance'
+                  initialValue={trip_price.customer_price - trip_price.bank || 0}
+                >
+                  <Input placeholder='Balance' disabled />
+                </Form.Item>
+              </Col>
+            </Row>
           </Col>
         </Row>
+        <Divider />
         <Form.Item
           label='Comment'
           name='comment'
@@ -254,6 +302,7 @@ const CustomerPrice = (props) => {
         <Row>
           <Col flex='auto'>
             <h4>Partner Price: {price.partner_price}</h4>
+            <h4 className='mb0'>Advance ({price.adv_percentage}%): {price.advance}</h4>
           </Col>
           <Col flex='100px' className='text-right'>
             <Button type='primary' loading={disableButton} htmlType='submit'>Update</Button>

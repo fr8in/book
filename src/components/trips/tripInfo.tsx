@@ -12,7 +12,6 @@ const TripInfo = (props) => {
   const { trip_info, trip_id } = props
   const initial = { price: false }
   const { visible, onShow, onHide } = useShowHide(initial)
-
   const trip_prices = {
     customer_price: get(trip_info, 'customer_price', 0),
     partner_price: get(trip_info, 'partner_price', 0),
@@ -109,7 +108,14 @@ const TripInfo = (props) => {
           </Col>
         </Row>
       </Col>
-      {visible.price && <CustomerPrice visible={visible.price} onHide={onHide} trip_price={trip_prices || {}} trip_id={trip_id} />}
+      {visible.price &&
+        <CustomerPrice
+          visible={visible.price}
+          onHide={onHide}
+          trip_price={trip_prices || {}}
+          trip_id={trip_id}
+          loaded={trip_info.loaded === 'Yes'}
+        />}
     </Row>
   )
 }
