@@ -10,7 +10,7 @@ subscription dashboard_trips($regions: [Int!], $branches: [Int!], $cities: [Int!
         id
         cities {
           id
-          trips(where: {trip_status: {name: {_eq: $trip_status}}, truck_type: {id: {_in: $truck_type}}, created_by: {_in: $managers}}) {
+          trips(where: {trip_status: {name: {_eq: $trip_status}}, truck_type: {id: {_in: $truck_type}}, branch_employee_id: {_in: $managers}}) {
             id
             delay
             eta
