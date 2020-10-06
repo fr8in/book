@@ -3,11 +3,11 @@ import moment from 'moment'
 
 const IncomingPaymentsBooked = (props) => {
   const { customer_booked } = props
-
+console.log('customer_booked',customer_booked)
   const data = [
     {
       title: 'Date',
-      dataIndex: 'created_at',
+      dataIndex: 'wallet_moved_date',
       width: '20%',
       render: (text, render) => text ? moment(text).format('DD-MMM-YY') : '-'
     },

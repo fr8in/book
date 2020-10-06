@@ -34,7 +34,7 @@ mutation customer_additional_invoice(
 }`
 
 const AdditionalInvoiceBooking = (props) => {
-  const { visible, onHide, cardcode, mamul, price, pending_data, trip_id } = props
+  const { visible, onHide, cardcode, mamul, price, pending_data, trip_id,walletcode,wallet_balance,customer_id } = props
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
@@ -136,6 +136,9 @@ const AdditionalInvoiceBooking = (props) => {
           cardcode={cardcode}
           amount={amount}
           setAmount={setAmount}
+          walletcode={walletcode}
+          customer_id={customer_id}
+          wallet_balance={wallet_balance}
         />
         <Card className='mtb10 card-body-0'>
           <Table

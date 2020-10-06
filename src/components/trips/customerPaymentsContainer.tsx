@@ -42,7 +42,7 @@ query customerPaymentData($trip_id: Int!) {
 }`
 
 const CustomerPaymentsContainer = (props) => {
-  const { trip_id, status, cardcode, mamul, price } = props
+  const { trip_id, status, cardcode, mamul, price,walletcode,wallet_balance,customer_id } = props
   const initial = { adv_visible: false, final_visible: false, title: null, adv_data: null, final_data: null, add_inv_visible: false, add_inv_data: null }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
@@ -119,6 +119,9 @@ const CustomerPaymentsContainer = (props) => {
           mamul={mamul}
           price={price}
           trip_id={trip_id}
+          walletcode={walletcode}
+          wallet_balance={wallet_balance}
+          customer_id={customer_id}
         />}
       {object.final_visible &&
         <FinalBooking
@@ -130,6 +133,9 @@ const CustomerPaymentsContainer = (props) => {
           mamul={mamul}
           price={price}
           trip_id={trip_id}
+          walletcode={walletcode}
+          wallet_balance={wallet_balance}
+          customer_id={customer_id}
         />}
       {object.add_inv_visible &&
         <AdditionalInvoiceBooking
@@ -140,6 +146,9 @@ const CustomerPaymentsContainer = (props) => {
           mamul={mamul}
           price={price}
           trip_id={trip_id}
+          walletcode={walletcode}
+          wallet_balance={wallet_balance}
+          customer_id={customer_id}
         />}
     </>
   )

@@ -172,7 +172,7 @@ const CustomerDetailContainer = (props) => {
                       tab={<TitleWithCount name='Incoming' value={0} />}
                       key='5'
                     >
-                      <IncomingPayments cardcode={cardcode} id={customer_info && customer_info.id} />
+                      <IncomingPayments walletcode={customer_info && customer_info.walletcode} id={customer_info && customer_info.id} />
                     </TabPane>
                     <TabPane tab='Users' key='6'>
                       <Row justify='end' className='m5'>
@@ -220,7 +220,9 @@ const CustomerDetailContainer = (props) => {
                   visible={visible.transfer}
                   onHide={onHide}
                   cardcode={cardcode}
+                  walletcode={customer_info && customer_info.walletcode}
                   customer_id={customer_info && customer_info.id}
+                  wallet_balance={customer_info && customer_info.customer_accounting && customer_info.customer_accounting.wallet_balance}
                 />
               )}
               {visible.rebate && (
@@ -230,6 +232,7 @@ const CustomerDetailContainer = (props) => {
                   cardcode={cardcode}
                   walletcode={customer_info && customer_info.walletcode}
                   customer_id={customer_info && customer_info.id}
+                  wallet_balance={customer_info && customer_info.customer_accounting && customer_info.customer_accounting.wallet_balance}
                 />
               )}
               {visible.wallet && (
