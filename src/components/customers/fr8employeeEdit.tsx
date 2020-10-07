@@ -25,7 +25,7 @@ mutation fr8_employee_edit($branch_id: Int, $employee_id: Int) {
 `
 
 const Fr8Employee = (props) => {
-  const { employee, id } = props
+  const { employee, id ,edit_access } = props
   const { loading, error, data } = useQuery(
     EMPLOYEE_QUERY,
     {
@@ -68,6 +68,7 @@ const Fr8Employee = (props) => {
         label={employee}
         handleChange={handleChange}
         style={{ width: '200px' }}
+        edit_access={edit_access}
       />)
   )
 }

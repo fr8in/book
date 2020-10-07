@@ -4,6 +4,7 @@ import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 import { useState,useContext } from 'react'
+import u from '../../lib/util'
 
 const CUSTOMERS_ADVANCE_PERCENTAGE_QUERY = gql`
   query customer_advance_percentage{
@@ -27,6 +28,8 @@ mutation customer_advace_update($advance_percentage_id:Int,$cardcode:String,$upd
 const CustomerAdvancePercentage = (props) => {
   const { advancePercentageId, advancePercentage, cardcode } = props
   const context = useContext(userContext)
+  const { role } = u
+  const customerAdvancePercentageEdit = [role.admin, role.accounts_manager, role.accounts]
 
   const { loading, error, data } = useQuery(
     CUSTOMERS_ADVANCE_PERCENTAGE_QUERY,
@@ -72,6 +75,7 @@ const CustomerAdvancePercentage = (props) => {
         options={advancePercentageList}
         handleChange={handleChange}
         style={{ width: '80%' }}
+        edit_access={customerAdvancePercentageEdit}
       />)
   )
 }

@@ -15,7 +15,7 @@ mutation customer_gst_edit($gst:String,$cardcode:String,$updated_by:String!) {
 }
 `
 const CustomerGst = (props) => {
-  const { cardcode, gst, loading } = props
+  const { cardcode, gst, loading,edit_access } = props
   const context = useContext(userContext)
 
   const [updateCustomerGst] = useMutation(
@@ -41,6 +41,7 @@ const CustomerGst = (props) => {
       <InlineEdit
         text={gst || 'Nill'}
         onSetText={onSubmit}
+        edit_access={edit_access}
       />)
   )
 }

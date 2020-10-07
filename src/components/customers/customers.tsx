@@ -52,7 +52,8 @@ const CustomerKyc = (props) => {
     onFilter,
     onNameSearch,
     onMobileSearch,
-    onPageChange
+    onPageChange,
+    edit_access
   } = props
 
   const context = useContext(userContext)
@@ -66,7 +67,7 @@ const CustomerKyc = (props) => {
   const mamulInitial = { mamul: null, selectedId: null }
   const [defaultMamul, setDefaultMamul] = useState(mamulInitial)
   const [currentPage, setCurrentPage] = useState(1)
-
+  const approvalRejectAccess = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
   const onMamul = (record, e) => {
     const givenMamul = e.target.value
     setDefaultMamul({
@@ -298,6 +299,8 @@ const CustomerKyc = (props) => {
             )}
             {(statusId === 3 || statusId === 4) && (
               <Space>
+               { approvalRejectAccess ?
+               <>
                 <Button
                   type='primary'
                   size='small'
@@ -320,6 +323,7 @@ const CustomerKyc = (props) => {
                     icon={<CloseOutlined />}
                   />
                 </Popconfirm>
+               </> : null }
               </Space>
             )}
           </Space>

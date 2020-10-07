@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useState,useContext  } from 'react'
 import { Row, Col, Card } from 'antd'
 import Customers from '../customers'
 import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
 import u from '../../../lib/util'
+import userContext from '../../../lib/userContaxt'
+import isEmpty from 'lodash/isEmpty'
 
 const CUSTOMERS_QUERY = gql`
   query customers(
@@ -83,6 +85,8 @@ const CustomersContainer = (props) => {
     limit: u.limit
   }
   const [filter, setFilter] = useState(initialFilter)
+  const { role } = u
+  const kycApprovalRejectEdit = [role.admin, role.accounts_manager, role.accounts]
 
   const customersQueryVars = {
     offset: filter.offset,
@@ -143,6 +147,7 @@ const CustomersContainer = (props) => {
             onMobileSearch={onMobileSearch}
             onPageChange={onPageChange}
             loading={loading}
+            edit_access={kycApprovalRejectEdit}
           />
         </Card>
       </Col>

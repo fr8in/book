@@ -6,9 +6,13 @@ import mockData from '../../../mock/customer/customerDetail'
 import get from 'lodash/get'
 import CustomerGst from './customerGst'
 import CustomerOnBoardedBy from './customerOnboardedByName'
+import u from '../../lib/util'
 
 const CustomerDetails = (props) => {
   const { customer_info } = props
+  const { role } = u
+  const customerGstEdit = [role.admin, role.accounts_manager, role.accounts]
+  const customerOnboardedByEdit = [role.admin, role.accounts_manager, role.accounts]
 
   const lr_files = customer_info && customer_info.customer_files && customer_info.customer_files.filter(file => file.type === 'LR')
   const pan_files = customer_info && customer_info.customer_files && customer_info.customer_files.filter(file => file.type === 'PAN')
@@ -48,7 +52,7 @@ const CustomerDetails = (props) => {
         />
         <LabelWithData
           label='GST No'
-          data={<CustomerGst gst={customer_info.gst} cardcode={customer_info.cardcode} loading={props.loading} />}
+          data={<CustomerGst gst={customer_info.gst} cardcode={customer_info.cardcode} loading={props.loading}  edit_access={customerGstEdit}/>}
           labelSpan={10}
           dataSpan={14}
         />
@@ -93,6 +97,7 @@ const CustomerDetails = (props) => {
               onboardedBy={get(customer_info, 'onboarded_by.email', '-')}
               onboardedById={get(customer_info, 'onboarded_by.id', null)}
               cardcode={customer_info.cardcode}
+              edit_access={customerOnboardedByEdit}
             />
           }
           labelSpan={10}

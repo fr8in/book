@@ -24,7 +24,7 @@ update_customer(_set:{onboarded_by_id: $onboarded_by_id,updated_by:$updated_by},
 `
 
 const OnBoardedBy = (props) => {
-  const { onboardedById, onboardedBy, cardcode } = props
+  const { onboardedById, onboardedBy, cardcode ,edit_access} = props
   const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(
@@ -67,6 +67,7 @@ const OnBoardedBy = (props) => {
       options={empList}
       handleChange={onChange}
       style={{ width: 110 }}
+      edit_access={edit_access}
     />
   )
 }

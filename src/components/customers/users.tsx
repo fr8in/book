@@ -2,6 +2,10 @@ import { Table, Button, message } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 import { gql, useMutation, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
+import isEmpty from 'lodash/isEmpty'
+
 
 const CUSTOMER_USER = gql`
 subscription customer_users($cardcode: String!) {
@@ -26,7 +30,9 @@ mutation customer_users_delete($id:Int) {
 }`
 
 const Users = (props) => {
-  const { cardcode } = props
+  const { cardcode,edit_access } = props
+  const context = useContext(userContext)
+  const transferAccess = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
   const { loading, data, error } = useSubscription(
     CUSTOMER_USER,
@@ -76,6 +82,7 @@ const Users = (props) => {
       render: (text, record) => text,
       width: '30%'
     },
+    transferAccess ?
     {
       title: 'Action',
       render: (text, record) => (
@@ -84,7 +91,7 @@ const Users = (props) => {
         </span>
       ),
       width: '20%'
-    }
+    } : {}
   ]
 
   return (
