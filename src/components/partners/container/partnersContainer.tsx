@@ -35,19 +35,6 @@ query partners(
     partner_advance_percentage_id
     emi
     tds_percentage_id
-    trucks {
-      truck_no
-      truck_type{
-        name
-      }
-    }
-    partner_files {
-      id
-      type
-      folder
-      file_path
-      created_at
-    }
     onboarded_by{
       id
       name

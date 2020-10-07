@@ -4,7 +4,7 @@ import { ALL_EMPLOYEE } from '../branches/container/query/employeeQuery'
 import InlineSelect from '../common/inlineSelect'
 
 const UPDATE_PARTNER_ONBOARDED_BY_NAME_MUTATION = gql`
-mutation partner_onboarded_by_name($onboarded_by_id:Int,$cardcode:String) {
+mutation partner_onboarded_by_name($onboarded_by_id:Int,$cardcode:String!) {
 update_partner(_set:{onboarded_by_id: $onboarded_by_id}, where:{cardcode: {_eq:$cardcode}}){
     returning{
       id
