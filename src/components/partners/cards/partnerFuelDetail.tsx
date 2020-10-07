@@ -3,7 +3,9 @@ import LabelWithData from '../../common/labelWithData'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useContext } from 'react'
+import u from '../../../lib/util'
+import isEmpty from 'lodash/isEmpty'
 
 const FUEL_CARD_QUERY = gql`
 query all($partner_id: Int!) {
@@ -22,13 +24,15 @@ const UPDATE_FUEL_CARD_STATUS_MUTATION = gql`
 mutation update_fuel_card_status($number:String!,$status:Boolean!,$provider:String!,$modifiedBy:String!){
   update_fuel_card(number:$number,status:$status,provider:$provider,modified_by:$modifiedBy){status
     description
-}
+  }
 }
 `
 const PartnerFuelDetail = (props) => {
   const { partner_id } = props
-  console.log('partner_id', partner_id)
   const context = useContext(userContext)
+  const { role } = u
+  const edit_access = [role.admin, role.partner_manager, role.onboarding]
+  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
   const { loading, error, data } = useQuery(
     FUEL_CARD_QUERY, {
@@ -95,11 +99,14 @@ const PartnerFuelDetail = (props) => {
         />
         <LabelWithData
           label='Status'
-          data={<Switch
-            size='small'
-            defaultChecked
-            onChange={onChange}
-          />}
+          data={
+            <Switch
+              size='small'
+              defaultChecked
+              onChange={onChange}
+              disabled={!access}
+            />
+          }
           labelSpan={8}
         />
       </Col>
