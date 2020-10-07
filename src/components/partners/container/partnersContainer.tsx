@@ -37,13 +37,6 @@ subscription partners(
     partner_advance_percentage_id
     emi
     tds_percentage_id
-    partner_files {
-      id
-      type
-      folder
-      file_path
-      created_at
-    }
     onboarded_by{
       id
       name

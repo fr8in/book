@@ -5,7 +5,6 @@ import {
   Form,
   Select,
   Input,
-  Radio,
   Col,
   List,
   Checkbox,
@@ -17,12 +16,12 @@ import LinkComp from '../common/link'
 import FileUploadOnly from '../common/fileUploadOnly'
 import ViewFile from '../common/viewFile'
 import DeleteFile from '../common/deleteFile'
-import { gql,useMutation,useQuery} from '@apollo/client'
+import { gql, useMutation, useQuery, useSubscription } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import { useState,useContext } from 'react'
 import get from 'lodash/get'
 
-const PARTNERS_SUBSCRIPTION = gql`
+const PARTNERS_QUERY = gql`
   query create_partner{
     employee{
       id
@@ -32,6 +31,32 @@ const PARTNERS_SUBSCRIPTION = gql`
       id
       name
     }
+}
+`
+
+const PARTNERS_SUBSCRIPTION = gql`
+subscription partner_kyc($id:Int){
+  partner(where:{id:{_eq:$id}}){
+    id
+    name
+    pan
+    cardcode
+    partner_advance_percentage_id
+    account_number
+   partner_files {
+      id
+      type
+      folder
+      file_path
+      created_at
+    }
+    trucks{
+      truck_no
+      truck_type{
+        name
+      }
+    }
+  }
 }
 `
 
@@ -56,10 +81,7 @@ mutation create_partner_code($name: String!, $partner_id: Int!, $pay_terms_code:
 `
 
 const { Option } = Select
-const tableData = [
-  { truck_no: 'TN03AA0001', type: 'MXL' },
-  { truck_no: 'TN03AA0002', type: 'SXL' }
-]
+
 const KycApproval = (props) => {
   const { visible, onHide, approveData } = props
   const [form] = Form.useForm()
@@ -67,41 +89,61 @@ const KycApproval = (props) => {
   const context = useContext(userContext)
 
 
-  const files = approveData.partner_files
-  const pan_files = files.filter(file => file.type === 'PAN')
-
-  const cheaque_files = files.filter(file => file.type === 'CL')
-
-  const tds_files = files.filter(file => file.type === 'TDS')
-
-  const agreement_files = files.filter(file => file.type === 'AGREEMENT')
-
-  const cs_files = files.filter(file => file.type === 'CS')
 
   const { loading, error, data } = useQuery(
-    PARTNERS_SUBSCRIPTION,{ notifyOnNetworkStatusChange: true }
+    PARTNERS_QUERY, { notifyOnNetworkStatusChange: true }
   )
   console.log('CreatePartnersContainer error', error)
+  console.log('CreatePartnersContainer data', data)
+  const {  data: partnerData } = useSubscription(
+    PARTNERS_SUBSCRIPTION, {
+    variables:
+    {
+      id: approveData
+    }
+  }
+  )
+  console.log('partnerData', partnerData)
+  const partnerDetail = partnerData && partnerData.partner[0] 
+  
+const name = partnerDetail && partnerDetail.name
+const cardcode =  partnerDetail && partnerDetail.cardcode
+ const trucks =   partnerDetail && partnerDetail.trucks
+ const files =  partnerDetail && partnerDetail.partner_files
+ console.log('cardcode',cardcode)
+
+  const pan_files = files && files.filter(file => file.type === 'PAN')
+  console.log('pan_files', pan_files)
+  const cheaque_files =files && files.filter(file => file.type === 'CL')
+
+  const agreement_files =files && files.filter(file => file.type === 'AGREEMENT')
+
+  const cs_files =files && files.filter(file => file.type === 'CS')
+
+
 
   const [updatePartnerApproval] = useMutation(
     UPDATE_PARTNER_APPOVAL_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         setDisableButton(false)
-         message.error(error.toString()) },
-      onCompleted () {
+        message.error(error.toString())
+      },
+      onCompleted() {
         setDisableButton(false)
-         message.success('Saved!!') }
+        message.success('Saved!!')
+      }
     }
   )
 
   const [createPartnerCode] = useMutation(
     CREATE_PARTNER_CODE_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         setDisableButton(false)
-         message.error(error.toString()) },
-      onCompleted (data) {
+        message.error(error.toString())
+      },
+      onCompleted(data) {
         setDisableButton(false)
         const status = get(data, 'create_partner_code.status', null)
         const description = get(data, 'create_partner_code.description', null)
@@ -109,8 +151,9 @@ const KycApproval = (props) => {
           message.success(description || 'Code created!')
           onPartnerApprovalSubmit()
         } else (message.error(description))
+        onHide()
       }
-     
+
     }
   )
 
@@ -130,7 +173,7 @@ const KycApproval = (props) => {
 
   const [checked, setChecked] = useState(false)
 
-  const onChange = e => {
+  const onChange = (e) => {
     setChecked(e.target.checked)
   }
 
@@ -149,19 +192,20 @@ const KycApproval = (props) => {
     },
     {
       title: 'Type',
-      dataIndex: 'type'
+      dataIndex: 'type',
+      render: (text, record) => record && record.truck_type && record.truck_type.name
     }
   ]
 
   const onPartnerApprovalSubmit = () => {
     setDisableButton(true)
-    console.log('Traffic Added',approveData.id)
+    console.log('Traffic Added', approveData)
     updatePartnerApproval({
       variables: {
-        id: approveData.id,
+        id: approveData,
         partner_status_id: 4,
         gst: form.getFieldValue('gst'),
-        cibil:form.getFieldValue('cibil'),
+        cibil: form.getFieldValue('cibil'),
         onboarded_by_id: form.getFieldValue('onboarded_by_id'),
         updated_by: context.email,
         partner_advance_percentage_id:form.getFieldValue('partner_advance_percentage_id')
@@ -171,13 +215,13 @@ const KycApproval = (props) => {
 
   const onCreatePartnerCodeSubmit = () => {
     setDisableButton(true)
-    console.log('Traffic Added',approveData.id)
+    console.log('Traffic Added', approveData)
     createPartnerCode({
       variables: {
-        name: approveData.name,
-        pay_terms_code: approveData.partner_advance_percentage_id,
-        partner_id: approveData.id,
-        pan_no:approveData.pan
+        name: name,
+        pay_terms_code: partnerDetail.partner_advance_percentage_id,
+        partner_id: approveData,
+        pan_no: partnerDetail.pan
       }
     })
   }
@@ -191,54 +235,54 @@ const KycApproval = (props) => {
       bodyStyle={{ padding: 10 }}
       width={700}
       footer={[
-       null
+        null
       ]}
     >
-      <Form layout='horizontal' onFinish={onCreatePartnerCodeSubmit} form={form}>
+      <Form layout='vertical' onFinish={onCreatePartnerCodeSubmit} form={form}>
         <Row gutter={10}>
           <Col xs={24} sm={6}>
             <Form.Item name='partnerName' label='Partner Name'>
               <LinkComp
                 type='partners'
-                data={approveData.name}
-                id={approveData.cardcode}
+                data={name}
+                id={cardcode}
               />
             </Form.Item>
           </Col>
           <Col xs={24} sm={8}>
-          <Form.Item
+            <Form.Item
               label='Advance Percentage'
               name='partner_advance_percentage_id'
               rules={[{ required: true }]}
               initialValue={partner_advance_percentage}
             >
-              <Select placeholder='Advance Percentage' options={advancePercentageList}/>
+              <Select placeholder='Advance Percentage' options={advancePercentageList} />
             </Form.Item>
           </Col>
           <Col xs={24} sm={10}>
-          <Form.Item
+            <Form.Item
               label='On Boarded By'
               name='onboarded_by_id'
               rules={[{ required: true, message: 'On-Boarded By is required field!' }]}
               initialValue={employee}
             >
-              <Select placeholder='On Boarded By' options={employeeList}/>
-                
+              <Select placeholder='On Boarded By' options={employeeList} optionFilterProp='label' showSearch />
+
             </Form.Item>
           </Col>
         </Row>
         <List header={<label>Documents</label>} bordered size='small' className='mb10'>
           <List.Item>
             <Col xs={24} sm={8}>PAN Document</Col>
-            <Col xs={12} sm={12}>{approveData.pan}</Col>
+            <Col xs={12} sm={12}>{partnerDetail && partnerDetail.pan}</Col>
             <Col xs={12} sm={4} className='text-right'>
               <Space>
-              <span>
+                <span>
                   {pan_files && pan_files.length > 0 ? (
                     <Space>
                       <ViewFile
                         size='small'
-                        id={approveData.id}
+                        id={approveData}
                         type='partner'
                         file_type='PAN'
                         folder='approvals/'
@@ -246,37 +290,37 @@ const KycApproval = (props) => {
                       />
                       <DeleteFile
                         size='small'
-                        id={approveData.id}
+                        id={approveData}
                         type='partner'
                         file_type='PAN'
                         file_list={pan_files}
                       />
                     </Space>
                   ) : (
-                    <FileUploadOnly
-                      size='small'
-                      id={approveData.id}
-                      type='partner'
-                      folder='approvals/'
-                      file_type='PAN'
-                      file_list={pan_files}
-                    />
-                  )}
+                      <FileUploadOnly
+                        size='small'
+                        id={approveData}
+                        type='partner'
+                        folder='approvals/'
+                        file_type='PAN'
+                        file_list={pan_files}
+                      />
+                    )}
                 </span>
               </Space>
             </Col>
           </List.Item>
           <List.Item>
             <Col xs={24} sm={8}>Cheque/Passbook</Col>
-            <Col xs={12} sm={12}>{approveData.accNo}</Col>
+            <Col xs={12} sm={12}>{partnerDetail && partnerDetail.account_number}</Col>
             <Col xs={12} sm={4} className='text-right'>
               <Space>
-              <span>
+                <span>
                   {cheaque_files && cheaque_files.length > 0 ? (
                     <Space>
                       <ViewFile
                         size='small'
-                        id={approveData.id}
+                        id={approveData}
                         type='partner'
                         file_type='CL'
                         folder='approvals/'
@@ -284,22 +328,22 @@ const KycApproval = (props) => {
                       />
                       <DeleteFile
                         size='small'
-                        id={approveData.id}
+                        id={approveData}
                         type='partner'
                         file_type='CL'
                         file_list={cheaque_files}
                       />
                     </Space>
                   ) : (
-                    <FileUploadOnly
-                      size='small'
-                      id={approveData.id}
-                      type='partner'
-                      folder='approvals/'
-                      file_type='CL'
-                      file_list={cheaque_files}
-                    />
-                  )}
+                      <FileUploadOnly
+                        size='small'
+                        id={approveData}
+                        type='partner'
+                        folder='approvals/'
+                        file_type='CL'
+                        file_list={cheaque_files}
+                      />
+                    )}
                 </span>
               </Space>
             </Col>
@@ -309,12 +353,12 @@ const KycApproval = (props) => {
             <Col xs={12} sm={12}>&nbsp;</Col>
             <Col xs={12} sm={4} className='text-right'>
               <Space>
-              <span>
+                <span>
                   {agreement_files && agreement_files.length > 0 ? (
                     <Space>
                       <ViewFile
                         size='small'
-                        id={approveData.id}
+                        id={approveData}
                         type='partner'
                         file_type='AGREEMENT'
                         folder='approvals/'
@@ -322,42 +366,42 @@ const KycApproval = (props) => {
                       />
                       <DeleteFile
                         size='small'
-                        id={approveData.id}
+                        id={approveData}
                         type='partner'
                         file_type='AGREEMENT'
                         file_list={agreement_files}
                       />
                     </Space>
                   ) : (
-                    <FileUploadOnly
-                      size='small'
-                      id={approveData.id}
-                      type='partner'
-                      folder='approvals/'
-                      file_type='AGREEMENT'
-                      file_list={agreement_files}
-                    />
-                  )}
+                      <FileUploadOnly
+                        size='small'
+                        id={approveData}
+                        type='partner'
+                        folder='approvals/'
+                        file_type='AGREEMENT'
+                        file_list={agreement_files}
+                      />
+                    )}
                 </span>
               </Space>
             </Col>
           </List.Item>
           <List.Item>
-          <Row gutter={20} >
-          <Col xs={24} sm={24}> 
-            <Form.Item label='Cibil Score' name='cibil'>
-            <Input placeholder='Cibil Score' />
-            </Form.Item>
-            </Col>
+            <Row gutter={20} >
+              <Col xs={24} sm={24}>
+                <Form.Item label='Cibil Score' name='cibil'>
+                  <Input placeholder='Cibil Score' />
+                </Form.Item>
+              </Col>
             </Row>
-            <Col xs={12} sm={4} className='text-right'>
+            <Col xs={24} sm={4} className='text-right'>
               <Space>
-              <span>
+                <span>
                   {cs_files && cs_files.length > 0 ? (
                     <Space>
                       <ViewFile
                         size='small'
-                        id={approveData.id}
+                        id={approveData}
                         type='partner'
                         file_type='CS'
                         folder='approvals/'
@@ -365,75 +409,33 @@ const KycApproval = (props) => {
                       />
                       <DeleteFile
                         size='small'
-                        id={approveData.id}
+                        id={approveData}
                         type='partner'
                         file_type='CS'
                         file_list={cs_files}
                       />
                     </Space>
                   ) : (
-                    <FileUploadOnly
-                      size='small'
-                      id={approveData.id}
-                      type='partner'
-                      folder='approvals/'
-                      file_type='CS'
-                      file_list={cs_files}
-                    />
-                  )}
+                      <FileUploadOnly
+                        size='small'
+                        id={approveData}
+                        type='partner'
+                        folder='approvals/'
+                        file_type='CS'
+                        file_list={cs_files}
+                      />
+                    )}
                 </span>
               </Space>
             </Col>
           </List.Item>
-          <List.Item >
-            <Col xs={24} sm={8}>TDS</Col>
-            <Col xs={12} sm={12}>
-              <Radio.Group  >
-                <Radio value='Applicable'>Applicable</Radio>
-                <Radio value='notApplicable'>Not Applicable</Radio>
-              </Radio.Group>
-            </Col>
-         
-            <Col xs={12} sm={4} className='text-right'>
-            <span>
-                  {tds_files && tds_files.length > 0 ? (
-                    <Space>
-                      <ViewFile
-                        size='small'
-                        id={approveData.id}
-                        type='partner'
-                        file_type='TDS'
-                        folder='approvals/'
-                        file_list={tds_files}
-                      />
-                      <DeleteFile
-                        size='small'
-                        id={approveData.id}
-                        type='partner'
-                        file_type='TDS'
-                        file_list={tds_files}
-                      />
-                    </Space>
-                  ) : (
-                    <FileUploadOnly
-                      size='small'
-                      id={approveData.id}
-                      type='partner'
-                      folder='approvals/'
-                      file_type='TDS'
-                      file_list={tds_files}
-                    />
-                  )}
-                </span> 
-            </Col> 
-          </List.Item>
           <List.Item>
-          <Row gutter={20} >
-          <Col xs={24} sm={24}> 
-            <Form.Item label='GST Applicable' name='gst'>
-            <Input placeholder='GST Number' />
-            </Form.Item>
-            </Col>
+            <Row gutter={20} >
+              <Col xs={24} sm={24}>
+                <Form.Item label='GST Applicable' name='gst'>
+                  <Input placeholder='GST Number' />
+                </Form.Item>
+              </Col>
             </Row>
             <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
           </List.Item>
@@ -447,16 +449,17 @@ const KycApproval = (props) => {
         </List>
         <Table
           columns={column}
-          dataSource={tableData}
+          dataSource={trucks}
           size='small'
           pagination={false}
         />
-         <Button key='back' onClick={onHide}>
-            Close
-        </Button>,
+        <br />
+        <Row justify='end'>
         <Button key='submit' type='primary' loading={disableButton} htmlType='submit'>
             Approve KYC
         </Button>
+        </Row>
+         
       </Form>
     </Modal>
   )

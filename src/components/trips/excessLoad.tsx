@@ -46,7 +46,7 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
             }
             customer_price
             created_at
-            leads(where:{deleted_at:{_is_null:true}}) {
+            leads {
               id
               created_at
               partner {

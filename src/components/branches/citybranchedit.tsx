@@ -24,7 +24,7 @@ mutation ($city_id:Int,$branch_id:Int){
 `
 
 const Fr8Employee = (props) => {
-  const { id, branch } = props
+  const { id, branch ,edit_access} = props
 
   const { loading, error, data } = useQuery(
     BRANCH_QUERY,
@@ -68,6 +68,7 @@ const Fr8Employee = (props) => {
         label={branch}
         handleChange={handleChange}
         style={{ width: '40%' }}
+        edit_access={edit_access}
       />)
   )
 }

@@ -2,9 +2,9 @@ import { Input, Space } from 'antd'
 import { useState } from 'react'
 import { EditTwoTone, CloseCircleTwoTone, CheckCircleTwoTone } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
-
+import EditAccess from './editAccess'
 const EditableCell = (props) => {
-  const { label, onSubmit } = props
+  const { label, onSubmit , edit_access } = props
 
   const initial = { selectType: false }
   const { visible, onHide, onShow } = useShowHide(initial)
@@ -25,7 +25,7 @@ const EditableCell = (props) => {
       {!visible.selectType ? (
         <label>
           {label}{' '}
-          <EditTwoTone onClick={() => onShow('selectType')} />
+          <EditAccess edit_access={edit_access} onEdit={() => onShow('selectType')} />
         </label>)
         : (
           <span>

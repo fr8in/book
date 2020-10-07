@@ -16,7 +16,7 @@ import get from 'lodash/get'
 import moment from 'moment'
 import PartnerOnBoardedBy from '../partnerOnboardedByName'
 import LinkComp from '../../common/link'
-
+import u from '../../../lib/util'
 const PENDING_SUBSCRIPTION = gql`
 subscription trip_credit_debit($status: [String!]) {
   trip_credit_debit(where: {credit_debit_status: {name: {_in: $status}}}, order_by: {created_at: desc}) {
@@ -74,6 +74,8 @@ const RequestedBy = [
 ]
 
 const Pending = () => {
+  const { role } = u
+  const access = [role.admin]
   const initial = {
     commentData: [],
     commentVisible: false,
@@ -221,6 +223,7 @@ const Pending = () => {
           onboardedBy={get(record, 'responsibility.name', '-')}
           onboardedById={get(record, 'onboarded_by.id', null)}
           credit_debit_id={record.id}
+          edit_access={access}
         />,
       filterDropdown: (
         <div>

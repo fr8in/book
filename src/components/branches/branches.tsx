@@ -7,6 +7,7 @@ import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import u from '../../lib/util'
+import EditAccess from '../common/editAccess'
 
 const BRANCHES_QUERY = gql`
 subscription branches($week: Int!, $year: Int!) {
@@ -33,7 +34,12 @@ subscription branches($week: Int!, $year: Int!) {
   }
 }`
 
-const Branches = () => {
+const Branches = (props) => {
+
+  const {edit_access } = props
+
+  const { role } = u
+  const traffic_member_delete = [role.admin]
   const initial = {
     trafficVisible: false,
     title: null,
@@ -106,12 +112,8 @@ const Branches = () => {
                 : null}
             </span>
             {
-              <EditTwoTone
-                type='edit'
-                className='cell-icon'
-                onClick={() =>
-                  handleShow('trafficVisible', record.name, 'trafficData', record)}
-              />
+             <EditAccess edit_access={edit_access} onEdit={() =>
+              handleShow('trafficVisible', record.name, 'trafficData', record)} />    
             }
           </div>
         )
@@ -144,6 +146,7 @@ const Branches = () => {
           onHide={handleHide}
           branch_data={object.trafficData}
           title={object.title}
+          edit_access_delete={traffic_member_delete}
         />
       )}
     </>
