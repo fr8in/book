@@ -1,10 +1,11 @@
 import { Modal, Button, Input, Row, Form, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
-import { useState } from 'react'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 
 const UPDATE_PARTNER_ADDRESS_MUTATION = gql`
-mutation update_address($address:jsonb, $cardcode:String){
-  update_partner(_set:{address: $address} where: {cardcode:{_eq:$cardcode}}){
+mutation update_address($address:jsonb, $cardcode:String,$updated_by: String!){
+  update_partner(_set:{address: $address,updated_by:$updated_by} where: {cardcode:{_eq:$cardcode}}){
     returning{
       id
       address
@@ -16,6 +17,7 @@ const EditAddress = (props) => {
   const { visible, onHide, cardcode } = props
 
   const [disableButton, setDisableButton] = useState(false)
+  const context = useContext(userContext)
 
   const [updatePartnerAddress] = useMutation(
     UPDATE_PARTNER_ADDRESS_MUTATION,
@@ -45,7 +47,8 @@ const EditAddress = (props) => {
     updatePartnerAddress({
       variables: {
         cardcode: cardcode,
-        address: address
+        address: address,
+        updated_by: context.email
       }
     })
   }

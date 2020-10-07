@@ -2,6 +2,7 @@ import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import InlineEdit from '../common/inlineEdit'
 
+
 const UPDATE_PARTNER_NUMBER_MUTATION = gql`
 mutation partner_user_edit($mobile:String!,$id:Int!) {
     update_partner_user(_set: {mobile: $mobile}, where: {is_admin: {_eq: true}, id: {_eq: $id}}) {
@@ -14,6 +15,7 @@ mutation partner_user_edit($mobile:String!,$id:Int!) {
 `
 const PartnerUserNumber = (props) => {
   const { id, mobile, loading } = props
+  
 
   const [updateUserNumber] = useMutation(
     UPDATE_PARTNER_NUMBER_MUTATION,

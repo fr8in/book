@@ -2,10 +2,12 @@ import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import { ALL_EMPLOYEE } from '../branches/container/query/employeeQuery'
 import InlineSelect from '../common/inlineSelect'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 
 const UPDATE_PARTNER_ONBOARDED_BY_NAME_MUTATION = gql`
-mutation partner_onboarded_by_name($onboarded_by_id:Int,$cardcode:String!) {
-update_partner(_set:{onboarded_by_id: $onboarded_by_id}, where:{cardcode: {_eq:$cardcode}}){
+mutation partner_onboarded_by_name($onboarded_by_id:Int,$cardcode:String,$updated_by: String!) {
+update_partner(_set:{onboarded_by_id: $onboarded_by_id,updated_by:$updated_by}, where:{cardcode: {_eq:$cardcode}}){
     returning{
       id
       onboarded_by_id   
@@ -26,6 +28,8 @@ mutation update_credit_responsibility($responsibility_id:Int!,$id:Int! ){
 
 const OnBoardedBy = (props) => {
   const { onboardedById, onboardedBy, cardcode ,credit_debit_id} = props
+  const context = useContext(userContext)
+
 
   const { loading, error, data } = useQuery(
     ALL_EMPLOYEE,
@@ -73,7 +77,8 @@ const OnBoardedBy = (props) => {
       UpdateOnBoardedByName({
         variables: {
           cardcode,
-          onboarded_by_id: value
+          onboarded_by_id: value,
+          updated_by: context.email
         }
       })
     )

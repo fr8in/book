@@ -17,7 +17,8 @@ import FileUploadOnly from '../common/fileUploadOnly'
 import ViewFile from '../common/viewFile'
 import DeleteFile from '../common/deleteFile'
 import { gql, useMutation, useQuery, useSubscription } from '@apollo/client'
-import { useState } from 'react'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 import get from 'lodash/get'
 
 const PARTNERS_QUERY = gql`
@@ -60,8 +61,8 @@ subscription partner_kyc($id:Int){
 `
 
 const UPDATE_PARTNER_APPOVAL_MUTATION = gql`
-mutation update_partner_approval($onboarded_by_id:Int,$partner_advance_percentage_id:Int,$gst:String,$cibil:String,$emi:Boolean,$id:Int,$partner_status_id:Int){
-  update_partner(_set: {onboarded_by_id:$onboarded_by_id, partner_advance_percentage_id:$partner_advance_percentage_id, gst:$gst, cibil:$cibil, emi:$emi,partner_status_id:$partner_status_id}, where: {id: {_eq:$id}}) {
+mutation update_partner_approval($onboarded_by_id:Int,$partner_advance_percentage_id:Int,$gst:String,$cibil:String,$emi:Boolean,$id:Int,$partner_status_id:Int,$updated_by: String!){
+  update_partner(_set: {onboarded_by_id:$onboarded_by_id, partner_advance_percentage_id:$partner_advance_percentage_id, gst:$gst, cibil:$cibil, emi:$emi,partner_status_id:$partner_status_id,updated_by:$updated_by}, where: {id: {_eq:$id}}) {
     returning {
       id
     }
@@ -85,6 +86,8 @@ const KycApproval = (props) => {
   const { visible, onHide, approveData } = props
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
+  const context = useContext(userContext)
+
 
 
   const { loading, error, data } = useQuery(
@@ -204,7 +207,8 @@ const cardcode =  partnerDetail && partnerDetail.cardcode
         gst: form.getFieldValue('gst'),
         cibil: form.getFieldValue('cibil'),
         onboarded_by_id: form.getFieldValue('onboarded_by_id'),
-        partner_advance_percentage_id: form.getFieldValue('partner_advance_percentage_id')
+        updated_by: context.email,
+        partner_advance_percentage_id:form.getFieldValue('partner_advance_percentage_id')
       }
     })
   }

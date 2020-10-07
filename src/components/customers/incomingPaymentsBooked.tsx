@@ -3,7 +3,7 @@ import moment from 'moment'
 
 const IncomingPaymentsBooked = (props) => {
   const { customer_booked } = props
-
+console.log('customer_booked',customer_booked)
   const data = [
     {
       title: 'Date',

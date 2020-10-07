@@ -66,7 +66,14 @@ query partners(
       }
     }
   }
-  partner_aggregate(where:{partner_status:{id:{_in:$partner_statusId}}})
+  partner_aggregate(
+    where:{
+      city:{branch:{region:{name:{_in:$region}}}},
+      partner_status:{id:{_in:$partner_statusId}}, 
+      name: {_ilike: $name}, 
+      cardcode: {_ilike: $cardcode}
+    }
+  )
   {
     aggregate{
       count

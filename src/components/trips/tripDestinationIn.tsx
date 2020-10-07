@@ -2,7 +2,7 @@ import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import DateUpdater from '../common/dateUpdater'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 
 const UPDATE_TRIP_DESTINATIONIN_MUTATION = gql`
 mutation trip_destination_in($destination_in:timestamp,$id:Int,$updated_by: String!) {
@@ -16,7 +16,7 @@ mutation trip_destination_in($destination_in:timestamp,$id:Int,$updated_by: Stri
 `
 
 const DestinationInDate = (props) => {
-  const { destination_in, id } = props
+  const { destination_in, id, advance_processed } = props
 
   const context = useContext(userContext)
 
@@ -29,13 +29,17 @@ const DestinationInDate = (props) => {
   )
 
   const onSubmit = (dateString) => {
-    updateDestinationIn({
-      variables: {
-        id,
-        destination_in: dateString,
-        updated_by: context.email
-      }
-    })
+    if (advance_processed) {
+      updateDestinationIn({
+        variables: {
+          id,
+          destination_in: dateString,
+          updated_by: context.email
+        }
+      })
+    } else {
+      message.error('Advance not processed!')
+    }
   }
 
   return (

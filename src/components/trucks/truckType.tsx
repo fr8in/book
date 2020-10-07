@@ -1,6 +1,8 @@
 import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
+import { useContext } from 'react'
+import userContext from '../../lib/userContaxt'
 
 const TRUCKS_TYPE_QUERY = gql`
   query truck_type{
@@ -11,8 +13,8 @@ const TRUCKS_TYPE_QUERY = gql`
 }
 `
 const UPDATE_TRUCK_TYPE_MUTATION = gql`
-mutation truck_type_edit($truck_type_id:Int,$truck_no:String) {
-    update_truck(_set:{truck_type_id: $truck_type_id}, where:{truck_no: {_eq:$truck_no}}) {
+mutation truck_type_edit($truck_type_id:Int,$truck_no:String,$updated_by: String!) {
+    update_truck(_set:{truck_type_id: $truck_type_id,updated_by:$updated_by}, where:{truck_no: {_eq:$truck_no}}) {
       returning{
         id
         truck_type_id
@@ -23,6 +25,7 @@ mutation truck_type_edit($truck_type_id:Int,$truck_no:String) {
 
 const TruckType = (props) => {
   const { truckTypeId, truckType, truck_no } = props
+  const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(
     TRUCKS_TYPE_QUERY,
@@ -51,7 +54,8 @@ const TruckType = (props) => {
     updateTruckTypeId({
       variables: {
         truck_no,
-        truck_type_id: value
+        truck_type_id: value,
+        updated_by: context.email
       }
     })
   }

@@ -220,7 +220,9 @@ const CustomerDetailContainer = (props) => {
                   visible={visible.transfer}
                   onHide={onHide}
                   cardcode={cardcode}
+                  walletcode={customer_info && customer_info.walletcode}
                   customer_id={customer_info && customer_info.id}
+                  wallet_balance={customer_info && customer_info.customer_accounting && customer_info.customer_accounting.wallet_balance}
                 />
               )}
               {visible.rebate && (
@@ -230,6 +232,7 @@ const CustomerDetailContainer = (props) => {
                   cardcode={cardcode}
                   walletcode={customer_info && customer_info.walletcode}
                   customer_id={customer_info && customer_info.id}
+                  wallet_balance={customer_info && customer_info.customer_accounting && customer_info.customer_accounting.wallet_balance}
                 />
               )}
               {visible.wallet && (

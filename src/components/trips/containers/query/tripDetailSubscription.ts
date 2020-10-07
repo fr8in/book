@@ -31,6 +31,11 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       customer{
         cardcode
         name
+        id
+        walletcode
+        customer_accounting {
+          wallet_balance
+        }
       }
       partner{
         id

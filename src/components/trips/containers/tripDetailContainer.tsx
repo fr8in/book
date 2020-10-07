@@ -125,6 +125,9 @@ const TripDetailContainer = (props) => {
                         cardcode={get(trip_info, 'customer.cardcode', null)}
                         mamul={get(trip_info, 'mamul', 0)}
                         price={get(trip_info, 'partner_price', 0)}
+                        walletcode={get(trip_info,'customer.walletcode', null)}
+                        wallet_balance={get(trip_info,'customer.customer_accounting.wallet_balance', null)}
+                        customer_id={get(trip_info,'customer.id', null)}
                       />
                     </Panel>
                   </Collapse>
