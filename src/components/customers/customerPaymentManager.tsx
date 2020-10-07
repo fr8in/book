@@ -1,6 +1,8 @@
 import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 
 const ALL_EMPLOYEE = gql`
   query all_employee {
@@ -11,8 +13,8 @@ const ALL_EMPLOYEE = gql`
 }
 `
 const UPDATE_CUSTOMER_PAYMENT_MANAGER_MUTATION = gql`
-mutation customer_payment_manager($payment_manager_id:Int,$cardcode:String) {
-  update_customer(_set: {payment_manager_id: $payment_manager_id}, where: {cardcode: {_eq: $cardcode}}) {
+mutation customer_payment_manager($payment_manager_id:Int,$cardcode:String,$updated_by:String!) {
+  update_customer(_set: {payment_manager_id: $payment_manager_id,updated_by:$updated_by}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id
       payment_manager_id
@@ -22,6 +24,7 @@ mutation customer_payment_manager($payment_manager_id:Int,$cardcode:String) {
 `
 const CustomerPaymentManager = (props) => {
   const { paymentManagerId, paymentManager, cardcode } = props
+  const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(ALL_EMPLOYEE, {
     notifyOnNetworkStatusChange: true
@@ -51,6 +54,7 @@ const CustomerPaymentManager = (props) => {
     updateCustomerTypeId({
       variables: {
         cardcode,
+        updated_by: context.email,
         payment_manager_id: value
       }
     })

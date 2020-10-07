@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 import {
   Table,
   Button,
@@ -27,10 +28,10 @@ import LinkComp from '../common/link'
 import isEmpty from 'lodash/isEmpty'
 
 const CUSTOMER_REJECT_MUTATION = gql`
-  mutation customer_reject($status_id: Int, $id: Int!) {
+  mutation customer_reject($status_id: Int, $id: Int!,$updated_by:String!) {
     update_customer_by_pk(
       pk_columns: { id: $id }
-      _set: { status_id: $status_id }
+      _set: { status_id: $status_id,updated_by:$updated_by }
     ) {
       id
       name
@@ -53,6 +54,8 @@ const CustomerKyc = (props) => {
     onMobileSearch,
     onPageChange
   } = props
+
+  const context = useContext(userContext)
 
   const initial = {
     visible: false,
@@ -108,6 +111,7 @@ const CustomerKyc = (props) => {
     insertComment({
       variables: {
         status_id: 7,
+        updated_by: context.email,
         id: id
       }
       // ,

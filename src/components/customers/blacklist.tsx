@@ -1,9 +1,11 @@
 import { gql, useMutation } from '@apollo/client'
 import { Switch, Tooltip, message } from 'antd'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 
 const UPDATE_CUSTOMER_BLACKLIST_MUTATION = gql`
-mutation customer_blacklist($status_id:Int,$cardcode:String) {
-  update_customer(_set: {status_id: $status_id}, where: {cardcode: {_eq: $cardcode}}) {
+mutation customer_blacklist($status_id:Int,$cardcode:String,$updated_by:String!) {
+  update_customer(_set: {status_id: $status_id,updated_by:$updated_by}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id
       status_id
@@ -18,6 +20,9 @@ const customerStatus = {
 }
 
 const Blacklist = ({ cardcode, statusId }) => {
+  const context = useContext(userContext)
+
+
   const [updateStatusId] = useMutation(
     UPDATE_CUSTOMER_BLACKLIST_MUTATION,
     {
@@ -30,6 +35,7 @@ const Blacklist = ({ cardcode, statusId }) => {
     updateStatusId({
       variables: {
         cardcode,
+        updated_by: context.email,
         status_id: checked ? customerStatus.Blacklisted : customerStatus.Active
       }
     })

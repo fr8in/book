@@ -1,9 +1,11 @@
 import { Checkbox, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 
 const UPDATE_CUSTOMER_MANAGED_MUTATION = gql`
-mutation customer_managed($managed:Boolean,$cardcode:String) {
-  update_customer(_set: {managed: $managed}, where: {cardcode: {_eq: $cardcode}}) {
+mutation customer_managed($managed:Boolean,$cardcode:String,$updated_by:String!) {
+  update_customer(_set: {managed: $managed,updated_by:$updated_by}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id
       managed
@@ -14,6 +16,7 @@ mutation customer_managed($managed:Boolean,$cardcode:String) {
 
 const ManagedCustomer = (props) => {
   const { cardcode, isManaged } = props
+  const context = useContext(userContext)
 
   const [customerManaged] = useMutation(
     UPDATE_CUSTOMER_MANAGED_MUTATION,
@@ -27,6 +30,7 @@ const ManagedCustomer = (props) => {
     customerManaged({
       variables: {
         cardcode,
+        updated_by: context.email,
         managed: e.target.checked
       }
     })
