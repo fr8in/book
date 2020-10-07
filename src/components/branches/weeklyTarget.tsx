@@ -1,6 +1,7 @@
 import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import EditableCell from '../common/editableCell'
+import u from '../../lib/util'
 
 const UPDATE_BRABCH_WEEKLY_TARGET_MUTATION = gql`
 mutation update_branch_weekly_target($trip_target: Int!, $branch_id: Int!, $week: Int!, $year: Int!){
@@ -15,7 +16,8 @@ mutation update_branch_weekly_target($trip_target: Int!, $branch_id: Int!, $week
 
 const WeeklyTarget = (props) => {
   const { id, label, week, year } = props
-
+  const {role} = u
+  const weekly_target = [role.admin]
   const [updateTruckNo] = useMutation(
     UPDATE_BRABCH_WEEKLY_TARGET_MUTATION,
     {
@@ -39,6 +41,7 @@ const WeeklyTarget = (props) => {
     <EditableCell
       label={label}
       onSubmit={onSubmit}
+      edit_access = {weekly_target}
     />
   )
 }

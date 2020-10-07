@@ -3,7 +3,7 @@ import { Table } from 'antd'
 import BranchEdit from './citybranchedit'
 import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
-
+import u from '../../lib/util'
 const CITY_QUERY = gql`
 subscription{
   city(where:{_and: [ {is_connected_city: {_eq: true}}]}){
@@ -19,6 +19,8 @@ subscription{
 const CityBranchMapping = () => {
   const { loading, error, data } = useSubscription(CITY_QUERY)
   console.log('error', error)
+  const { role } = u
+  const access = [role.admin]
 
   let _data = []
   if (!loading) {
@@ -41,7 +43,7 @@ const CityBranchMapping = () => {
       render: (text, record) => {
         const branch = record.branch && record.branch.name
         return (
-          <span> <BranchEdit id={record.id} branch={branch} /></span>
+          <span> <BranchEdit id={record.id} branch={branch}  edit_access={access} /></span>
 
         )
       }
