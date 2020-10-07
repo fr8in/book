@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import userContext from '../../../lib/userContaxt'
+import { useState,useContext } from 'react'
 import { Row, Col, Card, Input, Button, Form, Space, Select, message } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
 import Link from 'next/link'
@@ -22,8 +23,8 @@ query add_truck ( $cardcode: String!){
 }`
 
 const INSERT_ADD_TRUCK_MUTATION = gql`
-mutation add_truck($truck_no:String,  $partner_id: Int, $breadth:float8,$length:float8,$height:float8,$city_id:Int,$truck_type_id:Int, $driver_id: Int ) {
-  insert_truck(objects: {truck_no: $truck_no,breadth: $breadth, height: $height, length: $length, partner_id: $partner_id,  truck_type_id: $truck_type_id, city_id: $city_id, driver_id: $driver_id, truck_status_id: 5}) {
+mutation add_truck($truck_no:String,  $partner_id: Int, $breadth:float8,$length:float8,$height:float8,$city_id:Int,$truck_type_id:Int, $driver_id: Int,$created_by:String ) {
+  insert_truck(objects: {truck_no: $truck_no,breadth: $breadth, height: $height, length: $length,created_by:$created_by, partner_id: $partner_id,  truck_type_id: $truck_type_id, city_id: $city_id, driver_id: $driver_id, truck_status_id: 5}) {
     returning {
       id
       truck_no
@@ -37,6 +38,7 @@ const AddTruckContainer = (props) => {
   const [driver_id, setDriver_id] = useState(null)
   const router = useRouter()
   const [disableButton, setDisableButton] = useState(false)
+  const context = useContext(userContext)
 
   const onCityChange = (city_id) => {
     setCity_id(city_id)
@@ -97,6 +99,7 @@ const AddTruckContainer = (props) => {
         breadth: parseFloat(form.breadth),
         height: parseFloat(form.height),
         truck_no: (form.truck_no),
+        created_by: context.email,
         truck_type_id: parseInt(form.truck_type, 10),
         driver_id: driver_id
       }

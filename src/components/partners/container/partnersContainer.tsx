@@ -4,10 +4,10 @@ import Link from 'next/link'
 import Partners from '../partners'
 import u from '../../../lib/util'
 import get from 'lodash/get'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useQuery, useSubscription } from '@apollo/client'
 
-const PARTNERS_QUERY = gql`
-query partners(
+const PARTNERS_SUBSCRIPTION = gql`
+subscription partners(
   $offset: Int!, 
   $limit: Int!,
   $partner_statusId:[Int!], 
@@ -72,23 +72,38 @@ query partners(
         count
       }
     }
-  }
-  partner_aggregate(where:{partner_status:{id:{_in:$partner_statusId}}})
+  } 
+}`
+
+const PARTNERS_QUERY = gql`
+query partners(
+  $partner_statusId:[Int!], 
+  $name:String, 
+  $cardcode:String,
+  $region:[String!]
+  ) {
+    partner_aggregate(
+    where:{
+      city:{branch:{region:{name:{_in:$region}}}},
+      partner_status:{id:{_in:$partner_statusId}}, 
+      name: {_ilike: $name}, 
+      cardcode: {_ilike: $cardcode}
+    }
+  )
   {
     aggregate{
       count
     }
   }
-  partner_status(where:{name: {_nin: ["Lead","Registered","Rejected"]}},order_by:{id:asc}){
+  partner_status(where:{name: {_nin: ["Lead"]}}){
     id
     name
   }
   region{
     name
     id
-  }  
-}
-`
+  }
+}`
 
 const PartnerContainer = () => {
   const initialFilter = {
@@ -100,9 +115,21 @@ const PartnerContainer = () => {
     cardcode: null
   }
   const [filter, setFilter] = useState(initialFilter)
-  const partnersQueryVars = {
+  const variables = {
     offset: filter.offset,
     limit: filter.limit,
+    region: filter.region,
+    partner_statusId: filter.partner_statusId,
+    name: filter.name ? `%${filter.name}%` : null,
+    cardcode: filter.cardcode ? `%${filter.cardcode}%` : null
+  }
+  const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
+    PARTNERS_SUBSCRIPTION,
+    {
+      variables: variables
+    }
+  )
+  const partnersQueryVars = {
     region: filter.region,
     partner_statusId: filter.partner_statusId,
     name: filter.name ? `%${filter.name}%` : null,
@@ -119,12 +146,18 @@ const PartnerContainer = () => {
   )
 
   console.log('PartnersContainer error', error)
+  console.log('PartnersContainer s_error', s_error)
+
+  let _sdata = {}
+  if (!s_loading) {
+    _sdata = s_data
+  }
+  const partner = get(_sdata, 'partner', [])
 
   let _data = {}
   if (!loading) {
     _data = data
   }
-  const partner = get(_data, 'partner', [])
   const partner_status = get(_data, 'partner_status', [])
   const partner_aggregate = get(_data, 'partner_aggregate', 0)
   const region = get(_data, 'region', [])
@@ -165,7 +198,7 @@ const PartnerContainer = () => {
     >
       <Partners
         partners={partner}
-        loading={loading}
+        loading={s_loading}
         onPageChange={onPageChange}
         record_count={record_count}
         filter={filter}

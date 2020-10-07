@@ -4,13 +4,13 @@ import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 
 const INSERT_TRUCK_REJECT_MUTATION = gql`
-mutation truck_reject ($description:String, $topic:String, $truck_id: Int, $created_by:String, $truck_status_id:Int,$id:Int! ){
+mutation truck_reject ($description:String, $topic:String, $truck_id: Int, $created_by:String, $truck_status_id:Int,$id:Int!,$updated_by: String! ){
   insert_truck_comment(objects: {truck_id:$truck_id, topic: $topic, description: $description, created_by: $created_by}) {
     returning {
       id
     }
   }
-  update_truck_by_pk(pk_columns: {id: $id}, _set: {truck_status_id:$truck_status_id}) {
+  update_truck_by_pk(pk_columns: {id: $id}, _set: {truck_status_id:$truck_status_id,,updated_by:$updated_by}) {
     id
   }
 }
@@ -44,7 +44,8 @@ const TruckReject = (props) => {
         description: rejectComment,
         topic: 'text',
         truck_status_id: 12,
-        id: truck_id
+        id: truck_id,
+        updated_by: context.email
       }
     })
   }

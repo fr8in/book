@@ -1,11 +1,20 @@
 import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
-import { ALL_EMPLOYEE } from '../branches/container/query/employeeQuery'
 import InlineSelect from '../common/inlineSelect'
+import userContext from '../../lib/userContaxt'
+import { useContext } from 'react'
+
+const ALL_EMPLOYEE = gql`
+  query allEmployee {
+  employee{
+    id
+    email
+  }
+}`
 
 const UPDATE_PARTNER_ONBOARDED_BY_NAME_MUTATION = gql`
-mutation partner_onboarded_by_name($onboarded_by_id:Int,$cardcode:String) {
-update_partner(_set:{onboarded_by_id: $onboarded_by_id}, where:{cardcode: {_eq:$cardcode}}){
+mutation partner_onboarded_by_name($onboarded_by_id:Int,$cardcode:String,$updated_by: String!) {
+update_partner(_set:{onboarded_by_id: $onboarded_by_id,updated_by:$updated_by}, where:{cardcode: {_eq:$cardcode}}){
     returning{
       id
       onboarded_by_id   
@@ -25,7 +34,8 @@ mutation update_credit_responsibility($responsibility_id:Int!,$id:Int! ){
 `
 
 const OnBoardedBy = (props) => {
-  const { onboardedById, onboardedBy, cardcode ,credit_debit_id} = props
+  const { onboardedById, onboardedBy, cardcode, credit_debit_id, edit_access } = props
+  const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(
     ALL_EMPLOYEE,
@@ -50,7 +60,7 @@ const OnBoardedBy = (props) => {
   )
 
   if (loading) return null
- // console.log('OnBoardedByName error', error)
+  // console.log('OnBoardedByName error', error)
 
   const { employee } = data
   const empList = employee.map(data => {
@@ -58,26 +68,24 @@ const OnBoardedBy = (props) => {
   })
 
   const onChange = (value) => {
-    console.log('credit_debit_id',credit_debit_id)
-    if (credit_debit_id !== undefined)
-    {
+    console.log('credit_debit_id', credit_debit_id)
+    if (credit_debit_id !== undefined) {
       UpdateCreditResponsibilityName({
         variables:
           {
-            responsibility_id:value,
+            responsibility_id: value,
             id: props.credit_debit_id
-          }   
+          }
       })
-    }
-    else(
+    } else {
       UpdateOnBoardedByName({
         variables: {
           cardcode,
-          onboarded_by_id: value
+          onboarded_by_id: value,
+          updated_by: context.email
         }
       })
-    )
-   
+    }
   }
 
   return (
@@ -87,6 +95,7 @@ const OnBoardedBy = (props) => {
       options={empList}
       handleChange={onChange}
       style={{ width: 110 }}
+      edit_access={edit_access}
     />
   )
 }

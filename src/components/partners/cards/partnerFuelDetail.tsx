@@ -2,6 +2,8 @@ import { Row, Col, Switch, message } from 'antd'
 import LabelWithData from '../../common/labelWithData'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import get from 'lodash/get'
+import userContext from '../../../lib/userContaxt'
+import { useState,useContext } from 'react'
 
 const FUEL_CARD_QUERY = gql`
 query all($partner_id: Int!) {
@@ -26,6 +28,8 @@ mutation update_fuel_card_status($number:String!,$status:Boolean!,$provider:Stri
 const PartnerFuelDetail = (props) => {
   const { partner_id } = props
   console.log('partner_id', partner_id)
+  const context = useContext(userContext)
+
   const { loading, error, data } = useQuery(
     FUEL_CARD_QUERY, {
       variables: {
@@ -50,7 +54,7 @@ const PartnerFuelDetail = (props) => {
         number: card_number,
         provider: 'RELIANCE',
         status: checked,
-        modifiedBy: 'pravalika.k@fr8.in'
+        modifiedBy: context.email
       }
     })
   }

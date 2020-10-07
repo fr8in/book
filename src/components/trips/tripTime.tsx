@@ -244,6 +244,7 @@ const TripTime = (props) => {
   const remove_sout = trip_status_name === 'Intransit' && authorized
   const remove_din = trip_status_name === 'Reported at destination' && authorized
   const remove_dout = trip_status_name === 'Delivered' && authorized
+  const advance_processed = (trip_info.loaded === 'Yes')
 
   const trip_files = get(trip_info, 'trip_files', [])
   const wh_files = !isEmpty(trip_files) ? trip_files.filter(file => file.type === 'WH') : null
@@ -270,7 +271,7 @@ const TripTime = (props) => {
             </Row>
             <Row gutter={10}>
               <Col xs={8}>
-                <DestinationInDate destination_in={trip_info.destination_in} id={trip_info.id} />
+                <DestinationInDate destination_in={trip_info.destination_in} id={trip_info.id} advance_processed={advance_processed} />
               </Col>
               <Col xs={8}>
                 <DestinationOutDate destination_out={trip_info.destination_out} id={trip_info.id} />

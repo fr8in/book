@@ -1,7 +1,14 @@
 import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
-import { ALL_EMPLOYEE } from '../branches/container/query/employeeQuery'
 import InlineSelect from '../common/inlineSelect'
+
+const ALL_EMPLOYEE = gql`
+  query allEmployee {
+  employee{
+    id
+    email
+  }
+}`
 
 const UPDATE_PARTNER_ONBOARDED_BY_NAME_MUTATION = gql`
 mutation customer_onboarded_by_name($onboarded_by_id:Int,$cardcode:String) {

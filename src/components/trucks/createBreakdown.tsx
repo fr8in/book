@@ -18,7 +18,7 @@ query create_breakdown($id: Int!){
 `
 
 const INSERT_UPDATE_CREATE_BREAKDOWN_MUTATION = gql`
-mutation truck_available($truck_id:Int!,$topic:String,$created_by:String,$description:String,$id:Int!,$available_at:timestamptz,$city_id:Int) {
+mutation truck_available($truck_id:Int!,$topic:String,$created_by:String,$description:String,$id:Int!,$available_at:timestamptz,$city_id:Int,$updated_by: String!) {
   insert_truck_comment(objects: {truck_id:$truck_id, topic:$topic, created_by:$created_by, description:$description}) {
     returning {
       id
@@ -27,7 +27,7 @@ mutation truck_available($truck_id:Int!,$topic:String,$created_by:String,$descri
       truck_id
     }
   }
-  update_truck_by_pk(pk_columns: {id:$id}, _set: {available_at:$available_at, city_id:$city_id}) {
+  update_truck_by_pk(pk_columns: {id:$id}, _set: {available_at:$available_at, city_id:$city_id,updated_by:$updated_by}) {
     id
     city_id
     available_at
@@ -86,6 +86,7 @@ const CreateBreakdown = (props) => {
         truck_id: id,
         id: id,
         created_by: context.email,
+        updated_by: context.email,
         description: form.comment,
         topic: truck_status,
         city_id: parseInt(city.city_id, 10)

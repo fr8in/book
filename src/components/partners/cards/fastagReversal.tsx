@@ -1,7 +1,8 @@
 import { Modal, Form, Input, message, Row, Col, Button, Space } from 'antd'
 import React from 'react'
 import { gql, useMutation } from '@apollo/client'
-import { useState } from 'react'
+import { useState,useContext } from 'react'
+import userContext from '../../../lib/userContaxt'
 
 const UPDATE_FASTAG_REVERSE_MUTATION = gql`
 mutation tag_reversal(
@@ -29,6 +30,7 @@ const FastagReversal = (props) => {
   const { visible, onHide, fastag, token } = props
 
   const [disableButton, setDisableButton] = useState(false)
+  const context = useContext(userContext)
 
   const [reverse_fastag] = useMutation(
     UPDATE_FASTAG_REVERSE_MUTATION,
@@ -49,7 +51,7 @@ const FastagReversal = (props) => {
         truckId: fastag.truck_id,
         partnerId: fastag.partner_id,
         tagId: fastag.tag_id,
-        modifiedBy: 'pravalika.k@fr8.in',
+        modifiedBy: context.email,
         reversalAmount: form.reversal_amount,
         token: token
       }

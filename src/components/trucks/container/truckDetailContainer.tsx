@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import userContext from '../../../lib/userContaxt'
+import { useState,useContext } from 'react'
 import TruckInfo from '../truckInfo'
 import Documents from '../truckDocuments'
 import TripDetail from '../../trips/tripsByStages'
@@ -88,8 +89,8 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
 `
 
 const INSERT_TRUCK_REJECT_MUTATION = gql`
-mutation truck_reject ( $truck_status_id:Int,$id:Int! ){
-  update_truck_by_pk(pk_columns: {id: $id}, _set: {truck_status_id:$truck_status_id}) {
+mutation truck_reject ( $truck_status_id:Int,$id:Int!,$updated_by: String! ){
+  update_truck_by_pk(pk_columns: {id: $id}, _set: {truck_status_id:$truck_status_id,updated_by:$updated_by}) {
     id
   }
 }
@@ -102,6 +103,7 @@ const TruckDetailContainer = (props) => {
   const { truckNo } = props
   const admin = true
   const [subTabKey, setSubTabKey] = useState('1')
+  const context = useContext(userContext)
 
   const initial = { commment: false }
   const { visible, onShow, onHide } = useShowHide(initial)
@@ -144,7 +146,8 @@ const TruckDetailContainer = (props) => {
     updateStatus({
       variables: {
         truck_status_id: status_check ? 5 : 6,
-        id: truck_info.id
+        id: truck_info.id,
+        updated_by: context.email
       }
     })
   }

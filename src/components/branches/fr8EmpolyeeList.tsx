@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { isArray } from 'lodash'
 
 const EMP_LIST = gql`
-query create_partner{
+query emp_list{
   employee{
     id
     email

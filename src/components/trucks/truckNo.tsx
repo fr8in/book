@@ -2,10 +2,12 @@ import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import InlineEdit from '../common/inlineEdit'
 import { useRouter } from 'next/router'
+import { useContext } from 'react'
+import userContext from '../../lib/userContaxt'
 
 const UPDATE_TRUCK_NO_MUTATION = gql`
-mutation truck_no_edit($truck_no:String,$id:Int) {
-  update_truck(_set: {truck_no: $truck_no}, where: {id: {_eq: $id}}) {
+mutation truck_no_edit($truck_no:String,$id:Int,$updated_by: String!) {
+  update_truck(_set: {truck_no: $truck_no,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
       truck_no
@@ -16,6 +18,7 @@ mutation truck_no_edit($truck_no:String,$id:Int) {
 const TruckNo = (props) => {
   const { truck_no, id , loading } = props
   const router = useRouter()
+  const context = useContext(userContext)
 
   const [updateTruckNo] = useMutation(
     UPDATE_TRUCK_NO_MUTATION,
@@ -29,7 +32,8 @@ const TruckNo = (props) => {
     updateTruckNo({
       variables: {
         id,
-        truck_no: text
+        truck_no: text,
+        updated_by: context.email
       }
     })
     const url = '/trucks/[id]'

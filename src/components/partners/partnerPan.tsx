@@ -1,10 +1,12 @@
 import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import InlineEdit from '../common/inlineEdit'
+import userContext from '../../lib/userContaxt'
+import { useContext } from 'react'
 
 const UPDATE_PARTNER_PAN_MUTATION = gql`
-mutation partner_pan_edit($pan:String,$cardcode:String) {
-  update_partner(_set: {pan: $pan}, where: {cardcode: {_eq: $cardcode}}) {
+mutation partner_pan_edit($pan:String,$cardcode:String,$updated_by: String!) {
+  update_partner(_set: {pan: $pan,updated_by:$updated_by}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id
       pan
@@ -13,13 +15,14 @@ mutation partner_pan_edit($pan:String,$cardcode:String) {
 }
 `
 const PartnerPan = (props) => {
-  const { cardcode, pan, loading } = props
+  const { cardcode, pan, loading, edit_access } = props
+  const context = useContext(userContext)
 
   const [updatePan] = useMutation(
     UPDATE_PARTNER_PAN_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
 
@@ -27,7 +30,8 @@ const PartnerPan = (props) => {
     updatePan({
       variables: {
         cardcode: cardcode,
-        pan: text
+        pan: text,
+        updated_by: context.email
       }
     })
   }
@@ -37,6 +41,7 @@ const PartnerPan = (props) => {
       <InlineEdit
         text={pan}
         onSetText={onSubmit}
+        edit_access={edit_access}
       />)
   )
 }

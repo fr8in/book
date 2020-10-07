@@ -18,8 +18,9 @@ import Loading from '../common/loading'
 import FileUploadOnly from '../common/fileUploadOnly'
 import DeleteFile from '../common/deleteFile'
 import ViewFile from '../common/viewFile'
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import get from 'lodash/get'
+import userContext from '../../lib/userContaxt'
 
 const TRUCKS_QUERY = gql`
 subscription truck_activation($truck_id : Int){
@@ -54,8 +55,8 @@ subscription truck_activation($truck_id : Int){
 }`
 
 const UPDATE_TRUCK_ACTIVATION_MUTATION = gql`
-mutation truck_activation($available_at:timestamptz,$id:Int,$city_id:Int,$truck_type_id:Int,$truck_status_id:Int) {
-  update_truck(_set: {available_at: $available_at, city_id:$city_id, truck_type_id:$truck_type_id,truck_status_id:$truck_status_id}, where: {id: {_eq: $id}}) {
+mutation truck_activation($available_at:timestamptz,$id:Int,$city_id:Int,$truck_type_id:Int,$truck_status_id:Int,$updated_by: String!) {
+  update_truck(_set: {available_at: $available_at, city_id:$city_id, truck_type_id:$truck_type_id,truck_status_id:$truck_status_id,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
     }
@@ -70,7 +71,7 @@ const TruckActivation = (props) => {
   const { visible, onHide, truck_id, title, truck_type } = props
 
   const initial = { city_id: null }
-
+  const context = useContext(userContext)
   const [city, setCity] = useState(initial)
   const [disableButton, setDisableButton] = useState(false)
 
@@ -123,6 +124,7 @@ const TruckActivation = (props) => {
         id: truck_id,
         truck_status_id: 5,
         available_at: form.available_at,
+        updated_by: context.email,
         city_id: parseInt(city.city_id, 10),
         truck_type_id: parseInt(form.truck_type_id, 10)
       }

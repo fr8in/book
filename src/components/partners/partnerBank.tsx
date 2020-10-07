@@ -1,14 +1,16 @@
 import { Modal, Button, Input, Row, Form, Space, message } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
-import { useState } from 'react'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 
 const UPDATE_PARTNER_BANK_MUTATION = gql`
-mutation partner_bank_edit ($account_number:String,$ifsc_code:String,$acconnt_holder:String,$cardcode:String){
+mutation partner_bank_edit ($account_number:String,$ifsc_code:String,$acconnt_holder:String,$cardcode:String,$updated_by: String!){
   update_partner(_set:{
     account_number: $account_number,
     ifsc_code: $ifsc_code,
-    acconnt_holder:$acconnt_holder},
+    acconnt_holder:$acconnt_holder,
+    updated_by:$updated_by},
     where: {cardcode:{_eq:$cardcode}}){
     returning{
       id
@@ -21,6 +23,7 @@ const EditBank = (props) => {
   const { visible, onHide, cardcode } = props
 
   const [disableButton, setDisableButton] = useState(false)
+  const context = useContext(userContext)
 
   const [updatePartnerBank] = useMutation(
     UPDATE_PARTNER_BANK_MUTATION,
@@ -43,7 +46,8 @@ const EditBank = (props) => {
         cardcode: cardcode,
         account_number: form.account_number,
         ifsc_code: form.ifsc_code,
-        acconnt_holder: form.acconnt_holder
+        acconnt_holder: form.acconnt_holder,
+        updated_by: context.email
       }
     })
   }

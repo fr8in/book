@@ -1,9 +1,13 @@
+import { useContext } from 'react'
 import { Checkbox, Space, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
+import userContext from '../../lib/userContaxt'
+import get from 'lodash/get'
+import u from '../../lib/util'
 
 const UPDATE_PARTNER_BLACKLIST_MUTATION = gql`
-mutation partner_blacklist($partner_status_id:Int,$cardcode:String){
-  update_partner( _set: {partner_status_id: $partner_status_id }, where: {cardcode:{_eq: $cardcode}} 
+mutation partner_blacklist($partner_status_id:Int,$cardcode:String!, $updated_by: String){
+  update_partner( _set: {partner_status_id: $partner_status_id, updated_by: $updated_by}, where: {cardcode:{_eq: $cardcode}} 
   ){
     returning{
       cardcode
@@ -13,8 +17,8 @@ mutation partner_blacklist($partner_status_id:Int,$cardcode:String){
 }
 `
 const UPDATE_PARTNER_DE_ACTIVATE_MUTATION = gql`
-mutation partner_de_activate($partner_status_id:Int,$cardcode:String){
-  update_partner( _set: {partner_status_id: $partner_status_id}, where: {cardcode:{_eq: $cardcode}} 
+mutation partner_de_activate($partner_status_id:Int,$cardcode:String!, $updated_by: String){
+  update_partner( _set: {partner_status_id: $partner_status_id, updated_by: $updated_by}, where: {cardcode:{_eq: $cardcode}} 
   ){
     returning{
       cardcode
@@ -25,8 +29,8 @@ mutation partner_de_activate($partner_status_id:Int,$cardcode:String){
 `
 
 const UPDATE_PARTNER_DND_MUTATION = gql`
-mutation partner_dnd($dnd:Boolean,$cardcode:String) {
-  update_partner(_set: {dnd: $dnd}, where: {cardcode: {_eq: $cardcode}}) {
+mutation partner_dnd($dnd:Boolean,$cardcode:String!,$updated_by: String) {
+  update_partner(_set: {dnd: $dnd, updated_by: $updated_by}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       cardcode
       dnd
@@ -37,11 +41,13 @@ mutation partner_dnd($dnd:Boolean,$cardcode:String) {
 
 const PartnerStatus = (props) => {
   const { partnerInfo } = props
-  const is_blacklisted = partnerInfo && partnerInfo.partner_status && partnerInfo.partner_status.id && partnerInfo.partner_status.id === 4
-  const is_deactivate = partnerInfo && partnerInfo.partner_status && partnerInfo.partner_status.id && partnerInfo.partner_status.id === 7
-
-  console.log('partnerStatus', is_blacklisted)
-  const admin = true
+  const { role } = u
+  const context = useContext(userContext)
+  const partner_status = get(partnerInfo, 'partner_status.name', null)
+  const is_blacklisted = (partner_status === 'Blacklisted')
+  const is_deactivate = (partner_status === 'De-activate')
+  const admin = context.roles.includes(role.admin, role.partner_manager, role.partner_support)
+  const blockAccess = context.roles.includes(role.admin, role.rm, role.onboarding, role.partner_manager, role.partner_support)
 
   const [updateBlacklist] = useMutation(
     UPDATE_PARTNER_BLACKLIST_MUTATION,
@@ -54,7 +60,8 @@ const PartnerStatus = (props) => {
     updateBlacklist({
       variables: {
         cardcode: partnerInfo.cardcode,
-        partner_status_id: e.target.checked ? 4 : 2
+        partner_status_id: e.target.checked ? 7 : 4,
+        updated_by: context.email
       }
     })
   }
@@ -70,7 +77,8 @@ const PartnerStatus = (props) => {
     updateDeactivate({
       variables: {
         cardcode: partnerInfo.cardcode,
-        partner_status_id: e.target.checked ? 7 : 2
+        partner_status_id: e.target.checked ? 6 : 4,
+        updated_by: context.email
       }
     })
   }
@@ -86,7 +94,8 @@ const PartnerStatus = (props) => {
     updateDnd({
       variables: {
         cardcode: partnerInfo.cardcode,
-        dnd: e.target.checked
+        dnd: e.target.checked,
+        updated_by: context.email
       }
     })
   }
@@ -95,21 +104,21 @@ const PartnerStatus = (props) => {
     <Space>
       <Checkbox
         checked={is_blacklisted}
-        disabled={!admin && is_blacklisted}
+        disabled={!blockAccess ? true : admin ? false : !((blockAccess && !is_blacklisted))}
         onChange={blacklistChange}
       >
           BlackList
       </Checkbox>
       <Checkbox
         checked={is_deactivate}
-        disabled={is_blacklisted}
+        disabled={!blockAccess ? true : !((blockAccess && !is_blacklisted))}
         onChange={deActivateChange}
       >
           De-activate
       </Checkbox>
       <Checkbox
         checked={partnerInfo.dnd}
-        disabled={is_blacklisted || is_deactivate}
+        disabled={!blockAccess || is_blacklisted || is_deactivate}
         onChange={dndChange}
       >
           DND
