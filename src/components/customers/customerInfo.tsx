@@ -8,10 +8,16 @@ import CustomerExceptionDate from './customerExceptionDate'
 import CustomerType from './customerType'
 import CustomerPaymentManager from './customerPaymentManager'
 import get from 'lodash/get'
+import u from '../../lib/util'
 
 const CustomerInfo = (props) => {
   const { customer_info } = props
 
+  const { role } = u
+  const customerTypeEdit = [role.admin, role.accounts_manager, role.accounts]
+  const paymentManagerEdit = [role.admin, role.accounts_manager]
+  const exceptionDateEdit = [role.admin, role.accounts_manager]
+  const managedCustomerEdit = [role.admin, role.accounts_manager]
   const modelInitial = { mamulVisible: false }
   const { visible, onHide, onShow } = useShowHide(modelInitial)
   const system_mamul = get(customer_info, 'system_mamul', 0)
@@ -20,21 +26,21 @@ const CustomerInfo = (props) => {
       <Row gutter={8}>
         <LabelAndData
           label='Type'
-          data={<CustomerType type={get(customer_info, 'customer_type.name', '-')} cardcode={customer_info.cardcode} />}
+          data={<CustomerType type={get(customer_info, 'customer_type.name', '-')} cardcode={customer_info.cardcode}  edit_access={customerTypeEdit}/>}
           mdSpan={4}
           smSpan={8}
           xsSpan={12}
         />
         <LabelAndData
           label='Managed'
-          data={<ManagedCustomer isManaged={customer_info.managed} cardcode={customer_info.cardcode} />}
+          data={<ManagedCustomer isManaged={customer_info.managed} cardcode={customer_info.cardcode}  edit_access={managedCustomerEdit}/>}
           mdSpan={4}
           smSpan={8}
           xsSpan={12}
         />
         <LabelAndData
           label='Exception'
-          data={<CustomerExceptionDate exceptionDate={customer_info.exception_date} cardcode={customer_info.cardcode} />}
+          data={<CustomerExceptionDate exceptionDate={customer_info.exception_date} cardcode={customer_info.cardcode} edit_access={exceptionDateEdit}/>}
           mdSpan={4}
           smSpan={8}
           xsSpan={12}
@@ -46,6 +52,7 @@ const CustomerInfo = (props) => {
               paymentManager={get(customer_info, 'payment_manager.email', '-')}
               paymentManagerId={get(customer_info, 'payment_manager.id', null)}
               cardcode={customer_info.cardcode}
+              edit_access={paymentManagerEdit}
             />
           }
           mdSpan={4}

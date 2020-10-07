@@ -28,6 +28,10 @@ import Fr8Branch from '../../customers/containers/fr8branchContainer'
 import CustomerUser from '../createCustomerUser'
 import CustomerBranch from '../createCustomerBranch'
 import TitleWithCount from '../../common/titleWithCount'
+import u from '../../../lib/util'
+import userContext from '../../../lib/userContaxt'
+import { useState,useContext } from 'react'
+import isEmpty from 'lodash/isEmpty'
 
 // Apollo Client
 import { useSubscription } from '@apollo/client'
@@ -51,6 +55,19 @@ const CustomerDetailContainer = (props) => {
     addBranch: false
   }
   const { visible, onShow, onHide } = useShowHide(initial)
+  const { role } = u
+  const customerNameEdit = [role.admin, role.accounts_manager, role.accounts]
+  const deleteUserEdit = [role.admin, role.accounts_manager, role.accounts]
+  const branchActionEdit = [role.admin, role.accounts_manager, role.accounts]
+  const BlacklistEdit = [role.admin, role.accounts_manager, role.accounts]
+  const context = useContext(userContext)
+  const ad_am = [role.admin, role.accounts_manager]
+  const ad_am_ac = [role.admin, role.accounts_manager, role.accounts]
+  const transferAccess = !isEmpty(ad_am) ? context.roles.some(r => ad_am.includes(r)) : false
+  const walletAccess = !isEmpty(ad_am_ac) ? context.roles.some(r => ad_am_ac.includes(r)) : false
+  const addUserAccess = !isEmpty(ad_am_ac) ? context.roles.some(r => ad_am_ac.includes(r)) : false
+  const addBranchAccess = !isEmpty(ad_am_ac) ? context.roles.some(r => ad_am_ac.includes(r)) : false
+
 
   const variables = {
     cardcode: cardcode,
@@ -95,6 +112,7 @@ const CustomerDetailContainer = (props) => {
                       cardcode={cardcode}
                       name={customer_info && customer_info.name}
                       loading={loading}
+                      edit_access={customerNameEdit}
                     />
                     <h4>{cardcode}</h4>
                   </Space>
@@ -108,7 +126,9 @@ const CustomerDetailContainer = (props) => {
                         onClick={() => onShow('showModal')}
                       />
                     </Tooltip> */}
-                    <Tooltip title='Transfer'>
+                    { transferAccess ?
+                      <span>
+                      <Tooltip title='Transfer'>
                       <Button
                         icon={<BankFilled />}
                         shape='circle'
@@ -121,7 +141,12 @@ const CustomerDetailContainer = (props) => {
                         shape='circle'
                         onClick={() => onShow('rebate')}
                       />
-                    </Tooltip>
+                      </Tooltip>
+                      </span>
+                   : null }
+                    
+                    { walletAccess ?
+                      <>
                     <Tooltip title='Wallet Topup'>
                       <Button
                         shape='circle'
@@ -129,10 +154,13 @@ const CustomerDetailContainer = (props) => {
                         onClick={() => onShow('wallet')}
                       />
                     </Tooltip>
+                    </>
+                    : null}
                     <WalletBalance wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)} cardcode={cardcode} />
                     <Blacklist
                       cardcode={cardcode}
                       statusId={get(customer_info, 'status.id', null)}
+                      edit_access={BlacklistEdit}
                     />
                   </Space>
                 }
@@ -176,22 +204,24 @@ const CustomerDetailContainer = (props) => {
                     </TabPane>
                     <TabPane tab='Users' key='6'>
                       <Row justify='end' className='m5'>
+                        { addUserAccess ?
                         <Button type='primary' onClick={() => onShow('addUser')}>
                           <PlusOutlined /> Add Users
-                        </Button>
+                        </Button> : null}
                       </Row>
-                      <Users cardcode={cardcode} />
+                      <Users cardcode={cardcode} edit_access={deleteUserEdit}/>
                     </TabPane>
                     <TabPane tab='Branch' key='7'>
                       <Row justify='end' className='m5'>
+                        { addBranchAccess ?
                         <Button
                           type='primary'
                           onClick={() => onShow('addBranch')}
                         >
                           <PlusOutlined /> Add Branch
-                        </Button>
+                        </Button> : null }
                       </Row>
-                      <Branch cardcode={cardcode} />
+                      <Branch cardcode={cardcode}  edit_access={branchActionEdit}/>
                     </TabPane>
                     <TabPane tab='FR8 Branch' key='8'>
                       <Fr8Branch cardcode={cardcode} id={customer_info && customer_info.id} />

@@ -3,10 +3,13 @@ import { CloseCircleTwoTone, EditTwoTone } from '@ant-design/icons'
 import moment from 'moment'
 import { gql, useMutation } from '@apollo/client'
 import useShowHide from '../../hooks/useShowHide'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
+import EditAccess from '../common/editAccess'
 
 const UPDATE_CUSTOMER_EXCEPTION_MUTATION = gql`
-mutation customer_exception($exception_date:date,$cardcode:String) {
-  update_customer(_set: {exception_date: $exception_date}, where: {cardcode: {_eq: $cardcode}}) {
+mutation customer_exception($exception_date:date,$cardcode:String,$updated_by:String!) {
+  update_customer(_set: {exception_date: $exception_date,updated_by:$updated_by}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id
       managed
@@ -15,7 +18,8 @@ mutation customer_exception($exception_date:date,$cardcode:String) {
 }
 `
 const CustomerExceptionDate = (props) => {
-  const { exceptionDate, cardcode } = props
+  const { exceptionDate, cardcode ,edit_access} = props
+  const context = useContext(userContext)
 
   const initial = { datePicker: false }
   const { visible, onHide, onShow } = useShowHide(initial)
@@ -32,6 +36,7 @@ const CustomerExceptionDate = (props) => {
     updateCustomerException({
       variables: {
         cardcode,
+        updated_by: context.email,
         exception_date: dateString
       }
     })
@@ -45,7 +50,7 @@ const CustomerExceptionDate = (props) => {
       {!visible.datePicker ? (
         <label>
           {exceptionDate ? moment(exceptionDate).format(dateFormat) : '-'}{' '}
-          <EditTwoTone onClick={() => onShow('datePicker')} />
+          <EditAccess edit_access={edit_access} onEdit={() => onShow('datePicker')} />
         </label>)
         : (
           <span>

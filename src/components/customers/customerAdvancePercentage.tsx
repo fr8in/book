@@ -2,6 +2,9 @@ import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
+import u from '../../lib/util'
 
 const CUSTOMERS_ADVANCE_PERCENTAGE_QUERY = gql`
   query customer_advance_percentage{
@@ -12,8 +15,8 @@ const CUSTOMERS_ADVANCE_PERCENTAGE_QUERY = gql`
 }
 `
 const UPDATE_CUSTOMER_ADVANCE_MUTATION = gql`
-mutation customer_advace_update($advance_percentage_id:Int,$cardcode:String) {
-  update_customer(_set: {advance_percentage_id: $advance_percentage_id}, where: {cardcode: {_eq: $cardcode}}) {
+mutation customer_advace_update($advance_percentage_id:Int,$cardcode:String,$updated_by:String!) {
+  update_customer(_set: {advance_percentage_id: $advance_percentage_id,updated_by:$updated_by}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id
       advance_percentage_id
@@ -24,6 +27,9 @@ mutation customer_advace_update($advance_percentage_id:Int,$cardcode:String) {
 
 const CustomerAdvancePercentage = (props) => {
   const { advancePercentageId, advancePercentage, cardcode } = props
+  const context = useContext(userContext)
+  const { role } = u
+  const customerAdvancePercentageEdit = [role.admin, role.accounts_manager, role.accounts]
 
   const { loading, error, data } = useQuery(
     CUSTOMERS_ADVANCE_PERCENTAGE_QUERY,
@@ -55,6 +61,7 @@ const CustomerAdvancePercentage = (props) => {
     updateCustomerTypeId({
       variables: {
         cardcode,
+        updated_by: context.email,
         advance_percentage_id: value
       }
     })
@@ -68,6 +75,7 @@ const CustomerAdvancePercentage = (props) => {
         options={advancePercentageList}
         handleChange={handleChange}
         style={{ width: '80%' }}
+        edit_access={customerAdvancePercentageEdit}
       />)
   )
 }

@@ -69,7 +69,7 @@ const TripLr = (props) => {
     })
   }
 
-  const lr_files = trip_info.trip_files.filter(file => file.type === 'LR')
+  const lr_files = trip_info && trip_info.trip_files && trip_info.trip_files.filter(file => file.type === 'LR')
 
   const disableLr = trip_info.trip_status && trip_info.trip_status.name === 'Invoiced' &&
                     trip_info.trip_status.name === 'Paid' &&

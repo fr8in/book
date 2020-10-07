@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 import {
   Table,
   Button,
@@ -27,10 +28,10 @@ import LinkComp from '../common/link'
 import isEmpty from 'lodash/isEmpty'
 
 const CUSTOMER_REJECT_MUTATION = gql`
-  mutation customer_reject($status_id: Int, $id: Int!) {
+  mutation customer_reject($status_id: Int, $id: Int!,$updated_by:String!) {
     update_customer_by_pk(
       pk_columns: { id: $id }
-      _set: { status_id: $status_id }
+      _set: { status_id: $status_id,updated_by:$updated_by }
     ) {
       id
       name
@@ -51,8 +52,11 @@ const CustomerKyc = (props) => {
     onFilter,
     onNameSearch,
     onMobileSearch,
-    onPageChange
+    onPageChange,
+    edit_access
   } = props
+
+  const context = useContext(userContext)
 
   const initial = {
     visible: false,
@@ -63,7 +67,7 @@ const CustomerKyc = (props) => {
   const mamulInitial = { mamul: null, selectedId: null }
   const [defaultMamul, setDefaultMamul] = useState(mamulInitial)
   const [currentPage, setCurrentPage] = useState(1)
-
+  const approvalRejectAccess = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
   const onMamul = (record, e) => {
     const givenMamul = e.target.value
     setDefaultMamul({
@@ -108,6 +112,7 @@ const CustomerKyc = (props) => {
     insertComment({
       variables: {
         status_id: 7,
+        updated_by: context.email,
         id: id
       }
       // ,
@@ -294,6 +299,8 @@ const CustomerKyc = (props) => {
             )}
             {(statusId === 3 || statusId === 4) && (
               <Space>
+               { approvalRejectAccess ?
+               <>
                 <Button
                   type='primary'
                   size='small'
@@ -316,6 +323,7 @@ const CustomerKyc = (props) => {
                     icon={<CloseOutlined />}
                   />
                 </Popconfirm>
+               </> : null }
               </Space>
             )}
           </Space>

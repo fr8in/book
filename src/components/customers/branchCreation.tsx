@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 import { Modal, Button, Row, Form, Select, Col, Input, message } from 'antd'
 import CitySelect from '../common/citySelect'
 import { gql, useQuery, useMutation } from '@apollo/client'
@@ -63,13 +64,15 @@ mutation update_customer(
   $payment_manager_id: Int
   $customer_type_id: Int
   $mamul: Int
-  $id:Int!) {
+  $id:Int!
+  $updated_by:String!) {
   update_customer(_set: {
       customer_type_id: $customer_type_id, 
       onboarded_by_id: $onboarded_by_id, 
       payment_manager_id: $payment_manager_id, 
       system_mamul: $mamul,
-      status_id: 5
+      status_id: 5,
+      updated_by:$updated_by
     }, 
     where: {
       id: {_eq:$id}
@@ -82,6 +85,7 @@ mutation update_customer(
 
 const BranchCreation = (props) => {
   const { visible, onHide, customer_data, mamul } = props
+  const context = useContext(userContext)
 
   const initial = { city_id: null, state_name: null }
   const [obj, setObj] = useState(initial)
@@ -188,6 +192,7 @@ const BranchCreation = (props) => {
         onboarded_by_id: form.getFieldValue('onboardedby_id'),
         payment_manager_id: form.getFieldValue('payment_manager_id'),
         mamul: parseInt(mamul),
+        updated_by: context.email,
         id:customer_data.id
       }
     })

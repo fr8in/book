@@ -1,6 +1,8 @@
 import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 
 const ALL_EMPLOYEE = gql`
   query allEmployee {
@@ -11,8 +13,8 @@ const ALL_EMPLOYEE = gql`
 }`
 
 const UPDATE_PARTNER_ONBOARDED_BY_NAME_MUTATION = gql`
-mutation customer_onboarded_by_name($onboarded_by_id:Int,$cardcode:String) {
-update_customer(_set:{onboarded_by_id: $onboarded_by_id}, where:{cardcode: {_eq:$cardcode}}){
+mutation customer_onboarded_by_name($onboarded_by_id:Int,$cardcode:String!,$updated_by:String!) {
+update_customer(_set:{onboarded_by_id: $onboarded_by_id,updated_by:$updated_by}, where:{cardcode: {_eq:$cardcode}}){
     returning{
       id
       onboarded_by_id   
@@ -22,7 +24,8 @@ update_customer(_set:{onboarded_by_id: $onboarded_by_id}, where:{cardcode: {_eq:
 `
 
 const OnBoardedBy = (props) => {
-  const { onboardedById, onboardedBy, cardcode } = props
+  const { onboardedById, onboardedBy, cardcode ,edit_access} = props
+  const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(
     ALL_EMPLOYEE,
@@ -51,6 +54,7 @@ const OnBoardedBy = (props) => {
     UpdateOnBoardedByName({
       variables: {
         cardcode,
+        updated_by: context.email,
         onboarded_by_id: value
       }
     })
@@ -63,6 +67,7 @@ const OnBoardedBy = (props) => {
       options={empList}
       handleChange={onChange}
       style={{ width: 110 }}
+      edit_access={edit_access}
     />
   )
 }

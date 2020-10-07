@@ -2,6 +2,8 @@ import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 
 const CUSTOMERS_TYPE_QUERY = gql`
   query customer_type{
@@ -12,8 +14,8 @@ const CUSTOMERS_TYPE_QUERY = gql`
 }
 `
 const UPDATE_CUSTOMER_TYPE_MUTATION = gql`
-mutation customer_type_update($type_id:Int,$cardcode:String) {
-  update_customer(_set: {customer_type_id: $type_id}, where: {cardcode: {_eq: $cardcode}}) {
+mutation customer_type_update($type_id:Int,$cardcode:String,$updated_by:String!) {
+  update_customer(_set: {customer_type_id: $type_id,updated_by:$updated_by}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id
       customer_type_id
@@ -23,7 +25,8 @@ mutation customer_type_update($type_id:Int,$cardcode:String) {
 `
 
 const CustomerType = (props) => {
-  const { type, cardcode } = props
+  const { type, cardcode,edit_access } = props
+  const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(CUSTOMERS_TYPE_QUERY, {
     notifyOnNetworkStatusChange: true
@@ -49,7 +52,8 @@ const CustomerType = (props) => {
     updateCustomerTypeId({
       variables: {
         cardcode,
-        type_id: value
+        type_id: value,
+        updated_by: context.email,
       }
     })
   }
@@ -62,6 +66,7 @@ const CustomerType = (props) => {
         options={typeList}
         handleChange={handleChange}
         style={{ width: 110 }}
+        edit_access={edit_access}
       />)
   )
 }
