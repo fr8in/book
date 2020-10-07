@@ -1,5 +1,5 @@
 import userContext from '../../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import TruckInfo from '../truckInfo'
 import Documents from '../truckDocuments'
 import TripDetail from '../../trips/tripsByStages'
@@ -14,6 +14,8 @@ import useShowHide from '../../../hooks/useShowHide'
 import TruckComment from '../../trucks/truckComment'
 import CreatePo from '../../trips/createPo'
 import get from 'lodash/get'
+import u from '../../../lib/util'
+import isEmpty from 'lodash/isEmpty'
 
 import { gql, useSubscription, useMutation } from '@apollo/client'
 
@@ -101,9 +103,12 @@ const tripStatusId = [2, 3, 4, 5, 6]
 
 const TruckDetailContainer = (props) => {
   const { truckNo } = props
-  const admin = true
-  const [subTabKey, setSubTabKey] = useState('1')
   const context = useContext(userContext)
+  const { role } = u
+  const edit_access = [role.admin, role.partner_manager, role.onboarding]
+  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
+
+  const [subTabKey, setSubTabKey] = useState('1')
 
   const initial = { commment: false }
   const { visible, onShow, onHide } = useShowHide(initial)
@@ -208,11 +213,12 @@ const TruckDetailContainer = (props) => {
                     <Divider />
                     <Documents truck_id={truck_info.id} partner_id={partner_id} truck_info={truck_info} />
                     <Divider />
-                    <Row>
-                      <Col span={8}>
-                        <Button danger={admin && !status_check} onClick={() => onSubmit(status_check)}>  {status_check ? 'Re-Activate' : 'De-Activate'} </Button>
-                      </Col>
-                    </Row>
+                    {access &&
+                      <Row>
+                        <Col span={8}>
+                          <Button danger onClick={() => onSubmit(status_check)}>  {status_check ? 'Re-Activate' : 'De-Activate'} </Button>
+                        </Col>
+                      </Row>}
                   </Col>
                 </Row>
               </TabPane>
@@ -225,7 +231,6 @@ const TruckDetailContainer = (props) => {
                     <TruckTimeline comments={truck_info.truck_comments} />
                   </Col>
                 </Row>
-
               </TabPane>
             </Tabs>
           </Card>

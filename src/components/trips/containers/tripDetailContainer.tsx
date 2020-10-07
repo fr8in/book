@@ -1,4 +1,5 @@
 
+import { useContext } from 'react'
 import { Row, Col, Card, Space, Tag, Tabs, Collapse } from 'antd'
 import TripInfo from '../tripInfo'
 import TripLr from '../tripLr'
@@ -20,12 +21,20 @@ import { TRIP_DETAIL_SUBSCRIPTION } from './query/tripDetailSubscription'
 import DetailPageHeader from '../../common/detailPageHeader'
 import get from 'lodash/get'
 import Loading from '../../common/loading'
+import u from '../../../lib/util'
+import isEmpty from 'lodash/isEmpty'
+import userContext from '../../../lib/userContaxt'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
 
 const TripDetailContainer = (props) => {
   const { trip_id } = props
+
+  const context = useContext(userContext)
+  const { role } = u
+  const edit_access = [role.admin, role.billing_manager, role.billing]
+  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
   const { loading, error, data } = useSubscription(
     TRIP_DETAIL_SUBSCRIPTION,
@@ -87,7 +96,7 @@ const TripDetailContainer = (props) => {
                       <TripPod trip_id={trip_info.id} trip_info={trip_info} />
                     </Panel>
                   </Collapse>
-                  {(trip_status_name === 'Delivered' || trip_status_name === 'POD Verified') && trip_info.pod_verified_at &&
+                  {trip_status_name === 'Delivered' && trip_info.pod_verified_at && access &&
                     <Collapse accordion className='small box-0 mt10'>
                       <Panel header='Invoice' key='1'>
                         <TripInvoice trip_info={trip_info} />
@@ -100,6 +109,7 @@ const TripDetailContainer = (props) => {
                           ap={trip_info.ap}
                           ar={trip_info.ar}
                           trip_id={trip_id}
+                          edit_access={access}
                         />
                       </Panel>
                     </Collapse>}
@@ -125,19 +135,19 @@ const TripDetailContainer = (props) => {
                         cardcode={get(trip_info, 'customer.cardcode', null)}
                         mamul={get(trip_info, 'mamul', 0)}
                         price={get(trip_info, 'partner_price', 0)}
-                        walletcode={get(trip_info,'customer.walletcode', null)}
-                        wallet_balance={get(trip_info,'customer.customer_accounting.wallet_balance', null)}
-                        customer_id={get(trip_info,'customer.id', null)}
+                        walletcode={get(trip_info, 'customer.walletcode', null)}
+                        wallet_balance={get(trip_info, 'customer.customer_accounting.wallet_balance', null)}
+                        customer_id={get(trip_info, 'customer.id', null)}
                       />
                     </Panel>
                   </Collapse>
                   {trip_status_name !== 'Closed' &&
-                  <Collapse accordion className='small mt10'>
-                    <Panel header='Credit/Debit Note' key='1'>
-                      <CreditNote trip_id={trip_id} />
-                      <CreditNoteTable trip_id={trip_id} />
-                    </Panel>
-                  </Collapse>}
+                    <Collapse accordion className='small mt10'>
+                      <Panel header='Credit/Debit Note' key='1'>
+                        <CreditNote trip_id={trip_id} />
+                        <CreditNoteTable trip_id={trip_id} />
+                      </Panel>
+                    </Collapse>}
                 </TabPane>
                 <TabPane tab='Timeline' key='3'>
                   <TripComment trip_id={trip_info.id} trip_status={get(trip_info, 'trip_status.name', null)} />
