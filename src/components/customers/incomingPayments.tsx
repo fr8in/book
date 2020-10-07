@@ -30,6 +30,9 @@ query customerbooked($cardcode:String,$customer_incoming_id:Int)
     id
     trip_id
     invoice_no
+    customer_incoming_id
+    comment
+    created_at
   }
 }`
 
@@ -46,25 +49,27 @@ const IncomingPayments = (props) => {
 
   console.log('Incoming Error', error)
 
-  const [getCustomerData, { loading: cus_loading, data: cus_data, error: cus_error }] = useLazyQuery(customerBooked)
-
+ 
   let _data = {}
   if (!loading) {
     _data = data
   }
 
-  let _cus_data = {}
-  if (!cus_loading) {
-    _cus_data = cus_data
-  }
-
   const customer = get(_data, 'customer[0]', [])
   const customer_incomings = get(customer, 'customer_incoming', 0)
+
+  const [getCustomerBooked,{ loading: cus_loading, data: cus_data, error: cus_error }] = useLazyQuery(customerBooked)
+    
+    let _cus_data = {}
+    if (!cus_loading) {
+      _cus_data = cus_data
+    }
   const customer_booked = get(_cus_data, 'accounting_customer_booked', null)
 
-  const onCusSelect = (value, cardcode) => {
-    getCustomerData({
-      variables: { cardcode: cardcode,customer_incoming_id:customer_incomings.customer_incoming_id }
+  const onExpand = (_, record) => {
+    console.log('onExpand', record)
+    getCustomerBooked({
+      variables: {cardcode: record.cardcode,customer_incoming_id:record.customer_incoming_id}
     })
   }
 
@@ -103,7 +108,8 @@ const IncomingPayments = (props) => {
   return (
     <Table
       columns={columns}
-      expandedRowRender={record => <IncomingPaymentsBooked customer_booked={customer_booked} onchange={onCusSelect} />}
+      expandedRowRender={record => <IncomingPaymentsBooked  customer_booked={customer_booked}/>}
+      onExpand={onExpand}
       dataSource={customer_incomings}
       rowKey={record => record.customer_incoming_id}
       size='small'

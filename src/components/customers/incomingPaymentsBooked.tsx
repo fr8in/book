@@ -2,8 +2,8 @@ import { Table } from 'antd'
 import moment from 'moment'
 
 const IncomingPaymentsBooked = (props) => {
-  const { customer_booked } = props
-console.log('customer_booked',customer_booked)
+  const { customer_booked,loading} = props
+
   const data = [
     {
       title: 'Date',
@@ -41,6 +41,7 @@ console.log('customer_booked',customer_booked)
       rowKey={(record) => record.customer_incoming_id}
       size='small'
       pagination={false}
+      loading={loading}
     />
   )
 }
