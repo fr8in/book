@@ -20,6 +20,7 @@ export default {
     partner_support: 'partner_support',
     accounts: 'accounts',
     onboarding: 'onboarding',
-    billing: 'billing'
+    billing: 'billing',
+    user: 'user'
   }
 }

@@ -15,7 +15,7 @@ mutation partner_gst_edit($gst:String,$cardcode:String,$updated_by: String!) {
 }
 `
 const PartnerGst = (props) => {
-  const { cardcode, gst, loading } = props
+  const { cardcode, gst, loading, edit_access } = props
   const context = useContext(userContext)
 
   const [updateGst] = useMutation(
@@ -41,6 +41,7 @@ const PartnerGst = (props) => {
       <InlineEdit
         text={gst}
         onSetText={onSubmit}
+        edit_access={edit_access}
       />)
   )
 }

@@ -1,5 +1,4 @@
 import { Row, Col, Space } from 'antd'
-import { EditTwoTone } from '@ant-design/icons'
 import LabelWithData from '../common/labelWithData'
 import AdvancePercentage from './partnerAdvancePercentage'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
@@ -27,9 +26,11 @@ const PartnerDetail = (props) => {
 
   const kycStatus = get(partnerDetail, 'partner_status.name', null)
   const notVerified = kycStatus === 'Verification' || kycStatus === 'Rejected' || kycStatus === 'Registered'
-  const editAccess = [role.admin, role.rm, role.onboarding]
+
+  const beforeOnboard = [role.admin, role.rm, role.onboarding]
   const afterOnboard = [role.admin, role.rm]
-  const bankEdit = notVerified ? editAccess : afterOnboard
+  const editAccess = notVerified ? beforeOnboard : afterOnboard
+  const ad_pm_on = [role.admin, role.partner_manager, role.onboarding]
 
   const address = partnerDetail && partnerDetail.address
   const partner_address = address === null || isEmpty(address) ? null
@@ -45,7 +46,7 @@ const PartnerDetail = (props) => {
         <LabelWithData
           label='PAN'
           data={
-            <Pan cardcode={cardcode} pan={partnerDetail.pan} loading={loading} access={afterOnboard} />
+            <Pan cardcode={cardcode} pan={partnerDetail.pan} loading={loading} edit_access={ad_pm_on} />
           }
           labelSpan={10}
           dataSpan={14}
@@ -64,9 +65,9 @@ const PartnerDetail = (props) => {
           label=' Address'
           data={
             <Space>
-              <span>{partner_address}
+              <span>{partner_address}{' '}
                 <EditAccess
-                  edit_access={editAccess}
+                  edit_access={beforeOnboard}
                   onEdit={() => handleShow('addressVisible', partnerDetail, 'address', cardcode)}
                 />
               </span>
@@ -85,9 +86,9 @@ const PartnerDetail = (props) => {
           label='Bank'
           data={
             <span>
-              {get(partnerDetail, 'bank.name', '-')}
+              {get(partnerDetail, 'bank.name', '-')}{' '}
               <EditAccess
-                edit_access={bankEdit}
+                edit_access={editAccess}
                 onEdit={() => handleShow('bankVisible', partnerDetail, 'bank', cardcode)}
               />
             </span>
@@ -111,7 +112,7 @@ const PartnerDetail = (props) => {
           label='Cibil Score '
           data={
             <span>
-              <CibilScore cardcode={cardcode} cibil={partnerDetail.cibil} loading={loading} />
+              <CibilScore cardcode={cardcode} cibil={partnerDetail.cibil} loading={loading} edit_access={ad_pm_on} />
             </span>
           }
           labelSpan={10}
@@ -125,7 +126,7 @@ const PartnerDetail = (props) => {
         />
         <LabelWithData
           label=' GST'
-          data={<span><Gst cardcode={cardcode} gst={partnerDetail.gst || '-'} loading={loading} /></span>}
+          data={<span><Gst cardcode={cardcode} gst={partnerDetail.gst || '-'} loading={loading} edit_access={ad_pm_on} /></span>}
           labelSpan={10}
           dataSpan={14}
         />
@@ -136,6 +137,7 @@ const PartnerDetail = (props) => {
               advance={get(partnerDetail, 'partner_advance_percentage.name', null)}
               advance_id={get(partnerDetail, 'partner_advance_percentage.id', null)}
               cardcode={cardcode}
+              edit_access={ad_pm_on}
             />
           }
           labelSpan={10}

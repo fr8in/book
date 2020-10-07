@@ -7,7 +7,6 @@ import isEmpty from 'lodash/isEmpty'
 
 function InlineEdit (props) {
   const { onSetText, text, edit_access } = props
-  console.log('edit_access', edit_access)
   const context = useContext(userContext)
   const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
   const [isInputActive, setIsInputActive] = useState(false)

@@ -15,7 +15,7 @@ mutation partner_cibil_score_edit($cibil:String,$cardcode:String,$updated_by: St
 }
 `
 const PartnerCibilScore = (props) => {
-  const { cardcode, cibil, loading } = props
+  const { cardcode, cibil, loading, edit_access } = props
   const context = useContext(userContext)
 
   const [updateCibilScore] = useMutation(
@@ -41,6 +41,7 @@ const PartnerCibilScore = (props) => {
       <InlineEdit
         text={cibil || '-'}
         onSetText={onSubmit}
+        edit_access={edit_access}
       />)
   )
 }

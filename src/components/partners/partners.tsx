@@ -44,18 +44,22 @@ const PartnerKyc = (props) => {
 
   const handleStatus = (e) => {
     onFilter(e.target.value)
+    setCurrentPage(1)
   }
 
   const handleRegionStatus = (e) => {
     onRegionFilter(e.target.value)
+    setCurrentPage(1)
   }
 
   const handleName = (e) => {
     onNameSearch(e.target.value)
+    setCurrentPage(1)
   }
 
   const handleCardCode = (e) => {
     onCardCodeSearch(e.target.value)
+    setCurrentPage(1)
   }
 
   const pageChange = (page, pageSize) => {

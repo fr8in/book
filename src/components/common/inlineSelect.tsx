@@ -1,9 +1,13 @@
+
 import { Select } from 'antd'
 import { EditTwoTone, CloseCircleTwoTone } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
+import userContext from '../../lib/userContaxt'
+import isEmpty from 'lodash/isEmpty'
+import EditAccess from './editAccess'
 
 const InlineSelect = (props) => {
-  const { label, value, options, handleChange, style } = props
+  const { label, value, options, handleChange, style, edit_access } = props
 
   const initial = { selectType: false }
   const { visible, onHide, onShow } = useShowHide(initial)
@@ -20,7 +24,7 @@ const InlineSelect = (props) => {
       {!visible.selectType ? (
         <label>
           {label}{' '}
-          <EditTwoTone onClick={() => onShow('selectType')} />
+          <EditAccess edit_access={edit_access} onEdit={() => onShow('selectType')} />
         </label>)
         : (
           <span>

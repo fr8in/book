@@ -24,7 +24,7 @@ mutation partner_advance_percentage($partner_advance_percentage_id:Int,$cardcode
 }
 `
 const AdvancePercentage = (props) => {
-  const { advance_id, advance, cardcode } = props
+  const { advance_id, advance, cardcode, edit_access } = props
   const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(
@@ -71,6 +71,7 @@ const AdvancePercentage = (props) => {
         options={advancePercentage}
         handleChange={onChange}
         style={{ width: 110 }}
+        edit_access={edit_access}
       />)
   )
 }

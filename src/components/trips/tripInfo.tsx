@@ -2,14 +2,17 @@ import { Row, Col, Divider, Card, Table } from 'antd'
 import LabelAndData from '../common/labelAndData'
 import LabelWithData from '../common/labelWithData'
 import Link from 'next/link'
-import { EditTwoTone } from '@ant-design/icons'
+import EditAccess from '../common/editAccess'
 import useShowHide from '../../hooks/useShowHide'
 import CustomerPrice from '../trips/customerPrice'
 import moment from 'moment'
 import get from 'lodash/get'
+import u from '../../lib/util'
 
 const TripInfo = (props) => {
   const { trip_info, trip_id } = props
+  const { role } = u
+  const price_edit_access = [role.admin, role.rm]
   const initial = { price: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   const trip_prices = {
@@ -65,6 +68,7 @@ const TripInfo = (props) => {
       width: '23%'
     }
   ]
+  const trip_status_id = get(trip_info, 'trip_status.id', null)
   return (
     <Row>
       <Col xs={24}>
@@ -123,7 +127,8 @@ const TripInfo = (props) => {
               data={
                 <p className='mb0'>
                   {get(trip_info, 'customer_price', null)}{' '}
-                  <EditTwoTone onClick={() => onShow('price')} />
+                  {trip_status_id < 12 && // Before invoice
+                    <EditAccess edit_access={price_edit_access} onEdit={() => onShow('price')} />}
                 </p>
               }
               labelSpan={10}
