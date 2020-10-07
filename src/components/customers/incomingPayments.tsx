@@ -26,7 +26,7 @@ query customer_booking($cardcode: String) {
       }
     }
   }
-}           
+}     
 `
 
 const IncomingPayments = (props) => {
@@ -37,7 +37,6 @@ const IncomingPayments = (props) => {
     {
       variables: { cardcode: cardcode }
     }
-
   )
 
   console.log('Incoming Error', error)
@@ -48,7 +47,7 @@ const IncomingPayments = (props) => {
   }
 
   const customer = get(_data, 'customer[0]', [])
-  const customer_incomings = get(customer, 'customer_incomings', 0)
+  const customer_incomings = get(_data, 'customer_sap_incoming', 0)
 
   const columns = [
     {

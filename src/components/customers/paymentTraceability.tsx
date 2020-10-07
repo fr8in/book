@@ -8,34 +8,31 @@ import useShowHide from '../../hooks/useShowHide'
 import _ from 'lodash'
 
 const INCOMING_PAYMENT = gql`
-query customer_booking($cardcode: String) {
-  customer(where: {cardcode: {_eq: $cardcode}}) {
-    id
-    cardcode
+query customerIncoming($walletcode: String!) {
+  customer_sap_incoming( walletcode:$walletcode) {
     walletcode
-    customer_accounting {
-      wallet_balance
-    }
-    customer_incomings(where: {balance: {_neq: 0}}) {
-      id
-      created_at
-      recevied
-      booked
-      balance
-      comment
-      customer_incoming_id
-    }
+    date
+    wallet_moved_date
+    docnum
+    docentry
+    remarks
+    transaction_type
+    doc_line
+    doc_rate
+    received
+    booked
+    balance
   }
 }
 `
 const PaymentTraceability = (props) => {
-  const { selectedRowKeys, selectOnchange, cardcode, amount, setAmount, form } = props
+  const { selectedRowKeys, selectOnchange, customer_id, amount, setAmount, form ,walletcode,wallet_balance} = props
   const { visible, onShow, onHide } = useShowHide('')
 
   const { loading, data, error } = useQuery(
     INCOMING_PAYMENT,
     {
-      variables: { cardcode: cardcode }
+      variables: { walletcode: walletcode }
     }
   )
 
@@ -46,10 +43,9 @@ const PaymentTraceability = (props) => {
     _data = data
   }
 
-  const customer = get(_data, 'customer[0]', null)
-  const customer_incomings = get(customer, 'customer_incomings', [])
-  const wallet_balance = get(customer, 'customer_accounting.wallet_balance', 0)
 
+  const customer_incomings = get(_data, 'customer_sap_incoming', [])
+  
   const onAmountChange = (e, balance) => {
     const value = parseFloat(e.target.value) || 0
     if (value > balance) {
@@ -64,15 +60,15 @@ const PaymentTraceability = (props) => {
 
   const columns = [{
     title: 'Date',
-    dataIndex: 'created_at',
+    dataIndex: 'date',
     width: '12%',
     render: (text, record) => text ? moment(text).format('DD-MMM-YY') : null
   },
   {
     title: 'Amount',
-    dataIndex: 'recevied',
+    dataIndex: 'received',
     width: '12%',
-    sorter: (a, b) => (a.recevied > b.recevied ? 1 : -1)
+    sorter: (a, b) => (a.received > b.received ? 1 : -1)
   },
   {
     title: 'Booked',
@@ -91,7 +87,7 @@ const PaymentTraceability = (props) => {
     dataIndex: 'amount',
     width: '12%',
     render: (text, record) => {
-      const enableSelectedRows = _.includes(selectedRowKeys, record.id)
+      const enableSelectedRows = _.includes(selectedRowKeys, record.docentry)
       return (
         <Input
           type='number'
@@ -105,7 +101,7 @@ const PaymentTraceability = (props) => {
   },
   {
     title: 'Remarks',
-    dataIndex: 'comment',
+    dataIndex: 'remarks',
     width: '40%',
     render: (text, record) => <Truncate data={text} length={32} />
   }
@@ -126,13 +122,13 @@ const PaymentTraceability = (props) => {
         }}
         columns={columns}
         dataSource={customer_incomings}
-        rowKey={(record) => record.id}
+        rowKey={(record) => record.docentry}
         size='small'
         scroll={{ x: 780, y: 250 }}
         pagination={false}
       />
       {visible.wallet && (
-        <WalletTopup visible={visible.wallet} onHide={onHide} customer_id={customer.id} />
+        <WalletTopup visible={visible.wallet} onHide={onHide} customer_id={customer_id}/>
       )}
     </Card>
   )

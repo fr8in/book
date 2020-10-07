@@ -78,7 +78,7 @@ mutation customer_final_payment(
 }`
 
 const FinalBooking = (props) => {
-  const { visible, onHide, cardcode, mamul, title, price, pending_data, trip_id } = props
+  const { visible, onHide, cardcode, mamul, title, price, pending_data, trip_id,walletcode,wallet_balance,customer_id  } = props
 
   const [form] = Form.useForm()
 
@@ -223,6 +223,9 @@ const FinalBooking = (props) => {
           cardcode={cardcode}
           amount={amount}
           setAmount={setAmount}
+          walletcode={walletcode}
+          customer_id={customer_id}
+          wallet_balance={wallet_balance}
         />
         <Form layout='vertical' onFinish={onFinalBooking} form={form}>
           <Row className='mt10' gutter={10}>
