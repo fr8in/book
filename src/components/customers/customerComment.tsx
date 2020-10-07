@@ -1,12 +1,12 @@
 import { useContext, useState } from 'react'
 import { Row, Col, Table, Input, Button, message, Form } from 'antd'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { gql, useSubscription, useMutation } from '@apollo/client'
 import moment from 'moment'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
 
 const CUSTOMER_COMMENT_SUBSCRIPTION = gql`
-  query customer_comment($id: Int!){
+  subscription customer_comment($id: Int!){
     customer(where:{id:{_eq:$id}}) {
       status{
         name
@@ -36,11 +36,10 @@ const customerComment = (props) => {
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
 
-  const { loading, error, data } = useQuery(
+  const { loading, error, data } = useSubscription(
     CUSTOMER_COMMENT_SUBSCRIPTION,
     {
-      variables: { id: customer_id },
-      notifyOnNetworkStatusChange: true
+      variables: { id: customer_id }
     }
   )
 

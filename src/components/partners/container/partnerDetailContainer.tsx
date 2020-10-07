@@ -75,7 +75,7 @@ const PartnerDetailContainer = (props) => {
   const pod_count = get(partner_info, 'pod.aggregate.count', 0)
   const invoiced_count = get(partner_info, 'invoiced.aggregate.count', 0)
   const paid_count = get(partner_info, 'paid.aggregate.count', 0)
-
+  console.log('partner_info', partner_info)
   return (
     loading ? <Loading /> : (
       <Row>
