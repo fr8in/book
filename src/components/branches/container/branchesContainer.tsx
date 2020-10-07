@@ -4,13 +4,26 @@ import CityBranchMapping from '../cityBranchMapping'
 import AddBranch from '../addBranch'
 import { PlusCircleOutlined } from '@ant-design/icons'
 import { Tabs, Card, Button } from 'antd'
+import u from '../../../lib/util'
 import useShowHide from '../../../hooks/useShowHide'
+import { useContext } from 'react'
+import userContext from '../../../lib/userContaxt'
+import isEmpty from 'lodash/isEmpty'
+
 
 const TabPane = Tabs.TabPane
 
 const BranchesContainer = () => {
+
+  const { role } = u
+  const add_branch_access = [role.admin]
+  const traffic_member_edit = [role.admin]
   const initial = { showModal: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+
+
+const context = useContext(userContext)
+  const access = !isEmpty(add_branch_access) ? context.roles.some(r => add_branch_access.includes(r)) : false
 
   return (
     <Card
@@ -19,6 +32,7 @@ const BranchesContainer = () => {
     >
       <Tabs
         tabBarExtraContent={
+          access ?
           <Button
             title='Add Branch'
             type='primary'
@@ -26,11 +40,11 @@ const BranchesContainer = () => {
             onClick={() => onShow('showModal')}
           >
                 Add Branch
-          </Button>
+          </Button> : null
         }
       >
         <TabPane tab='Branches' key='1'>
-          <Branch />
+          <Branch edit_access={traffic_member_edit } />
         </TabPane>
         <TabPane tab='Employess' key='2'>
           <Employees />

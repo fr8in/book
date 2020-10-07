@@ -13,6 +13,9 @@ import {
 import { DeleteTwoTone } from '@ant-design/icons'
 import get from 'lodash/get'
 import { gql, useMutation, useQuery } from '@apollo/client'
+import { useContext } from 'react'
+import userContext from '../../lib/userContaxt'
+import isEmpty from 'lodash/isEmpty'
 
 const ALL_EMPLOYEE = gql`
   query allEmployee {
@@ -51,10 +54,13 @@ mutation delete_traffic($id: Int!){
 }`
 
 const AddTraffic = (props) => {
-  const { visible, onHide, branch_data, title } = props
-
+  const { visible, onHide, branch_data, title,edit_access_delete } = props
+console.log('edit_access_delete',edit_access_delete)
   const [emp_id, setEmp_id] = useState(null)
   console.log('object', branch_data)
+
+  const context = useContext(userContext)
+  const access = !isEmpty(edit_access_delete) ? context.roles.some(r => edit_access_delete.includes(r)) : false
 
   const { loading, data, error } = useQuery(
     ALL_EMPLOYEE,
@@ -158,7 +164,10 @@ const AddTraffic = (props) => {
     },
     {
       title: 'Action',
-      render: (record) => <DeleteTwoTone twoToneColor='#eb2f96' onClick={() => onDelete(record.id)} />
+      render: (record) => 
+        access ?
+        <DeleteTwoTone twoToneColor='#eb2f96' onClick={() => onDelete(record.id)} /> : null
+    
     }
   ]
 
