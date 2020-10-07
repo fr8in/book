@@ -1,19 +1,19 @@
-import { Table, Button, Switch, message } from 'antd'
+import { Table, Button, Switch, message, Tooltip } from 'antd'
 import Link from 'next/link'
 import userContext from '../../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import FastagSuspend from '../cards/fastagSuspend'
 import FastagReversal from './fastagReversal'
 import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
 import {
   DownloadOutlined,
   LeftCircleOutlined,
-  StopOutlined,
-  SearchOutlined
+  StopOutlined
 } from '@ant-design/icons'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import get from 'lodash/get'
-
+import u from '../../../lib/util'
+import isEmpty from 'lodash/isEmpty'
 
 const FASTAG_QUERY = gql`
 query FastagsByPartner($partner_id: Int!) {
@@ -29,23 +29,20 @@ query FastagsByPartner($partner_id: Int!) {
     }
     fastag_balance
   }
-}
-`
+}`
 
 const UPDATE_FASTAG_STATUS_MUTATION = gql`
 mutation update_fastag_status($truckId:Int!,$status:Int!,$modifiedBy:String!){
-  update_fastag(truck_id:$truckId,status:$status,modified_by:$modifiedBy)
-  {
+  update_fastag(truck_id:$truckId,status:$status,modified_by:$modifiedBy){
     status
     description
-}
-}
-`
+  }
+}`
+
 const TOKEN_MUTATION = gql`
 mutation token{
   token
-}
-`
+}`
 
 const FasTags = (props) => {
   const { partner_id } = props
@@ -59,8 +56,10 @@ const FasTags = (props) => {
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const [token, setToken] = useState('')
   const context = useContext(userContext)
+  const { role } = u
+  const edit_access = [role.admin, role.partner_manager, role.onboarding]
+  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
-  console.log('partner_id', partner_id)
   const { loading, error, data } = useQuery(
     FASTAG_QUERY, {
       variables: {
@@ -70,7 +69,6 @@ const FasTags = (props) => {
       notifyOnNetworkStatusChange: true
     })
   console.log('FasTag error', error)
-  console.log('FasTag data', data)
 
   const [updateFastagStatus] = useMutation(
     UPDATE_FASTAG_STATUS_MUTATION,
@@ -91,13 +89,13 @@ const FasTags = (props) => {
       }
     }
   )
-  console.log('token', token)
+
   const onChange = (value, record) => {
     console.log('record', record, value)
     updateFastagStatus({
       variables: {
         truckId: record.truck_id,
-        status: value == true ? 1 : 0,
+        status: value ? 1 : 0,
         modifiedBy: context.email
       }
     })
@@ -113,7 +111,6 @@ const FasTags = (props) => {
     _data = data
   }
   const fastags = get(_data, 'partner[0].fastags', [])
-  console.log('fastags', fastags)
 
   const CardsFastag = [
     {
@@ -136,19 +133,12 @@ const FasTags = (props) => {
         )
       }
     },
-
     {
       title: 'Tag Bal',
       dataIndex: 'balance',
       sorter: (a, b) => (a.tagBal > b.tagBal ? 1 : -1),
       width: '7%'
     },
-    // {
-    //   title: 'T.Status',
-    //   render: (text, record) => record.tag_status && record.tag_status.status,
-    //   width: '10%'
-    // },
-
     {
       title: 'C.Status',
       dataIndex: 'cStatus',
@@ -158,6 +148,7 @@ const FasTags = (props) => {
           size='small'
           defaultChecked
           onChange={(checked) => onChange(checked, record)} checked={text}
+          disabled={!access}
         />
     },
     {
@@ -172,16 +163,18 @@ const FasTags = (props) => {
           className='btn-success'
           icon={<LeftCircleOutlined />}
           onClick={() => showModal(record)}
+          disabled={!access}
         />
       )
     },
     {
-      title: (
-        <Button size='small'>
-          Sus.
-          <DownloadOutlined />
-        </Button>
-      ),
+      // title: (
+      //   <Button size='small'>
+      //     <Tooltip title='Suspend'><span>Sus.</span></Tooltip>
+      //     <DownloadOutlined />
+      //   </Button>
+      // ),
+      title: 'Suspend',
       width: '8%',
       render: (text, record) => (
         <Button
@@ -191,6 +184,7 @@ const FasTags = (props) => {
           shape='circle'
           icon={<StopOutlined />}
           onClick={() => handleShow('suspendVisible', null, 'suspendData', record.truck_id)}
+          disabled={!access}
         />
       )
     }
@@ -201,10 +195,11 @@ const FasTags = (props) => {
       <Table
         columns={CardsFastag}
         dataSource={fastags}
-        rowKey={(record) => record.tagId}
+        rowKey={(record) => record.tag_id}
         size='small'
-        scroll={{ x: 1156, y: 400 }}
+        scroll={{ x: 800 }}
         pagination={false}
+        loading={loading}
       />
 
       {object.suspendVisible && (

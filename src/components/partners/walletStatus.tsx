@@ -1,7 +1,9 @@
 import { Switch, Tooltip, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useContext } from 'react'
+import u from '../../lib/util'
+import isEmpty from 'lodash/isEmpty'
 
 const UPDATE_PARTNER_WALLET_STATUS_MUTATION = gql`
 mutation partner_wallet_status($wallet_block:Boolean,$cardcode:String,$updated_by: String!) {
@@ -16,12 +18,15 @@ mutation partner_wallet_status($wallet_block:Boolean,$cardcode:String,$updated_b
 const PartnerStatus = (props) => {
   const { cardcode, status } = props
   const context = useContext(userContext)
+  const { role } = u
+  const edit_access = [role.admin, role.partner_manager, role.onboarding]
+  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
   const [updateStatusId] = useMutation(
     UPDATE_PARTNER_WALLET_STATUS_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
 
@@ -42,7 +47,7 @@ const PartnerStatus = (props) => {
         onChange={onChange}
         checked={blacklisted}
         className={blacklisted ? 'block' : 'unblock'}
-        disabled={false}
+        disabled={!access}
       />
     </Tooltip>
   )

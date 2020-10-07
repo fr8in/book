@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Button, Card } from 'antd'
 import Link from 'next/link'
 import Partners from '../partners'
 import u from '../../../lib/util'
 import get from 'lodash/get'
 import { gql, useQuery, useSubscription } from '@apollo/client'
+import isEmpty from 'lodash/isEmpty'
+import userContext from '../../../lib/userContaxt'
 
 const PARTNERS_SUBSCRIPTION = gql`
 subscription partners(
@@ -106,6 +108,10 @@ query partners(
 }`
 
 const PartnerContainer = () => {
+  const context = useContext(userContext)
+  const { role } = u
+  const edit_access = [role.admin, role.partner_manager, role.onboarding]
+  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
   const initialFilter = {
     partner_statusId: [1],
     region: null,
@@ -189,11 +195,10 @@ const PartnerContainer = () => {
   return (
     <Card
       size='small'
-      extra={
+      extra={access ? (
         <Link href='partners/create-partner'>
           <Button type='primary'>Create Partner</Button>
-        </Link>
-      }
+        </Link>) : ''}
       className='card-body-0 border-top-blue'
     >
       <Partners
@@ -208,6 +213,7 @@ const PartnerContainer = () => {
         region_list={region}
         onNameSearch={onNameSearch}
         onCardCodeSearch={onCardCodeSearch}
+        edit_access={access}
       />
     </Card>
   )

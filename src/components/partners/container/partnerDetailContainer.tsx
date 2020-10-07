@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Row, Col, Card, Tabs, Button, Space, Tooltip } from 'antd'
 import { CarOutlined, WalletOutlined, FileTextOutlined, MailOutlined, PlusCircleOutlined, BankOutlined } from '@ant-design/icons'
 import DetailPageHeader from '../../common/detailPageHeader'
@@ -29,6 +29,10 @@ import WalletStatement from '../walletStatement'
 import Loading from '../../common/loading'
 import PartnerTripContainer from './partnerTripContainer'
 import WalletToBank from '../walletToBank'
+import u from '../../../lib/util'
+import isEmpty from 'lodash/isEmpty'
+import userContext from '../../../lib/userContaxt'
+
 const TabPane = Tabs.TabPane
 
 const on_going = ['Confirmed', 'Reported at source', 'Intransit', 'Reported at destination', 'Delivery onhold']
@@ -47,6 +51,13 @@ const PartnerDetailContainer = (props) => {
   const { visible, onShow, onHide } = useShowHide(initial)
 
   const { cardcode, partner_id } = props
+  const context = useContext(userContext)
+  const { role } = u
+  const edit_access = [role.admin, role.partner_manager, role.onboarding]
+  const partner_access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
+  const admin = context.roles.includes(role.admin)
+  const admin_rm = context.roles.includes(role.admin, role.rm)
+
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,
     {
@@ -75,9 +86,10 @@ const PartnerDetailContainer = (props) => {
   const pod_count = get(partner_info, 'pod.aggregate.count', 0)
   const invoiced_count = get(partner_info, 'invoiced.aggregate.count', 0)
   const paid_count = get(partner_info, 'paid.aggregate.count', 0)
-  console.log('partner_info', partner_info)
+
   const partner_status = get(partner_info, 'partner_status.name', null)
   const after_onboard = partner_status === 'Active' || partner_status === 'De-activate' || partner_status === 'Blacklisted'
+
   return (
     loading ? <Loading /> : (
       <Row>
@@ -90,21 +102,23 @@ const PartnerDetailContainer = (props) => {
                 title={<HeaderInfo partner={partner_info} />}
                 extra={
                   <Space>
-                    <Tooltip title='Wallet to Bank'>
-                      <Button icon={<BankOutlined />} shape='circle' onClick={() => onShow('walletToBank')} />
-                    </Tooltip>
+                    {admin &&
+                      <Tooltip title='Wallet to Bank'>
+                        <Button icon={<BankOutlined />} shape='circle' onClick={() => onShow('walletToBank')} />
+                      </Tooltip>}
                     <Tooltip title='Account Statement'>
                       <Button icon={<MailOutlined />} shape='circle' onClick={() => onShow('reportMail')} />
                     </Tooltip>
                     <Tooltip title='Wallet Statement'>
                       <Button icon={<FileTextOutlined />} shape='circle' onClick={() => onShow('statement')} />
                     </Tooltip>
-                    <Tooltip title='Wallet Topup'>
-                      <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('topUp')} />
-                    </Tooltip>
+                    {admin_rm &&
+                      <Tooltip title='Wallet Topup'>
+                        <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('topUp')} />
+                      </Tooltip>}
                     <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${cardcode}`}>
                       <Tooltip title='Add Truck'>
-                        <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />} />
+                        <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />} disabled={!partner_access} />
                       </Tooltip>
                     </Link>
                     <WalletStatus cardcode={partner_info.cardcode} status={partner_info.wallet_block} />
@@ -138,7 +152,7 @@ const PartnerDetailContainer = (props) => {
                               onChange={tabChange}
                               tabBarExtraContent={
                                 <span>
-                                  {Key === '5' && (
+                                  {Key === '5' && partner_access && (
                                     <Link href='/partners/add-fastag'>
                                       <Button
                                         type='primary'

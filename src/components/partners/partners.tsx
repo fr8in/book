@@ -27,7 +27,8 @@ const PartnerKyc = (props) => {
     region_list,
     partner_status_list,
     onNameSearch,
-    onCardCodeSearch
+    onCardCodeSearch,
+    edit_access
   } = props
 
   const [currentPage, setCurrentPage] = useState(1)
@@ -194,7 +195,7 @@ const PartnerKyc = (props) => {
                 onClick={() => handleShow('commentVisible', null, 'commentData', record.id)}
               />
             </Tooltip>
-            {(partner_status === 'Verification' || partner_status === 'Reverification') &&
+            {(partner_status === 'Verification' || partner_status === 'Reverification') && edit_access &&
               <>
                 <Button
                   type='primary'

@@ -2,8 +2,9 @@ import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import InlineEdit from '../common/inlineEdit'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
-
+import { useContext } from 'react'
+import u from '../../lib/util'
+import isEmpty from 'lodash/isEmpty'
 
 const UPDATE_PARTNER_NAME_MUTATION = gql`
 mutation partner_name_edit($name:String,$cardcode:String,$updated_by: String!) {
@@ -18,12 +19,14 @@ mutation partner_name_edit($name:String,$cardcode:String,$updated_by: String!) {
 const PartnerName = (props) => {
   const { cardcode, name, loading } = props
   const context = useContext(userContext)
+  const { role } = u
+  const edit_access = [role.admin, role.partner_manager, role.onboarding]
 
   const [updatePartnerName] = useMutation(
     UPDATE_PARTNER_NAME_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
 
@@ -42,6 +45,7 @@ const PartnerName = (props) => {
       <InlineEdit
         text={name}
         onSetText={onSubmit}
+        edit_access={edit_access}
       />)
   )
 }
