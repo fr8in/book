@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import userContext from '../../../lib/userContaxt'
+import { useState,useContext } from 'react'
 import { Row, Col, Card, Input, Form, Button, Select, Space, message } from 'antd'
 import { gql, useMutation, useQuery, useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
@@ -36,7 +37,7 @@ const INSERT_PARTNER_MUTATION = gql`
     $account_number: String, $ifsc_code: String, 
     $mobile: String, $pan_no: String, $contact_name: String, 
     $acconnt_holder: String, $partner_status_id:Int,$city_id:Int,
-    $partner_advance_percentage_id:Int,$onboarded_by_id:Int) 
+    $partner_advance_percentage_id:Int,$onboarded_by_id:Int,$created_by:String ) 
     {
     insert_partner(
       objects: {
@@ -44,6 +45,7 @@ const INSERT_PARTNER_MUTATION = gql`
         pan: $pan_no, 
         cibil: $cibil, 
         address: $address, 
+        created_by:$created_by,
         account_number: $account_number,
         ifsc_code: $ifsc_code,
         partner_users:
@@ -69,6 +71,7 @@ const CreatePartner = () => {
   const [city, setCity] = useState(null)
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
+  const context = useContext(userContext)
 
 
   const { loading, error, data } = useQuery(
@@ -152,6 +155,7 @@ const CreatePartner = () => {
         partner_status_id: 1,
         partner_advance_percentage_id: form.advance_percentage,
         city_id: parseInt(city),
+        created_by: context.email,
         onboarded_by_id: form.on_boarded_by
       }
     })
