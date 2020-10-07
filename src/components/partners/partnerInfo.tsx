@@ -2,9 +2,12 @@ import { Row } from 'antd'
 import LabelAndData from '../common/labelAndData'
 import PartnerOnBoardedBy from './partnerOnboardedByName'
 import get from 'lodash/get'
+import u from '../../lib/util'
 
 const PartnerInfo = (props) => {
   const { partnerInfo } = props
+  const { role } = u
+  const access = [role.admin, role.rm, role.partner_manager, role.partner_support, role.onboarding]
 
   return (
     <Row gutter={8} className='mb10'>
@@ -32,6 +35,7 @@ const PartnerInfo = (props) => {
             onboardedBy={get(partnerInfo, 'onboarded_by.email', '-')}
             onboardedById={get(partnerInfo, 'onboarded_by.id', null)}
             cardcode={partnerInfo.cardcode}
+            edit_access={access}
           />
         }
         mdSpan={4}

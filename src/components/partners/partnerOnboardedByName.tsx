@@ -34,7 +34,7 @@ mutation update_credit_responsibility($responsibility_id:Int!,$id:Int! ){
 `
 
 const OnBoardedBy = (props) => {
-  const { onboardedById, onboardedBy, cardcode , credit_debit_id } = props
+  const { onboardedById, onboardedBy, cardcode, credit_debit_id, edit_access } = props
   const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(
@@ -77,7 +77,7 @@ const OnBoardedBy = (props) => {
             id: props.credit_debit_id
           }
       })
-    } else {(
+    } else {
       UpdateOnBoardedByName({
         variables: {
           cardcode,
@@ -85,7 +85,7 @@ const OnBoardedBy = (props) => {
           updated_by: context.email
         }
       })
-    )}
+    }
   }
 
   return (
@@ -95,6 +95,7 @@ const OnBoardedBy = (props) => {
       options={empList}
       handleChange={onChange}
       style={{ width: 110 }}
+      edit_access={edit_access}
     />
   )
 }
