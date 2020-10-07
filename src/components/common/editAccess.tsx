@@ -8,7 +8,6 @@ const EditAccess = (props) => {
   const context = useContext(userContext)
   const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
-  console.log('access', access)
   return (
     <>
       {access ? <EditTwoTone onClick={onEdit} /> : ''}

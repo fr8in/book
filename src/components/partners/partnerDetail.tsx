@@ -1,5 +1,4 @@
 import { Row, Col, Space } from 'antd'
-import { EditTwoTone } from '@ant-design/icons'
 import LabelWithData from '../common/labelWithData'
 import AdvancePercentage from './partnerAdvancePercentage'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
@@ -27,8 +26,11 @@ const PartnerDetail = (props) => {
 
   const kycStatus = get(partnerDetail, 'partner_status.name', null)
   const notVerified = kycStatus === 'Verification' || kycStatus === 'Rejected' || kycStatus === 'Registered'
+
   const editAccess = [role.admin, role.rm, role.onboarding]
   const afterOnboard = [role.admin, role.rm]
+  const panEdit = [role.admin, role.partner_manager, role.onboarding]
+  const adv_edit = [role.admin, role.partner_manager, role.onboarding]
   const bankEdit = notVerified ? editAccess : afterOnboard
 
   const address = partnerDetail && partnerDetail.address
@@ -45,7 +47,7 @@ const PartnerDetail = (props) => {
         <LabelWithData
           label='PAN'
           data={
-            <Pan cardcode={cardcode} pan={partnerDetail.pan} loading={loading} access={afterOnboard} />
+            <Pan cardcode={cardcode} pan={partnerDetail.pan} loading={loading} edit_access={panEdit} />
           }
           labelSpan={10}
           dataSpan={14}
@@ -136,6 +138,7 @@ const PartnerDetail = (props) => {
               advance={get(partnerDetail, 'partner_advance_percentage.name', null)}
               advance_id={get(partnerDetail, 'partner_advance_percentage.id', null)}
               cardcode={cardcode}
+              edit_access={adv_edit}
             />
           }
           labelSpan={10}

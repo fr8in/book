@@ -15,7 +15,7 @@ mutation partner_pan_edit($pan:String,$cardcode:String,$updated_by: String!) {
 }
 `
 const PartnerPan = (props) => {
-  const { cardcode, pan, loading, access } = props
+  const { cardcode, pan, loading, edit_access } = props
   const context = useContext(userContext)
 
   const [updatePan] = useMutation(
@@ -41,7 +41,7 @@ const PartnerPan = (props) => {
       <InlineEdit
         text={pan}
         onSetText={onSubmit}
-        edit_access={access}
+        edit_access={edit_access}
       />)
   )
 }
