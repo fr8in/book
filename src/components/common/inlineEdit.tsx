@@ -1,9 +1,15 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef, useCallback, useContext } from 'react'
 import useKeypress from '../../hooks/useKeypress'
 import useOnClickOutside from '../../hooks/useOnClickOutside'
 import { EditOutlined } from '@ant-design/icons'
+import userContext from '../../lib/userContaxt'
+import isEmpty from 'lodash/isEmpty'
+
 function InlineEdit (props) {
-  const { onSetText, text } = props
+  const { onSetText, text, edit_access } = props
+  console.log('edit_access', edit_access)
+  const context = useContext(userContext)
+  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
   const [isInputActive, setIsInputActive] = useState(false)
   const [inputValue, setInputValue] = useState(text)
   const [width, setWidth] = useState(140)
@@ -70,29 +76,30 @@ function InlineEdit (props) {
   ])
 
   return (
-    <span className='inline-wrapper' ref={wrapperRef}>
-      <span
-        ref={textRef}
-        onClick={handleSpanClick}
-        className={`inline-text-copy ${
+    access ? (
+      <span className='inline-wrapper' ref={wrapperRef}>
+        <span
+          ref={textRef}
+          onClick={handleSpanClick}
+          className={`inline-text-copy ${
           !isInputActive ? 'active' : 'hidden'
-        }`}
-      >
-        {text}
-        <EditOutlined />
-      </span>
-      <input
-        ref={inputRef}
-        // set the width to the input length multiplied by the x height
-        // it's not quite right but gets it close
-        style={{ minWidth: width }}
-        value={inputValue}
-        onChange={handleInputChange}
-        className={`inline-text-input ${
+          }`}
+        >
+          {text}
+          <EditOutlined />
+        </span>
+        <input
+          ref={inputRef}
+          // set the width to the input length multiplied by the x height
+          // it's not quite right but gets it close
+          style={{ minWidth: width }}
+          value={inputValue}
+          onChange={handleInputChange}
+          className={`inline-text-input ${
           isInputActive ? 'active' : 'hidden'
-        }`}
-      />
-    </span>
+          }`}
+        />
+      </span>) : (text || '-')
   )
 }
 

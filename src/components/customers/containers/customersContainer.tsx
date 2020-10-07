@@ -47,7 +47,7 @@ const CUSTOMERS_QUERY = gql`
         id
         name
       }
-      customer_files(where:{deleted_at: {_is_null: true}}) {
+      customer_files {
         type
         file_path
         folder

@@ -14,7 +14,7 @@ mutation customer_excess_payment ($amount:Float!,$customer_id:Int!,$doc_entry:In
 `
 
 const Rebate = (props) => {
-  const { visible, onHide, cardcode, customer_id } = props
+  const { visible, onHide, cardcode, customer_id,walletcode,wallet_balance } = props
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
   const [disableButton, setDisableButton] = useState(true)
@@ -44,7 +44,7 @@ const Rebate = (props) => {
       excess_payment_booking({
         variables: {
           customer_id: customer_id,
-          doc_entry: selectedRow[0].customer_incoming_id,
+          doc_entry: selectedRow[0].docentry,
           amount: parseFloat(amount)
         }
       })
@@ -76,6 +76,9 @@ const Rebate = (props) => {
             cardcode={cardcode}
             amount={amount}
             setAmount={setAmount}
+            walletcode={walletcode}
+            customer_id={customer_id}
+            wallet_balance={wallet_balance}
           />
         </Col>
       </Row>

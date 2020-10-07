@@ -6,10 +6,10 @@ import get from 'lodash/get'
 const EMPLOYEE_QUERY = gql`
   query fr8_employee{
     employee{
-        id
-        name
-        email
-      }
+      id
+      name
+      email
+    }
 }
 `
 const UPDATE_BRABCH_EMPLOYEE_MUTATION = gql`

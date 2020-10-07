@@ -45,7 +45,7 @@ query ifsc_validation($ifsc: String!){
 }`
 
 const Transfer = (props) => {
-  const { visible, onHide, cardcode, customer_id } = props
+  const { visible, onHide, cardcode, customer_id,walletcode,wallet_balance } = props
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
@@ -103,7 +103,7 @@ const Transfer = (props) => {
       customer_mamul_transfer({
         variables: {
           customer_id: customer_id,
-          doc_entry: selectedRow[0].customer_incoming_id,
+          doc_entry: selectedRow[0].docentry,
           amount: parseFloat(amount),
           trip_id: parseInt(form.trip_id),
           created_by: context.email,
@@ -156,9 +156,12 @@ const Transfer = (props) => {
             selectedRowKeys={selectedRowKeys}
             selectOnchange={selectOnchange}
             cardcode={cardcode}
+            walletcode={walletcode}
             amount={amount}
             setAmount={setAmount}
             form={form}
+            customer_id={customer_id}
+            wallet_balance={wallet_balance}
           />
         </Col>
       </Row>

@@ -1,10 +1,9 @@
 import { Modal, Form, Input, Select, message, Row, Col, Button } from 'antd'
-import React from 'react'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import u from '../../lib/util'
 import { useState } from 'react'
 
-const ADD_BRANCH_SUBSCRIPTION = gql`
+const ADD_BRANCH = gql`
  query add_branch{
   employee{
     id
@@ -46,7 +45,7 @@ const AddBranch = (props) => {
   const [disableButton, setDisableButton] = useState(false)
 
   const { loading, error, data } = useQuery(
-    ADD_BRANCH_SUBSCRIPTION,
+    ADD_BRANCH,
     {
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
