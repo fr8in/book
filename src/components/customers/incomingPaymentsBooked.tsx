@@ -38,7 +38,7 @@ console.log('customer_booked',customer_booked)
     <Table
       columns={data}
       dataSource={customer_booked}
-      rowKey={(record) => record.id}
+      rowKey={(record) => record.customer_incoming_id}
       size='small'
       pagination={false}
     />

@@ -24,7 +24,7 @@ subscription dashboard_trips_truks($regions: [Int!], $trip_status:String!, $bran
         cities {
           id
           name
-          tripsByDestination(where: {trip_status: {name: {_eq: $trip_status}}, truck_type:{id: {_in:$truck_type}}, created_by: {_in: $managers}}) {
+          tripsByDestination(where: {trip_status: {name: {_eq: $trip_status}}, truck_type:{id: {_in:$truck_type}}, branch_employee_id: {_in: $managers}}) {
             id
             delay
             eta
