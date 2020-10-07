@@ -2,11 +2,12 @@
 import { Row, Col, Form, Input, Button, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import Driver from '../trucks/driver'
-import { useState } from 'react'
+import { useState,useContext } from 'react'
+import userContext from '../../lib/userContaxt'
 
 const UPDATE_TRUCK_INFO_MUTATION = gql`
-mutation truck_info($length:float8,$breadth:float8,$height:float8,$id:Int!) {
-  update_truck(_set: {length:$length,breadth:$breadth,height:$height}, where: {id: {_eq:$id }}){
+mutation truck_info($length:float8,$breadth:float8,$height:float8,$id:Int!,$updated_by: String!) {
+  update_truck(_set: {length:$length,breadth:$breadth,height:$height,updated_by:$updated_by}, where: {id: {_eq:$id }}){
     returning{
       id
       length
@@ -20,6 +21,7 @@ mutation truck_info($length:float8,$breadth:float8,$height:float8,$id:Int!) {
 const TruckInfo = (props) => {
   const { truck_info, id, loading, partner_id } = props
   const [disableButton, setDisableButton] = useState(false)
+  const context = useContext(userContext)
   
   const driver_number = truck_info && truck_info.driver && truck_info.driver.mobile
 
@@ -44,7 +46,8 @@ const TruckInfo = (props) => {
         id: id,
         length: parseFloat(form.length),
         breadth: parseFloat(form.breadth),
-        height: parseFloat(form.height)
+        height: parseFloat(form.height),
+        updated_by: context.email
       }
     })
   }

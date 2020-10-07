@@ -5,7 +5,8 @@ import {
   CloseOutlined,
   SearchOutlined
 } from '@ant-design/icons'
-import { useState } from 'react'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
 import moment from 'moment'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import EmployeeList from '../branches/fr8EmpolyeeList'
@@ -74,10 +75,10 @@ query partner_lead(
 }
   `
 const LEAD_REJECT_MUTATION = gql`
-  mutation partner_lead_reject($partner_status_id:Int,$id:Int! ){
+  mutation partner_lead_reject($partner_status_id:Int,$id:Int!,$updated_by: String! ){
     update_partner_by_pk(
         pk_columns: { id: $id }
-        _set: { partner_status_id: $partner_status_id }) 
+        _set: { partner_status_id: $partner_status_id,updated_by:$updated_by }) 
     {
       id
       name
@@ -85,8 +86,8 @@ const LEAD_REJECT_MUTATION = gql`
   }
 `
 const UPDATE_LEAD_PRIORITY_STATUS_MUTATION = gql`
-mutation lead_priority_status($lead_priority: Boolean, $id: Int) {
-  update_partner(_set: {lead_priority: $lead_priority}, where: {id: {_eq: $id}}) {
+mutation lead_priority_status($lead_priority: Boolean, $id: Int,$updated_by: String!) {
+  update_partner(_set: {lead_priority: $lead_priority,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
       lead_priority
@@ -95,8 +96,8 @@ mutation lead_priority_status($lead_priority: Boolean, $id: Int) {
 }
 `
 const UPDATE_LEAD_CITY_MUTATION = gql`
-mutation update_lead_city($city_id:Int,$id:Int) {
-  update_partner(_set: {city_id: $city_id}, where: {id: {_eq: $id}}) {
+mutation update_lead_city($city_id:Int,$id:Int,$updated_by: String!) {
+  update_partner(_set: {city_id: $city_id,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
       city_id
@@ -129,6 +130,7 @@ const PartnerLead = (props) => {
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const [selectedPartners, setSelectedPartners] = useState([])
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const context = useContext(userContext)
 
   const onSelectChange = (selectedRowKeys, selectedRows) => {
     const partner_list = selectedRows && selectedRows.length > 0 ? selectedRows.map(row => row.id) : []
@@ -173,7 +175,7 @@ const PartnerLead = (props) => {
   console.log('partnerLead error', error)
   console.log('partnerLead data', data)
 
-  const [insertComment] = useMutation(
+  const [rejectLead] = useMutation(
     LEAD_REJECT_MUTATION, {
       onError (error) {
         message.error(error.toString())
@@ -183,10 +185,11 @@ const PartnerLead = (props) => {
       }
     })
   const onSubmit = (id) => {
-    insertComment({
+    rejectLead({
       variables: {
         partner_status_id: 2,
-        id: id
+        id: id,
+        updated_by: context.email
       }
     })
   }
@@ -205,7 +208,8 @@ const PartnerLead = (props) => {
     updateStatusId({
       variables: {
         id: id,
-        lead_priority: checked
+        lead_priority: checked,
+        updated_by: context.email
       }
     })
     console.log('id priority', id)
@@ -224,7 +228,8 @@ const PartnerLead = (props) => {
     updateCity({
       variables: {
         city_id: city_id,
-        id: partner_id
+        id: partner_id,
+        updated_by: context.email
       }
     })
   }

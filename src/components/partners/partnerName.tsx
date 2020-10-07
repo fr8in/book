@@ -1,10 +1,13 @@
 import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import InlineEdit from '../common/inlineEdit'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
+
 
 const UPDATE_PARTNER_NAME_MUTATION = gql`
-mutation partner_name_edit($name:String,$cardcode:String) {
-  update_partner(_set: {name: $name}, where: {cardcode: {_eq: $cardcode}}) {
+mutation partner_name_edit($name:String,$cardcode:String,$updated_by: String!) {
+  update_partner(_set: {name: $name,updated_by:$updated_by}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id
       name
@@ -14,6 +17,7 @@ mutation partner_name_edit($name:String,$cardcode:String) {
 `
 const PartnerName = (props) => {
   const { cardcode, name, loading } = props
+  const context = useContext(userContext)
 
   const [updatePartnerName] = useMutation(
     UPDATE_PARTNER_NAME_MUTATION,
@@ -27,7 +31,8 @@ const PartnerName = (props) => {
     updatePartnerName({
       variables: {
         cardcode: cardcode,
-        name: text
+        name: text,
+        updated_by: context.email
       }
     })
   }
