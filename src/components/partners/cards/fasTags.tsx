@@ -1,6 +1,7 @@
 import { Table, Button, Switch, message } from 'antd'
 import Link from 'next/link'
-import { useState } from 'react'
+import userContext from '../../../lib/userContaxt'
+import { useState,useContext } from 'react'
 import FastagSuspend from '../cards/fastagSuspend'
 import FastagReversal from './fastagReversal'
 import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
@@ -12,6 +13,7 @@ import {
 } from '@ant-design/icons'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import get from 'lodash/get'
+
 
 const FASTAG_QUERY = gql`
 query FastagsByPartner($partner_id: Int!) {
@@ -56,6 +58,8 @@ const FasTags = (props) => {
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const [token, setToken] = useState('')
+  const context = useContext(userContext)
+
   console.log('partner_id', partner_id)
   const { loading, error, data } = useQuery(
     FASTAG_QUERY, {
@@ -94,7 +98,7 @@ const FasTags = (props) => {
       variables: {
         truckId: record.truck_id,
         status: value == true ? 1 : 0,
-        modifiedBy: 'pravalika.k@fr8.in'
+        modifiedBy: context.email
       }
     })
   }

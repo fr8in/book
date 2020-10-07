@@ -4,7 +4,7 @@ import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 
 const INSERT_PARTNER_REJECT_MUTATION = gql`
-mutation partner_kyc_reject ($description:String, $topic:String, $partner_id: Int, $created_by:String, $partner_status_id:Int,$id:Int! ){
+mutation partner_kyc_reject ($description:String, $topic:String, $partner_id: Int, $created_by:String, $partner_status_id:Int,$id:Int!,$updated_by: String!){
   insert_partner_comment(objects:{partner_id:$partner_id,topic:$topic,description:$description,created_by:$created_by})
     {
       returning
@@ -12,7 +12,7 @@ mutation partner_kyc_reject ($description:String, $topic:String, $partner_id: In
         id
       }
     }
-    update_partner_by_pk(pk_columns:{id:$id} , _set:{partner_status_id:$partner_status_id})
+    update_partner_by_pk(pk_columns:{id:$id} , _set:{partner_status_id:$partner_status_id,updated_by:$updated_by})
     {
       id
     name
@@ -51,6 +51,7 @@ const KycReject = (props) => {
       variables: {
         partner_id: partner_id,
         created_by: context.email,
+        updated_by: context.email,
         description: userComment,
         topic: 'Kyc Rejected',
         partner_status_id: 3,
