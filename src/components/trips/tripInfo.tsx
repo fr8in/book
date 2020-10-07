@@ -69,6 +69,7 @@ const TripInfo = (props) => {
     }
   ]
   const trip_status_id = get(trip_info, 'trip_status.id', null)
+  console.log('trip_status_id', trip_status_id)
   return (
     <Row>
       <Col xs={24}>
