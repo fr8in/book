@@ -1,7 +1,9 @@
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import { Row, Col, Radio, Input, Select, Form, Button, message } from 'antd'
 import { gql, useSubscription, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
+import u from '../../lib/util'
+import isEmpty from 'lodash/isEmpty'
 
 const CREDIT_DEBIT_ISSUE_TYPE_SUBSCRIPTION = gql`
 subscription credit_debit_issue_type {
@@ -57,9 +59,12 @@ create_debit_track(
 `
 
 const CreditNote = (props) => {
-  const {trip_id} = props
+  const { trip_id } = props
   const [radioType, setRadioType] = useState('Credit Note')
   const context = useContext(userContext)
+  const { role } = u
+  const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing]
+  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
   const [disableButton, setDisableButton] = useState(false)
 
   const { loading, error, data } = useSubscription(
@@ -73,17 +78,16 @@ const CreditNote = (props) => {
     {
       onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
-      onCompleted (data) 
-      { 
+        message.error(error.toString())
+      },
+      onCompleted (data) {
         setDisableButton(false)
         console.log('credit data', data)
-        if (data.create_credit_track.message){
+        if (data.create_credit_track.message) {
+          message.success(data.create_credit_track && data.create_credit_track.message)
+        } else {
           message.success(data.create_credit_track && data.create_credit_track.message)
         }
-        else{
-          message.success(data.create_credit_track && data.create_credit_track.message)
-        } 
       }
     }
   )
@@ -92,21 +96,20 @@ const CreditNote = (props) => {
     {
       onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
-      onCompleted (data) 
-      { 
+        message.error(error.toString())
+      },
+      onCompleted (data) {
         setDisableButton(false)
-        console.log('debit data',data)
-        if (data.create_debit_track.success){
-          message.success(data.create_debit_track && data.create_debit_track.message) 
-        }
-        else{
+        console.log('debit data', data)
+        if (data.create_debit_track.success) {
+          message.success(data.create_debit_track && data.create_debit_track.message)
+        } else {
           message.error(data.create_debit_track && data.create_debit_track.message)
-       }
+        }
       }
     }
   )
-  
+
   var issue_type = []
   if (!loading) {
     issue_type = data && data.credit_debit_type
@@ -116,33 +119,33 @@ const CreditNote = (props) => {
     return { value: data.id, label: data.name }
   })
 
-const create_credit_debit = (form) =>{
-  console.log('form',form)
-  if (radioType === 'Credit Note'){
-    setDisableButton(true)
-    upadateCreditNote ({
-      variables:{
-        credit_debit_type_id: form.issue_type,
-        amount: parseFloat(form.amount),
-        comment: form.comment,
-        trip_id: parseInt(trip_id) ,
-        created_by: context.email
-      }   
-    })
+  const create_credit_debit = (form) => {
+    console.log('form', form)
+    if (radioType === 'Credit Note') {
+      setDisableButton(true)
+      upadateCreditNote({
+        variables: {
+          credit_debit_type_id: form.issue_type,
+          amount: parseFloat(form.amount),
+          comment: form.comment,
+          trip_id: parseInt(trip_id),
+          created_by: context.email
+        }
+      })
+    }
+    if (radioType === 'Debit Note') {
+      setDisableButton(true)
+      upadateDebitNote({
+        variables: {
+          credit_debit_type_id: form.issue_type,
+          amount: parseFloat(form.amount),
+          comment: form.comment,
+          trip_id: parseInt(trip_id),
+          created_by: context.email
+        }
+      })
+    }
   }
-  if(radioType === 'Debit Note'){
-    setDisableButton(true)
-    upadateDebitNote ({
-      variables:{
-        credit_debit_type_id: form.issue_type,
-        amount: parseFloat(form.amount),
-        comment: form.comment,
-        trip_id: parseInt(trip_id) ,
-        created_by: context.email
-      }   
-    })
-  }
-}
 
   return (
     <>
@@ -152,15 +155,15 @@ const create_credit_debit = (form) =>{
           onChange={(e) => setRadioType(e.target.value)}
         >
           <Radio value='Credit Note'>Credit</Radio>
-          <Radio value='Debit Note'>Debit</Radio>
+          {access && <Radio value='Debit Note'>Debit</Radio>}
         </Radio.Group>
       </Row>
       <Form layout='vertical' onFinish={create_credit_debit}>
         <Row gutter={10}>
           <Col xs={24} sm={12}>
-            <Form.Item label='Amount' name='amount' rules={[{ required: true }]} >
+            <Form.Item label='Amount' name='amount' rules={[{ required: true }]}>
               <Input
-               placeholder='amount'
+                placeholder='amount'
                 maxLength={5}
               />
             </Form.Item>

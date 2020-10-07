@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Col, Button, Menu, Dropdown, Drawer, Space, Checkbox, Collapse, Typography } from 'antd'
 import {
   UserOutlined,
@@ -12,6 +12,9 @@ import GlobalSearch from '../dashboard/globalSearch'
 import { useQuery, gql } from '@apollo/client'
 import {signOut} from '../../lib/auth'
 import BankBalance from './bankBalance'
+import u from '../../lib/util'
+import isEmpty from 'lodash/isEmpty'
+import userContext from '../../lib/userContaxt'
 
 
 const { Panel } = Collapse
@@ -68,6 +71,11 @@ const Actions = (props) => {
   const { visible, onShow, onHide } = useShowHide(initial)
 
   const [filter, setFilter] = useState(initialFilter)
+
+  const context = useContext(userContext)
+  const { role } = u
+  const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing_manager, role.partner_manager, role.accounts, role.billing]
+  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
   const variables = {
     now: initialFilter.now,
@@ -143,9 +151,10 @@ const Actions = (props) => {
       <Space>
         <Button size='small' type='ghost' shape='circle' icon={<FilterFilled />} onClick={() => onShow('filter')} />
         <Button size='small' type='ghost' shape='circle' icon={<SearchOutlined />} onClick={() => onShow('search')} />
+       {access &&
         <Dropdown overlay={<BankBalance />} trigger={['click']} placement='bottomRight'>
           <Button size='small' type='ghost' shape='circle' icon={<BankFilled />} />
-        </Dropdown>
+        </Dropdown>}
         <Dropdown overlay={user} trigger={['click']} placement='bottomRight'>
           <Button size='small' type='primary' shape='circle' icon={<UserOutlined />} />
         </Dropdown>
