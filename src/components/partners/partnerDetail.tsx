@@ -27,9 +27,9 @@ const PartnerDetail = (props) => {
   const kycStatus = get(partnerDetail, 'partner_status.name', null)
   const notVerified = kycStatus === 'Verification' || kycStatus === 'Rejected' || kycStatus === 'Registered'
 
-  const editAccess = [role.admin, role.rm, role.onboarding]
+  const beforeOnboard = [role.admin, role.rm, role.onboarding]
   const afterOnboard = [role.admin, role.rm]
-  const bankEdit = notVerified ? editAccess : afterOnboard
+  const editAccess = notVerified ? beforeOnboard : afterOnboard
   const ad_pm_on = [role.admin, role.partner_manager, role.onboarding]
 
   const address = partnerDetail && partnerDetail.address
@@ -67,7 +67,7 @@ const PartnerDetail = (props) => {
             <Space>
               <span>{partner_address}{' '}
                 <EditAccess
-                  edit_access={editAccess}
+                  edit_access={beforeOnboard}
                   onEdit={() => handleShow('addressVisible', partnerDetail, 'address', cardcode)}
                 />
               </span>
@@ -88,7 +88,7 @@ const PartnerDetail = (props) => {
             <span>
               {get(partnerDetail, 'bank.name', '-')}{' '}
               <EditAccess
-                edit_access={bankEdit}
+                edit_access={editAccess}
                 onEdit={() => handleShow('bankVisible', partnerDetail, 'bank', cardcode)}
               />
             </span>
