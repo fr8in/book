@@ -29,9 +29,8 @@ const PartnerDetail = (props) => {
 
   const editAccess = [role.admin, role.rm, role.onboarding]
   const afterOnboard = [role.admin, role.rm]
-  const panEdit = [role.admin, role.partner_manager, role.onboarding]
-  const adv_edit = [role.admin, role.partner_manager, role.onboarding]
   const bankEdit = notVerified ? editAccess : afterOnboard
+  const ad_pm_on = [role.admin, role.partner_manager, role.onboarding]
 
   const address = partnerDetail && partnerDetail.address
   const partner_address = address === null || isEmpty(address) ? null
@@ -47,7 +46,7 @@ const PartnerDetail = (props) => {
         <LabelWithData
           label='PAN'
           data={
-            <Pan cardcode={cardcode} pan={partnerDetail.pan} loading={loading} edit_access={panEdit} />
+            <Pan cardcode={cardcode} pan={partnerDetail.pan} loading={loading} edit_access={ad_pm_on} />
           }
           labelSpan={10}
           dataSpan={14}
@@ -66,7 +65,7 @@ const PartnerDetail = (props) => {
           label=' Address'
           data={
             <Space>
-              <span>{partner_address}
+              <span>{partner_address}{' '}
                 <EditAccess
                   edit_access={editAccess}
                   onEdit={() => handleShow('addressVisible', partnerDetail, 'address', cardcode)}
@@ -87,7 +86,7 @@ const PartnerDetail = (props) => {
           label='Bank'
           data={
             <span>
-              {get(partnerDetail, 'bank.name', '-')}
+              {get(partnerDetail, 'bank.name', '-')}{' '}
               <EditAccess
                 edit_access={bankEdit}
                 onEdit={() => handleShow('bankVisible', partnerDetail, 'bank', cardcode)}
@@ -113,7 +112,7 @@ const PartnerDetail = (props) => {
           label='Cibil Score '
           data={
             <span>
-              <CibilScore cardcode={cardcode} cibil={partnerDetail.cibil} loading={loading} />
+              <CibilScore cardcode={cardcode} cibil={partnerDetail.cibil} loading={loading} edit_access={ad_pm_on} />
             </span>
           }
           labelSpan={10}
@@ -127,7 +126,7 @@ const PartnerDetail = (props) => {
         />
         <LabelWithData
           label=' GST'
-          data={<span><Gst cardcode={cardcode} gst={partnerDetail.gst || '-'} loading={loading} /></span>}
+          data={<span><Gst cardcode={cardcode} gst={partnerDetail.gst || '-'} loading={loading} edit_access={ad_pm_on} /></span>}
           labelSpan={10}
           dataSpan={14}
         />
@@ -138,7 +137,7 @@ const PartnerDetail = (props) => {
               advance={get(partnerDetail, 'partner_advance_percentage.name', null)}
               advance_id={get(partnerDetail, 'partner_advance_percentage.id', null)}
               cardcode={cardcode}
-              edit_access={adv_edit}
+              edit_access={ad_pm_on}
             />
           }
           labelSpan={10}
