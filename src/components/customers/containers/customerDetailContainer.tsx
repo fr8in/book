@@ -96,6 +96,7 @@ const CustomerDetailContainer = (props) => {
   const delivered_count = get(customer_info, 'delivered.aggregate.count', 0)
   const invoiced_count = get(customer_info, 'invoiced.aggregate.count', 0)
   const recieved_count = get(customer_info, 'recieved.aggregate.count', 0)
+  const incoming_count= get(customer_info, 'incoming.aggregate.count', 0)
 
   return (
     loading ? <Loading /> : (
@@ -197,7 +198,7 @@ const CustomerDetailContainer = (props) => {
                       <CustomerClosedTrips cardcode={cardcode} />
                     </TabPane>
                     <TabPane
-                      tab={<TitleWithCount name='Incoming' value={0} />}
+                      tab={<TitleWithCount name='Incoming' value={incoming_count} />}
                       key='5'
                     >
                       <IncomingPayments cardcode={cardcode} id={customer_info && customer_info.id} />

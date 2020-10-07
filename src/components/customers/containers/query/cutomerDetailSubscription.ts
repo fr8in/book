@@ -23,6 +23,11 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         count
       }
     }
+    incoming:customer_incoming_aggregate{
+      aggregate{
+        count
+      }
+    }
     id
     cardcode
     walletcode

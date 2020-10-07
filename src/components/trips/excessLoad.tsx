@@ -24,7 +24,7 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
         cities {
           id
           name
-          trips(where: {trip_status: {name: {_eq: $trip_status}}, truck_type:{id: {_in:$truck_type}}, created_by: {_in: $managers}}) {
+          trips(where: {trip_status: {name: {_eq: $trip_status}}, truck_type:{id: {_in:$truck_type}}, branch_employee_id: {_in: $managers}}) {
             id
             po_date
             source {

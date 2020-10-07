@@ -1,33 +1,41 @@
 import { Table } from 'antd'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useQuery,useLazyQuery } from '@apollo/client'
 import IncomingPaymentsBooked from './incomingPaymentsBooked'
 import get from 'lodash/get'
 import moment from 'moment'
 
 const INCOMING_PAYMENT = gql`
-query customer_booking($cardcode: String) {
-  customer(where: {cardcode: {_eq: $cardcode}}) {
-    id
+query customerIncoming($cardcode:String){
+  customer(where:{cardcode:{_eq:$cardcode}}){
     cardcode
-    customer_incomings {
-      id
+    id
+    customer_incoming{
+      cardcode
+      wallet_moved_date
+      comment
+      customer_incoming_id
+      recevied
       booked
       balance
-      comment
-      recevied
-      created_at
-      customer_booked {
-        id
-        created_at
-        amount
-        comment
-        trip_id
-        invoice_no
-      }
     }
+   }
+}`
+
+const customerBooked = gql`
+query customerbooked($cardcode:String,$customer_incoming_id:Int)
+{
+  accounting_customer_booked(where:{cardcode:{_eq:$cardcode} ,customer_incoming_id:{_eq:$customer_incoming_id}})
+  {
+    amount
+    id
+    trip_id
+    invoice_no
+    customer_incoming_id
+    comment
+    created_at
   }
-}     
-`
+}`
+
 
 const IncomingPayments = (props) => {
   const { cardcode } = props
@@ -41,18 +49,34 @@ const IncomingPayments = (props) => {
 
   console.log('Incoming Error', error)
 
+ 
   let _data = {}
   if (!loading) {
     _data = data
   }
 
   const customer = get(_data, 'customer[0]', [])
-  const customer_incomings = get(_data, 'customer_sap_incoming', 0)
+  const customer_incomings = get(customer, 'customer_incoming', 0)
+
+  const [getCustomerBooked,{ loading: cus_loading, data: cus_data, error: cus_error }] = useLazyQuery(customerBooked)
+    
+    let _cus_data = {}
+    if (!cus_loading) {
+      _cus_data = cus_data
+    }
+  const customer_booked = get(_cus_data, 'accounting_customer_booked', null)
+
+  const onExpand = (_, record) => {
+    console.log('onExpand', record)
+    getCustomerBooked({
+      variables: {cardcode: record.cardcode,customer_incoming_id:record.customer_incoming_id}
+    })
+  }
 
   const columns = [
     {
       title: 'Date',
-      dataIndex: 'created_at',
+      dataIndex: 'wallet_moved_date',
       width: '15%',
       render: (text, render) => text ? moment(text).format('DD-MMM-YY') : '-'
     },
@@ -84,9 +108,10 @@ const IncomingPayments = (props) => {
   return (
     <Table
       columns={columns}
-      expandedRowRender={record => <IncomingPaymentsBooked customer_booked={record.customer_booked} />}
+      expandedRowRender={record => <IncomingPaymentsBooked  customer_booked={customer_booked}/>}
+      onExpand={onExpand}
       dataSource={customer_incomings}
-      rowKey={record => record.id}
+      rowKey={record => record.customer_incoming_id}
       size='small'
       scroll={{ x: 1156 }}
       pagination={false}
