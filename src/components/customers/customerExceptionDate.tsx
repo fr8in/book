@@ -5,6 +5,7 @@ import { gql, useMutation } from '@apollo/client'
 import useShowHide from '../../hooks/useShowHide'
 import userContext from '../../lib/userContaxt'
 import { useState,useContext } from 'react'
+import EditAccess from '../common/editAccess'
 
 const UPDATE_CUSTOMER_EXCEPTION_MUTATION = gql`
 mutation customer_exception($exception_date:date,$cardcode:String,$updated_by:String!) {
@@ -17,7 +18,7 @@ mutation customer_exception($exception_date:date,$cardcode:String,$updated_by:St
 }
 `
 const CustomerExceptionDate = (props) => {
-  const { exceptionDate, cardcode } = props
+  const { exceptionDate, cardcode ,edit_access} = props
   const context = useContext(userContext)
 
   const initial = { datePicker: false }
@@ -49,7 +50,7 @@ const CustomerExceptionDate = (props) => {
       {!visible.datePicker ? (
         <label>
           {exceptionDate ? moment(exceptionDate).format(dateFormat) : '-'}{' '}
-          <EditTwoTone onClick={() => onShow('datePicker')} />
+          <EditAccess edit_access={edit_access} onEdit={() => onShow('datePicker')} />
         </label>)
         : (
           <span>

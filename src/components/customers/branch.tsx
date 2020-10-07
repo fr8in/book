@@ -4,6 +4,10 @@ import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import EditBranch from '../customers/createCustomerBranch'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
+import isEmpty from 'lodash/isEmpty'
+
 
 const CUSTOMER_BRANCH = gql`
 subscription customer_branch($cardcode: String) {
@@ -26,9 +30,11 @@ subscription customer_branch($cardcode: String) {
 `
 
 const Branch = (props) => {
-  const { cardcode } = props
+  const { cardcode,edit_access } = props
   const initial = { visible: false, data: null }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
+  const context = useContext(userContext)
+  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
   const { loading, data, error } = useSubscription(
     CUSTOMER_BRANCH,
@@ -79,6 +85,7 @@ const Branch = (props) => {
       dataIndex: 'mobile',
       width: '8%'
     },
+    access ?
     {
       title: 'Action',
       render: (text, record) => {
@@ -91,7 +98,7 @@ const Branch = (props) => {
         )
       },
       width: '4%'
-    }
+    } : {}
   ]
 
   return (

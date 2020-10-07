@@ -28,6 +28,7 @@ import Fr8Branch from '../../customers/containers/fr8branchContainer'
 import CustomerUser from '../createCustomerUser'
 import CustomerBranch from '../createCustomerBranch'
 import TitleWithCount from '../../common/titleWithCount'
+import u from '../../../lib/util'
 
 // Apollo Client
 import { useSubscription } from '@apollo/client'
@@ -51,6 +52,9 @@ const CustomerDetailContainer = (props) => {
     addBranch: false
   }
   const { visible, onShow, onHide } = useShowHide(initial)
+  const { role } = u
+  const customerNameEdit = [role.admin, role.accounts_manager, role.accounts]
+  const branchActionEdit = [role.admin, role.accounts_manager, role.accounts]
 
   const variables = {
     cardcode: cardcode,
@@ -95,6 +99,7 @@ const CustomerDetailContainer = (props) => {
                       cardcode={cardcode}
                       name={customer_info && customer_info.name}
                       loading={loading}
+                      edit_access={customerNameEdit}
                     />
                     <h4>{cardcode}</h4>
                   </Space>
@@ -191,7 +196,7 @@ const CustomerDetailContainer = (props) => {
                           <PlusOutlined /> Add Branch
                         </Button>
                       </Row>
-                      <Branch cardcode={cardcode} />
+                      <Branch cardcode={cardcode}  edit_access={branchActionEdit}/>
                     </TabPane>
                     <TabPane tab='FR8 Branch' key='8'>
                       <Fr8Branch cardcode={cardcode} id={customer_info && customer_info.id} />

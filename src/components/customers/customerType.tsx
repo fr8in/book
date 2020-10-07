@@ -25,7 +25,7 @@ mutation customer_type_update($type_id:Int,$cardcode:String,$updated_by:String!)
 `
 
 const CustomerType = (props) => {
-  const { type, cardcode } = props
+  const { type, cardcode,edit_access } = props
   const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(CUSTOMERS_TYPE_QUERY, {
@@ -66,6 +66,7 @@ const CustomerType = (props) => {
         options={typeList}
         handleChange={handleChange}
         style={{ width: 110 }}
+        edit_access={edit_access}
       />)
   )
 }

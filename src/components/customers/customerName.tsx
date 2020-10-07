@@ -12,7 +12,7 @@ mutation update_customer_name($cardcode: String!, $company_name: String!){
 }
 `
 const CustomerName = (props) => {
-  const { cardcode, name, loading } = props
+  const { cardcode, name, loading ,edit_access} = props
 
   const [updateCustomerName] = useMutation(
     UPDATE_CUSTOMER_NAME_MUTATION,
@@ -42,6 +42,7 @@ const CustomerName = (props) => {
       <InlineEdit
         text={name}
         onSetText={onSubmit}
+        edit_access={edit_access}
       />)
   )
 }

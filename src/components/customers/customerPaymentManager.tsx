@@ -23,7 +23,7 @@ mutation customer_payment_manager($payment_manager_id:Int,$cardcode:String,$upda
 }
 `
 const CustomerPaymentManager = (props) => {
-  const { paymentManagerId, paymentManager, cardcode } = props
+  const { paymentManagerId, paymentManager, cardcode ,edit_access} = props
   const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(ALL_EMPLOYEE, {
@@ -68,6 +68,7 @@ const CustomerPaymentManager = (props) => {
         options={empList}
         handleChange={onChange}
         style={{ width: 110 }}
+        edit_access={edit_access}
       />)
   )
 }

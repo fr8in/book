@@ -2,6 +2,7 @@ import { Checkbox, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import { useState,useContext } from 'react'
+import isEmpty from 'lodash/isEmpty'
 
 const UPDATE_CUSTOMER_MANAGED_MUTATION = gql`
 mutation customer_managed($managed:Boolean,$cardcode:String,$updated_by:String!) {
@@ -15,8 +16,9 @@ mutation customer_managed($managed:Boolean,$cardcode:String,$updated_by:String!)
 `
 
 const ManagedCustomer = (props) => {
-  const { cardcode, isManaged } = props
+  const { cardcode, isManaged,edit_access } = props
   const context = useContext(userContext)
+  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
   const [customerManaged] = useMutation(
     UPDATE_CUSTOMER_MANAGED_MUTATION,
@@ -41,7 +43,7 @@ const ManagedCustomer = (props) => {
       <Checkbox
         onChange={onChange}
         checked={isManaged}
-        disabled={false}
+        disabled={!access}
       >
         Yes
       </Checkbox>
