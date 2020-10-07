@@ -1,9 +1,16 @@
 import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
-import { ALL_EMPLOYEE } from '../branches/container/query/employeeQuery'
 import InlineSelect from '../common/inlineSelect'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useContext } from 'react'
+
+const ALL_EMPLOYEE = gql`
+  query allEmployee {
+  employee{
+    id
+    email
+  }
+}`
 
 const UPDATE_PARTNER_ONBOARDED_BY_NAME_MUTATION = gql`
 mutation partner_onboarded_by_name($onboarded_by_id:Int,$cardcode:String,$updated_by: String!) {
@@ -27,9 +34,8 @@ mutation update_credit_responsibility($responsibility_id:Int!,$id:Int! ){
 `
 
 const OnBoardedBy = (props) => {
-  const { onboardedById, onboardedBy, cardcode ,credit_debit_id} = props
+  const { onboardedById, onboardedBy, cardcode , credit_debit_id } = props
   const context = useContext(userContext)
-
 
   const { loading, error, data } = useQuery(
     ALL_EMPLOYEE,
@@ -54,7 +60,7 @@ const OnBoardedBy = (props) => {
   )
 
   if (loading) return null
- // console.log('OnBoardedByName error', error)
+  // console.log('OnBoardedByName error', error)
 
   const { employee } = data
   const empList = employee.map(data => {
@@ -62,18 +68,16 @@ const OnBoardedBy = (props) => {
   })
 
   const onChange = (value) => {
-    console.log('credit_debit_id',credit_debit_id)
-    if (credit_debit_id !== undefined)
-    {
+    console.log('credit_debit_id', credit_debit_id)
+    if (credit_debit_id !== undefined) {
       UpdateCreditResponsibilityName({
         variables:
           {
-            responsibility_id:value,
+            responsibility_id: value,
             id: props.credit_debit_id
-          }   
+          }
       })
-    }
-    else(
+    } else {(
       UpdateOnBoardedByName({
         variables: {
           cardcode,
@@ -81,8 +85,7 @@ const OnBoardedBy = (props) => {
           updated_by: context.email
         }
       })
-    )
-   
+    )}
   }
 
   return (

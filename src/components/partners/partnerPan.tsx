@@ -41,7 +41,7 @@ const PartnerPan = (props) => {
       <InlineEdit
         text={pan}
         onSetText={onSubmit}
-        access={access}
+        edit_access={access}
       />)
   )
 }
