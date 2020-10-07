@@ -56,9 +56,16 @@ const Approve = (props) => {
         setDisableButton(false)
         message.error(error.toString())
       },
-      onCompleted () {
+      onCompleted (data) {
+        console.log('cedit_approve data',data)
         setDisableButton(false)
-        message.success('Updated!!')
+        if (data.approve_credit.success){
+          message.success(data.approve_credit && data.approve_credit.message)
+        }
+        else{
+          message.error(data.approve_credit && data.approve_credit.message)
+        }
+       
         onHide()
       }
     })

@@ -109,7 +109,7 @@ const CreditNote = (props) => {
   
   var issue_type = []
   if (!loading) {
-    issue_type = data.credit_debit_type
+    issue_type = data && data.credit_debit_type
   }
 
   const issue_type_list = issue_type.map((data) => {
