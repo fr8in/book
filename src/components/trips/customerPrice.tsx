@@ -74,6 +74,9 @@ const CustomerPrice = (props) => {
   )
 
   const onCustomerPriceSubmit = (form) => {
+    const old_total = parseFloat(trip_price.cash) + parseFloat(trip_price.to_pay)
+    const new_total = parseFloat(form.cash) + parseFloat(form.to_pay)
+    const comment = `${form.comment}, Customer Price: ${trip_price.customer_price}/${form.customer_price}, Partner Total: ${old_total}/${new_total}, Partner Advance: ${trip_price.cash}/${form.cash}, Partner Balance: ${trip_price.to_pay}/${form.to_pay}, FR8 Advance: ${trip_price.bank}/${form.bank}`
     setDisableButton(true)
     insertTripPrice({
       variables: {
@@ -87,7 +90,7 @@ const CustomerPrice = (props) => {
         ton: form.ton ? parseInt(form.ton, 10) : null,
         is_price_per_ton: !!form.ton,
         price_per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
-        comment: form.comment,
+        comment: comment,
         created_by: context.email,
         updated_by: context.email,
         topic: 'Trip Price Changed'
@@ -104,7 +107,7 @@ const CustomerPrice = (props) => {
 
     form.setFieldsValue({
       customer_price: cus_price,
-      bank: bank > 0 ? bank : 0
+      bank: loaded ? trip_price.bank : (bank > 0 ? bank : 0)
     })
     setPrice({ ...price, partner_price: cus_price - form.getFieldValue('mamul'), advance: cus_adv })
   }
@@ -117,7 +120,7 @@ const CustomerPrice = (props) => {
 
     form.setFieldsValue({
       customer_price: cus_price,
-      bank: bank > 0 ? bank : 0
+      bank: loaded ? trip_price.bank : (bank > 0 ? bank : 0)
     })
     setPrice({ ...price, partner_price: cus_price - form.getFieldValue('mamul'), advance: cus_adv })
   }
@@ -129,7 +132,7 @@ const CustomerPrice = (props) => {
 
     form.setFieldsValue({
       customer_price: value,
-      bank: bank > 0 ? bank : 0
+      bank: loaded ? trip_price.bank : (bank > 0 ? bank : 0)
     })
     setPrice({ ...price, partner_price: netPrice, advance: cus_adv })
   }
@@ -140,7 +143,7 @@ const CustomerPrice = (props) => {
     const bank = cus_adv - (parseFloat(form.getFieldValue('cash')) + parseFloat(form.getFieldValue('to_pay')))
     console.log('bank', bank, cus_adv)
     form.setFieldsValue({
-      bank: bank > 0 ? bank : 0
+      bank: loaded ? trip_price.bank : (bank > 0 ? bank : 0)
     })
     setPrice({ ...price, partner_price: netPrice, advance: cus_adv })
   }
@@ -164,19 +167,22 @@ const CustomerPrice = (props) => {
 
   const onBankChange = (e) => {
     const { value } = e.target
-    const advance = (form.getFieldValue('customer_price') - (parseFloat(form.getFieldValue('f_total')) - (value ? parseFloat(value) : 0)))
+    const netPrice = form.getFieldValue('customer_price') - form.getFieldValue('mamul')
+    const advance = (netPrice - (parseFloat(form.getFieldValue('f_total')) - (value ? parseFloat(value) : 0)))
     const balance = (parseFloat(form.getFieldValue('f_total')) - (value ? parseFloat(value) : 0))
-    const adv_percentage = Math.floor(((form.getFieldValue('customer_price') - balance) * 100) / form.getFieldValue('customer_price'))
+    const adv_percentage = Math.ceil(((netPrice - balance) * 100) / form.getFieldValue('customer_price'))
     form.setFieldsValue({
       balance: balance
     })
     setPrice({ ...price, advance, adv_percentage })
   }
+  const initial_adv = trip_price.bank + trip_price.cash + trip_price.to_pay
   return (
     <Modal
       title='Customer Price Change'
       visible={visible}
       onCancel={onHide}
+      style={{ top: 20 }}
       bodyStyle={{ paddingBottom: 0 }}
       footer={[]}
     >
@@ -263,7 +269,7 @@ const CustomerPrice = (props) => {
             <Form.Item
               label='FR8'
               name='f_total'
-              initialValue={trip_price.customer_price || 0}
+              initialValue={(trip_price.customer_price - (trip_price.cash + trip_price.to_pay)) || 0}
             >
               <Input placeholder='Total' disabled />
             </Form.Item>
@@ -282,7 +288,7 @@ const CustomerPrice = (props) => {
                 <Form.Item
                   label='Balance'
                   name='balance'
-                  initialValue={trip_price.customer_price - trip_price.bank || 0}
+                  initialValue={(trip_price.customer_price - (trip_price.bank + trip_price.cash + trip_price.to_pay)) || 0}
                 >
                   <Input placeholder='Balance' disabled />
                 </Form.Item>
@@ -302,7 +308,7 @@ const CustomerPrice = (props) => {
         <Row>
           <Col flex='auto'>
             <h4>Partner Price: {price.partner_price}</h4>
-            <h4 className='mb0'>Advance ({price.adv_percentage}%): {price.advance}</h4>
+            <h4 className='mb0'>Advance ({price.adv_percentage}%): {loaded ? initial_adv : price.advance}</h4>
           </Col>
           <Col flex='100px' className='text-right'>
             <Button type='primary' loading={disableButton} htmlType='submit'>Update</Button>

@@ -1,4 +1,4 @@
-import { Row, Col, Divider } from 'antd'
+import { Row, Col, Divider, Card, Table } from 'antd'
 import LabelAndData from '../common/labelAndData'
 import LabelWithData from '../common/labelWithData'
 import Link from 'next/link'
@@ -27,6 +27,44 @@ const TripInfo = (props) => {
     customer_advance_percentage: get(trip_info, 'customer_advance_percentage', null),
     partner_advance_percentage: get(trip_info, 'partner_advance_percentage.name', null)
   }
+  const customer_payment = [
+    {
+      id: 1,
+      to: 'Partner',
+      total: trip_prices.cash + trip_prices.to_pay,
+      advance: trip_prices.cash,
+      balance: trip_prices.to_pay
+    },
+    {
+      id: 2,
+      to: 'FR8',
+      total: trip_prices.customer_price - (trip_prices.cash + trip_prices.to_pay),
+      advance: trip_prices.bank,
+      balance: (trip_prices.customer_price - (trip_prices.cash + trip_prices.to_pay)) - trip_prices.bank
+    }
+  ]
+  const column = [
+    {
+      title: 'Customer Payment To',
+      dataIndex: 'to',
+      width: '30%'
+    },
+    {
+      title: 'Total',
+      dataIndex: 'total',
+      width: '24%'
+    },
+    {
+      title: 'Advance',
+      dataIndex: 'advance',
+      width: '23%'
+    },
+    {
+      title: 'Balance',
+      dataIndex: 'balance',
+      width: '23%'
+    }
+  ]
   return (
     <Row>
       <Col xs={24}>
@@ -90,9 +128,8 @@ const TripInfo = (props) => {
               }
               labelSpan={10}
             />
-            <LabelWithData label='Cash' data={get(trip_info, 'cash', 0)} labelSpan={10} />
-            <LabelWithData label='To Pay' data={get(trip_info, 'to_pay', 0)} labelSpan={10} />
             <LabelWithData label='Mamul' data={get(trip_info, 'mamul', 0)} labelSpan={10} />
+            <LabelWithData label='Including loading' data={get(trip_info, 'including_loading', null) ? 'Yes' : 'No'} labelSpan={10} />
           </Col>
           <Col sm={24} md={12}>
             <LabelWithData
@@ -103,10 +140,18 @@ const TripInfo = (props) => {
             <LabelWithData label='Delay' data={get(trip_info, 'delay', 0)} labelSpan={10} />
             <LabelWithData label='Partner Price' data={get(trip_info, 'partner_price', 0)} labelSpan={10} />
             <LabelWithData label='Trip KM' data={get(trip_info, 'km', '-')} labelSpan={10} />
-            <LabelWithData label='Including loading' data={get(trip_info, 'including_loading', null) ? 'Yes' : 'No'} labelSpan={10} />
             <LabelWithData label='Including Unloading' data={get(trip_info, 'including_unloading', null) ? 'Yes' : 'No'} labelSpan={10} />
           </Col>
         </Row>
+        <Card className='card-body-0 mt5'>
+          <Table
+            columns={column}
+            dataSource={customer_payment}
+            size='small'
+            pagination={false}
+            rowKey={(record) => record.id}
+          />
+        </Card>
       </Col>
       {visible.price &&
         <CustomerPrice
