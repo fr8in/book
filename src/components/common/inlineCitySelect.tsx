@@ -1,9 +1,10 @@
 import { EditTwoTone, CloseCircleTwoTone } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
 import CitySelect from './citySelect'
+import EditAccess from './editAccess'
 
 const InlineSelect = (props) => {
-  const { label, handleChange, partner_id } = props
+  const { label, handleChange, partner_id,edit_access } = props
 
   const initial = { selectType: false }
   const { visible, onHide, onShow } = useShowHide(initial)
@@ -18,7 +19,7 @@ const InlineSelect = (props) => {
       {!visible.selectType ? (
         <label>
           {label}{' '}
-          <EditTwoTone onClick={() => onShow('selectType')} />
+          <EditAccess edit_access={edit_access} onEdit={() => onShow('selectType')} />
         </label>)
         : (
           <span>
