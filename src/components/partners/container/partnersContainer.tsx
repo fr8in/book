@@ -114,6 +114,12 @@ const PartnerContainer = () => {
     cardcode: null
   }
   const [filter, setFilter] = useState(initialFilter)
+  const partnersQueryVars = {
+    region: filter.region,
+    partner_statusId: filter.partner_statusId,
+    name: filter.name ? `%${filter.name}%` : null,
+    cardcode: filter.cardcode ? `%${filter.cardcode}%` : null
+  }
   const variables = {
     offset: filter.offset,
     limit: filter.limit,
@@ -128,12 +134,6 @@ const PartnerContainer = () => {
       variables: variables
     }
   )
-  const partnersQueryVars = {
-    region: filter.region,
-    partner_statusId: filter.partner_statusId,
-    name: filter.name ? `%${filter.name}%` : null,
-    cardcode: filter.cardcode ? `%${filter.cardcode}%` : null
-  }
 
   const { loading, error, data } = useQuery(
     PARTNERS_QUERY,
