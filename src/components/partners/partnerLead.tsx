@@ -8,7 +8,7 @@ import {
 import userContext from '../../lib/userContaxt'
 import { useState,useContext } from 'react'
 import moment from 'moment'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { gql, useQuery, useMutation, useSubscription } from '@apollo/client'
 import EmployeeList from '../branches/fr8EmpolyeeList'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from '../../components/partners/comment'
@@ -17,12 +17,12 @@ import u from '../../lib/util'
 import Truncate from '../common/truncate'
 import get from 'lodash/get'
 
-const PARTNERS_LEAD_QUERY = gql`
-query partner_lead(
+const PARTNERS_LEAD_SUBSCRIPTION = gql`
+subscription partner_lead(
   $offset: Int!
   $limit: Int!
   $where:partner_bool_exp
-  ){
+){
   partner(
     offset: $offset
     limit: $limit
@@ -59,6 +59,13 @@ query partner_lead(
       description
     }
   }
+}
+`
+
+const PARTNERS_LEAD_QUERY = gql`
+query partner_lead(
+  $where:partner_bool_exp
+  ){
   partner_aggregate(where: $where) {
     aggregate {
       count
@@ -160,9 +167,20 @@ const PartnerLead = (props) => {
     // _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ? null :  {id: {_is_null:true }} }
   }
   // console.log('filter.no_comment ', filter.no_comment, filter.no_comment && filter.no_comment.length > 0)
+
+const variables = {
+  offset: filter.offset,
+  limit: filter.limit,
+  where: filter.city_name ? where : whereNoCityFilter
+}
+const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
+  PARTNERS_LEAD_SUBSCRIPTION,
+  {
+    variables: variables
+  }
+)
+
   const partnerQueryVars = {
-    offset: filter.offset,
-    limit: filter.limit,
     where: filter.city_name ? where : whereNoCityFilter
   }
 
@@ -234,13 +252,19 @@ const PartnerLead = (props) => {
     })
   }
 
+  let _sdata = {}
+  if (!s_loading) {
+    _sdata = s_data
+  }
+  const partners = get(s_data, 'partner', [])
+
   let _data = {}
 
   if (!loading) {
     _data = data
   }
 
-  const partners = get(_data, 'partner', [])
+  
   const partner_aggregate = get(_data, 'partner_aggregate', 0)
   const partner_status = get(_data, 'partner_status', [])
   const channel = get(_data, 'channel', [])
