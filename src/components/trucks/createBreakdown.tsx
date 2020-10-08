@@ -14,11 +14,10 @@ query create_breakdown($id: Int!){
       name
     }
   }
-}
-`
+}`
 
 const INSERT_UPDATE_CREATE_BREAKDOWN_MUTATION = gql`
-mutation truck_available($truck_id:Int!,$topic:String,$created_by:String,$description:String,$id:Int!,$available_at:timestamptz,$city_id:Int,$updated_by: String!) {
+mutation truck_available($truck_id:Int!,$topic:String,$created_by:String,$description:String,$id:Int!,$available_at:timestamp,$city_id:Int,$updated_by: String!) {
   insert_truck_comment(objects: {truck_id:$truck_id, topic:$topic, created_by:$created_by, description:$description}) {
     returning {
       id
