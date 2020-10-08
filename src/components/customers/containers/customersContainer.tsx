@@ -2,61 +2,68 @@ import { useState,useContext  } from 'react'
 import { Row, Col, Card } from 'antd'
 import Customers from '../customers'
 import get from 'lodash/get'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useQuery, useSubscription } from '@apollo/client'
 import u from '../../../lib/util'
-import userContext from '../../../lib/userContaxt'
-import isEmpty from 'lodash/isEmpty'
 
+const CUSTOMERS_SUBSCRIPTION = gql`
+subscription customers(
+  $offset: Int!, 
+  $limit: Int!,
+  $statusId: [Int!]
+  $name: String
+  $mobile: String
+){
+  customer(
+    offset: $offset
+    limit: $limit
+    where: {
+      status: { id: { _in: $statusId } }
+      mobile: { _like: $mobile }
+      name: { _ilike: $name }
+    }
+  ) {
+    id
+    cardcode
+    customer_users {
+      id
+      name
+    }
+    name
+    mobile
+    customer_type_id
+    customer_type{
+      id
+      name
+    }
+    created_at
+    pan
+    advance_percentage_id
+    customer_advance_percentage{
+      name
+      id
+    }
+    system_mamul
+    status {
+      id
+      name
+    }
+    customer_files {
+      type
+      file_path
+      folder
+      id
+      created_at
+    }
+  }
+}
+
+`
 const CUSTOMERS_QUERY = gql`
   query customers(
-    $offset: Int!
-    $limit: Int!
     $statusId: [Int!]
     $name: String
     $mobile: String
   ) {
-    customer(
-      offset: $offset
-      limit: $limit
-      where: {
-        status: { id: { _in: $statusId } }
-        mobile: { _like: $mobile }
-        name: { _ilike: $name }
-      }
-    ) {
-      id
-      cardcode
-      customer_users {
-        id
-        name
-      }
-      name
-      mobile
-      customer_type_id
-      customer_type{
-        id
-        name
-      }
-      created_at
-      pan
-      advance_percentage_id
-      customer_advance_percentage{
-        name
-        id
-      }
-      system_mamul
-      status {
-        id
-        name
-      }
-      customer_files {
-        type
-        file_path
-        folder
-        id
-        created_at
-      }
-    }
     customer_aggregate(
       where: {
         status: { id: { _in: $statusId } }
@@ -88,9 +95,20 @@ const CustomersContainer = (props) => {
   const { role } = u
   const kycApprovalRejectEdit = [role.admin, role.accounts_manager, role.accounts]
 
-  const customersQueryVars = {
-    offset: filter.offset,
+const variables = {
+  offset: filter.offset,
     limit: filter.limit,
+    statusId: filter.statusId,
+    name: filter.name ? `%${filter.name}%` : null,
+    mobile: filter.mobile ? `%${filter.mobile}%` : null
+}
+const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
+  CUSTOMERS_SUBSCRIPTION,
+  {
+    variables: variables
+  }
+)
+  const customersQueryVars = {
     statusId: filter.statusId,
     name: filter.name ? `%${filter.name}%` : null,
     mobile: filter.mobile ? `%${filter.mobile}%` : null
@@ -103,12 +121,20 @@ const CustomersContainer = (props) => {
   })
 
   console.log('CustomersContainer error', error)
+
+  let _sdata = {}
+  if (!s_loading) {
+    _sdata = s_data
+  }
+
+  const customer = get(s_data, 'customer', null)
+
   let _data = {}
   if (!loading) {
     _data = data
   }
 
-  const customer = get(_data, 'customer', null)
+ 
   const customer_status = get(_data, 'customer_status', [])
   const customer_aggregate = get(_data, 'customer_aggregate', 0)
 
