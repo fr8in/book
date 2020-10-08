@@ -71,10 +71,7 @@ const KycReject = (props) => {
       </Row>
       <br />
       <Row justify='end'>
-        <Space>
-          <Button onClick={onHide}>Cancel</Button>
           <Button type='primary'  loading={disableButton} onClick={onSubmit}>Ok</Button>
-        </Space>
       </Row>
     </>
   )

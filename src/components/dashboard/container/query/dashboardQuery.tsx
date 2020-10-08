@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 const DASHBOAD_QUERY = gql`
-subscription dashboard_aggregate($now: timestamptz, $regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $managers: [Int!]) {
+subscription dashboard_aggregate($now: timestamp, $regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $managers: [Int!]) {
   region(where: {id: {_in: $regions}}) {
     id
     branches(where:{id:{_in:$branches}}) {

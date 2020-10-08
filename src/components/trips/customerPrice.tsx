@@ -3,7 +3,7 @@ import { gql, useMutation } from '@apollo/client'
 import { useState, useContext } from 'react'
 import userContext from '../../lib/userContaxt'
 
-const CUSTOMER_MUTATION = gql`
+const UPDATE_TRIP_PRICE = gql`
 mutation update_trip_price(
   $trip_id: Int, 
   $updated_by: String!
@@ -58,8 +58,8 @@ const CustomerPrice = (props) => {
   }
   const [price, setPrice] = useState(initial)
 
-  const [insertTripPrice] = useMutation(
-    CUSTOMER_MUTATION,
+  const [update_trip_price] = useMutation(
+    UPDATE_TRIP_PRICE,
     {
       onError (error) {
         setDisableButton(false)
@@ -78,7 +78,7 @@ const CustomerPrice = (props) => {
     const new_total = parseFloat(form.cash) + parseFloat(form.to_pay)
     const comment = `${form.comment}, Customer Price: ${trip_price.customer_price}/${form.customer_price}, Partner Total: ${old_total}/${new_total}, Partner Advance: ${trip_price.cash}/${form.cash}, Partner Balance: ${trip_price.to_pay}/${form.to_pay}, FR8 Advance: ${trip_price.bank}/${form.bank}`
     setDisableButton(true)
-    insertTripPrice({
+    update_trip_price({
       variables: {
         trip_id: trip_id,
         customer_price: parseFloat(form.customer_price),

@@ -1,7 +1,6 @@
 import { Table } from 'antd'
-import { gql, useQuery} from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
-
 
 const ADDITIONAL_ADVANCE_QUERY = gql`
 query additional_advance($trip_id: Int_comparison_exp!) {
@@ -22,15 +21,13 @@ query additional_advance($trip_id: Int_comparison_exp!) {
 `
 
 const AdditionalAdvance = (props) => {
-
-
-console.log('AD trip_id',props)
+  console.log('AD trip_id', props)
   const { loading, error, data } = useQuery(
     ADDITIONAL_ADVANCE_QUERY, {
-      variables:{trip_id:{'_eq':props.ad_trip_id}} ,
-    fetchPolicy: 'cache-and-network',
-    notifyOnNetworkStatusChange: true
-  })
+      variables: { trip_id: { _eq: props.ad_trip_id } },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    })
 
   console.log('Additional advance error', error)
 
@@ -40,7 +37,6 @@ console.log('AD trip_id',props)
   }
   const additionalAdvance = get(_data, 'trip[0].additional_advance', [])
   console.log('additionalAdvance', additionalAdvance)
-
 
   const columns = [
     {

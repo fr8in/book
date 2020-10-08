@@ -1,8 +1,11 @@
 import { Table } from 'antd'
-import { EditTwoTone } from '@ant-design/icons'
+import u from '../../lib/util'
+import EditAccess from '../common/editAccess'
 
 const CustomerPayments = (props) => {
   const { dataSource, onShow, type_name } = props
+  const { role } = u
+  const edit_access = [role.admin, role.accounts_manager, role.accounts]
 
   const column = [{
     title: 'Type',
@@ -41,7 +44,7 @@ const CustomerPayments = (props) => {
   {
     title: 'Edit',
     width: '6%',
-    render: (record) => <EditTwoTone onClick={(type_name === 'Final') ? () => onShow(record) : onShow} />
+    render: (record) => <EditAccess edit_access={edit_access} onEdit={(type_name === 'Final') ? () => onShow(record) : onShow} />
   }]
 
   return (

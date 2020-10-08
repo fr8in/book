@@ -3,6 +3,8 @@ import { Row, Col, Radio, Form, Input, Button, message } from 'antd'
 import { gql, useMutation, useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
+import u from '../../lib/util'
+import isEmpty from 'lodash/isEmpty'
 
 const CREATE_ADDITIONAL_ADVANCE = gql`
 mutation additional_advance($input: AdditionalAdvanceInput) {
@@ -25,8 +27,12 @@ const CreateAdditionalAdvance = (props) => {
   const { trip_info } = props
 
   const [radioValue, setRadioValue] = useState('WALLET')
+  const [disableBtn, setDisableBtn] = useState(false)
   const [form] = Form.useForm()
   const context = useContext(userContext)
+  const { role } = u
+  const edit_access = [role.admin, role.rm, role.accounts_manager]
+  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
   const [getBankDetail, { loading, data, error }] = useLazyQuery(
     IFSC_VALIDATION,
@@ -60,19 +66,21 @@ const CreateAdditionalAdvance = (props) => {
   const [createAdditionalAdvance] = useMutation(
     CREATE_ADDITIONAL_ADVANCE,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) { message.error(error.toString()); setDisableBtn(false) },
       onCompleted (data) {
         const status = get(data, 'additional_advance.status', null)
         const description = get(data, 'additional_advance.description', null)
         if (status === 'OK') {
+          setDisableBtn(false)
           message.success(description || 'Processed!')
-        } else (message.error(description))
+        } else { (message.error(description)); setDisableBtn(false) }
       }
     }
   )
 
   const onSubmit = (form) => {
-    (radioValue === 'WALLET') ? (
+    setDisableBtn(true)
+    if (radioValue === 'WALLET') {
       createAdditionalAdvance({
         variables: {
           input: {
@@ -86,27 +94,26 @@ const CreateAdditionalAdvance = (props) => {
           }
         }
       })
-    )
-      : (
-        createAdditionalAdvance({
-          variables: {
-            input: {
-              trip_id: trip_info.id,
-              truck_id: trip_info && trip_info.truck && trip_info.truck.id,
-              amount: parseFloat(form.amount),
-              wallet_code: trip_info && trip_info.partner && trip_info.partner.walletcode,
-              payment_mode: radioValue,
-              comment: form.comment,
-              created_by: context.email,
-              bank_detail: {
-                account_name: form.account_name,
-                account_number: form.account_number,
-                ifsc_code: form.ifsc
-              }
+    } else {
+      createAdditionalAdvance({
+        variables: {
+          input: {
+            trip_id: trip_info.id,
+            truck_id: trip_info && trip_info.truck && trip_info.truck.id,
+            amount: parseFloat(form.amount),
+            wallet_code: trip_info && trip_info.partner && trip_info.partner.walletcode,
+            payment_mode: radioValue,
+            comment: form.comment,
+            created_by: context.email,
+            bank_detail: {
+              account_name: form.account_name,
+              account_number: form.account_number,
+              ifsc_code: form.ifsc
             }
           }
-        })
-      )
+        }
+      })
+    }
   }
 
   const rules = [
@@ -123,7 +130,10 @@ const CreateAdditionalAdvance = (props) => {
       }
     })
   ]
-
+  console.log('trip_info', trip_info)
+  const trip_status = get(trip_info, 'trip_status.id', null)
+  const loadedNo = get(trip_info, 'loaded', 'No')
+  const disable_adv_btn = (trip_status >= 12 || loadedNo === 'No' || !access)
   return (
     <Row>
       <Col xs={24}>
@@ -149,12 +159,12 @@ const CreateAdditionalAdvance = (props) => {
                     </Form.Item>
                   </Col>
                   <Col xs={12} sm={8}>
-                    <Form.Item label='Account Number' name='account_number'>
+                    <Form.Item label='Account No' name='account_number'>
                       <Input required placeholder='Account Number' />
                     </Form.Item>
                   </Col>
                   <Col xs={12} sm={8}>
-                    <Form.Item label='Confirm Account Number' rules={rules} dependencies={['account_number']} name='confirm'>
+                    <Form.Item label='Confirm Account No' rules={rules} dependencies={['account_number']} name='confirm'>
                       <Input required placeholder='Confirm' />
                     </Form.Item>
                   </Col>
@@ -171,18 +181,6 @@ const CreateAdditionalAdvance = (props) => {
                     </Form.Item>
                   </Col>
                 </Row>
-                <Row gutter={10}>
-                  <Col xs={16}>
-                    <Form.Item label='Bank Comment' name='comment'>
-                      <Input placeholder='Comment' required />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={8}>
-                    <Form.Item label='save' className='hideLabel'>
-                      <Button type='primary' disabled={false} htmlType='submit'>Pay to Bank </Button>
-                    </Form.Item>
-                  </Col>
-                </Row>
               </div>) : radioValue === 'WALLET'
               ? (
                 <Row gutter={10}>
@@ -191,21 +189,19 @@ const CreateAdditionalAdvance = (props) => {
                       <Input required placeholder='Amount' />
                     </Form.Item>
                   </Col>
-                  <Col xs={24}>
-                    <Row gutter={10}>
-                      <Col xs={16}>
-                        <Form.Item label='Comment' name='comment'>
-                          <Input required placeholder='Comment' />
-                        </Form.Item>
-                      </Col>
-                      <Col xs={8}>
-                        <Form.Item label='save' className='hideLabel'>
-                          <Button type='primary' className='labelFix' htmlType='submit'>Pay Wallet</Button>
-                        </Form.Item>
-                      </Col>
-                    </Row>
-                  </Col>
                 </Row>) : null}
+          <Row gutter={10}>
+            <Col xs={16}>
+              <Form.Item label='Comment' name='comment'>
+                <Input placeholder='Comment' required />
+              </Form.Item>
+            </Col>
+            <Col xs={8}>
+              <Form.Item label='save' className='hideLabel'>
+                <Button type='primary' disabled={disable_adv_btn} loading={disableBtn} htmlType='submit'>Pay Now</Button>
+              </Form.Item>
+            </Col>
+          </Row>
         </Form>
       </Col>
     </Row>

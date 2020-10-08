@@ -4,17 +4,18 @@ import { useState } from 'react'
 import u from '../../../lib/util'
 import get from 'lodash/get'
 
-import { gql, useQuery } from '@apollo/client'
+import { gql, useQuery, useSubscription } from '@apollo/client'
 
-const TRUCKS_QUERY = gql`
-  query trucks(
-    $offset: Int!
-    $limit: Int!
-    $trip_status_id: [Int!]
-    $truck_statusId: [Int!]
-    $name: String
-    $truckno: String
-  ) {
+const TRUCKS_SUBSCRIPTION = gql`
+subscription trucks(
+  $offset: Int!
+  $limit: Int!
+  $trip_status_id: [Int!]
+  $truck_statusId: [Int!]
+  $name: String
+  $truckno: String
+  )
+  {
     truck(
       offset: $offset
       limit: $limit
@@ -55,8 +56,18 @@ const TRUCKS_QUERY = gql`
         destination {
           name
         }
-      }
-    }
+     }
+  }
+  }
+`
+
+const TRUCKS_QUERY = gql`
+  query trucks(
+    $trip_status_id: [Int!]
+    $truck_statusId: [Int!]
+    $name: String
+    $truckno: String
+  ) {
     truck_status(order_by: { id: asc }) {
       id
       name
@@ -79,9 +90,22 @@ const TruckContainer = () => {
   }
   const [filter, setFilter] = useState(initialFilter)
 
-  const trucksQueryVars = {
+  const variables = {
     offset: filter.offset,
     limit: filter.limit,
+    truck_statusId: filter.truck_statusId,
+    trip_status_id: [2, 3, 4, 5, 6, 8],
+    truckno: filter.truckno ? `%${filter.truckno}%` : null,
+    name: filter.name ? `%${filter.name}%` : null
+  }
+  const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
+    TRUCKS_SUBSCRIPTION,
+    {
+      variables: variables
+    }
+  )
+
+  const trucksQueryVars = {
     truck_statusId: filter.truck_statusId,
     trip_status_id: [2, 3, 4, 5, 6, 8],
     truckno: filter.truckno ? `%${filter.truckno}%` : null,
@@ -95,12 +119,18 @@ const TruckContainer = () => {
   })
 
   console.log('TrucksContainer error', error)
+  let _sdata = {}
+  if (!s_loading) {
+    _sdata = s_data
+  }
+
+  const truck = get(s_data, 'truck', [])
 
   let _data = {}
   if (!loading) {
     _data = data
   }
-  const truck = get(_data, 'truck', [])
+  
   const truck_status = get(_data, 'truck_status', [])
   const truck_aggregate = get(_data, 'truck_aggregate', null)
   const truck_status_list = truck_status.filter((data) => data.id !== 10)
