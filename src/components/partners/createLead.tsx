@@ -177,7 +177,8 @@ const CreateLead = (props) => {
             <Form.Item
               name='employee'
             >
-              <Select defaultValue='Select Owner' onChange={handleChange} options={employeeList} />
+              <Select defaultValue='Select Owner' onChange={handleChange} options={employeeList} optionFilterProp='label'
+              showSearch />
             </Form.Item>
           </Col>
         </Row>
