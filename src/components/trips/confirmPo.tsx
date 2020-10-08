@@ -175,7 +175,7 @@ const ConfirmPo = (props) => {
           to_pay: parseFloat(form.to_pay),
           truck_id: po_data && po_data.id,
           truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
-          driver_id: driver_id,
+          driver_id: parseInt(driver_id, 10),
           updated_by: context.email,
           loading_point_id: form.loading_contact
         }
