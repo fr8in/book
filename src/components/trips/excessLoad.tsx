@@ -11,7 +11,7 @@ import userContext from '../../lib/userContaxt'
 import {useContext } from 'react'
 
 const EXCESS_LOAD = gql`
-subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$trip_status: String, $truck_type:[Int!], $managers: [String!]) {
+subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$trip_status: String, $truck_type:[Int!], $managers: [Int!]) {
   region(where: {id: {_in: $regions}}) {
     id
     name
