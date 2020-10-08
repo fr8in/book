@@ -104,7 +104,7 @@ const CONFIRM_PO = gql`
 }`
 
 const ConfirmPo = (props) => {
-  const { visible, onHide, truck_id, record } = props
+  const { visible, onHide, truck_id, record, hideExess } = props
   console.log('trip.id', record)
   const [driver_id, setDriver_id] = useState(null)
 
@@ -135,6 +135,7 @@ const ConfirmPo = (props) => {
         message.success('Load Created!!')
         setObj(initial)
         onHide()
+        hideExess()
       }
     }
   )
