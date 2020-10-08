@@ -56,6 +56,7 @@ const TripDetailContainer = (props) => {
     </h3>)
   const trip_status_name = get(trip_info, 'trip_status.name', null)
   const trip_status_id = get(trip_info, 'trip_status.id', null)
+  const disable_advance = (trip_status_id < 12)
   return (
     <>
       {loading ? <Loading /> : (
@@ -115,7 +116,8 @@ const TripDetailContainer = (props) => {
                     </Collapse>}
                   <Collapse accordion className='small mt10'>
                     <Panel header='Additional Advance' key='1'>
-                      <CreateAdditionalAdvance trip_info={trip_info} />
+                      {disable_advance &&
+                        <CreateAdditionalAdvance trip_info={trip_info} />}
                       <AdditionalAdvance ad_trip_id={trip_info.id} />
                     </Panel>
                   </Collapse>

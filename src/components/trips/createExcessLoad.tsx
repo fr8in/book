@@ -111,22 +111,26 @@ const CreateExcessLoad = (props) => {
   }
 
   const onCreateLoad = (form) => {
-    setObj({ ...obj, disableButton: true })
-    create_excess_load({
-      variables: {
-        source_id: parseInt(obj.source_id, 10),
-        destination_id: parseInt(obj.destination_id, 10),
-        customer_id: parseInt(obj.customer_id, 10),
-        customer_price: form.price ? parseFloat(form.price) : null,
-        ton: form.ton ? parseFloat(form.ton) : null,
-        rate_per_ton: form.ton ? Math.floor(form.price / parseFloat(form.ton)) : null,
-        is_per_ton: !!form.ton,
-        truck_type_id: parseInt(form.truck_type, 10),
-        description: form.comment,
-        topic: 'Excess Load Created',
-        created_by: context.email
-      }
-    })
+    if ((parseInt(form.price) < 0) || form.ton < 0) {
+      message.error('Customer Price and Ton should be positive!')
+    } else {
+      setObj({ ...obj, disableButton: true })
+      create_excess_load({
+        variables: {
+          source_id: parseInt(obj.source_id, 10),
+          destination_id: parseInt(obj.destination_id, 10),
+          customer_id: parseInt(obj.customer_id, 10),
+          customer_price: form.price ? parseFloat(form.price) : null,
+          ton: form.ton ? parseFloat(form.ton) : null,
+          rate_per_ton: form.ton ? Math.floor(form.price / parseFloat(form.ton)) : null,
+          is_per_ton: !!form.ton,
+          truck_type_id: parseInt(form.truck_type, 10),
+          description: form.comment,
+          topic: 'Excess Load Created',
+          created_by: context.email
+        }
+      })
+    }
   }
 
   return (
@@ -134,6 +138,8 @@ const CreateExcessLoad = (props) => {
       visible={props.visible}
       title='Create Excess Load'
       onCancel={props.onHide}
+      style={{ top: 20 }}
+      bodyStyle={{ paddingBottom: 0 }}
       footer={[]}
     >
       <Form layout='vertical' onFinish={onCreateLoad}>

@@ -16,6 +16,9 @@ import InlineCitySelect from '../common/inlineCitySelect'
 import u from '../../lib/util'
 import Truncate from '../common/truncate'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
+import EditAccess from '../common/editAccess'
+import { NoUnusedVariablesRule } from 'graphql'
 
 const PARTNERS_LEAD_SUBSCRIPTION = gql`
 subscription partner_lead(
@@ -144,6 +147,14 @@ const PartnerLead = (props) => {
     setSelectedRowKeys(selectedRowKeys)
     setSelectedPartners(partner_list)
   }
+
+  const { role } = u
+  const cityEdit = [role.admin, role.partner_manager, role.billing]
+  const ownerEdit = [role.admin, role.partner_manager, role.billing]
+  const rejectEdit = [role.admin, role.partner_manager, role.billing]
+  const priorityEdit = [role.admin, role.partner_manager, role.billing]
+  const priorityEditAccess = !isEmpty(priorityEdit) ? context.roles.some(r => priorityEdit.includes(r)) : false
+  const rejectEditAccess = !isEmpty(rejectEdit) ? context.roles.some(r => rejectEdit.includes(r)) : false
 
   const rowSelection = {
     selectedRowKeys,
@@ -351,6 +362,7 @@ const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
             label={record.city && record.city.name}
             handleChange={onCityUpdate}
             partner_id={record.id}
+            edit_access={cityEdit}
           />
         )
       },
@@ -379,9 +391,7 @@ const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
         return (
           <div>
             <span>{owner}&nbsp;</span>
-            <EditTwoTone onClick={() =>
-              handleShow('ownerVisible', null, 'ownerData', record.id)}
-            />
+            <EditAccess edit_access={ownerEdit} onEdit={() => handleShow('ownerVisible', null, 'ownerData', record.id)} />
           </div>
         )
       },
@@ -464,7 +474,7 @@ const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
       title: 'Priority',
       dataIndex: 'lead_priority',
       width: '7%',
-      render: (text, record) => <Switch onChange={(checked) => onChange(checked, record.id)} checked={text} />
+      render: (text, record) => priorityEditAccess ? <Switch onChange={(checked) => onChange(checked, record.id)} checked={text} /> : null
     },
     {
       title: 'Action',
@@ -480,6 +490,7 @@ const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
                 handleShow('commentVisible', null, 'commentData', record.id)}
             />
           </Tooltip>
+          { rejectEditAccess ? 
           <Popconfirm
             title='Are you sure want to Reject the lead?'
             okText='Yes'
@@ -493,7 +504,7 @@ const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
               danger
               icon={<CloseOutlined />}
             />
-          </Popconfirm>
+          </Popconfirm> : null }
         </span>
       )
     }
