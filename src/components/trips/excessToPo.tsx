@@ -85,6 +85,7 @@ const ExcessToPo = (props) => {
           truck_id={obj.truck_id}
           record={record}
           onHide={onClosePoModal}
+          hideExess={onHide}
         />}
     </>
   )

@@ -166,16 +166,16 @@ const PartnerLead = (props) => {
     partner_users: filter.mobile ? { mobile: { _like: `%${filter.mobile}%` } } : null,
     city: filter.city_name && {name:{ _ilike: `%${filter.city_name}%`}} ,
     onboarded_by: { email: { _ilike: filter.owner_name ? `%${filter.owner_name}%` : null, _in: onboarded_by || null } },
-    partner_status: { name: { _in: filter.partner_status_name && filter.partner_status_name.length > 0 ? filter.partner_status_name : null } }
-    // channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}},
-    // _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ?  null : {id: {_is_null:true }} }
+    partner_status: { name: { _in: filter.partner_status_name && filter.partner_status_name.length > 0 ? filter.partner_status_name : null } },
+    channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}},
+     _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ?  null : {id: {_is_null:true }} }
   }
   const whereNoCityFilter = {
     partner_users: filter.mobile ? { mobile: { _like: `%${filter.mobile}%` } } : null,
     onboarded_by: { email: { _ilike: filter.owner_name ? `%${filter.owner_name}%` : null, _in: onboarded_by || null } },
-    partner_status: { name: { _in: filter.partner_status_name ? filter.partner_status_name : null } }
-    // channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} ,
-    // _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ? null :  {id: {_is_null:true }} }
+    partner_status: { name: { _in: filter.partner_status_name ? filter.partner_status_name : null } },
+    channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} ,
+     _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ? null :  {id: {_is_null:true }} }
   }
   // console.log('filter.no_comment ', filter.no_comment, filter.no_comment && filter.no_comment.length > 0)
 
@@ -190,7 +190,7 @@ const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
     variables: variables
   }
 )
-
+console.log('s_data',s_data)
   const partnerQueryVars = {
     where: filter.city_name ? where : whereNoCityFilter
   }

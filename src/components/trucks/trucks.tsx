@@ -104,7 +104,7 @@ const Trucks = (props) => {
         return (
           <span>
             {id ? (
-              <span>{source && source.slice(0, 3) ? source && source.slice(0, 3) : null + '-' +  destination && destination.slice(0, 3) ? destination && destination.slice(0, 3) : null}</span> 
+              <span>{(source ? source.slice(0, 3) : null) + '-' + (destination ? destination.slice(0, 3) : null)}</span> 
             ) : record.truck_status.id === 5 ? (
               <a
                 className='link'
