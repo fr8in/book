@@ -132,7 +132,7 @@ const TripDetailContainer = (props) => {
                     <Panel header={<span>Customer - Receivables</span>} key='1'>
                       <Receivables trip_id={trip_id} />
                       <CustomerPayments
-                        trip_id={trip_id}
+                        trip_id={trip_info.id}
                         status={get(trip_info, 'trip_status.name', null)}
                         cardcode={get(trip_info, 'customer.cardcode', null)}
                         mamul={get(trip_info, 'mamul', 0)}
@@ -140,6 +140,8 @@ const TripDetailContainer = (props) => {
                         walletcode={get(trip_info, 'customer.walletcode', null)}
                         wallet_balance={get(trip_info, 'customer.customer_accounting.wallet_balance', null)}
                         customer_id={get(trip_info, 'customer.id', null)}
+                        bank={get(trip_info,'bank',0)}
+                        status_id={get(trip_info, 'trip_status.id', null)}
                       />
                     </Panel>
                   </Collapse>
