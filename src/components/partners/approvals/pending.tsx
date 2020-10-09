@@ -17,6 +17,11 @@ import moment from 'moment'
 import PartnerOnBoardedBy from '../partnerOnboardedByName'
 import LinkComp from '../../common/link'
 import u from '../../../lib/util'
+import { useContext } from 'react'
+import userContext from '../../../lib/userContaxt'
+import isEmpty from 'lodash/isEmpty'
+
+
 const PENDING_SUBSCRIPTION = gql`
 subscription trip_credit_debit($status: [String!]) {
   trip_credit_debit(where: {credit_debit_status: {name: {_in: $status}}}, order_by: {created_at: desc}) {
@@ -75,7 +80,9 @@ const RequestedBy = [
 
 const Pending = () => {
   const { role } = u
-  const access = [role.admin]
+  const access = [role.admin, role.rm]
+  const approve_access = [role.admin, role.rm]
+  const reject_access = [role.admin, role.rm]
   const initial = {
     commentData: [],
     commentVisible: false,
@@ -87,6 +94,9 @@ const Pending = () => {
     pending: []
   }
 
+  const context = useContext(userContext)
+  const approval_access = !isEmpty(approve_access) ? context.roles.some(r => approve_access.includes(r)) : false
+  const rejected_access = !isEmpty(reject_access) ? context.roles.some(r => reject_access.includes(r)) : false
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const [filter, setFilter] = useState(initial)
 
@@ -127,7 +137,7 @@ const Pending = () => {
     }
   }
 
-  function onChange (filters) {
+  function onChange(filters) {
     console.log('filters', filters)
   }
 
@@ -260,27 +270,31 @@ const Pending = () => {
               onClick={() => handleShow('commentVisible', null, 'commentData', record.trip_id)}
             />
           </Tooltip>
-          <Tooltip title='Accept'>
-            <Button
-              type='primary'
-              shape='circle'
-              size='small'
-              className='btn-success'
-              icon={<CheckOutlined />}
-              onClick={() =>
-                handleShow('approveVisible', 'Approved', 'approveData', record)}
-            />
+          <Tooltip title='Accept'>{
+            approval_access ?
+              <Button
+                type='primary'
+                shape='circle'
+                size='small'
+                className='btn-success'
+                icon={<CheckOutlined />}
+                onClick={() =>
+                  handleShow('approveVisible', 'Approved', 'approveData', record)}
+              /> : null
+          }
           </Tooltip>
-          <Tooltip title='Decline'>
-            <Button
-              type='primary'
-              shape='circle'
-              size='small'
-              danger
-              icon={<CloseOutlined />}
-              onClick={() =>
-                handleShow('approveVisible', 'Rejected', 'approveData', record.id)}
-            />
+          <Tooltip title='Decline'>{
+            rejected_access ?
+              <Button
+                type='primary'
+                shape='circle'
+                size='small'
+                danger
+                icon={<CloseOutlined />}
+                onClick={() =>
+                  handleShow('approveVisible', 'Rejected', 'approveData', record.id)}
+              /> : null
+          }
           </Tooltip>
         </Space>
       )

@@ -8,7 +8,7 @@ import CitySelect from '../../common/citySelect'
 import Driver from '../driver'
 import get from 'lodash/get'
 import { useRouter } from 'next/router'
-import u from '../../lib/util'
+import u from '../../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 
 const ADD_TRUCK_QUERY = gql`

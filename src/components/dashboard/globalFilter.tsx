@@ -7,7 +7,7 @@ const { Text } = Typography;
 import _ from 'lodash'
 
 const GLOBAL_FILTER = gql`
-query gloabl_filter($now: timestamptz, $regions:[Int!], $branches:[Int!], $cities:[Int!]) {
+query gloabl_filter($now: timestamp, $regions:[Int!], $branches:[Int!], $cities:[Int!]) {
   truck_type {
     id
     name

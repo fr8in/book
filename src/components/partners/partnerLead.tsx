@@ -8,7 +8,7 @@ import {
 import userContext from '../../lib/userContaxt'
 import { useState,useContext } from 'react'
 import moment from 'moment'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { gql, useQuery, useMutation, useSubscription } from '@apollo/client'
 import EmployeeList from '../branches/fr8EmpolyeeList'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from '../../components/partners/comment'
@@ -16,13 +16,16 @@ import InlineCitySelect from '../common/inlineCitySelect'
 import u from '../../lib/util'
 import Truncate from '../common/truncate'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
+import EditAccess from '../common/editAccess'
+import { NoUnusedVariablesRule } from 'graphql'
 
-const PARTNERS_LEAD_QUERY = gql`
-query partner_lead(
+const PARTNERS_LEAD_SUBSCRIPTION = gql`
+subscription partner_lead(
   $offset: Int!
   $limit: Int!
   $where:partner_bool_exp
-  ){
+){
   partner(
     offset: $offset
     limit: $limit
@@ -59,6 +62,13 @@ query partner_lead(
       description
     }
   }
+}
+`
+
+const PARTNERS_LEAD_QUERY = gql`
+query partner_lead(
+  $where:partner_bool_exp
+  ){
   partner_aggregate(where: $where) {
     aggregate {
       count
@@ -138,6 +148,14 @@ const PartnerLead = (props) => {
     setSelectedPartners(partner_list)
   }
 
+  const { role } = u
+  const cityEdit = [role.admin, role.partner_manager, role.billing]
+  const ownerEdit = [role.admin, role.partner_manager, role.billing]
+  const rejectEdit = [role.admin, role.partner_manager, role.billing]
+  const priorityEdit = [role.admin, role.partner_manager, role.billing]
+  const priorityEditAccess = !isEmpty(priorityEdit) ? context.roles.some(r => priorityEdit.includes(r)) : false
+  const rejectEditAccess = !isEmpty(rejectEdit) ? context.roles.some(r => rejectEdit.includes(r)) : false
+
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange
@@ -148,21 +166,32 @@ const PartnerLead = (props) => {
     partner_users: filter.mobile ? { mobile: { _like: `%${filter.mobile}%` } } : null,
     city: filter.city_name && {name:{ _ilike: `%${filter.city_name}%`}} ,
     onboarded_by: { email: { _ilike: filter.owner_name ? `%${filter.owner_name}%` : null, _in: onboarded_by || null } },
-    partner_status: { name: { _in: filter.partner_status_name && filter.partner_status_name.length > 0 ? filter.partner_status_name : null } }
-    // channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}},
-    // _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ?  null : {id: {_is_null:true }} }
+    partner_status: { name: { _in: filter.partner_status_name && filter.partner_status_name.length > 0 ? filter.partner_status_name : null } },
+    channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}},
+     _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ?  null : {id: {_is_null:true }} }
   }
   const whereNoCityFilter = {
     partner_users: filter.mobile ? { mobile: { _like: `%${filter.mobile}%` } } : null,
     onboarded_by: { email: { _ilike: filter.owner_name ? `%${filter.owner_name}%` : null, _in: onboarded_by || null } },
-    partner_status: { name: { _in: filter.partner_status_name ? filter.partner_status_name : null } }
-    // channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} ,
-    // _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ? null :  {id: {_is_null:true }} }
+    partner_status: { name: { _in: filter.partner_status_name ? filter.partner_status_name : null } },
+    channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} ,
+     _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ? null :  {id: {_is_null:true }} }
   }
   // console.log('filter.no_comment ', filter.no_comment, filter.no_comment && filter.no_comment.length > 0)
+
+const variables = {
+  offset: filter.offset,
+  limit: filter.limit,
+  where: filter.city_name ? where : whereNoCityFilter
+}
+const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
+  PARTNERS_LEAD_SUBSCRIPTION,
+  {
+    variables: variables
+  }
+)
+console.log('s_data',s_data)
   const partnerQueryVars = {
-    offset: filter.offset,
-    limit: filter.limit,
     where: filter.city_name ? where : whereNoCityFilter
   }
 
@@ -234,13 +263,19 @@ const PartnerLead = (props) => {
     })
   }
 
+  let _sdata = {}
+  if (!s_loading) {
+    _sdata = s_data
+  }
+  const partners = get(s_data, 'partner', [])
+
   let _data = {}
 
   if (!loading) {
     _data = data
   }
 
-  const partners = get(_data, 'partner', [])
+  
   const partner_aggregate = get(_data, 'partner_aggregate', 0)
   const partner_status = get(_data, 'partner_status', [])
   const channel = get(_data, 'channel', [])
@@ -327,6 +362,7 @@ const PartnerLead = (props) => {
             label={record.city && record.city.name}
             handleChange={onCityUpdate}
             partner_id={record.id}
+            edit_access={cityEdit}
           />
         )
       },
@@ -355,9 +391,7 @@ const PartnerLead = (props) => {
         return (
           <div>
             <span>{owner}&nbsp;</span>
-            <EditTwoTone onClick={() =>
-              handleShow('ownerVisible', null, 'ownerData', record.id)}
-            />
+            <EditAccess edit_access={ownerEdit} onEdit={() => handleShow('ownerVisible', null, 'ownerData', record.id)} />
           </div>
         )
       },
@@ -440,7 +474,7 @@ const PartnerLead = (props) => {
       title: 'Priority',
       dataIndex: 'lead_priority',
       width: '7%',
-      render: (text, record) => <Switch onChange={(checked) => onChange(checked, record.id)} checked={text} />
+      render: (text, record) => priorityEditAccess ? <Switch onChange={(checked) => onChange(checked, record.id)} checked={text} /> : null
     },
     {
       title: 'Action',
@@ -456,6 +490,7 @@ const PartnerLead = (props) => {
                 handleShow('commentVisible', null, 'commentData', record.id)}
             />
           </Tooltip>
+          { rejectEditAccess ? 
           <Popconfirm
             title='Are you sure want to Reject the lead?'
             okText='Yes'
@@ -469,7 +504,7 @@ const PartnerLead = (props) => {
               danger
               icon={<CloseOutlined />}
             />
-          </Popconfirm>
+          </Popconfirm> : null }
         </span>
       )
     }

@@ -128,7 +128,7 @@ const TripInfo = (props) => {
               data={
                 <p className='mb0'>
                   {get(trip_info, 'customer_price', null)}{' '}
-                  {(trip_status_id < 12 && trip_status_id !== 7) && // Before invoice
+                  {(trip_status_id < 12 && trip_status_id !== 7 && trip_status_id !== 1) && // Before invoice
                     <EditAccess edit_access={price_edit_access} onEdit={() => onShow('price')} />}
                 </p>
               }

@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import userContext from '../../lib/userContaxt'
+import { useState,useContext } from 'react'
+import u from '../../lib/util'
 import { Table, Button, Space, Pagination, Checkbox, Tooltip } from 'antd'
 import Link from 'next/link'
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
@@ -9,6 +11,7 @@ import { gql, useQuery, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import Truncate from '../common/truncate'
 import LinkComp from '../common/link'
+import isEmpty from 'lodash/isEmpty'
 
 const TRUCKS_QUERY = gql`
 query trucks_{
@@ -60,6 +63,11 @@ const TruckVerification = (props) => {
   const [filter, setFilter] = useState(initial)
 
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+
+  const { role } = u
+  const context = useContext(userContext)
+  const customerAdvancePercentageEdit = [role.admin, role.partner_manager, role.billing]
+  const truckActivationRejectAccess = !isEmpty(customerAdvancePercentageEdit) ? context.roles.some(r => customerAdvancePercentageEdit.includes(r)) : false
 
   const variables = {
     truck_statusName: filter.truck_statusName
@@ -149,6 +157,8 @@ const TruckVerification = (props) => {
       render: (text, record) => {
         return (
           <Space>
+            { truckActivationRejectAccess ?
+             <>
             <Button
               type='primary'
               size='small'
@@ -164,7 +174,8 @@ const TruckVerification = (props) => {
               danger
               icon={<CloseOutlined />}
               onClick={() => handleShow('truckRejectVisible', 'Reject Truck', 'truckRejectData', record.id)}
-            />
+            /> </> : null  }
+              
           </Space>
         )
       }
