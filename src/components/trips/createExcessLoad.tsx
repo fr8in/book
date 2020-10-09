@@ -135,6 +135,7 @@ const CreateExcessLoad = (props) => {
     setCus_price(ratePerTon)
   }
 
+
   const onCreateLoad = (form) => {
     if ((parseInt(form.price) < 0) || form.ton < 0) {
       message.error('Customer Price and Ton should be positive!')
@@ -145,7 +146,7 @@ const CreateExcessLoad = (props) => {
           source_id: parseInt(obj.source_id, 10),
           destination_id: parseInt(obj.destination_id, 10),
           customer_id: parseInt(obj.customer_id, 10),
-          customer_price: form.price ? parseFloat(form.price) : null,
+          customer_price: (checked && form.rate_per_ton && form.ton) ? cus_price : form.price ? parseFloat(form.price) : null ,
           ton: form.ton ? parseFloat(form.ton) : null,
           rate_per_ton: form.rate_per_ton ? parseFloat(form.rate_per_ton) : null ,
           is_per_ton: !!form.ton,
@@ -238,6 +239,7 @@ const CreateExcessLoad = (props) => {
               <Input
                 placeholder='Price'
                 disabled={false}
+                type='number'
               />
             </Form.Item>
           </Col> )}
