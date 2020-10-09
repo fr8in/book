@@ -61,7 +61,6 @@ const CreateExcessLoad = (props) => {
   const context = useContext(userContext)
   const [checked, setChecked] = useState(false)
   const [cus_price, setCus_price] = useState(0)
-  const [ratePerTon, setRatePerTon] = useState(0)
   const [form] = Form.useForm()
 
 
@@ -122,18 +121,18 @@ const CreateExcessLoad = (props) => {
     setObj({ ...obj, customer_id: customer.key })
   }
 
-  const onCustomerPrice = (e) => {
+  const onRatePerTonChange = (e) => {
     const ton = form.getFieldValue('ton')
     const { value } = e.target
     const cus_price = Math.floor((value * (ton || 1)))
     setCus_price (cus_price)
   }
 
-  const onRatePerTon = (e) => {
-    const rate = form.getFieldValue('rate_per_ton')
+  const onTonChange = (e) => {
+    const rate_per_ton = form.getFieldValue('rate_per_ton')
     const { value } = e.target
-    const ratePerTon = Math.floor((value * (rate || 1)))
-    setRatePerTon (ratePerTon)
+    const ratePerTon = Math.floor((value * (rate_per_ton || 1)))
+    setCus_price(ratePerTon)
   }
 
   const onCreateLoad = (form) => {
@@ -219,21 +218,23 @@ const CreateExcessLoad = (props) => {
               <Input
                 placeholder='Price'
                 disabled={false}
-                onChange={onCustomerPrice}
+                type='number'
+                onChange={onRatePerTonChange}
               />
             </Form.Item>
           </Col>
           <Col xs={6}>
-            <Form.Item label='Ton' name='ton' extra={ratePerTon}>
+            <Form.Item label='Ton' name='ton' >
               <Input
                 placeholder='Ton'
                 disabled={false}
-                onChange={onRatePerTon}
+                type='number'
+                onChange={onTonChange}
               />
             </Form.Item>
           </Col> </> ) : ( 
           <Col xs={12}>
-            <Form.Item label='Price' name='customer_price'>
+            <Form.Item label='Price' name='price'>
               <Input
                 placeholder='Price'
                 disabled={false}
