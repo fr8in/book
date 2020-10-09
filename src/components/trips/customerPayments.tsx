@@ -9,37 +9,42 @@ const CustomerPayments = (props) => {
 
   const column = [{
     title: 'Type',
-    render: (record) => (record && record.invoicetype) ? record.invoicetype : (type_name + ' Pending'),
+    render: (record) => (type_name + ' Pending'),
     width: '26%'
   },
+  type_name === 'Final' ?
   {
     title: 'Doc No',
     width: '18%',
-    render: (text, record) => {
-      const docEntry = type_name === 'Advance' ? record.base_Advance_DocEntry : type_name === 'Final' ? record.docentry : '-'
-      return docEntry
-    }
-  },
+    // render: (text, record) => {
+    //   const docEntry = type_name === 'Advance' ? record.base_Advance_DocEntry : type_name === 'Final' ? record.docentry : '-'
+    //   console.log('docEntry',docEntry)
+    //   return docEntry
+    // }
+  } : {},
   {
     title: 'Amount',
     width: '16%',
-    render: (text, record) => {
-      const amount = (type_name === 'Final') ? record.freight : record.amount
-      return amount
+    render: ( record) => {
+       const amounts = (type_name === 'Final') ? record.amount : record.freight
+      return amounts
     }
   },
   {
     title: 'Recieved',
     width: '16%',
-    render: (text, record) => record.received
+    render: ( record) => {
+      const Recieved = (type_name === 'Final') ? record.received : record.received
+     return Recieved
+   }
   },
   {
     title: 'Balance',
     width: '18%',
-    render: (text, record) => {
-      const pending = (type_name === 'Final') ? record.balance : record.pending
-      return pending
-    }
+    render: ( record) => {
+      const Balance = (type_name === 'Final') ? record.balance : record.balance
+     return Balance
+   }
   },
   {
     title: 'Edit',

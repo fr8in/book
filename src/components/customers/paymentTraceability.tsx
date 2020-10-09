@@ -19,7 +19,7 @@ query customerIncoming($walletcode: String!) {
     transaction_type
     doc_line
     doc_rate
-    received
+    recevied
     booked
     balance
   }
@@ -66,9 +66,9 @@ const PaymentTraceability = (props) => {
   },
   {
     title: 'Amount',
-    dataIndex: 'received',
+    dataIndex: 'recevied',
     width: '12%',
-    sorter: (a, b) => (a.received > b.received ? 1 : -1)
+    sorter: (a, b) => (a.recevied > b.recevied ? 1 : -1)
   },
   {
     title: 'Booked',

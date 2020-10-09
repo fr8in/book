@@ -35,14 +35,14 @@ const TripInfo = (props) => {
       id: 1,
       to: 'Partner',
       total: trip_prices.cash + trip_prices.to_pay,
-      advance: trip_prices.cash,
-      balance: trip_prices.to_pay
+      advance: (trip_prices.cash || 0),
+      balance: (trip_prices.to_pay || 0)
     },
     {
       id: 2,
       to: 'FR8',
       total: trip_prices.customer_price - (trip_prices.cash + trip_prices.to_pay),
-      advance: trip_prices.bank,
+      advance: (trip_prices.bank || 0),
       balance: (trip_prices.customer_price - (trip_prices.cash + trip_prices.to_pay)) - trip_prices.bank
     }
   ]

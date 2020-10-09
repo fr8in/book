@@ -1,4 +1,3 @@
-
 import { useContext } from 'react'
 import { Row, Col, Card, Space, Tag, Tabs, Collapse } from 'antd'
 import TripInfo from '../tripInfo'
@@ -24,8 +23,6 @@ import Loading from '../../common/loading'
 import u from '../../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 import userContext from '../../../lib/userContaxt'
-import LabelWithData from '../../common/labelWithData'
-import LinkComp from '../../common/link'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
@@ -76,7 +73,7 @@ const TripDetailContainer = (props) => {
             />
           }
         >
-          {trip_status_id === 1 ? (
+          {(trip_status_id === 1 || trip_status_id === 7) ? (
             <Row>
               <Col sm={24}>
                 <TripInfo trip_info={trip_info} trip_id={trip_info.id} />
@@ -141,7 +138,7 @@ const TripDetailContainer = (props) => {
                         <Panel header={<span>Customer - Receivables</span>} key='1'>
                           <Receivables trip_id={trip_id} />
                           <CustomerPayments
-                            trip_id={trip_id}
+                            trip_id={trip_info.id}
                             status={get(trip_info, 'trip_status.name', null)}
                             cardcode={get(trip_info, 'customer.cardcode', null)}
                             mamul={get(trip_info, 'mamul', 0)}
@@ -149,6 +146,8 @@ const TripDetailContainer = (props) => {
                             walletcode={get(trip_info, 'customer.walletcode', null)}
                             wallet_balance={get(trip_info, 'customer.customer_accounting.wallet_balance', null)}
                             customer_id={get(trip_info, 'customer.id', null)}
+                            bank={get(trip_info, 'bank', 0)}
+                            status_id={get(trip_info, 'trip_status.id', null)}
                           />
                         </Panel>
                       </Collapse>
