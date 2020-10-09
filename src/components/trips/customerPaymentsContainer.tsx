@@ -10,59 +10,89 @@ import AdditionalInvoiceBooking from './additionalInvoiceBooking'
 
 const TRIP_CUSTOMER_PENDING_PAYMENTS = gql`
 query customerPaymentData($trip_id: Int!) {
-  trip_sap_customer_advance_pending(trip_id: $trip_id) {
-    trip_id
-    cardCode
-    base_Advance_DocNum
-    base_Advance_DocEntry
-    amount
-    received
-    pending
+    trip_sap_customer_advance_pending(trip_id: $trip_id) {
+      trip_id
+      cardCode
+      base_Advance_DocNum
+      base_Advance_DocEntry
+      amount
+      received
+      pending
+    }
+    trip_sap_customer_invoice_pending(trip_id: $trip_id) {
+      trip_id
+      cardCode
+      status
+      amount
+      received
+      pending
+    }
+    trip_sap_customer_balance_pending(trip_id: $trip_id) {
+      trip_id
+      cardCode
+      docentry
+      advanceReceived
+      additionalCharges
+      freight
+      received
+      balance
+      doctype
+      invoicetype
+    }
+  }`
+  const TRIP_CUSTOMER = gql`
+  query TripReceivable($trip_id:Int){
+    accounting_trip_receivable_summary(where:{trip_id:{_eq:$trip_id}}){
+      amount
+      trip_id
+    }
   }
-  trip_sap_customer_invoice_pending(trip_id: $trip_id) {
-    trip_id
-    cardCode
-    status
-    amount
-    received
-    pending
-  }
-  trip_sap_customer_balance_pending(trip_id: $trip_id) {
-    trip_id
-    cardCode
-    docentry
-    advanceReceived
-    additionalCharges
-    freight
-    received
-    balance
-    doctype
-    invoicetype
-  }
-}`
-
+  `
 const CustomerPaymentsContainer = (props) => {
-  const { trip_id, status, cardcode, mamul, price,walletcode,wallet_balance,customer_id } = props
+  const { trip_id, status, cardcode, mamul, price,walletcode,wallet_balance,bank,customer_id,status_id } = props
   const initial = { adv_visible: false, final_visible: false, title: null, adv_data: null, final_data: null, add_inv_visible: false, add_inv_data: null }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+  console.log('id',trip_id)
 
   const { loading, error, data } = useQuery(
     TRIP_CUSTOMER_PENDING_PAYMENTS,
     {
-      variables: { trip_id: parseInt(trip_id, 10) },
+      variables: { trip_id:trip_id },
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
   )
+
   console.log('CustomerPaymentsContainer Error', error)
+  const { loading:s_loading, error:s_error, data:s_data } = useQuery(
+    TRIP_CUSTOMER,
+    {
+      variables: { trip_id:trip_id },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
+  )
+  
   let _data = {}
   if (!loading) {
     _data = data
   }
-  const advance_pending = get(_data, 'trip_sap_customer_advance_pending', [])
-  const invoice_pending = get(_data, 'trip_sap_customer_invoice_pending', [])
-  const balance_pending = get(_data, 'trip_sap_customer_balance_pending', [])
 
+  let trip_data = {}
+  if (!s_loading) {
+    trip_data = s_data
+  }
+
+  console.log('CustomerPaymentsContainer data', trip_data)
+
+  // const advance_pending = get(_data, 'trip_sap_customer_advance_pending', [])
+  // const invoice_pending = get(_data, 'trip_sap_customer_invoice_pending', [])
+  const balance_pending = get(_data, 'trip_sap_customer_balance_pending', [])
+  const amount=get(trip_data, 'accounting_trip_receivable_summary[0].amount', [])
+  
+  const pending_data = [
+    {amount: bank, received: amount, balance: (bank - amount)}
+  ]
   const onFinalShow = (record) => {
     if (record && record.doctype === 'S') {
       handleShow('add_inv_visible', 'Final', 'add_inv_data', record)
@@ -72,17 +102,34 @@ const CustomerPaymentsContainer = (props) => {
   }
   return (
     <>
-      {!isEmpty(advance_pending) &&
+    {
+    (balance_pending) && status_id === 12 ?
+     <Row>
+          <Col xs={24} className='payableHead'><b>Pending Payments</b></Col>
+          <Col xs={24}>
+            <CustomerPayments
+              dataSource={pending_data}
+              type_name='Final'
+              onShow={onFinalShow}
+             amount={amount}
+             bank={bank}
+            />
+          </Col>
+        </Row>:
         <Row>
           <Col xs={24} className='payableHead'><b>Advance Payments</b></Col>
           <Col xs={24}>
             <CustomerPayments
-              dataSource={advance_pending}
+              dataSource={balance_pending}
               type_name='Advance'
-              onShow={() => handleShow('adv_visible', 'Advance', 'adv_data', advance_pending[0])}
+              onShow={() => handleShow('adv_visible', 'Advance', 'adv_data', balance_pending[0])}
             />
           </Col>
-        </Row>}
+        </Row>
+        }
+
+      {/*
+      TODO:Comment by sanjay -- should be removed - always advance pending
       {!isEmpty(invoice_pending) &&
         <Row>
           <Col xs={24} className='payableHead'><b>Invoice Pending Payments</b></Col>
@@ -91,20 +138,11 @@ const CustomerPaymentsContainer = (props) => {
               dataSource={invoice_pending}
               type_name='Invoice'
               onShow={() => handleShow('adv_visible', 'Invoice', 'adv_data', invoice_pending[0])}
+              bank={bank}
             />
           </Col>
-        </Row>}
-      {!isEmpty(balance_pending) &&
-        <Row>
-          <Col xs={24} className='payableHead'><b>Pending Payments</b></Col>
-          <Col xs={24}>
-            <CustomerPayments
-              dataSource={balance_pending}
-              type_name='Final'
-              onShow={onFinalShow}
-            />
-          </Col>
-        </Row>}
+        </Row>} */}
+
       {(status === 'Recieved' || status === 'Closed') &&
         <div className='payableHead'>
           <h4 className='text-center'>100% payment recieved from customer</h4>
@@ -155,3 +193,5 @@ const CustomerPaymentsContainer = (props) => {
 }
 
 export default CustomerPaymentsContainer
+
+
