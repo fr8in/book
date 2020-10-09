@@ -1,4 +1,3 @@
-
 import { useContext } from 'react'
 import { Row, Col, Card, Space, Tag, Tabs, Collapse } from 'antd'
 import TripInfo from '../tripInfo'
@@ -24,8 +23,6 @@ import Loading from '../../common/loading'
 import u from '../../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 import userContext from '../../../lib/userContaxt'
-import LabelWithData from '../../common/labelWithData'
-import LinkComp from '../../common/link'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
@@ -76,7 +73,7 @@ const TripDetailContainer = (props) => {
             />
           }
         >
-          {trip_status_id === 1 ? (
+          {(trip_status_id === 1 || trip_status_id === 7) ? (
             <Row>
               <Col sm={24}>
                 <TripInfo trip_info={trip_info} trip_id={trip_info.id} />

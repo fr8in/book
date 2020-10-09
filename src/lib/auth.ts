@@ -84,19 +84,19 @@ const signOut = async () => {
   }
 }
 
-const hasuraClaim = async (user, setAuthState) => {
-  const token = await user.getIdToken()
-  const idTokenResult = await user.getIdTokenResult()
-  const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims']
-  console.log('hasuraClaim', hasuraClaim)
-  console.log('user', user)
-  if (hasuraClaim) {
-    // @ts-ignore
-    setAuthState({ status: 'in', user, token })
-    return true
-  } else {
-    return false
-  }
-}
+// const hasuraClaim = async (user, setAuthState) => {
+//   const token = await user.getIdToken()
+//   const idTokenResult = await user.getIdTokenResult()
+//   const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims']
+//   console.log('hasuraClaim', hasuraClaim)
+//   console.log('user', user)
+//   if (hasuraClaim) {
+//     // @ts-ignore
+//     setAuthState({ status: 'in', user, token })
+//     return true
+//   } else {
+//     return false
+//   }
+// }
 
 export { auth, signInWithGoogle, signOut }
