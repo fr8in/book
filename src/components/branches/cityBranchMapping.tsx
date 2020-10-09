@@ -43,7 +43,7 @@ const CityBranchMapping = () => {
       render: (text, record) => {
         const branch = record.branch && record.branch.name
         return (
-          <span> <BranchEdit id={record.id} branch={branch}  edit_access={access} /></span>
+          <span> <BranchEdit id={record.id} branch={branch} edit_access={access} /></span>
 
         )
       }

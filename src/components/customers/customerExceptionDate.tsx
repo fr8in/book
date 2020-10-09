@@ -1,10 +1,10 @@
 import { message, DatePicker } from 'antd'
-import { CloseCircleTwoTone, EditTwoTone } from '@ant-design/icons'
+import { CloseCircleTwoTone } from '@ant-design/icons'
 import moment from 'moment'
 import { gql, useMutation } from '@apollo/client'
 import useShowHide from '../../hooks/useShowHide'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useContext } from 'react'
 import EditAccess from '../common/editAccess'
 
 const UPDATE_CUSTOMER_EXCEPTION_MUTATION = gql`

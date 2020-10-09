@@ -1,22 +1,18 @@
-import React from 'react'
 import { Table } from 'antd'
 import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import EmployeeNumber from './employeeNumber'
 
-
 const EMPLOYEE_QUERY = gql`
-  query BranchEmployee {
-    employee {
-      id
-      name
-      mobileno
-    }
+query BranchEmployee {
+  employee {
+    id
+    name
+    mobileno
   }
-`
+}`
 
 const Employees = (props) => {
-
   const { loading, error, data } = useQuery(
     EMPLOYEE_QUERY, { notifyOnNetworkStatusChange: true }
   )
@@ -39,7 +35,7 @@ const Employees = (props) => {
       dataIndex: 'mobileno',
       width: '20%',
       render: (text, record) => {
-        return <EmployeeNumber id={record.id} label={text}/>
+        return <EmployeeNumber id={record.id} label={text} />
       }
     }
   ]

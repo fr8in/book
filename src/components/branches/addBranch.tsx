@@ -2,6 +2,7 @@ import { Modal, Form, Input, Select, message, Row, Col, Button } from 'antd'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import u from '../../lib/util'
 import { useState } from 'react'
+import get from 'lodash/get'
 
 const ADD_BRANCH = gql`
  query add_branch{
@@ -13,8 +14,7 @@ const ADD_BRANCH = gql`
     id
     name
   }
-}
-`
+}`
 
 const INSERT_BRANCH_MUTATION = gql`
 mutation insert_branch(
@@ -36,12 +36,10 @@ mutation insert_branch(
       name
     }
   }
-}
-`
+}`
 
 const AddBranch = (props) => {
   const { visible, onHide } = props
-
   const [disableButton, setDisableButton] = useState(false)
 
   const { loading, error, data } = useQuery(
@@ -58,7 +56,8 @@ const AddBranch = (props) => {
     {
       onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
+        message.error(error.toString())
+      },
       onCompleted () {
         setDisableButton(false)
         message.success('Updated!!')
@@ -68,12 +67,12 @@ const AddBranch = (props) => {
     }
   )
 
-  var employee = []
-  var region = []
+  let _data = {}
   if (!loading) {
-    region = data.region
-    employee = data.employee
+    _data = data
   }
+  const region = get(_data, 'region', [])
+  const employee = get(_data, 'employee', [])
 
   const regionList = region.map((data) => {
     return { value: data.id, label: data.name }
@@ -112,10 +111,10 @@ const AddBranch = (props) => {
       footer={[]}
     >
       <Form onFinish={onSubmit}>
-        <Form.Item name='name'>
+        <Form.Item name='name' rules={[{ required: true }]}>
           <Input placeholder='Branch Name' />
         </Form.Item>
-        <Form.Item name='bm_id'>
+        <Form.Item name='bm_id' rules={[{ required: true }]}>
           <Select
             placeholder='Branch Manager'
             options={employeeList}
@@ -136,7 +135,7 @@ const AddBranch = (props) => {
         </Form.Item>
         <Row gutter={10}>
           <Col xs={24} sm={12}>
-            <Form.Item name='region'>
+            <Form.Item name='region' rules={[{ required: true }]}>
               <Select
                 placeholder='Region'
                 optionFilterProp='label'

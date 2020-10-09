@@ -1,9 +1,6 @@
 import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import EditableCell from '../common/editableCell'
-import { useContext } from 'react'
-import userContext from '../../lib/userContaxt'
-import isEmpty from 'lodash/isEmpty'
 import u from '../../lib/util'
 const UPDATE_EMPLOYEE_NO_MUTATION = gql`
 mutation insert_branch($id:Int!, $mobile:String) {
@@ -15,7 +12,7 @@ mutation insert_branch($id:Int!, $mobile:String) {
 const EmployeeNumber = (props) => {
   const { id, label } = props
 
-  const {role} = u
+  const { role } = u
   const employee_number = [role.admin]
 
   const [updateTruckNo] = useMutation(
@@ -36,13 +33,12 @@ const EmployeeNumber = (props) => {
   }
 
   return (
-
     <EditableCell
-    label={label}
-    onSubmit={onSubmit}
-    edit_access = {employee_number}
-  />
-    
+      label={label}
+      onSubmit={onSubmit}
+      edit_access={employee_number}
+    />
+
   )
 }
 
