@@ -5,46 +5,71 @@ import { useContext } from 'react'
 import u from '../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 
-const UPDATE_PARTNER_WALLET_STATUS_MUTATION = gql`
-mutation partner_wallet_status($wallet_block:Boolean,$cardcode:String,$updated_by: String!) {
-  update_partner(_set: {wallet_block:$wallet_block,updated_by:$updated_by}, where: {cardcode: {_eq:$cardcode}}) {
-    returning {
-      id
-      wallet_block
-    }
+const UPDATE_PARTNER_WALLET_BLOCK_STATUS_MUTATION = gql`
+mutation partner_wallet_block ($id:Int!,$updated_by:String!){
+  partner_wallet_block(id: $id, updated_by:$updated_by ) {
+    description
+    status
   }
 }
 `
+const UPDATE_PARTNER_WALLET_UNBLOCK_STATUS_MUTATION = gql`
+mutation partner_wallet_Unblock ($id:Int!,$updated_by:String!) {
+  partner_wallet_unblock(id: $id, updated_by: $updated_by) {
+    description
+    status
+  }
+}`
+
 const PartnerStatus = (props) => {
-  const { cardcode, status } = props
+  const { id, status } = props
   const context = useContext(userContext)
   const { role } = u
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
   const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
   const [updateStatusId] = useMutation(
-    UPDATE_PARTNER_WALLET_STATUS_MUTATION,
+    UPDATE_PARTNER_WALLET_BLOCK_STATUS_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
       onCompleted () { message.success('Updated!!') }
     }
   )
 
-  const onChange = (checked) => {
+  const [updateStatus] = useMutation(
+    UPDATE_PARTNER_WALLET_UNBLOCK_STATUS_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
+    }
+  )
+
+  const onblock = () => {
     updateStatusId({
       variables: {
-        cardcode,
-        wallet_block: checked,
+        id:id,
         updated_by: context.email
       }
     })
   }
+
+  const onunblock = () => {
+    updateStatus({
+      variables: {
+        id:id,
+        updated_by: context.email
+      }
+    })
+  }
+
   const blacklisted = status
+
+  const onchange = blacklisted ? onunblock : onblock
 
   return (
     <Tooltip title={blacklisted ? 'Unblock Wallet' : 'Block Wallet'}>
       <Switch
-        onChange={onChange}
+        onChange={ onchange}
         checked={blacklisted}
         className={blacklisted ? 'block' : 'unblock'}
         disabled={!access}

@@ -108,7 +108,7 @@ const Branch = (props) => {
         dataSource={customer_branches}
         rowKey={(record) => record.id}
         size='small'
-        scroll={{ x: 800 }}
+        scroll={{ x: 1050 }}
         pagination={false}
         className='withAction'
         loading={loading}

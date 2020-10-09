@@ -4,10 +4,6 @@ import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import EmployeeList from '../fr8employeeEdit'
 import u from '../../../lib/util'
-import userContext from '../../../lib/userContaxt'
-import { useState,useContext } from 'react'
-import isEmpty from 'lodash/isEmpty'
-
 
 const EMPLOOYEE_QUERY = gql`
 subscription customer_fr8Branch_manager($id: Int){
@@ -67,11 +63,9 @@ const CustomersContainer = (props) => {
       title: 'Traffic',
       width: '50%',
       render: (record) => {
-        const branch_employee = get(record, 'branch_employees', null)
         const customer_branch_employees = get(record, 'branch_employees[0].customer_branch_employees[0]', null)
         const branch_employees = get(record, 'branch_employees[0].customer_branch_employees[0].branch_employee.employee', null)
         const employee = get(record, 'branch_employees[0].employee', null)
-        // const emp = (branch_employee ? (customer_branch_employees ? branch_employees && branch_employees.name : (employee ? employee && employee.name : null)) : null)
         const emp = customer_branch_employees ? branch_employees && branch_employees.name : employee && employee.name 
         return <EmployeeList employee={emp} id={record.id} edit_access={trafficEdit}/>
       }
