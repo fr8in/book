@@ -11,7 +11,7 @@ import { useRouter } from 'next/router'
 
 const PARTNERS_SUBSCRIPTION = gql`
   query create_partner{
-    employee{
+    employee(where:{active: {_eq: 1}}){
       id
       email
     }

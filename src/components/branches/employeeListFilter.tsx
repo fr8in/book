@@ -4,7 +4,7 @@ import { gql, useQuery } from '@apollo/client'
 
 const EMP_LIST = gql`
 query employee_list{
-  employee{
+  employee(where:{active: {_eq: 1}}){
     id
     email
   }

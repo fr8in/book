@@ -23,7 +23,7 @@ import get from 'lodash/get'
 
 const PARTNERS_QUERY = gql`
   query create_partner{
-    employee{
+    employee(where:{active: {_eq: 1}}){
       id
       email
     }

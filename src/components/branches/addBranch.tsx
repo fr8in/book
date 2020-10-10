@@ -6,7 +6,7 @@ import get from 'lodash/get'
 
 const ADD_BRANCH = gql`
  query add_branch{
-  employee{
+  employee(where:{active: {_eq: 1}}){
     id
     email
   }

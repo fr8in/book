@@ -20,7 +20,7 @@ insert_trip_pod_receipt(objects: $objects) {
 `
 const ALL_EMP_AND_COURIER = gql`
  query emp_courier {
-  employee {
+  employee(where:{active: {_eq: 1}}){
     id
     email
   }

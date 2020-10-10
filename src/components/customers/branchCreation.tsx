@@ -15,7 +15,7 @@ query region_state_type_emp_list{
     id
     name
   }
-  employee{
+  employee(where:{active: {_eq: 1}}){
     id
     email
   }

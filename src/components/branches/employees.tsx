@@ -5,7 +5,7 @@ import EmployeeNumber from './employeeNumber'
 
 const EMPLOYEE_QUERY = gql`
 query BranchEmployee {
-  employee {
+  employee(where:{active: {_eq: 1}}){
     id
     name
     mobileno

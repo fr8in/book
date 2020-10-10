@@ -18,7 +18,7 @@ import isEmpty from 'lodash/isEmpty'
 
 const ALL_EMPLOYEE = gql`
   query allEmployee {
-  employee{
+    employee(where:{active: {_eq: 1}}){
     id
     email
   }

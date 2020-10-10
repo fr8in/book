@@ -5,7 +5,7 @@ import { isArray } from 'lodash'
 
 const EMP_LIST = gql`
 query emp_list{
-  employee{
+  employee(where:{active: {_eq: 1}}){
     id
     email
   }

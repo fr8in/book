@@ -6,7 +6,7 @@ import { useState,useContext } from 'react'
 
 const ALL_EMPLOYEE = gql`
   query all_employee {
-  employee{
+  employee(where:{active: {_eq: 1}}){
     id
     email
   }
