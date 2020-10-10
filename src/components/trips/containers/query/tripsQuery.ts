@@ -22,6 +22,7 @@ subscription trips(
     {
     id
     order_date
+    po_date
     customer {
       name
       cardcode

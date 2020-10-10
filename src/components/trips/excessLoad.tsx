@@ -45,6 +45,9 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
               name
             }
             customer_price
+            is_price_per_ton
+            ton
+            price_per_ton
             created_at
             leads {
               id

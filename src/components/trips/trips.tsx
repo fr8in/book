@@ -86,7 +86,7 @@ const Trips = (props) => {
           <span>O.Date</span>
         </Tooltip>
       ),
-      dataIndex: 'order_date',
+      dataIndex: 'po_date',
       key: 'order_date',
       render: (text, record) => text ? moment(text).format('DD-MMM-YY') : '',
       width: '8%'

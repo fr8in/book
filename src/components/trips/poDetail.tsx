@@ -19,7 +19,7 @@ const PoDetail = (props) => {
   const partner_adv = net_price ? net_price * get(po_data, 'partner_advance_percentage.name', null) / 100 : 0
   const partner_wallet = partner_adv ? (partner_adv - (get(record, 'cash', 0) + get(record, 'to_pay', 0))) : 0
   const customer_adv = customer_price_data ? customer_price_data * get(customer, 'customer_advance_percentage.name', null) / 100 : 0
-
+  console.log('PO record', record)
   const initial = {
     part_price: net_price,
     part_adv: partner_adv,

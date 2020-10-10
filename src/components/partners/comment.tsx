@@ -13,6 +13,7 @@ const PARTNER_COMMENT_SUBSCRIPTION = gql`
       }
       partner_comments(limit:5,order_by:{created_at:desc}){
         id
+        topic
         description
         created_at
         created_by
