@@ -51,7 +51,7 @@ const Fr8Employee = (props) => {
 
   const employees = get(_data, 'branch[0].branch_employees', [])
   const emplist = employees.map(data => {
-    return { value: data.employee.id, label: data.employee.name }
+    return { value: data.id, label: data.employee.name }
   })
 
   const handleChange = (value) => {
