@@ -39,7 +39,7 @@ mutation customer_branch_update($address: String, $id: Int!, $branch_name: Strin
 
 const CreateCustomerBranch = (props) => {
   const { visible, onHide, customerbranches, customer_id } = props
-  const initial = { city_id: null, state_name: (customerbranches.state || null) }
+  const initial = { city_id: null, state_name: ((customerbranches && customerbranches.state) || null) }
   const [obj, setObj] = useState(initial)
   const [disableButton, setDisableButton] = useState(false)
 

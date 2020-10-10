@@ -140,16 +140,6 @@ const CustomerKyc = (props) => {
 
   const newCustomer = [
     {
-      title: 'User Name',
-      width: '11%',
-      render: (text, record) => {
-        const user = get(record, 'customer_users[0].name', '-')
-        return (
-          <Truncate data={user} length={14} />
-        )
-      }
-    },
-    {
       title: 'Company Name',
       dataIndex: 'name',
       width: '11%',
