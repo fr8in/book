@@ -1,5 +1,5 @@
-import { Table, Tooltip, Button } from 'antd'
-import { PhoneOutlined, CommentOutlined, WhatsAppOutlined } from '@ant-design/icons'
+import { Table, Tooltip, Button, Space } from 'antd'
+import { PhoneOutlined, CommentOutlined, CheckOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import TripFeedBack from '../trips/tripFeedBack'
@@ -9,7 +9,7 @@ import LinkComp from '../common/link'
 
 const Trips = (props) => {
   const { trips, loading } = props
-
+  console.log('trips', trips)
   const initial = {
     commentData: [],
     commentVisible: false
@@ -19,7 +19,10 @@ const Trips = (props) => {
   const callNow = record => {
     window.location.href = 'tel:' + record
   }
-
+  
+  const now = new Date().toISOString()
+  console.log('now', now)
+ 
   const columns = [
     {
       title: 'ID',
@@ -155,42 +158,62 @@ const Trips = (props) => {
     },
     {
       title: 'Action',
-      render: (text, record) => (
-        <span>
-          <Tooltip title={record.driverPhoneNo}>
-            <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.driverPhoneNo)} />
-          </Tooltip>
-          <Tooltip title='Comment'>
-            <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
-          </Tooltip>
-          {/* <Tooltip title='click to copy message'>
+      render: (text, record) => {
+        const is_execption = get(record, 'customer.is_exception', null)
+        const expection_date = get(record, 'customer.exception_date', null)
+        const assign_status = get(record, 'trip_status.name', null)
+        return (
+          <span>
+            <Tooltip title={record.driverPhoneNo}>
+              <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.driverPhoneNo)} />
+            </Tooltip>
+            <Tooltip title='Comment'>
+              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
+            </Tooltip>
+            {/* <Tooltip title='click to copy message'>
             <Button type='link' icon={<WhatsAppOutlined />} />
           </Tooltip> */}
-        </span>
-      ),
-      width: props.intransit ? '9%' : '11%'
+            <>
+              {
+                assign_status === 'Assigned' ?
+                  <Button
+                    icon={<CheckOutlined />}
+                    type='primary'
+                    size='small'
+                    className='btn-success'
+                    shape='circle'
+                    disabled={ expection_date < now}
+                  /> : ''
+              }
+            </>
+          </span>
+        )
+      }
+        
+        ,
+width: props.intransit ? '9%' : '11%'
     }
   ]
-  return (
-    <>
-      <Table
-        columns={columns}
-        dataSource={trips}
-        className='withAction'
-        rowKey={record => record.id}
-        size='small'
-        scroll={{ x: 1156 }}
-        pagination={false}
-        loading={loading}
-      />
-      {object.commentVisible &&
-        <TripFeedBack
-          visible={object.commentVisible}
-          tripid={object.commentData}
-          onHide={handleHide}
-        />}
-    </>
-  )
+return (
+  <>
+    <Table
+      columns={columns}
+      dataSource={trips}
+      className='withAction'
+      rowKey={record => record.id}
+      size='small'
+      scroll={{ x: 1156 }}
+      pagination={false}
+      loading={loading}
+    />
+    {object.commentVisible &&
+      <TripFeedBack
+        visible={object.commentVisible}
+        tripid={object.commentData}
+        onHide={handleHide}
+      />}
+  </>
+)
 }
 
 export default Trips
