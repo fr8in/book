@@ -188,9 +188,8 @@ const Trips = (props) => {
         const is_execption = get(record, 'customer.is_exception', null)
         const expection_date = get(record, 'customer.exception_date', null)
         const assign_status = get(record, 'trip_status.name', null)
-        const expection_dates = moment(expection_date).format('YYYY-MM-DD')
+        const expection_dates = expection_date ? moment(expection_date).format('YYYY-MM-DD') : null
         const todayDate = new Date().toISOString().slice(0,10);
-        console.log('todayDate',todayDate)
         return (
           <span>
             <Tooltip title={record.driverPhoneNo}>
@@ -217,7 +216,7 @@ const Trips = (props) => {
                       size='small'
                       className='btn-success'
                       shape='circle'
-                      disabled={is_execption && (expection_dates < todayDate || expection_dates === 'Invalid date') }
+                      disabled={is_execption && (expection_dates < todayDate || expection_dates === null) }
                     /> 
                     </Popconfirm> : null
               }
