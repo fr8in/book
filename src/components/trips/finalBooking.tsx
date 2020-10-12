@@ -183,7 +183,7 @@ const FinalBooking = (props) => {
         variables: {
           trip_id: parseInt(trip_id),
           wallet: floatVal(amount),
-          docentry: selectedRow[0].customer_incoming_id,
+          docentry: selectedRow[0].docentry,
           cash: floatVal(form.cash),
           rebate: floatVal(form.rebate),
           created_by: context.email,
