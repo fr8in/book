@@ -5,11 +5,11 @@ import userContext from '../../lib/userContaxt'
 import { useState,useContext } from 'react'
 
 const UPDATE_PARTNER_BANK_MUTATION = gql`
-mutation partner_bank_edit ($account_number:String,$ifsc_code:String,$acconnt_holder:String,$cardcode:String,$updated_by: String!){
+mutation partner_bank_edit ($account_number:String,$ifsc_code:String,$account_holder:String,$cardcode:String,$updated_by: String!){
   update_partner(_set:{
     account_number: $account_number,
     ifsc_code: $ifsc_code,
-    acconnt_holder:$acconnt_holder,
+    account_holder:$account_holder,
     updated_by:$updated_by},
     where: {cardcode:{_eq:$cardcode}}){
     returning{
@@ -46,7 +46,7 @@ const EditBank = (props) => {
         cardcode: cardcode,
         account_number: form.account_number,
         ifsc_code: form.ifsc_code,
-        acconnt_holder: form.acconnt_holder,
+        account_holder: form.account_holder,
         updated_by: context.email
       }
     })
@@ -62,7 +62,7 @@ const EditBank = (props) => {
       >
         <Form layout='vertical' onFinish={onBankSubmit}>
           <Form.Item
-            name='acconnt_holder'
+            name='account_holder'
           >
             <Input placeholder='Name' />
           </Form.Item>

@@ -1,4 +1,4 @@
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import { Modal, Row, Button, Form, Col, Input, Radio, message } from 'antd'
 import PaymentTraceability from './paymentTraceability'
 import { gql, useMutation, useLazyQuery } from '@apollo/client'
@@ -45,7 +45,7 @@ query ifsc_validation($ifsc: String!){
 }`
 
 const Transfer = (props) => {
-  const { visible, onHide, cardcode, customer_id,walletcode,wallet_balance } = props
+  const { visible, onHide, cardcode, customer_id, walletcode, wallet_balance } = props
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
@@ -70,9 +70,10 @@ const Transfer = (props) => {
   const [customer_mamul_transfer] = useMutation(
     CUSTOMER_MAMUL_TRANSFER,
     {
-      onError (error) { 
+      onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
+        message.error(error.toString())
+      },
       onCompleted (data) {
         setDisableButton(false)
         const status = get(data, 'customer_mamul_transfer.status', null)

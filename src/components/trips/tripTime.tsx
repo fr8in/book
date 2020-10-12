@@ -336,7 +336,7 @@ const TripTime = (props) => {
         </Col>
       </Row>
       {visible.mail && <SendLoadingMemo visible={visible.mail} onHide={onHide} />}
-      {visible.deletePO && <DeletePO visible={visible.deletePO} onHide={onHide} />}
+      {visible.deletePO && <DeletePO visible={visible.deletePO} onHide={onHide} trip_id={trip_info.id} />}
       {visible.godownReceipt && <GodownReceipt visible={visible.godownReceipt} trip_id={trip_info.id} trip_info={trip_info} onHide={onHide} />}
       {visible.wh_detail &&
         <Modal
