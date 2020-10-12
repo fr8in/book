@@ -36,6 +36,10 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         customer_accounting {
           wallet_balance
         }
+        customer_advance_percentage{
+          id
+          name
+        }
       }
       partner{
         id
@@ -79,7 +83,6 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       mamul
       including_loading
       including_unloading
-      customer_advance_percentage
       ton
       is_price_per_ton
       price_per_ton

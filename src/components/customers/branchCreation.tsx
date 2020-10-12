@@ -74,7 +74,7 @@ mutation update_customer(
       payment_manager_id: $payment_manager_id, 
       system_mamul: $mamul,
       status_id: 5,
-      updated_by:$updated_by
+      updated_by:$updated_by,
       city_id: $city_id
     }, 
     where: {

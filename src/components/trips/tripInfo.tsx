@@ -27,8 +27,8 @@ const TripInfo = (props) => {
     ton: get(trip_info, 'ton', 0),
     is_price_per_ton: get(trip_info, 'is_price_per_ton', 0),
     price_per_ton: get(trip_info, 'price_per_ton', 0),
-    customer_advance_percentage: get(trip_info, 'customer_advance_percentage', null),
-    partner_advance_percentage: get(trip_info, 'partner_advance_percentage.name', null)
+    customer_advance_percentage: get(trip_info, 'customer.customer_advance_percentage.name', null),
+    partner_advance_percentage: get(trip_info, 'partner.partner_advance_percentage.name', null)
   }
   const customer_payment = [
     {

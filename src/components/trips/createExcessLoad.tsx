@@ -7,7 +7,7 @@ import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 
 const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
-  search_customer(args:{search:$search}, where:{customer:{status:{name:{_in: ["Active", "In-Active"]}}}}){
+  search_customer(args:{search:$search, status_ids: "{1,5}"}){
     id
     description
   }

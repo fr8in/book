@@ -7,12 +7,12 @@ const PARTNER_WALLET_STATEMENT_QUERY = gql`
 query partner_wallet_statement($cardcode: String) {
   partner(where: {cardcode: {_eq: $cardcode}}) {
     cardcode
-    partner_wallet_statement_aggregate {
-      aggregate{
-        sum{
-          amount
-        }
-      }
+    partner_accounting {
+      cleared
+      wallet_balance
+      onhold
+      commission
+      billed
     }
     partner_wallet_statement(order_by:{created_at:desc}) {
       docnum
@@ -46,7 +46,7 @@ const WalletStatement = (props) => {
   }
 
   const partner_wallet_statements = get(_data, 'partner[0].partner_wallet_statement', [])
-  const wallet_balance = get(_data, 'partner[0].partner_wallet_statement_aggregate.aggregate.sum.amount', 0)
+  const wallet_balance = get(_data, 'partner[0].partner_accounting.wallet_balance', 0)
 
   const statements = partner_wallet_statements.reduce((transactions, trans) => {
     const date = trans.created_at.split('T')[0]
