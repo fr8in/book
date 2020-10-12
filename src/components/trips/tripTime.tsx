@@ -48,8 +48,8 @@ mutation remove_souce_out($source_in:timestamp,$id:Int!,$updated_by: String!) {
 }`
 
 const REMOVE_SOUT_MUTATION = gql`
-mutation remove_souce_out($source_out:timestamp,$id:Int!,$updated_by: String!,$loaded:String) {
-  update_trip(_set: {source_out: $source_out,updated_by:$updated_by,loaded:$loaded}, where: {id: {_eq: $id}}) {
+mutation remove_souce_out($source_out:timestamp,$id:Int!,$updated_by: String!) {
+  update_trip(_set: {source_out: $source_out,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
       source_out
@@ -205,8 +205,7 @@ const TripTime = (props) => {
       variables: {
         id: trip_info.id,
         source_out: null,
-        updated_by: context.email,
-        loaded:"No"
+        updated_by: context.email
       }
     })
   }
@@ -240,7 +239,7 @@ const TripTime = (props) => {
   const authorized = true // TODO
   const trip_status_name = get(trip_info, 'trip_status.name', null)
   const po_delete = (trip_status_name === 'Assigned' || trip_status_name === 'Confirmed' || trip_status_name === 'Reported at source') && !trip_info.source_out
-  const process_advance = trip_info.source_in && trip_info.source_out && (trip_info.loaded === 'No')
+  const process_advance = trip_info.source_out && (trip_info.loaded !== 'Yes')
   const remove_sin = trip_status_name === 'Reported at source' && authorized
   const remove_sout = trip_status_name === 'Intransit' && authorized
   const remove_din = trip_status_name === 'Reported at destination' && authorized

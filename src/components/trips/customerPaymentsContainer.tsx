@@ -87,10 +87,10 @@ const CustomerPaymentsContainer = (props) => {
 
   // const advance_pending = get(_data, 'trip_sap_customer_advance_pending', [])
   // const invoice_pending = get(_data, 'trip_sap_customer_invoice_pending', [])
-  const balance_pending = get(_data, 'trip_sap_customer_balance_pending', [])
-  const amount=get(trip_data, 'accounting_trip_receivable_summary[0].amount', [])
+  const invoice_pending = get(_data, 'trip_sap_customer_balance_pending', [])
+  const amount=get(trip_data, 'accounting_trip_receivable_summary[0].amount', 0)
   
-  const pending_data = [
+  const advance_pending_data = [
     {amount: bank, received: amount, balance: (bank - amount)}
   ]
   const onFinalShow = (record) => {
@@ -103,16 +103,14 @@ const CustomerPaymentsContainer = (props) => {
   return (
     <>
     {
-    (balance_pending) && status_id === 12 ?
+     status_id === 12 ? //Invoiced : 12
      <Row>
           <Col xs={24} className='payableHead'><b>Pending Payments</b></Col>
           <Col xs={24}>
             <CustomerPayments
-              dataSource={pending_data}
+              dataSource={invoice_pending}
               type_name='Final'
-              onShow={onFinalShow}
-             amount={amount}
-             bank={bank}
+              onShow={() => handleShow('adv_visible', 'Advance', 'adv_data', invoice_pending[0])}
             />
           </Col>
         </Row>:
@@ -120,9 +118,9 @@ const CustomerPaymentsContainer = (props) => {
           <Col xs={24} className='payableHead'><b>Advance Payments</b></Col>
           <Col xs={24}>
             <CustomerPayments
-              dataSource={balance_pending}
+              dataSource={advance_pending_data}
               type_name='Advance'
-              onShow={() => handleShow('adv_visible', 'Advance', 'adv_data', balance_pending[0])}
+              onShow={onFinalShow}
             />
           </Col>
         </Row>
@@ -193,5 +191,6 @@ const CustomerPaymentsContainer = (props) => {
 }
 
 export default CustomerPaymentsContainer
+
 
 
