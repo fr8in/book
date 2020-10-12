@@ -50,7 +50,7 @@ const Trips = (props) => {
   }
 
   const now = new Date().toISOString()
-  console.log('now', now)
+  console.log('now', now,moment())
 
   const columns = [
     {
@@ -217,7 +217,7 @@ const Trips = (props) => {
                       size='small'
                       className='btn-success'
                       shape='circle'
-                      disabled={expection_date < now}
+                      disabled={is_execption && (expection_date < now || expection_date === null) }
                     /> 
                     </Popconfirm> : null
               }
