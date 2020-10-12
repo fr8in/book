@@ -3,7 +3,7 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useContext } from 'react'
 import u from '../../lib/util'
 
 const CUSTOMERS_ADVANCE_PERCENTAGE_QUERY = gql`

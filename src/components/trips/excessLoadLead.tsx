@@ -1,5 +1,4 @@
-import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState} from 'react'
 import { Table, Tooltip, Button, Select, Space, message, Modal } from 'antd'
 import { RocketFilled, DeleteOutlined, WhatsAppOutlined } from '@ant-design/icons'
 import Link from 'next/link'
@@ -10,8 +9,8 @@ import get from 'lodash/get'
 import ConfirmPo from '../trips/confirmPo'
 
 const DELETE_LEAD = gql`
-mutation delete_lead($deleted_at: timestamp, $id: Int,$updated_by: String!){
-  update_lead(_set:{deleted_at: $deleted_at,updated_by:$updated_by }, where:{id:{_eq: $id}}){
+mutation delete_lead($deleted_at: timestamp, $id: Int){
+  update_lead(_set:{deleted_at: $deleted_at }, where:{id:{_eq: $id}}){
     returning{
       id
       deleted_at
@@ -25,7 +24,6 @@ const ExcessLoadLead = (props) => {
 
   const initial = { cancel_visible: false, record: null, po_visible: false, po_data: null }
   const { object, handleShow, handleHide } = useShowHideWithRecord(initial)
-  const context = useContext(userContext)
 
   const [truck_id, setTruck_id] = useState(null)
 
@@ -44,8 +42,7 @@ const ExcessLoadLead = (props) => {
     delete_lead({
       variables: {
         id: id,
-        deleted_at: new Date().toISOString(),
-        updated_by: context.email
+        deleted_at: new Date().toISOString()
       }
     })
   }

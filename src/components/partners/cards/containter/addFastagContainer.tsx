@@ -1,14 +1,12 @@
 import { Row, Col, Form, Input, Button, Select, Space, Card, message } from 'antd'
 import { gql, useQuery, useMutation, useLazyQuery } from '@apollo/client'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import get from 'lodash/get'
 import userContext from '../../../../lib/userContaxt'
 
-const { Option } = Select
-
 const PARTNER_SEARCH = gql`
 query par_search($search:String!){
-  search_partner(args:{search:$search}, where:{partner:{partner_status:{name:{_eq:"Active"}}}}){
+  search_partner(args:{search:$search, status_ids: "{4}"}){
     id
     description
   }
@@ -58,10 +56,12 @@ const AddFastagContainer = () => {
     {
       onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
+        message.error(error.toString()) 
+},
       onCompleted () {
         setDisableButton(false)
-        message.success('Updated!!') }
+        message.success('Updated!!') 
+}
     }
   )
 

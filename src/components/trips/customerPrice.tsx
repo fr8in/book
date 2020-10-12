@@ -40,12 +40,11 @@ mutation update_trip_price(
   insert_trip_comment(objects:{trip_id: $trip_id, description: $comment, topic: $topic, created_by: $created_by}){
     returning{ id trip_id }
   }
-}
-`
+}`
 
 const CustomerPrice = (props) => {
   const { visible, onHide, trip_id, trip_price, loaded } = props
-
+console.log('trip_price', trip_price)
   const [form] = Form.useForm()
   const context = useContext(userContext)
   const customer_advance_percentage = trip_price.customer_advance_percentage || 90

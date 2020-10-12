@@ -52,7 +52,7 @@ query customers_po($id:Int!){
 }`
 
 const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
-  search_customer(args:{search:$search}){
+  search_customer(args:{search:$search, status_ids: "{1,5}"}){
     id
     description
   }

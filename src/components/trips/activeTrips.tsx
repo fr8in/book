@@ -1,20 +1,49 @@
-import { Table, Tooltip, Button } from 'antd'
-import { PhoneOutlined, CommentOutlined, WhatsAppOutlined } from '@ant-design/icons'
+import { Table, Tooltip, Button, Popconfirm,message } from 'antd'
+import { PhoneOutlined, CommentOutlined, CheckOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import TripFeedBack from '../trips/tripFeedBack'
 import Truncate from '../common/truncate'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
+import { gql, useMutation } from '@apollo/client'
+
+const ASSIGN_TO_CONFIRM_STATUS_MUTATION = gql`
+mutation update_trip_status($id: Int , $trip_status_id : Int) {
+  update_trip(_set: {trip_status_id: $trip_status_id}, where: {id: {_eq: $id}}) {
+    returning {
+      id
+    }
+  }
+}
+`
 
 const Trips = (props) => {
   const { trips, loading } = props
-
+  console.log('trips', trips)
   const initial = {
     commentData: [],
     commentVisible: false
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
+
+  const [assign_to_confirm] = useMutation(
+    ASSIGN_TO_CONFIRM_STATUS_MUTATION, {
+      onError (error) {
+        message.error(error.toString())
+      },
+      onCompleted () {
+        message.success('Updated!!')
+      }
+    })
+  const onSubmit = (id) => {
+    assign_to_confirm({
+      variables: {
+        trip_status_id: 3,
+        id: id
+      }
+    })
+  }
 
   const callNow = record => {
     window.location.href = 'tel:' + record
@@ -155,19 +184,48 @@ const Trips = (props) => {
     },
     {
       title: 'Action',
-      render: (text, record) => (
-        <span>
-          <Tooltip title={record.driverPhoneNo}>
-            <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.driverPhoneNo)} />
-          </Tooltip>
-          <Tooltip title='Comment'>
-            <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
-          </Tooltip>
-          {/* <Tooltip title='click to copy message'>
+      render: (text, record) => {
+        const is_execption = get(record, 'customer.is_exception', null)
+        const expection_date = get(record, 'customer.exception_date', null)
+        const assign_status = get(record, 'trip_status.name', null)
+        const expection_dates = expection_date ? moment(expection_date).format('YYYY-MM-DD') : null
+        const todayDate = new Date().toISOString().slice(0,10);
+        return (
+          <span>
+            <Tooltip title={record.driverPhoneNo}>
+              <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.driverPhoneNo)} />
+            </Tooltip>
+            <Tooltip title='Comment'>
+              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
+            </Tooltip>
+            {/* <Tooltip title='click to copy message'>
             <Button type='link' icon={<WhatsAppOutlined />} />
           </Tooltip> */}
-        </span>
-      ),
+            <>
+              {
+                assign_status === 'Assigned' ?
+                  <Popconfirm
+                    title='Are you sure you want to change this status to confirmed?'
+                    okText='Yes'
+                    cancelText='No'
+                   onConfirm={() => onSubmit(record.id)}
+                  >
+                    <Button
+                      icon={<CheckOutlined />}
+                      type='primary'
+                      size='small'
+                      className='btn-success'
+                      shape='circle'
+                      disabled={is_execption && (expection_dates < todayDate || expection_dates === null) }
+                    /> 
+                    </Popconfirm> : null
+              }
+            </>
+          </span>
+        )
+      }
+
+      ,
       width: props.intransit ? '9%' : '11%'
     }
   ]

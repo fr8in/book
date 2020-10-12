@@ -2,6 +2,7 @@ import { ApolloClient, InMemoryCache, HttpLink, split } from '@apollo/client'
 import { WebSocketLink } from '@apollo/client/link/ws'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { setContext } from '@apollo/client/link/context'
+import { refreshToken } from './auth'
 // import WebSocket from 'ws';
 
 const isBrowser = typeof window !== 'undefined'
@@ -10,7 +11,9 @@ const wsLink = isBrowser ? new WebSocketLink({
   options: {
     reconnect: true,
     connectionParams: async () => {
+      refreshToken()
       const token = await localStorage.getItem('token')
+      console.log('token', token)
       if (token) {
         return {
           headers: {
@@ -29,7 +32,9 @@ const httpLink = new HttpLink({
 })
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
+  refreshToken()
   const token = localStorage.getItem('token')
+  console.log('token', token)
   // return the headers to the context so httpLink can read them
   return {
     headers: {

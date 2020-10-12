@@ -18,6 +18,8 @@ subscription dashboard_trips($regions: [Int!], $branches: [Int!], $cities: [Int!
               id
               cardcode
               name
+              is_exception
+              exception_date
             }
             partner {
               id
