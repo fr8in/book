@@ -1,4 +1,4 @@
-import { Table, Tooltip, Button, Space } from 'antd'
+import { Table, Tooltip, Button, Popconfirm,message } from 'antd'
 import { PhoneOutlined, CommentOutlined, CheckOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
@@ -6,6 +6,17 @@ import TripFeedBack from '../trips/tripFeedBack'
 import Truncate from '../common/truncate'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
+import { gql, useMutation } from '@apollo/client'
+
+const ASSIGN_TO_CONFIRM_STATUS_MUTATION = gql`
+mutation update_trip_status($id: Int , $trip_status_id : Int) {
+  update_trip(_set: {trip_status_id: $trip_status_id}, where: {id: {_eq: $id}}) {
+    returning {
+      id
+    }
+  }
+}
+`
 
 const Trips = (props) => {
   const { trips, loading } = props
@@ -16,13 +27,31 @@ const Trips = (props) => {
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
+  const [assign_to_confirm] = useMutation(
+    ASSIGN_TO_CONFIRM_STATUS_MUTATION, {
+      onError (error) {
+        message.error(error.toString())
+      },
+      onCompleted () {
+        message.success('Updated!!')
+      }
+    })
+  const onSubmit = (id) => {
+    assign_to_confirm({
+      variables: {
+        trip_status_id: 3,
+        id: id
+      }
+    })
+  }
+
   const callNow = record => {
     window.location.href = 'tel:' + record
   }
-  
+
   const now = new Date().toISOString()
   console.log('now', now)
- 
+
   const columns = [
     {
       title: 'ID',
@@ -176,44 +205,51 @@ const Trips = (props) => {
             <>
               {
                 assign_status === 'Assigned' ?
-                  <Button
-                    icon={<CheckOutlined />}
-                    type='primary'
-                    size='small'
-                    className='btn-success'
-                    shape='circle'
-                    disabled={ expection_date < now}
-                  /> : ''
+                  <Popconfirm
+                    title='Are you sure you want to change this status to confirmed?'
+                    okText='Yes'
+                    cancelText='No'
+                   onConfirm={() => onSubmit(record.id)}
+                  >
+                    <Button
+                      icon={<CheckOutlined />}
+                      type='primary'
+                      size='small'
+                      className='btn-success'
+                      shape='circle'
+                      disabled={expection_date < now}
+                    /> 
+                    </Popconfirm> : null
               }
             </>
           </span>
         )
       }
-        
-        ,
-width: props.intransit ? '9%' : '11%'
+
+      ,
+      width: props.intransit ? '9%' : '11%'
     }
   ]
-return (
-  <>
-    <Table
-      columns={columns}
-      dataSource={trips}
-      className='withAction'
-      rowKey={record => record.id}
-      size='small'
-      scroll={{ x: 1156 }}
-      pagination={false}
-      loading={loading}
-    />
-    {object.commentVisible &&
-      <TripFeedBack
-        visible={object.commentVisible}
-        tripid={object.commentData}
-        onHide={handleHide}
-      />}
-  </>
-)
+  return (
+    <>
+      <Table
+        columns={columns}
+        dataSource={trips}
+        className='withAction'
+        rowKey={record => record.id}
+        size='small'
+        scroll={{ x: 1156 }}
+        pagination={false}
+        loading={loading}
+      />
+      {object.commentVisible &&
+        <TripFeedBack
+          visible={object.commentVisible}
+          tripid={object.commentData}
+          onHide={handleHide}
+        />}
+    </>
+  )
 }
 
 export default Trips
