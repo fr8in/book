@@ -19,6 +19,7 @@
     "antd": "^4.6.5",
     "firebase": "^7.19.1",
     "graphql": "^15.3.0",
+    "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.19",
     "moment": "^2.27.0",
     "next": "latest",

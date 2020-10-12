@@ -6,7 +6,7 @@ import ConfirmPo from './confirmPo'
 import get from 'lodash/get'
 
 const PARTNER_SEARCH_QUERY = gql`query partner_search($search: String){
-search_partner(args:{search:$search}){
+search_partner(args:{search:$search, status_ids: "{4}"}){
     id
     link
     description

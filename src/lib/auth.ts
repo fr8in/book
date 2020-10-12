@@ -3,6 +3,8 @@ import 'firebase/auth'
 import 'firebase/database'
 import Router from 'next/router'
 import { message } from 'antd'
+import jwt from 'jsonwebtoken'
+import moment from 'moment'
 
 if (!firebase.apps.length) {
   firebase.initializeApp({
@@ -22,16 +24,14 @@ const auth = (setAuthState) => {
         const token = await user.getIdToken()
         let idTokenResult = await user.getIdTokenResult()
         let hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims']
-        console.log('hasuraClaim', hasuraClaim)
-        console.log('user', user)
 
         if (hasuraClaim) {
           // @ts-ignore
           const roles = hasuraClaim['x-hasura-allowed-roles']
           // roles.include(account_manager)
           console.log('roles', roles)
-          setAuthState({ status: 'in', user, token, roles })
           localStorage.setItem('token', token)
+          setAuthState({ status: 'in', user, token, roles })
         } else {
           // Check if refresh is required.
           const metadataRef = firebase
@@ -47,8 +47,9 @@ const auth = (setAuthState) => {
             hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims']
             console.log('hasuraClaimm', hasuraClaim)
             if (hasuraClaim) {
-              setAuthState({ status: 'in', user, token })
               localStorage.setItem('token', token)
+              const roles = hasuraClaim['x-hasura-allowed-roles']
+              setAuthState({ status: 'in', user, token, roles })
             } else {
               await firebase.auth().signOut()
               setAuthState({ status: 'out' })
@@ -84,6 +85,29 @@ const signOut = async () => {
   }
 }
 
+const refreshToken = () => {
+  const token = localStorage.getItem('token')
+  const decodedToken = jwt.decode(token)
+  const expiryTime = decodedToken.exp
+  const currentTime = new Date().getTime()
+  console.log('expiryToime', expiryTime)
+  console.log('currentTime', currentTime)
+  // let userId = decodedToken.user_id;
+  const appendExpiry = expiryTime + '000'
+  const parsing = parseInt(appendExpiry) - 120000 // expire time minus 2 minutes
+  console.log('im out', (moment().diff(moment(parsing))) >= 0)
+  if ((moment().diff(moment(parsing))) >= 0) {
+    console.log('im in', (moment().diff(moment(parsing))) >= 0)
+
+    firebase.auth().onAuthStateChanged(async user => {
+      if (user) {
+        const token = await user.getIdToken(true)
+        localStorage.setItem('token', token)
+      }
+    })
+  }
+}
+
 // const hasuraClaim = async (user, setAuthState) => {
 //   const token = await user.getIdToken()
 //   const idTokenResult = await user.getIdTokenResult()
@@ -99,4 +123,4 @@ const signOut = async () => {
 //   }
 // }
 
-export { auth, signInWithGoogle, signOut }
+export { auth, signInWithGoogle, signOut, refreshToken }
