@@ -26,16 +26,16 @@ const CustomerPayments = (props) => {
     title: 'Amount',
     width: '16%',
     render: ( record) => {
-       const amounts = (type_name === 'Final') ? record.amount : record.freight
+       const amounts = (type_name === 'Final') ? record.freight : record.amount
       return amounts
     }
   },
   {
-    title: 'Recieved',
+    title: 'Received',
     width: '16%',
     render: ( record) => {
-      const Recieved = (type_name === 'Final') ? record.received : record.received
-     return Recieved
+      const Received = (type_name === 'Final') ? record.received : record.received
+     return Received
    }
   },
   {
