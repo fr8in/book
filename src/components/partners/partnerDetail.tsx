@@ -41,6 +41,7 @@ const PartnerDetail = (props) => {
          ${address.state || null},
          ${address.pin_code || null}`
   const cardcode = partnerDetail.cardcode
+  console.log('addressaddress',address)
   return (
     <Row gutter={8}>
       <Col xs={24} sm={24} md={24}>
@@ -147,6 +148,7 @@ const PartnerDetail = (props) => {
             cardcode={object.address}
             onHide={handleHide}
             title={object.title}
+            partnerAddress={address}
           />}
         {object.bankVisible &&
           <EditBank
