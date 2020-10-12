@@ -14,7 +14,9 @@ mutation update_address($address:jsonb, $cardcode:String,$updated_by: String!){
 }
 `
 const EditAddress = (props) => {
-  const { visible, onHide, cardcode } = props
+  const { visible, onHide, cardcode ,partnerAddress} = props
+
+  console.log('address',partnerAddress)
 
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
@@ -62,19 +64,19 @@ const EditAddress = (props) => {
         footer={null}
       >
         <Form layout='vertical' onFinish={onAddressSubmit}>
-          <Form.Item name='no'>
+          <Form.Item name='no' initialValue={partnerAddress && partnerAddress.no || null}>
             <Input placeholder='Building Number' />
           </Form.Item>
-          <Form.Item name='address'>
+          <Form.Item name='address'  initialValue={partnerAddress && partnerAddress.address || null}>
             <Input placeholder='Address' />
           </Form.Item>
-          <Form.Item name='city'>
+          <Form.Item name='city'  initialValue={partnerAddress && partnerAddress.city || null}>
             <Input placeholder='City' />
           </Form.Item>
-          <Form.Item name='state'>
+          <Form.Item name='state'  initialValue={partnerAddress && partnerAddress.state || null}>
             <Input placeholder='State' />
           </Form.Item>
-          <Form.Item name='pin_code'>
+          <Form.Item name='pin_code'  initialValue={partnerAddress && partnerAddress.pin_code || null}>
             <Input placeholder='Pin Code' />
           </Form.Item>
           <Row justify='end'>
