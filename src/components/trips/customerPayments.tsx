@@ -49,7 +49,7 @@ const CustomerPayments = (props) => {
   {
     title: 'Edit',
     width: '6%',
-    render: (record) => <EditAccess edit_access={edit_access} onEdit={(type_name === 'Final') ? () => onShow(record) : onShow} />
+    render: (record) => <EditAccess edit_access={edit_access} onEdit={(type_name === 'Advance') ? () => onShow(record) : onShow} />
   }]
 
   return (

@@ -7,11 +7,11 @@ import userContext from '../../lib/userContaxt'
 
 const CUSTOMER_ADVANCE = gql`
 mutation customer_advance(
-  $cash: Float!
-  $docentry: Int!
+  $cash: Float
+  $docentry: Int
   $created_by: String!
   $trip_id: Int!
-  $wallet: Float!
+  $wallet: Float
 ) {
   customer_advance(
     cash: $cash,
@@ -65,7 +65,7 @@ const AdvanceBooking = (props) => {
         trip_id: parseInt(trip_id, 10),
         wallet: parseFloat(amount),
         cash: parseFloat(form.cash),
-        docentry: selectedRow[0].customer_incoming_id,
+        docentry: selectedRow[0].docentry,
         created_by: context.email
       }
     })
