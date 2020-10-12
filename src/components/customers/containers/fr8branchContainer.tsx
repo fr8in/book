@@ -4,33 +4,27 @@ import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import EmployeeList from '../fr8employeeEdit'
 import u from '../../../lib/util'
-import userContext from '../../../lib/userContaxt'
-import { useState,useContext } from 'react'
-import isEmpty from 'lodash/isEmpty'
 
-
-const EMPLOOYEE_QUERY = gql`
-subscription customer_fr8Branch_manager($id: Int){
-  branch(order_by: {displayposition: asc}){
+const EMPLOYEE_SUBSCRIPTION = gql`
+subscription customer_branch_employees($id:Int!){
+  customer(where: { id:{_eq: $id}}){
     id
-    name
-    branch_employees(where: {is_manager:{_eq: true}}){
-      customer_branch_employees(where:{customer_id:{_eq:$id}}){
+    cardcode
+    updated_at
+    customer_branch_employees(order_by:{branch_employee:{branch:{displayposition:asc}}}){
+      id
+      branch_employee{
         id
-        customer_id
-        branch_employee{
+        employee{
           id
-          employee{
-            id
-            email
-            name
-          }
+          name
+          email
         }
-      }
-      employee{
-        id
-        name
-        email
+        branch{
+          id
+          name
+        }
+        is_manager
       }
     }
   }
@@ -40,40 +34,38 @@ const CustomersContainer = (props) => {
   const { id } = props
   const { role } = u
   const trafficEdit = [role.user]
-  const variables = {
-    id: id
-  }
 
   const { loading, error, data } = useSubscription(
-    EMPLOOYEE_QUERY,
-    {
-      variables: variables
-    })
+    EMPLOYEE_SUBSCRIPTION,
+    { variables: { id: id } }
+  )
   console.log('error', error)
-  
+
   let _data = []
   if (!loading) {
     _data = data
   }
-  const branches = get(_data, 'branch', [])
+  const customer_branch_employees = get(_data, 'customer[0].customer_branch_employees', [])
 
   const column = [
     {
       title: 'Branch Name',
-      dataIndex: 'name',
-      width: '50%'
+      width: '50%',
+      render: (record) => get(record, 'branch_employee.branch.name')
     },
     {
       title: 'Traffic',
       width: '50%',
       render: (record) => {
-        const branch_employee = get(record, 'branch_employees', null)
-        const customer_branch_employees = get(record, 'branch_employees[0].customer_branch_employees[0]', null)
-        const branch_employees = get(record, 'branch_employees[0].customer_branch_employees[0].branch_employee.employee', null)
-        const employee = get(record, 'branch_employees[0].employee', null)
-        // const emp = (branch_employee ? (customer_branch_employees ? branch_employees && branch_employees.name : (employee ? employee && employee.name : null)) : null)
-        const emp = customer_branch_employees ? branch_employees && branch_employees.name : employee && employee.name 
-        return <EmployeeList employee={emp} id={record.id} edit_access={trafficEdit}/>
+        const employee = get(record, 'branch_employee.employee.name', null)
+        return (
+          <EmployeeList
+            employee={employee}
+            id={record.id}
+            edit_access={trafficEdit}
+            branch_id={get(record, 'branch_employee.branch.id', null)}
+          />
+        )
       }
     }
   ]
@@ -82,7 +74,7 @@ const CustomersContainer = (props) => {
     <>
       <Table
         columns={column}
-        dataSource={branches}
+        dataSource={customer_branch_employees}
         rowKey={(record) => record.id}
         size='small'
         scroll={{ x: 800 }}

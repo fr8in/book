@@ -30,7 +30,7 @@ import CustomerBranch from '../createCustomerBranch'
 import TitleWithCount from '../../common/titleWithCount'
 import u from '../../../lib/util'
 import userContext from '../../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import isEmpty from 'lodash/isEmpty'
 
 // Apollo Client
@@ -64,10 +64,7 @@ const CustomerDetailContainer = (props) => {
   const ad_am = [role.admin, role.accounts_manager]
   const ad_am_ac = [role.admin, role.accounts_manager, role.accounts]
   const transferAccess = !isEmpty(ad_am) ? context.roles.some(r => ad_am.includes(r)) : false
-  const walletAccess = !isEmpty(ad_am_ac) ? context.roles.some(r => ad_am_ac.includes(r)) : false
-  const addUserAccess = !isEmpty(ad_am_ac) ? context.roles.some(r => ad_am_ac.includes(r)) : false
-  const addBranchAccess = !isEmpty(ad_am_ac) ? context.roles.some(r => ad_am_ac.includes(r)) : false
-
+  const ad_am_ac_access = !isEmpty(ad_am_ac) ? context.roles.some(r => ad_am_ac.includes(r)) : false
 
   const variables = {
     cardcode: cardcode,
@@ -96,7 +93,7 @@ const CustomerDetailContainer = (props) => {
   const delivered_count = get(customer_info, 'delivered.aggregate.count', 0)
   const invoiced_count = get(customer_info, 'invoiced.aggregate.count', 0)
   const recieved_count = get(customer_info, 'recieved.aggregate.count', 0)
-  const incoming_count= get(customer_info, 'incoming.aggregate.count', 0)
+  const incoming_count = get(customer_info, 'incoming.aggregate.count', 0)
 
   return (
     loading ? <Loading /> : (
@@ -127,36 +124,35 @@ const CustomerDetailContainer = (props) => {
                         onClick={() => onShow('showModal')}
                       />
                     </Tooltip> */}
-                    { transferAccess ?
-                      <span>
-                      <Tooltip title='Transfer'>
-                      <Button
-                        icon={<BankFilled />}
-                        shape='circle'
-                        onClick={() => onShow('transfer')}
-                      />
-                    </Tooltip>
-                    <Tooltip title='Excess'>
-                      <Button
-                        icon={<FileDoneOutlined />}
-                        shape='circle'
-                        onClick={() => onShow('rebate')}
-                      />
-                      </Tooltip>
-                      </span>
-                   : null }
-                    
-                    { walletAccess ?
-                      <>
-                    <Tooltip title='Wallet Topup'>
-                      <Button
-                        shape='circle'
-                        icon={<WalletOutlined />}
-                        onClick={() => onShow('wallet')}
-                      />
-                    </Tooltip>
-                    </>
-                    : null}
+                    {transferAccess
+                      ? (
+                        <span>
+                          <Tooltip title='Transfer'>
+                            <Button
+                              icon={<BankFilled />}
+                              shape='circle'
+                              onClick={() => onShow('transfer')}
+                            />
+                          </Tooltip>
+                          <Tooltip title='Excess'>
+                            <Button
+                              icon={<FileDoneOutlined />}
+                              shape='circle'
+                              onClick={() => onShow('rebate')}
+                            />
+                          </Tooltip>
+                        </span>)
+                      : null}
+
+                    {ad_am_ac_access ? (
+                      <Tooltip title='Wallet Topup'>
+                        <Button
+                          shape='circle'
+                          icon={<WalletOutlined />}
+                          onClick={() => onShow('wallet')}
+                        />
+                      </Tooltip>)
+                      : null}
                     <WalletBalance wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)} cardcode={cardcode} />
                     <Blacklist
                       cardcode={cardcode}
@@ -205,24 +201,24 @@ const CustomerDetailContainer = (props) => {
                     </TabPane>
                     <TabPane tab='Users' key='6'>
                       <Row justify='end' className='m5'>
-                        { addUserAccess ?
-                        <Button type='primary' onClick={() => onShow('addUser')}>
-                          <PlusOutlined /> Add Users
-                        </Button> : null}
+                        {ad_am_ac_access ? (
+                          <Button type='primary' onClick={() => onShow('addUser')}>
+                            <PlusOutlined /> Add Users
+                          </Button>) : null}
                       </Row>
-                      <Users cardcode={cardcode} edit_access={deleteUserEdit}/>
+                      <Users cardcode={cardcode} edit_access={deleteUserEdit} />
                     </TabPane>
                     <TabPane tab='Branch' key='7'>
                       <Row justify='end' className='m5'>
-                        { addBranchAccess ?
-                        <Button
-                          type='primary'
-                          onClick={() => onShow('addBranch')}
-                        >
-                          <PlusOutlined /> Add Branch
-                        </Button> : null }
+                        {ad_am_ac_access ? (
+                          <Button
+                            type='primary'
+                            onClick={() => onShow('addBranch')}
+                          >
+                            <PlusOutlined /> Add Branch
+                          </Button>) : null}
                       </Row>
-                      <Branch cardcode={cardcode}  edit_access={branchActionEdit}/>
+                      <Branch cardcode={cardcode} edit_access={branchActionEdit} />
                     </TabPane>
                     <TabPane tab='FR8 Branch' key='8'>
                       <Fr8Branch cardcode={cardcode} id={customer_info && customer_info.id} />

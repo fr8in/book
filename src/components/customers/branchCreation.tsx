@@ -15,7 +15,7 @@ query region_state_type_emp_list{
     id
     name
   }
-  employee{
+  employee(where:{active: {_eq: 1}}){
     id
     email
   }
@@ -65,7 +65,9 @@ mutation update_customer(
   $customer_type_id: Int
   $mamul: Int
   $id:Int!
-  $updated_by:String!) {
+  $updated_by:String!
+  $city_id: Int!
+) {
   update_customer(_set: {
       customer_type_id: $customer_type_id, 
       onboarded_by_id: $onboarded_by_id, 
@@ -73,6 +75,7 @@ mutation update_customer(
       system_mamul: $mamul,
       status_id: 5,
       updated_by:$updated_by
+      city_id: $city_id
     }, 
     where: {
       id: {_eq:$id}
@@ -193,6 +196,7 @@ const BranchCreation = (props) => {
         payment_manager_id: form.getFieldValue('payment_manager_id'),
         mamul: parseInt(mamul),
         updated_by: context.email,
+        city_id: obj.city_id,
         id:customer_data.id
       }
     })
@@ -226,8 +230,8 @@ const BranchCreation = (props) => {
           </Row>
           <Row gutter={10}>
             <Col xs={24} sm={12}>
-              <Form.Item name='name' rules={[{ required: true, message: 'City name required' }]}>
-                <Input placeholder='City name' />
+              <Form.Item name='name' rules={[{ required: true, message: 'Name required' }]}>
+                <Input placeholder='Name' />
               </Form.Item>
             </Col>
             <Col xs={24} sm={12}>

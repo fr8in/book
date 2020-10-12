@@ -10,7 +10,7 @@ const PARTNERS_LEAD_SUBSCRIPTION = gql`
       id
       name
     }
-    employee{
+    employee(where:{active: {_eq: 1}}){
       id
       email
     }

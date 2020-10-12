@@ -7,16 +7,17 @@ import userContext from '../../lib/userContaxt'
 
 const TRIP_COMMENTS = gql`
 subscription trip_comments($id: Int!) {
-  trip(where: {id: {_eq:$id}}){
-      trip_comments{
-        id
-        description
-        topic
-        created_by
-        created_at
-      }
+  trip(where: {id: {_eq: $id}}, order_by: {created_at: asc}) {
+    trip_comments {
+      id
+      description
+      topic
+      created_by
+      created_at
+    }
   }
-}`
+}
+`
 
 const INSERT_TRIP_COMMENT_MUTATION = gql`
 mutation trip_comment($description:String, $topic:String, $trip_id: Int, $created_by:String) {

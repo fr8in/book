@@ -1,6 +1,6 @@
 
 import { useState, useContext } from 'react'
-import { Modal, Button, Input, Form, Row, Col, Select, message } from 'antd'
+import { Modal, Button, Input, Form, Row, Col, Select, message, Checkbox } from 'antd'
 import CitySelect from '../common/citySelect'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import get from 'lodash/get'
@@ -59,6 +59,9 @@ const CreateExcessLoad = (props) => {
   const initial = { search: '', customer_id: null, source_id: null, destination_id: null, disableButton: false }
   const [obj, setObj] = useState(initial)
   const context = useContext(userContext)
+  const [checked, setChecked] = useState(false)
+  const [cus_price, setCus_price] = useState(0)
+  const [form] = Form.useForm()
 
   const { loading, error, data } = useQuery(
     CUSTOMER_SEARCH,
@@ -94,6 +97,11 @@ const CreateExcessLoad = (props) => {
     }
   )
 
+  const onChange = (e) => {
+    console.log('event', e)
+    setChecked(e.target.checked)
+  }
+
   const onSourceChange = (city_id) => {
     setObj({ ...obj, source_id: city_id })
   }
@@ -110,6 +118,20 @@ const CreateExcessLoad = (props) => {
     setObj({ ...obj, customer_id: customer.key })
   }
 
+  const onRatePerTonChange = (e) => {
+    const ton = form.getFieldValue('ton')
+    const { value } = e.target
+    const cus_price = Math.floor((value * (ton || 1)))
+    setCus_price(cus_price)
+  }
+
+  const onTonChange = (e) => {
+    const rate_per_ton = form.getFieldValue('rate_per_ton')
+    const { value } = e.target
+    const ratePerTon = Math.floor((value * (rate_per_ton || 1)))
+    setCus_price(ratePerTon)
+  }
+
   const onCreateLoad = (form) => {
     if ((parseInt(form.price) < 0) || form.ton < 0) {
       message.error('Customer Price and Ton should be positive!')
@@ -120,10 +142,10 @@ const CreateExcessLoad = (props) => {
           source_id: parseInt(obj.source_id, 10),
           destination_id: parseInt(obj.destination_id, 10),
           customer_id: parseInt(obj.customer_id, 10),
-          customer_price: form.price ? parseFloat(form.price) : null,
+          customer_price: (checked && form.rate_per_ton && form.ton) ? cus_price : (!checked && form.price) ? parseFloat(form.price) : null,
           ton: form.ton ? parseFloat(form.ton) : null,
-          rate_per_ton: form.ton ? Math.floor(form.price / parseFloat(form.ton)) : null,
-          is_per_ton: !!form.ton,
+          rate_per_ton: form.rate_per_ton ? parseFloat(form.rate_per_ton) : null,
+          is_per_ton: checked,
           truck_type_id: parseInt(form.truck_type, 10),
           description: form.comment,
           topic: 'Excess Load Created',
@@ -142,7 +164,7 @@ const CreateExcessLoad = (props) => {
       bodyStyle={{ paddingBottom: 0 }}
       footer={[]}
     >
-      <Form layout='vertical' onFinish={onCreateLoad}>
+      <Form layout='vertical' form={form} onFinish={onCreateLoad}>
         <Row gutter={10}>
           <Col xs={24}>
             <Form.Item label='Customer' name='customer' rules={[{ required: true }]}>
@@ -178,23 +200,43 @@ const CreateExcessLoad = (props) => {
             />
           </Col>
         </Row>
+        <Form.Item name='ton' className='mb0'>
+          <Checkbox onChange={onChange} checked={checked} value='Rate/Ton'>Rate/Ton</Checkbox>
+        </Form.Item>
         <Row gutter={10}>
-          <Col xs={6}>
-            <Form.Item label='Price' name='price'>
-              <Input
-                placeholder='Price'
-                disabled={false}
-              />
-            </Form.Item>
-          </Col>
-          <Col xs={6}>
-            <Form.Item label='Ton' name='ton'>
-              <Input
-                placeholder='Ton'
-                disabled={false}
-              />
-            </Form.Item>
-          </Col>
+          {checked ? (
+            <>
+              <Col xs={6}>
+                <Form.Item label='Price/Ton' name='rate_per_ton' extra={`Price: ${cus_price || 0}`}>
+                  <Input
+                    placeholder='Price'
+                    disabled={false}
+                    type='number'
+                    onChange={onRatePerTonChange}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={6}>
+                <Form.Item label='Ton' name='ton'>
+                  <Input
+                    placeholder='Ton'
+                    disabled={false}
+                    type='number'
+                    onChange={onTonChange}
+                  />
+                </Form.Item>
+              </Col>
+            </>)
+            : (
+              <Col xs={12}>
+                <Form.Item label='Price' name='price'>
+                  <Input
+                    placeholder='Price'
+                    disabled={false}
+                    type='number'
+                  />
+                </Form.Item>
+              </Col>)}
           <Col xs={12}>
             <Form.Item label='Truck Type' name='truck_type' rules={[{ required: true }]}>
               <Select

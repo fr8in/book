@@ -18,6 +18,7 @@ subscription trips($offset: Int!, $limit: Int!, $where: trip_bool_exp) {
   trip(offset: $offset, limit: $limit, where: $where) {
     id
     order_date
+    po_date
     customer {
       name
       cardcode

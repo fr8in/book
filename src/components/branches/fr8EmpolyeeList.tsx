@@ -5,12 +5,12 @@ import { isArray } from 'lodash'
 
 const EMP_LIST = gql`
 query emp_list{
-  employee{
+  employee(where:{active: {_eq: 1}}){
     id
     email
   }
-}
-`
+}`
+
 const UPDATE_OWNER_MUTATION = gql`
 mutation update_owner($id:[Int!],$onboarded_by_id:Int) {
   update_partner(_set: {onboarded_by_id: $onboarded_by_id}, where: {id: {_in: $id}}) {
@@ -18,8 +18,7 @@ mutation update_owner($id:[Int!],$onboarded_by_id:Int) {
       id
     }
   }
-}
-`
+}`
 
 const EmployeeList = (props) => {
   const { visible, onHide, partner_ids } = props

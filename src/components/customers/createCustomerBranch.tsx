@@ -39,7 +39,7 @@ mutation customer_branch_update($address: String, $id: Int!, $branch_name: Strin
 
 const CreateCustomerBranch = (props) => {
   const { visible, onHide, customerbranches, customer_id } = props
-  const initial = { city_id: null, state_name: null }
+  const initial = { city_id: null, state_name: ((customerbranches && customerbranches.state) || null) }
   const [obj, setObj] = useState(initial)
   const [disableButton, setDisableButton] = useState(false)
 
@@ -63,6 +63,7 @@ const CreateCustomerBranch = (props) => {
         setDisableButton(false)
         message.success('Updated!!')
         setObj(initial)
+        onHide()
       }
     }
   )
@@ -78,6 +79,7 @@ const CreateCustomerBranch = (props) => {
         setDisableButton(false)
         message.success('Updated!!')
         setObj(initial)
+        onHide()
       }
     }
   )
@@ -110,8 +112,8 @@ const CreateCustomerBranch = (props) => {
           name: form.name,
           address: form.address,
           pincode: form.pincode,
-          state_id: form.state_id,
-          state: obj.state_name,
+          state_id: isNaN(form.state_id) ? customerbranches.state_id : form.state_id,
+          state:  obj.state_name ,
           branch_name: form.branch_name
         }
       })
@@ -167,11 +169,11 @@ const CreateCustomerBranch = (props) => {
                 <Col xs={12}>
                   <Form.Item
                     label='State'
-                    name='state_id'
+                    name='state_id' 
                     initialValue={get(customerbranches, 'state', null)}
                     rules={[{ required: true, message: 'State is required field' }]}
                   >
-                    <Select onChange={onStateChange} options={StateList} />
+                    <Select onChange={onStateChange} options={StateList} showSearch optionFilterProp='label'/>
                   </Form.Item>
                 </Col>
               </Row>

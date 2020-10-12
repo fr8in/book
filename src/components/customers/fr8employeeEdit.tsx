@@ -4,31 +4,33 @@ import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
 
 const EMPLOYEE_QUERY = gql`
-  query fr8_employee{
-    employee{
+  query branch_employee($id: Int!) {
+  branch(where:{id:{_eq:$id}}){
+    id
+    branch_employees{
       id
-      name
-      email
-    }
-}
-`
-const UPDATE_BRABCH_EMPLOYEE_MUTATION = gql`
-mutation fr8_employee_edit($branch_id: Int, $employee_id: Int) {
-  update_branch_employee(where: {branch_id: {_eq: $branch_id}, is_manager: {_eq: true}}, _set: {employee_id: $employee_id}) {
-    returning {
-      employee {
+      employee{
+        id
         name
+        email
       }
     }
   }
 }
 `
+const UPDATE_BRABCH_EMPLOYEE_MUTATION = gql`
+mutation update_customer_branch_employee($branch_employee_id: Int!, $id: Int!){
+  update_customer_branch_employee(_set:{branch_employee_id: $branch_employee_id}, where:{id:{_eq: $id}}){
+    returning{ id }
+  }
+}`
 
 const Fr8Employee = (props) => {
-  const { employee, id ,edit_access } = props
+  const { employee, id, edit_access, branch_id } = props
   const { loading, error, data } = useQuery(
     EMPLOYEE_QUERY,
     {
+      variables: { id: branch_id },
       notifyOnNetworkStatusChange: true
     }
   )
@@ -39,7 +41,7 @@ const Fr8Employee = (props) => {
     _data = data
   }
 
-  const [updateTruckNo] = useMutation(
+  const [update_customer_branch_employee] = useMutation(
     UPDATE_BRABCH_EMPLOYEE_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
@@ -47,16 +49,16 @@ const Fr8Employee = (props) => {
     }
   )
 
-  const employees = get(_data, 'employee', [])
+  const employees = get(_data, 'branch[0].branch_employees', [])
   const emplist = employees.map(data => {
-    return { value: data.id, label: data.name }
+    return { value: data.id, label: data.employee.name }
   })
 
   const handleChange = (value) => {
-    updateTruckNo({
+    update_customer_branch_employee({
       variables: {
-        branch_id: id,
-        employee_id: value
+        id: id,
+        branch_employee_id: value
       }
     })
   }
@@ -66,6 +68,7 @@ const Fr8Employee = (props) => {
       <InlineSelect
         options={emplist}
         label={employee}
+        value={employee}
         handleChange={handleChange}
         style={{ width: '200px' }}
         edit_access={edit_access}

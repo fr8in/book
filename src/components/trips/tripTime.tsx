@@ -48,8 +48,8 @@ mutation remove_souce_out($source_in:timestamp,$id:Int!,$updated_by: String!) {
 }`
 
 const REMOVE_SOUT_MUTATION = gql`
-mutation remove_souce_out($source_out:timestamp,$id:Int!,$updated_by: String!) {
-  update_trip(_set: {source_out: $source_out,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
+mutation remove_souce_out($source_out:timestamp,$id:Int!,$updated_by: String!,$loaded:String) {
+  update_trip(_set: {source_out: $source_out,updated_by:$updated_by,loaded:$loaded}, where: {id: {_eq: $id}}) {
     returning {
       id
       source_out
@@ -205,7 +205,8 @@ const TripTime = (props) => {
       variables: {
         id: trip_info.id,
         source_out: null,
-        updated_by: context.email
+        updated_by: context.email,
+        loaded:"No"
       }
     })
   }

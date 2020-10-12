@@ -1,4 +1,4 @@
-import { useState,useContext  } from 'react'
+import { useState, useContext } from 'react'
 import { Row, Col, Card } from 'antd'
 import Customers from '../customers'
 import get from 'lodash/get'
@@ -24,10 +24,6 @@ subscription customers(
   ) {
     id
     cardcode
-    customer_users {
-      id
-      name
-    }
     name
     mobile
     customer_type_id
@@ -95,19 +91,19 @@ const CustomersContainer = (props) => {
   const { role } = u
   const kycApprovalRejectEdit = [role.admin, role.accounts_manager, role.accounts]
 
-const variables = {
-  offset: filter.offset,
+  const variables = {
+    offset: filter.offset,
     limit: filter.limit,
     statusId: filter.statusId,
     name: filter.name ? `%${filter.name}%` : null,
     mobile: filter.mobile ? `%${filter.mobile}%` : null
-}
-const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
-  CUSTOMERS_SUBSCRIPTION,
-  {
-    variables: variables
   }
-)
+  const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
+    CUSTOMERS_SUBSCRIPTION,
+    {
+      variables: variables
+    }
+  )
   const customersQueryVars = {
     statusId: filter.statusId,
     name: filter.name ? `%${filter.name}%` : null,
@@ -126,7 +122,6 @@ const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
   if (!s_loading) {
     _sdata = s_data
   }
-
   const customer = get(s_data, 'customer', null)
 
   let _data = {}
@@ -134,12 +129,9 @@ const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
     _data = data
   }
 
- 
   const customer_status = get(_data, 'customer_status', [])
   const customer_aggregate = get(_data, 'customer_aggregate', 0)
-
   const customer_status_list = customer_status && customer_status.filter((data) => data.id !== 8)
-
   const record_count = get(customer_aggregate, 'aggregate.count', 0)
 
   console.log('record_count', record_count)

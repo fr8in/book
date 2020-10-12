@@ -10,19 +10,16 @@ import { useContext } from 'react'
 import userContext from '../../../lib/userContaxt'
 import isEmpty from 'lodash/isEmpty'
 
-
 const TabPane = Tabs.TabPane
 
 const BranchesContainer = () => {
-
   const { role } = u
   const add_branch_access = [role.admin]
   const traffic_member_edit = [role.admin]
   const initial = { showModal: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
-
-const context = useContext(userContext)
+  const context = useContext(userContext)
   const access = !isEmpty(add_branch_access) ? context.roles.some(r => add_branch_access.includes(r)) : false
 
   return (
@@ -31,8 +28,7 @@ const context = useContext(userContext)
       className='card-body-0 border-top-blue'
     >
       <Tabs
-        tabBarExtraContent={
-          access ?
+        tabBarExtraContent={access ? (
           <Button
             title='Add Branch'
             type='primary'
@@ -40,11 +36,10 @@ const context = useContext(userContext)
             onClick={() => onShow('showModal')}
           >
                 Add Branch
-          </Button> : null
-        }
+          </Button>) : null}
       >
         <TabPane tab='Branches' key='1'>
-          <Branch edit_access={traffic_member_edit } />
+          <Branch edit_access={traffic_member_edit} />
         </TabPane>
         <TabPane tab='Employess' key='2'>
           <Employees />
@@ -53,9 +48,7 @@ const context = useContext(userContext)
           <CityBranchMapping />
         </TabPane>
       </Tabs>
-      {visible.showModal && (
-        <AddBranch visible={visible.showModal} onHide={onHide} />
-      )}
+      {visible.showModal && <AddBranch visible={visible.showModal} onHide={onHide} />}
     </Card>
   )
 }

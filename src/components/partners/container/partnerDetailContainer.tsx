@@ -121,7 +121,7 @@ const PartnerDetailContainer = (props) => {
                         <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />} disabled={!partner_access} />
                       </Tooltip>
                     </Link>
-                    <WalletStatus cardcode={partner_info.cardcode} status={partner_info.wallet_block} />
+                    <WalletStatus id={partner_info.id} status={partner_info.wallet_block} />
                   </Space>
                 }
               />

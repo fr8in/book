@@ -16,7 +16,7 @@ search_partner(args:{search:$search}){
 const ExcessToPo = (props) => {
   const { visible, onHide, record } = props
 
-  const initial = { search: '', partner_id: null, po_visible: false, truck_id: null }
+  const initial = { search: null, partner_id: null, po_visible: false, truck_id: null }
   const [obj, setObj] = useState(initial)
 
   const [form] = Form.useForm()
@@ -26,7 +26,8 @@ const ExcessToPo = (props) => {
   const { loading, error, data } = useQuery(
     PARTNER_SEARCH_QUERY,
     {
-      variables: { search: obj.search || '' }
+      variables: { search: obj.search || '' },
+      skip: !obj.search
     }
   )
 
@@ -35,8 +36,8 @@ const ExcessToPo = (props) => {
   if (!loading) {
     _data = data
   }
-  const partnerSearch = get(_data, 'search_partner', null)
-
+  const partnerSearch = get(_data, 'search_partner', [])
+  console.log('partnerSearch', partnerSearch)
   const onPartnerSearch = (value) => {
     setObj({ ...obj, search: value })
   }
@@ -85,6 +86,7 @@ const ExcessToPo = (props) => {
           truck_id={obj.truck_id}
           record={record}
           onHide={onClosePoModal}
+          hideExess={onHide}
         />}
     </>
   )

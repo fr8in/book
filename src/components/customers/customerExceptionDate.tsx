@@ -1,14 +1,14 @@
 import { message, DatePicker } from 'antd'
-import { CloseCircleTwoTone, EditTwoTone } from '@ant-design/icons'
+import { CloseCircleTwoTone } from '@ant-design/icons'
 import moment from 'moment'
 import { gql, useMutation } from '@apollo/client'
 import useShowHide from '../../hooks/useShowHide'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useContext } from 'react'
 import EditAccess from '../common/editAccess'
 
 const UPDATE_CUSTOMER_EXCEPTION_MUTATION = gql`
-mutation customer_exception($exception_date:date,$cardcode:String,$updated_by:String!) {
+mutation customer_exception($exception_date:timestamp,$cardcode:String,$updated_by:String!) {
   update_customer(_set: {exception_date: $exception_date,updated_by:$updated_by}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id
@@ -59,7 +59,7 @@ const CustomerExceptionDate = (props) => {
               placeholder='Exception Date'
               disabledDate={(current) => current && current < moment().startOf('days')}
               format={dateFormat}
-              value={exceptionDate ? moment(exceptionDate, dateFormat) : moment()}
+              value={exceptionDate ? moment(exceptionDate, dateFormat) : null}
               onChange={onChange}
               size='small'
             />{' '}

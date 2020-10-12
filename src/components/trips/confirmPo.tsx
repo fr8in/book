@@ -1,5 +1,5 @@
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import { Modal, Row, Button, Form, Col, Select, Card, Divider, message } from 'antd'
 import Link from 'next/link'
 import { gql, useQuery, useMutation } from '@apollo/client'
@@ -104,7 +104,7 @@ const CONFIRM_PO = gql`
 }`
 
 const ConfirmPo = (props) => {
-  const { visible, onHide, truck_id, record } = props
+  const { visible, onHide, truck_id, record, hideExess } = props
   console.log('trip.id', record)
   const [driver_id, setDriver_id] = useState(null)
 
@@ -135,6 +135,7 @@ const ConfirmPo = (props) => {
         message.success('Load Created!!')
         setObj(initial)
         onHide()
+        hideExess()
       }
     }
   )
@@ -175,7 +176,7 @@ const ConfirmPo = (props) => {
           to_pay: parseFloat(form.to_pay),
           truck_id: po_data && po_data.id,
           truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
-          driver_id: driver_id,
+          driver_id: parseInt(driver_id, 10),
           updated_by: context.email,
           loading_point_id: form.loading_contact
         }
@@ -192,6 +193,7 @@ const ConfirmPo = (props) => {
   }
 
   const partner_name = get(po_data, 'partner.name', null)
+  const trip_id = get(record, 'id', null)
   return (
     <Modal
       visible={visible}
@@ -203,9 +205,17 @@ const ConfirmPo = (props) => {
       footer={[]}
     >
       <Form form={form} layout='vertical' className='create-po' onFinish={onSubmit}>
-        <Link href='trucks/[id]' as={`trucks/${po_data.truck_no}`}>
-          <a className='truckPO'>{po_data.truck_no}</a>
-        </Link>
+        <span className='truckPO'>
+          <Link href='trucks/[id]' as={`trucks/${po_data.truck_no}`}>
+            <a>{po_data.truck_no}</a>
+          </Link>
+          {trip_id &&
+            <span> |&nbsp;
+              <Link href='trips/[id]' as={`trips/${trip_id}`}>
+                <a>{'#' + trip_id}</a>
+              </Link>
+            </span>}
+        </span>
         <Row gutter={10}>
           <Col xs={24} sm={12}>
             <Form.Item label='Customer' name='customer' initialValue={customer.name}>

@@ -7,7 +7,7 @@ const InvoiceItem = (props) => {
   const onChange = e => {
     setChecked(e.target.checked)
     if (form) {
-      form.resetFields([days_name])
+      form.resetFields(e.target.checked ? [days_name] : [spl_name, field_name])
     }
   }
   const disable_field = checkbox && !checked

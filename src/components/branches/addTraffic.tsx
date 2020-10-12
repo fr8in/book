@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import {
   Modal,
   Button,
@@ -13,18 +13,16 @@ import {
 import { DeleteTwoTone } from '@ant-design/icons'
 import get from 'lodash/get'
 import { gql, useMutation, useQuery } from '@apollo/client'
-import { useContext } from 'react'
 import userContext from '../../lib/userContaxt'
 import isEmpty from 'lodash/isEmpty'
 
 const ALL_EMPLOYEE = gql`
   query allEmployee {
-  employee{
+    employee(where:{active: {_eq: 1}}){
     id
     email
   }
-}
-`
+}`
 
 const IS_MANAGER_MUTATION = gql`
 mutation update_is_manager($is_manager: Boolean, $branch_id: Int!, $emp_id: Int!){
@@ -54,8 +52,8 @@ mutation delete_traffic($id: Int!){
 }`
 
 const AddTraffic = (props) => {
-  const { visible, onHide, branch_data, title,edit_access_delete } = props
-console.log('edit_access_delete',edit_access_delete)
+  const { visible, onHide, branch_data, title, edit_access_delete } = props
+  console.log('edit_access_delete', edit_access_delete)
   const [emp_id, setEmp_id] = useState(null)
   console.log('object', branch_data)
 
@@ -112,7 +110,6 @@ console.log('edit_access_delete',edit_access_delete)
   })
 
   const onIsManagerChange = (e, emp_id) => {
-    console.log('Traffic Added', e.target.checked, emp_id)
     is_manager_update({
       variables: {
         is_manager: e.target.checked,
@@ -164,10 +161,10 @@ console.log('edit_access_delete',edit_access_delete)
     },
     {
       title: 'Action',
-      render: (record) => 
-        access ?
-        <DeleteTwoTone twoToneColor='#eb2f96' onClick={() => onDelete(record.id)} /> : null
-    
+      render: (record) =>
+        access
+          ? <DeleteTwoTone twoToneColor='#eb2f96' onClick={() => onDelete(record.id)} /> : null
+
     }
   ]
 

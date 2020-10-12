@@ -1,6 +1,5 @@
 import React from 'react'
 import { Table, Tag } from 'antd'
-import { EditTwoTone } from '@ant-design/icons'
 import AddTraffic from '../branches/addTraffic'
 import WeeklyTarget from '../branches/weeklyTarget'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
@@ -35,8 +34,7 @@ subscription branches($week: Int!, $year: Int!) {
 }`
 
 const Branches = (props) => {
-
-  const {edit_access } = props
+  const { edit_access } = props
 
   const { role } = u
   const traffic_member_delete = [role.admin]
@@ -47,8 +45,6 @@ const Branches = (props) => {
   }
 
   const period = u.getWeekNumber(new Date())
-  console.log('period', period)
-
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
   const { loading, data, error } = useSubscription(
@@ -75,7 +71,6 @@ const Branches = (props) => {
     {
       title: 'Connected City',
       dataIndex: 'connectedCity',
-      key: 'connectedCity',
       width: '30%',
       render: (text, record) =>
         record.cities.length > 0
@@ -89,7 +84,6 @@ const Branches = (props) => {
     {
       title: 'Traffic Members',
       dataIndex: 'trafficMembers',
-      key: 'trafficMembers',
       width: '48%',
       render: (text, record) => {
         return (
@@ -111,10 +105,10 @@ const Branches = (props) => {
                 })
                 : null}
             </span>
-            {
-             <EditAccess edit_access={edit_access} onEdit={() =>
-              handleShow('trafficVisible', record.name, 'trafficData', record)} />    
-            }
+            <EditAccess
+              edit_access={edit_access}
+              onEdit={() => handleShow('trafficVisible', record.name, 'trafficData', record)}
+            />
           </div>
         )
       }

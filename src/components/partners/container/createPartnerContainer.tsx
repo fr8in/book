@@ -1,14 +1,17 @@
 import userContext from '../../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { Row, Col, Card, Input, Form, Button, Select, Space, message } from 'antd'
 import { gql, useMutation, useQuery, useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
 import CitySelect from '../../common/citySelect'
 import Link from 'next/link'
+import u from '../../../lib/util'
+import isEmpty from 'lodash/isEmpty'
+import { useRouter } from 'next/router'
 
 const PARTNERS_SUBSCRIPTION = gql`
   query create_partner{
-    employee{
+    employee(where:{active: {_eq: 1}}){
       id
       email
     }
@@ -71,8 +74,17 @@ const CreatePartner = () => {
   const [city, setCity] = useState(null)
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
+  const router = useRouter()
   const context = useContext(userContext)
+  const { role } = u
+  const edit_access = [role.admin, role.partner_manager, role.onboarding]
+  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
+  useEffect(() => {
+    if (!access) {
+      router.push('/')
+    }
+  })
 
   const { loading, error, data } = useQuery(
     PARTNERS_SUBSCRIPTION,
@@ -101,12 +113,14 @@ const CreatePartner = () => {
   const [updatePartner] = useMutation(
     INSERT_PARTNER_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
-      onCompleted() {
+        message.error(error.toString())
+      },
+      onCompleted () {
         setDisableButton(false)
-        message.success('Updated!!') }
+        message.success('Updated!!')
+      }
     }
   )
 
