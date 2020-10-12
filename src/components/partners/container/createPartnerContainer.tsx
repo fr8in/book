@@ -35,39 +35,39 @@ query ifsc_validation($ifsc: String!){
 }`
 
 const INSERT_PARTNER_MUTATION = gql`
-  mutation create_partner(
-    $name: String, $email: String, $cibil: String, $address: jsonb, 
-    $account_number: String, $ifsc_code: String, 
-    $mobile: String, $pan_no: String, $contact_name: String, 
-    $acconnt_holder: String, $partner_status_id:Int,$city_id:Int,
-    $partner_advance_percentage_id:Int,$onboarded_by_id:Int,$created_by:String ) 
-    {
-    insert_partner(
-      objects: {
-        name: $name,
-        pan: $pan_no, 
-        cibil: $cibil, 
-        address: $address, 
-        created_by:$created_by,
-        account_number: $account_number,
-        ifsc_code: $ifsc_code,
-        partner_users:
-        {data: {
-          mobile: $mobile,
-            name: $contact_name,
-            email: $email}
-          },
-        acconnt_holder: $acconnt_holder,
-        partner_status_id:$partner_status_id,
-        city_id:$city_id,
-        partner_advance_percentage_id:$partner_advance_percentage_id,
-        onboarded_by_id:$onboarded_by_id
-      }) {
-      returning {
-        id
-      }
+mutation create_partner(
+  $name: String, $email: String, $cibil: String, $address: jsonb, 
+  $account_number: String, $ifsc_code: String, 
+  $mobile: String, $pan_no: String, $contact_name: String, 
+  $account_holder: String, $partner_status_id:Int,$city_id:Int,
+  $partner_advance_percentage_id:Int,$onboarded_by_id:Int,$created_by:String ) 
+  {
+  insert_partner(
+    objects: {
+      name: $name,
+      pan: $pan_no, 
+      cibil: $cibil, 
+      address: $address, 
+      created_by:$created_by,
+      account_number: $account_number,
+      ifsc_code: $ifsc_code,
+      partner_users:
+      {data: {
+        mobile: $mobile,
+          name: $contact_name,
+          email: $email}
+        },
+      account_holder: $account_holder,
+      partner_status_id:$partner_status_id,
+      city_id:$city_id,
+      partner_advance_percentage_id:$partner_advance_percentage_id,
+      onboarded_by_id:$onboarded_by_id
+    }) {
+    returning {
+      id
     }
   }
+}
 `
 
 const CreatePartner = () => {
@@ -163,7 +163,7 @@ const CreatePartner = () => {
         pan_no: form.pan_no,
         cibil: form.cibil,
         account_number: form.account_no,
-        acconnt_holder: form.account_holder_name,
+        account_holder: form.account_holder_name,
         ifsc_code: form.ifsc,
         address: address,
         partner_status_id: 1,
