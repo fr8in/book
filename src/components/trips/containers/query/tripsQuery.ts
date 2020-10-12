@@ -14,19 +14,15 @@ query trips($trip_statusName:[String!], $where: trip_bool_exp){
 }  
 `
 export const TRIPS = gql`
-subscription trips(
-  $offset: Int!, 
-  $limit: Int!,
-  $where: trip_bool_exp){
-  trip(offset: $offset, limit: $limit, where:$where)
-    {
+subscription trips($offset: Int!, $limit: Int!, $where: trip_bool_exp) {
+  trip(offset: $offset, limit: $limit, where: $where) {
     id
     order_date
     po_date
     customer {
       name
       cardcode
-    } 
+    }
     partner {
       name
       cardcode
@@ -40,7 +36,7 @@ subscription trips(
     destination {
       name
     }
-    trip_status{
+    trip_status {
       name
     }
     km
@@ -50,11 +46,11 @@ subscription trips(
     pod_verified_tat
     pod_dispatched_tat
     invoiced_tat
-    last_comment{
+    last_comment {
       description
       created_at
       created_by
-     }
+    }
   }
-}  
+}
 `
