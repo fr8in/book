@@ -75,7 +75,7 @@ mutation confirm_po(
   update_trip(_set:{
     truck_id: $truck_id,
     partner_id: $partner_id,
-    created_at: $po_date,
+    po_date: $po_date,
     updated_by:$updated_by,
     loading_point_contact_id: $loading_point_id,
     customer_office_id: $loading_point_id,
@@ -158,7 +158,7 @@ const ConfirmPo = (props) => {
       confirm_po_mutation({
         variables: {
           trip_id: record.id,
-          po_date: form.po_date.toDate(),
+          po_date: form.po_date.format('YYYY-MM-DD'),
           source_id: obj.source_id ? parseInt(obj.source_id, 10) : get(record, 'source.id', null),
           destination_id: obj.destination_id ? parseInt(obj.destination_id, 10) : get(record, 'destination.id', null),
           customer_id: customer.id,
