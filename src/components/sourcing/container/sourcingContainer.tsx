@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Tabs, Card, Space, Button } from 'antd'
 import PartnerLead from '../../partners/partnerLead'
 import TruckVerification from '../../trucks/truckVerification'
@@ -12,6 +12,7 @@ import useShowHide from '../../../hooks/useShowHide'
 import { UserAddOutlined, FilterOutlined, PlusOutlined } from '@ant-design/icons'
 import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
+import userContext from '../../../lib/userContaxt'
 
 const SOURCING_QUERY = gql`
 query sourcing {
@@ -25,11 +26,12 @@ query sourcing {
       count
     }
   }
-}
-`
+}`
+
 const TabPane = Tabs.TabPane
 const SourcingContainer = () => {
-  const auth_user = ['jay@fr8.in']
+  const context = useContext(userContext)
+  const auth_user = [context.email]
 
   const [filter, setFilter] = useState(auth_user)
   const [mainTabKey, setMainTabKey] = useState('1')
