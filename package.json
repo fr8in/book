@@ -6,8 +6,10 @@
   "scripts": {
     "local": "next",
     "prestart": "yarn && next build",
-    "start": "next start -p $PORT",
-    "test": "jest --watchAll --setupFiles dotenv/config"
+    "test": "jest --watchAll --setupFiles dotenv/config",
+    "dev": "node server.js",
+"build": "next build",
+"start": "node server.js"
   },
   "author": "FR8",
   "dependencies": {
