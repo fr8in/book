@@ -240,8 +240,9 @@ const PartnerKyc = (props) => {
           visible={object.commentVisible}
           onCancel={handleHide}
           bodyStyle={{ padding: 10 }}
+          footer={null}
         >
-          <Comment partner_id={object.commentData} />
+          <Comment partner_id={object.commentData} onHide={handleHide} />
         </Modal>
       )}
       {object.rejectVisible && (

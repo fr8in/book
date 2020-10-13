@@ -1,9 +1,8 @@
 import { Row, Col, Table, Input, Button, message, Form } from 'antd'
 import { gql, useMutation, useSubscription } from '@apollo/client'
 import moment from 'moment'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import userContext from '../../lib/userContaxt'
-import { useState } from 'react'
 
 const PARTNER_COMMENT_SUBSCRIPTION = gql`
   subscription partner_comment($id: Int!){
@@ -32,7 +31,7 @@ const INSERT_PARTNER_COMMENT_MUTATION = gql`
   }
 `
 const Comment = (props) => {
-  const { partner_id } = props
+  const { partner_id, onHide } = props
   const context = useContext(userContext)
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
@@ -47,13 +46,15 @@ const Comment = (props) => {
   const [insertComment] = useMutation(
     INSERT_PARTNER_COMMENT_MUTATION,
     {
-      onError (error) { 
+      onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
+        message.error(error.toString())
+      },
       onCompleted () {
         setDisableButton(false)
         message.success('Updated!!')
         form.resetFields()
+        if (onHide) { onHide() }
       }
     }
   )

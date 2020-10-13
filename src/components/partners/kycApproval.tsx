@@ -18,8 +18,9 @@ import ViewFile from '../common/viewFile'
 import DeleteFile from '../common/deleteFile'
 import { gql, useMutation, useQuery, useSubscription } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import get from 'lodash/get'
+import moment from 'moment'
 
 const PARTNERS_QUERY = gql`
   query create_partner{
@@ -61,8 +62,8 @@ subscription partner_kyc($id:Int){
 `
 
 const UPDATE_PARTNER_APPOVAL_MUTATION = gql`
-mutation update_partner_approval($onboarded_by_id:Int,$partner_advance_percentage_id:Int,$gst:String,$cibil:String,$emi:Boolean,$id:Int,$partner_status_id:Int,$updated_by: String!){
-  update_partner(_set: {onboarded_by_id:$onboarded_by_id, partner_advance_percentage_id:$partner_advance_percentage_id, gst:$gst, cibil:$cibil, emi:$emi,partner_status_id:$partner_status_id,updated_by:$updated_by}, where: {id: {_eq:$id}}) {
+mutation update_partner_approval($onboarded_by_id:Int,$partner_advance_percentage_id:Int,$gst:String,$cibil:String,$emi:Boolean,$id:Int,$partner_status_id:Int,$updated_by: String!, $onboarded_date: timestamp){
+  update_partner(_set: {onboarded_by_id:$onboarded_by_id, partner_advance_percentage_id:$partner_advance_percentage_id, gst:$gst, cibil:$cibil, emi:$emi,partner_status_id:$partner_status_id,updated_by:$updated_by, onboarded_date: $onboarded_date}, where: {id: {_eq:$id}}) {
     returning {
       id
     }
@@ -88,48 +89,44 @@ const KycApproval = (props) => {
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
 
-
-
   const { loading, error, data } = useQuery(
     PARTNERS_QUERY, { notifyOnNetworkStatusChange: true }
   )
   console.log('CreatePartnersContainer error', error)
   console.log('CreatePartnersContainer data', data)
-  const {  data: partnerData } = useSubscription(
+  const { data: partnerData } = useSubscription(
     PARTNERS_SUBSCRIPTION, {
-    variables:
+      variables:
     {
       id: approveData
     }
-  }
+    }
   )
   console.log('partnerData', partnerData)
-  const partnerDetail = partnerData && partnerData.partner[0] 
-  
-const name = partnerDetail && partnerDetail.name
-const cardcode =  partnerDetail && partnerDetail.cardcode
- const trucks =   partnerDetail && partnerDetail.trucks
- const files =  partnerDetail && partnerDetail.partner_files
- console.log('cardcode',cardcode)
+  const partnerDetail = partnerData && partnerData.partner[0]
+
+  const name = partnerDetail && partnerDetail.name
+  const cardcode = partnerDetail && partnerDetail.cardcode
+  const trucks = partnerDetail && partnerDetail.trucks
+  const files = partnerDetail && partnerDetail.partner_files
+  console.log('cardcode', cardcode)
 
   const pan_files = files && files.filter(file => file.type === 'PAN')
   console.log('pan_files', pan_files)
-  const cheaque_files =files && files.filter(file => file.type === 'CL')
+  const cheaque_files = files && files.filter(file => file.type === 'CL')
 
-  const agreement_files =files && files.filter(file => file.type === 'AGREEMENT')
+  const agreement_files = files && files.filter(file => file.type === 'AGREEMENT')
 
-  const cs_files =files && files.filter(file => file.type === 'CS')
-
-
+  const cs_files = files && files.filter(file => file.type === 'CS')
 
   const [updatePartnerApproval] = useMutation(
     UPDATE_PARTNER_APPOVAL_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         setDisableButton(false)
         message.error(error.toString())
       },
-      onCompleted() {
+      onCompleted () {
         setDisableButton(false)
         message.success('Saved!!')
       }
@@ -139,11 +136,11 @@ const cardcode =  partnerDetail && partnerDetail.cardcode
   const [createPartnerCode] = useMutation(
     CREATE_PARTNER_CODE_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         setDisableButton(false)
         message.error(error.toString())
       },
-      onCompleted(data) {
+      onCompleted (data) {
         setDisableButton(false)
         const status = get(data, 'create_partner_code.status', null)
         const description = get(data, 'create_partner_code.description', null)
@@ -208,7 +205,8 @@ const cardcode =  partnerDetail && partnerDetail.cardcode
         cibil: form.getFieldValue('cibil'),
         onboarded_by_id: form.getFieldValue('onboarded_by_id'),
         updated_by: context.email,
-        partner_advance_percentage_id:form.getFieldValue('partner_advance_percentage_id')
+        partner_advance_percentage_id: form.getFieldValue('partner_advance_percentage_id'),
+        onboarded_date: moment().toDate()
       }
     })
   }
@@ -297,15 +295,15 @@ const cardcode =  partnerDetail && partnerDetail.cardcode
                       />
                     </Space>
                   ) : (
-                      <FileUploadOnly
-                        size='small'
-                        id={approveData}
-                        type='partner'
-                        folder='approvals/'
-                        file_type='PAN'
-                        file_list={pan_files}
-                      />
-                    )}
+                    <FileUploadOnly
+                      size='small'
+                      id={approveData}
+                      type='partner'
+                      folder='approvals/'
+                      file_type='PAN'
+                      file_list={pan_files}
+                    />
+                  )}
                 </span>
               </Space>
             </Col>
@@ -335,15 +333,15 @@ const cardcode =  partnerDetail && partnerDetail.cardcode
                       />
                     </Space>
                   ) : (
-                      <FileUploadOnly
-                        size='small'
-                        id={approveData}
-                        type='partner'
-                        folder='approvals/'
-                        file_type='CL'
-                        file_list={cheaque_files}
-                      />
-                    )}
+                    <FileUploadOnly
+                      size='small'
+                      id={approveData}
+                      type='partner'
+                      folder='approvals/'
+                      file_type='CL'
+                      file_list={cheaque_files}
+                    />
+                  )}
                 </span>
               </Space>
             </Col>
@@ -373,21 +371,21 @@ const cardcode =  partnerDetail && partnerDetail.cardcode
                       />
                     </Space>
                   ) : (
-                      <FileUploadOnly
-                        size='small'
-                        id={approveData}
-                        type='partner'
-                        folder='approvals/'
-                        file_type='AGREEMENT'
-                        file_list={agreement_files}
-                      />
-                    )}
+                    <FileUploadOnly
+                      size='small'
+                      id={approveData}
+                      type='partner'
+                      folder='approvals/'
+                      file_type='AGREEMENT'
+                      file_list={agreement_files}
+                    />
+                  )}
                 </span>
               </Space>
             </Col>
           </List.Item>
           <List.Item>
-            <Row gutter={20} >
+            <Row gutter={20}>
               <Col xs={24} sm={24}>
                 <Form.Item label='Cibil Score' name='cibil'>
                   <Input placeholder='Cibil Score' />
@@ -416,21 +414,21 @@ const cardcode =  partnerDetail && partnerDetail.cardcode
                       />
                     </Space>
                   ) : (
-                      <FileUploadOnly
-                        size='small'
-                        id={approveData}
-                        type='partner'
-                        folder='approvals/'
-                        file_type='CS'
-                        file_list={cs_files}
-                      />
-                    )}
+                    <FileUploadOnly
+                      size='small'
+                      id={approveData}
+                      type='partner'
+                      folder='approvals/'
+                      file_type='CS'
+                      file_list={cs_files}
+                    />
+                  )}
                 </span>
               </Space>
             </Col>
           </List.Item>
           <List.Item>
-            <Row gutter={20} >
+            <Row gutter={20}>
               <Col xs={24} sm={24}>
                 <Form.Item label='GST Applicable' name='gst'>
                   <Input placeholder='GST Number' />
@@ -455,11 +453,11 @@ const cardcode =  partnerDetail && partnerDetail.cardcode
         />
         <br />
         <Row justify='end'>
-        <Button key='submit' type='primary' loading={disableButton} htmlType='submit'>
+          <Button key='submit' type='primary' loading={disableButton} htmlType='submit'>
             Approve KYC
-        </Button>
+          </Button>
         </Row>
-         
+
       </Form>
     </Modal>
   )

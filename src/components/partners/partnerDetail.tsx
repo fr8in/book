@@ -11,6 +11,7 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import u from '../../lib/util'
 import EditAccess from '../common/editAccess'
+import moment from 'moment'
 
 const PartnerDetail = (props) => {
   const { partnerDetail, loading } = props
@@ -40,6 +41,7 @@ const PartnerDetail = (props) => {
          ${address.state || null},
          ${address.pin_code || null}`
   const cardcode = partnerDetail.cardcode
+  console.log('addressaddress',address)
   return (
     <Row gutter={8}>
       <Col xs={24} sm={24} md={24}>
@@ -53,11 +55,7 @@ const PartnerDetail = (props) => {
         />
         <LabelWithData
           label='On Boarded Date'
-          data={
-            <Space>
-              <span>{partnerDetail.onboarded_date}</span>
-            </Space>
-          }
+          data={<span>{partnerDetail.onboarded_date ? moment(partnerDetail.onboarded_date).format('DD-MMM-YY') : '-'}</span>}
           labelSpan={10}
           dataSpan={14}
         />
@@ -150,6 +148,7 @@ const PartnerDetail = (props) => {
             cardcode={object.address}
             onHide={handleHide}
             title={object.title}
+            partnerAddress={address}
           />}
         {object.bankVisible &&
           <EditBank

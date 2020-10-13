@@ -55,7 +55,8 @@ mutation create_partner(
       {data: {
         mobile: $mobile,
           name: $contact_name,
-          email: $email}
+          email: $email,
+          is_admin: true}
         },
       account_holder: $account_holder,
       partner_status_id:$partner_status_id,
@@ -120,6 +121,7 @@ const CreatePartner = () => {
       onCompleted () {
         setDisableButton(false)
         message.success('Updated!!')
+        router.push('/partners')
       }
     }
   )
