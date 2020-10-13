@@ -2,7 +2,9 @@
 import { Modal, Button, Row, Input, Col, Table, Popconfirm, Form, message } from 'antd'
 import { PhoneOutlined, DeleteOutlined } from '@ant-design/icons'
 import { useSubscription, useMutation, gql } from '@apollo/client'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import userContext from '../../lib/userContaxt'
+import get from 'lodash/get'
 
 const PARTNER_USERS_SUBSCRIPTION = gql`
 subscription partner_user($cardcode: String){
@@ -14,38 +16,36 @@ subscription partner_user($cardcode: String){
       name
     }
   }
-}
-`
+}`
+
 const INSERT_PARTNER_USERS_MUTATION = gql`
-mutation partner_user_insert($name:String,$is_admin:Boolean,$mobile:String,$email:String,$partner_id:Int) {
-  insert_partner_user(
-    objects: {
-      name: $name,
-      is_admin: $is_admin,
-      mobile: $mobile,
-      email:$email,
-      partner_id: $partner_id
-    }
-  ) {
-    returning {
-      partner_id
-      mobile
-    }
+mutation upsert_partner_mobile($mobile: String!, $partner_id: Int!, $is_primary: Boolean!, $updated_by: String!) {
+  upsert_partner_mobile(mobile_no: $mobile, partner_id: $partner_id, is_primary: $is_primary, updated_by: $updated_by) {
+    description
+    status
   }
-}
-`
+}`
+
 const DELETE_PARTNER_USER_MUTATION = gql`
-mutation PartnerUserDelete($id:Int) {
+mutation PartnerUserDelete($id:Int!, $description: String, $topic: String, $created_by: String, $partner_id: Int!) {
   delete_partner_user( where: {id: {_eq:$id}}) {
     returning {
       id
       mobile
     }
   }
-}
-`
+
+  insert_partner_comment(objects: {description: $description, partner_id: $partner_id, topic: $topic, created_by:$created_by}) {
+    returning {
+      description
+      partner_id
+    }
+  }
+}`
+
 const PartnerUsers = (props) => {
   const { visible, partner, onHide, title } = props
+  const context = useContext(userContext)
 
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
@@ -60,10 +60,11 @@ const PartnerUsers = (props) => {
   const [insertPartnerUser] = useMutation(
     INSERT_PARTNER_USERS_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
-      onCompleted() {
+        message.error(error.toString())
+      },
+      onCompleted () {
         setDisableButton(false)
         message.success('Updated!!')
         form.resetFields()
@@ -74,13 +75,17 @@ const PartnerUsers = (props) => {
   const [deletePartnerUser] = useMutation(
     DELETE_PARTNER_USER_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError (error) { message.error(error.toString()) },
+      onCompleted () { message.success('Updated!!') }
     }
   )
 
-  if (loading) return null
   console.log('PartnerUsers error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const partner_users = get(_data, 'partner[0].partner_users', [])
 
   const onAddUser = (form) => {
     setDisableButton(true)
@@ -88,22 +93,23 @@ const PartnerUsers = (props) => {
       variables: {
         partner_id: partner.id,
         mobile: form.mobile,
-        is_admin: false,
-        email: `${form.mobile}.partner@fr8.in`,
-        name: ''
+        is_primary: false,
+        updated_by: context.email
       }
     })
   }
 
-  const onDelete = (id) => {
+  const onDelete = (record) => {
     deletePartnerUser({
       variables: {
-        id: id
+        id: record.id,
+        partner_id: partner.id,
+        description: `Mobile No: ${record.mobile}, is deleted!`,
+        topic: 'User Deleted',
+        created_by: context.email
       }
     })
   }
-
-  const { partner_users } = data.partner[0] ? data.partner[0] : [] && data.partner_users[0] ? data.partner_users[0] : []
 
   const callNow = record => {
     window.location.href = 'tel:' + record
@@ -123,7 +129,7 @@ const PartnerUsers = (props) => {
         <span>
           <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.mobileNo)} />
           {!record.is_admin &&
-            <Popconfirm title='Sure to delete?' onConfirm={() => onDelete(record.id)}>
+            <Popconfirm title='Sure to delete?' onConfirm={() => onDelete(record)}>
               <Button type='link' danger icon={<DeleteOutlined />} />
             </Popconfirm>}
         </span>

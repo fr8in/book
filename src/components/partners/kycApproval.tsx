@@ -68,8 +68,7 @@ mutation update_partner_approval($onboarded_by_id:Int,$partner_advance_percentag
       id
     }
   }
-}
-`
+}`
 
 const CREATE_PARTNER_CODE_MUTATION = gql`
 mutation create_partner_code($name: String!, $partner_id: Int!, $pay_terms_code: Int!,$pan_no:String!) {
@@ -77,14 +76,10 @@ mutation create_partner_code($name: String!, $partner_id: Int!, $pay_terms_code:
     description
     status
   }
-}
-
-`
-
-const { Option } = Select
+}`
 
 const KycApproval = (props) => {
-  const { visible, onHide, approveData } = props
+  const { visible, onHide, partner_id } = props
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
@@ -93,30 +88,25 @@ const KycApproval = (props) => {
     PARTNERS_QUERY, { notifyOnNetworkStatusChange: true }
   )
   console.log('CreatePartnersContainer error', error)
-  console.log('CreatePartnersContainer data', data)
   const { data: partnerData } = useSubscription(
     PARTNERS_SUBSCRIPTION, {
       variables:
     {
-      id: approveData
+      id: partner_id
     }
     }
   )
-  console.log('partnerData', partnerData)
+
   const partnerDetail = partnerData && partnerData.partner[0]
 
   const name = partnerDetail && partnerDetail.name
   const cardcode = partnerDetail && partnerDetail.cardcode
   const trucks = partnerDetail && partnerDetail.trucks
   const files = partnerDetail && partnerDetail.partner_files
-  console.log('cardcode', cardcode)
 
   const pan_files = files && files.filter(file => file.type === 'PAN')
-  console.log('pan_files', pan_files)
   const cheaque_files = files && files.filter(file => file.type === 'CL')
-
   const agreement_files = files && files.filter(file => file.type === 'AGREEMENT')
-
   const cs_files = files && files.filter(file => file.type === 'CS')
 
   const [updatePartnerApproval] = useMutation(
@@ -150,7 +140,6 @@ const KycApproval = (props) => {
         } else (message.error(description))
         onHide()
       }
-
     }
   )
 
@@ -196,10 +185,9 @@ const KycApproval = (props) => {
 
   const onPartnerApprovalSubmit = () => {
     setDisableButton(true)
-    console.log('Traffic Added', approveData)
     updatePartnerApproval({
       variables: {
-        id: approveData,
+        id: partner_id,
         partner_status_id: 4,
         gst: form.getFieldValue('gst'),
         cibil: form.getFieldValue('cibil'),
@@ -213,12 +201,11 @@ const KycApproval = (props) => {
 
   const onCreatePartnerCodeSubmit = () => {
     setDisableButton(true)
-    console.log('Traffic Added', approveData)
     createPartnerCode({
       variables: {
         name: name,
         pay_terms_code: partnerDetail.partner_advance_percentage_id,
-        partner_id: approveData,
+        partner_id: partner_id,
         pan_no: partnerDetail.pan
       }
     })
@@ -280,7 +267,7 @@ const KycApproval = (props) => {
                     <Space>
                       <ViewFile
                         size='small'
-                        id={approveData}
+                        id={partner_id}
                         type='partner'
                         file_type='PAN'
                         folder='approvals/'
@@ -288,7 +275,7 @@ const KycApproval = (props) => {
                       />
                       <DeleteFile
                         size='small'
-                        id={approveData}
+                        id={partner_id}
                         type='partner'
                         file_type='PAN'
                         file_list={pan_files}
@@ -297,7 +284,7 @@ const KycApproval = (props) => {
                   ) : (
                     <FileUploadOnly
                       size='small'
-                      id={approveData}
+                      id={partner_id}
                       type='partner'
                       folder='approvals/'
                       file_type='PAN'
@@ -318,7 +305,7 @@ const KycApproval = (props) => {
                     <Space>
                       <ViewFile
                         size='small'
-                        id={approveData}
+                        id={partner_id}
                         type='partner'
                         file_type='CL'
                         folder='approvals/'
@@ -326,7 +313,7 @@ const KycApproval = (props) => {
                       />
                       <DeleteFile
                         size='small'
-                        id={approveData}
+                        id={partner_id}
                         type='partner'
                         file_type='CL'
                         file_list={cheaque_files}
@@ -335,7 +322,7 @@ const KycApproval = (props) => {
                   ) : (
                     <FileUploadOnly
                       size='small'
-                      id={approveData}
+                      id={partner_id}
                       type='partner'
                       folder='approvals/'
                       file_type='CL'
@@ -356,7 +343,7 @@ const KycApproval = (props) => {
                     <Space>
                       <ViewFile
                         size='small'
-                        id={approveData}
+                        id={partner_id}
                         type='partner'
                         file_type='AGREEMENT'
                         folder='approvals/'
@@ -364,7 +351,7 @@ const KycApproval = (props) => {
                       />
                       <DeleteFile
                         size='small'
-                        id={approveData}
+                        id={partner_id}
                         type='partner'
                         file_type='AGREEMENT'
                         file_list={agreement_files}
@@ -373,7 +360,7 @@ const KycApproval = (props) => {
                   ) : (
                     <FileUploadOnly
                       size='small'
-                      id={approveData}
+                      id={partner_id}
                       type='partner'
                       folder='approvals/'
                       file_type='AGREEMENT'
@@ -399,7 +386,7 @@ const KycApproval = (props) => {
                     <Space>
                       <ViewFile
                         size='small'
-                        id={approveData}
+                        id={partner_id}
                         type='partner'
                         file_type='CS'
                         folder='approvals/'
@@ -407,7 +394,7 @@ const KycApproval = (props) => {
                       />
                       <DeleteFile
                         size='small'
-                        id={approveData}
+                        id={partner_id}
                         type='partner'
                         file_type='CS'
                         file_list={cs_files}
@@ -416,7 +403,7 @@ const KycApproval = (props) => {
                   ) : (
                     <FileUploadOnly
                       size='small'
-                      id={approveData}
+                      id={partner_id}
                       type='partner'
                       folder='approvals/'
                       file_type='CS'

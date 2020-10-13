@@ -43,7 +43,6 @@ const PartnerFuelDetail = (props) => {
       notifyOnNetworkStatusChange: true
     })
   console.log('FuelCard error', error)
-  console.log('FuelCard data', data)
 
   const [updateFuelCardStatus] = useMutation(
     UPDATE_FUEL_CARD_STATUS_MUTATION,
