@@ -1,7 +1,8 @@
 import { Modal, Button, Input, Row, Form, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
+import get from 'lodash/get'
 
 const UPDATE_PARTNER_ADDRESS_MUTATION = gql`
 mutation update_address($address:jsonb, $cardcode:String,$updated_by: String!){
@@ -11,12 +12,12 @@ mutation update_address($address:jsonb, $cardcode:String,$updated_by: String!){
       address
     }
   }
-}
-`
-const EditAddress = (props) => {
-  const { visible, onHide, cardcode ,partnerAddress} = props
+}`
 
-  console.log('address',partnerAddress)
+const EditAddress = (props) => {
+  const { visible, onHide, cardcode, partnerAddress } = props
+
+  console.log('address', partnerAddress)
 
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
@@ -30,7 +31,7 @@ const EditAddress = (props) => {
       },
       onCompleted () {
         setDisableButton(false)
-        message.success('Updated!!') 
+        message.success('Updated!!')
         onHide()
       }
     }
@@ -64,23 +65,23 @@ const EditAddress = (props) => {
         footer={null}
       >
         <Form layout='vertical' onFinish={onAddressSubmit}>
-          <Form.Item name='no' initialValue={partnerAddress && partnerAddress.no || null}>
+          <Form.Item name='no' initialValue={get(partnerAddress, 'no', null)}>
             <Input placeholder='Building Number' />
           </Form.Item>
-          <Form.Item name='address'  initialValue={partnerAddress && partnerAddress.address || null}>
+          <Form.Item name='address' initialValue={get(partnerAddress, 'address', null)}>
             <Input placeholder='Address' />
           </Form.Item>
-          <Form.Item name='city'  initialValue={partnerAddress && partnerAddress.city || null}>
+          <Form.Item name='city' initialValue={get(partnerAddress, 'city', null)}>
             <Input placeholder='City' />
           </Form.Item>
-          <Form.Item name='state'  initialValue={partnerAddress && partnerAddress.state || null}>
+          <Form.Item name='state' initialValue={get(partnerAddress, 'state', null)}>
             <Input placeholder='State' />
           </Form.Item>
-          <Form.Item name='pin_code'  initialValue={partnerAddress && partnerAddress.pin_code || null}>
+          <Form.Item name='pin_code' initialValue={get(partnerAddress, 'pin_code', null)}>
             <Input placeholder='Pin Code' />
           </Form.Item>
           <Row justify='end'>
-            <Button type='primary' loading={disableButton} htmlType='submit'> Save </Button>
+            <Button type='primary' loading={disableButton} htmlType='submit'>Save</Button>
           </Row>
         </Form>
       </Modal>

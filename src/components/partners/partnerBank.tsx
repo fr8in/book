@@ -72,8 +72,7 @@ const EditBank = (props) => {
 
           <Row justify='end'>
             <Space>
-              <Button type='primary' icon={<LeftOutlined />} onClick={onHide}> Back </Button>
-              <Button type='primary' key='back' loading={disableButton} htmlType='submit'> Save </Button>
+              <Button type='primary' key='back' loading={disableButton} htmlType='submit'>Save</Button>
             </Space>
           </Row>
         </Form>

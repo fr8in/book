@@ -33,13 +33,11 @@ const PartnerKyc = (props) => {
 
   const [currentPage, setCurrentPage] = useState(1)
   const initial = {
-    commentData: [],
+    partner_id: null,
     commentVisible: false,
     title: '',
     approvalVisible: false,
-    approvalData: [],
-    rejectVisible: false,
-    rejectData: []
+    rejectVisible: false
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
@@ -192,7 +190,7 @@ const PartnerKyc = (props) => {
               <Button
                 type='link'
                 icon={<CommentOutlined />}
-                onClick={() => handleShow('commentVisible', null, 'commentData', record.id)}
+                onClick={() => handleShow('commentVisible', null, 'partner_id', record.id)}
               />
             </Tooltip>
             {(partner_status === 'Verification' || partner_status === 'Reverification') && edit_access &&
@@ -204,7 +202,7 @@ const PartnerKyc = (props) => {
                   className='btn-success'
                   icon={<CheckOutlined />}
                   onClick={() =>
-                    handleShow('approvalVisible', null, 'approvalData', record.id)}
+                    handleShow('approvalVisible', null, 'partner_id', record.id)}
                 />
                 <Button
                   type='primary'
@@ -213,7 +211,7 @@ const PartnerKyc = (props) => {
                   danger
                   icon={<CloseOutlined />}
                   onClick={() =>
-                    handleShow('rejectVisible', null, 'rejectData', record.id)}
+                    handleShow('rejectVisible', null, 'partner_id', record.id)}
                 />
               </>}
           </Space>
@@ -242,7 +240,7 @@ const PartnerKyc = (props) => {
           bodyStyle={{ padding: 10 }}
           footer={null}
         >
-          <Comment partner_id={object.commentData} onHide={handleHide} />
+          <Comment partner_id={object.partner_id} onHide={handleHide} />
         </Modal>
       )}
       {object.rejectVisible && (
@@ -252,14 +250,14 @@ const PartnerKyc = (props) => {
           onCancel={handleHide}
           footer={null}
         >
-          <KycReject partner_id={object.rejectData} onHide={handleHide} />
+          <KycReject partner_id={object.partner_id} onHide={handleHide} />
         </Modal>
       )}
       {object.approvalVisible && (
         <KycApproval
           visible={object.approvalVisible}
           onHide={handleHide}
-          approveData={object.approvalData}
+          partner_id={object.partner_id}
         />
       )}
       {!loading &&

@@ -36,10 +36,9 @@ query ifsc_validation($ifsc: String!){
 
 const INSERT_PARTNER_MUTATION = gql`
 mutation create_partner(
-  $name: String, $email: String, $cibil: String, $address: jsonb, 
-  $account_number: String, $ifsc_code: String, 
+  $name: String, $email: String, $cibil: String, $address: jsonb,
   $mobile: String, $pan_no: String, $contact_name: String, 
-  $account_holder: String, $partner_status_id:Int,$city_id:Int,
+  $partner_status_id:Int,$city_id:Int,
   $partner_advance_percentage_id:Int,$onboarded_by_id:Int,$created_by:String ) 
   {
   insert_partner(
