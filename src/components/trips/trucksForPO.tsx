@@ -26,7 +26,8 @@ const TrucksForPO = (props) => {
     TRUCKS_FOR_PO_QUERY,
     {
       variables: { id: partner_id },
-      skip: !partner_id
+      skip: !partner_id,
+        fetchPolicy:"cache-and-network"
     }
   )
 
