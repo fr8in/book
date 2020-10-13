@@ -59,16 +59,20 @@ const AdvanceBooking = (props) => {
   }
 
   const onAdvanceBooking = (form) => {
-    setDisableButton(true)
-    customer_advance_booking({
-      variables: {
-        trip_id: parseInt(trip_id, 10),
-        wallet: parseFloat(amount),
-        cash: parseFloat(form.cash),
-        docentry: selectedRow[0].docentry,
-        created_by: context.email
-      }
-    })
+    if(amount >= 0) {
+      setDisableButton(true)
+      customer_advance_booking({
+        variables: {
+          trip_id: parseInt(trip_id, 10),
+          wallet: parseFloat(amount),
+          cash: parseFloat(form.cash),
+          docentry: selectedRow[0].docentry,
+          created_by: context.email
+        }
+      })
+    } else {
+      message.error('Negative value not allowed')
+    }
   }
   const total = (cash ? parseInt(cash) : 0) + (amount ? parseInt(amount) : 0)
   return (

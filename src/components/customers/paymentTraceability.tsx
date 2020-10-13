@@ -92,7 +92,7 @@ const PaymentTraceability = (props) => {
         <Input
           type='number'
           size='small'
-          value={enableSelectedRows ? (amount >= 0 ? amount : null)  : null}
+          value={enableSelectedRows ? amount : null}
           disabled={!enableSelectedRows}
           onChange={(e) => onAmountChange(e, record.balance)}
         />
