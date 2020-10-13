@@ -49,8 +49,6 @@ mutation create_partner(
       cibil: $cibil, 
       address: $address, 
       created_by:$created_by,
-      account_number: $account_number,
-      ifsc_code: $ifsc_code,
       partner_users:
       {data: {
         mobile: $mobile,
@@ -58,7 +56,6 @@ mutation create_partner(
           email: $email,
           is_admin: true}
         },
-      account_holder: $account_holder,
       partner_status_id:$partner_status_id,
       city_id:$city_id,
       partner_advance_percentage_id:$partner_advance_percentage_id,
@@ -74,8 +71,8 @@ mutation create_partner(
 }`
 
 const UPDATE_ACCOUNT_NO = gql`
-mutation update_account_no($id: Int!, $account_number: String!, $account_holder: String!, $ifsc_code: String!) {
-  update_account_no(id: $id, account_number: $account_number, account_holder: $account_holder, ifsc_code: $ifsc_code) {
+mutation update_account_no($id: Int!, $account_number: String!, $account_holder: String!, $ifsc_code: String!, $updated_by: String!) {
+  update_account_no(id: $id, account_number: $account_number, account_holder: $account_holder, ifsc_code: $ifsc_code, updated_by:$updated_by) {
     description
     status
   }
@@ -132,6 +129,7 @@ const CreatePartner = () => {
         const description = get(data, 'update_account_no.description', null)
         if (status === 'OK') {
           message.success(description || 'Account Created!')
+          router.push('/partners')
         } else (message.error(description))
       }
     }
@@ -146,9 +144,8 @@ const CreatePartner = () => {
       },
       onCompleted (data) {
         message.success('Partner Created!!')
-        const returning = get(data, 'insert_partner.returning[0]', null)
-        onUpdateAccount(returning)
-        router.push('/partners')
+        const partner_id = get(data, 'insert_partner.returning[0].id', null)
+        onUpdateAccount(partner_id)
         setDisableButton(false)
       }
     }
@@ -192,9 +189,6 @@ const CreatePartner = () => {
         email: form.email,
         pan_no: form.pan_no,
         cibil: form.cibil,
-        account_number: form.account_no,
-        account_holder: form.account_holder_name,
-        ifsc_code: form.ifsc,
         address: address,
         partner_status_id: 1,
         partner_advance_percentage_id: form.advance_percentage,
@@ -205,13 +199,14 @@ const CreatePartner = () => {
     })
   }
 
-  const onUpdateAccount = (data) => {
+  const onUpdateAccount = (id) => {
     update_account_no({
       variables: {
-        id: data.id,
-        account_number: data.account_number,
-        account_holder: data.account_holder,
-        ifsc_code: data.ifsc_code
+        id: id,
+        account_number: form.getFieldValue('account_no'),
+        account_holder: form.getFieldValue('account_holder_name'),
+        ifsc_code: form.getFieldValue('ifsc'),
+        updated_by: context.email
       }
     })
   }

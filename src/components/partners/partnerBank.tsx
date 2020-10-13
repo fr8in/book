@@ -2,25 +2,18 @@ import { Modal, Button, Input, Row, Form, Space, message } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 
 const UPDATE_PARTNER_BANK_MUTATION = gql`
-mutation partner_bank_edit ($account_number:String,$ifsc_code:String,$account_holder:String,$cardcode:String,$updated_by: String!){
-  update_partner(_set:{
-    account_number: $account_number,
-    ifsc_code: $ifsc_code,
-    account_holder:$account_holder,
-    updated_by:$updated_by},
-    where: {cardcode:{_eq:$cardcode}}){
-    returning{
-      id
-      ifsc_code
-    }
+mutation update_account_no($id: Int!, $account_number: String!, $account_holder: String!, $ifsc_code: String!, $updated_by: String!) {
+  update_account_no(id: $id, account_number: $account_number, account_holder: $account_holder, ifsc_code: $ifsc_code, updated_by:$updated_by) {
+    description
+    status
   }
-}
-`
+}`
+
 const EditBank = (props) => {
-  const { visible, onHide, cardcode } = props
+  const { visible, onHide, partner_id } = props
 
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
@@ -43,10 +36,10 @@ const EditBank = (props) => {
     setDisableButton(true)
     updatePartnerBank({
       variables: {
-        cardcode: cardcode,
+        id: partner_id,
         account_number: form.account_number,
-        ifsc_code: form.ifsc_code,
         account_holder: form.account_holder,
+        ifsc_code: form.ifsc_code,
         updated_by: context.email
       }
     })

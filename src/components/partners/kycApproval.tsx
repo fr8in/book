@@ -68,8 +68,7 @@ mutation update_partner_approval($onboarded_by_id:Int,$partner_advance_percentag
       id
     }
   }
-}
-`
+}`
 
 const CREATE_PARTNER_CODE_MUTATION = gql`
 mutation create_partner_code($name: String!, $partner_id: Int!, $pay_terms_code: Int!,$pan_no:String!) {
@@ -77,11 +76,7 @@ mutation create_partner_code($name: String!, $partner_id: Int!, $pay_terms_code:
     description
     status
   }
-}
-
-`
-
-const { Option } = Select
+}`
 
 const KycApproval = (props) => {
   const { visible, onHide, approveData } = props
