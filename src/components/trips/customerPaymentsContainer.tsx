@@ -95,9 +95,9 @@ const CustomerPaymentsContainer = (props) => {
   ]
   const onFinalShow = (record) => {
     if (record && record.doctype === 'S') {
-      handleShow('add_inv_visible', 'Final', 'add_inv_data', record)
+      handleShow('add_inv_visible', 'Advance', 'add_inv_data', record)
     } else {
-      handleShow('final_visible', 'Final', 'final_data', record)
+      handleShow('final_visible', 'Advance', 'final_data', record)
     }
   }
   return (
@@ -110,7 +110,7 @@ const CustomerPaymentsContainer = (props) => {
             <CustomerPayments
               dataSource={invoice_pending}
               type_name='Final'
-              onShow={() => handleShow('adv_visible', 'Advance', 'adv_data', invoice_pending[0])}
+              onShow={() => handleShow('adv_visible', 'Final', 'adv_data', invoice_pending[0])}
             />
           </Col>
         </Row>:
@@ -145,11 +145,11 @@ const CustomerPaymentsContainer = (props) => {
         <div className='payableHead'>
           <h4 className='text-center'>100% payment recieved from customer</h4>
         </div>}
-      {object.adv_visible &&
+      {object.final_visible &&
         <AdvanceBooking
-          visible={object.adv_visible}
+          visible={object.final_visible}
           title={object.title}
-          pending_data={object.adv_data}
+          pending_data={object.final_data}
           onHide={handleHide}
           cardcode={cardcode}
           mamul={mamul}
@@ -159,11 +159,11 @@ const CustomerPaymentsContainer = (props) => {
           wallet_balance={wallet_balance}
           customer_id={customer_id}
         />}
-      {object.final_visible &&
+      {object.adv_visible &&
         <FinalBooking
-          visible={object.final_visible}
+          visible={object.adv_visible}
           title={object.title}
-          pending_data={object.final_data}
+          pending_data={object.adv_data}
           onHide={handleHide}
           cardcode={cardcode}
           mamul={mamul}

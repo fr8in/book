@@ -94,7 +94,7 @@ const refreshToken = () => {
   console.log('currentTime', currentTime)
   // let userId = decodedToken.user_id;
   const appendExpiry = expiryTime + '000'
-  const parsing = parseInt(appendExpiry) - 120000 // expire time minus 2 minutes
+  const parsing = parseInt(appendExpiry) - 600000 // expire time minus 10 minutes
   console.log('im out', (moment().diff(moment(parsing))) >= 0)
   if ((moment().diff(moment(parsing))) >= 0) {
     console.log('im in', (moment().diff(moment(parsing))) >= 0)

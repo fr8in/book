@@ -74,7 +74,7 @@ const AdditionalInvoiceBooking = (props) => {
     customer_additional_invoice({
       variables: {
         trip_id: parseInt(trip_id),
-        docentry: selectedRow[0].customer_incoming_id,
+        docentry: selectedRow[0].docentry,
         wallet_amount: amount ? parseInt(amount) : 0,
         write_off_docentry: pending_data.docentry,
         created_by: context.email,

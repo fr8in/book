@@ -2,6 +2,7 @@ import { Drawer, Row, Col } from 'antd'
 import { gql, useQuery } from '@apollo/client'
 import Loading from '../common/loading'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
 
 const PARTNER_WALLET_STATEMENT_QUERY = gql`
 query partner_wallet_statement($cardcode: String) {
@@ -20,9 +21,23 @@ query partner_wallet_statement($cardcode: String) {
       created_at
       amount
       mode
-      refid
+      trip_id
       comment
       type
+      route
+      trip{
+        source{ 
+          id 
+          name 
+        }
+        destination{ 
+          id 
+          name 
+        }
+        truck{ 
+          truck_no 
+        }
+      }
     }
   }
 }
@@ -63,7 +78,6 @@ const WalletStatement = (props) => {
     }
   })
 
-  console.log('statement_group', wallet_statement)
   return (
     <Drawer
       title={`Wallet: ₹${wallet_balance ? wallet_balance.toFixed(2) : 0}`}
@@ -80,21 +94,23 @@ const WalletStatement = (props) => {
             return (
               <div key={i}>
                 <h4>{data.date}</h4>
-                {transactionDetails && transactionDetails.length > 0
+                {!isEmpty(transactionDetails)
                   ? transactionDetails.map((transactionData, i) => {
                     return (
-                    // transactionData.type === 'Credit'
-                      <Row key={i}>
-                        <Col span={18}>
-                          <p><b>{transactionData.mode}</b></p>
-                          {transactionData.refid && <p>{transactionData.refid}, {transactionData.comment}</p>}
-                        </Col>
-                        <Col span={6} className='text-right'>
-                          <span className={transactionData.type === 'Credit' ? 'creditAmount' : 'debitAmount'}>
-                            {`₹${transactionData.amount}`}
-                          </span>
-                        </Col>
-                      </Row>
+                      isEmpty(transactionData.mode) ? '' : (
+                        <Row key={i}>
+                          <Col span={18}>
+                            <p><b>{transactionData.mode} {transactionData.trip_id || ''}</b></p>
+                            {transactionData.trip_id
+                              ? <p>{'#' + transactionData.trip_id}, {get(transactionData, 'trip.source.name', null)} - {get(transactionData, 'trip.destination.name', null)}</p>
+                              : <p>{transactionData.route || ''}</p>}
+                          </Col>
+                          <Col span={6} className='text-right'>
+                            <span className={transactionData.type === 'Credit' ? 'creditAmount' : 'debitAmount'}>
+                              {`₹${transactionData.amount}`}
+                            </span>
+                          </Col>
+                        </Row>)
                     )
                   })
                   : <div />}
