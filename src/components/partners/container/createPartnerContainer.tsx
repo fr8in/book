@@ -66,10 +66,20 @@ mutation create_partner(
     }) {
     returning {
       id
+      account_number
+      account_holder
+      ifsc_code
     }
   }
-}
-`
+}`
+
+const UPDATE_ACCOUNT_NO = gql`
+mutation update_account_no($id: Int!, $account_number: String!, $account_holder: String!, $ifsc_code: String!) {
+  update_account_no(id: $id, account_number: $account_number, account_holder: $account_holder, ifsc_code: $ifsc_code) {
+    description
+    status
+  }
+}`
 
 const CreatePartner = () => {
   const [city, setCity] = useState(null)
@@ -111,17 +121,35 @@ const CreatePartner = () => {
   )
   console.log('CreatePartnersContainer error', error)
 
-  const [updatePartner] = useMutation(
+  const [update_account_no] = useMutation(
+    UPDATE_ACCOUNT_NO,
+    {
+      onError (error) {
+        message.error(error.toString())
+      },
+      onCompleted (data) {
+        const status = get(data, 'update_account_no.status', null)
+        const description = get(data, 'update_account_no.description', null)
+        if (status === 'OK') {
+          message.success(description || 'Account Created!')
+        } else (message.error(description))
+      }
+    }
+  )
+
+  const [insertPartner] = useMutation(
     INSERT_PARTNER_MUTATION,
     {
       onError (error) {
         setDisableButton(false)
         message.error(error.toString())
       },
-      onCompleted () {
-        setDisableButton(false)
-        message.success('Updated!!')
+      onCompleted (data) {
+        message.success('Partner Created!!')
+        const returning = get(data, 'insert_partner.returning[0]', null)
+        onUpdateAccount(returning)
         router.push('/partners')
+        setDisableButton(false)
       }
     }
   )
@@ -156,7 +184,7 @@ const CreatePartner = () => {
       state: form.state,
       pin_code: form.pin_code
     }
-    updatePartner({
+    insertPartner({
       variables: {
         name: form.name,
         contact_name: form.contact_name,
@@ -173,6 +201,17 @@ const CreatePartner = () => {
         city_id: parseInt(city),
         created_by: context.email,
         onboarded_by_id: form.on_boarded_by
+      }
+    })
+  }
+
+  const onUpdateAccount = (data) => {
+    update_account_no({
+      variables: {
+        id: data.id,
+        account_number: data.account_number,
+        account_holder: data.account_holder,
+        ifsc_code: data.ifsc_code
       }
     })
   }

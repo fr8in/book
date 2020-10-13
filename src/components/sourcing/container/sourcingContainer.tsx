@@ -51,7 +51,6 @@ const SourcingContainer = () => {
   const lead_count = get(_data, 'partner_aggregate.aggregate.count', 0)
   const waiting_for_load_count = get(_data, 'waiting_for_load.aggregate.count', 0)
 
-
   const onFilterChange = (checked) => {
     setFilter(checked)
   }
