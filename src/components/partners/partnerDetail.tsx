@@ -1,4 +1,4 @@
-import { Row, Col, Space } from 'antd'
+import { Row, Col, Space, Tooltip } from 'antd'
 import LabelWithData from '../common/labelWithData'
 import AdvancePercentage from './partnerAdvancePercentage'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
@@ -41,7 +41,7 @@ const PartnerDetail = (props) => {
          ${address.state || null},
          ${address.pin_code || null}`
   const cardcode = partnerDetail.cardcode
-  console.log('addressaddress',address)
+  console.log('addressaddress', address)
   return (
     <Row gutter={8}>
       <Col xs={24} sm={24} md={24}>
@@ -117,13 +117,13 @@ const PartnerDetail = (props) => {
           dataSpan={14}
         />
         <LabelWithData
-          label=' TDS %'
+          label='TDS %'
           data={<span>{get(partnerDetail, 'tds_percentage.name', '-')}</span>}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData
-          label=' GST'
+          label='GST'
           data={<span><Gst cardcode={cardcode} gst={partnerDetail.gst || '-'} loading={loading} edit_access={ad_pm_on} /></span>}
           labelSpan={10}
           dataSpan={14}
@@ -138,6 +138,12 @@ const PartnerDetail = (props) => {
               edit_access={ad_pm_on}
             />
           }
+          labelSpan={10}
+          dataSpan={14}
+        />
+        <LabelWithData
+          label='Status'
+          data={<Tooltip title={partnerDetail.id}><span>{get(partnerDetail, 'partner_status.name', '-')}</span></Tooltip>}
           labelSpan={10}
           dataSpan={14}
         />

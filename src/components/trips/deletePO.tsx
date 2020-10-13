@@ -30,7 +30,7 @@ const DeletePO = (props) => {
         const status = get(data, 'cancel_po.status', null)
         const description = get(data, 'cancel_po.description', null)
         if (status === 'OK') {
-          message.success(description || 'Processed!')
+          message.success(description || 'Trip Cancelled!')
           onHide()
         } else (message.error(description))
       }
