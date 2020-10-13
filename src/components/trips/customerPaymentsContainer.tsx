@@ -42,7 +42,7 @@ query customerPaymentData($trip_id: Int!) {
   }`
   const TRIP_CUSTOMER = gql`
   query TripReceivable($trip_id:Int){
-    accounting_trip_receivable_summary(where:{trip_id:{_eq:$trip_id}}){
+    accounting_trip_receipt_summary(where:{trip_id:{_eq:$trip_id}}){
       amount
       trip_id
     }
@@ -88,7 +88,7 @@ const CustomerPaymentsContainer = (props) => {
   // const advance_pending = get(_data, 'trip_sap_customer_advance_pending', [])
   // const invoice_pending = get(_data, 'trip_sap_customer_invoice_pending', [])
   const invoice_pending = get(_data, 'trip_sap_customer_balance_pending', [])
-  const amount=get(trip_data, 'accounting_trip_receivable_summary[0].amount', 0)
+  const amount=get(trip_data, 'accounting_trip_receipt_summary[0].amount', 0)
   
   const advance_pending_data = [
     {amount: bank, received: amount, balance: (bank - amount)}
