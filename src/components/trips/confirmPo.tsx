@@ -48,7 +48,7 @@ query po_query($id: Int!, $cus_id: Int!){
 }`
 
 const CONFIRM_PO = gql`
-  mutation confirm_po(
+mutation confirm_po(
   $trip_id: Int!
   $updated_by: String!
   $truck_id: Int!
@@ -75,7 +75,7 @@ const CONFIRM_PO = gql`
   update_trip(_set:{
     truck_id: $truck_id,
     partner_id: $partner_id,
-    po_date: $po_date,
+    created_at: $po_date,
     updated_by:$updated_by,
     loading_point_contact_id: $loading_point_id,
     customer_office_id: $loading_point_id,
