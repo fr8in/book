@@ -114,8 +114,8 @@ const TripInfo = (props) => {
         <Row>
           <Col sm={24} md={12}>
             <LabelWithData
-              label='Order Date' data={trip_info && trip_info.order_date ? (
-                moment(trip_info.order_date).format('DD-MMM-YY hh:mm')
+              label='Order Date' data={trip_info && trip_info.created_at ? (
+                moment(trip_info.created_at).format('DD-MMM-YY hh:mm')
               ) : ''} labelSpan={10}
             />
             <LabelWithData

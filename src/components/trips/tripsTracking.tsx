@@ -119,7 +119,7 @@ const TripsTracking = (props) => {
     },
     {
       title: 'PO date',
-      dataIndex: 'po_date',
+      dataIndex: 'created_at',
       render: (text, record) => {
         return text ? (
           moment(text).format('DD-MMM-YY')

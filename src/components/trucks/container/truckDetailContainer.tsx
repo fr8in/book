@@ -72,6 +72,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
         trips {
           id
           order_date
+          created_at
           km
           avg_km_day
           source{
