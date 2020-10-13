@@ -1,12 +1,11 @@
 import { Table, Input, Switch, Popconfirm, Button, Tooltip, message, Pagination, Checkbox, Modal, Radio } from 'antd'
 import {
-  EditTwoTone,
   CommentOutlined,
   CloseOutlined,
   SearchOutlined
 } from '@ant-design/icons'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import moment from 'moment'
 import { gql, useQuery, useMutation, useSubscription } from '@apollo/client'
 import EmployeeList from '../branches/fr8EmpolyeeList'
@@ -18,7 +17,6 @@ import Truncate from '../common/truncate'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import EditAccess from '../common/editAccess'
-import { NoUnusedVariablesRule } from 'graphql'
 
 const PARTNERS_LEAD_SUBSCRIPTION = gql`
 subscription partner_lead(
@@ -35,6 +33,7 @@ subscription partner_lead(
       ){
     id
     name
+    created_at
     lead_priority
     onboarded_by{
       id
@@ -164,33 +163,32 @@ const PartnerLead = (props) => {
   console.log('onboarded_by', onboarded_by)
   const where = {
     partner_users: filter.mobile ? { mobile: { _like: `%${filter.mobile}%` } } : null,
-    city: filter.city_name && {name:{ _ilike: `%${filter.city_name}%`}} ,
+    city: filter.city_name && { name: { _ilike: `%${filter.city_name}%` } },
     onboarded_by: { email: { _ilike: filter.owner_name ? `%${filter.owner_name}%` : null, _in: onboarded_by || null } },
     partner_status: { name: { _in: filter.partner_status_name && filter.partner_status_name.length > 0 ? filter.partner_status_name : null } },
-    //channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}},
-     _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ?  null : {id: {_is_null:true }} }
+    // channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}},
+    _not: { partner_comments: filter.no_comment && filter.no_comment.length > 0 ? null : { id: { _is_null: true } } }
   }
   const whereNoCityFilter = {
     partner_users: filter.mobile ? { mobile: { _like: `%${filter.mobile}%` } } : null,
     onboarded_by: { email: { _ilike: filter.owner_name ? `%${filter.owner_name}%` : null, _in: onboarded_by || null } },
     partner_status: { name: { _in: filter.partner_status_name ? filter.partner_status_name : null } },
-    //channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} ,
-     _not: {partner_comments: filter.no_comment && filter.no_comment.length > 0  ? null :  {id: {_is_null:true }} }
+    // channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} ,
+    _not: { partner_comments: filter.no_comment && filter.no_comment.length > 0 ? null : { id: { _is_null: true } } }
   }
-  // console.log('filter.no_comment ', filter.no_comment, filter.no_comment && filter.no_comment.length > 0)
 
-const variables = {
-  offset: filter.offset,
-  limit: filter.limit,
-  where: filter.city_name ? where : whereNoCityFilter
-}
-const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
-  PARTNERS_LEAD_SUBSCRIPTION,
-  {
-    variables: variables
+  const variables = {
+    offset: filter.offset,
+    limit: filter.limit,
+    where: filter.city_name ? where : whereNoCityFilter
   }
-)
-console.log('s_data',s_data)
+  const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
+    PARTNERS_LEAD_SUBSCRIPTION,
+    {
+      variables: variables
+    }
+  )
+
   const partnerQueryVars = {
     where: filter.city_name ? where : whereNoCityFilter
   }
@@ -275,7 +273,6 @@ console.log('s_data',s_data)
     _data = data
   }
 
-  
   const partner_aggregate = get(_data, 'partner_aggregate', 0)
   const partner_status = get(_data, 'partner_status', [])
   const channel = get(_data, 'channel', [])
@@ -446,7 +443,7 @@ console.log('s_data',s_data)
       dataIndex: 'comment',
       width: '13%',
       render: (text, record) => {
-        const comment = record.last_comment && record.last_comment.description 
+        const comment = record.last_comment && record.last_comment.description
         return <Truncate data={comment} length={20} />
       },
       filterDropdown: (
@@ -460,14 +457,10 @@ console.log('s_data',s_data)
 
     },
     {
-      title: 'Created Date',
+      title: 'Created At',
       dataIndex: 'date',
       width: '10%',
-      render: (text, record) => {
-        const create_date = record.partner_comments && record.partner_comments.length > 0 &&
-          record.partner_comments[0].created_at ? record.partner_comments[0].created_at : '-'
-        return (create_date ? moment(create_date).format('DD-MMM-YY') : null)
-      },
+      render: (text, record) => record.created_at ? moment(record.created_at).format('DD-MMM-YY') : '-',
       sorter: (a, b) => (a.date > b.date ? 1 : -1)
     },
     {
@@ -490,21 +483,21 @@ console.log('s_data',s_data)
                 handleShow('commentVisible', null, 'commentData', record.id)}
             />
           </Tooltip>
-          { rejectEditAccess ? 
-          <Popconfirm
-            title='Are you sure want to Reject the lead?'
-            okText='Yes'
-            cancelText='No'
-            onConfirm={() => onSubmit(record.id)}
-          >
-            <Button
-              type='primary'
-              size='small'
-              shape='circle'
-              danger
-              icon={<CloseOutlined />}
-            />
-          </Popconfirm> : null }
+          {rejectEditAccess ? (
+            <Popconfirm
+              title='Are you sure want to Reject the lead?'
+              okText='Yes'
+              cancelText='No'
+              onConfirm={() => onSubmit(record.id)}
+            >
+              <Button
+                type='primary'
+                size='small'
+                shape='circle'
+                danger
+                icon={<CloseOutlined />}
+              />
+            </Popconfirm>) : null}
         </span>
       )
     }
@@ -519,9 +512,9 @@ console.log('s_data',s_data)
         dataSource={partners}
         rowKey={(record) => record.id}
         size='small'
-        scroll={{ x: 1156 }}
+        scroll={{ x: 1156, y: 550 }}
         pagination={false}
-        // onMobileSearch={onMobileSearch}
+        loading={s_loading}
         className='withAction'
       />
       {!loading && record_count
