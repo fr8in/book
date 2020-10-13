@@ -4,6 +4,7 @@ import { PhoneOutlined, DeleteOutlined } from '@ant-design/icons'
 import { useSubscription, useMutation, gql } from '@apollo/client'
 import { useState, useContext } from 'react'
 import userContext from '../../lib/userContaxt'
+import get from 'lodash/get'
 
 const PARTNER_USERS_SUBSCRIPTION = gql`
 subscription partner_user($cardcode: String){
@@ -18,26 +19,10 @@ subscription partner_user($cardcode: String){
 }`
 
 const INSERT_PARTNER_USERS_MUTATION = gql`
-mutation partner_user_insert($name:String,$is_admin:Boolean,$mobile:String,$email:String,$partner_id:Int!, $description:String, $topic: String, $created_by: String) {
-  insert_partner_user(
-    objects: {
-      name: $name,
-      is_admin: $is_admin,
-      mobile: $mobile,
-      email:$email,
-      partner_id: $partner_id
-    }
-  ) {
-    returning {
-      partner_id
-      mobile
-    }
-  }
-  insert_partner_comment(objects: {description: $description, partner_id: $partner_id, topic: $topic, created_by:$created_by}) {
-    returning {
-      description
-      partner_id
-    }
+mutation upsert_partner_mobile($mobile: String!, $partner_id: Int!, $is_primary: Boolean!, $updated_by: String!) {
+  upsert_partner_mobile(mobile_no: $mobile, partner_id: $partner_id, is_primary: $is_primary, updated_by: $updated_by) {
+    description
+    status
   }
 }`
 
@@ -95,8 +80,12 @@ const PartnerUsers = (props) => {
     }
   )
 
-  if (loading) return null
   console.log('PartnerUsers error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const partner_users = get(_data, 'partner[0].partner_users', [])
 
   const onAddUser = (form) => {
     setDisableButton(true)
@@ -104,12 +93,8 @@ const PartnerUsers = (props) => {
       variables: {
         partner_id: partner.id,
         mobile: form.mobile,
-        is_admin: false,
-        email: `${form.mobile}.partner@fr8.in`,
-        name: '',
-        description: `Mobile No: ${form.mobile}, is added!`,
-        topic: 'User Added',
-        created_by: context.email
+        is_primary: false,
+        updated_by: context.email
       }
     })
   }
@@ -125,8 +110,6 @@ const PartnerUsers = (props) => {
       }
     })
   }
-
-  const { partner_users } = data.partner[0] ? data.partner[0] : [] && data.partner_users[0] ? data.partner_users[0] : []
 
   const callNow = record => {
     window.location.href = 'tel:' + record
