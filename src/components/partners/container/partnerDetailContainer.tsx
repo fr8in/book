@@ -201,7 +201,7 @@ const PartnerDetailContainer = (props) => {
                     </TabPane>
                     <TabPane tab='Comment' key='3'>
                       <div className='p10'>
-                        <Comment partner_id={partner_info.id} loading={loading} />
+                        <Comment partner_id={partner_info.id} loading={loading} detailPage />
                       </div>
                     </TabPane>
                     <TabPane tab={<TitleWithCount name='On-going' value={ongoing_count} />} key='4'>

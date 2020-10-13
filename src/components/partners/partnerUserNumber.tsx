@@ -2,17 +2,16 @@ import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import InlineEdit from '../common/inlineEdit'
 import u from '../../lib/util'
+import get from 'lodash/get'
 
 const UPDATE_PARTNER_NUMBER_MUTATION = gql`
-mutation partner_user_edit($mobile:String!,$id:Int!) {
-    update_partner_user(_set: {mobile: $mobile}, where: {is_admin: {_eq: true}, id: {_eq: $id}}) {
-      returning {
-        id
-        mobile
-      }
-    }
+mutation upsert_partner_mobile($mobile: String!, $partner_id: Int!, $is_primary: Boolean!) {
+  upsert_partner_mobile(mobile_no: $mobile, partner_id: $partner_id, is_primary: $is_primary) {
+    description
+    status
   }
-`
+}`
+
 const PartnerUserNumber = (props) => {
   const { id, mobile, loading } = props
 
@@ -23,15 +22,23 @@ const PartnerUserNumber = (props) => {
     UPDATE_PARTNER_NUMBER_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted (data) {
+        message.success('Updated!!')
+        const status = get(data, 'upsert_partner_mobile.status', null)
+        const description = get(data, 'upsert_partner_mobile.description', null)
+        if (status === 'OK') {
+          message.success(description || 'Updated!')
+        } else (message.error(description))
+      }
     }
   )
 
-  const onSubmit = (text) => {
+  const onSubmit = (mobile) => {
     updateUserNumber({
       variables: {
-        id: id,
-        mobile: text
+        partner_id: id,
+        mobile: mobile,
+        is_primary: true
       }
     })
   }

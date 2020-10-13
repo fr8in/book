@@ -1,5 +1,4 @@
 import { Modal, Button, Input, Row, Form, Space, message } from 'antd'
-import { LeftOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import { useState, useContext } from 'react'

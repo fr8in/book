@@ -14,7 +14,7 @@ mutation customer_excess_payment ($amount:Float!,$customer_id:Int!,$doc_entry:In
 `
 
 const Rebate = (props) => {
-  const { visible, onHide, cardcode, customer_id,walletcode,wallet_balance } = props
+  const { visible, onHide, cardcode, customer_id, walletcode, wallet_balance } = props
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
   const [disableButton, setDisableButton] = useState(true)
@@ -25,7 +25,8 @@ const Rebate = (props) => {
     {
       onError (error) {
         setDisableButton(false)
-         message.error(error.toString()) },
+        message.error(error.toString())
+      },
       onCompleted (data) {
         setDisableButton(false)
         const status = get(data, 'customer_excess_payment.status', null)
