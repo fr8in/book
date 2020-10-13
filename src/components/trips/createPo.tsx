@@ -82,7 +82,7 @@ const CREATE_PO = gql`
       $driver_id: Int,
       $loading_point_id: Int) {
     insert_trip(objects: {
-      po_date:$po_date
+      created_at:$po_date
       source_id: $source_id, 
       created_by: $created_by
       destination_id: $destination_id, 

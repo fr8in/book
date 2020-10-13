@@ -69,6 +69,8 @@ const TripInfo = (props) => {
     }
   ]
   const trip_status_id = get(trip_info, 'trip_status.id', null)
+  const order_date = get(trip_info, 'created_at', null)
+  const po_date = get(trip_info, 'po_date', null)
 
   return (
     <Row>
@@ -114,8 +116,8 @@ const TripInfo = (props) => {
         <Row>
           <Col sm={24} md={12}>
             <LabelWithData
-              label='Order Date' data={trip_info && trip_info.order_date ? (
-                moment(trip_info.order_date).format('DD-MMM-YY hh:mm')
+              label='Order Date' data={order_date ? (
+                moment(order_date).format('DD-MMM-YY hh:mm')
               ) : ''} labelSpan={10}
             />
             <LabelWithData
@@ -139,8 +141,8 @@ const TripInfo = (props) => {
           </Col>
           <Col sm={24} md={12}>
             <LabelWithData
-              label='PO Date' data={trip_info.po_date ? (
-                moment(trip_info.po_date).format('DD-MMM-YY hh:mm')
+              label='PO Date' data={po_date ? (
+                moment(po_date).format('DD-MMM-YY hh:mm')
               ) : ''} labelSpan={10}
             />
             <LabelWithData label='Delay' data={get(trip_info, 'delay', 0)} labelSpan={10} />

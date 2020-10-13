@@ -22,6 +22,7 @@ query trips(
   trip(offset: $offset, limit: $limit, where:$where)
     {
     id
+      created_at
     order_date
     po_date
     customer {
