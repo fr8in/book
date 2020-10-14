@@ -60,7 +60,7 @@ const AdvanceBooking = (props) => {
   }
 
   const onAdvanceBooking = (form) => {
-    if (amount > 0 || form.cash) {
+    if (amount > 0 || form.cash > 0) {
       setDisableButton(true)
       customer_advance_booking({
         variables: {
@@ -106,6 +106,8 @@ const AdvanceBooking = (props) => {
             >
               <Input
                 placeholder='Cash'
+                type='number'
+                min={1}
                 onChange={e => setCash(e.target.value)}
               />
             </Form.Item>
