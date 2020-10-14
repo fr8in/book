@@ -1,5 +1,5 @@
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import { Modal, Button, Row, Form, Select, Col, Input, message } from 'antd'
 import CitySelect from '../common/citySelect'
 import { gql, useQuery, useMutation } from '@apollo/client'
@@ -22,8 +22,8 @@ query region_state_type_emp_list{
 }`
 
 const CREATE_CARDCODE = gql`
-mutation create_customer_cardcode($company_name: String!, $customer_id: Int!){
-  create_customer_cardcode(company_name: $company_name, customer_id: $customer_id) {
+mutation create_customer_cardcode($cardcode:String,$company_name: String!, $customer_id: Int!) {
+  create_customer_cardcode(company_name: $company_name, customer_id: $customer_id, cardcode: $cardcode) {
     description
     status
   }
@@ -106,14 +106,22 @@ const BranchCreation = (props) => {
   const [create_cardcode] = useMutation(
     CREATE_CARDCODE,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString())
+      },
       onCompleted (data) {
         const status = get(data, 'create_customer_cardcode.status', null)
         const description = get(data, 'create_customer_cardcode.description', null)
         if (status === 'OK') {
-          message.success(description || 'Cardcode created!')
+          setDisableButton(false)
+          message.success(description || 'KYC Approved!')
           onBranchInsert()
-        } else (message.error(description))
+          onHide()
+        } else {
+          message.error(description)
+          setDisableButton(false)
+        }
       }
     }
   )
@@ -131,13 +139,8 @@ const BranchCreation = (props) => {
   const [update_customer] = useMutation(
     UPDATE_CUSTOMER,
     {
-      onError (error) { 
-        setDisableButton(false)
-        message.error(error.toString()) },
-      onCompleted () {
-        message.success('Updated!')
-        setDisableButton(false)
-        onHide()
+      onError (error) {
+        message.error(error.toString())
       }
     }
   )
@@ -167,7 +170,8 @@ const BranchCreation = (props) => {
     create_cardcode({
       variables: {
         company_name: customer_data.name,
-        customer_id: customer_data.id
+        customer_id: customer_data.id,
+        cardcode: get(customer_data, 'cardcode', null)
       }
     })
   }
@@ -197,7 +201,7 @@ const BranchCreation = (props) => {
         mamul: parseInt(mamul),
         updated_by: context.email,
         city_id: obj.city_id,
-        id:customer_data.id
+        id: customer_data.id
       }
     })
   }

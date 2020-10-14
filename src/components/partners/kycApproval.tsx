@@ -71,7 +71,7 @@ mutation update_partner_approval($onboarded_by_id:Int,$partner_advance_percentag
 }`
 
 const CREATE_PARTNER_CODE_MUTATION = gql`
-mutation create_partner_code($cardcode: String!, $name: String!, $partner_id: Int!, $pay_terms_code: Int!,$pan_no:String!) {
+mutation create_partner_code($cardcode: String, $name: String!, $partner_id: Int!, $pay_terms_code: Int!,$pan_no:String!) {
   create_partner_code(cardcode: $cardcode,name: $name, partner_id: $partner_id, pay_terms_code: $pay_terms_code, pan_no:$pan_no) {
     description
     status

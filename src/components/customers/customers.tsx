@@ -1,5 +1,5 @@
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import {
   Table,
   Button,
@@ -115,14 +115,6 @@ const CustomerKyc = (props) => {
         updated_by: context.email,
         id: id
       }
-      // ,
-      // update (cache, data) {
-      //   const _result = data.data.update_customer_by_pk.status
-      //   console.log('cache:', cache, 'data:', data, { data: { [`customer:${_result.name}`]: _result.name } })
-      //   cache.writeData({ data: { [`customer:${_result.name}`]: _result.name } })
-      //   message.success(success)
-      //   localStorage.clear()
-      // }
     })
   }
 
@@ -289,31 +281,31 @@ const CustomerKyc = (props) => {
             )}
             {(statusId === 3 || statusId === 4) && (
               <Space>
-               { approvalRejectAccess ?
-               <>
-                <Button
-                  type='primary'
-                  size='small'
-                  shape='circle'
-                  className='btn-success'
-                  icon={<CheckOutlined />}
-                  onClick={() => onApproval(record, pan_files)}
-                />
-                <Popconfirm
-                  title='Are you sure want to Reject the Customer?'
-                  okText='Yes'
-                  cancelText='No'
-                  onConfirm={() => onReject(record.id)}
-                >
-                  <Button
-                    type='primary'
-                    size='small'
-                    shape='circle'
-                    danger
-                    icon={<CloseOutlined />}
-                  />
-                </Popconfirm>
-               </> : null }
+                {approvalRejectAccess ? (
+                  <>
+                    <Button
+                      type='primary'
+                      size='small'
+                      shape='circle'
+                      className='btn-success'
+                      icon={<CheckOutlined />}
+                      onClick={() => onApproval(record, pan_files)}
+                    />
+                    <Popconfirm
+                      title='Are you sure want to Reject the Customer?'
+                      okText='Yes'
+                      cancelText='No'
+                      onConfirm={() => onReject(record.id)}
+                    >
+                      <Button
+                        type='primary'
+                        size='small'
+                        shape='circle'
+                        danger
+                        icon={<CloseOutlined />}
+                      />
+                    </Popconfirm>
+                  </>) : null}
               </Space>
             )}
           </Space>
