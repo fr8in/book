@@ -3,7 +3,7 @@ import { DeleteOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 
 const FILE_DELETE_MUTATION = gql`
-    mutation($name:String,$id:Int,$type: String, $fileType: String) {
+    mutation delete_file($name:String,$id:Int,$type: String, $fileType: String) {
     fileDelete(name: $name,id:$id, type:$type, fileType: $fileType) {
         affected
         }
