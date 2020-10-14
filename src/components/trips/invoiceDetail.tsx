@@ -30,11 +30,11 @@ const InvoiceDetail = (props) => {
       onError (error) { message.error(error.toString()) },
       onCompleted (data) {
         setDisableAP(false)
-        const success = get(data, 'cancel_ap.success', null)
-        const message = get(data, 'cancel_ap.message', null)
-        if (success) {
-          message.success(message || 'Cancelled!')
-        } else (message.error(message))
+        const status = get(data, 'cancel_ap.success', null)
+        const msg = get(data, 'cancel_ap.message', null)
+        if (status) {
+          message.success(msg || 'Cancelled!')
+        } else (message.error(msg))
       }
     }
   )
@@ -44,11 +44,11 @@ const InvoiceDetail = (props) => {
       onError (error) { message.error(error.toString()) },
       onCompleted (data) {
         setDisableAR(false)
-        const success = get(data, 'cancel_ar.success', null)
-        const message = get(data, 'cancel_ar.message', null)
-        if (success) {
-          message.success(message || 'Cancelled!')
-        } else (message.error(message))
+        const status = get(data, 'cancel_ar.success', null)
+        const msg = get(data, 'cancel_ar.message', null)
+        if (status) {
+          message.success(msg || 'Cancelled!')
+        } else (message.error(msg))
       }
     }
   )
