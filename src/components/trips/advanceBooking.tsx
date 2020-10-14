@@ -59,7 +59,7 @@ const AdvanceBooking = (props) => {
   }
 
   const onAdvanceBooking = (form) => {
-    if(amount >= 0) {
+    if(amount > 0) {
       setDisableButton(true)
       customer_advance_booking({
         variables: {
@@ -71,7 +71,7 @@ const AdvanceBooking = (props) => {
         }
       })
     } else {
-      message.error('Negative value not allowed')
+      message.error('Enter the valid amount')
     }
   }
   const total = (cash ? parseInt(cash) : 0) + (amount ? parseInt(amount) : 0)
