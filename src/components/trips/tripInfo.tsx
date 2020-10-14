@@ -71,6 +71,8 @@ const TripInfo = (props) => {
   const trip_status_id = get(trip_info, 'trip_status.id', null)
   const order_date = get(trip_info, 'created_at', null)
   const po_date = get(trip_info, 'po_date', null)
+  const pod_verified = get(trip_info, 'pod_verified_at', null)
+  const pod_dispatched = get(trip_info, 'pod_dispatched_at', null)
 
   return (
     <Row>
@@ -138,6 +140,7 @@ const TripInfo = (props) => {
             />
             <LabelWithData label='Mamul' data={get(trip_info, 'mamul', 0)} labelSpan={10} />
             <LabelWithData label='Including loading' data={get(trip_info, 'including_loading', null) ? 'Yes' : 'No'} labelSpan={10} />
+            <LabelWithData label='POD Verified at' data={pod_verified ? moment(pod_verified).format('DD-MMM-YY hh:mm') : '-'} labelSpan={10} />
           </Col>
           <Col sm={24} md={12}>
             <LabelWithData
@@ -149,6 +152,7 @@ const TripInfo = (props) => {
             <LabelWithData label='Partner Price' data={get(trip_info, 'partner_price', 0)} labelSpan={10} />
             <LabelWithData label='Trip KM' data={get(trip_info, 'km', '-')} labelSpan={10} />
             <LabelWithData label='Including Unloading' data={get(trip_info, 'including_unloading', null) ? 'Yes' : 'No'} labelSpan={10} />
+            <LabelWithData label='POD Dispatched at' data={pod_dispatched ? moment(pod_dispatched).format('DD-MMM-YY hh:mm') : '-'} labelSpan={10} />
           </Col>
         </Row>
         <Card className='card-body-0 mt5'>

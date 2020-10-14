@@ -11,6 +11,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       loaded
       status_at
       pod_verified_at
+      pod_dispatched_at
       destination_in
       destination_out
       km

@@ -2,7 +2,7 @@ import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import DateUpdater from '../common/dateUpdater'
 import userContext from '../../lib/userContaxt'
-import { useState, useContext } from 'react'
+import { useContext } from 'react'
 
 const UPDATE_TRIP_DESTINATIONIN_MUTATION = gql`
 mutation trip_destination_in($destination_in:timestamp,$id:Int,$updated_by: String!) {

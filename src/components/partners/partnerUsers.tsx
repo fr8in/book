@@ -34,7 +34,6 @@ mutation PartnerUserDelete($id:Int!, $description: String, $topic: String, $crea
       mobile
     }
   }
-
   insert_partner_comment(objects: {description: $description, partner_id: $partner_id, topic: $topic, created_by:$created_by}) {
     returning {
       description
@@ -64,10 +63,14 @@ const PartnerUsers = (props) => {
         setDisableButton(false)
         message.error(error.toString())
       },
-      onCompleted () {
+      onCompleted (data) {
         setDisableButton(false)
-        message.success('Updated!!')
-        form.resetFields()
+        const status = get(data, 'upsert_partner_mobile.status', null)
+        const description = get(data, 'upsert_partner_mobile.description', null)
+        if (status === 'OK') {
+          message.success(description || 'Updated!')
+          form.resetFields()
+        } else (message.error(description))
       }
     }
   )
@@ -104,7 +107,7 @@ const PartnerUsers = (props) => {
       variables: {
         id: record.id,
         partner_id: partner.id,
-        description: `Mobile No: ${record.mobile}, is deleted!`,
+        description: `${record.mobile}, is deleted!`,
         topic: 'User Deleted',
         created_by: context.email
       }
