@@ -3,14 +3,15 @@ import { gql, useMutation, useSubscription } from '@apollo/client'
 import moment from 'moment'
 import { useContext, useState } from 'react'
 import userContext from '../../lib/userContaxt'
+import get from 'lodash/get'
 
 const PARTNER_COMMENT_SUBSCRIPTION = gql`
-  subscription partner_comment($id: Int!){
+  subscription partner_comment($id: Int!, $limit: Int){
     partner(where:{id:{_eq:$id}}) {
       partner_status{
         name
       }
-      partner_comments(limit:5,order_by:{created_at:desc}){
+      partner_comments(limit:$limit,order_by:{created_at:desc}){
         id
         topic
         description
@@ -31,7 +32,7 @@ const INSERT_PARTNER_COMMENT_MUTATION = gql`
   }
 `
 const Comment = (props) => {
-  const { partner_id, onHide } = props
+  const { partner_id, onHide, detailPage } = props
   const context = useContext(userContext)
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
@@ -39,7 +40,10 @@ const Comment = (props) => {
   const { loading, error, data } = useSubscription(
     PARTNER_COMMENT_SUBSCRIPTION,
     {
-      variables: { id: partner_id }
+      variables: {
+        id: partner_id,
+        limit: detailPage ? 100 : 5
+      }
     }
   )
 
@@ -59,10 +63,12 @@ const Comment = (props) => {
     }
   )
   console.log('PartnerComment error', error)
-
-  if (loading) return null
-  const partner_status_name = data.partner && data.partner[0].partner_status && data.partner[0].partner_status.name
-  const { partner_comments } = data.partner && data.partner[0] ? data.partner[0] : []
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const partner_status_name = get(_data, 'partner[0].partner_status.name', null)
+  const partner_comments = get(_data, 'partner[0].partner_comments', [])
 
   const onSubmit = (form) => {
     setDisableButton(true)
@@ -77,21 +83,26 @@ const Comment = (props) => {
   }
 
   const columnsCurrent = [
+    detailPage ? {
+      title: 'Topic',
+      dataIndex: 'topic',
+      width: '15%'
+    } : {},
     {
       title: 'Comment',
       dataIndex: 'description',
-      width: '45%'
+      width: detailPage ? '40%' : '45%'
     },
     {
       title: 'Created By',
       dataIndex: 'created_by',
-      width: '35%'
+      width: detailPage ? '25%' : '30%'
     },
     {
       title: 'Created On',
       dataIndex: 'created_at',
-      width: '20%',
-      render: (text, record) => text ? moment(text).format('DD-MMM-YY') : null
+      width: '25%',
+      render: (text, record) => text ? moment(text).format('DD-MMM-YY HH:mm') : null
     }
   ]
   return (
@@ -119,6 +130,7 @@ const Comment = (props) => {
         size='small'
         scroll={{ x: 500, y: 400 }}
         pagination={false}
+        loading={loading}
       />
     </div>
   )

@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { Row, Col, Card, Space, Tag, Tabs, Collapse } from 'antd'
 import TripInfo from '../tripInfo'
 import TripLr from '../tripLr'
@@ -35,6 +35,8 @@ const TripDetailContainer = (props) => {
   const edit_access = [role.admin, role.billing_manager, role.billing]
   const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
+  const [customerConfirm, setCustomerConfirm] = useState(null)
+
   const { loading, error, data } = useSubscription(
     TRIP_DETAIL_SUBSCRIPTION,
     {
@@ -56,6 +58,13 @@ const TripDetailContainer = (props) => {
   const trip_status_name = get(trip_info, 'trip_status.name', null)
   const trip_status_id = get(trip_info, 'trip_status.id', null)
   const disable_advance = (trip_status_id < 12)
+  const lr_files = trip_info && trip_info.trip_files && trip_info.trip_files.filter(file => file.type === 'LR')
+  const customer_confirmation = get(trip_info, 'customer_confirmation', null)
+
+  useEffect(() => {
+    setCustomerConfirm(customer_confirmation)
+  }, [customer_confirmation])
+
   return (
     <>
       {loading ? <Loading /> : (
@@ -85,10 +94,18 @@ const TripDetailContainer = (props) => {
                   <TripInfo trip_info={trip_info} trip_id={trip_info.id} />
                   <Collapse accordion className='small mt10'>
                     <Panel header='Trip LR' key='1'>
-                      <TripLr trip_info={trip_info} />
+                      <TripLr
+                        trip_info={trip_info}
+                        customerConfirm={customerConfirm}
+                        setCustomerConfirm={setCustomerConfirm}
+                      />
                     </Panel>
                   </Collapse>
-                  <TripTime trip_info={trip_info} trip_id={trip_info.id} />
+                  <TripTime
+                    trip_info={trip_info}
+                    customerConfirm={customerConfirm}
+                    lr_files={lr_files}
+                  />
                   <Collapse accordion className='small mt10'>
                     <Panel header='Customer/Partner - Billing Comment' key='1'>
                       <BillingComment trip_id={trip_info.id} trip_info={trip_info} />

@@ -1,7 +1,6 @@
-import { Row, Col, Space } from 'antd'
+import { Row, Col, Space, Tooltip } from 'antd'
 import LabelWithData from '../common/labelWithData'
 import AdvancePercentage from './partnerAdvancePercentage'
-import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import EditAddress from './partnerAddress'
 import EditBank from './partnerBank'
 import CibilScore from '../partners/partnerCibilScore'
@@ -12,18 +11,16 @@ import isEmpty from 'lodash/isEmpty'
 import u from '../../lib/util'
 import EditAccess from '../common/editAccess'
 import moment from 'moment'
+import useShowHide from '../../hooks/useShowHide'
 
 const PartnerDetail = (props) => {
   const { partnerDetail, loading } = props
   const { role } = u
   const initial = {
-    address: [],
     addressVisible: false,
-    bank: [],
-    bankVisible: false,
-    title: ''
+    bankVisible: false
   }
-  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
+  const { visible, onHide, onShow } = useShowHide(initial)
 
   const kycStatus = get(partnerDetail, 'partner_status.name', null)
   const notVerified = kycStatus === 'Verification' || kycStatus === 'Rejected' || kycStatus === 'Registered'
@@ -41,7 +38,7 @@ const PartnerDetail = (props) => {
          ${address.state || null},
          ${address.pin_code || null}`
   const cardcode = partnerDetail.cardcode
-  console.log('addressaddress',address)
+
   return (
     <Row gutter={8}>
       <Col xs={24} sm={24} md={24}>
@@ -66,7 +63,7 @@ const PartnerDetail = (props) => {
               <span>{partner_address}{' '}
                 <EditAccess
                   edit_access={beforeOnboard}
-                  onEdit={() => handleShow('addressVisible', partnerDetail, 'address', cardcode)}
+                  onEdit={() => onShow('addressVisible')}
                 />
               </span>
             </Space>
@@ -87,7 +84,7 @@ const PartnerDetail = (props) => {
               {get(partnerDetail, 'bank.name', '-')}{' '}
               <EditAccess
                 edit_access={editAccess}
-                onEdit={() => handleShow('bankVisible', partnerDetail, 'bank', cardcode)}
+                onEdit={() => onShow('bankVisible')}
               />
             </span>
           }
@@ -117,13 +114,13 @@ const PartnerDetail = (props) => {
           dataSpan={14}
         />
         <LabelWithData
-          label=' TDS %'
+          label='TDS %'
           data={<span>{get(partnerDetail, 'tds_percentage.name', '-')}</span>}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData
-          label=' GST'
+          label='GST'
           data={<span><Gst cardcode={cardcode} gst={partnerDetail.gst || '-'} loading={loading} edit_access={ad_pm_on} /></span>}
           labelSpan={10}
           dataSpan={14}
@@ -141,25 +138,28 @@ const PartnerDetail = (props) => {
           labelSpan={10}
           dataSpan={14}
         />
+        <LabelWithData
+          label='Status'
+          data={<Tooltip title={'Id: ' + partnerDetail.id}><span>{get(partnerDetail, 'partner_status.name', '-')}</span></Tooltip>}
+          labelSpan={10}
+          dataSpan={14}
+        />
 
-        {object.addressVisible &&
+        {visible.addressVisible &&
           <EditAddress
-            visible={object.addressVisible}
-            cardcode={object.address}
-            onHide={handleHide}
-            title={object.title}
+            visible={visible.addressVisible}
+            cardcode={cardcode}
+            onHide={onHide}
             partnerAddress={address}
           />}
-        {object.bankVisible &&
+        {visible.bankVisible &&
           <EditBank
-            visible={object.bankVisible}
-            cardcode={object.bank}
-            onHide={handleHide}
-            title={object.title}
+            visible={visible.bankVisible}
+            partner_id={partnerDetail.id}
+            onHide={onHide}
           />}
       </Col>
     </Row>
-
   )
 }
 

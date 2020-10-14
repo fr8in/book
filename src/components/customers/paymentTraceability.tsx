@@ -26,13 +26,14 @@ query customerIncoming($walletcode: String!) {
 }
 `
 const PaymentTraceability = (props) => {
-  const { selectedRowKeys, selectOnchange, customer_id, amount, setAmount, form ,walletcode,wallet_balance} = props
+  const { selectedRowKeys, selectOnchange, customer_id, amount, setAmount, form , walletcode, wallet_balance } = props
   const { visible, onShow, onHide } = useShowHide('')
 
   const { loading, data, error } = useQuery(
     INCOMING_PAYMENT,
     {
-      variables: { walletcode: walletcode }
+      variables: { walletcode: walletcode },
+      fetchPolicy: 'cache-and-network'
     }
   )
 
@@ -43,9 +44,8 @@ const PaymentTraceability = (props) => {
     _data = data
   }
 
-
   const customer_incomings = get(_data, 'customer_sap_incoming', [])
-  
+
   const onAmountChange = (e, balance) => {
     const value = parseFloat(e.target.value) || 0
     if (value > balance) {
@@ -126,9 +126,10 @@ const PaymentTraceability = (props) => {
         size='small'
         scroll={{ x: 780, y: 250 }}
         pagination={false}
+        loading={loading}
       />
       {visible.wallet && (
-        <WalletTopup visible={visible.wallet} onHide={onHide} customer_id={customer_id}/>
+        <WalletTopup visible={visible.wallet} onHide={onHide} customer_id={customer_id} />
       )}
     </Card>
   )

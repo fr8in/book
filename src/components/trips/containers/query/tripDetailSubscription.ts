@@ -5,11 +5,13 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
     trip(where: {id:{_eq:$id}}){
       id
       order_date
+      created_at
       source_in
       source_out
       loaded
       status_at
       pod_verified_at
+      pod_dispatched_at
       destination_in
       destination_out
       km

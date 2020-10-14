@@ -42,8 +42,8 @@ const PayablesContainer = () => {
     if (!isEmpty(dates)) {
       icici_statement({
         variables: {
-          start_date: dates[0].toDate(),
-          end_date: dates[1].toDate()
+          start_date: dates[0].format('YYYY-MM-DD'),
+          end_date: dates[1].format('YYYY-MM-DD')
         }
       })
     } else {

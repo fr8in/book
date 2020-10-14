@@ -118,8 +118,8 @@ const TripsTracking = (props) => {
       filterIcon: () => <SearchOutlined style={{ color: filter.id ? '#1890ff' : undefined }} />
     },
     {
-      title: 'PO date',
-      dataIndex: 'po_date',
+      title: 'Order date',
+      dataIndex: 'created_at',
       render: (text, record) => {
         return text ? (
           moment(text).format('DD-MMM-YY')

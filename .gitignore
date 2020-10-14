@@ -9,7 +9,7 @@
 # production
 /build
 .build
-
+/out
 # misc
 serverless
 .next

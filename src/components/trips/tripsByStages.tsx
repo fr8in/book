@@ -34,8 +34,8 @@ const TripsByStages = (props) => {
         />)
     },
     {
-      title: 'OrderDate',
-      dataIndex: 'order_date',
+      title: 'Order date',
+      dataIndex: 'created_at',
       width: '13%',
       render: (text, record) => text ? moment(text).format('DD-MMM-YY') : null
     },

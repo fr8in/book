@@ -5,6 +5,7 @@ import CitySelect from '../common/citySelect'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
+import LinkComp from '../common/link'
 
 const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
   search_customer(args:{search:$search, status_ids: "{1,5}"}){
@@ -89,8 +90,16 @@ const CreateExcessLoad = (props) => {
         message.error(error.toString())
         setObj({ ...obj, disableButton: false })
       },
-      onCompleted () {
-        message.success('Updated!!')
+      onCompleted (data) {
+        const load_id = get(data, 'insert_trip.returning[0].id', null)
+        const msg = (
+          <span>
+            <span>Excess Load&nbsp;</span>
+            <LinkComp type='trips' data={load_id} id={load_id} />
+            <span>&nbsp;Created!</span>
+          </span>
+        )
+        message.success(msg)
         setObj(initial)
         props.onHide()
       }

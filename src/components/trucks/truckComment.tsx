@@ -1,9 +1,8 @@
 import { Row, Col, Modal, Form, Button, Input, message, Table, Tooltip } from 'antd'
 import { gql, useMutation, useSubscription } from '@apollo/client'
 import moment from 'moment'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import userContext from '../../lib/userContaxt'
-import { useState } from 'react'
 
 const TRUCK_COMMENT = gql`
 subscription truck_comment($id: Int!){
@@ -58,11 +57,13 @@ const TruckComment = (props) => {
     {
       onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
+        message.error(error.toString())
+      },
       onCompleted () {
         setDisableButton(false)
         message.success('Updated!!')
         form.resetFields()
+        onHide()
       }
     }
   )

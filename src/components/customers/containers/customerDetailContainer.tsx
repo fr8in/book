@@ -40,7 +40,7 @@ import Loading from '../../common/loading'
 
 const { TabPane } = Tabs
 
-const ongoing = ['Assigned', 'Confirmed', 'Reported at source', 'Intransit', 'Reported at destination', 'Delivery onhold']
+const ongoing = ['Assigned', 'Confirmed', 'Reported at source', 'Intransit', 'Reported at destination', 'Intransit halting']
 const delivered = ['Delivered']
 const invoiced = ['Invoiced', 'Paid']
 const recieved = ['Recieved', 'Closed']

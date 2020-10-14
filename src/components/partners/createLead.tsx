@@ -1,4 +1,4 @@
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import { Modal, Button, Input, Row, Col, Form, Select, message } from 'antd'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import CitySelect from '../common/citySelect'
@@ -79,13 +79,15 @@ const CreateLead = (props) => {
   const [updatePartnerLeadAddress] = useMutation(
     INSERT_PARTNER_LEAD_MUTATION,
     {
-      onError(error) { 
+      onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
-      onCompleted() {
+        message.error(error.toString())
+      },
+      onCompleted () {
         setDisableButton(false)
         message.success('Updated!!')
         setObj(initial)
+        onHide()
       }
     }
   )
@@ -104,7 +106,7 @@ const CreateLead = (props) => {
   const employeeList = employee.map((data) => {
     return { value: data.id, label: data.email }
   })
-  function handleChange(value) {
+  function handleChange (value) {
     console.log(`selected ${value}`)
   }
   const handleCommentChange = (e) => {
@@ -177,8 +179,10 @@ const CreateLead = (props) => {
             <Form.Item
               name='employee'
             >
-              <Select defaultValue='Select Owner' onChange={handleChange} options={employeeList} optionFilterProp='label'
-              showSearch />
+              <Select
+                                defaultValue='Select Owner' onChange={handleChange} options={employeeList} optionFilterProp='label'
+                showSearch
+              />
             </Form.Item>
           </Col>
         </Row>
