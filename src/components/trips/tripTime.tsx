@@ -78,15 +78,15 @@ mutation remove_destination_out($destination_out:timestamp,$id:Int!,$updated_by:
 }`
 
 const PROCESS_ADVANCE_MUTATION = gql`
-mutation process_advance ($tripId: Int!, $createdBy: String!) {
-  partner_advance(trip_id: $tripId, created_by: $createdBy) {
+mutation partner_advance ($tripId: Int!, $createdBy: String!, $customer_confirmation: Boolean!) {
+  partner_advance(trip_id: $tripId, created_by: $createdBy, customer_confirmation: $customer_confirmation) {
     description
     status
   }
 }`
 
 const TripTime = (props) => {
-  const { trip_info } = props
+  const { trip_info, customerConfirm, lr_files } = props
   const initial = { checkbox: false, mail: false, deletePO: false, godownReceipt: false, wh_detail: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   const context = useContext(userContext)
@@ -182,8 +182,8 @@ const TripTime = (props) => {
     {
       onError (error) { message.error(error.toString()) },
       onCompleted (data) {
-        const status = get(data, 'process_advance.status', null)
-        const description = get(data, 'process_advance.description', null)
+        const status = get(data, 'partner_advance.status', null)
+        const description = get(data, 'partner_advance.description', null)
         if (status === 'OK') {
           message.success(description || 'Advance Processed!')
         } else (message.error(description))
@@ -231,7 +231,8 @@ const TripTime = (props) => {
     processAdvance({
       variables: {
         tripId: trip_info.id,
-        createdBy: context.email
+        createdBy: context.email,
+        customer_confirmation: customerConfirm
       }
     })
   }
@@ -242,7 +243,7 @@ const TripTime = (props) => {
   const remove_sin = trip_status_name === 'Reported at source'
   const remove_sout = trip_status_name === 'Intransit'
   const remove_din = trip_status_name === 'Reported at destination'
-  const remove_dout = (trip_status_name === 'Delivered') && !(trip_info.pod_verified_at)
+  const remove_dout = (trip_status_name === 'Delivered')
   const advance_processed = (trip_info.loaded === 'Yes')
 
   const trip_files = get(trip_info, 'trip_files', [])
@@ -252,7 +253,8 @@ const TripTime = (props) => {
   const trip_status_id = get(trip_info, 'trip_status.id', null)
   const after_deliverd = (trip_status_id >= 9)
   const wh_update = (trip_status_id <= 4)
-  console.log('trip_info', trip_info)
+  const disable_pa = (!customerConfirm && isEmpty(lr_files))
+
   return (
     <Card size='small' className='mt10'>
       <Row>
@@ -320,7 +322,7 @@ const TripTime = (props) => {
                 {po_delete &&
                   <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>}
                 {process_advance &&
-                  <Button type='primary' onClick={onProcessAdvance} >Process Advance</Button>}
+                  <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa}>Process Advance</Button>}
                 {remove_sin &&
                   <Button danger icon={<CloseCircleOutlined />} onClick={onSinRemove}>S-In</Button>}
                 {remove_sout &&
