@@ -88,7 +88,7 @@ const CreateBreakdown = (props) => {
         description: form.comment,
         topic: truck_status,
         city_id: parseInt(city.city_id, 10),
-        available_at: form.available_at.toDate()
+        available_at: form.available_at.format('YYYY-MM-DD HH:mm')
       }
     })
   }

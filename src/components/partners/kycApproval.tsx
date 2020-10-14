@@ -194,7 +194,7 @@ const KycApproval = (props) => {
         onboarded_by_id: form.getFieldValue('onboarded_by_id'),
         updated_by: context.email,
         partner_advance_percentage_id: form.getFieldValue('partner_advance_percentage_id'),
-        onboarded_date: moment().toDate()
+        onboarded_date: moment().format('YYYY-MM-DD')
       }
     })
   }
