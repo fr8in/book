@@ -298,7 +298,7 @@ const KycApproval = (props) => {
           </List.Item>
           <List.Item>
             <Col xs={24} sm={8}>Cheque/Passbook</Col>
-            <Col xs={12} sm={12}>{partnerDetail && partnerDetail.account_number}</Col>
+            <Col xs={12} sm={12}>{get(partnerDetail, 'display_account_number', '-')}</Col>
             <Col xs={12} sm={4} className='text-right'>
               <Space>
                 <span>
