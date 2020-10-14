@@ -12,39 +12,34 @@ const CustomerPayments = (props) => {
     render: (record) => (type_name + ' Pending'),
     width: '26%'
   },
-  type_name === 'Final' ?
-  {
+  type_name === 'Final' ? {
     title: 'Doc No',
-    width: '18%',
-    // render: (text, record) => {
-    //   const docEntry = type_name === 'Advance' ? record.base_Advance_DocEntry : type_name === 'Final' ? record.docentry : '-'
-    //   console.log('docEntry',docEntry)
-    //   return docEntry
-    // }
+    dataIndex: 'docentry',
+    width: '18%'
   } : {},
   {
     title: 'Amount',
     width: '16%',
-    render: ( record) => {
-       const amounts = (type_name === 'Final') ? record.freight : record.amount
+    render: (record) => {
+      const amounts = (type_name === 'Final') ? record.freight : record.amount
       return amounts
     }
   },
   {
     title: 'Received',
     width: '16%',
-    render: ( record) => {
+    render: (record) => {
       const Received = (type_name === 'Final') ? record.received : record.received
-     return Received
-   }
+      return Received
+    }
   },
   {
     title: 'Balance',
     width: '18%',
-    render: ( record) => {
+    render: (record) => {
       const Balance = (type_name === 'Final') ? record.balance : record.balance
-     return Balance
-   }
+      return Balance
+    }
   },
   {
     title: 'Edit',

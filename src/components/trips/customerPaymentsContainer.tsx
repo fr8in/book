@@ -3,30 +3,12 @@ import AdvanceBooking from './advanceBooking'
 import CustomerPayments from './customerPayments'
 import { gql, useQuery, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
-import isEmpty from 'lodash/isEmpty'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import FinalBooking from './finalBooking'
 import AdditionalInvoiceBooking from './additionalInvoiceBooking'
 
 const TRIP_CUSTOMER_PENDING_PAYMENTS = gql`
 query customerPaymentData($trip_id: Int!) {
-    trip_sap_customer_advance_pending(trip_id: $trip_id) {
-      trip_id
-      cardCode
-      base_Advance_DocNum
-      base_Advance_DocEntry
-      amount
-      received
-      pending
-    }
-    trip_sap_customer_invoice_pending(trip_id: $trip_id) {
-      trip_id
-      cardCode
-      status
-      amount
-      received
-      pending
-    }
     trip_sap_customer_balance_pending(trip_id: $trip_id) {
       trip_id
       cardCode
@@ -81,10 +63,6 @@ const CustomerPaymentsContainer = (props) => {
     trip_data = s_data
   }
 
-  console.log('CustomerPaymentsContainer data', trip_data)
-
-  // const advance_pending = get(_data, 'trip_sap_customer_advance_pending', [])
-  // const invoice_pending = get(_data, 'trip_sap_customer_invoice_pending', [])
   const invoice_pending = get(_data, 'trip_sap_customer_balance_pending', [])
   const amount = get(trip_data, 'accounting_trip_receipt_summary[0].amount', 0)
 
