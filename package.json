@@ -5,10 +5,10 @@
   "license": "UNLICENSED",
   "scripts": {
     "local": "next",
-    "prestart": "yarn && next build",
+  
     "test": "jest --watchAll --setupFiles dotenv/config",
     "dev": "node server.js",
-"build": "next build",
+    "build": "next build",
 "start": "node server.js"
   },
   "author": "FR8",
