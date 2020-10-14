@@ -38,7 +38,7 @@ query loading_memo_pdf($id:Int!){
 }`
 
 const REMOVE_SIN_MUTATION = gql`
-mutation remove_souce_out($source_in:timestamp,$id:Int!,$updated_by: String!) {
+mutation remove_souce_in($source_in:timestamp,$id:Int!,$updated_by: String!) {
   update_trip(_set: {source_in: $source_in,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
@@ -58,7 +58,7 @@ mutation remove_souce_out($source_out:timestamp,$id:Int!,$updated_by: String!) {
 }`
 
 const REMOVE_DIN_MUTATION = gql`
-mutation remove_destination_out($destination_in:timestamp,$id:Int!,$updated_by: String!) {
+mutation remove_destination_in($destination_in:timestamp,$id:Int!,$updated_by: String!) {
   update_trip(_set: {destination_in: $destination_in,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
