@@ -40,7 +40,7 @@ const Rebate = (props) => {
   )
 
   const onSubmit = () => {
-    if (amount) {
+    if (amount > 0) {
       setDisableButton(true)
       excess_payment_booking({
         variables: {
@@ -49,7 +49,7 @@ const Rebate = (props) => {
           amount: parseFloat(amount)
         }
       })
-    } else { message.error('Enter Amount') }
+    } else { message.error('Enter the valid amount') }
   }
 
   const selectOnchange = (selectedRowKeys, selectedRows) => {

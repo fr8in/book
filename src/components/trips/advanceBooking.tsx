@@ -60,7 +60,7 @@ const AdvanceBooking = (props) => {
   }
 
   const onAdvanceBooking = (form) => {
-    if (amount || form.cash) {
+    if (amount > 0 || form.cash) {
       setDisableButton(true)
       customer_advance_booking({
         variables: {
@@ -72,7 +72,7 @@ const AdvanceBooking = (props) => {
         }
       })
     } else {
-      message.error('Cash or Wallet amount needed!')
+      message.error('Valid cash or wallet amount needed!')
     }
   }
   const total = (cash ? parseInt(cash) : 0) + (amount ? parseInt(amount) : 0)
