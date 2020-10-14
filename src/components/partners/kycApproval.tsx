@@ -373,13 +373,16 @@ const KycApproval = (props) => {
             </Col>
           </List.Item>
           <List.Item>
-            <Row gutter={20}>
-              <Col xs={24} sm={24}>
-                <Form.Item label='Cibil Score' name='cibil'>
-                  <Input placeholder='Cibil Score' />
-                </Form.Item>
-              </Col>
-            </Row>
+            <Col xs={24} sm={20}>
+              <Row>
+                <Col xs={10}>Cibil Score</Col>
+                <Col xs={14}>
+                  <Form.Item name='cibil' className='mb0'>
+                    <Input placeholder='Cibil Score' />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Col>
             <Col xs={24} sm={4} className='text-right'>
               <Space>
                 <span>
@@ -416,13 +419,16 @@ const KycApproval = (props) => {
             </Col>
           </List.Item>
           <List.Item>
-            <Row gutter={20}>
-              <Col xs={24} sm={24}>
-                <Form.Item label='GST Applicable' name='gst'>
-                  <Input placeholder='GST Number' />
-                </Form.Item>
-              </Col>
-            </Row>
+            <Col xs={24} sm={20}>
+              <Row>
+                <Col xs={10}>GST Applicable</Col>
+                <Col xs={14}>
+                  <Form.Item label='' name='gst'>
+                    <Input placeholder='GST Number' />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Col>
             <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
           </List.Item>
           <List.Item>
