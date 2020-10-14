@@ -9,7 +9,7 @@ import FinalBooking from './finalBooking'
 import AdditionalInvoiceBooking from './additionalInvoiceBooking'
 
 const TRIP_CUSTOMER_PENDING_PAYMENTS = gql`
-query customerPaymentData($trip_id: Int!) {
+query customer_payment_data($trip_id: Int!) {
     trip_sap_customer_advance_pending(trip_id: $trip_id) {
       trip_id
       cardCode
@@ -41,7 +41,7 @@ query customerPaymentData($trip_id: Int!) {
     }
   }`
   const TRIP_CUSTOMER = gql`
-  subscription TripReceivable($trip_id:Int){
+  subscription trip_receipt_summary($trip_id:Int){
     accounting_trip_receipt_summary(where:{trip_id:{_eq:$trip_id}}){
       amount
       trip_id

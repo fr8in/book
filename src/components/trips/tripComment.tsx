@@ -20,7 +20,7 @@ subscription trip_comments($id: Int!) {
 `
 
 const INSERT_TRIP_COMMENT_MUTATION = gql`
-mutation trip_comment($description:String, $topic:String, $trip_id: Int, $created_by:String) {
+mutation trip_comment_insert($description:String, $topic:String, $trip_id: Int, $created_by:String) {
   insert_trip_comment(objects: {description: $description, trip_id: $trip_id, topic: $topic, created_by: $created_by}) {
     returning {
       id
