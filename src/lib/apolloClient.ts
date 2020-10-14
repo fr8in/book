@@ -7,7 +7,7 @@ import { refreshToken } from './auth'
 
 const isBrowser = typeof window !== 'undefined'
 const wsLink = isBrowser ? new WebSocketLink({
-  uri: 'ws://20.43.174.253/v1/graphql',
+  uri: 'wss://20.43.174.253/v1/graphql',
   options: {
     reconnect: true,
     connectionParams: async () => {
