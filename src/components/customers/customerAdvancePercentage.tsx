@@ -15,7 +15,7 @@ const CUSTOMERS_ADVANCE_PERCENTAGE_QUERY = gql`
 }
 `
 const UPDATE_CUSTOMER_ADVANCE_MUTATION = gql`
-mutation customer_advace_update($advance_percentage_id:Int,$cardcode:String,$updated_by:String!) {
+mutation customer_advance_update($advance_percentage_id:Int,$cardcode:String,$updated_by:String!) {
   update_customer(_set: {advance_percentage_id: $advance_percentage_id,updated_by:$updated_by}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id

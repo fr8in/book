@@ -8,7 +8,7 @@ import useShowHide from '../../hooks/useShowHide'
 import _ from 'lodash'
 
 const INCOMING_PAYMENT = gql`
-query customerIncoming($walletcode: String!) {
+query customer_incoming($walletcode: String!) {
   customer_sap_incoming( walletcode:$walletcode) {
     walletcode
     date

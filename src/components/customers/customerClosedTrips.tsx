@@ -8,7 +8,7 @@ import LinkComp from '../common/link'
 import u from '../../lib/util'
 
 const CLOSED_TRIPS = gql`
-subscription customer_trip_list($cardcode: String, $trip_status: [String!],$limit: Int!, $offset:Int!) {
+subscription customer_closed_trip_list($cardcode: String, $trip_status: [String!],$limit: Int!, $offset:Int!) {
   customer(where: {cardcode: {_eq: $cardcode}}) {
     trips_aggregate(where:{trip_status:{name:{_in:$trip_status}}}){
       aggregate{
@@ -37,9 +37,6 @@ subscription customer_trip_list($cardcode: String, $trip_status: [String!],$limi
       trip_status {
         name
       }
-      # trip_pod_status{
-      #   name
-      # }
        customer_price
         partner_price
     }

@@ -5,7 +5,7 @@ import get from 'lodash/get'
 import moment from 'moment'
 
 const INCOMING_PAYMENT = gql`
-query customerIncoming($cardcode:String){
+query customer_booked_incoming($cardcode:String){
   customer(where:{cardcode:{_eq:$cardcode}}){
     cardcode
     id
@@ -22,7 +22,7 @@ query customerIncoming($cardcode:String){
 }`
 
 const customerBooked = gql`
-query customerbooked($cardcode:String,$customer_incoming_id:Int)
+query customer_booked($cardcode:String,$customer_incoming_id:Int)
 {
   accounting_customer_booked(where:{cardcode:{_eq:$cardcode} ,customer_incoming_id:{_eq:$customer_incoming_id}})
   {

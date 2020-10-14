@@ -17,7 +17,7 @@ import userContext from '../../lib/userContaxt'
 import isEmpty from 'lodash/isEmpty'
 
 const ALL_EMPLOYEE = gql`
-  query allEmployee {
+  query all_employee {
     employee(where:{active: {_eq: 1}}){
     id
     email

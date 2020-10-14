@@ -55,7 +55,7 @@ subscription customers(
 
 `
 const CUSTOMERS_QUERY = gql`
-  query customers(
+  query customers_aggregate(
     $statusId: [Int!]
     $name: String
     $mobile: String
