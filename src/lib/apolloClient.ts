@@ -7,7 +7,7 @@ import { refreshToken } from './auth'
 
 const isBrowser = typeof window !== 'undefined'
 const wsLink = isBrowser ? new WebSocketLink({
-  uri: 'wss://20.43.174.253/v1/graphql',
+  uri: process.env.WS_CORE,
   options: {
     reconnect: true,
     connectionParams: async () => {
@@ -27,7 +27,7 @@ const wsLink = isBrowser ? new WebSocketLink({
 }) : null
 console.log(' process.browser: ', process.browser)
 const httpLink = new HttpLink({
-  uri: process.env.CORE || 'https://20.43.174.253/v1/graphql',
+  uri: process.env.HTTP_CORE,
   credentials: 'same-origin' // Additional fetch() options like `credentials` or `headers`
 })
 const authLink = setContext((_, { headers }) => {
