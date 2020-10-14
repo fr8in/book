@@ -21,7 +21,7 @@ subscription partners_truck($cardcode: String) {
         id
         name
       }
-      trips(where: {trip_status: {name: {_in: ["Confirmed", "Reported at source", "Intransit", "Reported at destination", "Delivery onhold"]}}}) {
+      trips(where: {trip_status: {name: {_in: ["Confirmed", "Reported at source", "Intransit", "Reported at destination", "Intransit halting"]}}}) {
         id
         source {
           name

@@ -35,7 +35,7 @@ import userContext from '../../../lib/userContaxt'
 
 const TabPane = Tabs.TabPane
 
-const on_going = ['Confirmed', 'Reported at source', 'Intransit', 'Reported at destination', 'Delivery onhold']
+const on_going = ['Confirmed', 'Reported at source', 'Intransit', 'Reported at destination', 'Intransit halting']
 const pod = ['Delivered']
 const invoiced = ['Invoiced', 'Recieved']
 const paid = ['Paid', 'Closed']

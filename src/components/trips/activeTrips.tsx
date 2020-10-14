@@ -147,6 +147,7 @@ const Trips = (props) => {
           (status === 'Assigned' || status === 'Confirmed') ? record.confirmed_tat
             : status === 'Reported at source' ? record.loading_tat
               : status === 'Intransit' ? record.intransit_tat
+              : status === 'Intransit halting' ? record.intransit_tat
                 : status === 'Reported at destination' ? record.unloading_tat : null
         )
       },

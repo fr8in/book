@@ -138,7 +138,7 @@ const DashboardContainer = (props) => {
                   <ExcessLoad trip_status='Waiting for truck' filters={filters} />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Hold' value={hold_count} />} key='10'>
-                  <TripsContainer filters={filters} trip_status='Delivery onhold' />
+                  <TripsContainer filters={filters} trip_status='Intransit halting' />
                 </TabPane>
               </Tabs>
             </Card>

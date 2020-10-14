@@ -50,7 +50,7 @@ subscription dashboard_aggregate($now: timestamp, $regions: [Int!], $branches: [
               count
             }
           }
-          hold: trips_aggregate(where: {trip_status: {name: {_eq: "Delivery onhold"}}, truck_type_id: {_in: $truck_type}, branch_employee_id: {_in: $managers}}) {
+          hold: trips_aggregate(where: {trip_status: {name: {_eq: "Intransit halting"}}, truck_type_id: {_in: $truck_type}, branch_employee_id: {_in: $managers}}) {
             aggregate {
               count
             }
