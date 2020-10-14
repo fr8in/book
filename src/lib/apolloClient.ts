@@ -7,7 +7,7 @@ import { refreshToken } from './auth'
 
 const isBrowser = typeof window !== 'undefined'
 const wsLink = isBrowser ? new WebSocketLink({
-  uri: process.env.WS_CORE,
+  uri: process.env.NEXT_PUBLIC_WS_CORE,
   options: {
     reconnect: true,
     connectionParams: async () => {
@@ -27,7 +27,7 @@ const wsLink = isBrowser ? new WebSocketLink({
 }) : null
 console.log(' process.browser: ', process.browser)
 const httpLink = new HttpLink({
-  uri: process.env.HTTP_CORE,
+  uri: process.env.NEXT_PUBLIC_HTTP_CORE,
   credentials: 'same-origin' // Additional fetch() options like `credentials` or `headers`
 })
 const authLink = setContext((_, { headers }) => {
