@@ -154,7 +154,7 @@ const CreatePo = (props) => {
         const load_id = get(data, 'insert_trip.returning[0].id', null)
         const msg = (
           <span>
-            <span>Excess Load&nbsp;</span>
+            <span>Load&nbsp;</span>
             <LinkComp type='trips' data={load_id} id={load_id} />
             <span>&nbsp;Created!</span>
           </span>
