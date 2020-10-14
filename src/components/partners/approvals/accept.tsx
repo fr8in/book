@@ -1,7 +1,8 @@
 import { Modal, Form, Input, message, Button } from 'antd'
-import React from 'react'
-import { gql, useMutation } from '@apollo/client'
 import { useState, useContext } from 'react'
+import { gql, useMutation } from '@apollo/client'
+import get from 'lodash/get'
+
 import userContext from '../../../lib/userContaxt'
 
 const REJECT_CREDIT_MUTATION = gql`
@@ -12,15 +13,15 @@ mutation reject_credit($id:Int!,$remarks:String){
       id
     }
   }
-}
-`
+}`
+
 const CREDIT_APPROVAL_MUTATION = gql`
 mutation approve_credit(
   $id: Int!
   $approved_by: String!
   $approved_amount: Float! 
   $approval_comment: String!
-){
+  ){
   approve_credit(
     id: $id
     approved_by: $approved_by
@@ -35,7 +36,6 @@ mutation approve_credit(
 const Approve = (props) => {
   const { visible, onHide, item_id, title } = props
   const context = useContext(userContext)
-
   const [disableButton, setDisableButton] = useState(false)
 
   const [rejectCredit] = useMutation(
@@ -57,23 +57,23 @@ const Approve = (props) => {
         message.error(error.toString())
       },
       onCompleted (data) {
-        console.log('cedit_approve data',data)
-        setDisableButton(false)
-        if (data.approve_credit.success){
-          message.success(data.approve_credit && data.approve_credit.message)
+        const status = get(data, 'approve_credit.success', null)
+        if (status) {
+          message.success(get(data, 'approve_credit.message', 'Approved!!'))
+          setDisableButton(false)
+          onHide()
+        } else {
+          setDisableButton(false)
+          message.error(get(data, 'approve_credit.message', 'Error Occured!!'))
         }
-        else{
-          message.error(data.approve_credit && data.approve_credit.message)
-        }
-       
-        onHide()
       }
     })
 
   const onSubmit = (form) => {
-    console.log('Fastag Amount Reversed!', form)
-    setDisableButton(true)
-    if (title === 'Approved') {
+    if ( form.amount && (item_id.amount < parseFloat(form.amount))) {
+      message.error('Approval amount should be less than or equal to claim amount')
+    } else if (title === 'Approved') {
+      setDisableButton(true)
       creditApproval({
         variables: {
           id: item_id.id,
@@ -83,6 +83,7 @@ const Approve = (props) => {
         }
       })
     } else {
+      setDisableButton(true)
       rejectCredit({
         variables: {
           id: item_id,
@@ -91,7 +92,6 @@ const Approve = (props) => {
       })
     }
   }
-  console.log('id', item_id)
 
   return (
     <Modal
@@ -103,7 +103,7 @@ const Approve = (props) => {
       <Form layout='vertical' onFinish={onSubmit}>
         {title === 'Approved' && (
           <Form.Item label='Amount' name='amount' rules={[{ required: true }]} extra={`Claim Amount: ${item_id.amount}`}>
-            <Input placeholder='Approved amount' />
+            <Input placeholder='Approved amount' type='number' min={1} />
           </Form.Item>
         )}
         <Form.Item label='Remarks' name='remarks' rules={[{ required: true }]}>

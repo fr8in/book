@@ -1,10 +1,10 @@
 import { Table, Tooltip, Button, Space } from 'antd'
-import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons'
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import get from 'lodash/get'
 import Approve from '../partners/approvals/accept'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
-import { gql, useSubscription} from '@apollo/client'
+import { gql, useSubscription } from '@apollo/client'
 
 const CREDIT_NOTE_TABLE_SUBSCRIPTION = gql`
 subscription ($id:Int){
@@ -28,19 +28,19 @@ subscription ($id:Int){
 
 const CreditNoteTable = (props) => {
   const { trip_id } = props
-  console.log('trip_id',trip_id)
+  console.log('trip_id', trip_id)
   const authorised = true
   const initial = {
     approveData: [],
-    approveVisible: false,
+    approveVisible: false
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const { loading, error, data } = useSubscription(
     CREDIT_NOTE_TABLE_SUBSCRIPTION,
     {
       variables: {
-       id : trip_id
-      },
+        id: trip_id
+      }
     }
   )
   console.log('CreditNoteTable error', error)
@@ -52,7 +52,7 @@ const CreditNoteTable = (props) => {
   }
 
   const credit_debit_list = get(_data, 'trip[0].credit_debits', null)
-console.log('credit_debit_list',credit_debit_list)
+  console.log('credit_debit_list', credit_debit_list)
   const columns = [
     {
       title: 'Type',
@@ -61,11 +61,11 @@ console.log('credit_debit_list',credit_debit_list)
     },
     {
       title: 'Issue Type',
-     // dataIndex: 'issueType',
+      // dataIndex: 'issueType',
       width: authorised ? '17%' : '19%',
       render: (text, record) => {
-       return  get(record, 'credit_debit_type.name', null)
-      } 
+        return get(record, 'credit_debit_type.name', null)
+      }
     },
     {
       title: 'Claim ₹',
@@ -84,14 +84,15 @@ console.log('credit_debit_list',credit_debit_list)
       render: (text, record) => {
         return (
           <Tooltip
-            title={'' + 'createdOn:\t' + record.createdOn && moment(record.createdOn).format('DD MMM YYYY hh:mm a') +
-                          '\ncreatedBy:\t' + record.createdBy}
-          ><span>{record.comment}</span>
+            title={'createdOn:\t' + record.createdOn && moment(record.createdOn).format('DD-MMM-YYYY HH:mm') +
+                          '\ncreatedBy:\t' + record.created_by}
+          >
+            <span>{record.comment}</span>
           </Tooltip>)
       }
     }, {
       title: 'Status',
-      //dataIndex: 'approvalStatus',
+      // dataIndex: 'approvalStatus',
       width: authorised ? '12%' : '14%',
       render: (text, record) => {
         if ((record.approvedBy)) {
@@ -110,13 +111,25 @@ console.log('credit_debit_list',credit_debit_list)
         title: 'Action',
         width: '12%',
         render: (text, record) => (
-          get(record, 'credit_debit_status.name', null) === 'PENDING'
-            ? <Space>
-              <Button type='primary' className='btn-success' icon={<CheckCircleFilled />}  onClick={() =>
-                handleShow('approveVisible', 'Approved', 'approveData', record)}/>
-              <Button type='primary' danger icon={<CloseCircleFilled />}  onClick={() =>
-                handleShow('approveVisible', 'Rejected', 'approveData', record.id)}/>
-            </Space>
+          get(record, 'credit_debit_status.name', null) === 'PENDING' ? (
+            <Space>
+              <Button
+                type='primary'
+                size='small'
+                shape='circle'
+                className='btn-success'
+                icon={<CheckOutlined />}
+                onClick={() => handleShow('approveVisible', 'Approved', 'approveData', record)}
+              />
+              <Button
+                type='primary'
+                size='small'
+                shape='circle'
+                danger
+                icon={<CloseOutlined />}
+                onClick={() => handleShow('approveVisible', 'Rejected', 'approveData', record.id)}
+              />
+            </Space>)
             : <div />)
       } : {}
   ]
@@ -128,6 +141,7 @@ console.log('credit_debit_list',credit_debit_list)
         pagination={false}
         size='small'
         scroll={{ x: authorised ? 780 : 650, y: 240 }}
+        rowKey={record => record.id}
       />
       {/* <ApprovalModal tripId={this.props.tripId} /> */}
       {object.approveVisible && (
