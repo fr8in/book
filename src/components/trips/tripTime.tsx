@@ -236,14 +236,13 @@ const TripTime = (props) => {
     })
   }
 
-  const authorized = true // TODO
   const trip_status_name = get(trip_info, 'trip_status.name', null)
   const po_delete = (trip_status_name === 'Assigned' || trip_status_name === 'Confirmed' || trip_status_name === 'Reported at source') && !trip_info.source_out
   const process_advance = trip_info.source_out && (trip_info.loaded !== 'Yes')
-  const remove_sin = trip_status_name === 'Reported at source' && authorized
-  const remove_sout = trip_status_name === 'Intransit' && authorized
-  const remove_din = trip_status_name === 'Reported at destination' && authorized
-  const remove_dout = trip_status_name === 'Delivered' && authorized
+  const remove_sin = trip_status_name === 'Reported at source'
+  const remove_sout = trip_status_name === 'Intransit'
+  const remove_din = trip_status_name === 'Reported at destination'
+  const remove_dout = (trip_status_name === 'Delivered') && !(trip_info.pod_verified_at)
   const advance_processed = (trip_info.loaded === 'Yes')
 
   const trip_files = get(trip_info, 'trip_files', [])
@@ -253,6 +252,7 @@ const TripTime = (props) => {
   const trip_status_id = get(trip_info, 'trip_status.id', null)
   const after_deliverd = (trip_status_id >= 9)
   const wh_update = (trip_status_id <= 4)
+  console.log('trip_info', trip_info)
   return (
     <Card size='small' className='mt10'>
       <Row>
@@ -320,7 +320,7 @@ const TripTime = (props) => {
                 {po_delete &&
                   <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>}
                 {process_advance &&
-                  <Button type='primary' onClick={onProcessAdvance}>Process Advance</Button>}
+                  <Button type='primary' onClick={onProcessAdvance} >Process Advance</Button>}
                 {remove_sin &&
                   <Button danger icon={<CloseCircleOutlined />} onClick={onSinRemove}>S-In</Button>}
                 {remove_sout &&

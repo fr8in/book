@@ -1,9 +1,10 @@
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import { Modal, Button, Row, Col, Form, Input, message } from 'antd'
 import get from 'lodash/get'
 import PaymentTraceability from '../customers/paymentTraceability'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
+import isEmpty from 'lodash/isEmpty'
 
 const CUSTOMER_ADVANCE = gql`
 mutation customer_advance(
@@ -26,7 +27,7 @@ mutation customer_advance(
 }`
 
 const AdvanceBooking = (props) => {
-  const { visible, onHide, cardcode, mamul, title, price, pending_data, trip_id,walletcode,wallet_balance,customer_id } = props
+  const { visible, onHide, cardcode, mamul, title, price, pending_data, trip_id, walletcode, wallet_balance, customer_id } = props
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
@@ -59,16 +60,20 @@ const AdvanceBooking = (props) => {
   }
 
   const onAdvanceBooking = (form) => {
-    setDisableButton(true)
-    customer_advance_booking({
-      variables: {
-        trip_id: parseInt(trip_id, 10),
-        wallet: parseFloat(amount),
-        cash: parseFloat(form.cash),
-        docentry: selectedRow[0].docentry,
-        created_by: context.email
-      }
-    })
+    if (amount || form.cash) {
+      setDisableButton(true)
+      customer_advance_booking({
+        variables: {
+          trip_id: parseInt(trip_id, 10),
+          wallet: (!isEmpty(selectedRow) && amount) ? parseFloat(amount) : null,
+          cash: parseFloat(form.cash),
+          docentry: (!isEmpty(selectedRow) && amount) ? selectedRow[0].docentry : null,
+          created_by: context.email
+        }
+      })
+    } else {
+      message.error('Cash or Wallet amount needed!')
+    }
   }
   const total = (cash ? parseInt(cash) : 0) + (amount ? parseInt(amount) : 0)
   return (
