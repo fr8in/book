@@ -1,10 +1,11 @@
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import { Modal, Row, Button, Form, Col, Select, Card, Divider, message } from 'antd'
 import Link from 'next/link'
 import { gql, useQuery, useLazyQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
+import LinkComp from '../common/link'
 
 const PO_QUERY = gql`
 query po_query($id: Int!){
@@ -149,8 +150,16 @@ const CreatePo = (props) => {
         message.error(error.toString())
         setDisableBtn(false)
       },
-      onCompleted () {
-        message.success('Load Created!!')
+      onCompleted (data) {
+        const load_id = get(data, 'insert_trip.returning[0].id', null)
+        const msg = (
+          <span>
+            <span>Excess Load&nbsp;</span>
+            <LinkComp type='trips' data={load_id} id={load_id} />
+            <span>&nbsp;Created!</span>
+          </span>
+        )
+        message.success(msg)
         setObj(initial)
         setDisableBtn(false)
         onHide()
