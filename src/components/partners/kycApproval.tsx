@@ -71,7 +71,7 @@ mutation update_partner_approval($onboarded_by_id:Int,$partner_advance_percentag
 }`
 
 const CREATE_PARTNER_CODE_MUTATION = gql`
-mutation create_partner_code($cardcode: String!, $name: String!, $partner_id: Int!, $pay_terms_code: Int!,$pan_no:String!) {
+mutation create_partner_code($cardcode: String, $name: String!, $partner_id: Int!, $pay_terms_code: Int!,$pan_no:String!) {
   create_partner_code(cardcode: $cardcode,name: $name, partner_id: $partner_id, pay_terms_code: $pay_terms_code, pan_no:$pan_no) {
     description
     status
@@ -298,7 +298,7 @@ const KycApproval = (props) => {
           </List.Item>
           <List.Item>
             <Col xs={24} sm={8}>Cheque/Passbook</Col>
-            <Col xs={12} sm={12}>{partnerDetail && partnerDetail.account_number}</Col>
+            <Col xs={12} sm={12}>{get(partnerDetail, 'display_account_number', '-')}</Col>
             <Col xs={12} sm={4} className='text-right'>
               <Space>
                 <span>
@@ -373,13 +373,16 @@ const KycApproval = (props) => {
             </Col>
           </List.Item>
           <List.Item>
-            <Row gutter={20}>
-              <Col xs={24} sm={24}>
-                <Form.Item label='Cibil Score' name='cibil'>
-                  <Input placeholder='Cibil Score' />
-                </Form.Item>
-              </Col>
-            </Row>
+            <Col xs={24} sm={20}>
+              <Row>
+                <Col xs={10}>Cibil Score</Col>
+                <Col xs={14}>
+                  <Form.Item name='cibil' className='mb0'>
+                    <Input placeholder='Cibil Score' />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Col>
             <Col xs={24} sm={4} className='text-right'>
               <Space>
                 <span>
@@ -416,13 +419,16 @@ const KycApproval = (props) => {
             </Col>
           </List.Item>
           <List.Item>
-            <Row gutter={20}>
-              <Col xs={24} sm={24}>
-                <Form.Item label='GST Applicable' name='gst'>
-                  <Input placeholder='GST Number' />
-                </Form.Item>
-              </Col>
-            </Row>
+            <Col xs={24} sm={20}>
+              <Row>
+                <Col xs={10}>GST Applicable</Col>
+                <Col xs={14}>
+                  <Form.Item label='' name='gst'>
+                    <Input placeholder='GST Number' />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Col>
             <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
           </List.Item>
           <List.Item>

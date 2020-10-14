@@ -5,9 +5,10 @@ import DeleteFile from '../common/deleteFile'
 import ViewFile from '../common/viewFile'
 import userContext from '../../lib/userContaxt'
 import { useContext } from 'react'
+import get from 'lodash/get'
 
 const UPDATE_LR_MUTATION = gql`
-mutation lr_number_update ($lr: jsonb, $id: Int!,$updated_by: String!){
+mutation lr_number_update ($lr: String, $id: Int!,$updated_by: String!){
   update_trip(_set: {lr: $lr,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
@@ -33,7 +34,7 @@ const TripLr = (props) => {
     updateLrNumber({
       variables: {
         id: trip_info.id,
-        lr: value,
+        lr: value.toString(),
         updated_by: context.email
       }
     })
@@ -44,12 +45,11 @@ const TripLr = (props) => {
   }
 
   const lr_files = trip_info && trip_info.trip_files && trip_info.trip_files.filter(file => file.type === 'LR')
-
-  const disableLr = trip_info.trip_status && trip_info.trip_status.name === 'Invoiced' &&
-                    trip_info.trip_status.name === 'Paid' &&
-                    trip_info.trip_status.name === 'Recieved' &&
-                    trip_info.trip_status.name === 'Closed'
+  const trip_status = get(trip_info, 'trip_status.name', null)
+  const disableLr = (trip_status === 'Invoiced' && trip_status === 'Paid' && trip_status === 'Recieved' && trip_status === 'Closed')
   const loaded = (trip_info.loaded === 'Yes')
+  const lr = get(trip_info, 'lr', null)
+  const lr_numbers = lr ? lr.split(',') : []
 
   return (
     <Row gutter={8}>
@@ -62,7 +62,7 @@ const TripLr = (props) => {
           placeholder='Enter valid LR numbers'
           disabled={disableLr}
           onChange={handleChange}
-          value={trip_info.lr || []}
+          value={lr_numbers}
         />
       </Col>
       <Col xs={24} sm={12}>
