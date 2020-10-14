@@ -8,6 +8,7 @@ subscription partner_trip($cardcode: String, $trip_status_value: [String!]) {
     trips(where: {trip_status: {name: {_in: $trip_status_value}}}) {
       id
       order_date
+      created_at
       source {
         name
       }

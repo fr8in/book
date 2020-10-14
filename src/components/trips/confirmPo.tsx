@@ -48,7 +48,7 @@ query po_query($id: Int!, $cus_id: Int!){
 }`
 
 const CONFIRM_PO = gql`
-  mutation confirm_po(
+mutation confirm_po(
   $trip_id: Int!
   $updated_by: String!
   $truck_id: Int!
@@ -158,7 +158,7 @@ const ConfirmPo = (props) => {
       confirm_po_mutation({
         variables: {
           trip_id: record.id,
-          po_date: form.po_date.toDate(),
+          po_date: form.po_date.format('YYYY-MM-DD'),
           source_id: obj.source_id ? parseInt(obj.source_id, 10) : get(record, 'source.id', null),
           destination_id: obj.destination_id ? parseInt(obj.destination_id, 10) : get(record, 'destination.id', null),
           customer_id: customer.id,

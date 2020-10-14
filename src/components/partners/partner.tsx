@@ -13,6 +13,7 @@ const PartnerInfo = (props) => {
 
   const membership = get(partner, 'partner_memberships[0].membership_type.id', null)
   const number = get(partner, 'partner_users[0].mobile', null)
+  const partner_id = get(partner, 'id', null)
   const id = get(partner, 'partner_users[0].id', null)
   const partnerKycStatus = get(partner, 'partner_status.id', null)
   console.log('partner', partner)
@@ -37,7 +38,7 @@ const PartnerInfo = (props) => {
           loading={loading}
         />
         <h4>{partner.cardcode}</h4>
-        <h4><PartnerUser mobile={number} loading={loading} id={id} /></h4>
+        <h4><PartnerUser mobile={number} loading={loading} id={partner_id} /></h4>
         <Button
           shape='circle'
           size='small'

@@ -1,4 +1,4 @@
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import { Modal, Button, Row, Col, Form, Input, message, Collapse, Divider, Radio } from 'antd'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
@@ -78,7 +78,7 @@ mutation customer_final_payment(
 }`
 
 const FinalBooking = (props) => {
-  const { visible, onHide, cardcode, mamul, title, price, pending_data, trip_id,walletcode,wallet_balance,customer_id  } = props
+  const { visible, onHide, cardcode, mamul, title, price, pending_data, trip_id, walletcode, wallet_balance, customer_id } = props
 
   const [form] = Form.useForm()
 
@@ -173,8 +173,8 @@ const FinalBooking = (props) => {
   }
 
   const onFinalBooking = (form) => {
-    if ((floatVal(form.cash) === 0) && amount === 0) {
-      message.error('Cash or Wallet amount required!')
+    if ((floatVal(form.cash) <= 0) && amount <= 0) {
+      message.error('Valid Cash or Wallet amount required!')
     } else if (calc.total > pending_data.balance) {
       message.error('Maximum booking amount is ' + pending_data.balance)
     } else {
@@ -182,8 +182,8 @@ const FinalBooking = (props) => {
       customer_final_payment({
         variables: {
           trip_id: parseInt(trip_id),
-          wallet: floatVal(amount),
-          docentry: selectedRow[0].docentry,
+          wallet: (!isEmpty(selectedRow) && amount) ? floatVal(amount) : null,
+          docentry: (!isEmpty(selectedRow) && amount) ? selectedRow[0].docentry : null,
           cash: floatVal(form.cash),
           rebate: floatVal(form.rebate),
           created_by: context.email,

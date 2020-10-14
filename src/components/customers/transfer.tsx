@@ -99,7 +99,7 @@ const Transfer = (props) => {
   const bank_detail = get(_data, 'bank_detail', null)
 
   const onSubmit = (form) => {
-    if (amount) {
+    if (amount > 0) {
       setDisableButton(true)
       customer_mamul_transfer({
         variables: {
@@ -115,7 +115,7 @@ const Transfer = (props) => {
           is_mamul_charges_included: (form.mamul_include === 'INCLUDE')
         }
       })
-    } else { message.error('Enter Amount') }
+    } else { message.error('Enter the valid amount') }
   }
 
   const selectOnchange = (selectedRowKeys, selectedRows) => {

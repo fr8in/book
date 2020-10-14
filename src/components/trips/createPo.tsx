@@ -188,7 +188,7 @@ const CreatePo = (props) => {
       setDisableBtn(true)
       create_po_mutation({
         variables: {
-          po_date: form.po_date.toDate(),
+          po_date: form.po_date.format('YYYY-MM-DD'),
           source_id: parseInt(obj.source_id, 10),
           destination_id: parseInt(obj.destination_id, 10),
           customer_id: customer.id,

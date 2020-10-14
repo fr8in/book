@@ -1,7 +1,7 @@
 import { Modal, Button, Row, Col, DatePicker, Space, Input, Form, Radio, message, Table } from 'antd'
 import { useMutation, gql, useQuery } from '@apollo/client'
 import moment from 'moment'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import CitySelect from '../common/citySelect'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
@@ -17,7 +17,7 @@ query create_breakdown($id: Int!){
 }`
 
 const INSERT_UPDATE_CREATE_BREAKDOWN_MUTATION = gql`
-mutation truck_available($truck_id:Int!,$topic:String,$created_by:String,$description:String,$id:Int!,$available_at:timestamp,$city_id:Int,$updated_by: String!) {
+mutation truck_available($truck_id:Int!,$topic:String,$created_by:String,$description:String,$available_at:timestamp,$city_id:Int,$updated_by: String!) {
   insert_truck_comment(objects: {truck_id:$truck_id, topic:$topic, created_by:$created_by, description:$description}) {
     returning {
       id
@@ -26,7 +26,7 @@ mutation truck_available($truck_id:Int!,$topic:String,$created_by:String,$descri
       truck_id
     }
   }
-  update_truck_by_pk(pk_columns: {id:$id}, _set: {available_at:$available_at, city_id:$city_id,updated_by:$updated_by}) {
+  update_truck_by_pk(pk_columns: {id:$truck_id}, _set: {available_at:$available_at, city_id:$city_id,updated_by:$updated_by}) {
     id
     city_id
     available_at
@@ -64,7 +64,8 @@ const CreateBreakdown = (props) => {
     {
       onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
+        message.error(error.toString())
+      },
       onCompleted () {
         setDisableButton(false)
         message.success('Updated!!')
@@ -79,16 +80,15 @@ const CreateBreakdown = (props) => {
 
   const onCreateBreakdown = (form) => {
     setDisableButton(true)
-    console.log('id', id, city)
     insertUpdateCreateBreakdown({
       variables: {
         truck_id: id,
-        id: id,
         created_by: context.email,
         updated_by: context.email,
         description: form.comment,
         topic: truck_status,
-        city_id: parseInt(city.city_id, 10)
+        city_id: parseInt(city.city_id, 10),
+        available_at: form.available_at.format('YYYY-MM-DD HH:mm')
       }
     })
   }
@@ -141,11 +141,10 @@ const CreateBreakdown = (props) => {
             </Form.Item>}
           <Row gutter={10}>
             <Col sm={12}>
-              <Form.Item label='Available Date'>
+              <Form.Item label='Available Date' name='available_at'>
                 <DatePicker
                   showTime
-                  name='selectSearchDate'
-                  format='YYYY-MM-DD'
+                  format='YYYY-MM-DD HH:mm'
                   placeholder='Select Date'
                   style={{ width: '100%' }}
                 />

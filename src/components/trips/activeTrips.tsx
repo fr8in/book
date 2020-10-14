@@ -1,4 +1,4 @@
-import { Table, Tooltip, Button, Popconfirm,message } from 'antd'
+import { Table, Tooltip, Button, Popconfirm, message } from 'antd'
 import { PhoneOutlined, CommentOutlined, CheckOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
@@ -20,7 +20,6 @@ mutation update_trip_status($id: Int , $trip_status_id : Int) {
 
 const Trips = (props) => {
   const { trips, loading } = props
-  console.log('trips', trips)
   const initial = {
     commentData: [],
     commentVisible: false
@@ -147,8 +146,8 @@ const Trips = (props) => {
           (status === 'Assigned' || status === 'Confirmed') ? record.confirmed_tat
             : status === 'Reported at source' ? record.loading_tat
               : status === 'Intransit' ? record.intransit_tat
-              : status === 'Intransit halting' ? record.intransit_tat
-                : status === 'Reported at destination' ? record.unloading_tat : null
+                : status === 'Intransit halting' ? record.intransit_tat
+                  : status === 'Reported at destination' ? record.unloading_tat : null
         )
       },
       sorter: (a, b) => {
@@ -190,7 +189,7 @@ const Trips = (props) => {
         const expection_date = get(record, 'customer.exception_date', null)
         const assign_status = get(record, 'trip_status.name', null)
         const expection_dates = expection_date ? moment(expection_date).format('YYYY-MM-DD') : null
-        const todayDate = new Date().toISOString().slice(0,10);
+        const todayDate = new Date().toISOString().slice(0, 10)
         return (
           <span>
             <Tooltip title={record.driverPhoneNo}>
@@ -204,12 +203,12 @@ const Trips = (props) => {
           </Tooltip> */}
             <>
               {
-                assign_status === 'Assigned' ?
-                  <Popconfirm
+                assign_status === 'Assigned'
+                  ? <Popconfirm
                     title='Are you sure you want to change this status to confirmed?'
                     okText='Yes'
                     cancelText='No'
-                   onConfirm={() => onSubmit(record.id)}
+                    onConfirm={() => onSubmit(record.id)}
                   >
                     <Button
                       icon={<CheckOutlined />}
@@ -217,16 +216,15 @@ const Trips = (props) => {
                       size='small'
                       className='btn-success'
                       shape='circle'
-                      disabled={is_execption && (expection_dates < todayDate || expection_dates === null) }
-                    /> 
-                    </Popconfirm> : null
+                      disabled={is_execption && (expection_dates < todayDate || expection_dates === null)}
+                    />
+                  </Popconfirm> : null
               }
             </>
           </span>
         )
-      }
-
-      ,
+      },
+      
       width: props.intransit ? '9%' : '11%'
     }
   ]

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Row, Button, message, Divider } from 'antd'
+import { Row, Button, message } from 'antd'
 import LabelAndData from '../common/labelAndData'
 import { gql, useMutation } from '@apollo/client'
 import get from 'lodash/get'
