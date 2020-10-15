@@ -8,7 +8,7 @@
     "test": "jest --watchAll --setupFiles dotenv/config",
     "dev": "next",
     "build": "next build",
-    "start": "node server.js",
+    "start": "next start -p $PORT",
     "postinstall": "next build"
   },
   "author": "FR8",
@@ -33,7 +33,7 @@
     "subscriptions-transport-ws": "^0.9.17"
   },
   "devDependencies": {
-    "@types/node": "^14.0.14",
+    "@types/node": "^14.11.8",
     "@types/react": "^16.9.41",
     "jest": "^26.0.1",
     "less": "^3.11.3",
