@@ -5,7 +5,6 @@
   "license": "UNLICENSED",
   "scripts": {
     "local": "next",
-    "test": "jest --watchAll --setupFiles dotenv/config",
     "dev": "next",
     "build": "next build",
     "start": "next start -p $PORT",
