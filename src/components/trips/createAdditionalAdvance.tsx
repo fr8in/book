@@ -7,7 +7,7 @@ import u from '../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 
 const CREATE_ADDITIONAL_ADVANCE = gql`
-mutation additional_advance($input: AdditionalAdvanceInput) {
+mutation create_additional_advance($input: AdditionalAdvanceInput) {
   additional_advance(input: $input) {
     status
     description
