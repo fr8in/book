@@ -18,7 +18,7 @@ query partner_driver($id:Int!){
   }`
 
 const INSERT_PARTNER_DRIVER = gql`
-mutation driver_insert($id: Int!, $mobile: String){
+mutation truck_driver_insert($id: Int!, $mobile: String){
   insert_driver(objects:{partner_id: $id, mobile:$mobile}){
     returning{
       id
