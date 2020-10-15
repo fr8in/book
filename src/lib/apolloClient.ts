@@ -9,6 +9,7 @@ const isBrowser = typeof window !== 'undefined'
 const wsLink = isBrowser ? new WebSocketLink({
   uri: process.env.NEXT_PUBLIC_WS_CORE,
   options: {
+    lazy: true,
     reconnect: true,
     connectionParams: async () => {
       refreshToken()
