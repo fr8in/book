@@ -4,6 +4,7 @@ import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
 import u from '../../lib/util'
+import isEmpty from 'lodash/isEmpty'
 
 const UPDATE_PARTNER_BLACKLIST_MUTATION = gql`
 mutation partner_blacklist($partner_status_id:Int,$cardcode:String!, $updated_by: String){
@@ -46,8 +47,11 @@ const PartnerStatus = (props) => {
   const partner_status = get(partnerInfo, 'partner_status.name', null)
   const is_blacklisted = (partner_status === 'Blacklisted')
   const is_deactivate = (partner_status === 'De-activate')
-  const admin = context.roles.includes(role.admin, role.partner_manager, role.partner_support)
-  const blockAccess = context.roles.includes(role.admin, role.rm, role.onboarding, role.partner_manager, role.partner_support)
+  const admin_role =[role.admin, role.partner_manager, role.partner_support]
+  const blockAccess_role = [role.admin, role.rm, role.onboarding, role.partner_manager, role.partner_support]
+  const admin = !isEmpty(admin_role) ? context.roles.some(r => admin_role.includes(r)) : false
+  const blockAccess = !isEmpty(blockAccess_role) ? context.roles.some(r => blockAccess_role.includes(r)) : false
+  
 
   const [updateBlacklist] = useMutation(
     UPDATE_PARTNER_BLACKLIST_MUTATION,

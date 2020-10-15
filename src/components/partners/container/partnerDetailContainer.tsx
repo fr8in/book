@@ -55,8 +55,10 @@ const PartnerDetailContainer = (props) => {
   const { role } = u
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
   const partner_access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
-  const admin = context.roles.includes(role.admin)
-  const admin_rm = context.roles.includes(role.admin, role.rm)
+  const admin_role = [role.admin]
+  const admin_rm_role = [role.admin, role.rm]
+  const admin = !isEmpty(admin_role) ? context.roles.some(r => admin_role.includes(r)) : false
+  const admin_rm = !isEmpty(admin_rm_role) ? context.roles.some(r => admin_rm_role.includes(r)) : false
 
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,
