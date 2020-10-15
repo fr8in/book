@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
 import get from 'lodash/get'
+import LinkComp from '../common/link'
 
 const PO_QUERY = gql`
 query po_query($id: Int!, $cus_id: Int!){
