@@ -23,7 +23,7 @@ subscription truck_comment($id: Int!){
 }
 `
 const INSERT_TRUCK_COMMENT_MUTATION = gql`
-mutation truck_comment($description:String, $topic:String, $truck_id: Int, $created_by:String ) {
+mutation insert_truck_comment($description:String, $topic:String, $truck_id: Int, $created_by:String ) {
   insert_truck_comment(objects: {description: $description, truck_id: $truck_id, topic: $topic, created_by: $created_by}) {
     returning {
       id
