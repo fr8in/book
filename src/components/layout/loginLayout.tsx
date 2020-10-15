@@ -6,8 +6,9 @@ import Loading from '../common/loading'
 const Auth = (props) => {
   if (props.authState.status === 'in') {
     Router.push('/')
-    return <Loading preloading />
-  } else if (props.authState.status !== 'out') {
+  } else if (props.authState.status === 'out') {
+    Router.push('/login')
+  } else {
     return <Loading preloading />
   }
   return (

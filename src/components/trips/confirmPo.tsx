@@ -130,9 +130,17 @@ const ConfirmPo = (props) => {
         setDisableButton(false)
         message.error(error.toString())
       },
-      onCompleted () {
+      onCompleted (data) {
+        const load_id = get(data, 'update_trip.returning[0].id', null)
+        const msg = (
+          <span>
+            <span>Load&nbsp;</span>
+            <LinkComp type='trips' data={load_id} id={load_id} />
+            <span>&nbsp;Confimed!</span>
+          </span>
+        )
         setDisableButton(false)
-        message.success('Load Created!!')
+        message.success(msg)
         setObj(initial)
         onHide()
         hideExess()

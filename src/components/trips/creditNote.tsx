@@ -12,8 +12,7 @@ subscription credit_debit_issue_type {
     active
     name
   }
-}
-`
+}`
 
 const CREATE_CREDIT_MUTATION = gql`
 mutation create_credit_track(
@@ -21,42 +20,39 @@ mutation create_credit_track(
   $created_by: String!
   $credit_debit_type_id: Int!
   $comment: String!
-$amount: Float!
-) {
-create_credit_track(
-  trip_id: $trip_id
-  created_by: $created_by
-  credit_debit_type_id: $credit_debit_type_id
-  comment: $comment
-  amount: $amount
-)
-{
-  success
-  message
-}
-}
-`
+  $amount: Float!
+  ) {
+    create_credit_track(
+      trip_id: $trip_id
+      created_by: $created_by
+      credit_debit_type_id: $credit_debit_type_id
+      comment: $comment
+      amount: $amount
+    ) {
+    success
+    message
+  }
+}`
+
 const CREATE_DEBIT_MUTATION = gql`
 mutation create_debit_track(
   $trip_id: Int!
   $created_by: String!
   $credit_debit_type_id: Int!
   $comment: String!
-$amount: Float!
-) {
-create_debit_track(
-  trip_id: $trip_id
-  created_by: $created_by
-  credit_debit_type_id: $credit_debit_type_id
-  comment: $comment
-  amount: $amount
-)
-{
-  success
-  message
-}
-}
-`
+  $amount: Float!
+  ) {
+  create_debit_track(
+    trip_id: $trip_id
+    created_by: $created_by
+    credit_debit_type_id: $credit_debit_type_id
+    comment: $comment
+    amount: $amount
+  ) {
+    success
+    message
+  }
+}`
 
 const CreditNote = (props) => {
   const { trip_id } = props
@@ -132,8 +128,7 @@ const CreditNote = (props) => {
           created_by: context.email
         }
       })
-    }
-    if (radioType === 'Debit Note') {
+    } else if (radioType === 'Debit Note') {
       setDisableButton(true)
       upadateDebitNote({
         variables: {
@@ -144,7 +139,7 @@ const CreditNote = (props) => {
           created_by: context.email
         }
       })
-    }
+    } else { return null }
   }
 
   return (
@@ -164,12 +159,14 @@ const CreditNote = (props) => {
             <Form.Item label='Amount' name='amount' rules={[{ required: true }]}>
               <Input
                 placeholder='amount'
+                type='number'
+                min={1}
                 maxLength={5}
               />
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
-            <Form.Item label='Issue Type' name='issue_type'>
+            <Form.Item label='Issue Type' name='issue_type' rules={[{ required: true }]}>
               <Select
                 id='issueType'
                 placeholder='Select Issue Type'

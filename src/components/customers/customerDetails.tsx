@@ -1,4 +1,4 @@
-import { Row, Col, Space } from 'antd'
+import { Row, Col, Space, Tooltip } from 'antd'
 import LabelWithData from '../common/labelWithData'
 import FileUploadOnly from '../common/fileUploadOnly'
 import ViewFile from '../common/viewFile'
@@ -16,7 +16,10 @@ const CustomerDetails = (props) => {
 
   const lr_files = customer_info && customer_info.customer_files && customer_info.customer_files.filter(file => file.type === 'LR')
   const pan_files = customer_info && customer_info.customer_files && customer_info.customer_files.filter(file => file.type === 'PAN')
-
+  console.log('customer_info', customer_info)
+  const cus_status = (
+    <Tooltip title={get(customer_info, 'id', '-')}>{get(customer_info, 'status.name', '-')}</Tooltip>
+  )
   return (
     <Row gutter={8}>
       <Col xs={24} sm={24} md={12}>
@@ -52,11 +55,12 @@ const CustomerDetails = (props) => {
         />
         <LabelWithData
           label='GST No'
-          data={<CustomerGst gst={customer_info.gst} cardcode={customer_info.cardcode} loading={props.loading}  edit_access={customerGstEdit}/>}
+          data={<CustomerGst gst={customer_info.gst} cardcode={customer_info.cardcode} loading={props.loading} edit_access={customerGstEdit} />}
           labelSpan={10}
           dataSpan={14}
         />
         <LabelWithData label='Virtual Account' data={customer_info.virtual_account} labelSpan={10} dataSpan={14} />
+        <LabelWithData label='Status' data={cus_status} labelSpan={10} dataSpan={14} />
       </Col>
       <Col xs={24} sm={24} md={12}>
         <LabelWithData

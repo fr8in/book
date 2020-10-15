@@ -5,7 +5,7 @@ import Trips from '../trips'
 import u from '../../../lib/util'
 
 const TRIPS_QUERY = gql`
-query trips(
+query after_delivered_trips_list(
   $offset: Int!, 
   $limit: Int!,
   $trip_statusName: [String!],
