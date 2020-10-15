@@ -27,7 +27,7 @@ mutation upsert_partner_mobile($mobile: String!, $partner_id: Int!, $is_primary:
 }`
 
 const DELETE_PARTNER_USER_MUTATION = gql`
-mutation PartnerUserDelete($id:Int!, $description: String, $topic: String, $created_by: String, $partner_id: Int!) {
+mutation partner_user_delete($id:Int!, $description: String, $topic: String, $created_by: String, $partner_id: Int!) {
   delete_partner_user( where: {id: {_eq:$id}}) {
     returning {
       id

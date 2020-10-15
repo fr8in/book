@@ -5,7 +5,7 @@ import CitySelect from '../common/citySelect'
 import get from 'lodash/get'
 
 const CUSTOMER_BRANCH_QUERY = gql`
-  query customer_branch{
+  query customer_branch_state{
     state{
       id
       name
