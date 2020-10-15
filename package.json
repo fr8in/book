@@ -6,9 +6,10 @@
   "scripts": {
     "local": "next",
     "test": "jest --watchAll --setupFiles dotenv/config",
-    "dev": "node server.js",
+    "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start -p $PORT",
+    "postinstall": "next build"
   },
   "author": "FR8",
   "dependencies": {
