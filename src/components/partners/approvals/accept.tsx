@@ -19,7 +19,7 @@ const CREDIT_APPROVAL_MUTATION = gql`
 mutation approve_credit(
   $id: Int!
   $approved_by: String!
-  $approved_amount: Float! 
+  $approved_amount: Float!
   $approval_comment: String!
   ){
   approve_credit(
@@ -70,7 +70,7 @@ const Approve = (props) => {
     })
 
   const onSubmit = (form) => {
-    if ( form.amount && (item_id.amount < parseFloat(form.amount))) {
+    if (form.amount && (item_id.amount < parseFloat(form.amount))) {
       message.error('Approval amount should be less than or equal to claim amount')
     } else if (title === 'Approved') {
       setDisableButton(true)

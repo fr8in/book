@@ -30,7 +30,6 @@ const TripLr = (props) => {
   )
 
   const handleChange = (value) => {
-    console.log(`Selected: ${value}`)
     updateLrNumber({
       variables: {
         id: trip_info.id,
@@ -92,7 +91,7 @@ const TripLr = (props) => {
               />)}
           <Checkbox
             checked={trip_info.customer_confirmation || customerConfirm}
-            disabled={customerConfirm && loaded}
+            disabled={trip_info.customer_confirmation && loaded}
             onChange={onCustomerConfirm}
           >Customer Confirmation
           </Checkbox>

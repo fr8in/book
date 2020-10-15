@@ -42,10 +42,12 @@ const Revenue = (props) => {
   }
   console.log('AnalyticsContainer Error', error)
   const analytics = get(_data, 'analytics_monthly_billing_aggregate.aggregate.sum', null)
+  const receivable = get(analytics, 'receivable', 0) / 100000
+  const revenue = get(analytics, 'revenue', 0) / 100000
 
   const stats_data = [
-    { count: get(analytics, 'receivable', 0), name: 'GMV (Bi)' },
-    { count: get(analytics, 'revenue', 0), name: 'Revenue' }
+    { count: receivable.toFixed(1), name: 'GMV (Bi)' },
+    { count: revenue.toFixed(1), name: 'Revenue' }
   ]
   return (
     <>
@@ -65,8 +67,11 @@ const Revenue = (props) => {
           footer={null}
         >
           <div className='truckStatusReport'>
-            <iframe width="100%" height="100%"
-              src="https://app.powerbi.com/view?r=eyJrIjoiZTE4NjQ0MmMtMDE4NC00MzNiLWJlYTktMzg3MGY3ZjIzZTM2IiwidCI6IjE5ZWE5NTViLTE1MzYtNGM3Ni04NDIwLTUxZmJjNGM5YzM5NyIsImMiOjEwfQ=="  ></iframe>
+            <iframe
+              width='100%'
+              height='100%'
+              src='https://app.powerbi.com/view?r=eyJrIjoiZTE4NjQ0MmMtMDE4NC00MzNiLWJlYTktMzg3MGY3ZjIzZTM2IiwidCI6IjE5ZWE5NTViLTE1MzYtNGM3Ni04NDIwLTUxZmJjNGM5YzM5NyIsImMiOjEwfQ=='
+            />
           </div>
         </Modal>}
     </>
@@ -74,4 +79,3 @@ const Revenue = (props) => {
 }
 
 export default Revenue
-
