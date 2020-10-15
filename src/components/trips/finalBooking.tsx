@@ -10,7 +10,7 @@ import userContext from '../../lib/userContaxt'
 const { Panel } = Collapse
 
 const TRIP_SAP_RECEIPT = gql`
-query customerPaymentData($trip_id: Int!) {
+query customer_payment($trip_id: Int!) {
   trip_sap_receipt(trip_id: $trip_id) {
     trip_id
     cardcode

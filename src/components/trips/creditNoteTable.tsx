@@ -7,7 +7,7 @@ import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import { gql, useSubscription } from '@apollo/client'
 
 const CREDIT_NOTE_TABLE_SUBSCRIPTION = gql`
-subscription ($id:Int){
+subscription credit_debits($id:Int){
   trip(where: {id: {_eq: $id}}) {
     credit_debits {
       id
