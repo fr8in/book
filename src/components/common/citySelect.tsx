@@ -3,7 +3,7 @@ import { useMutation, gql } from '@apollo/client'
 import get from 'lodash/get'
 
 const CITY_SEARCH = gql`
-mutation citySearchMutation($searchText:String!) 
+mutation city_search_mutation($searchText:String!) 
 {
   citySearch(searchText:$searchText) {
     id

@@ -5,7 +5,7 @@ import userContext from '../../lib/userContaxt'
 import { useState,useContext } from 'react'
 
 const ALL_EMPLOYEE = gql`
-  query allEmployee {
+  query all_employee {
     employee(where:{active: {_eq: 1}}){
     id
     email

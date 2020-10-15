@@ -75,7 +75,6 @@ const WeeklyBranchTarget = (props) => {
     const week_day_target = (Math.floor(targetAvg * n))
     return { week_day_target, ...data }
   })
-  console.log('branchTargetWeekly', branchTargetWeekly)
 
   const w1_actual = sumBy(branch, 'week1[0].trip_actual')
   const w1_target = sumBy(branch, 'week1[0].trip_target')

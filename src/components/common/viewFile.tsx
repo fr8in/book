@@ -4,7 +4,7 @@ import { EyeOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 
 const FILE_DOWNLOAD_MUTATION = gql`
-  mutation ($name:String,$folder:String) {
+  mutation file_downlod($name:String,$folder:String) {
     fileDownload(name: $name, folder: $folder) {
         url
      }

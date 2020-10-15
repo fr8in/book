@@ -26,9 +26,6 @@ query customer_trip_list($cardcode: String, $trip_status: [String!]) {
       trip_status {
         name
       }
-      # trip_pod_status{
-      #   name
-      # }
       trip_receivables_aggregate(where:{deleted_at:{_is_null:true}}) {
         aggregate {
           sum {

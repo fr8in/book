@@ -3,7 +3,7 @@ import { UploadOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 
 const FILE_UPLOAD_MUTATION = gql`
-mutation ($name: String, $type: String, $base64Str: String,$id: Int, $folder: String,$fileType: String ) {
+mutation file_upload($name: String, $type: String, $base64Str: String,$id: Int, $folder: String,$fileType: String ) {
   fileUpload(name: $name, type: $type, base64Str: $base64Str, id: $id, folder: $folder, fileType: $fileType) {
     file_path
   }
