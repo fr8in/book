@@ -1,10 +1,11 @@
-import { Row, Col, Divider, Card, Table } from 'antd'
+import { Row, Col, Divider } from 'antd'
 import LabelAndData from '../common/labelAndData'
 import LabelWithData from '../common/labelWithData'
 import Link from 'next/link'
 import EditAccess from '../common/editAccess'
 import useShowHide from '../../hooks/useShowHide'
 import CustomerPrice from '../trips/customerPrice'
+import CustomerPriceEdit from '../trips/customerPriceEdit'
 import moment from 'moment'
 import get from 'lodash/get'
 import u from '../../lib/util'
@@ -13,7 +14,7 @@ const TripInfo = (props) => {
   const { trip_info, trip_id } = props
   const { role } = u
   const price_edit_access = [role.admin, role.rm]
-  const initial = { price: false }
+  const initial = { price: false, price_test_ui: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   const trip_prices = {
     customer_price: get(trip_info, 'customer_price', 0),
@@ -27,47 +28,9 @@ const TripInfo = (props) => {
     ton: get(trip_info, 'ton', 0),
     is_price_per_ton: get(trip_info, 'is_price_per_ton', 0),
     price_per_ton: get(trip_info, 'price_per_ton', 0),
-    customer_advance_percentage: get(trip_info, 'customer.customer_advance_percentage.name', null),
-    partner_advance_percentage: get(trip_info, 'partner.partner_advance_percentage.name', null)
+    customer_advance_percentage: parseInt(get(trip_info, 'customer.customer_advance_percentage.name', 90)),
+    partner_advance_percentage: parseInt(get(trip_info, 'partner.partner_advance_percentage.name', 70))
   }
-  const customer_payment = [
-    {
-      id: 1,
-      to: 'Partner',
-      total: trip_prices.cash + trip_prices.to_pay,
-      advance: (trip_prices.cash || 0),
-      balance: (trip_prices.to_pay || 0)
-    },
-    {
-      id: 2,
-      to: 'FR8',
-      total: trip_prices.customer_price - (trip_prices.cash + trip_prices.to_pay),
-      advance: (trip_prices.bank || 0),
-      balance: (trip_prices.customer_price - (trip_prices.cash + trip_prices.to_pay)) - trip_prices.bank
-    }
-  ]
-  const column = [
-    {
-      title: 'Customer Payment To',
-      dataIndex: 'to',
-      width: '30%'
-    },
-    {
-      title: 'Total',
-      dataIndex: 'total',
-      width: '24%'
-    },
-    {
-      title: 'Advance',
-      dataIndex: 'advance',
-      width: '23%'
-    },
-    {
-      title: 'Balance',
-      dataIndex: 'balance',
-      width: '23%'
-    }
-  ]
   const trip_status_id = get(trip_info, 'trip_status.id', null)
   const order_date = get(trip_info, 'created_at', null)
   const po_date = get(trip_info, 'po_date', null)
@@ -132,8 +95,9 @@ const TripInfo = (props) => {
               data={
                 <p className='mb0'>
                   {get(trip_info, 'customer_price', null)}{' '}
-                  {(trip_status_id < 12 && trip_status_id !== 7 && trip_status_id !== 1) && // Before invoice
-                    <EditAccess edit_access={price_edit_access} onEdit={() => onShow('price')} />}
+                  {(trip_status_id < 12 && trip_status_id !== 7 && trip_status_id !== 1) &&
+                    <EditAccess edit_access={price_edit_access} onEdit={() => onShow('price')} />}{' '}
+                  <EditAccess edit_access={price_edit_access} onEdit={() => onShow('price_test_ui')} />
                 </p>
               }
               labelSpan={10}
@@ -155,19 +119,18 @@ const TripInfo = (props) => {
             <LabelWithData label='POD Dispatched at' data={pod_dispatched ? moment(pod_dispatched).format('DD-MMM-YY hh:mm') : '-'} labelSpan={10} />
           </Col>
         </Row>
-        <Card className='card-body-0 mt5'>
-          <Table
-            columns={column}
-            dataSource={customer_payment}
-            size='small'
-            pagination={false}
-            rowKey={(record) => record.id}
-          />
-        </Card>
       </Col>
       {visible.price &&
         <CustomerPrice
           visible={visible.price}
+          onHide={onHide}
+          trip_price={trip_prices || {}}
+          trip_id={trip_id}
+          loaded={trip_info.loaded === 'Yes'}
+        />}
+      {visible.price_test_ui &&
+        <CustomerPriceEdit
+          visible={visible.price_test_ui}
           onHide={onHide}
           trip_price={trip_prices || {}}
           trip_id={trip_id}

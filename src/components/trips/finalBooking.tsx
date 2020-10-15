@@ -32,22 +32,22 @@ query customer_payment($trip_id: Int!) {
 const CUSTOMER_FINAL = gql`
 mutation customer_final_payment(
   $trip_id: Int!
-  $wallet: Float!
-  $docentry: Int!
-  $cash: Float!
-  $rebate: Float!
+  $wallet: Float
+  $docentry: Int
+  $cash: Float
+  $rebate: Float
   $created_by: String!, 
-  $shortage_write_off: Float!
-  $pod_delay_missing_write_off: Float!
-  $late_delivery_write_off: Float!
-  $tds_filed_by_partner: Float!
-  $loading_charge_write_off: Float!
-  $unloading_charge_write_off: Float!
-  $mamul_write_off: Float!
-  $price_difference_write_off: Float!
-  $source_halting_write_off: Float!
-  $destination_halting_write_off: Float!
-  $tds_filed_by_fr8: Float!
+  $shortage_write_off: Float
+  $pod_delay_missing_write_off: Float
+  $late_delivery_write_off: Float
+  $tds_filed_by_partner: Float
+  $loading_charge_write_off: Float
+  $unloading_charge_write_off: Float
+  $mamul_write_off: Float
+  $price_difference_write_off: Float
+  $source_halting_write_off: Float
+  $destination_halting_write_off: Float
+  $tds_filed_by_fr8: Float
   $header: String
   $comment: String!
 ) {

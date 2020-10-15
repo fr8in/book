@@ -27,7 +27,7 @@ query gloabl_filter($now: timestamp, $regions:[Int!], $branches:[Int!], $cities:
     id
     name
   }
-  region(where: {id: {_in: $regions}}) {
+  region {
     id
     name
     branches(where:{_and: [ {region_id:{_in:$regions}} {id:{_in:$branches}}]}) {
