@@ -52,7 +52,8 @@ const CustomerPriceEdit = (props) => {
   const [disableButton, setDisableButton] = useState(false)
 
   const initial = {
-    cus_advance: trip_price.bank || ((trip_price.customer_price - trip_price.mamul) * customer_advance_percentage / 100)
+    cus_advance: trip_price.bank || ((trip_price.customer_price - trip_price.mamul) * customer_advance_percentage / 100),
+    part_advance: ((trip_price.partner_price) * partner_advance_percentage / 100)
   }
   const [price, setPrice] = useState(initial)
 
@@ -100,68 +101,96 @@ const CustomerPriceEdit = (props) => {
     const { value } = e.target
     const ton = form.getFieldValue('ton')
     const cus_price = value * (ton || 1)
+    const part_price = cus_price - form.getFieldValue('mamul')
     const cus_adv = (cus_price - form.getFieldValue('mamul')) * customer_advance_percentage / 100
+    const part_adv = (cus_price - form.getFieldValue('mamul')) * partner_advance_percentage / 100
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
     const fr8_total = cus_price - (parseFloat(form.getFieldValue('p_total')))
+    const fr8_part_total = cus_price - (parseFloat(form.getFieldValue('p_total'))) - form.getFieldValue('mamul')
+    const wallet = part_adv - (parseFloat(form.getFieldValue('p_total')))
+    const fr8_part_balance = (fr8_total < 0 ? 0 : fr8_total) - form.getFieldValue('mamul') - (wallet < 0 ? 0 : wallet)
 
     form.setFieldsValue({
       customer_price: cus_price,
-      partner_price: cus_price - form.getFieldValue('mamul'),
-      f_total: fr8_total < 0 ? 0 : fr8_total,
-      fp_total: (fr8_total < 0 ? 0 : fr8_total) - form.getFieldValue('mamul'),
+      partner_price: part_price < 0 ? 0 : part_price,
+      total: fr8_total < 0 ? 0 : fr8_total,
       bank: loaded ? trip_price.bank : (bank > 0 ? bank : 0),
-      balance: (fr8_total < 0 ? 0 : fr8_total) - (loaded ? trip_price.bank : (bank > 0 ? bank : 0))
+      balance: (fr8_total < 0 ? 0 : fr8_total) - (loaded ? trip_price.bank : (bank > 0 ? bank : 0)),
+      fp_total: (fr8_part_total < 0 ? 0 : fr8_part_total),
+      wallet: (wallet < 0 ? 0 : wallet),
+      fp_balance: fr8_part_balance < 0 ? 0 : fr8_part_balance
     })
-    setPrice({ ...price, cus_advance: cus_adv })
+    setPrice({ ...price, cus_advance: cus_adv, part_advance: part_adv })
   }
   const onTonChange = (e) => {
     const { value } = e.target
     const price_per_ton = form.getFieldValue('price_per_ton')
     const cus_price = value * (price_per_ton || 1)
+    const part_price = cus_price - form.getFieldValue('mamul')
     const cus_adv = (cus_price - form.getFieldValue('mamul')) * customer_advance_percentage / 100
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
+    const part_adv = (cus_price - form.getFieldValue('mamul')) * partner_advance_percentage / 100
+    const wallet = part_adv - (parseFloat(form.getFieldValue('p_total')))
     const fr8_total = cus_price - (parseFloat(form.getFieldValue('p_total')))
+    const fr8_part_total = cus_price - (parseFloat(form.getFieldValue('p_total'))) - -form.getFieldValue('mamul')
+    const fr8_part_balance = (fr8_total < 0 ? 0 : fr8_total) - form.getFieldValue('mamul') - (wallet < 0 ? 0 : wallet)
 
     form.setFieldsValue({
       customer_price: cus_price,
-      f_total: fr8_total < 0 ? 0 : fr8_total,
-      fp_total: (fr8_total < 0 ? 0 : fr8_total) - form.getFieldValue('mamul'),
-      partner_price: cus_price - form.getFieldValue('mamul'),
+      partner_price: part_price < 0 ? 0 : part_price,
+      total: fr8_total < 0 ? 0 : fr8_total,
       bank: loaded ? trip_price.bank : (bank > 0 ? bank : 0),
-      balance: (fr8_total < 0 ? 0 : fr8_total) - (loaded ? trip_price.bank : (bank > 0 ? bank : 0))
+      balance: (fr8_total < 0 ? 0 : fr8_total) - (loaded ? trip_price.bank : (bank > 0 ? bank : 0)),
+      fp_total: fr8_part_total < 0 ? 0 : fr8_part_total,
+      wallet: (wallet < 0 ? 0 : wallet),
+      fp_balance: fr8_part_balance < 0 ? 0 : fr8_part_balance
     })
-    setPrice({ ...price, cus_advance: cus_adv })
+    setPrice({ ...price, cus_advance: cus_adv, part_advance: part_adv })
   }
   const onCustomerPriceChange = (e) => {
     const { value } = e.target
     const netPrice = value - form.getFieldValue('mamul')
     const cus_adv = netPrice * customer_advance_percentage / 100
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
+    const part_adv = netPrice * partner_advance_percentage / 100
+    const wallet = part_adv - (parseFloat(form.getFieldValue('p_total')))
     const fr8_total = value - (parseFloat(form.getFieldValue('p_total')))
+    const fr8_part_total = value - (parseFloat(form.getFieldValue('p_total'))) - form.getFieldValue('mamul')
+    const fr8_part_balance = (fr8_total < 0 ? 0 : fr8_total) - form.getFieldValue('mamul') - (wallet < 0 ? 0 : wallet)
 
     form.setFieldsValue({
       customer_price: value,
-      f_total: fr8_total < 0 ? 0 : fr8_total,
-      fp_total: (fr8_total < 0 ? 0 : fr8_total) - form.getFieldValue('mamul'),
-      partner_price: netPrice,
+      partner_price: netPrice < 0 ? 0 : netPrice,
+      total: fr8_total < 0 ? 0 : fr8_total,
       bank: loaded ? trip_price.bank : (bank > 0 ? bank : 0),
-      balance: (fr8_total < 0 ? 0 : fr8_total) - (loaded ? trip_price.bank : (bank > 0 ? bank : 0))
+      balance: (fr8_total < 0 ? 0 : fr8_total) - (loaded ? trip_price.bank : (bank > 0 ? bank : 0)),
+      fp_total: fr8_part_total < 0 ? 0 : fr8_part_total,
+      wallet: (wallet < 0 ? 0 : wallet),
+      fp_balance: fr8_part_balance < 0 ? 0 : fr8_part_balance
     })
-    setPrice({ ...price, cus_advance: cus_adv })
+    setPrice({ ...price, cus_advance: cus_adv, part_advance: part_adv })
   }
   const onMamulChange = (e) => {
     const { value } = e.target
     const netPrice = form.getFieldValue('customer_price') - value
     const cus_adv = netPrice * customer_advance_percentage / 100
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
+    const part_adv = netPrice * partner_advance_percentage / 100
+    const wallet = part_adv - (parseFloat(form.getFieldValue('p_total')))
+    const fr8_total = form.getFieldValue('customer_price') - (parseFloat(form.getFieldValue('p_total')))
+    const fr8_part_total = form.getFieldValue('total') - (value ? parseFloat(value) : 0)
+    const fr8_part_balance = form.getFieldValue('total') - (value ? parseFloat(value) : 0) - (wallet < 0 ? 0 : wallet)
 
     form.setFieldsValue({
-      partner_price: netPrice,
+      partner_price: netPrice < 0 ? 0 : netPrice,
+      total: fr8_total < 0 ? 0 : fr8_total,
       bank: loaded ? trip_price.bank : (bank > 0 ? bank : 0),
-      fp_total: form.getFieldValue('f_total') - (value ? parseFloat(value) : 0),
-      balance: form.getFieldValue('f_total') - (loaded ? trip_price.bank : (bank > 0 ? bank : 0))
+      balance: form.getFieldValue('total') - (loaded ? trip_price.bank : (bank > 0 ? bank : 0)),
+      fp_total: fr8_part_total < 0 ? 0 : fr8_part_total,
+      wallet: (wallet < 0 ? 0 : wallet),
+      fp_balance: fr8_part_balance < 0 ? 0 : fr8_part_balance
     })
-    setPrice({ ...price, cus_advance: cus_adv })
+    setPrice({ ...price, cus_advance: cus_adv, part_advance: part_adv })
   }
   const onCashChange = (e) => {
     const { value } = e.target
@@ -169,16 +198,24 @@ const CustomerPriceEdit = (props) => {
       to_pay: (parseFloat(form.getFieldValue('p_total')) - (value ? parseFloat(value) : 0))
     })
   }
-  console.log('price.cus_advance', price.cus_advance)
+
   const onTotalChange = (e) => {
     const { value } = e.target
     const bank = price.cus_advance - ((value ? parseFloat(value) : 0))
+    const wallet = price.part_advance - ((value ? parseFloat(value) : 0))
+    const fr8_total = (parseFloat(form.getFieldValue('customer_price')) - (value ? parseFloat(value) : 0))
+    const fpart_total = ((parseFloat(form.getFieldValue('customer_price')) - form.getFieldValue('mamul')) - (value ? parseFloat(value) : 0))
+    const fr8_balance = (parseFloat(form.getFieldValue('customer_price')) - (value ? parseFloat(value) : 0)) - (bank > 0 ? bank : 0)
+
     form.setFieldsValue({
       bank: bank > 0 ? bank : 0,
+      wallet: (wallet < 0 ? 0 : wallet),
       to_pay: (value ? parseFloat(value) : 0),
-      f_total: (parseFloat(form.getFieldValue('customer_price')) - (value ? parseFloat(value) : 0)),
-      cash: 0,
-      balance: (parseFloat(form.getFieldValue('customer_price')) - (value ? parseFloat(value) : 0)) - (bank > 0 ? bank : 0)
+      total: fr8_total < 0 ? 0 : fr8_total,
+      fp_total: fpart_total < 0 ? 0 : fpart_total,
+      balance: fr8_balance < 0 ? 0 : fr8_balance,
+      fp_balance: fpart_total < 0 ? 0 : fpart_total - (wallet < 0 ? 0 : wallet),
+      cash: 0
     })
   }
   const fr8_partner_advance = ((trip_price.partner_price * trip_price.partner_advance_percentage) / 100) - (trip_price.cash - trip_price.to_pay)
@@ -267,7 +304,7 @@ const CustomerPriceEdit = (props) => {
         <Divider />
         <Form.Item
           label='Customer To FR8'
-          name='f_total'
+          name='total'
           initialValue={(trip_price.customer_price - (trip_price.cash + trip_price.to_pay)) || 0}
         >
           <Input placeholder='Total' disabled size='small' type='number' />
@@ -308,7 +345,7 @@ const CustomerPriceEdit = (props) => {
         </Form.Item>
         <Form.Item
           label={<span>Balance <span>Including Commission</span></span>}
-          name='wallet_balance'
+          name='fp_balance'
           initialValue={(trip_price.partner_price - (trip_price.cash + trip_price.to_pay + fr8_partner_advance)) || 0}
           className='indent'
         >
