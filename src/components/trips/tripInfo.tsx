@@ -31,7 +31,7 @@ const TripInfo = (props) => {
     partner_advance_percentage: parseInt(get(trip_info, 'partner.partner_advance_percentage.name', 70)),
     system_mamul: parseInt(get(trip_info, 'customer.system_mamul', 90))
   }
-  console.log('trip_info', trip_info)
+
   const trip_status_id = get(trip_info, 'trip_status.id', null)
   const order_date = get(trip_info, 'created_at', null)
   const po_date = get(trip_info, 'po_date', null)

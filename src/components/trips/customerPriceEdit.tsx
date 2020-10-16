@@ -3,6 +3,7 @@ import { gql, useMutation, useSubscription } from '@apollo/client'
 import { useState, useContext } from 'react'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
+import u from '../../lib/util'
 
 const TRIP_MAX_PRICE = gql`
 subscription config{
@@ -95,8 +96,10 @@ const CustomerPriceEdit = (props) => {
     const comment = `${form.comment}, Customer Price: ${trip_price.customer_price}/${form.customer_price}, Partner Total: ${old_total}/${new_total}, Partner Advance: ${trip_price.cash}/${form.cash}, Partner Balance: ${trip_price.to_pay}/${form.to_pay}, FR8 Advance: ${trip_price.bank}/${form.bank}`
     if (form.customer_price > trip_max_price) {
       message.error(`Trip max price limit ₹${trip_max_price}`)
-    } else if (form.customer_price <= 0 || form.partner_price <= 0) {
+    } else if (form.customer_price <= 0) {
       message.error('Enter valid trip price')
+    } else if (parseInt(form.p_total) < parseInt(form.cash)) {
+      message.error('Customer to Partner, Total and cash is miss matching')
     } else if (parseInt(form.mamul) < trip_price.system_mamul) {
       message.error(`Mamul Should be greater then ₹${trip_price.system_mamul}`)
     } else {
@@ -219,8 +222,9 @@ const CustomerPriceEdit = (props) => {
   }
   const onCashChange = (e) => {
     const { value } = e.target
+    const to_pay = (parseFloat(form.getFieldValue('p_total')) - (value ? parseFloat(value) : 0))
     form.setFieldsValue({
-      to_pay: (parseFloat(form.getFieldValue('p_total')) - (value ? parseFloat(value) : 0))
+      to_pay: to_pay < 0 ? 0 : to_pay
     })
   }
 
@@ -276,6 +280,7 @@ const CustomerPriceEdit = (props) => {
                 type='number'
                 min={0}
                 maxLength={4}
+                onInput={u.handleLengthCheck}
               />
             </Form.Item>
             <Form.Item
@@ -284,7 +289,16 @@ const CustomerPriceEdit = (props) => {
               rules={[{ required: true, message: 'No.of Ton is required field!' }]}
               initialValue={trip_price.ton || 0}
             >
-              <Input placeholder='Ton' disabled={!authorised} onChange={onTonChange} size='small' type='number' />
+              <Input
+                placeholder='Ton'
+                disabled={!authorised}
+                onChange={onTonChange}
+                size='small'
+                type='number'
+                min={0}
+                maxLength={2}
+                onInput={u.handleLengthCheck}
+              />
             </Form.Item>
           </div>) : null}
         <Form.Item
@@ -293,14 +307,32 @@ const CustomerPriceEdit = (props) => {
           rules={[{ required: true, message: 'Customer Price is required field!' }]}
           initialValue={trip_price.customer_price}
         >
-          <Input placeholder='Customer Price' disabled={trip_price.is_price_per_ton || !authorised} onChange={onCustomerPriceChange} size='small' type='number' />
+          <Input
+            placeholder='Customer Price'
+            disabled={trip_price.is_price_per_ton || !authorised}
+            onChange={onCustomerPriceChange}
+            size='small'
+            type='number'
+            min={0}
+            maxLength={6}
+            onInput={u.handleLengthCheck}
+          />
         </Form.Item>
         <Form.Item
           label='Mamul Charge'
           name='mamul'
           initialValue={trip_price.mamul || 0}
         >
-          <Input placeholder='Mamul' disabled={!authorised} onChange={onMamulChange} size='small' type='number' />
+          <Input
+            placeholder='Mamul'
+            disabled={!authorised}
+            onChange={onMamulChange}
+            size='small'
+            type='number'
+            min={0}
+            maxLength={5}
+            onInput={u.handleLengthCheck}
+          />
         </Form.Item>
         <Form.Item
           label='Partner Price'
@@ -316,7 +348,16 @@ const CustomerPriceEdit = (props) => {
           name='p_total'
           initialValue={(parseInt(trip_price.to_pay) + parseInt(trip_price.cash)) || 0}
         >
-          <Input placeholder='Total' onChange={onTotalChange} disabled={loaded || !authorised} size='small' type='number' />
+          <Input
+            placeholder='Total'
+            onChange={onTotalChange}
+            disabled={loaded || !authorised}
+            size='small'
+            type='number'
+            min={0}
+            maxLength={6}
+            onInput={u.handleLengthCheck}
+          />
         </Form.Item>
         <Form.Item
           label={<span>Advance <span>Cash/Bank/Diesel</span></span>}
@@ -325,7 +366,16 @@ const CustomerPriceEdit = (props) => {
           initialValue={trip_price.cash || 0}
           className='indent'
         >
-          <Input placeholder='Cash' onChange={onCashChange} disabled={loaded || !authorised} size='small' type='number' />
+          <Input
+            placeholder='Cash'
+            onChange={onCashChange}
+            disabled={loaded || !authorised}
+            size='small'
+            type='number'
+            min={0}
+            maxLength={6}
+            onInput={u.handleLengthCheck}
+          />
         </Form.Item>
         <Form.Item
           label={<span>Balance <span>To-pay</span></span>}

@@ -173,8 +173,13 @@ const FinalBooking = (props) => {
   }
 
   const onFinalBooking = (form) => {
-    if ((floatVal(form.cash) <= 0) && amount <= 0) {
-      message.error('Valid Cash or Wallet amount required!')
+    const wallet_amount = (!isEmpty(selectedRow) && amount) ? floatVal(amount) : 0
+    const rebate = form.rebate ? floatVal(form.rebate) : 0
+    const diff_wallet = wallet_amount - rebate
+    if (floatVal(form.cash) < 0) {
+      message.error('Enter valid cash!')
+    } else if (diff_wallet < 0) {
+      message.error('(Wallet - Rebate) should be positive value!')
     } else if (calc.total > pending_data.balance) {
       message.error('Maximum booking amount is ' + pending_data.balance)
     } else {
@@ -182,7 +187,7 @@ const FinalBooking = (props) => {
       customer_final_payment({
         variables: {
           trip_id: parseInt(trip_id),
-          wallet: (!isEmpty(selectedRow) && amount) ? floatVal(amount) : null,
+          wallet: diff_wallet,
           docentry: (!isEmpty(selectedRow) && amount) ? selectedRow[0].docentry : null,
           cash: floatVal(form.cash),
           rebate: floatVal(form.rebate),

@@ -23,5 +23,9 @@ export default {
     billing: 'billing',
     user: 'user'
   },
-  trip_price_limit: 200000
+  handleLengthCheck: (e) => {
+    if (e.target.value.length > e.target.maxLength) {
+      e.target.value = e.target.value.slice(0, e.target.maxLength)
+    }
+  }
 }
