@@ -1,8 +1,15 @@
 import { Modal, Button, Row, Col, Form, Input, message, Divider } from 'antd'
-import { gql, useMutation } from '@apollo/client'
+import { gql, useMutation, useSubscription } from '@apollo/client'
 import { useState, useContext } from 'react'
 import userContext from '../../lib/userContaxt'
-import u from '../../lib/util'
+import get from 'lodash/get'
+
+const TRIP_MAX_PRICE = gql`
+subscription config{
+  config(where:{key:{_eq:"trip"}}){
+    value
+  }
+}`
 
 const UPDATE_TRIP_PRICE = gql`
 mutation update_trip_price(
@@ -53,10 +60,12 @@ const CustomerPriceEdit = (props) => {
   const [disableButton, setDisableButton] = useState(false)
 
   const initial = {
-    cus_advance: trip_price.bank || ((trip_price.customer_price - trip_price.mamul) * customer_advance_percentage / 100),
+    cus_advance: trip_price.bank || ((trip_price.customer_price) * customer_advance_percentage / 100),
     part_advance: ((trip_price.partner_price) * partner_advance_percentage / 100)
   }
   const [price, setPrice] = useState(initial)
+
+  const { loading, data, error } = useSubscription(TRIP_MAX_PRICE)
 
   const [update_trip_price] = useMutation(
     UPDATE_TRIP_PRICE,
@@ -72,13 +81,22 @@ const CustomerPriceEdit = (props) => {
       }
     }
   )
+  console.log('CustomerPriceEdit Error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+
+  const trip_max_price = get(_data, 'config[0].value.trip_max_price', null) // max limit default may change
 
   const onCustomerPriceSubmit = (form) => {
     const old_total = parseFloat(trip_price.cash) + parseFloat(trip_price.to_pay)
     const new_total = parseFloat(form.cash) + parseFloat(form.to_pay)
     const comment = `${form.comment}, Customer Price: ${trip_price.customer_price}/${form.customer_price}, Partner Total: ${old_total}/${new_total}, Partner Advance: ${trip_price.cash}/${form.cash}, Partner Balance: ${trip_price.to_pay}/${form.to_pay}, FR8 Advance: ${trip_price.bank}/${form.bank}`
-    if (form.customer_price > u.trip_price_limit || form.customer_price <= 0) {
-      message.error('Enter valid customer price')
+    if (form.customer_price > trip_max_price) {
+      message.error(`Trip max price limit ₹${trip_max_price}`)
+    } else if (form.customer_price <= 0 || form.partner_price <= 0) {
+      message.error('Enter valid trip price')
     } else if (parseInt(form.mamul) < trip_price.system_mamul) {
       message.error(`Mamul Should be greater then ₹${trip_price.system_mamul}`)
     } else {
@@ -109,7 +127,7 @@ const CustomerPriceEdit = (props) => {
     const ton = form.getFieldValue('ton')
     const cus_price = value * (ton || 1)
     const part_price = cus_price - form.getFieldValue('mamul')
-    const cus_adv = (cus_price - form.getFieldValue('mamul')) * customer_advance_percentage / 100
+    const cus_adv = cus_price * customer_advance_percentage / 100
     const part_adv = (cus_price - form.getFieldValue('mamul')) * partner_advance_percentage / 100
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
     const fr8_total = cus_price - (parseFloat(form.getFieldValue('p_total')))
@@ -134,7 +152,7 @@ const CustomerPriceEdit = (props) => {
     const price_per_ton = form.getFieldValue('price_per_ton')
     const cus_price = value * (price_per_ton || 1)
     const part_price = cus_price - form.getFieldValue('mamul')
-    const cus_adv = (cus_price - form.getFieldValue('mamul')) * customer_advance_percentage / 100
+    const cus_adv = cus_price * customer_advance_percentage / 100
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
     const part_adv = (cus_price - form.getFieldValue('mamul')) * partner_advance_percentage / 100
     const wallet = part_adv - (parseFloat(form.getFieldValue('p_total')))
@@ -156,21 +174,21 @@ const CustomerPriceEdit = (props) => {
   }
   const onCustomerPriceChange = (e) => {
     const { value } = e.target
-    const netPrice = value - form.getFieldValue('mamul')
-    const cus_adv = netPrice * customer_advance_percentage / 100
+    const netPrice = (value ? parseFloat(value) : 0) - form.getFieldValue('mamul')
+    const cus_adv = (value ? parseFloat(value) : 0) * customer_advance_percentage / 100
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
     const part_adv = netPrice * partner_advance_percentage / 100
     const wallet = part_adv - (parseFloat(form.getFieldValue('p_total')))
     const fr8_total = value - (parseFloat(form.getFieldValue('p_total')))
+    const fr8_balance = (fr8_total < 0 ? 0 : fr8_total) - (loaded ? trip_price.bank : (bank > 0 ? bank : 0))
     const fr8_part_total = value - (parseFloat(form.getFieldValue('p_total'))) - form.getFieldValue('mamul')
     const fr8_part_balance = (fr8_total < 0 ? 0 : fr8_total) - form.getFieldValue('mamul') - (wallet < 0 ? 0 : wallet)
 
     form.setFieldsValue({
-      customer_price: value,
       partner_price: netPrice < 0 ? 0 : netPrice,
       total: fr8_total < 0 ? 0 : fr8_total,
-      bank: loaded ? trip_price.bank : (bank > 0 ? bank : 0),
-      balance: (fr8_total < 0 ? 0 : fr8_total) - (loaded ? trip_price.bank : (bank > 0 ? bank : 0)),
+      bank: loaded ? trip_price.bank : (bank < 0 ? 0 : bank),
+      balance: fr8_balance < 0 ? 0 : fr8_balance,
       fp_total: fr8_part_total < 0 ? 0 : fr8_part_total,
       wallet: (wallet < 0 ? 0 : wallet),
       fp_balance: fr8_part_balance < 0 ? 0 : fr8_part_balance
@@ -180,7 +198,7 @@ const CustomerPriceEdit = (props) => {
   const onMamulChange = (e) => {
     const { value } = e.target
     const netPrice = form.getFieldValue('customer_price') - value
-    const cus_adv = netPrice * customer_advance_percentage / 100
+    const cus_adv = form.getFieldValue('customer_price') * customer_advance_percentage / 100
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
     const part_adv = netPrice * partner_advance_percentage / 100
     const wallet = part_adv - (parseFloat(form.getFieldValue('p_total')))
