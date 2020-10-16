@@ -128,7 +128,7 @@ const CustomerPriceEdit = (props) => {
     const cus_price = value * (ton || 1)
     const part_price = cus_price - form.getFieldValue('mamul')
     const cus_adv = cus_price * customer_advance_percentage / 100
-    const part_adv = (cus_price - form.getFieldValue('mamul')) * partner_advance_percentage / 100
+    const part_adv = loaded ? price.part_advance : (cus_price - form.getFieldValue('mamul')) * partner_advance_percentage / 100
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
     const fr8_total = cus_price - (parseFloat(form.getFieldValue('p_total')))
     const fr8_part_total = cus_price - (parseFloat(form.getFieldValue('p_total'))) - form.getFieldValue('mamul')
@@ -154,7 +154,7 @@ const CustomerPriceEdit = (props) => {
     const part_price = cus_price - form.getFieldValue('mamul')
     const cus_adv = cus_price * customer_advance_percentage / 100
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
-    const part_adv = (cus_price - form.getFieldValue('mamul')) * partner_advance_percentage / 100
+    const part_adv = loaded ? price.part_advance : (cus_price - form.getFieldValue('mamul')) * partner_advance_percentage / 100
     const wallet = part_adv - (parseFloat(form.getFieldValue('p_total')))
     const fr8_total = cus_price - (parseFloat(form.getFieldValue('p_total')))
     const fr8_part_total = cus_price - (parseFloat(form.getFieldValue('p_total'))) - -form.getFieldValue('mamul')
@@ -177,7 +177,7 @@ const CustomerPriceEdit = (props) => {
     const netPrice = (value ? parseFloat(value) : 0) - form.getFieldValue('mamul')
     const cus_adv = (value ? parseFloat(value) : 0) * customer_advance_percentage / 100
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
-    const part_adv = netPrice * partner_advance_percentage / 100
+    const part_adv = loaded ? price.part_advance : netPrice * partner_advance_percentage / 100
     const wallet = part_adv - (parseFloat(form.getFieldValue('p_total')))
     const fr8_total = value - (parseFloat(form.getFieldValue('p_total')))
     const fr8_balance = (fr8_total < 0 ? 0 : fr8_total) - (loaded ? trip_price.bank : (bank > 0 ? bank : 0))
@@ -200,7 +200,7 @@ const CustomerPriceEdit = (props) => {
     const netPrice = form.getFieldValue('customer_price') - value
     const cus_adv = form.getFieldValue('customer_price') * customer_advance_percentage / 100
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
-    const part_adv = netPrice * partner_advance_percentage / 100
+    const part_adv = loaded ? price.part_advance : netPrice * partner_advance_percentage / 100
     const wallet = part_adv - (parseFloat(form.getFieldValue('p_total')))
     const fr8_total = form.getFieldValue('customer_price') - (parseFloat(form.getFieldValue('p_total')))
     const fr8_part_total = form.getFieldValue('total') - (value ? parseFloat(value) : 0)
