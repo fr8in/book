@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { gql, useQuery } from '@apollo/client'
 
 const EMP_LIST = gql`
-query employee_list{
+query all_employee{
   employee(where:{active: {_eq: 1}}){
     id
     email

@@ -3,7 +3,7 @@ import { message } from 'antd'
 import EditableCell from '../common/editableCell'
 import u from '../../lib/util'
 const UPDATE_EMPLOYEE_NO_MUTATION = gql`
-mutation insert_branch($id:Int!, $mobile:String) {
+mutation update_employee_number($id:Int!, $mobile:String) {
     update_employee_by_pk(pk_columns:{id:$id}, _set:{mobileno:$mobile}){
       id
     }
