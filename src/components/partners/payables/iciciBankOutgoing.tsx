@@ -9,7 +9,7 @@ import moment from 'moment'
 import Refno from './refNum'
 
 const pendingTransaction = gql`
-query pendingTransaction {
+query pending_transaction {
   pending_transaction {
     docNum
     docDate
@@ -26,7 +26,7 @@ query pendingTransaction {
 }`
 
 const Execute_Transfer = gql`
-mutation executeTransfer($doc_num:String!,$updated_by:String!) {
+mutation execute_transfer($doc_num:String!,$updated_by:String!) {
   execute_transfer(doc_num:$doc_num, updated_by:$updated_by) {
     description
     status

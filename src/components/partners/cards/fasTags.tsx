@@ -16,7 +16,7 @@ import u from '../../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 
 const FASTAG_QUERY = gql`
-query FastagsByPartner($partner_id: Int!) {
+query fastags_by_partner($partner_id: Int!) {
   partner(where: {id: {_eq: $partner_id}}) {
     fastags {
       mobile

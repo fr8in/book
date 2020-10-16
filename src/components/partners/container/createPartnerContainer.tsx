@@ -10,7 +10,7 @@ import isEmpty from 'lodash/isEmpty'
 import { useRouter } from 'next/router'
 
 const PARTNERS_SUBSCRIPTION = gql`
-  query create_partner{
+  query advance_state_emp{
     employee(where:{active: {_eq: 1}}){
       id
       email
@@ -35,7 +35,7 @@ query ifsc_validation($ifsc: String!){
 }`
 
 const INSERT_PARTNER_MUTATION = gql`
-mutation create_partner(
+mutation create_partner_mutation(
   $name: String, $email: String, $cibil: String, $address: jsonb,
   $mobile: String, $pan_no: String, $contact_name: String, 
   $partner_status_id:Int,$city_id:Int,

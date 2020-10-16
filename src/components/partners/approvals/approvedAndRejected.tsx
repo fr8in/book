@@ -9,7 +9,7 @@ import moment from 'moment'
 import u from '../../../lib/util'
 
 const APPROVED_REJECTED_QUERY = gql`
-query trip_credit_debit(
+query trip_credit_debit_approval(
   $status: [String!], 
   $offset: Int, 
   $limit: Int, 

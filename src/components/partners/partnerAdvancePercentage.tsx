@@ -14,7 +14,7 @@ const PARTNER_ADVANCE_PERCENTAGE_SUBSCRIPTION = gql`
 }
 `
 const UPDATE_PARTNER_ADVANCE_PERCENTAGE_MUTATION = gql`
-mutation partner_advance_percentage($partner_advance_percentage_id:Int,$cardcode:String,,$updated_by: String!) {
+mutation partner_advance_percentage_mutation($partner_advance_percentage_id:Int,$cardcode:String,,$updated_by: String!) {
   update_partner(_set:{partner_advance_percentage_id:$partner_advance_percentage_id,updated_by:$updated_by }, where:{cardcode:{_eq:$cardcode}}){
     returning{
       id
