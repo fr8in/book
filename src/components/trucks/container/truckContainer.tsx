@@ -7,7 +7,7 @@ import get from 'lodash/get'
 import { gql, useQuery, useSubscription } from '@apollo/client'
 
 const TRUCKS_SUBSCRIPTION = gql`
-subscription trucks(
+subscription trucks_list(
   $offset: Int!
   $limit: Int!
   $trip_status_id: [Int!]

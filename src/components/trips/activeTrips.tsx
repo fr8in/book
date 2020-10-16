@@ -214,7 +214,6 @@ const Trips = (props) => {
                       icon={<CheckOutlined />}
                       type='primary'
                       size='small'
-                      className='btn-success'
                       shape='circle'
                       disabled={is_execption && (expection_dates < todayDate || expection_dates === null)}
                     />

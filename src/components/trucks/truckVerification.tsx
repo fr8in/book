@@ -14,7 +14,7 @@ import LinkComp from '../common/link'
 import isEmpty from 'lodash/isEmpty'
 
 const TRUCKS_QUERY = gql`
-query trucks_{
+query trucks_type_status{
   truck_type {
     id
     name
