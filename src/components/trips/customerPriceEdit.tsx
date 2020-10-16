@@ -2,6 +2,7 @@ import { Modal, Button, Row, Col, Form, Input, message, Divider } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import { useState, useContext } from 'react'
 import userContext from '../../lib/userContaxt'
+import u from '../../lib/util'
 
 const UPDATE_TRIP_PRICE = gql`
 mutation update_trip_price(
@@ -43,7 +44,7 @@ mutation update_trip_price(
 }`
 
 const CustomerPriceEdit = (props) => {
-  const { visible, onHide, trip_id, trip_price, loaded } = props
+  const { visible, onHide, trip_id, trip_price, loaded, trip_status_id, edit_access } = props
 
   const [form] = Form.useForm()
   const context = useContext(userContext)
@@ -76,25 +77,31 @@ const CustomerPriceEdit = (props) => {
     const old_total = parseFloat(trip_price.cash) + parseFloat(trip_price.to_pay)
     const new_total = parseFloat(form.cash) + parseFloat(form.to_pay)
     const comment = `${form.comment}, Customer Price: ${trip_price.customer_price}/${form.customer_price}, Partner Total: ${old_total}/${new_total}, Partner Advance: ${trip_price.cash}/${form.cash}, Partner Balance: ${trip_price.to_pay}/${form.to_pay}, FR8 Advance: ${trip_price.bank}/${form.bank}`
-    setDisableButton(true)
-    update_trip_price({
-      variables: {
-        trip_id: trip_id,
-        customer_price: parseFloat(form.customer_price),
-        mamul: parseFloat(form.mamul),
-        bank: parseFloat(form.bank),
-        cash: parseFloat(form.cash),
-        to_pay: parseFloat(form.to_pay),
-        partner_price: parseFloat(form.partner_price),
-        ton: form.ton ? parseInt(form.ton, 10) : null,
-        is_price_per_ton: !!form.ton,
-        price_per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
-        comment: comment,
-        created_by: context.email,
-        updated_by: context.email,
-        topic: 'Trip Price Changed'
-      }
-    })
+    if (form.customer_price > u.trip_price_limit || form.customer_price <= 0) {
+      message.error('Enter valid customer price')
+    } else if (parseInt(form.mamul) < trip_price.system_mamul) {
+      message.error(`Mamul Should be greater then ₹${trip_price.system_mamul}`)
+    } else {
+      setDisableButton(true)
+      update_trip_price({
+        variables: {
+          trip_id: trip_id,
+          customer_price: parseFloat(form.customer_price),
+          mamul: parseFloat(form.mamul),
+          bank: parseFloat(form.bank),
+          cash: parseFloat(form.cash),
+          to_pay: parseFloat(form.to_pay),
+          partner_price: parseFloat(form.partner_price),
+          ton: form.ton ? parseInt(form.ton, 10) : null,
+          is_price_per_ton: !!form.ton,
+          price_per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
+          comment: comment,
+          created_by: context.email,
+          updated_by: context.email,
+          topic: 'Trip Price Changed'
+        }
+      })
+    }
   }
 
   const onPerTonPriceChange = (e) => {
@@ -208,14 +215,14 @@ const CustomerPriceEdit = (props) => {
     const fr8_balance = (parseFloat(form.getFieldValue('customer_price')) - (value ? parseFloat(value) : 0)) - (bank > 0 ? bank : 0)
 
     form.setFieldsValue({
-      bank: bank > 0 ? bank : 0,
-      wallet: (wallet < 0 ? 0 : wallet),
+      cash: 0,
       to_pay: (value ? parseFloat(value) : 0),
       total: fr8_total < 0 ? 0 : fr8_total,
-      fp_total: fpart_total < 0 ? 0 : fpart_total,
+      bank: bank > 0 ? bank : 0,
       balance: fr8_balance < 0 ? 0 : fr8_balance,
-      fp_balance: fpart_total < 0 ? 0 : fpart_total - (wallet < 0 ? 0 : wallet),
-      cash: 0
+      fp_total: fpart_total < 0 ? 0 : fpart_total,
+      wallet: (wallet < 0 ? 0 : wallet),
+      fp_balance: fpart_total < 0 ? 0 : fpart_total - (wallet < 0 ? 0 : wallet)
     })
   }
   const fr8_partner_advance = ((trip_price.partner_price * trip_price.partner_advance_percentage) / 100) - (trip_price.cash - trip_price.to_pay)
@@ -223,6 +230,8 @@ const CustomerPriceEdit = (props) => {
     labelCol: { xs: 16 },
     wrapperCol: { xs: 8 }
   }
+  const authorised = (trip_status_id < 12 && trip_status_id !== 7 && trip_status_id !== 1) && edit_access
+
   return (
     <Modal
       visible={visible}
@@ -241,7 +250,15 @@ const CustomerPriceEdit = (props) => {
               rules={[{ required: true, message: 'Price Per Ton is required field!' }]}
               initialValue={trip_price.price_per_ton || 0}
             >
-              <Input placeholder='Customer Price' onChange={onPerTonPriceChange} size='small' type='number' />
+              <Input
+                placeholder='Price/Ton'
+                disabled={!authorised}
+                onChange={onPerTonPriceChange}
+                size='small'
+                type='number'
+                min={0}
+                maxLength={4}
+              />
             </Form.Item>
             <Form.Item
               label='Ton'
@@ -249,7 +266,7 @@ const CustomerPriceEdit = (props) => {
               rules={[{ required: true, message: 'No.of Ton is required field!' }]}
               initialValue={trip_price.ton || 0}
             >
-              <Input placeholder='Ton' onChange={onTonChange} size='small' type='number' />
+              <Input placeholder='Ton' disabled={!authorised} onChange={onTonChange} size='small' type='number' />
             </Form.Item>
           </div>) : null}
         <Form.Item
@@ -258,14 +275,14 @@ const CustomerPriceEdit = (props) => {
           rules={[{ required: true, message: 'Customer Price is required field!' }]}
           initialValue={trip_price.customer_price}
         >
-          <Input placeholder='Customer Price' disabled={trip_price.is_price_per_ton} onChange={onCustomerPriceChange} size='small' type='number' />
+          <Input placeholder='Customer Price' disabled={trip_price.is_price_per_ton || !authorised} onChange={onCustomerPriceChange} size='small' type='number' />
         </Form.Item>
         <Form.Item
           label='Mamul Charge'
           name='mamul'
           initialValue={trip_price.mamul || 0}
         >
-          <Input placeholder='Mamul' onChange={onMamulChange} size='small' type='number' />
+          <Input placeholder='Mamul' disabled={!authorised} onChange={onMamulChange} size='small' type='number' />
         </Form.Item>
         <Form.Item
           label='Partner Price'
@@ -281,7 +298,7 @@ const CustomerPriceEdit = (props) => {
           name='p_total'
           initialValue={(parseInt(trip_price.to_pay) + parseInt(trip_price.cash)) || 0}
         >
-          <Input placeholder='Total' onChange={onTotalChange} disabled={loaded} size='small' type='number' />
+          <Input placeholder='Total' onChange={onTotalChange} disabled={loaded || !authorised} size='small' type='number' />
         </Form.Item>
         <Form.Item
           label={<span>Advance <span>Cash/Bank/Diesel</span></span>}
@@ -290,7 +307,7 @@ const CustomerPriceEdit = (props) => {
           initialValue={trip_price.cash || 0}
           className='indent'
         >
-          <Input placeholder='Cash' onChange={onCashChange} disabled={loaded} size='small' type='number' />
+          <Input placeholder='Cash' onChange={onCashChange} disabled={loaded || !authorised} size='small' type='number' />
         </Form.Item>
         <Form.Item
           label={<span>Balance <span>To-pay</span></span>}
@@ -352,22 +369,31 @@ const CustomerPriceEdit = (props) => {
           <Input placeholder='Balance' disabled size='small' type='number' />
         </Form.Item>
         <Divider />
-        <Form.Item
-          name='comment'
-          initialValue={trip_price.comment || null}
-          rules={[{ required: true, message: 'Comment value is required field!' }]}
-          className='vertical'
-        >
-          <Input.TextArea placeholder='Comment' />
-        </Form.Item>
-        <Row>
-          <Col xs={24} className='text-right mt10'>
-            <Button type='primary' loading={disableButton} htmlType='submit'>Update</Button>
-          </Col>
-        </Row>
+        {authorised ? (
+          <div>
+            <Form.Item
+              name='comment'
+              initialValue={trip_price.comment || null}
+              rules={[{ required: true, message: 'Comment value is required field!' }]}
+              className='vertical'
+            >
+              <Input.TextArea placeholder='Comment' />
+            </Form.Item>
+            <Row>
+              <Col xs={24} className='text-right mt10'>
+                <Button type='primary' loading={disableButton} htmlType='submit'>Update</Button>
+              </Col>
+            </Row>
+          </div>)
+          : (
+            <Row>
+              <Col xs={24} className='text-right'>
+                <Button onClick={onHide} key='back'>Close</Button>
+              </Col>
+            </Row>
+          )}
       </Form>
     </Modal>
-
   )
 }
 

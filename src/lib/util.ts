@@ -22,5 +22,6 @@ export default {
     onboarding: 'onboarding',
     billing: 'billing',
     user: 'user'
-  }
+  },
+  trip_price_limit: 200000
 }

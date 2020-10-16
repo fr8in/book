@@ -4,7 +4,6 @@ import LabelWithData from '../common/labelWithData'
 import Link from 'next/link'
 import EditAccess from '../common/editAccess'
 import useShowHide from '../../hooks/useShowHide'
-import CustomerPrice from '../trips/customerPrice'
 import CustomerPriceEdit from '../trips/customerPriceEdit'
 import moment from 'moment'
 import get from 'lodash/get'
@@ -14,7 +13,7 @@ const TripInfo = (props) => {
   const { trip_info, trip_id } = props
   const { role } = u
   const price_edit_access = [role.admin, role.rm]
-  const initial = { price: false, price_test_ui: false }
+  const initial = { price: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   const trip_prices = {
     customer_price: get(trip_info, 'customer_price', 0),
@@ -29,8 +28,10 @@ const TripInfo = (props) => {
     is_price_per_ton: get(trip_info, 'is_price_per_ton', 0),
     price_per_ton: get(trip_info, 'price_per_ton', 0),
     customer_advance_percentage: parseInt(get(trip_info, 'customer.customer_advance_percentage.name', 90)),
-    partner_advance_percentage: parseInt(get(trip_info, 'partner.partner_advance_percentage.name', 70))
+    partner_advance_percentage: parseInt(get(trip_info, 'partner.partner_advance_percentage.name', 70)),
+    system_mamul: parseInt(get(trip_info, 'customer.system_mamul', 90))
   }
+  console.log('trip_info', trip_info)
   const trip_status_id = get(trip_info, 'trip_status.id', null)
   const order_date = get(trip_info, 'created_at', null)
   const po_date = get(trip_info, 'po_date', null)
@@ -95,9 +96,7 @@ const TripInfo = (props) => {
               data={
                 <p className='mb0'>
                   {get(trip_info, 'customer_price', null)}{' '}
-                  {(trip_status_id < 12 && trip_status_id !== 7 && trip_status_id !== 1) &&
-                    <EditAccess edit_access={price_edit_access} onEdit={() => onShow('price')} />}{' '}
-                  <EditAccess edit_access={price_edit_access} onEdit={() => onShow('price_test_ui')} />
+                  <EditAccess edit_access={price_edit_access} onEdit={() => onShow('price')} />
                 </p>
               }
               labelSpan={10}
@@ -121,20 +120,14 @@ const TripInfo = (props) => {
         </Row>
       </Col>
       {visible.price &&
-        <CustomerPrice
+        <CustomerPriceEdit
           visible={visible.price}
           onHide={onHide}
           trip_price={trip_prices || {}}
           trip_id={trip_id}
           loaded={trip_info.loaded === 'Yes'}
-        />}
-      {visible.price_test_ui &&
-        <CustomerPriceEdit
-          visible={visible.price_test_ui}
-          onHide={onHide}
-          trip_price={trip_prices || {}}
-          trip_id={trip_id}
-          loaded={trip_info.loaded === 'Yes'}
+          trip_status_id={trip_status_id}
+          edit_access={price_edit_access}
         />}
     </Row>
   )
