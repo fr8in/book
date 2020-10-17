@@ -90,7 +90,7 @@ const TripTime = (props) => {
   const { trip_info, customerConfirm, lr_files } = props
   const initial = { checkbox: false, mail: false, deletePO: false, godownReceipt: false, wh_detail: false }
   const { visible, onShow, onHide } = useShowHide(initial)
-  const { disableBtn, setDisableBtn } = useState(false)
+  const [ disableBtn, setDisableBtn ] = useState(false)
   const context = useContext(userContext)
   const [form] = Form.useForm()
 
