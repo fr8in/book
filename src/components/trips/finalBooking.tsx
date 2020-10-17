@@ -196,7 +196,7 @@ const FinalBooking = (props) => {
       floatVal(form.loading_halting) === 0 &&
       floatVal(form.unloading_halting) === 0
     ) {
-      message.error('All fileds value is in Zero!')
+      message.error('Book any value, all fileds value is zero!')
     } else if (calc.total > pending_data.balance) {
       message.error('Maximum booking amount is ' + pending_data.balance)
     } else {
