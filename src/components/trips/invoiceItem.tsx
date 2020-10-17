@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Row, Col, Checkbox, Form, Input } from 'antd'
 
 const InvoiceItem = (props) => {
-  const { item_label, halting_label, amount, value, checkbox, dayInput, days_name, field_name, spl_name, form, disable } = props
-  const [checked, setChecked] = useState(false)
+  const { item_label, halting_label, amount, value, checkbox, dayInput, days_name, field_name, spl_name, form, disable, checked, setChecked } = props
+
   const onChange = e => {
     setChecked(e.target.checked)
     if (form) {
@@ -58,6 +58,7 @@ const InvoiceItem = (props) => {
                   min='0'
                   disabled={disable}
                   size='small'
+                  className='text-right'
                 />
               </Form.Item>
             </Col>

@@ -105,6 +105,8 @@ mutation create_invoice(
 const TripInvoice = (props) => {
   const { trip_info } = props
   const context = useContext(userContext)
+  const [lchecked, setLchecked] = useState(false)
+  const [uchecked, setUchecked] = useState(false)
 
   const initial = {
     completed: false,
@@ -173,11 +175,15 @@ const TripInvoice = (props) => {
       }
     }
   )
-
   const floatVal = (value) => value ? parseFloat(value) : 0
+  console.log('checked', lchecked && !(floatVal(form.getFieldValue('customer_loading_halting')) && floatVal(form.getFieldValue('loading_halting'))))
   const onCalcutation = () => {
     if (trip_info.billing_remarks && !form.getFieldValue('remarks')) {
       message.error('Confirm other charges booked for Customer/Partner')
+    } else if (lchecked && !(floatVal(form.getFieldValue('customer_loading_halting')) && floatVal(form.getFieldValue('loading_halting')))) {
+      message.error('Loading halting Required for both partner and customer')
+    } else if (uchecked && !(floatVal(form.getFieldValue('customer_unloading_halting')) && floatVal(form.getFieldValue('unloading_halting')))) {
+      message.error('Unloading halting Required for both partner and customer')
     } else if (form.getFieldValue('customer_loading_halting') && (form.getFieldValue('customer_loading_halting') < form.getFieldValue('loading_halting'))) {
       message.error('Partner loading halting should be less than customer loading halting')
     } else if (form.getFieldValue('customer_unloading_halting') && (form.getFieldValue('customer_unloading_halting') < form.getFieldValue('unloading_halting'))) {
@@ -250,6 +256,8 @@ const TripInvoice = (props) => {
       />
       <InvoiceItem
         checkbox
+        checked={lchecked}
+        setChecked={setLchecked}
         form={form}
         item_label='Loading Halting'
         dayInput
@@ -261,6 +269,8 @@ const TripInvoice = (props) => {
       />
       <InvoiceItem
         checkbox
+        checked={uchecked}
+        setChecked={setUchecked}
         item_label='Unloading Halting'
         form={form}
         dayInput
