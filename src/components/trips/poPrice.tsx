@@ -135,7 +135,7 @@ const PoPrice = (props) => {
 
   const onTotalChange = (e) => {
     const { value } = e.target
-    const cus_adv = ((parseFloat(form.getFieldValue('customer_price')) * partner_advance_percentage) / 100)
+    const cus_adv = ((parseFloat(form.getFieldValue('customer_price')) * customer_advance_percentage) / 100)
     const fr8_total = (parseFloat(form.getFieldValue('customer_price')) - (value ? parseFloat(value) : 0))
     const bank = cus_adv - ((value ? parseFloat(value) : 0))
     const fr8_balance = (fr8_total < 0 ? 0 : fr8_total) - (bank > 0 ? bank : 0)
