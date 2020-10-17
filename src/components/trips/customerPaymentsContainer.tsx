@@ -31,7 +31,7 @@ const TRIP_CUSTOMER = gql`
   }
   `
 const CustomerPaymentsContainer = (props) => {
-  const { trip_id, status, cardcode, mamul, price, walletcode, wallet_balance, bank, customer_id } = props
+  const { trip_id, status, cardcode, mamul, price, walletcode, wallet_balance, bank, loaded,customer_id } = props
   const initial = { adv_visible: false, final_visible: false, title: null, adv_data: null, final_data: null, add_inv_visible: false, add_inv_data: null }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
@@ -118,6 +118,7 @@ const CustomerPaymentsContainer = (props) => {
           walletcode={walletcode}
           wallet_balance={wallet_balance}
           customer_id={customer_id}
+          loaded={loaded}
         />}
       {object.adv_visible &&
         <FinalBooking

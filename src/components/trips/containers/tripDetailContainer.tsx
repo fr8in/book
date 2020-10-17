@@ -168,6 +168,7 @@ const TripDetailContainer = (props) => {
                             customer_id={get(trip_info, 'customer.id', null)}
                             bank={get(trip_info, 'bank', 0)}
                             status_id={get(trip_info, 'trip_status.id', null)}
+                            loaded = {get(trip_info, 'loaded', null)}
                           />
                         </Panel>
                       </Collapse>
