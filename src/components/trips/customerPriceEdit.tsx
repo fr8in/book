@@ -147,7 +147,6 @@ const CustomerPriceEdit = (props) => {
       wallet: (wallet < 0 ? 0 : wallet),
       fp_balance: fr8_part_balance < 0 ? 0 : fr8_part_balance
     })
-    setPrice({ ...price, cus_advance: cus_adv, part_advance: wallet })
   }
   const onTonChange = (e) => {
     const { value } = e.target
@@ -171,7 +170,6 @@ const CustomerPriceEdit = (props) => {
       wallet: (wallet < 0 ? 0 : wallet),
       fp_balance: fr8_part_balance < 0 ? 0 : fr8_part_balance
     })
-    setPrice({ ...price, cus_advance: cus_adv, part_advance: wallet })
   }
   const onCustomerPriceChange = (e) => {
     const { value } = e.target
@@ -193,7 +191,6 @@ const CustomerPriceEdit = (props) => {
       wallet: (wallet < 0 ? 0 : wallet),
       fp_balance: fr8_part_balance < 0 ? 0 : fr8_part_balance
     })
-    setPrice({ ...price, cus_advance: cus_adv, part_advance: wallet })
   }
   const onMamulChange = (e) => {
     const { value } = e.target
@@ -215,7 +212,6 @@ const CustomerPriceEdit = (props) => {
       wallet: (wallet < 0 ? 0 : wallet),
       fp_balance: fr8_part_balance < 0 ? 0 : fr8_part_balance
     })
-    setPrice({ ...price, cus_advance: cus_adv, part_advance: wallet })
   }
   const onCashChange = (e) => {
     const { value } = e.target
@@ -245,7 +241,6 @@ const CustomerPriceEdit = (props) => {
       wallet: (wallet < 0 ? 0 : wallet),
       fp_balance: (fr8_part_balance < 0 ? 0 : fr8_part_balance)
     })
-    setPrice({ ...price, part_advance: wallet })
   }
   const layout = {
     labelCol: { xs: 16 },
