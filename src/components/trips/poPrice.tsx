@@ -175,8 +175,11 @@ const PoPrice = (props) => {
                     placeholder='Price'
                     disabled={false}
                     onChange={onPerTonPriceChange}
-                    type='number'
                     size='small'
+                    type='number'
+                    min={0}
+                    maxLength={4}
+                    onInput={u.handleLengthCheck}
                   />
                 </Form.Item>
                 <Form.Item label='Ton' name='ton' initialValue={get(record, 'ton', null)}>
@@ -184,8 +187,11 @@ const PoPrice = (props) => {
                     placeholder='Ton'
                     disabled={false}
                     onChange={onTonChange}
-                    type='number'
                     size='small'
+                    type='number'
+                    min={0}
+                    maxLength={2}
+                    onInput={u.handleLengthCheck}
                   />
                 </Form.Item>
               </div>)}
@@ -199,8 +205,11 @@ const PoPrice = (props) => {
                 placeholder='Customer price'
                 disabled={rate_per_ton}
                 onChange={onCustomerPriceChange}
-                type='number'
                 size='small'
+                type='number'
+                min={0}
+                maxLength={6}
+                onInput={u.handleLengthCheck}
               />
             </Form.Item>
             <Form.Item
@@ -219,6 +228,9 @@ const PoPrice = (props) => {
                 onChange={onMamulChange}
                 type='number'
                 size='small'
+                min={0}
+                maxLength={5}
+                onInput={u.handleLengthCheck}
               />
             </Form.Item>
             <Form.Item label='Partner Price' name='partner_price' initialValue={part_price < 0 ? 0 : part_price}>

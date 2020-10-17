@@ -100,6 +100,8 @@ const CustomerPriceEdit = (props) => {
       message.error('Enter valid trip price')
     } else if (parseInt(form.p_total) < parseInt(form.cash)) {
       message.error('Customer to Partner, Total and cash is miss matching')
+    } else if (parseInt(form.p_total) > form.customer_price) {
+      message.error('Customer to Partner should be less than or euqal to customer price')
     } else if (parseInt(form.mamul) < trip_price.system_mamul) {
       message.error(`Mamul Should be greater then ₹${trip_price.system_mamul}`)
     } else {
