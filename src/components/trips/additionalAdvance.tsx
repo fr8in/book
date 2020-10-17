@@ -1,6 +1,7 @@
 import { Table } from 'antd'
 import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
 
 const ADDITIONAL_ADVANCE_QUERY = gql`
 query additional_advance($trip_id: Int_comparison_exp!) {
@@ -16,12 +17,9 @@ query additional_advance($trip_id: Int_comparison_exp!) {
       status
     }
   }
-}
-
-`
+}`
 
 const AdditionalAdvance = (props) => {
-  console.log('AD trip_id', props)
   const { loading, error, data } = useQuery(
     ADDITIONAL_ADVANCE_QUERY, {
       variables: { trip_id: { _eq: props.ad_trip_id } },
@@ -75,17 +73,17 @@ const AdditionalAdvance = (props) => {
   ]
   return (
     <div className='additonalAdv'>
-      {additionalAdvance && additionalAdvance.length > 0
-        ? (
-          <Table
-            columns={columns}
-            dataSource={additionalAdvance}
-            rowKey={record => record.id}
-            size='small'
-            scroll={{ x: 960 }}
-            pagination={false}
-          />)
-        : <p>Additional advance not processed</p>}
+      {!isEmpty(additionalAdvance) ? (
+        <Table
+          columns={columns}
+          dataSource={additionalAdvance}
+          rowKey={record => record.id}
+          size='small'
+          scroll={{ x: 960 }}
+          pagination={false}
+        />)
+        : !(props.loaded) ? <p>Additional advance available after process advance</p>
+          : <p>Additional advance not processed</p>}
     </div>
   )
 }

@@ -44,6 +44,7 @@ const InvoiceItem = (props) => {
                 min='0'
                 disabled={disable_field || disable}
                 size='small'
+                className='text-right'
               />
             </Form.Item>
           )}

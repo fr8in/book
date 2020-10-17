@@ -3,7 +3,7 @@ import { DatePicker, Form } from 'antd'
 import isEmpty from 'lodash/isEmpty'
 
 const DateUpdater = (props) => {
-  const { name, label, dateValue, onSubmit } = props
+  const { name, label, dateValue, onSubmit, disable } = props
 
   const handleChange = (date, dateString) => {
     if (!isEmpty(dateString)) {
@@ -22,7 +22,7 @@ const DateUpdater = (props) => {
         format='YYYY-MM-DD HH:mm'
         placeholder='Select Time'
         style={{ width: '100%' }}
-        disabled={!!dateValue}
+        disabled={!!dateValue || disable}
         onChange={handleChange}
         value={dateValue !== '' ? moment(dateValue) : null}
       />

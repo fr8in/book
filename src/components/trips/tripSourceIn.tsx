@@ -2,7 +2,7 @@ import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import DateUpdater from '../common/dateUpdater'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 
 const UPDATE_TRIP_SOURCEIN_MUTATION = gql`
 mutation trip_source_in($source_in:timestamp,$id:Int,$updated_by: String!) {
@@ -19,18 +19,24 @@ const SourceInDate = (props) => {
   const { source_in, id } = props
 
   const context = useContext(userContext)
+  const [disableBtn, setDisableBtn] = useState(false)
 
   const [updateSourceIn] = useMutation(
     UPDATE_TRIP_SOURCEIN_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        message.error(error.toString())
+        setDisableBtn(false)
+      },
       onCompleted () {
-        message.success('Updated!!')
+        message.success('S-In Updated!')
+        setDisableBtn(false)
       }
     }
   )
 
   const onSubmit = (dateString) => {
+    setDisableBtn(true)
     updateSourceIn({
       variables: {
         id,
@@ -46,6 +52,7 @@ const SourceInDate = (props) => {
       label='Source In'
       dateValue={source_in}
       onSubmit={onSubmit}
+      disable={disableBtn}
     />
   )
 }

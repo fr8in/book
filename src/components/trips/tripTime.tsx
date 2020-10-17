@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Row, Col, Card, Form, Space, Button, Checkbox, message, Modal } from 'antd'
 import {
   FilePdfOutlined,
@@ -20,7 +20,7 @@ import ViewFile from '../common/viewFile'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import { gql, useMutation, useLazyQuery } from '@apollo/client'
-import { useContext } from 'react'
+
 import userContext from '../../lib/userContaxt'
 import LabelWithData from '../common/labelWithData'
 
@@ -255,10 +255,8 @@ const TripTime = (props) => {
   const remove_din = trip_status_name === 'Reported at destination'
   const remove_dout = (trip_status_name === 'Delivered')
   const advance_processed = (trip_info.loaded === 'Yes')
-
   const trip_files = get(trip_info, 'trip_files', [])
   const wh_files = !isEmpty(trip_files) ? trip_files.filter(file => file.type === 'WH') : null
-
   const driver_number = get(trip_info, 'driver.mobile', null)
   const trip_status_id = get(trip_info, 'trip_status.id', null)
   const after_deliverd = (trip_status_id >= 9)

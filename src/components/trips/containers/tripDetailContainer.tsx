@@ -62,6 +62,7 @@ const TripDetailContainer = (props) => {
   const lr_files = !isEmpty(files) && files.filter(file => file.type === 'LR')
   const pod_files = !isEmpty(files) && files.filter(file => file.type === 'POD')
   const customer_confirmation = get(trip_info, 'customer_confirmation', null)
+  const loaded = (get(trip_info, 'loaded', null) === 'Yes')
 
   useEffect(() => {
     setCustomerConfirm(customer_confirmation)
@@ -141,9 +142,9 @@ const TripDetailContainer = (props) => {
                         </Collapse>}
                       <Collapse accordion className='small mt10'>
                         <Panel header='Additional Advance' key='1'>
-                          {before_invoice &&
+                          {before_invoice && loaded &&
                             <CreateAdditionalAdvance trip_info={trip_info} />}
-                          <AdditionalAdvance ad_trip_id={trip_info.id} />
+                          <AdditionalAdvance ad_trip_id={trip_info.id} loaded={loaded} />
                         </Panel>
                       </Collapse>
                     </TabPane>

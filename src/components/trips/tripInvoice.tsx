@@ -72,7 +72,8 @@ mutation create_invoice(
   $part_unloading_charge: Float
   $topic: String
   $description: String
-  $createdBy: String
+  $createdBy: String!
+  $onHold: Float!
 ){
   create_invoice(
      customer_charge: {
@@ -94,6 +95,7 @@ mutation create_invoice(
     topic: $topic,
     description: $description,
     createdBy: $createdBy
+    onHold: $onHold
   ){
     success
     message
@@ -132,6 +134,9 @@ const TripInvoice = (props) => {
         const un_halting = get(data, 'calculate_onHold.partner_halting.destination_halting', null)
 
         setCalc({ ...calc, completed: true, balance, commission, on_hold, loading_clac: false })
+        form.setFieldsValue({
+          onHold: on_hold
+        })
 
         if (form.getFieldValue('loading_days')) {
           form.setFieldsValue({ loading_halting: l_halting })
@@ -217,7 +222,8 @@ const TripInvoice = (props) => {
         part_other_charge: floatVal(form.other_charge),
         topic: 'Invoiced',
         description: form.comment,
-        createdBy: context.email
+        createdBy: context.email,
+        onHold: form.onHold
       }
     })
   }
@@ -306,7 +312,7 @@ const TripInvoice = (props) => {
           />
           <InvoiceItem
             item_label='On Hold'
-            amount
+            field_name='onHold'
             value={calc.on_hold ? calc.on_hold.toFixed(2) : 0}
           />
           <Form.Item className='item' name='comment' rules={[{ required: true }]}>
