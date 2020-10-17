@@ -3,6 +3,7 @@ import { Modal, Row, Button, Form, Col, Select, Card, Divider, message } from 'a
 import Link from 'next/link'
 import { gql, useQuery, useLazyQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
+import PoPrice from './poPrice'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 import LinkComp from '../common/link'
@@ -205,7 +206,7 @@ const CreatePo = (props) => {
           customer_price: parseFloat(form.customer_price),
           partner_price: parseFloat(form.partner_price),
           ton: form.ton ? form.ton : null,
-          per_ton: form.per_ton_rate ? parseFloat(form.per_ton_rate) : null,
+          per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
           is_per_ton: !!form.ton,
           mamul: parseFloat(form.mamul),
           including_loading: loading_charge,
@@ -241,40 +242,47 @@ const CreatePo = (props) => {
     })
   }
   const partner_name = po_data && po_data.partner && po_data.partner.name
+  const layout = {
+    labelCol: { xs: 12 },
+    wrapperCol: { xs: 12 }
+  }
   return (
     <Modal
       visible={visible}
-      title={`PO: ${partner_name}`}
       onOk={onSubmit}
       onCancel={onHide}
-      width={960}
+      width={900}
       style={{ top: 20 }}
+      bodyStyle={{ paddingBottom: 0 }}
       footer={[]}
+      className='no-header'
     >
-      <Form form={form} layout='vertical' className='create-po' onFinish={onSubmit}>
-        <Link href='trucks/[id]' as={`trucks/${po_data.truck_no}`}>
-          <a className='truckPO'>{po_data.truck_no}</a>
-        </Link>
-        <Row gutter={10}>
-          <Col xs={24} sm={12}>
-            <Form.Item label='Customer' name='customer' rules={[{ required: true }]}>
+      <Form form={form} className='create-po form-sheet' labelAlign='left' colon={false} {...layout} onFinish={onSubmit}>
+        <Row gutter={20}>
+          <Col xs={24} sm={14}>
+            <Row>
+              <Col sm={12}><h4>{`PO: ${partner_name}`}</h4></Col>
+              <Col sm={12} className='text-right'>
+                <Link href='trucks/[id]' as={`trucks/${po_data.truck_no}`}>
+                  <a>{po_data.truck_no}</a>
+                </Link>
+              </Col>
+            </Row>
+            <Form.Item label='Customer' name='customer' rules={[{ required: true }]} labelCol={{ sm: 6 }} wrapperCol={{ sm: 18 }}>
               <Select
                 placeholder='Customer'
                 showSearch
                 disabled={false}
                 onSearch={onCusSearch}
                 onChange={onCusSelect}
+                size='small'
               >
                 {customerSearch && customerSearch.map(_cus => (
                   <Select.Option key={_cus.id} value={_cus.description}>{_cus.description}</Select.Option>
                 ))}
               </Select>
             </Form.Item>
-          </Col>
-        </Row>
-        <Card size='small' className='po-card'>
-          {!cus_loading && (customer && customer.id) &&
-            <div>
+            {!cus_loading && (customer && customer.id) &&
               <PoDetail
                 driver_id={setDriver_id}
                 po_data={po_data && po_data.partner}
@@ -283,13 +291,23 @@ const CreatePo = (props) => {
                 form={form}
                 customer={customer}
                 loading={cus_loading}
-              />
-              <Divider className='hidden-xs' />
-              <div className='text-right'>
-                <Button type='primary' htmlType='submit' loading={disableBtn}>Create</Button>
-              </div>
-            </div>}
-        </Card>
+              />}
+          </Col>
+          <Col xs={24} sm={10}>
+            {!cus_loading && (customer && customer.id) &&
+              <PoPrice
+                po_data={po_data && po_data.partner}
+                form={form}
+                customer={customer}
+                loading={cus_loading}
+              />}
+          </Col>
+        </Row>
+        {!cus_loading && (customer && customer.id) &&
+          <Row justify='end'>
+            <Divider />
+            <Button className='mt10' type='primary' htmlType='submit' loading={disableBtn}>Create</Button>
+          </Row>}
       </Form>
     </Modal>
   )

@@ -132,6 +132,9 @@ td .ant-badge {position: absolute; left: -3px;top: 20px;}
     position: relative;
     top: -10px;
     font-weight: normal;
+    b {
+        color: @primary;
+    }
 }
 .form-sheet.ant-form .ant-form-item.vertical .ant-form-item-label,
 .form-sheet.ant-form .ant-form-item.vertical .ant-form-item-control  {
@@ -142,8 +145,19 @@ td .ant-badge {position: absolute; left: -3px;top: 20px;}
     padding-left: 20%;
 }
 .form-sheet {
+    .ant-divider-horizontal {
+        margin: 0;
+    }
+    &.create-po{
+        input.ant-input {
+            max-width: 100%;
+        }
+    }
     .ant-form-item-control {
         text-align: right;
+        .ant-select-selector {
+            text-align: left;
+        }
         input.ant-input {
             text-align: right;
             max-width: 120px;
@@ -154,6 +168,9 @@ td .ant-badge {position: absolute; left: -3px;top: 20px;}
             }
         }
     }
+}
+#trip_rate_type label:last-child {
+    margin-right: 0;
 }
 @media (max-width: 575px) {
     .form-sheet.ant-form .ant-form-item .ant-form-item-label {

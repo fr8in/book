@@ -6,6 +6,7 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
+import PoPrice from './poPrice'
 
 const PO_QUERY = gql`
 query po_query($id: Int!, $cus_id: Int!){
@@ -203,43 +204,48 @@ const ConfirmPo = (props) => {
 
   const partner_name = get(po_data, 'partner.name', null)
   const trip_id = get(record, 'id', null)
+  const layout = {
+    labelCol: { xs: 12 },
+    wrapperCol: { xs: 12 }
+  }
   return (
     <Modal
       visible={visible}
-      title={`PO: ${partner_name}`}
       onOk={onSubmit}
       onCancel={onHide}
       width={960}
       style={{ top: 20 }}
+      bodyStyle={{ paddingBottom: 0 }}
       footer={[]}
+      className='no-header'
     >
-      <Form form={form} layout='vertical' className='create-po' onFinish={onSubmit}>
-        <span className='truckPO'>
-          <Link href='trucks/[id]' as={`trucks/${po_data.truck_no}`}>
-            <a>{po_data.truck_no}</a>
-          </Link>
-          {trip_id &&
-            <span> |&nbsp;
-              <Link href='trips/[id]' as={`trips/${trip_id}`}>
-                <a>{'#' + trip_id}</a>
-              </Link>
-            </span>}
-        </span>
-        <Row gutter={10}>
-          <Col xs={24} sm={12}>
-            <Form.Item label='Customer' name='customer' initialValue={customer.name}>
+      <Form form={form} className='create-po form-sheet' labelAlign='left' colon={false} {...layout} onFinish={onSubmit}>
+        <Row gutter={20}>
+          <Col xs={24} sm={14}>
+            <Row>
+              <Col sm={12}><h4>{`PO: ${partner_name}`}</h4></Col>
+              <Col sm={12} className='text-right'>
+                <Link href='trucks/[id]' as={`trucks/${po_data.truck_no}`}>
+                  <a>{po_data.truck_no}</a>
+                </Link>
+                {trip_id &&
+                  <span> |&nbsp;
+                    <Link href='trips/[id]' as={`trips/${trip_id}`}>
+                      <a>{'#' + trip_id}</a>
+                    </Link>
+                  </span>}
+              </Col>
+            </Row>
+            <Form.Item label='Customer' name='customer' initialValue={customer.name} labelCol={{ sm: 6 }} wrapperCol={{ sm: 18 }}>
               <Select
                 placeholder='Customer'
                 disabled
+                size='small'
               >
                 <Select.Option value={customer.id}>{customer.name}</Select.Option>
               </Select>
             </Form.Item>
-          </Col>
-        </Row>
-        <Card size='small' className='po-card'>
-          {(customer && customer.id) &&
-            <div>
+            {(customer && customer.id) &&
               <PoDetail
                 driver_id={setDriver_id}
                 po_data={po_data && po_data.partner}
@@ -248,13 +254,23 @@ const ConfirmPo = (props) => {
                 form={form}
                 customer={customer}
                 record={record}
-              />
-              <Divider className='hidden-xs' />
-              <div className='text-right'>
-                <Button type='primary' loading={disableButton} htmlType='submit'>Create</Button>
-              </div>
-            </div>}
-        </Card>
+              />}
+          </Col>
+          <Col xs={24} sm={10}>
+            {(customer && customer.id) &&
+              <PoPrice
+                po_data={po_data && po_data.partner}
+                form={form}
+                customer={customer}
+                record={record}
+              />}
+          </Col>
+        </Row>
+        {(customer && customer.id) &&
+          <Row justify='end'>
+            <Divider />
+            <Button className='mt10' type='primary' htmlType='submit'>Create</Button>
+          </Row>}
       </Form>
     </Modal>
   )
