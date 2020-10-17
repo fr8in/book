@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Row, Col, Card, Form, Space, Button, Checkbox, message, Modal } from 'antd'
 import {
   FilePdfOutlined,
@@ -89,6 +90,7 @@ const TripTime = (props) => {
   const { trip_info, customerConfirm, lr_files } = props
   const initial = { checkbox: false, mail: false, deletePO: false, godownReceipt: false, wh_detail: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+  const { disableBtn, setDisableBtn } = useState(false)
   const context = useContext(userContext)
   const [form] = Form.useForm()
 
@@ -180,13 +182,20 @@ const TripTime = (props) => {
   const [processAdvance] = useMutation(
     PROCESS_ADVANCE_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        message.error(error.toString())
+        setDisableBtn(false)
+      },
       onCompleted (data) {
         const status = get(data, 'partner_advance.status', null)
         const description = get(data, 'partner_advance.description', null)
         if (status === 'OK') {
+          setDisableBtn(false)
           message.success(description || 'Advance Processed!')
-        } else (message.error(description))
+        } else {
+          setDisableBtn(false)
+          message.error(description)
+        }
       }
     }
   )
@@ -228,6 +237,7 @@ const TripTime = (props) => {
     })
   }
   const onProcessAdvance = () => {
+    setDisableBtn(true)
     processAdvance({
       variables: {
         tripId: trip_info.id,
@@ -252,7 +262,7 @@ const TripTime = (props) => {
   const driver_number = get(trip_info, 'driver.mobile', null)
   const trip_status_id = get(trip_info, 'trip_status.id', null)
   const after_deliverd = (trip_status_id >= 9)
-  const wh_update = (trip_status_id <= 4)
+  const wh_update = (trip_status_id > 4)
   const disable_pa = (!customerConfirm && isEmpty(lr_files))
 
   return (
@@ -322,7 +332,7 @@ const TripTime = (props) => {
                 {po_delete &&
                   <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>}
                 {process_advance &&
-                  <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa}>Process Advance</Button>}
+                  <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa} loading={disableBtn}>Process Advance</Button>}
                 {remove_sin &&
                   <Button danger icon={<CloseCircleOutlined />} onClick={onSinRemove}>S-In</Button>}
                 {remove_sout &&

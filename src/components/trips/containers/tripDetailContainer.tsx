@@ -57,8 +57,10 @@ const TripDetailContainer = (props) => {
     </h3>)
   const trip_status_name = get(trip_info, 'trip_status.name', null)
   const trip_status_id = get(trip_info, 'trip_status.id', null)
-  const disable_advance = (trip_status_id < 12)
-  const lr_files = trip_info && trip_info.trip_files && trip_info.trip_files.filter(file => file.type === 'LR')
+  const before_invoice = (trip_status_id < 12)
+  const files = get(trip_info, 'trip_files', [])
+  const lr_files = !isEmpty(files) && files.filter(file => file.type === 'LR')
+  const pod_files = !isEmpty(files) && files.filter(file => file.type === 'POD')
   const customer_confirmation = get(trip_info, 'customer_confirmation', null)
 
   useEffect(() => {
@@ -120,7 +122,7 @@ const TripDetailContainer = (props) => {
                           <TripPod trip_id={trip_info.id} trip_info={trip_info} />
                         </Panel>
                       </Collapse>
-                      {trip_status_name === 'Delivered' && trip_info.pod_verified_at && access &&
+                      {trip_status_name === 'Delivered' && trip_info.pod_verified_at && access && !isEmpty(pod_files) &&
                         <Collapse accordion className='small box-0 mt10'>
                           <Panel header='Invoice' key='1'>
                             <TripInvoice trip_info={trip_info} />
@@ -139,7 +141,7 @@ const TripDetailContainer = (props) => {
                         </Collapse>}
                       <Collapse accordion className='small mt10'>
                         <Panel header='Additional Advance' key='1'>
-                          {disable_advance &&
+                          {before_invoice &&
                             <CreateAdditionalAdvance trip_info={trip_info} />}
                           <AdditionalAdvance ad_trip_id={trip_info.id} />
                         </Panel>
@@ -168,13 +170,12 @@ const TripDetailContainer = (props) => {
                           />
                         </Panel>
                       </Collapse>
-                      {trip_status_name !== 'Closed' &&
-                        <Collapse accordion className='small mt10'>
-                          <Panel header='Credit/Debit Note' key='1'>
-                            <CreditNote trip_id={trip_id} />
-                            <CreditNoteTable trip_id={trip_id} />
-                          </Panel>
-                        </Collapse>}
+                      <Collapse accordion className='small mt10'>
+                        <Panel header='Credit/Debit Note' key='1'>
+                          <CreditNote trip_id={trip_id} trip_info={trip_info} />
+                          <CreditNoteTable trip_id={trip_id} trip_info={trip_info} />
+                        </Panel>
+                      </Collapse>
                     </TabPane>
                     <TabPane tab='Timeline' key='3'>
                       <TripComment trip_id={trip_info.id} trip_status={get(trip_info, 'trip_status.name', null)} />

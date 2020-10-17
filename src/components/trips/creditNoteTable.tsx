@@ -1,3 +1,4 @@
+import { useContext } from 'react'
 import { Table, Tooltip, Button, Space } from 'antd'
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import moment from 'moment'
@@ -5,6 +6,9 @@ import get from 'lodash/get'
 import Approve from '../partners/approvals/accept'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import { gql, useSubscription } from '@apollo/client'
+import userContext from '../../lib/userContaxt'
+import u from '../../lib/util'
+import isEmpty from 'lodash/isEmpty'
 
 const CREDIT_NOTE_TABLE_SUBSCRIPTION = gql`
 subscription credit_debits($id:Int){
@@ -27,9 +31,17 @@ subscription credit_debits($id:Int){
 `
 
 const CreditNoteTable = (props) => {
-  const { trip_id } = props
+  const { trip_id, trip_info } = props
   console.log('trip_id', trip_id)
-  const authorised = true
+  const context = useContext(userContext)
+  const { role } = u
+  const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing]
+  const authorised = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
+
+  const invoiced = get(trip_info, 'invoiced_at', null)
+  const received = get(trip_info, 'received_at', null)
+  const closed = get(trip_info, 'closed_at', null)
+
   const initial = {
     approveData: [],
     approveVisible: false
@@ -118,6 +130,7 @@ const CreditNoteTable = (props) => {
                 size='small'
                 shape='circle'
                 className='btn-success'
+                disabled={!(invoiced && !received && !closed)}
                 icon={<CheckOutlined />}
                 onClick={() => handleShow('approveVisible', 'Approved', 'approveData', record)}
               />

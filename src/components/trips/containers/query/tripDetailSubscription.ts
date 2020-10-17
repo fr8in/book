@@ -14,6 +14,9 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       pod_dispatched_at
       destination_in
       destination_out
+      invoiced_at
+      received_at
+      closed_at
       km
       driver{
         id
