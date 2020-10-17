@@ -6,6 +6,7 @@ import PaymentTraceability from '../customers/paymentTraceability'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import useShowHide from '../../hooks/useShowHide'
 import userContext from '../../lib/userContaxt'
+import u from '../../lib/util'
 
 const { Panel } = Collapse
 
@@ -180,6 +181,22 @@ const FinalBooking = (props) => {
       message.error('Enter valid cash!')
     } else if (diff_wallet < 0) {
       message.error('(Wallet - Rebate) should be positive value!')
+    } else if (
+      diff_wallet === 0 &&
+      floatVal(form.cash) === 0 &&
+      floatVal(form.rebate) === 0 &&
+      floatVal(form.sortage) === 0 &&
+      floatVal(form.pod_delay) === 0 &&
+      floatVal(form.late_delivery) === 0 &&
+      floatVal(form.tds) === 0 &&
+      floatVal(form.loading_charge) === 0 &&
+      floatVal(form.unloading_charge) === 0 &&
+      floatVal(form.mamul) === 0 &&
+      floatVal(form.price_difference) === 0 &&
+      floatVal(form.loading_halting) === 0 &&
+      floatVal(form.unloading_halting) === 0
+    ) {
+      message.error('All fileds value is in Zero!')
     } else if (calc.total > pending_data.balance) {
       message.error('Maximum booking amount is ' + pending_data.balance)
     } else {
@@ -187,11 +204,11 @@ const FinalBooking = (props) => {
       customer_final_payment({
         variables: {
           trip_id: parseInt(trip_id),
-          wallet: diff_wallet,
+          created_by: context.email,
           docentry: (!isEmpty(selectedRow) && amount) ? selectedRow[0].docentry : null,
+          wallet: diff_wallet,
           cash: floatVal(form.cash),
           rebate: floatVal(form.rebate),
-          created_by: context.email,
           shortage_write_off: floatVal(form.sortage),
           pod_delay_missing_write_off: floatVal(form.pod_delay),
           late_delivery_write_off: floatVal(form.late_delivery),
@@ -235,13 +252,27 @@ const FinalBooking = (props) => {
         <Form layout='vertical' onFinish={onFinalBooking} form={form}>
           <Row className='mt10' gutter={10}>
             <Col sm={6}>
-              <Form.Item label='Cash' name='cash'>
-                <Input placeholder='Cash' onBlur={onBlurCalc} type='number' min='0' />
+              <Form.Item label='Cash' name='cash' initialValue={0}>
+                <Input
+                  placeholder='Cash'
+                  onBlur={onBlurCalc}
+                  type='number'
+                  min={0}
+                  maxLength={u.maxLength}
+                  onInput={u.handleLengthCheck}
+                />
               </Form.Item>
             </Col>
             <Col sm={6}>
-              <Form.Item label='Rebate' name='rebate'>
-                <Input placeholder='Rebate' onBlur={onBlurCalc} type='number' min='0' />
+              <Form.Item label='Rebate' name='rebate' initialValue={0}>
+                <Input
+                  placeholder='Rebate'
+                  onBlur={onBlurCalc}
+                  type='number'
+                  min={0}
+                  maxLength={u.maxLength}
+                  onInput={u.handleLengthCheck}
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -251,52 +282,100 @@ const FinalBooking = (props) => {
               <Divider />
               <Row gutter={10}>
                 <Col sm={6}>
-                  <Form.Item label='Shortage/Damage' name='sortage'>
-                    <Input placeholder='Shortage/Damage' disabled={disabled} onBlur={onBlurCalc} type='number' min='0' />
+                  <Form.Item label='Shortage/Damage' name='sortage' initialValue={0}>
+                    <Input
+                      placeholder='Shortage/Damage'
+                      disabled={disabled}
+                      onBlur={onBlurCalc}
+                      type='number'
+                      min={0}
+                      maxLength={u.maxLength}
+                      onInput={u.handleLengthCheck}
+                    />
                   </Form.Item>
                 </Col>
                 <Col sm={6}>
-                  <Form.Item label='POD Delay/Lost' name='pod_delay'>
-                    <Input placeholder='POD Delay/Lost' disabled={disabled} onBlur={onBlurCalc} type='number' min='0' />
+                  <Form.Item label='POD Delay/Lost' name='pod_delay' initialValue={0}>
+                    <Input
+                      placeholder='POD Delay/Lost'
+                      disabled={disabled}
+                      onBlur={onBlurCalc}
+                      type='number'
+                      min={0}
+                      maxLength={u.maxLength}
+                      onInput={u.handleLengthCheck}
+                    />
                   </Form.Item>
                 </Col>
                 <Col sm={6}>
-                  <Form.Item label='Late Delivery' name='late_delivery'>
-                    <Input placeholder='Late Delivery' disabled={disabled} onBlur={onBlurCalc} type='number' min='0' />
+                  <Form.Item label='Late Delivery' name='late_delivery' initialValue={0}>
+                    <Input
+                      placeholder='Late Delivery'
+                      disabled={disabled}
+                      onBlur={onBlurCalc}
+                      type='number'
+                      min={0}
+                      maxLength={u.maxLength}
+                      onInput={u.handleLengthCheck}
+                    />
                   </Form.Item>
                 </Col>
                 <Col sm={6}>
-                  <Form.Item label='TDS Filed By Partner' name='tds' initialValue={tds}>
-                    <Input placeholder='TDS' disabled={tds > 0} onBlur={onBlurCalc} type='number' min='0' />
+                  <Form.Item label='TDS Filed By Partner' name='tds' initialValue={tds || 0}>
+                    <Input
+                      placeholder='TDS'
+                      disabled={tds > 0}
+                      onBlur={onBlurCalc}
+                      type='number'
+                      min={0}
+                      maxLength={u.maxLength}
+                      onInput={u.handleLengthCheck}
+                    />
                   </Form.Item>
                 </Col>
               </Row>
               <Row gutter={10}>
                 <Col sm={6}>
-                  <Form.Item label='Loading Charge' name='loading_charge'>
-                    <Input placeholder='Loading Charge' disabled={disabled} onBlur={onBlurCalc} type='number' min='0' />
+                  <Form.Item label='Loading Charge' name='loading_charge' initialValue={0}>
+                    <Input
+                      placeholder='Loading Charge'
+                      disabled={disabled}
+                      onBlur={onBlurCalc}
+                      type='number'
+                      min={0}
+                      maxLength={u.maxLength}
+                      onInput={u.handleLengthCheck}
+                    />
                   </Form.Item>
                 </Col>
                 <Col sm={6}>
-                  <Form.Item label='Unloading Charge' name='unloading_charge'>
-                    <Input placeholder='Unloading Charge' disabled={disabled} onBlur={onBlurCalc} type='number' min='0' />
+                  <Form.Item label='Unloading Charge' name='unloading_charge' initialValue={0}>
+                    <Input
+                      placeholder='Unloading Charge'
+                      disabled={disabled}
+                      onBlur={onBlurCalc}
+                      type='number'
+                      min={0}
+                      maxLength={u.maxLength}
+                      onInput={u.handleLengthCheck}
+                    />
                   </Form.Item>
                 </Col>
               </Row>
               <Row gutter={10}>
                 <Col sm={6}>
-                  <Form.Item label='On-Hold' name='on_hold' initialValue={on_hold}>
-                    <Input placeholder='On-Hold' disabled />
+                  <Form.Item label='On-Hold' name='on_hold' initialValue={on_hold || 0}>
+                    <Input placeholder='On-Hold' disabled type='number' />
                   </Form.Item>
                 </Col>
                 <Col sm={6}>
-                  <Form.Item label='Debit' name='debit'>
-                    <Input placeholder='Debit' disabled />
+                  <Form.Item label='Debit' name='debit' initialValue={0}>
+                    <Input placeholder='Debit' disabled type='number' />
                   </Form.Item>
                 </Col>
                 <Col sm={6}>
-                  <Form.Item label='Release Amount' name='release_amount'>
-                    <Input placeholder='Release Amount' disabled />
+                  <Form.Item label='Release Amount' name='release_amount' initialValue={0}>
+                    <Input placeholder='Release Amount' disabled type='number' />
                   </Form.Item>
                 </Col>
               </Row>
@@ -304,30 +383,65 @@ const FinalBooking = (props) => {
               <Divider />
               <Row gutter={10}>
                 <Col sm={6}>
-                  <Form.Item label='Mamul' name='mamul'>
-                    <Input placeholder='Mamul' onBlur={onBlurCalc} type='number' min='0' />
+                  <Form.Item label='Mamul' name='mamul' initialValue={0}>
+                    <Input
+                      placeholder='Mamul'
+                      onBlur={onBlurCalc}
+                      type='number'
+                      min={0}
+                      maxLength={u.maxLength}
+                      onInput={u.handleLengthCheck}
+                    />
                   </Form.Item>
                 </Col>
                 <Col sm={6}>
-                  <Form.Item label='Price Difference' name='price_difference'>
-                    <Input placeholder='Price Difference' onBlur={onBlurCalc} type='number' min='0' />
+                  <Form.Item label='Price Difference' name='price_difference' initialValue={0}>
+                    <Input
+                      placeholder='Price Difference'
+                      onBlur={onBlurCalc}
+                      type='number'
+                      min={0}
+                      maxLength={u.maxLength}
+                      onInput={u.handleLengthCheck}
+                    />
                   </Form.Item>
                 </Col>
                 <Col sm={6}>
-                  <Form.Item label='Loading Halting' name='loading_halting'>
-                    <Input placeholder='Loading Halting' onBlur={onBlurCalc} type='number' min='0' />
+                  <Form.Item label='Loading Halting' name='loading_halting' initialValue={0}>
+                    <Input
+                      placeholder='Loading Halting'
+                      onBlur={onBlurCalc}
+                      type='number'
+                      min={0}
+                      maxLength={u.maxLength}
+                      onInput={u.handleLengthCheck}
+                    />
                   </Form.Item>
                 </Col>
                 <Col sm={6}>
-                  <Form.Item label='Unloading Halting' name='unloading_halting'>
-                    <Input placeholder='Unloading Halting' onBlur={onBlurCalc} type='number' min='0' />
+                  <Form.Item label='Unloading Halting' name='unloading_halting' initialValue={0}>
+                    <Input
+                      placeholder='Unloading Halting'
+                      onBlur={onBlurCalc}
+                      type='number'
+                      min={0}
+                      maxLength={u.maxLength}
+                      onInput={u.handleLengthCheck}
+                    />
                   </Form.Item>
                 </Col>
               </Row>
               <Row gutter={10}>
                 <Col sm={6}>
-                  <Form.Item label='TDS Filed By FR8' name='tds_fr8'>
-                    <Input placeholder='TDS Filed By FR8' onBlur={onBlurCalc} type='number' min='0' />
+                  <Form.Item label='TDS Filed By FR8' name='tds_fr8' initialValue={0}>
+                    <Input
+                      placeholder='TDS Filed By FR8'
+                      onBlur={onBlurCalc}
+                      type='number'
+                      min={0}
+                      maxLength={u.maxLength}
+                      onInput={u.handleLengthCheck}
+                    />
                   </Form.Item>
                 </Col>
               </Row>
