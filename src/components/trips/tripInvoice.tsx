@@ -72,7 +72,8 @@ mutation create_invoice(
   $part_unloading_charge: Float
   $topic: String
   $description: String
-  $createdBy: String
+  $createdBy: String!
+  $onHold: Float!
 ){
   create_invoice(
      customer_charge: {
@@ -94,6 +95,7 @@ mutation create_invoice(
     topic: $topic,
     description: $description,
     createdBy: $createdBy
+    onHold: $onHold
   ){
     success
     message
@@ -103,6 +105,8 @@ mutation create_invoice(
 const TripInvoice = (props) => {
   const { trip_info } = props
   const context = useContext(userContext)
+  const [lchecked, setLchecked] = useState(false)
+  const [uchecked, setUchecked] = useState(false)
 
   const initial = {
     completed: false,
@@ -132,6 +136,9 @@ const TripInvoice = (props) => {
         const un_halting = get(data, 'calculate_onHold.partner_halting.destination_halting', null)
 
         setCalc({ ...calc, completed: true, balance, commission, on_hold, loading_clac: false })
+        form.setFieldsValue({
+          onHold: on_hold
+        })
 
         if (form.getFieldValue('loading_days')) {
           form.setFieldsValue({ loading_halting: l_halting })
@@ -168,11 +175,15 @@ const TripInvoice = (props) => {
       }
     }
   )
-
   const floatVal = (value) => value ? parseFloat(value) : 0
+  console.log('checked', lchecked && !(floatVal(form.getFieldValue('customer_loading_halting')) && floatVal(form.getFieldValue('loading_halting'))))
   const onCalcutation = () => {
     if (trip_info.billing_remarks && !form.getFieldValue('remarks')) {
       message.error('Confirm other charges booked for Customer/Partner')
+    } else if (lchecked && !(floatVal(form.getFieldValue('customer_loading_halting')) && floatVal(form.getFieldValue('loading_halting')))) {
+      message.error('Loading halting Required for both partner and customer')
+    } else if (uchecked && !(floatVal(form.getFieldValue('customer_unloading_halting')) && floatVal(form.getFieldValue('unloading_halting')))) {
+      message.error('Unloading halting Required for both partner and customer')
     } else if (form.getFieldValue('customer_loading_halting') && (form.getFieldValue('customer_loading_halting') < form.getFieldValue('loading_halting'))) {
       message.error('Partner loading halting should be less than customer loading halting')
     } else if (form.getFieldValue('customer_unloading_halting') && (form.getFieldValue('customer_unloading_halting') < form.getFieldValue('unloading_halting'))) {
@@ -217,7 +228,8 @@ const TripInvoice = (props) => {
         part_other_charge: floatVal(form.other_charge),
         topic: 'Invoiced',
         description: form.comment,
-        createdBy: context.email
+        createdBy: context.email,
+        onHold: form.onHold
       }
     })
   }
@@ -244,6 +256,8 @@ const TripInvoice = (props) => {
       />
       <InvoiceItem
         checkbox
+        checked={lchecked}
+        setChecked={setLchecked}
         form={form}
         item_label='Loading Halting'
         dayInput
@@ -255,6 +269,8 @@ const TripInvoice = (props) => {
       />
       <InvoiceItem
         checkbox
+        checked={uchecked}
+        setChecked={setUchecked}
         item_label='Unloading Halting'
         form={form}
         dayInput
@@ -306,7 +322,7 @@ const TripInvoice = (props) => {
           />
           <InvoiceItem
             item_label='On Hold'
-            amount
+            field_name='onHold'
             value={calc.on_hold ? calc.on_hold.toFixed(2) : 0}
           />
           <Form.Item className='item' name='comment' rules={[{ required: true }]}>

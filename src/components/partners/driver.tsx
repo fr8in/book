@@ -26,7 +26,7 @@ mutation driver_insert($id: Int!, $mobile: String){
 }`
 
 const Driver = (props) => {
-  const { partner_id, driver_id, required } = props
+  const { partner_id, driver_id, required, size } = props
   if (!partner_id) return null
 
   const [searchText, setSearchText] = useState('')
@@ -86,6 +86,7 @@ const Driver = (props) => {
         placeholder='Select Driver...'
         onSearch={onSearch}
         onChange={onDriverChange}
+        size={size || 'middle'}
       >
         {drivers && drivers.map(_driver => (
           <Option key={_driver.id} value={_driver.mobile}>{_driver.mobile}</Option>

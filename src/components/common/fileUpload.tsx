@@ -4,7 +4,7 @@ import { UploadOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 
 const FILE_UPLOAD_MUTATION = gql`
-  mutation ($name: String, $type: String, $base64Str: String,$id: Int, $folder: String,$fileType: String ) {
+  mutation file_upload ($name: String, $type: String, $base64Str: String,$id: Int, $folder: String,$fileType: String ) {
     fileUpload(name: $name, type: $type, base64Str: $base64Str, id: $id, folder: $folder, fileType: $fileType) {
       file_path
     }
@@ -12,7 +12,7 @@ const FILE_UPLOAD_MUTATION = gql`
 `
 
 const FILE_DOWNLOAD_MUTATION = gql`
-  mutation ($name:String,$folder:String) {
+  mutation file_download($name:String,$folder:String) {
     fileDownload(name: $name, folder: $folder) {
         url
      }
@@ -20,7 +20,7 @@ const FILE_DOWNLOAD_MUTATION = gql`
   `
 
 const FILE_DELETE_MUTATION = gql`
-    mutation($name:String,$id:Int,$type: String, $fileType: String) {
+    mutation delete_file($name:String,$id:Int,$type: String, $fileType: String) {
     fileDelete(name: $name,id:$id, type:$type, fileType: $fileType) {
         affected
         }

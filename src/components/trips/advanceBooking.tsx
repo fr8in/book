@@ -27,7 +27,7 @@ mutation customer_advance(
 }`
 
 const AdvanceBooking = (props) => {
-  const { visible, onHide, cardcode, mamul, title, price, pending_data, trip_id, walletcode, wallet_balance, customer_id } = props
+  const { visible, onHide, cardcode, mamul, title, price, pending_data, trip_id,loaded, walletcode, wallet_balance, customer_id } = props
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
@@ -98,6 +98,7 @@ const AdvanceBooking = (props) => {
         wallet_balance={wallet_balance}
       />
       <Form layout='vertical' onFinish={onAdvanceBooking}>
+        { loaded === 'Yes' && 
         <Row className='mt10'>
           <Col sm={10}>
             <Form.Item
@@ -112,7 +113,7 @@ const AdvanceBooking = (props) => {
               />
             </Form.Item>
           </Col>
-        </Row>
+        </Row>}
         <Row>
           <Col flex='auto'>
             <div>Total: <b>{total}</b></div>

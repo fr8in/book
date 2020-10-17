@@ -3,6 +3,7 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 import { useContext } from 'react'
 import userContext from '../../lib/userContaxt'
+import u from '../../lib/util'
 
 const TRUCKS_TYPE_QUERY = gql`
   query truck_type{
@@ -26,6 +27,9 @@ mutation truck_type_edit($truck_type_id:Int,$truck_no:String,$updated_by: String
 const TruckType = (props) => {
   const { truckTypeId, truckType, truck_no } = props
   const context = useContext(userContext)
+
+  const { role } = u
+  const edit_access = [role.user]
 
   const { loading, error, data } = useQuery(
     TRUCKS_TYPE_QUERY,
@@ -67,6 +71,7 @@ const TruckType = (props) => {
       options={truckList}
       handleChange={onChange}
       style={{ width: 110 }}
+      edit_access={edit_access}
     />
   )
 }

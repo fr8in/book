@@ -5,7 +5,7 @@ import CitySelect from '../common/citySelect'
 import userContext from '../../lib/userContaxt'
 
 const PARTNERS_LEAD_SUBSCRIPTION = gql`
-  query create_partner_lead{
+  query create_partner_lead_channel{
     channel{
       id
       name

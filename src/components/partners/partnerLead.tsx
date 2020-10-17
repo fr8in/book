@@ -65,7 +65,7 @@ subscription partner_lead(
 `
 
 const PARTNERS_LEAD_QUERY = gql`
-query partner_lead(
+query partner_lead_aggregate(
   $where:partner_bool_exp
   ){
   partner_aggregate(where: $where) {

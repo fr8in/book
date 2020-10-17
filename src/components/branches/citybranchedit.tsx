@@ -4,7 +4,7 @@ import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
 
 const BRANCH_QUERY = gql`
-  query cityBranch{
+  query city_branch{
     branch{
         id
         name
@@ -12,7 +12,7 @@ const BRANCH_QUERY = gql`
 }
 `
 const UPDATE_CITY_BRANCH_MUTATION = gql`
-mutation ($city_id:Int,$branch_id:Int){
+mutation update_city ($city_id:Int,$branch_id:Int){
     update_city(_set: {branch_id:$branch_id }, where: {id: {_eq: $city_id}}) {
       returning {
         branch {

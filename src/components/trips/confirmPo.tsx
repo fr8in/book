@@ -6,6 +6,7 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
+import PoPrice from './poPrice'
 
 const PO_QUERY = gql`
 query po_query($id: Int!, $cus_id: Int!){
@@ -45,6 +46,9 @@ query po_query($id: Int!, $cus_id: Int!){
       name
       mobile
     }
+  }
+  config(where:{key:{_eq:"trip"}}){
+    value
   }
 }`
 
@@ -150,17 +154,25 @@ const ConfirmPo = (props) => {
   )
 
   console.log('CreateExcessLoad Error', error)
-
   if (loading) return null
 
   const po_data = get(data, 'truck[0]', null)
   const customer = get(data, 'customer[0]', null)
+  const trip_max_price = get(data, 'config[0].value.trip_max_price', null)
   const system_mamul = get(customer, 'system_mamul', null)
 
   const onSubmit = (form) => {
     const loading_charge = form.charge_inclue.includes('Loading')
     const unloading_charge = form.charge_inclue.includes('Unloading')
-    if (system_mamul > parseFloat(form.mamul)) {
+    if (form.customer_price > trip_max_price) {
+      message.error(`Trip max price limit ₹${trip_max_price}`)
+    } else if (form.customer_price <= 0) {
+      message.error('Enter valid trip price')
+    } else if (parseInt(form.p_total) < parseInt(form.cash)) {
+      message.error('Customer to Partner, Total and cash is miss matching')
+    } else if (parseInt(form.p_total) > form.customer_price) {
+      message.error('Customer to Partner should be less than or euqal to customer price')
+    } else if (system_mamul > parseFloat(form.mamul)) {
       message.error('Mamul Should be greater than system mamul!')
     } else {
       setDisableButton(true)
@@ -203,43 +215,48 @@ const ConfirmPo = (props) => {
 
   const partner_name = get(po_data, 'partner.name', null)
   const trip_id = get(record, 'id', null)
+  const layout = {
+    labelCol: { xs: 12 },
+    wrapperCol: { xs: 12 }
+  }
   return (
     <Modal
       visible={visible}
-      title={`PO: ${partner_name}`}
       onOk={onSubmit}
       onCancel={onHide}
       width={960}
       style={{ top: 20 }}
+      bodyStyle={{ paddingBottom: 0 }}
       footer={[]}
+      className='no-header'
     >
-      <Form form={form} layout='vertical' className='create-po' onFinish={onSubmit}>
-        <span className='truckPO'>
-          <Link href='trucks/[id]' as={`trucks/${po_data.truck_no}`}>
-            <a>{po_data.truck_no}</a>
-          </Link>
-          {trip_id &&
-            <span> |&nbsp;
-              <Link href='trips/[id]' as={`trips/${trip_id}`}>
-                <a>{'#' + trip_id}</a>
-              </Link>
-            </span>}
-        </span>
-        <Row gutter={10}>
-          <Col xs={24} sm={12}>
-            <Form.Item label='Customer' name='customer' initialValue={customer.name}>
+      <Form form={form} className='create-po form-sheet' labelAlign='left' colon={false} {...layout} onFinish={onSubmit}>
+        <Row gutter={20}>
+          <Col xs={24} sm={14}>
+            <Row>
+              <Col sm={12}><h4>{`PO: ${partner_name}`}</h4></Col>
+              <Col sm={12} className='text-right'>
+                <Link href='trucks/[id]' as={`trucks/${po_data.truck_no}`}>
+                  <a>{po_data.truck_no}</a>
+                </Link>
+                {trip_id &&
+                  <span> |&nbsp;
+                    <Link href='trips/[id]' as={`trips/${trip_id}`}>
+                      <a>{'#' + trip_id}</a>
+                    </Link>
+                  </span>}
+              </Col>
+            </Row>
+            <Form.Item label='Customer' name='customer' initialValue={customer.name} labelCol={{ sm: 6 }} wrapperCol={{ sm: 18 }}>
               <Select
                 placeholder='Customer'
                 disabled
+                size='small'
               >
                 <Select.Option value={customer.id}>{customer.name}</Select.Option>
               </Select>
             </Form.Item>
-          </Col>
-        </Row>
-        <Card size='small' className='po-card'>
-          {(customer && customer.id) &&
-            <div>
+            {(customer && customer.id) &&
               <PoDetail
                 driver_id={setDriver_id}
                 po_data={po_data && po_data.partner}
@@ -248,13 +265,23 @@ const ConfirmPo = (props) => {
                 form={form}
                 customer={customer}
                 record={record}
-              />
-              <Divider className='hidden-xs' />
-              <div className='text-right'>
-                <Button type='primary' loading={disableButton} htmlType='submit'>Create</Button>
-              </div>
-            </div>}
-        </Card>
+              />}
+          </Col>
+          <Col xs={24} sm={10}>
+            {(customer && customer.id) &&
+              <PoPrice
+                po_data={po_data && po_data.partner}
+                form={form}
+                customer={customer}
+                record={record}
+              />}
+          </Col>
+        </Row>
+        {(customer && customer.id) &&
+          <Row justify='end'>
+            <Divider />
+            <Button className='mt10' type='primary' htmlType='submit'>Create</Button>
+          </Row>}
       </Form>
     </Modal>
   )

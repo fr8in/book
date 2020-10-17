@@ -5,7 +5,7 @@ import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import u from '../../lib/util'
 const CITY_QUERY = gql`
-subscription{
+subscription connected_city {
   city(where:{_and: [ {is_connected_city: {_eq: true}}]}){
     id
     name

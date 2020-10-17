@@ -23,7 +23,7 @@ import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 
 const TRUCKS_QUERY = gql`
-subscription truck_activation($truck_id : Int){
+subscription truck_activation_detail($truck_id : Int){
   truck(where: {id: {_eq: $truck_id}}) {
     height
     truck_no

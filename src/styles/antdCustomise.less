@@ -89,7 +89,6 @@ td .ant-badge {position: absolute; left: -3px;top: 20px;}
         border-color: lighten(@success, 5%);
     }
 }
-
 .p0 {
     .ant-page-header-heading-left {
         margin: 0;
@@ -98,7 +97,6 @@ td .ant-badge {position: absolute; left: -3px;top: 20px;}
         }
     }
 }
-
 .filter-drop-down { 
     padding: 0 10px 5px;
     .ant-checkbox-group-item, .ant-radio-wrapper {
@@ -108,3 +106,77 @@ td .ant-badge {position: absolute; left: -3px;top: 20px;}
     }
 }
 .ant-upload-list-item-name { cursor: pointer;}
+.no-header .ant-modal-close {
+    right: -5px;
+    top: -13px;
+    width: 42px;
+    height: 42px; 
+    .ant-modal-close-x {
+        width: 42px;
+        height: 42px; 
+    }
+}
+.form-sheet.ant-form .ant-form-item {
+    margin-bottom: 0;
+}
+.form-sheet .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+    display: none;
+}
+.form-sheet.ant-form .ant-form-item.last .ant-form-item-label{
+    padding-bottom: 0;
+}
+.form-sheet .ant-form-item-label label > span > span {
+    font-size: 10px;
+    display: block;
+    color: #999;
+    position: relative;
+    top: -10px;
+    font-weight: normal;
+    b {
+        color: @primary;
+    }
+}
+.form-sheet.ant-form .ant-form-item.vertical .ant-form-item-label,
+.form-sheet.ant-form .ant-form-item.vertical .ant-form-item-control  {
+    flex: 0 0 100%;
+    max-width: 100%;
+}
+.form-sheet.ant-form .ant-form-item.indent .ant-form-item-label {
+    padding-left: 20%;
+}
+.form-sheet {
+    .ant-divider-horizontal {
+        margin: 0;
+    }
+    &.create-po{
+        input.ant-input {
+            max-width: 100%;
+        }
+    }
+    .ant-form-item-control {
+        text-align: right;
+        .ant-select-selector {
+            text-align: left;
+        }
+        input.ant-input {
+            text-align: right;
+            max-width: 120px;
+            &[disabled]{
+                background-color: transparent;
+                border: 0 none;
+                color: rgba(0,0,0,0.5);
+            }
+        }
+    }
+}
+#trip_rate_type label:last-child {
+    margin-right: 0;
+}
+@media (max-width: 575px) {
+    .form-sheet.ant-form .ant-form-item .ant-form-item-label {
+        flex: 0 0 70%
+    }
+    .form-sheet.ant-form .ant-form-item .ant-form-item-control {
+        flex: 0 0 30%
+    }
+}

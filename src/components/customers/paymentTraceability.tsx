@@ -47,7 +47,7 @@ const PaymentTraceability = (props) => {
   const customer_incomings = get(_data, 'customer_sap_incoming', [])
 
   const onAmountChange = (e, balance) => {
-    const value = parseFloat(e.target.value) || 0
+    const value = parseFloat(e.target.value) || null
     if (value > balance) {
       message.error(`Don't enter more than ₹${balance}`)
     } else {

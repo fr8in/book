@@ -8,7 +8,7 @@ import u from '../../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 
 const FUEL_CARD_QUERY = gql`
-query all($partner_id: Int!) {
+query partner_fuel_detail($partner_id: Int!) {
   partner(where: {id: {_eq: $partner_id}}) {
     fuel_card {
       number

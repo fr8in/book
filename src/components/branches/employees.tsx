@@ -4,7 +4,7 @@ import get from 'lodash/get'
 import EmployeeNumber from './employeeNumber'
 
 const EMPLOYEE_QUERY = gql`
-query BranchEmployee {
+query branch_employee {
   employee(where:{active: {_eq: 1}}){
     id
     name

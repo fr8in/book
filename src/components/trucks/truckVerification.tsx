@@ -1,8 +1,7 @@
 import userContext from '../../lib/userContaxt'
 import { useState,useContext } from 'react'
 import u from '../../lib/util'
-import { Table, Button, Space, Pagination, Checkbox, Tooltip } from 'antd'
-import Link from 'next/link'
+import { Table, Button, Space, Checkbox } from 'antd'
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import TruckReject from '../../components/trucks/truckReject'
 import TruckActivation from '../trucks/truckActivation'
@@ -14,7 +13,7 @@ import LinkComp from '../common/link'
 import isEmpty from 'lodash/isEmpty'
 
 const TRUCKS_QUERY = gql`
-query trucks_{
+query trucks_type_status{
   truck_type {
     id
     name
