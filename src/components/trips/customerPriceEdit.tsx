@@ -59,12 +59,7 @@ const CustomerPriceEdit = (props) => {
   const customer_advance_percentage = trip_price.customer_advance_percentage
   const partner_advance_percentage = trip_price.partner_advance_percentage
   const [disableButton, setDisableButton] = useState(false)
-
-  const initial = {
-    cus_advance: trip_price.bank || ((trip_price.customer_price) * customer_advance_percentage / 100),
-    part_advance: ((trip_price.partner_price) * partner_advance_percentage / 100) - (trip_price.cash + trip_price.to_pay)
-  }
-  const [price, setPrice] = useState(initial)
+  const part_advance = ((trip_price.partner_price) * partner_advance_percentage / 100) - (trip_price.cash + trip_price.to_pay)
 
   const { loading, data, error } = useSubscription(TRIP_MAX_PRICE)
 
@@ -136,7 +131,7 @@ const CustomerPriceEdit = (props) => {
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
     const balance = (fr8_total < 0 ? 0 : fr8_total) - (loaded ? trip_price.bank : (bank > 0 ? bank : 0))
     const fr8_part_total = part_price - (parseFloat(form.getFieldValue('p_total')))
-    const wallet = loaded ? price.part_advance : (part_price * partner_advance_percentage / 100) - parseFloat(form.getFieldValue('p_total'))
+    const wallet = loaded ? part_advance : (part_price * partner_advance_percentage / 100) - parseFloat(form.getFieldValue('p_total'))
     const fr8_part_balance = (fr8_part_total < 0 ? 0 : fr8_part_total) - (wallet < 0 ? 0 : wallet)
 
     form.setFieldsValue({
@@ -159,7 +154,7 @@ const CustomerPriceEdit = (props) => {
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
     const balance = (fr8_total < 0 ? 0 : fr8_total) - (loaded ? trip_price.bank : (bank > 0 ? bank : 0))
     const fr8_part_total = part_price - (parseFloat(form.getFieldValue('p_total')))
-    const wallet = loaded ? price.part_advance : (part_price * partner_advance_percentage / 100) - parseFloat(form.getFieldValue('p_total'))
+    const wallet = loaded ? part_advance : (part_price * partner_advance_percentage / 100) - parseFloat(form.getFieldValue('p_total'))
     const fr8_part_balance = (fr8_part_total < 0 ? 0 : fr8_part_total) - (wallet < 0 ? 0 : wallet)
 
     form.setFieldsValue({
@@ -181,7 +176,7 @@ const CustomerPriceEdit = (props) => {
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
     const balance = (fr8_total < 0 ? 0 : fr8_total) - (loaded ? trip_price.bank : (bank > 0 ? bank : 0))
     const fr8_part_total = part_price - (parseFloat(form.getFieldValue('p_total')))
-    const wallet = loaded ? price.part_advance : ((part_price * partner_advance_percentage) / 100) - form.getFieldValue('p_total')
+    const wallet = loaded ? part_advance : ((part_price * partner_advance_percentage) / 100) - form.getFieldValue('p_total')
     const fr8_part_balance = (fr8_part_total < 0 ? 0 : fr8_part_total) - (wallet < 0 ? 0 : wallet)
 
     form.setFieldsValue({
@@ -202,7 +197,7 @@ const CustomerPriceEdit = (props) => {
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
     const balance = (fr8_total < 0 ? 0 : fr8_total) - (loaded ? trip_price.bank : (bank > 0 ? bank : 0))
     const fr8_part_total = form.getFieldValue('total') - (value ? parseFloat(value) : 0)
-    const wallet = loaded ? price.part_advance : (part_price * partner_advance_percentage / 100) - (parseFloat(form.getFieldValue('p_total')))
+    const wallet = loaded ? part_advance : (part_price * partner_advance_percentage / 100) - (parseFloat(form.getFieldValue('p_total')))
     const fr8_part_balance = (fr8_part_total < 0 ? 0 : fr8_part_total) - (wallet < 0 ? 0 : wallet)
 
     form.setFieldsValue({
@@ -419,7 +414,7 @@ const CustomerPriceEdit = (props) => {
           label={<span>{`Advance ${trip_price.partner_advance_percentage}%`} <span>Wallet</span></span>}
           name='wallet'
           rules={[{ required: true, message: 'Bank value is required field!' }]}
-          initialValue={price.part_advance || 0}
+          initialValue={part_advance || 0}
           className='indent'
         >
           <Input placeholder='Bank' disabled size='small' type='number' />
@@ -427,7 +422,7 @@ const CustomerPriceEdit = (props) => {
         <Form.Item
           label={<span>Balance <span>Including Commission</span></span>}
           name='fp_balance'
-          initialValue={(trip_price.partner_price - (trip_price.cash + trip_price.to_pay + price.part_advance)) || 0}
+          initialValue={(trip_price.partner_price - (trip_price.cash + trip_price.to_pay + part_advance)) || 0}
           className='indent'
         >
           <Input placeholder='Balance' disabled size='small' type='number' />

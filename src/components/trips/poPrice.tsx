@@ -17,8 +17,7 @@ const PoPrice = (props) => {
   const part_price = cus_price - default_mamul
   const bank = cus_price ? (cus_price * customer_advance_percentage / 100) : 0
   const wallet = part_price ? (part_price * partner_advance_percentage / 100) : 0
-  console.log('PO record', record)
-  console.log('PO data', po_data)
+
   const initial = {
     part_adv: wallet,
     rate_type: price_type ? 'Rate/Ton' : 'Rate/Trip',
@@ -26,7 +25,6 @@ const PoPrice = (props) => {
   }
   const [price, setPrice] = useState(initial)
   const rate_per_ton = (price.rate_type === 'Rate/Ton')
-  console.log('price', price)
 
   const modelInitial = { mamulVisible: false }
   const { visible, onHide, onShow } = useShowHide(modelInitial)
