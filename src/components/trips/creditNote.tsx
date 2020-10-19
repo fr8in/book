@@ -199,7 +199,7 @@ const CreditNote = (props) => {
                 loading={disableButton}
                 htmlType='submit'
                 disabled={
-                  !(invoiced && !received && !closed && access) || !(radioType === 'Credit Note' && invoiced && !received && !closed) || lock
+                  ((invoiced && access && !received && !closed) ? false : !(radioType === 'Credit Note' && invoiced && !received && !closed)) || lock
                 }
               >
                 Submit
