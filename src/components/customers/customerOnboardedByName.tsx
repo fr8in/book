@@ -30,6 +30,7 @@ const OnBoardedBy = (props) => {
   const { loading, error, data } = useQuery(
     ALL_EMPLOYEE,
     {
+      fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
   )

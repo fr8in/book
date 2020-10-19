@@ -164,7 +164,7 @@ const CustomersContainer = (props) => {
             onNameSearch={onNameSearch}
             onMobileSearch={onMobileSearch}
             onPageChange={onPageChange}
-            loading={loading}
+            loading={s_loading}
             edit_access={kycApprovalRejectEdit}
           />
         </Card>

@@ -1,10 +1,45 @@
 import { Table } from 'antd'
 import moment from 'moment'
+import { gql, useQuery } from '@apollo/client'
+import get from 'lodash/get'
+
+const customerBooked = gql`
+query customer_booked($cardcode:String,$customer_incoming_id:Int)
+{
+  accounting_customer_booked(where:{cardcode:{_eq:$cardcode} ,customer_incoming_id:{_eq:$customer_incoming_id}})
+  {
+    amount
+    id
+    trip_id
+    invoice_no
+    customer_incoming_id
+    comment
+    created_at
+  }
+}`
 
 const IncomingPaymentsBooked = (props) => {
-  const { customer_booked,loading} = props
+  const { record } = props
 
-  const data = [
+  const { loading, data, error } = useQuery(
+    customerBooked,
+    {
+      variables: {
+        cardcode: record.cardcode,
+        customer_incoming_id: record.customer_incoming_id
+      },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
+  )
+  console.log('IncomingPaymentsBooked error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const customer_booked = get(_data, 'accounting_customer_booked', null)
+
+  const column = [
     {
       title: 'Date',
       dataIndex: 'created_at',
@@ -36,7 +71,7 @@ const IncomingPaymentsBooked = (props) => {
 
   return (
     <Table
-      columns={data}
+      columns={column}
       dataSource={customer_booked}
       rowKey={(record) => record.customer_incoming_id}
       size='small'

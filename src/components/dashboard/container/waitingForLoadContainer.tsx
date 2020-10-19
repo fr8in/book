@@ -3,7 +3,7 @@ import { gql, useSubscription } from '@apollo/client'
 import _ from 'lodash'
 
 const DASHBOARD_TRUCK_QUERY = gql`
-subscription dashboard_trips($regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $truck_no: String) {
+subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $truck_no: String) {
   region(where: {id: {_in: $regions}}) {
     id
     branches(where: {id: {_in: $branches}}) {
@@ -12,7 +12,13 @@ subscription dashboard_trips($regions: [Int!], $branches: [Int!], $cities: [Int!
         id
         cities {
           id
-          trucks(where: {truck_status: {name: {_eq: "Waiting for Load"}}, truck_no: {_ilike: $truck_no}, truck_type: {id:{_in: $truck_type}}}) {
+          trucks(where: {
+            truck_status: {name: {_eq: "Waiting for Load"}},
+            truck_no: {_ilike: $truck_no},
+            truck_type: {id:{_in: $truck_type}},
+            partner:{partner_status:{name:{_eq:"Active"}}},
+            _or:[{ partner:{dnd:{_neq:true}}}, {truck_type: {id:{_nin: [25,27]}}}]
+          } ) {
             id
             truck_no
             truck_type {

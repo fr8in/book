@@ -1,6 +1,6 @@
 import TripsTracking from '../tripsTracking'
-import { useQuery,useSubscription } from '@apollo/client'
-import { TRIPS_QUERY,TRIPS } from './query/tripsQuery'
+import { useQuery, useSubscription } from '@apollo/client'
+import { TRIPS_QUERY, TRIPS } from './query/tripsQuery'
 import { useState } from 'react'
 import get from 'lodash/get'
 import u from '../../../lib/util'
@@ -34,7 +34,7 @@ const DeliveredContainer = () => {
     limit: filter.limit,
     where: where
   }
-  const status_fliter={
+  const status_fliter = {
     trip_statusName: initialFilter.trip_statusName,
     where: where
   }
@@ -48,7 +48,7 @@ const DeliveredContainer = () => {
     }
   )
   console.log('DeliveredContainer error', error)
-  const { data: tripsdata} = useSubscription(
+  const { data: tripsdata } = useSubscription(
     TRIPS,
     {
       variables: variables

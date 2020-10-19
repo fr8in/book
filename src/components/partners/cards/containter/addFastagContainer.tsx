@@ -40,7 +40,9 @@ const AddFastagContainer = () => {
   const { loading, error, data } = useQuery(
     PARTNER_SEARCH,
     {
-      variables: { search: obj.search || '' }
+      variables: { search: obj.search || '' },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
     }
   )
 

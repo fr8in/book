@@ -3,7 +3,7 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 
 const CUSTOMERS_TYPE_QUERY = gql`
   query customer_type{
@@ -25,10 +25,11 @@ mutation customer_type_update($type_id:Int,$cardcode:String,$updated_by:String!)
 `
 
 const CustomerType = (props) => {
-  const { type, cardcode,edit_access } = props
+  const { type, cardcode, edit_access } = props
   const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(CUSTOMERS_TYPE_QUERY, {
+    fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true
   })
 
@@ -53,7 +54,7 @@ const CustomerType = (props) => {
       variables: {
         cardcode,
         type_id: value,
-        updated_by: context.email,
+        updated_by: context.email
       }
     })
   }

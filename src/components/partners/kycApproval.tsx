@@ -85,7 +85,10 @@ const KycApproval = (props) => {
   const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(
-    PARTNERS_QUERY, { notifyOnNetworkStatusChange: true }
+    PARTNERS_QUERY, {
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
   )
   console.log('CreatePartnersContainer error', error)
   const { data: partnerData } = useSubscription(

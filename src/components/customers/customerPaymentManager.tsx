@@ -2,7 +2,7 @@ import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 
 const ALL_EMPLOYEE = gql`
   query all_employee {
@@ -23,10 +23,11 @@ mutation customer_payment_manager($payment_manager_id:Int,$cardcode:String,$upda
 }
 `
 const CustomerPaymentManager = (props) => {
-  const { paymentManagerId, paymentManager, cardcode ,edit_access} = props
+  const { paymentManagerId, paymentManager, cardcode , edit_access } = props
   const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(ALL_EMPLOYEE, {
+    fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true
   })
 

@@ -14,7 +14,10 @@ query branch_employee {
 
 const Employees = (props) => {
   const { loading, error, data } = useQuery(
-    EMPLOYEE_QUERY, { notifyOnNetworkStatusChange: true }
+    EMPLOYEE_QUERY, {
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
   )
 
   console.log('BranchesContainer error', error)

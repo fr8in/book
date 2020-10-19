@@ -47,7 +47,6 @@ const Breakdown = (props) => {
   const [filter, setFilter] = useState(initial)
   const [currentPage, setCurrentPage] = useState(1)
 
-
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
   const variables = {
@@ -59,7 +58,11 @@ const Breakdown = (props) => {
 
   const { loading, error, data } = useQuery(
     TRUCK_BREAKDOWN_QUERY,
-    { variables: variables }
+    {
+      variables: variables,
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
   )
 
   console.log('Breakdown error', error)

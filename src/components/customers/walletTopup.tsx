@@ -46,7 +46,9 @@ const WalletTopup = (props) => {
   const { loading, data, error } = useQuery(
     CUSTOMER_INCOMING_PAYMENTS,
     {
-      variables: { search: search || null }
+      variables: { search: search || null },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
     }
   )
   const [customer_topup] = useMutation(

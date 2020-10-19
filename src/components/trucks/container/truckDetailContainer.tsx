@@ -5,7 +5,7 @@ import Documents from '../truckDocuments'
 import TripDetail from '../../trips/tripsByStages'
 import Truck from '../truck'
 import TruckTimeline from '../truckTimeline'
-import { Row, Col, Button, Card, Divider, Space, Tag, Tabs, message } from 'antd'
+import { Row, Col, Button, Card, Divider, Space, Tag, Tabs, message, Tooltip } from 'antd'
 import { CommentOutlined, SnippetsOutlined } from '@ant-design/icons'
 import DetailPageHeader from '../../common/detailPageHeader'
 import TruckType from '../../trucks/truckType'
@@ -106,7 +106,7 @@ const TruckDetailContainer = (props) => {
   const { truckNo } = props
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.admin,role.partner_manager,role.onboarding]
+  const edit_access = [role.admin, role.partner_manager, role.onboarding]
   const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
   const [subTabKey, setSubTabKey] = useState('1')
@@ -176,9 +176,9 @@ const TruckDetailContainer = (props) => {
               <Divider type='vertical' />
               <h4>
                 <TruckType
-                  truckType={truck_info.truck_type && truck_info.truck_type.name}
-                  truckTypeId={truck_info.truck_type && truck_info.truck_type.id}
-                  truck_no={truck_info.truck_no}
+                  truckType={get(truck_info, 'truck_type.name', null)}
+                  truckTypeId={get(truck_info, 'truck_type.id', null)}
+                  truck_no={get(truck_info, 'truck_no', null)}
                 />
               </h4>
             </Space>
@@ -187,7 +187,7 @@ const TruckDetailContainer = (props) => {
             <Space>
               {truck_info && truck_info.truck_status && truck_info.truck_status.name && truck_info.truck_status.name === 'Waiting for Load' &&
                 <Button type='primary' shape='circle' onClick={() => onShow('poModal')} icon={<SnippetsOutlined />} />}
-              <Tag className='status'>{truck_info && truck_info.truck_status && truck_info.truck_status.name}</Tag>
+              <Tooltip title={`Id: ${get(truck_info, 'id', null)}`}><Tag className='status'>{get(truck_info, 'truck_status.name', null)}</Tag></Tooltip>
             </Space>
           }
         />

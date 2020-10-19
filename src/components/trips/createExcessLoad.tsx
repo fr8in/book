@@ -67,7 +67,9 @@ const CreateExcessLoad = (props) => {
   const { loading, error, data } = useQuery(
     CUSTOMER_SEARCH,
     {
-      variables: { search: obj.search || '' }
+      variables: { search: obj.search || '' },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
     }
   )
   console.log('CreateExcessLoad Error', error)

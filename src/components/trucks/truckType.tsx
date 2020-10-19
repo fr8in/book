@@ -34,6 +34,7 @@ const TruckType = (props) => {
   const { loading, error, data } = useQuery(
     TRUCKS_TYPE_QUERY,
     {
+      fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
   )

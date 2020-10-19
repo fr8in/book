@@ -4,11 +4,12 @@ import moment from 'moment'
 import { gql, useMutation, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
+import Loading from '../common/loading'
 
 const TRIP_COMMENTS = gql`
 subscription trip_comments($id: Int!) {
   trip(where: {id: {_eq: $id}}, order_by: {created_at: asc}) {
-    trip_comments {
+    trip_comments(order_by:{created_at: desc}) {
       id
       description
       topic
@@ -77,7 +78,7 @@ const TripComment = (props) => {
     <Card size='small'>
       <Row className='scroll-box mb10 pt10'>
         <Col xs={24} className='timeLine'>
-          {comments && comments.length > 0
+          {!loading && comments && comments.length > 0
             ? comments.map((comments, i) => {
               return (
                 <Timeline key={i}>
@@ -101,7 +102,7 @@ const TripComment = (props) => {
                 </Timeline>
               )
             })
-            : null}
+            : <Loading />}
         </Col>
       </Row>
       <Row gutter={10}>

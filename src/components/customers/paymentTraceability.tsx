@@ -33,7 +33,8 @@ const PaymentTraceability = (props) => {
     INCOMING_PAYMENT,
     {
       variables: { walletcode: walletcode },
-      fetchPolicy: 'cache-and-network'
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
     }
   )
 

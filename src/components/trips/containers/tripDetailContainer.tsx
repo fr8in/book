@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react'
-import { Row, Col, Card, Space, Tag, Tabs, Collapse } from 'antd'
+import { Row, Col, Card, Space, Tag, Tabs, Collapse, Tooltip } from 'antd'
 import { LockTwoTone } from '@ant-design/icons'
 import TripInfo from '../tripInfo'
 import TripLr from '../tripLr'
@@ -81,7 +81,10 @@ const TripDetailContainer = (props) => {
               title={title}
               extra={
                 <Space>
-                  {lock && <LockTwoTone twoToneColor='#dc3545' style={{ fontSize: 20 }} />}
+                  {lock &&
+                    <Tooltip title='Previous Transaction Pending'>
+                      <LockTwoTone twoToneColor='#dc3545' style={{ fontSize: 20 }} />
+                    </Tooltip>}
                   <Tag className='status'>{get(trip_info, 'trip_status.name', null)}</Tag>
                 </Space>
               }

@@ -39,7 +39,12 @@ const SourcingContainer = () => {
   const initial = { createLead: false, employeeList: false, filterList: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
-  const { loading, error, data } = useQuery(SOURCING_QUERY)
+  const { loading, error, data } = useQuery(
+    SOURCING_QUERY,
+    {
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    })
 
   console.log('sourcingContainer Error', error)
 

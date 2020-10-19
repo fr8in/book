@@ -31,12 +31,25 @@ query gloabl_filter($now: timestamp, $regions:[Int!], $branches:[Int!], $cities:
         cities {
           id
           name
-          trucks_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}}) {
+          trucks_total: trucks_aggregate(where: {
+            _and: [
+                {truck_status: {name: {_eq: "Waiting for Load"}}}, 
+                {partner:{partner_status:{name:{_eq:"Active"}}}}
+              ],
+            _or:[{ partner:{dnd:{_neq:true}}}, {truck_type: {id:{_nin: [25,27]}}}]
+          }) {
             aggregate {
               count
             }
           }
-          trucks_current: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, {available_at: {_gte: $now}}]}) {
+          trucks_current: trucks_aggregate(where: {
+            _and: [
+                {available_at: {_gte: $now}},
+                {truck_status: {name: {_eq: "Waiting for Load"}}}, 
+                {partner:{partner_status:{name:{_eq:"Active"}}}}
+              ],
+            _or:[{ partner:{dnd:{_neq:true}}}, {truck_type: {id:{_nin: [25,27]}}}]
+            }) {
             aggregate {
               count
             }
@@ -86,7 +99,14 @@ const GlobalFilter = ({onFilter,initialFilter}) => {
     regions: (filter.regions && filter.regions.length !== 0) ? filter.regions : null
   }
 
-  const { loading, data } = useQuery(GLOBAL_FILTER, { variables })
+  const { loading, data } = useQuery(
+    GLOBAL_FILTER, 
+    { 
+      variables, 
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true 
+    }
+  )
   if (!loading) {
     region_options = []
     //2nd level branch_options 

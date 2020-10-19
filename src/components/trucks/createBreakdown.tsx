@@ -44,7 +44,11 @@ const CreateBreakdown = (props) => {
   const [disableButton, setDisableButton] = useState(false)
 
   const { loading, data, error } = useQuery(
-    CREATE_BREAKDOWN, { variables: { id } }
+    CREATE_BREAKDOWN, {
+      variables: { id },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
   )
 
   console.log('CreateBreakdown Error', error)

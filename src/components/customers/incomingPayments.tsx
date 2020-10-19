@@ -1,5 +1,5 @@
 import { Table } from 'antd'
-import { gql, useQuery,useLazyQuery } from '@apollo/client'
+import { gql, useQuery, useLazyQuery } from '@apollo/client'
 import IncomingPaymentsBooked from './incomingPaymentsBooked'
 import get from 'lodash/get'
 import moment from 'moment'
@@ -21,35 +21,20 @@ query customer_booked_incoming($cardcode:String){
    }
 }`
 
-const customerBooked = gql`
-query customer_booked($cardcode:String,$customer_incoming_id:Int)
-{
-  accounting_customer_booked(where:{cardcode:{_eq:$cardcode} ,customer_incoming_id:{_eq:$customer_incoming_id}})
-  {
-    amount
-    id
-    trip_id
-    invoice_no
-    customer_incoming_id
-    comment
-    created_at
-  }
-}`
-
-
 const IncomingPayments = (props) => {
   const { cardcode } = props
 
   const { loading, data, error } = useQuery(
     INCOMING_PAYMENT,
     {
-      variables: { cardcode: cardcode }
+      variables: { cardcode: cardcode },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
     }
   )
 
   console.log('Incoming Error', error)
 
- 
   let _data = {}
   if (!loading) {
     _data = data
@@ -57,21 +42,6 @@ const IncomingPayments = (props) => {
 
   const customer = get(_data, 'customer[0]', [])
   const customer_incomings = get(customer, 'customer_incoming', 0)
-
-  const [getCustomerBooked,{ loading: cus_loading, data: cus_data, error: cus_error }] = useLazyQuery(customerBooked)
-    
-    let _cus_data = {}
-    if (!cus_loading) {
-      _cus_data = cus_data
-    }
-  const customer_booked = get(_cus_data, 'accounting_customer_booked', null)
-
-  const onExpand = (_, record) => {
-    console.log('onExpand', record)
-    getCustomerBooked({
-      variables: {cardcode: record.cardcode,customer_incoming_id:record.customer_incoming_id}
-    })
-  }
 
   const columns = [
     {
@@ -108,8 +78,7 @@ const IncomingPayments = (props) => {
   return (
     <Table
       columns={columns}
-      expandedRowRender={record => <IncomingPaymentsBooked  customer_booked={customer_booked}/>}
-      onExpand={onExpand}
+      expandedRowRender={record => <IncomingPaymentsBooked record={record} />}
       dataSource={customer_incomings}
       rowKey={record => record.customer_incoming_id}
       size='small'

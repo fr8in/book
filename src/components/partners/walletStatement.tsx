@@ -49,7 +49,9 @@ const WalletStatement = (props) => {
   const { loading, error, data } = useQuery(
     PARTNER_WALLET_STATEMENT_QUERY,
     {
-      variables: { cardcode: cardcode }
+      variables: { cardcode: cardcode },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
     }
   )
   console.log('PartnersWalletStatement error', error)

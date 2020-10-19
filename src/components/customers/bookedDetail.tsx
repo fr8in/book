@@ -43,7 +43,9 @@ const BookedDetail = (props) => {
   const { loading, data, error } = useQuery(
     INCOMING_PAYMENT,
     {
-      variables: { cardcode: cardcode }
+      variables: { cardcode: cardcode },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
     }
   )
 

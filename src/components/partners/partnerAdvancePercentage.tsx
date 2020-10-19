@@ -30,6 +30,7 @@ const AdvancePercentage = (props) => {
   const { loading, error, data } = useQuery(
     PARTNER_ADVANCE_PERCENTAGE_SUBSCRIPTION,
     {
+      fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
   )

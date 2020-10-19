@@ -38,10 +38,12 @@ const walletTopup = (props) => {
   const [total, setTotal] = useState(0)
   const context = useContext(userContext)
 
-  const { loading, data, error } = useQuery(
+  const { loading, data, error, refetch } = useQuery(
     PARTNER_MANUAL_TOPUP,
     {
-      variables: { id: partner_id }
+      variables: { id: partner_id },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
     }
   )
 
@@ -58,6 +60,7 @@ const walletTopup = (props) => {
         if (status === 'OK') {
           setDisbleBtn(false)
           message.success(description || 'Processed!')
+          refetch()
           onHide()
         } else {
           setDisbleBtn(false)

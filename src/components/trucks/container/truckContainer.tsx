@@ -124,13 +124,13 @@ const TruckContainer = () => {
     _sdata = s_data
   }
 
-  const truck = get(s_data, 'truck', [])
+  const truck = get(_sdata, 'truck', [])
 
   let _data = {}
   if (!loading) {
     _data = data
   }
-  
+
   const truck_status = get(_data, 'truck_status', [])
   const truck_aggregate = get(_data, 'truck_aggregate', null)
   const truck_status_list = truck_status.filter((data) => data.id !== 10)
@@ -162,7 +162,7 @@ const TruckContainer = () => {
               trucks={truck}
               truck_status_list={truck_status_list}
               status={truck_status}
-              loading={loading}
+              loading={s_loading}
               filter={filter}
               onFilter={onFilter}
               onPageChange={onPageChange}

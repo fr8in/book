@@ -31,6 +31,7 @@ const Fr8Employee = (props) => {
     EMPLOYEE_QUERY,
     {
       variables: { id: branch_id },
+      fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
   )

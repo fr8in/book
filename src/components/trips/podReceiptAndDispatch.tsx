@@ -40,6 +40,7 @@ const PodReceiptAndDispatch = (props) => {
 
   const { loading, error, data } = useQuery(
     ALL_EMP_AND_COURIER, {
+      fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
   )

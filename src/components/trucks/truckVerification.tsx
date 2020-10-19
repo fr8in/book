@@ -1,5 +1,5 @@
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import u from '../../lib/util'
 import { Table, Button, Space, Checkbox } from 'antd'
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
@@ -156,25 +156,26 @@ const TruckVerification = (props) => {
       render: (text, record) => {
         return (
           <Space>
-            { truckActivationRejectAccess ?
-             <>
-            <Button
-              type='primary'
-              size='small'
-              shape='circle'
-              className='btn-success'
-              icon={<CheckOutlined />}
-              onClick={() => handleShow('truckActivationVisible', null, 'truckActivationData', record.id)}
-            />
-            <Button
-              type='primary'
-              size='small'
-              shape='circle'
-              danger
-              icon={<CloseOutlined />}
-              onClick={() => handleShow('truckRejectVisible', 'Reject Truck', 'truckRejectData', record.id)}
-            /> </> : null  }
-              
+            {truckActivationRejectAccess ? (
+              <>
+                <Button
+                  type='primary'
+                  size='small'
+                  shape='circle'
+                  className='btn-success'
+                  icon={<CheckOutlined />}
+                  onClick={() => handleShow('truckActivationVisible', null, 'truckActivationData', record.id)}
+                />
+                <Button
+                  type='primary'
+                  size='small'
+                  shape='circle'
+                  danger
+                  icon={<CloseOutlined />}
+                  onClick={() => handleShow('truckRejectVisible', 'Reject Truck', 'truckRejectData', record.id)}
+                />
+              </>) : null}
+
           </Space>
         )
       }

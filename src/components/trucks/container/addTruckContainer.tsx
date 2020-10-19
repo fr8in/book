@@ -63,6 +63,7 @@ const AddTruckContainer = (props) => {
     ADD_TRUCK_QUERY,
     {
       variables: { cardcode: cardcode },
+      fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
   )

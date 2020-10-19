@@ -29,6 +29,7 @@ const Fr8Employee = (props) => {
   const { loading, error, data } = useQuery(
     BRANCH_QUERY,
     {
+      fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
   )

@@ -27,7 +27,8 @@ const TrucksForPO = (props) => {
     {
       variables: { id: partner_id },
       skip: !partner_id,
-        fetchPolicy:"cache-and-network"
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
     }
   )
 

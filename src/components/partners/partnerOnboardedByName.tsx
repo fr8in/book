@@ -40,6 +40,7 @@ const OnBoardedBy = (props) => {
   const { loading, error, data } = useQuery(
     ALL_EMPLOYEE,
     {
+      fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
   )
@@ -59,8 +60,8 @@ const OnBoardedBy = (props) => {
     }
   )
 
+  console.log('OnBoardedByName error', error)
   if (loading) return null
-  // console.log('OnBoardedByName error', error)
 
   const { employee } = data
   const empList = employee.map(data => {

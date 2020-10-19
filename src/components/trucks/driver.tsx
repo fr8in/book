@@ -47,7 +47,11 @@ const Driver = (props) => {
   }
 
   const { loading, error, data } = useQuery(
-    DRIVER_QUERY, { variables: { id: partner_id } }
+    DRIVER_QUERY, {
+      variables: { id: partner_id },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
   )
 
   let _data = {}

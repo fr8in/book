@@ -38,7 +38,10 @@ const OutGoing = (props) => {
   const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(
-    pendingTransaction, { notifyOnNetworkStatusChange: true }
+    pendingTransaction, {
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
   )
   console.log('pendingTransaction error', error)
 

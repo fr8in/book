@@ -30,7 +30,7 @@ query gloabl_filter($now: timestamp, $regions:[Int!], $branches:[Int!], $cities:
   region {
     id
     name
-    branches(where:{_and: [ {region_id:{_in:$regions}} {id:{_in:$branches}}]}) {
+    branches(where:{_and: [ {region_id:{_in:$regions}}, {id:{_in:$branches}}]}) {
       branch_employees {
         id
         employee {
@@ -47,12 +47,25 @@ query gloabl_filter($now: timestamp, $regions:[Int!], $branches:[Int!], $cities:
         cities {
           id
           name
-          trucks_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}}) {
+          trucks_total: trucks_aggregate(where: {
+            _and: [
+                {truck_status: {name: {_eq: "Waiting for Load"}}}, 
+                {partner:{partner_status:{name:{_eq:"Active"}}}}
+              ],
+            _or:[{ partner:{dnd:{_neq:true}}}, {truck_type: {id:{_nin: [25,27]}}}]
+          }) {
             aggregate {
               count
             }
           }
-          trucks_current: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, {available_at: {_gte: $now}}]}) {
+          trucks_current: trucks_aggregate(where: {
+            _and: [
+                {available_at: {_gte: $now}},
+                {truck_status: {name: {_eq: "Waiting for Load"}}}, 
+                {partner:{partner_status:{name:{_eq:"Active"}}}}
+              ],
+            _or:[{ partner:{dnd:{_neq:true}}}, {truck_type: {id:{_nin: [25,27]}}}]
+            }) {
             aggregate {
               count
             }
@@ -81,7 +94,11 @@ const Actions = (props) => {
     now: initialFilter.now,
     regions: (filter.regions && filter.regions.length > 0) ? filter.regions : null
   }
-  const { loading, data, error } = useQuery(GLOBAL_FILTER, { variables })
+  const { loading, data, error } = useQuery(GLOBAL_FILTER, { 
+    variables,
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  })
 
   console.log('Actions Error', error)
   let region_options = []

@@ -18,7 +18,7 @@ import Loading from '../common/loading'
 import FileUploadOnly from '../common/fileUploadOnly'
 import DeleteFile from '../common/deleteFile'
 import ViewFile from '../common/viewFile'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 
@@ -86,10 +86,13 @@ const TruckActivation = (props) => {
     {
       onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
+        message.error(error.toString())
+      },
       onCompleted () {
         setDisableButton(false)
-        message.success('Saved!!') }
+        message.success('Saved!!')
+        onHide()
+      }
     }
   )
 

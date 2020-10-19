@@ -148,7 +148,7 @@ const ConfirmPo = (props) => {
         message.success(msg)
         setObj(initial)
         onHide()
-        hideExess()
+        if (hideExess) { hideExess() }
       }
     }
   )

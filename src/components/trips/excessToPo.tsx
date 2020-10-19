@@ -27,7 +27,9 @@ const ExcessToPo = (props) => {
     PARTNER_SEARCH_QUERY,
     {
       variables: { search: obj.search || '' },
-      skip: !obj.search
+      skip: !obj.search,
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
     }
   )
 

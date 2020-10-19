@@ -38,7 +38,9 @@ const GlobalSearch = (props) => {
   const { loading, error, data } = useQuery(
     GLOBAL_SEARCH,
     {
-      variables: { search: search }
+      variables: { search: search },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
     }
   )
 
