@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect } from 'react'
 import { Row, Col, Card, Space, Tag, Tabs, Collapse } from 'antd'
+import { LockTwoTone } from '@ant-design/icons'
 import TripInfo from '../tripInfo'
 import TripLr from '../tripLr'
 import TripTime from '../tripTime'
@@ -80,6 +81,7 @@ const TripDetailContainer = (props) => {
               title={title}
               extra={
                 <Space>
+                  {lock && <LockTwoTone twoToneColor='#dc3545' style={{ fontSize: 20 }} />}
                   <Tag className='status'>{get(trip_info, 'trip_status.name', null)}</Tag>
                 </Space>
               }
@@ -144,7 +146,7 @@ const TripDetailContainer = (props) => {
                         </Collapse>}
                       <Collapse accordion className='small mt10'>
                         <Panel header='Additional Advance' key='1'>
-                          {before_invoice && loaded && lock &&
+                          {before_invoice && loaded && !lock &&
                             <CreateAdditionalAdvance trip_info={trip_info} />}
                           <AdditionalAdvance ad_trip_id={trip_info.id} loaded={loaded} />
                         </Panel>

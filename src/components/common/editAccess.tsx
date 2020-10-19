@@ -10,7 +10,7 @@ const EditAccess = (props) => {
 
   return (
     <>
-      {access ? <EditTwoTone onClick={onEdit} disabled={lock} /> : ''}
+      {access && !lock ? <EditTwoTone onClick={onEdit} /> : ''}
     </>
   )
 }
