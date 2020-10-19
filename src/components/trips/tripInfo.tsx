@@ -1,4 +1,5 @@
 import { Row, Col, Divider } from 'antd'
+import { EditTwoTone } from '@ant-design/icons'
 import LabelAndData from '../common/labelAndData'
 import LabelWithData from '../common/labelWithData'
 import Link from 'next/link'
@@ -37,6 +38,7 @@ const TripInfo = (props) => {
   const po_date = get(trip_info, 'po_date', null)
   const pod_verified = get(trip_info, 'pod_verified_at', null)
   const pod_dispatched = get(trip_info, 'pod_dispatched_at', null)
+  const lock = get(trip_info, 'transaction_lock', null)
 
   return (
     <Row>
@@ -96,7 +98,7 @@ const TripInfo = (props) => {
               data={
                 <p className='mb0'>
                   {get(trip_info, 'customer_price', null)}{' '}
-                  <EditAccess edit_access={price_edit_access} onEdit={() => onShow('price')} />
+                  <EditTwoTone onClick={() => onShow('price')} />
                 </p>
               }
               labelSpan={10}
@@ -128,6 +130,7 @@ const TripInfo = (props) => {
           loaded={trip_info.loaded === 'Yes'}
           trip_status_id={trip_status_id}
           edit_access={price_edit_access}
+          lock={lock}
         />}
     </Row>
   )

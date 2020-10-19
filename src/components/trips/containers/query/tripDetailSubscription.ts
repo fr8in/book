@@ -17,6 +17,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       invoiced_at
       received_at
       closed_at
+      transaction_lock
       km
       driver{
         id

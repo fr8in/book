@@ -16,7 +16,7 @@ mutation trip_source_out($source_out:timestamp,$id:Int,$updated_by: String!) {
 `
 
 const SourceOutDate = (props) => {
-  const { source_out, id } = props
+  const { source_out, id, lock } = props
 
   const context = useContext(userContext)
   const [disableBtn, setDisableBtn] = useState(false)
@@ -52,7 +52,7 @@ const SourceOutDate = (props) => {
       label='Source Out'
       dateValue={source_out || null}
       onSubmit={onSubmit}
-      disable={disableBtn}
+      disable={disableBtn || lock}
     />
   )
 }

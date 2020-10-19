@@ -90,7 +90,7 @@ const TripTime = (props) => {
   const { trip_info, customerConfirm, lr_files } = props
   const initial = { checkbox: false, mail: false, deletePO: false, godownReceipt: false, wh_detail: false }
   const { visible, onShow, onHide } = useShowHide(initial)
-  const [ disableBtn, setDisableBtn ] = useState(false)
+  const [disableBtn, setDisableBtn] = useState(false)
   const context = useContext(userContext)
   const [form] = Form.useForm()
 
@@ -262,6 +262,7 @@ const TripTime = (props) => {
   const after_deliverd = (trip_status_id >= 9)
   const wh_update = (trip_status_id > 4)
   const disable_pa = (!customerConfirm && isEmpty(lr_files))
+  const lock = get(trip_info, 'transaction_lock', null)
 
   return (
     <Card size='small' className='mt10'>
@@ -270,21 +271,21 @@ const TripTime = (props) => {
           <Form layout='vertical' form={form}>
             <Row gutter={10}>
               <Col xs={8}>
-                <SourceInDate source_in={trip_info.source_in} id={trip_info.id} form={form} />
+                <SourceInDate source_in={trip_info.source_in} id={trip_info.id} lock={lock} />
               </Col>
               <Col xs={8}>
-                <SourceOutDate source_out={trip_info.source_out} id={trip_info.id} />
+                <SourceOutDate source_out={trip_info.source_out} id={trip_info.id} lock={lock} />
               </Col>
               <Col xs={8}>
-                <Driver trip_info={trip_info} initialValue={driver_number} disable={after_deliverd} />
+                <Driver trip_info={trip_info} initialValue={driver_number} disable={after_deliverd || lock} />
               </Col>
             </Row>
             <Row gutter={10}>
               <Col xs={8}>
-                <DestinationInDate destination_in={trip_info.destination_in} id={trip_info.id} advance_processed={advance_processed} />
+                <DestinationInDate destination_in={trip_info.destination_in} id={trip_info.id} advance_processed={advance_processed} lock={lock} />
               </Col>
               <Col xs={8}>
-                <DestinationOutDate destination_out={trip_info.destination_out} id={trip_info.id} />
+                <DestinationOutDate destination_out={trip_info.destination_out} id={trip_info.id} lock={lock} />
               </Col>
               <Col xs={8}>
                 <Form.Item label='Loading Memo'>
@@ -300,7 +301,7 @@ const TripTime = (props) => {
             <Col xs={20}>
               <Checkbox
                 checked={get(trip_info, 'unloaded_private_godown', false)}
-                disabled={wh_update || get(trip_info, 'unloaded_private_godown', false)}
+                disabled={wh_update || get(trip_info, 'unloaded_private_godown', false) || lock}
                 onClick={get(trip_info, 'unloaded_private_godown', false) ? () => {} : () => onShow('godownReceipt')}
               >Unloaded at private godown
               </Checkbox>
@@ -328,17 +329,17 @@ const TripTime = (props) => {
             <Col xs={24}>
               <Space>
                 {po_delete &&
-                  <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')}>PO</Button>}
+                  <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')} disabled={lock}>PO</Button>}
                 {process_advance &&
-                  <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa} loading={disableBtn}>Process Advance</Button>}
+                  <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>}
                 {remove_sin &&
-                  <Button danger icon={<CloseCircleOutlined />} onClick={onSinRemove}>S-In</Button>}
+                  <Button danger icon={<CloseCircleOutlined />} onClick={onSinRemove} disabled={lock}>S-In</Button>}
                 {remove_sout &&
-                  <Button danger icon={<CloseCircleOutlined />} onClick={onSoutRemove}>S-Out</Button>}
+                  <Button danger icon={<CloseCircleOutlined />} onClick={onSoutRemove} disabled={lock}>S-Out</Button>}
                 {remove_din &&
-                  <Button danger icon={<CloseCircleOutlined />} onClick={onDinRemove}>D-In</Button>}
+                  <Button danger icon={<CloseCircleOutlined />} onClick={onDinRemove} disabled={lock}>D-In</Button>}
                 {remove_dout &&
-                  <Button danger icon={<CloseCircleOutlined />} onClick={onDoutRemove}>D-Out</Button>}
+                  <Button danger icon={<CloseCircleOutlined />} onClick={onDoutRemove} disabled={lock}>D-Out</Button>}
               </Space>
             </Col>
           </Row>

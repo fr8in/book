@@ -16,7 +16,7 @@ mutation trip_destination_out($destination_out:timestamp,$id:Int,$updated_by: St
 `
 
 const DestinationOutDate = (props) => {
-  const { destination_out, id } = props
+  const { destination_out, id, lock } = props
 
   const context = useContext(userContext)
   const [disableBtn, setDisableBtn] = useState(false)
@@ -52,7 +52,7 @@ const DestinationOutDate = (props) => {
       label='Destination Out'
       dateValue={destination_out}
       onSubmit={onSubmit}
-      disable={disableBtn}
+      disable={disableBtn || lock}
     />
   )
 }

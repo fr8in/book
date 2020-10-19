@@ -176,7 +176,7 @@ const TripInvoice = (props) => {
     }
   )
   const floatVal = (value) => value ? parseFloat(value) : 0
-  console.log('checked', lchecked && !(floatVal(form.getFieldValue('customer_loading_halting')) && floatVal(form.getFieldValue('loading_halting'))))
+
   const onCalcutation = () => {
     if (trip_info.billing_remarks && !form.getFieldValue('remarks')) {
       message.error('Confirm other charges booked for Customer/Partner')
@@ -229,7 +229,7 @@ const TripInvoice = (props) => {
         topic: 'Invoiced',
         description: form.comment,
         createdBy: context.email,
-        onHold: form.onHold
+        onHold: floatVal(form.onHold)
       }
     })
   }

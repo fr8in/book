@@ -49,6 +49,7 @@ const TripLr = (props) => {
   const loaded = (trip_info.loaded === 'Yes')
   const lr = get(trip_info, 'lr', null)
   const lr_numbers = lr ? lr.split(',') : []
+  const lock = get(trip_info, 'transaction_lock', null)
 
   return (
     <Row gutter={8}>
@@ -80,6 +81,7 @@ const TripLr = (props) => {
                 type='trip'
                 file_type='LR'
                 file_list={lr_files}
+                disable={lock}
               />
             </Space>)
             : (
@@ -88,10 +90,11 @@ const TripLr = (props) => {
                 type='trip'
                 folder='pod/'
                 file_type='LR'
+                disable={lock}
               />)}
           <Checkbox
             checked={trip_info.customer_confirmation || customerConfirm}
-            disabled={trip_info.customer_confirmation && loaded}
+            disabled={(trip_info.customer_confirmation && loaded) || lock}
             onChange={onCustomerConfirm}
           >Customer Confirmation
           </Checkbox>

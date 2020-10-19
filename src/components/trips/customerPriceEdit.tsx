@@ -52,7 +52,7 @@ mutation update_trip_price(
 }`
 
 const CustomerPriceEdit = (props) => {
-  const { visible, onHide, trip_id, trip_price, loaded, trip_status_id, edit_access } = props
+  const { visible, onHide, trip_id, trip_price, loaded, trip_status_id, edit_access, lock } = props
 
   const [form] = Form.useForm()
   const context = useContext(userContext)
@@ -427,7 +427,7 @@ const CustomerPriceEdit = (props) => {
         >
           <Input placeholder='Balance' disabled size='small' type='number' />
         </Form.Item>
-        {authorised ? (
+        {authorised && !lock ? (
           <div>
             <Form.Item
               name='comment'

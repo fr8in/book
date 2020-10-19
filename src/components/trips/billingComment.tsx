@@ -3,7 +3,7 @@ import { gql, useMutation } from '@apollo/client'
 import FileUpload from '../common/fileUpload'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 
 const BILLING_COMMENT_MUTATION = gql`
 mutation update_billing_comment($id: Int!, $billing_remarks: String,$updated_by: String!){
@@ -26,10 +26,12 @@ const BillingComment = (props) => {
     {
       onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
+        message.error(error.toString())
+      },
       onCompleted () {
         setDisableButton(false)
-        message.success('Updated!!') }
+        message.success('Updated!!')
+      }
     }
   )
 
@@ -55,7 +57,8 @@ const BillingComment = (props) => {
   })
   const trip_status_id = get(trip_info, 'trip_status.id', null)
   const trip_status = (trip_status_id >= 12)
-  console.log('trip_info', trip_info)
+  const lock = get(trip_info, 'transaction_lock', null)
+
   return (
     <Row>
       <Col xs={24}>
@@ -69,7 +72,7 @@ const BillingComment = (props) => {
                 folder='approvals/'
                 file_type='EVIDENCELIST'
                 file_list={evidence_file_list}
-                disable={trip_status}
+                disable={trip_status || lock}
               />
             </Col>
             <Col xs={24} sm={18}>
@@ -85,11 +88,11 @@ const BillingComment = (props) => {
                 </Col>
                 <Col flex='80px'>
                   <Form.Item label='save' className='hideLabel'>
-                    <Button htmlType='submit' type='primary' loading={disableButton} disabled={trip_status}>Save</Button>
+                    <Button htmlType='submit' type='primary' loading={disableButton} disabled={trip_status || lock}>Save</Button>
                   </Form.Item>
                 </Col>
               </Row>
-              {trip_info.billing_remarks &&
+              {get(trip_info, 'billing_remarks', null) &&
                 <Row>
                   <Col xs={24}>
                     <label>Billing Remark</label>
