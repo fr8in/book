@@ -20,7 +20,7 @@ const CANCEL_AR = gql`mutation cancel_ar($trip_id: Int!){
 }`
 
 const InvoiceDetail = (props) => {
-  const { ap, ar, trip_id, edit_access } = props
+  const { ap, ar, trip_id, edit_access, lock } = props
   const [disableAR, setDisableAR] = useState(false)
   const [disableAP, setDisableAP] = useState(false)
 
@@ -72,11 +72,11 @@ const InvoiceDetail = (props) => {
       <Row>
         <LabelAndData
           label={<p className='mb5 h5 text-body'>{`Partner (AP: ${ap})`}</p>}
-          data={edit_access ? <Button danger disabled={ar} loading={disableAP} onClick={onAPCancel}>AP cancel</Button> : ''}
+          data={edit_access ? <Button danger disabled={ar || lock} loading={disableAP} onClick={onAPCancel}>AP cancel</Button> : ''}
         />
         <LabelAndData
           label={<p className='mb5 h5 text-body'>{`Customer (AR: ${ar})`}</p>}
-          data={edit_access ? <Button danger loading={disableAR} onClick={onARCancel}>AR cancel</Button> : ''}
+          data={edit_access ? <Button danger loading={disableAR} onClick={onARCancel} disabled={lock}>AR cancel</Button> : ''}
         />
       </Row>
     </>

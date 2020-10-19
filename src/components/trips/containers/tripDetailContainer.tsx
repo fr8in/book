@@ -63,6 +63,7 @@ const TripDetailContainer = (props) => {
   const pod_files = !isEmpty(files) && files.filter(file => file.type === 'POD')
   const customer_confirmation = get(trip_info, 'customer_confirmation', null)
   const loaded = (get(trip_info, 'loaded', null) === 'Yes')
+  const lock = get(trip_info, 'transaction_lock', null)
 
   useEffect(() => {
     setCustomerConfirm(customer_confirmation)
@@ -123,7 +124,7 @@ const TripDetailContainer = (props) => {
                           <TripPod trip_id={trip_info.id} trip_info={trip_info} />
                         </Panel>
                       </Collapse>
-                      {trip_status_name === 'Delivered' && trip_info.pod_verified_at && access && !isEmpty(pod_files) &&
+                      {trip_status_name === 'Delivered' && trip_info.pod_verified_at && access && !isEmpty(pod_files) && !lock &&
                         <Collapse accordion className='small box-0 mt10'>
                           <Panel header='Invoice' key='1'>
                             <TripInvoice trip_info={trip_info} />
@@ -137,12 +138,13 @@ const TripDetailContainer = (props) => {
                               ar={trip_info.ar}
                               trip_id={trip_id}
                               edit_access={access}
+                              lock={lock}
                             />
                           </Panel>
                         </Collapse>}
                       <Collapse accordion className='small mt10'>
                         <Panel header='Additional Advance' key='1'>
-                          {before_invoice && loaded &&
+                          {before_invoice && loaded && lock &&
                             <CreateAdditionalAdvance trip_info={trip_info} />}
                           <AdditionalAdvance ad_trip_id={trip_info.id} loaded={loaded} />
                         </Panel>
@@ -157,19 +159,7 @@ const TripDetailContainer = (props) => {
                       <Collapse accordion className='small box-0 mt10'>
                         <Panel header={<span>Customer - Receivables</span>} key='1'>
                           <Receivables trip_id={trip_id} />
-                          <CustomerPayments
-                            trip_id={trip_info.id}
-                            status={get(trip_info, 'trip_status.name', null)}
-                            cardcode={get(trip_info, 'customer.cardcode', null)}
-                            mamul={get(trip_info, 'mamul', 0)}
-                            price={get(trip_info, 'partner_price', 0)}
-                            walletcode={get(trip_info, 'customer.walletcode', null)}
-                            wallet_balance={get(trip_info, 'customer.customer_accounting.wallet_balance', null)}
-                            customer_id={get(trip_info, 'customer.id', null)}
-                            bank={get(trip_info, 'bank', 0)}
-                            status_id={get(trip_info, 'trip_status.id', null)}
-                            loaded = {get(trip_info, 'loaded', null)}
-                          />
+                          <CustomerPayments trip_info={trip_info} />
                         </Panel>
                       </Collapse>
                       <Collapse accordion className='small mt10'>

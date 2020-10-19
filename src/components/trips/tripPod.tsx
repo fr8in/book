@@ -6,6 +6,7 @@ import useShowHide from '../../hooks/useShowHide'
 import u from '../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 import userContext from '../../lib/userContaxt'
+import get from 'lodash/get'
 
 const TripPod = (props) => {
   const { trip_id, trip_info } = props
@@ -17,14 +18,16 @@ const TripPod = (props) => {
   const edit_access = [role.admin, role.billing_manager, role.billing]
   const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
-  const pod_files = trip_info && trip_info.trip_files && trip_info.trip_files.length > 0 ? trip_info.trip_files.filter(file => file.type === 'POD') : null
-  const pod_file_list = pod_files && pod_files.length > 0 && pod_files.map((file, i) => {
+  const files = get(trip_info, 'trip_files', [])
+  const pod_files = !isEmpty(files) ? files.filter(file => file.type === 'POD') : null
+  const pod_file_list = !isEmpty(pod_files) && pod_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
       name: file.file_path,
       status: 'done'
     })
   })
+  const lock = get(trip_info, 'transaction_lock', null)
 
   return (
     <div>
@@ -38,11 +41,12 @@ const TripPod = (props) => {
                 folder='pod/'
                 file_type='POD'
                 file_list={pod_file_list}
+                disable={lock}
               />
             </Col>
             {access &&
               <Col xs={24} sm={10} className='text-right'>
-                <Button type='primary' onClick={() => onShow('billing')}>Billing</Button>
+                <Button type='primary' onClick={() => onShow('billing')} disabled={lock}>Billing</Button>
               </Col>}
           </Row>
         </Col>

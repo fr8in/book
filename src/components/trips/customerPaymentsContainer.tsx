@@ -31,7 +31,20 @@ const TRIP_CUSTOMER = gql`
   }
   `
 const CustomerPaymentsContainer = (props) => {
-  const { trip_id, status, cardcode, mamul, price, walletcode, wallet_balance, bank, loaded,customer_id } = props
+  const { trip_info } = props
+
+  const trip_id = get(trip_info, 'id', null)
+  const status = get(trip_info, 'trip_status.name', null)
+  const cardcode = get(trip_info, 'customer.cardcode', null)
+  const mamul = get(trip_info, 'mamul', 0)
+  const price = get(trip_info, 'partner_price', 0)
+  const walletcode = get(trip_info, 'customer.walletcode', null)
+  const wallet_balance = get(trip_info, 'customer.customer_accounting.wallet_balance', null)
+  const customer_id = get(trip_info, 'customer.id', null)
+  const bank = get(trip_info, 'bank', 0)
+  const loaded = get(trip_info, 'loaded', null)
+  const lock = get(trip_info, 'transaction_lock', null)
+
   const initial = { adv_visible: false, final_visible: false, title: null, adv_data: null, final_data: null, add_inv_visible: false, add_inv_data: null }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
@@ -85,6 +98,7 @@ const CustomerPaymentsContainer = (props) => {
               dataSource={invoice_pending}
               type_name='Final'
               onShow={() => handleShow('adv_visible', 'Final', 'adv_data', invoice_pending[0])}
+              lock={lock}
             />
           </Col>
         </Row>)
@@ -100,6 +114,7 @@ const CustomerPaymentsContainer = (props) => {
                   dataSource={advance_pending_data}
                   type_name='Advance'
                   onShow={onFinalShow}
+                  lock={lock}
                 />
               </Col>
             </Row>

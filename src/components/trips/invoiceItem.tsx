@@ -41,6 +41,7 @@ const InvoiceItem = (props) => {
                 placeholder='Amount'
                 type='number'
                 min='0'
+                step='any'
                 disabled={disable_field || disable}
                 size='small'
                 className='text-right'

@@ -68,6 +68,7 @@ const CreditNote = (props) => {
   const invoiced = get(trip_info, 'invoiced_at', null)
   const received = get(trip_info, 'received_at', null)
   const closed = get(trip_info, 'closed_at', null)
+  const lock = get(trip_info, 'transaction_lock', null)
 
   const { loading, error, data } = useSubscription(
     CREDIT_DEBIT_ISSUE_TYPE_SUBSCRIPTION
@@ -197,7 +198,9 @@ const CreditNote = (props) => {
                 type='primary'
                 loading={disableButton}
                 htmlType='submit'
-                disabled={(invoiced && access && !received && !closed) ? false : !(radioType === 'Credit Note' && invoiced && !received && !closed)}
+                disabled={
+                  !(invoiced && !received && !closed && access) || !(radioType === 'Credit Note' && invoiced && !received && !closed) || lock
+                }
               >
                 Submit
               </Button>

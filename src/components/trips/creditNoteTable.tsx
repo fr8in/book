@@ -41,6 +41,7 @@ const CreditNoteTable = (props) => {
   const invoiced = get(trip_info, 'invoiced_at', null)
   const received = get(trip_info, 'received_at', null)
   const closed = get(trip_info, 'closed_at', null)
+  const lock = get(trip_info, 'transaction_lock', null)
 
   const initial = {
     approveData: [],
@@ -130,7 +131,7 @@ const CreditNoteTable = (props) => {
                 size='small'
                 shape='circle'
                 className='btn-success'
-                disabled={!(invoiced && !received && !closed)}
+                disabled={!(invoiced && !received && !closed) || lock}
                 icon={<CheckOutlined />}
                 onClick={() => handleShow('approveVisible', 'Approved', 'approveData', record)}
               />

@@ -3,7 +3,7 @@ import u from '../../lib/util'
 import EditAccess from '../common/editAccess'
 
 const CustomerPayments = (props) => {
-  const { dataSource, onShow, type_name } = props
+  const { dataSource, onShow, type_name, lock } = props
   const { role } = u
   const edit_access = [role.admin, role.accounts_manager, role.accounts]
 
@@ -44,7 +44,7 @@ const CustomerPayments = (props) => {
   {
     title: 'Edit',
     width: '6%',
-    render: (record) => <EditAccess edit_access={edit_access} onEdit={(type_name === 'Advance') ? () => onShow(record) : onShow} />
+    render: (record) => <EditAccess lock={lock} edit_access={edit_access} onEdit={(type_name === 'Advance') ? () => onShow(record) : onShow} />
   }]
 
   return (
