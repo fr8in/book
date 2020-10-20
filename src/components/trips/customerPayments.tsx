@@ -7,6 +7,8 @@ const CustomerPayments = (props) => {
   const { role } = u
   const edit_access = [role.admin, role.accounts_manager, role.accounts]
 
+  const final_booking_check = dataSource && dataSource.length > 1
+
   const column = [{
     title: 'Type',
     render: (record) => record && record.invoicetype ? record.invoicetype : 'Advance Pending',
@@ -44,7 +46,14 @@ const CustomerPayments = (props) => {
   {
     title: 'Edit',
     width: '6%',
-    render: (record) => <EditAccess lock={lock} edit_access={edit_access} onEdit={type_name ? onShow : () => onShow(record)} />
+    render: (record) => (
+      <EditAccess
+        lock={lock}
+        edit_access={edit_access}
+        onEdit={type_name ? onShow : () => onShow(record)}
+        disable={final_booking_check && record.doctype === 'I'}
+      />
+    )
   }]
 
   return (
