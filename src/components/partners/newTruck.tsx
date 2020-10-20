@@ -1,22 +1,12 @@
-import userContext from '../../../lib/userContaxt'
-import { useState, useContext, useEffect } from 'react'
-import { Row, Col, Card, message } from 'antd'
-import Link from 'next/link'
+import userContext from '../../lib/userContaxt'
+import { useState, useContext } from 'react'
+import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
-
 import get from 'lodash/get'
-import { useRouter } from 'next/router'
-import u from '../../../lib/util'
-import isEmpty from 'lodash/isEmpty'
-import AddTruck from '../addTruck'
+import AddTruck from '../trucks/addTruck'
 
-const ADD_TRUCK_QUERY = gql`
-query add_truck ( $cardcode: String!){
-  partner(where: {cardcode: {_eq: $cardcode}}) {
-    id
-    cardcode
-    name
-  }
+const TRUCK_TYPE_QUERY = gql`
+query add_truck{
   truck_type {
     id
     name
@@ -33,16 +23,12 @@ mutation add_truck($truck_no:String,  $partner_id: Int!, $breadth:float8,$length
   }
 }`
 
-const AddTruckContainer = (props) => {
-  const { cardcode } = props
+const NewTruck = (props) => {
+  const { partner_info } = props
   const [city_id, setCity_id] = useState(null)
   const [driver_id, setDriver_id] = useState(null)
-  const router = useRouter()
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
-  const { role } = u
-  const edit_access = [role.admin, role.partner_manager, role.onboarding]
-  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
   const onCityChange = (city_id) => {
     setCity_id(city_id)
@@ -52,22 +38,15 @@ const AddTruckContainer = (props) => {
     setDriver_id(driver_id)
   }
 
-  useEffect(() => {
-    if (!access) {
-      router.push('/')
-    }
-  })
-
   const { loading, error, data } = useQuery(
-    ADD_TRUCK_QUERY,
+    TRUCK_TYPE_QUERY,
     {
-      variables: { cardcode: cardcode },
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
   )
 
-  console.log('AddTruck error', error)
+  console.log('NewTruck error', error)
 
   let _data = {}
 
@@ -75,7 +54,6 @@ const AddTruckContainer = (props) => {
     _data = data
   }
 
-  const partner_info = get(_data, 'partner[0]', { name: 'ID does not exist' })
   const truck_type = get(_data, 'truck_type', [])
 
   const typeList = truck_type.map((data) => {
@@ -89,13 +67,9 @@ const AddTruckContainer = (props) => {
         setDisableButton(false)
         message.error(error.toString())
       },
-      onCompleted (data) {
+      onCompleted () {
         setDisableButton(false)
-        const value = get(data, 'insert_truck.returning', [])
         message.success('Created!!')
-        const url = '/trucks/[id]'
-        const as = `/trucks/${value[0].truck_no}`
-        router.push(url, as, 'shallow')
       }
     }
   )
@@ -119,31 +93,18 @@ const AddTruckContainer = (props) => {
   }
 
   return (
-    <Card
-      title={
-        <h3>Add Truck:&nbsp;
-          <Link href='/partners/[id]' as={`/partners/${cardcode}`}>
-            <a>{partner_info.name}</a>
-          </Link>
-        </h3>
-      }
-      size='small'
-      className='border-top-blue'
-    >
-      <Row>
-        <Col sm={8} offset={8}>
-          <AddTruck
-            partner_info={partner_info}
-            onSubmit={onSubmit}
-            typeList={typeList}
-            driverChange={driverChange}
-            onCityChange={onCityChange}
-            disableButton={disableButton}
-          />
-        </Col>
-      </Row>
-    </Card>
+    <>
+      <AddTruck
+        partner_info={partner_info}
+        onSubmit={onSubmit}
+        typeList={typeList}
+        driverChange={driverChange}
+        onCityChange={onCityChange}
+        disableButton={disableButton}
+        grid_column={24}
+      />
+    </>
   )
 }
 
-export default AddTruckContainer
+export default NewTruck

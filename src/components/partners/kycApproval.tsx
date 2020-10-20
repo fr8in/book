@@ -24,6 +24,7 @@ import isEmpty from 'lodash/isEmpty'
 import moment from 'moment'
 import Loading from '../common/loading'
 import Truncate from '../common/truncate'
+import NewTruck from './newTruck'
 
 const PARTNERS_QUERY = gql`
   query create_partner{
@@ -132,7 +133,6 @@ const KycApproval = (props) => {
 
   const pan_files = !isEmpty(files) && files.filter(file => file.type === 'PAN')
   const cheaque_files = !isEmpty(files) && files.filter(file => file.type === 'CL')
-  const agreement_files = !isEmpty(files) && files.filter(file => file.type === 'AGREEMENT')
   const cs_files = !isEmpty(files) && files.filter(file => file.type === 'CS')
 
   const [updatePartnerApproval] = useMutation(
@@ -225,7 +225,7 @@ const KycApproval = (props) => {
   const onCreatePartnerCodeSubmit = () => {
     if (isEmpty(trucks)) {
       message.error('Add truck before approve Partner!')
-    } else if (isEmpty(pan_files) || isEmpty(cheaque_files) || isEmpty(agreement_files) || isEmpty(cs_files)) {
+    } else if (isEmpty(pan_files) || isEmpty(cheaque_files) || isEmpty(cs_files)) {
       message.error('All documents are mandatory!')
     } else {
       setDisableButton(true)
@@ -244,236 +244,209 @@ const KycApproval = (props) => {
   return (
     <Modal
       visible={visible}
-      title='KYC Approval'
+      title={isEmpty(trucks) ? 'Truck Required for KYC Approval' : 'KYC Approval'}
       onCancel={onHide}
       style={{ top: 10 }}
-      bodyStyle={{ padding: 10 }}
       width={700}
       footer={[
         null
       ]}
     >
-      {partnerLoading ? <Loading /> : (
-        <Form layout='vertical' onFinish={onCreatePartnerCodeSubmit} form={form}>
-          <Row gutter={10}>
-            <Col xs={24} sm={6}>
-              <Form.Item name='partnerName' label='Partner Name'>
-                {cardcode ? (
-                  <LinkComp
-                    type='partners'
-                    data={name}
-                    id={cardcode}
-                  />) : <Truncate data={name} length={15} />}
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={8}>
-              <Form.Item
-                label='Advance Percentage'
-                name='partner_advance_percentage_id'
-                rules={[{ required: true }]}
-                initialValue={get(partnerDetail, 'partner_advance_percentage.id', null)}
-              >
-                <Select
-                  placeholder='Advance Percentage'
-                  options={advancePercentageList}
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={10}>
-              <Form.Item
-                label='On Boarded By'
-                name='onboarded_by_id'
-                rules={[{ required: true }]}
-                initialValue={get(partnerDetail, 'onboarded_by.id', null)}
-              >
-                <Select placeholder='On Boarded By' options={employeeList} optionFilterProp='label' showSearch />
-              </Form.Item>
-            </Col>
-          </Row>
-          <List bordered size='small' className='mb10'>
-            <List.Item key={1}>
-              <Col xs={24} sm={8}>PAN Document</Col>
-              <Col xs={12} sm={12}>{partnerDetail && partnerDetail.pan}</Col>
-              <Col xs={12} sm={4} className='text-right'>
-                <Space>
-                  <span>
-                    {!isEmpty(pan_files) ? (
-                      <Space>
-                        <ViewFile
+      {partnerLoading ? <Loading />
+        : isEmpty(trucks) ? <NewTruck partner_info={partnerDetail} /> : (
+          <Form layout='vertical' onFinish={onCreatePartnerCodeSubmit} form={form}>
+            <Row gutter={10}>
+              <Col xs={24} sm={6}>
+                <Form.Item name='partnerName' label='Partner Name'>
+                  {cardcode ? (
+                    <LinkComp
+                      type='partners'
+                      data={name}
+                      id={cardcode}
+                    />) : <Truncate data={name} length={15} />}
+                </Form.Item>
+              </Col>
+              <Col xs={24} sm={8}>
+                <Form.Item
+                  label='Advance Percentage'
+                  name='partner_advance_percentage_id'
+                  rules={[{ required: true }]}
+                  initialValue={get(partnerDetail, 'partner_advance_percentage.id', null)}
+                >
+                  <Select
+                    placeholder='Advance Percentage'
+                    options={advancePercentageList}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} sm={10}>
+                <Form.Item
+                  label='On Boarded By'
+                  name='onboarded_by_id'
+                  rules={[{ required: true }]}
+                  initialValue={get(partnerDetail, 'onboarded_by.id', null)}
+                >
+                  <Select placeholder='On Boarded By' options={employeeList} optionFilterProp='label' showSearch />
+                </Form.Item>
+              </Col>
+            </Row>
+            <List bordered size='small' className='mb10'>
+              <List.Item key={1}>
+                <Col xs={24} sm={8}>PAN Document</Col>
+                <Col xs={12} sm={12}>{partnerDetail && partnerDetail.pan}</Col>
+                <Col xs={12} sm={4} className='text-right'>
+                  <Space>
+                    <span>
+                      {!isEmpty(pan_files) ? (
+                        <Space>
+                          <ViewFile
+                            size='small'
+                            id={partner_id}
+                            type='partner'
+                            file_type='PAN'
+                            folder='approvals/'
+                            file_list={pan_files}
+                          />
+                          <DeleteFile
+                            size='small'
+                            id={partner_id}
+                            type='partner'
+                            file_type='PAN'
+                            file_list={pan_files}
+                          />
+                        </Space>
+                      ) : (
+                        <FileUploadOnly
                           size='small'
                           id={partner_id}
                           type='partner'
-                          file_type='PAN'
                           folder='approvals/'
+                          file_type='PAN'
                           file_list={pan_files}
                         />
-                        <DeleteFile
+                      )}
+                    </span>
+                  </Space>
+                </Col>
+              </List.Item>
+              <List.Item key={2}>
+                <Col xs={24} sm={8}>Cheque/Passbook</Col>
+                <Col xs={12} sm={12}>{get(partnerDetail, 'display_account_number', '-')}</Col>
+                <Col xs={12} sm={4} className='text-right'>
+                  <Space>
+                    <span>
+                      {!isEmpty(cheaque_files) ? (
+                        <Space>
+                          <ViewFile
+                            size='small'
+                            id={partner_id}
+                            type='partner'
+                            file_type='CL'
+                            folder='approvals/'
+                            file_list={cheaque_files}
+                          />
+                          <DeleteFile
+                            size='small'
+                            id={partner_id}
+                            type='partner'
+                            file_type='CL'
+                            file_list={cheaque_files}
+                          />
+                        </Space>
+                      ) : (
+                        <FileUploadOnly
                           size='small'
                           id={partner_id}
                           type='partner'
-                          file_type='PAN'
-                          file_list={pan_files}
-                        />
-                      </Space>
-                    ) : (
-                      <FileUploadOnly
-                        size='small'
-                        id={partner_id}
-                        type='partner'
-                        folder='approvals/'
-                        file_type='PAN'
-                        file_list={pan_files}
-                      />
-                    )}
-                  </span>
-                </Space>
-              </Col>
-            </List.Item>
-            <List.Item key={2}>
-              <Col xs={24} sm={8}>Cheque/Passbook</Col>
-              <Col xs={12} sm={12}>{get(partnerDetail, 'display_account_number', '-')}</Col>
-              <Col xs={12} sm={4} className='text-right'>
-                <Space>
-                  <span>
-                    {!isEmpty(cheaque_files) ? (
-                      <Space>
-                        <ViewFile
-                          size='small'
-                          id={partner_id}
-                          type='partner'
-                          file_type='CL'
                           folder='approvals/'
-                          file_list={cheaque_files}
-                        />
-                        <DeleteFile
-                          size='small'
-                          id={partner_id}
-                          type='partner'
                           file_type='CL'
                           file_list={cheaque_files}
                         />
-                      </Space>
-                    ) : (
-                      <FileUploadOnly
-                        size='small'
-                        id={partner_id}
-                        type='partner'
-                        folder='approvals/'
-                        file_type='CL'
-                        file_list={cheaque_files}
-                      />
-                    )}
-                  </span>
-                </Space>
-              </Col>
-            </List.Item>
-            <List.Item key={3}>
-              <Col xs={24} sm={8}>Agreement</Col>
-              <Col xs={12} sm={12}>&nbsp;</Col>
-              <Col xs={12} sm={4} className='text-right'>
-                <Space>
-                  <span>
-                    {!isEmpty(agreement_files) ? (
-                      <ViewFile
-                        size='small'
-                        id={partner_id}
-                        type='partner'
-                        file_type='AGREEMENT'
-                        folder='approvals/'
-                        file_list={agreement_files}
-                      />
-                    ) : (
-                      <FileUploadOnly
-                        size='small'
-                        id={partner_id}
-                        type='partner'
-                        folder='approvals/'
-                        file_type='AGREEMENT'
-                        file_list={agreement_files}
-                      />)}
-                  </span>
-                </Space>
-              </Col>
-            </List.Item>
-            <List.Item key={4}>
-              <Col xs={24} sm={20}>
-                <Row>
-                  <Col xs={10}>Cibil Score</Col>
-                  <Col xs={14}>
-                    <Form.Item name='cibil' className='mb0' initialValue={get(partnerDetail, 'cibil', null)}>
-                      <Input placeholder='Cibil Score' size='small' type='number' />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Col>
-              <Col xs={24} sm={4} className='text-right'>
-                <Space>
-                  <span>
-                    {!isEmpty(cs_files) ? (
-                      <Space>
-                        <ViewFile
+                      )}
+                    </span>
+                  </Space>
+                </Col>
+              </List.Item>
+              <List.Item key={4}>
+                <Col xs={24} sm={20}>
+                  <Row>
+                    <Col xs={10}>Cibil Score</Col>
+                    <Col xs={14}>
+                      <Form.Item name='cibil' className='mb0' initialValue={get(partnerDetail, 'cibil', null)}>
+                        <Input placeholder='Cibil Score' size='small' type='number' />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col xs={24} sm={4} className='text-right'>
+                  <Space>
+                    <span>
+                      {!isEmpty(cs_files) ? (
+                        <Space>
+                          <ViewFile
+                            size='small'
+                            id={partner_id}
+                            type='partner'
+                            file_type='CS'
+                            folder='approvals/'
+                            file_list={cs_files}
+                          />
+                          <DeleteFile
+                            size='small'
+                            id={partner_id}
+                            type='partner'
+                            file_type='CS'
+                            file_list={cs_files}
+                          />
+                        </Space>
+                      ) : (
+                        <FileUploadOnly
                           size='small'
                           id={partner_id}
                           type='partner'
-                          file_type='CS'
                           folder='approvals/'
-                          file_list={cs_files}
-                        />
-                        <DeleteFile
-                          size='small'
-                          id={partner_id}
-                          type='partner'
                           file_type='CS'
                           file_list={cs_files}
                         />
-                      </Space>
-                    ) : (
-                      <FileUploadOnly
-                        size='small'
-                        id={partner_id}
-                        type='partner'
-                        folder='approvals/'
-                        file_type='CS'
-                        file_list={cs_files}
-                      />
-                    )}
-                  </span>
-                </Space>
-              </Col>
-            </List.Item>
-            <List.Item key={5}>
-              <Col xs={24} sm={20}>
-                <Row>
-                  <Col xs={10}>GST Applicable</Col>
-                  <Col xs={14}>
-                    <Form.Item name='gst' initialValue={get(partnerDetail, 'gst', null)}>
-                      <Input placeholder='GST Number' size='small' />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Col>
-              <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
-            </List.Item>
-            <List.Item key={6}>
-              <Form.Item initialValue={get(partnerDetail, 'emi', false)}>
-                <Checkbox checked={checked} onChange={onChange}>EMI</Checkbox>
-              </Form.Item>
-              <Col xs={12} sm={12}>&nbsp;</Col>
-              <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
-            </List.Item>
-          </List>
-          <Table
-            columns={column}
-            dataSource={trucks}
-            size='small'
-            pagination={false}
-          />
-          <Row justify='end' className='mt10'>
-            <Button key='submit' type='primary' loading={disableButton} htmlType='submit'>
+                      )}
+                    </span>
+                  </Space>
+                </Col>
+              </List.Item>
+              <List.Item key={5}>
+                <Col xs={24} sm={20}>
+                  <Row>
+                    <Col xs={10}>GST Applicable</Col>
+                    <Col xs={14}>
+                      <Form.Item className='mb0' name='gst' initialValue={get(partnerDetail, 'gst', null)}>
+                        <Input placeholder='GST Number' size='small' />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
+              </List.Item>
+              <List.Item key={6}>
+                <Form.Item className='mb0' initialValue={get(partnerDetail, 'emi', false)}>
+                  <Checkbox checked={checked} onChange={onChange}>EMI</Checkbox>
+                </Form.Item>
+                <Col xs={12} sm={12}>&nbsp;</Col>
+                <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
+              </List.Item>
+            </List>
+            <Table
+              columns={column}
+              dataSource={trucks}
+              size='small'
+              pagination={false}
+              rowKey={record => record.truck_no}
+            />
+            <Row justify='end' className='mt10'>
+              <Button key='submit' type='primary' loading={disableButton} htmlType='submit'>
             Approve KYC
-            </Button>
-          </Row>
-        </Form>)}
+              </Button>
+            </Row>
+          </Form>)}
     </Modal>
   )
 }
