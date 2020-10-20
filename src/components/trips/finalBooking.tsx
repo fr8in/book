@@ -156,6 +156,8 @@ const FinalBooking = (props) => {
     setHeader(null)
   }
   const excess = calc.debit - pending_data.balance
+   const MIN_REBATE_PERCENTAGE = 0.25
+    const min_rebate= mamul* MIN_REBATE_PERCENTAGE
 
   const selectOnchange = (selectedRowKeys, selectedRows) => {
     setSelectedRowKeys(selectedRowKeys)
@@ -199,6 +201,8 @@ const FinalBooking = (props) => {
       message.error('Book any value, all fileds value is zero!')
     } else if (calc.total > pending_data.balance) {
       message.error('Maximum booking amount is ' + pending_data.balance)
+    } else if ((calc.total === pending_data.balance) && (calc.rebate < min_rebate )) {
+      message.error('Rebate must be greater than or equal to Min-rebate')
     } else {
       setDisableButton(true)
       customer_final_payment({
@@ -453,7 +457,8 @@ const FinalBooking = (props) => {
           <Row>
             <Col flex='auto'>
               <div>Total: <b>{calc.total + (parseFloat(amount) || 0)}</b>, Rebate: <b>{calc.rebate}</b></div>
-              <p>Balance: <b>{pending_data.balance}</b>, (Recievables: <b>{price}</b>, Mamul: <b>{mamul}</b>)</p>
+              <p>Balance: <b>{pending_data.balance}</b></p>
+              <p>(Recievables: <b>{price}</b>,Mamul: <b>{mamul}</b>,Min-rebate: <b>{min_rebate}</b>)</p>
             </Col>
             <Col flex='100px' className='text-right'>
               {excess > 0 && !header ? <Button type='primary' onClick={() => onShow('excess')}>Book Excess Write Off</Button>
