@@ -97,7 +97,6 @@ const CustomerPaymentsContainer = (props) => {
           <Col xs={24}>
             <CustomerPayments
               dataSource={balance_pending}
-              type_name='Final'
               onShow={onFinalShow}
               lock={lock}
             />

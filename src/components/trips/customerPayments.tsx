@@ -9,10 +9,10 @@ const CustomerPayments = (props) => {
 
   const column = [{
     title: 'Type',
-    render: (record) => record && record.invoicetype ? record.invoicetype : (type_name + ' Pending'),
+    render: (record) => record && record.invoicetype ? record.invoicetype : 'Advance Pending',
     width: '26%'
   },
-  type_name === 'Final' ? {
+  !type_name ? {
     title: 'Doc No',
     dataIndex: 'docentry',
     width: '18%'
@@ -21,7 +21,7 @@ const CustomerPayments = (props) => {
     title: 'Amount',
     width: '16%',
     render: (record) => {
-      const amounts = (type_name === 'Final') ? record.freight : record.amount
+      const amounts = type_name ? record.amount : record.freight
       return amounts
     }
   },
@@ -29,7 +29,7 @@ const CustomerPayments = (props) => {
     title: 'Received',
     width: '16%',
     render: (record) => {
-      const Received = (type_name === 'Final') ? record.received : record.received
+      const Received = record.received
       return Received
     }
   },
@@ -37,7 +37,7 @@ const CustomerPayments = (props) => {
     title: 'Balance',
     width: '18%',
     render: (record) => {
-      const Balance = (type_name === 'Final') ? record.balance : record.balance
+      const Balance = record.balance
       return Balance
     }
   },
