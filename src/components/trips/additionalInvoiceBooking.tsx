@@ -67,17 +67,21 @@ const AdditionalInvoiceBooking = (props) => {
 
   const onAdditionInvoiceBooking = () => {
     const writeOff = pending_data.balance - (amount ? parseInt(amount, 10) : 0)
-    customer_additional_invoice({
-      variables: {
-        trip_id: parseInt(trip_id),
-        paid: amount ? parseInt(amount, 10) : 0,
-        write_off: writeOff,
-        charge: pending_data.invoicetype,
-        docentry: selectedRow[0].docentry,
-        write_off_docentry: pending_data.docentry,
-        created_by: context.email
-      }
-    })
+    if (writeOff < 0) {
+      message.error('Booked amount is greater then balance!')
+    } else {
+      customer_additional_invoice({
+        variables: {
+          trip_id: parseInt(trip_id),
+          paid: amount ? parseInt(amount, 10) : 0,
+          write_off: writeOff,
+          charge: pending_data.invoicetype,
+          docentry: selectedRow[0].docentry,
+          write_off_docentry: pending_data.docentry,
+          created_by: context.email
+        }
+      })
+    }
   }
 
   const tableData = []
