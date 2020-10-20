@@ -7,29 +7,25 @@ import userContext from '../../lib/userContaxt'
 
 const CUSTOMER_ADDITIONAL_INVOICE = gql`
 mutation customer_additional_invoice(
-    $trip_id: Int!, 
-    $docentry: Int!,
-    $wallet_amount: Float!, 
-    $write_off_docentry: Int!
-    $created_by: String!, 
-    $loading_charge_write_off: Float, 
-    $unloading_charge_write_off: Float,
-    $source_halting_write_off: Float,
-    $destination_halting_write_off: Float
-  ) {
+  $trip_id: Int!,
+  $paid: Float!,
+  $write_off: Float!,
+  $charge: String!,
+  $created_by: String!,
+  $docentry: Int!,
+  $write_off_docentry: Int!
+) {
   customer_additional_invoice(
-    trip_id: $trip_id, 
-    docentry: $docentry,
-    wallet_amount: $wallet_amount, 
-    write_off_docentry: $write_off_docentry,  
-    created_by: $created_by,
-    loading_charge_write_off: $loading_charge_write_off,
-    source_halting_write_off: $unloading_charge_write_off,
-    unloading_charge_write_off: $source_halting_write_off,
-    destination_halting_write_off: $destination_halting_write_off
+    trip_id: $trip_id
+    paid: $paid
+    write_off: $write_off
+    charge: $charge
+    created_by: $created_by
+    docentry: $docentry
+    write_off_docentry: $write_off_docentry
   ) {
-    description
     status
+    description
   }
 }`
 
@@ -74,14 +70,12 @@ const AdditionalInvoiceBooking = (props) => {
     customer_additional_invoice({
       variables: {
         trip_id: parseInt(trip_id),
+        paid: amount ? parseInt(amount, 10) : 0,
+        write_off: writeOff,
+        charge: pending_data.invoicetype,
         docentry: selectedRow[0].docentry,
-        wallet_amount: amount ? parseInt(amount) : 0,
         write_off_docentry: pending_data.docentry,
-        created_by: context.email,
-        loading_charge_write_off: pending_data.invoicetype === 'Loading Charges' ? writeOff : null,
-        source_halting_write_off: pending_data.invoicetype === 'Loading Halting' ? writeOff : null,
-        unloading_charge_write_off: pending_data.invoicetype === 'Unloading Charges' ? writeOff : null,
-        destination_halting_write_off: pending_data.invoicetype === 'Unloading Halting' ? writeOff : null
+        created_by: context.email
       }
     })
   }
