@@ -1,3 +1,4 @@
+import { useEffect, useState, useContext } from 'react'
 import {
   Modal,
   Button,
@@ -18,7 +19,6 @@ import ViewFile from '../common/viewFile'
 import DeleteFile from '../common/deleteFile'
 import { gql, useMutation, useQuery, useSubscription } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
-import { useState, useContext } from 'react'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import moment from 'moment'
@@ -45,10 +45,18 @@ subscription partner_kyc($id:Int){
     name
     pan
     cardcode
-    partner_advance_percentage_id
-    onboarded_by_id
+    partner_advance_percentage{
+      id
+      name
+    }
+    onboarded_by{
+      id
+      name
+    }
     display_account_number
     gst
+    cibil
+    emi
     partner_files {
       id
       type
@@ -89,6 +97,12 @@ const KycApproval = (props) => {
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
 
+  const [checked, setChecked] = useState(false)
+
+  const onChange = (e) => {
+    setChecked(e.target.checked)
+  }
+
   const { loading, error, data } = useQuery(
     PARTNERS_QUERY, {
       fetchPolicy: 'cache-and-network',
@@ -104,8 +118,12 @@ const KycApproval = (props) => {
       }
     })
 
-  console.log('KycApproval error', partnerError)
   const partnerDetail = get(partnerData, 'partner[0]', [])
+  console.log('KycApproval error', partnerError, partnerDetail)
+
+  useEffect(() => {
+    setChecked(get(partnerDetail, 'emi', false))
+  }, [partnerDetail])
 
   const name = get(partnerDetail, 'name', null)
   const cardcode = get(partnerDetail, 'cardcode', null)
@@ -167,12 +185,6 @@ const KycApproval = (props) => {
     return { value: data.id, label: data.email }
   })
 
-  const [checked, setChecked] = useState(false)
-
-  const onChange = (e) => {
-    setChecked(e.target.checked)
-  }
-
   const column = [
     {
       title: 'Truck No',
@@ -201,25 +213,32 @@ const KycApproval = (props) => {
         partner_status_id: 4,
         gst: form.getFieldValue('gst'),
         cibil: form.getFieldValue('cibil'),
-        onboarded_by_id: form.getFieldValue('onboarded_by_id'),
+        emi: checked,
+        onboarded_by_id: form.getFieldValue('onboarded_by_id') || get(partnerDetail, 'onboarded_by.id', null),
         updated_by: context.email,
-        partner_advance_percentage_id: form.getFieldValue('partner_advance_percentage_id'),
+        partner_advance_percentage_id: form.getFieldValue('partner_advance_percentage_id') || get(partnerDetail, 'partner_advance_percentage.id', null),
         onboarded_date: moment().format('YYYY-MM-DD')
       }
     })
   }
 
   const onCreatePartnerCodeSubmit = () => {
-    setDisableButton(true)
-    createPartnerCode({
-      variables: {
-        name: name,
-        pay_terms_code: partnerDetail.partner_advance_percentage_id,
-        partner_id: partner_id,
-        pan_no: partnerDetail.pan,
-        cardcode: get(partnerDetail, 'cardcode', null)
-      }
-    })
+    if (isEmpty(trucks)) {
+      message.error('Add truck before approve Partner!')
+    } else if (isEmpty(pan_files) || isEmpty(cheaque_files) || isEmpty(agreement_files) || isEmpty(cs_files)) {
+      message.error('All documents are mandatory!')
+    } else {
+      setDisableButton(true)
+      createPartnerCode({
+        variables: {
+          name: name,
+          pay_terms_code: form.getFieldValue('partner_advance_percentage_id') || get(partnerDetail, 'partner_advance_percentage.id', null),
+          partner_id: partner_id,
+          pan_no: partnerDetail.pan,
+          cardcode: get(partnerDetail, 'cardcode', null)
+        }
+      })
+    }
   }
 
   return (
@@ -252,17 +271,20 @@ const KycApproval = (props) => {
                 label='Advance Percentage'
                 name='partner_advance_percentage_id'
                 rules={[{ required: true }]}
-                initialValue={get(partnerData, 'partner_advance_percentage_id', null)}
+                initialValue={get(partnerDetail, 'partner_advance_percentage.id', null)}
               >
-                <Select placeholder='Advance Percentage' options={advancePercentageList} />
+                <Select
+                  placeholder='Advance Percentage'
+                  options={advancePercentageList}
+                />
               </Form.Item>
             </Col>
             <Col xs={24} sm={10}>
               <Form.Item
                 label='On Boarded By'
                 name='onboarded_by_id'
-                rules={[{ required: true, message: 'On-Boarded By is required field!' }]}
-                initialValue={get(partnerData, 'onboarded_by_id', null)}
+                rules={[{ required: true }]}
+                initialValue={get(partnerDetail, 'onboarded_by.id', null)}
               >
                 <Select placeholder='On Boarded By' options={employeeList} optionFilterProp='label' showSearch />
               </Form.Item>
@@ -360,7 +382,15 @@ const KycApproval = (props) => {
                         folder='approvals/'
                         file_list={agreement_files}
                       />
-                    ) : null}
+                    ) : (
+                      <FileUploadOnly
+                        size='small'
+                        id={partner_id}
+                        type='partner'
+                        folder='approvals/'
+                        file_type='AGREEMENT'
+                        file_list={agreement_files}
+                      />)}
                   </span>
                 </Space>
               </Col>
@@ -370,8 +400,8 @@ const KycApproval = (props) => {
                 <Row>
                   <Col xs={10}>Cibil Score</Col>
                   <Col xs={14}>
-                    <Form.Item name='cibil' className='mb0'>
-                      <Input placeholder='Cibil Score' />
+                    <Form.Item name='cibil' className='mb0' initialValue={get(partnerDetail, 'cibil', null)}>
+                      <Input placeholder='Cibil Score' size='small' type='number' />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -416,8 +446,8 @@ const KycApproval = (props) => {
                 <Row>
                   <Col xs={10}>GST Applicable</Col>
                   <Col xs={14}>
-                    <Form.Item label='' name='gst'>
-                      <Input placeholder='GST Number' />
+                    <Form.Item name='gst' initialValue={get(partnerDetail, 'gst', null)}>
+                      <Input placeholder='GST Number' size='small' />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -425,9 +455,9 @@ const KycApproval = (props) => {
               <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
             </List.Item>
             <List.Item key={6}>
-              <Col xs={24} sm={8}>
+              <Form.Item initialValue={get(partnerDetail, 'emi', false)}>
                 <Checkbox checked={checked} onChange={onChange}>EMI</Checkbox>
-              </Col>
+              </Form.Item>
               <Col xs={12} sm={12}>&nbsp;</Col>
               <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
             </List.Item>

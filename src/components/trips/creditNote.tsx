@@ -104,8 +104,8 @@ const CreditNote = (props) => {
       },
       onCompleted (data) {
         setDisableButton(false)
-        const status = get(data, 'create_credit_track.success', null)
-        const msg = get(data, 'create_credit_track.message', 'Created!')
+        const status = get(data, 'create_debit_track.success', null)
+        const msg = get(data, 'create_debit_track.message', 'Created!')
         if (status) {
           message.success(msg)
           form.resetFields()
@@ -170,6 +170,7 @@ const CreditNote = (props) => {
                 placeholder='amount'
                 type='number'
                 min={1}
+                step='any'
                 maxLength={5}
               />
             </Form.Item>
