@@ -8,7 +8,8 @@ const truckDocuments = (props) => {
   const { truck_id, truck_info, partner_id } = props
 
   const files = get(truck_info, 'partner.partner_files', [])
-  const rc_files = !isEmpty(files) ? files.filter(file => file.type === 'RC') : null
+  const truck_files = get(truck_info, 'truck_files', [])
+  const rc_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === 'RC') : null
   const rc_file_list = !isEmpty(rc_files) && rc_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
@@ -17,7 +18,7 @@ const truckDocuments = (props) => {
     })
   })
 
-  const insurance_files = !isEmpty(files) ? files.filter(file => file.type === 'insurance') : null
+  const insurance_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === 'insurance') : null
   const insurance_file_list = !isEmpty(insurance_files) && insurance_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
@@ -26,7 +27,7 @@ const truckDocuments = (props) => {
     })
   })
 
-  const permit_files = !isEmpty(files) ? files.filter(file => file.type === 'permit') : null
+  const permit_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === 'permit') : null
   const permit_file_list = !isEmpty(permit_files) && permit_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
@@ -35,7 +36,7 @@ const truckDocuments = (props) => {
     })
   })
 
-  const emi_files = !isEmpty(files) ? files.filter(file => file.type === 'EMI') : null
+  const emi_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === 'EMI') : null
   const emi_file_list = !isEmpty(emi_files) && emi_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
@@ -71,7 +72,7 @@ const truckDocuments = (props) => {
     })
   })
 
-  const vaahan_files = !isEmpty(files) ? files.filter(file => file.type === 'vaahan') : null
+  const vaahan_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === 'vaahan') : null
   const vaahan_file_list = !isEmpty(vaahan_files) && vaahan_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
