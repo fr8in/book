@@ -206,7 +206,7 @@ const FinalBooking = (props) => {
           trip_id: parseInt(trip_id),
           created_by: context.email,
           docentry: (!isEmpty(selectedRow) && amount) ? selectedRow[0].docentry : null,
-          wallet: diff_wallet,
+          wallet: (!isEmpty(selectedRow) && amount) ? diff_wallet : 0,
           cash: floatVal(form.cash),
           rebate: floatVal(form.rebate),
           shortage_write_off: floatVal(form.sortage),

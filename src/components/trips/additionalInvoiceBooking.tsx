@@ -1,6 +1,7 @@
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import { Modal, Button, Row, Col, Input, message, Table, Card, Divider } from 'antd'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
 import PaymentTraceability from '../customers/paymentTraceability'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
@@ -30,7 +31,7 @@ mutation customer_additional_invoice(
 }`
 
 const AdditionalInvoiceBooking = (props) => {
-  const { visible, onHide, cardcode, mamul, price, pending_data, trip_id,walletcode,wallet_balance,customer_id } = props
+  const { visible, onHide, cardcode, mamul, price, pending_data, trip_id, walletcode, wallet_balance, customer_id } = props
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
@@ -73,10 +74,10 @@ const AdditionalInvoiceBooking = (props) => {
       customer_additional_invoice({
         variables: {
           trip_id: parseInt(trip_id),
-          paid: amount ? parseInt(amount, 10) : 0,
+          paid: (!isEmpty(selectedRow) && amount) ? parseInt(amount, 10) : 0,
           write_off: writeOff,
           charge: pending_data.invoicetype,
-          docentry: selectedRow[0].docentry,
+          docentry: (!isEmpty(selectedRow) && amount) ? selectedRow[0].docentry : null,
           write_off_docentry: pending_data.docentry,
           created_by: context.email
         }

@@ -65,7 +65,7 @@ const AdvanceBooking = (props) => {
       customer_advance_booking({
         variables: {
           trip_id: parseInt(trip_id, 10),
-          wallet: (!isEmpty(selectedRow) && amount) ? parseFloat(amount) : null,
+          wallet: (!isEmpty(selectedRow) && amount) ? parseFloat(amount) : 0,
           cash: parseFloat(form.cash),
           docentry: (!isEmpty(selectedRow) && amount) ? selectedRow[0].docentry : null,
           created_by: context.email
