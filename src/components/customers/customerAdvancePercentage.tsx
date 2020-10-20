@@ -15,8 +15,8 @@ const CUSTOMERS_ADVANCE_PERCENTAGE_QUERY = gql`
 }
 `
 const UPDATE_CUSTOMER_ADVANCE_MUTATION = gql`
-mutation customer_advance_update($advance_percentage_id:Int,$cardcode:String,$updated_by:String!) {
-  update_customer(_set: {advance_percentage_id: $advance_percentage_id,updated_by:$updated_by}, where: {cardcode: {_eq: $cardcode}}) {
+mutation customer_advance_update($advance_percentage_id:Int,$customer_id:Int!,$updated_by:String!) {
+  update_customer(_set: {advance_percentage_id: $advance_percentage_id,updated_by:$updated_by}, where: {id: {_eq: $customer_id}}) {
     returning {
       id
       advance_percentage_id
@@ -26,10 +26,14 @@ mutation customer_advance_update($advance_percentage_id:Int,$cardcode:String,$up
 `
 
 const CustomerAdvancePercentage = (props) => {
-  const { advancePercentageId, advancePercentage, cardcode } = props
+  const { record } = props
   const context = useContext(userContext)
   const { role } = u
   const customerAdvancePercentageEdit = [role.admin, role.accounts_manager, role.accounts]
+
+  const advancePercentage = get(record, 'customer_advance_percentage.name', '-')
+  const advancePercentageId = get(record, 'customer_advance_percentage.id', null)
+  const customer_id = get(record, 'id', null)
 
   const { loading, error, data } = useQuery(
     CUSTOMERS_ADVANCE_PERCENTAGE_QUERY,
@@ -61,7 +65,7 @@ const CustomerAdvancePercentage = (props) => {
   const handleChange = (value) => {
     updateCustomerTypeId({
       variables: {
-        cardcode,
+        customer_id: customer_id,
         updated_by: context.email,
         advance_percentage_id: value
       }

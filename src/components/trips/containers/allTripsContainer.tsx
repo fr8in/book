@@ -9,6 +9,7 @@ query after_delivered_trips_list(
   $offset: Int!, 
   $limit: Int!,
   $trip_statusName: [String!],
+  $date_sort: order_by,
   $where: trip_bool_exp){
   rows: trip_aggregate(where: $where) {
     aggregate {
@@ -19,10 +20,10 @@ query after_delivered_trips_list(
     id
     name
   }
-  trip(offset: $offset, limit: $limit, where:$where)
+  trip(offset: $offset, limit: $limit, where:$where, order_by: {created_at: $date_sort})
     {
     id
-      created_at
+    created_at
     order_date
     po_date
     customer {
@@ -56,6 +57,7 @@ const AllTripsContainer = (props) => {
   const initialFilter = {
     offset: 0,
     limit: u.limit,
+    date_sort: 'desc',
     partnername: null,
     customername: null,
     sourcename: null,
@@ -79,6 +81,7 @@ const AllTripsContainer = (props) => {
   const variables = {
     offset: filter.offset,
     limit: filter.limit,
+    date_sort: filter.date_sort,
     where: where,
     trip_statusName: initialFilter.trip_statusName
   }

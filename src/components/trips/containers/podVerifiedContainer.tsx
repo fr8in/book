@@ -9,6 +9,7 @@ const DeliveredContainer = () => {
   const initialFilter = {
     offset: 0,
     limit: u.limit,
+    date_sort: 'desc',
     partnername: null,
     customername: null,
     sourcename: null,
@@ -32,6 +33,7 @@ const DeliveredContainer = () => {
   const variables = {
     offset: filter.offset,
     limit: filter.limit,
+    date_sort: filter.date_sort,
     where: where
   }
   const status_fliter = {

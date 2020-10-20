@@ -87,8 +87,8 @@ const Trips = (props) => {
         </Tooltip>
       ),
       dataIndex: 'created_at',
-      key: 'order_date',
       render: (text, record) => text ? moment(text).format('DD-MMM-YY') : '',
+      sorter: (a, b) => (a.created_at > b.created_at ? 1 : -1),
       width: '8%'
     },
     {

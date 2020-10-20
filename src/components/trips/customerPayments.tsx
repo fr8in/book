@@ -9,7 +9,7 @@ const CustomerPayments = (props) => {
 
   const column = [{
     title: 'Type',
-    render: (record) => (type_name + ' Pending'),
+    render: (record) => record && record.invoicetype ? record.invoicetype : (type_name + ' Pending'),
     width: '26%'
   },
   type_name === 'Final' ? {
@@ -44,7 +44,7 @@ const CustomerPayments = (props) => {
   {
     title: 'Edit',
     width: '6%',
-    render: (record) => <EditAccess lock={lock} edit_access={edit_access} onEdit={(type_name === 'Advance') ? () => onShow(record) : onShow} />
+    render: (record) => <EditAccess lock={lock} edit_access={edit_access} onEdit={type_name ? onShow : () => onShow(record)} />
   }]
 
   return (
@@ -52,7 +52,7 @@ const CustomerPayments = (props) => {
       columns={column}
       dataSource={dataSource}
       pagination={false}
-      rowKey={record => record.trip_id}
+      rowKey={record => record.docentry}
       scroll={{ x: 400 }}
       size='small'
     />

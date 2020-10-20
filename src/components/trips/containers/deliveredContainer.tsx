@@ -9,6 +9,7 @@ const DeliveredContainer = (props) => {
   const initialFilter = {
     offset: 0,
     limit: u.limit,
+    date_sort: 'desc',
     partnername: null,
     customername: null,
     sourcename: null,
@@ -32,10 +33,11 @@ const DeliveredContainer = (props) => {
   const variables = {
     offset: filter.offset,
     limit: filter.limit,
+    date_sort: filter.date_sort,
     where: where
   }
 
-  const status_fliter={
+  const status_fliter = {
     trip_statusName: initialFilter.trip_statusName,
     where: where
   }

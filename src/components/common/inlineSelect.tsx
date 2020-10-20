@@ -1,9 +1,6 @@
-
 import { Select } from 'antd'
-import { EditTwoTone, CloseCircleTwoTone } from '@ant-design/icons'
+import { CloseCircleTwoTone } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
-import userContext from '../../lib/userContaxt'
-import isEmpty from 'lodash/isEmpty'
 import EditAccess from './editAccess'
 
 const InlineSelect = (props) => {
