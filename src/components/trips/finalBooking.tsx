@@ -156,8 +156,7 @@ const FinalBooking = (props) => {
     setHeader(null)
   }
   const excess = calc.debit - pending_data.balance
-   const MIN_REBATE_PERCENTAGE = 0.25
-    const min_rebate= mamul* MIN_REBATE_PERCENTAGE
+  const min_rebate = mamul * u.MIN_REBATE_PERCENTAGE
 
   const selectOnchange = (selectedRowKeys, selectedRows) => {
     setSelectedRowKeys(selectedRowKeys)
@@ -201,7 +200,7 @@ const FinalBooking = (props) => {
       message.error('Book any value, all fileds value is zero!')
     } else if (calc.total > pending_data.balance) {
       message.error('Maximum booking amount is ' + pending_data.balance)
-    } else if ((calc.total === pending_data.balance) && (calc.rebate < min_rebate )) {
+    } else if ((calc.total === pending_data.balance) && (calc.rebate < min_rebate)) {
       message.error('Rebate must be greater than or equal to Min-rebate')
     } else {
       setDisableButton(true)
