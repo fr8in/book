@@ -27,8 +27,8 @@ mutation customer_advance(
 }`
 
 const AdvanceBooking = (props) => {
-  const { visible, onHide, cardcode, mamul, title, price, pending_data, trip_id,loaded, walletcode, wallet_balance, customer_id, refetch } = props
-
+  const { visible, onHide, cardcode, mamul, title, price, pending_data, trip_id, loaded, walletcode, wallet_balance, customer_id, refetch } = props
+  console.log('pending_data', pending_data)
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
   const [disableButton, setDisableButton] = useState(false)
@@ -101,27 +101,27 @@ const AdvanceBooking = (props) => {
         customer_id={customer_id}
         wallet_balance={wallet_balance}
       />
-      <Form layout='vertical' onFinish={onAdvanceBooking}>
-        { loaded === 'Yes' && 
-        <Row className='mt10'>
-          <Col sm={10}>
-            <Form.Item
-              label='Cash'
-              name='cash'
-            >
-              <Input
-                placeholder='Cash'
-                type='number'
-                min={1}
-                onChange={e => setCash(e.target.value)}
-              />
-            </Form.Item>
-          </Col>
-        </Row>}
+      <Form layout='vertical' onFinish={onAdvanceBooking} className='mt10'>
+        {loaded === 'Yes' &&
+          <Row>
+            <Col sm={10}>
+              <Form.Item
+                label='Cash'
+                name='cash'
+              >
+                <Input
+                  placeholder='Cash'
+                  type='number'
+                  min={1}
+                  onChange={e => setCash(e.target.value)}
+                />
+              </Form.Item>
+            </Col>
+          </Row>}
         <Row>
           <Col flex='auto'>
             <div>Total: <b>{total}</b></div>
-            <p>Advance: <b>{pending_data.pending}</b>, (Recievables: <b>{price}</b>, Mamul: <b>{mamul}</b>)</p>
+            <p>Advance: <b>{pending_data.balance}</b>, (Recievables: <b>{price}</b>, Mamul: <b>{mamul}</b>)</p>
           </Col>
           <Col flex='100px' className='text-right'>
             <Button type='primary' htmlType='submit' loading={disableButton}>Book</Button>

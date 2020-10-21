@@ -31,7 +31,7 @@ const TRIP_CUSTOMER = gql`
   }
   `
 const CustomerPaymentsContainer = (props) => {
-  const { trip_info } = props
+  const { trip_info, trip_onHold } = props
 
   const trip_id = get(trip_info, 'id', null)
   const status = get(trip_info, 'trip_status.name', null)
@@ -113,7 +113,7 @@ const CustomerPaymentsContainer = (props) => {
                 <CustomerPayments
                   dataSource={advance_pending_data}
                   type_name='Advance'
-                  onShow={() => handleShow('adv_visible', 'Advance', 'adv_data', advance_pending_data)}
+                  onShow={() => handleShow('adv_visible', 'Advance', 'adv_data', advance_pending_data[0])}
                   lock={lock}
                 />
               </Col>
@@ -149,6 +149,7 @@ const CustomerPaymentsContainer = (props) => {
           walletcode={walletcode}
           wallet_balance={wallet_balance}
           customer_id={customer_id}
+          trip_onHold={trip_onHold}
           refetch={refetch}
         />}
       {object.add_inv_visible &&

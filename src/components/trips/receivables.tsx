@@ -1,8 +1,10 @@
+import { useEffect } from 'react'
 import { Table, Row, Col } from 'antd'
 import moment from 'moment'
 import Truncate from '../common/truncate'
 import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
 import sumBy from 'lodash/sumBy'
 
 const TRIP_RECEIBABLES = gql`
@@ -21,11 +23,18 @@ subscription trips_receivables($id: Int!) {
         mode
         created_at
       }
+      # needed for On_hold Value don't remove
+      trip_payables {
+      id
+      name
+      amount
+      created_at
+    }
   }
 }`
 
 const Receivables = (props) => {
-  const { trip_id } = props
+  const { trip_id, setTrip_onHold } = props
 
   const { loading, data, error } = useSubscription(
     TRIP_RECEIBABLES,
@@ -44,6 +53,13 @@ const Receivables = (props) => {
 
   const receivables = sumBy(trip_pay.trip_receivables, 'amount').toFixed(2)
   const receipts = sumBy(trip_pay.trip_receipts, 'amount').toFixed(2)
+
+  const all_payables = get(trip_pay, 'trip_payables', [])
+  const on_hold = !isEmpty(all_payables) && all_payables.filter(payable => payable.name === 'On-Hold')
+
+  useEffect(() => {
+    setTrip_onHold(!isEmpty(on_hold) && on_hold[0].amount)
+  }, [trip_pay])
 
   const customerChargeColumns = [
     {

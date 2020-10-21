@@ -37,6 +37,7 @@ const TripDetailContainer = (props) => {
   const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
   const [customerConfirm, setCustomerConfirm] = useState(null)
+  const [trip_onHold, setTrip_onHold] = useState(null)
 
   const { loading, error, data } = useSubscription(
     TRIP_DETAIL_SUBSCRIPTION,
@@ -163,8 +164,8 @@ const TripDetailContainer = (props) => {
                       </Collapse>
                       <Collapse accordion className='small box-0 mt10'>
                         <Panel header={<span>Customer - Receivables</span>} key='1'>
-                          <Receivables trip_id={trip_id} />
-                          <CustomerPayments trip_info={trip_info} />
+                          <Receivables trip_id={trip_id} setTrip_onHold={setTrip_onHold} />
+                          <CustomerPayments trip_info={trip_info} trip_onHold={trip_onHold} />
                         </Panel>
                       </Collapse>
                       <Collapse accordion className='small mt10'>

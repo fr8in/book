@@ -18,8 +18,8 @@ query partner_driver($id:Int!){
   }`
 
 const INSERT_PARTNER_DRIVER = gql`
-mutation driver_insert($id: Int!, $mobile: String,$created_by: String!){
-  insert_driver(objects:{partner_id: $id, mobile:$mobile,created_by:$created_by}){
+mutation driver_insert($id: Int!, $mobile: String){
+  insert_driver(objects:{partner_id: $id, mobile:$mobile}){
     returning{
       id
     }
@@ -103,8 +103,7 @@ const Driver = (props) => {
       insertDriver({
         variables: {
           id: partner_id,
-          mobile: value,
-          created_by: context.email
+          mobile: value
         }
       })
     } else {

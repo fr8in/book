@@ -22,12 +22,6 @@ query customer_payment($trip_id: Int!) {
     doctype
     comment
   }
-  trip_sap_onhold_release(trip_id: $trip_id) {
-    trip_id
-    cardcode
-    onHoldAmount
-    TDS
-  }
 }`
 
 const CUSTOMER_FINAL = gql`
@@ -79,7 +73,11 @@ mutation customer_final_payment(
 }`
 
 const FinalBooking = (props) => {
-  const { visible, onHide, cardcode, mamul, title, price, pending_data, trip_id, walletcode, wallet_balance, customer_id, refetch } = props
+  const {
+    visible, onHide, cardcode, mamul, title, price,
+    pending_data, trip_id, walletcode, wallet_balance,
+    customer_id, refetch, trip_onHold
+  } = props
 
   const [form] = Form.useForm()
 
@@ -93,6 +91,7 @@ const FinalBooking = (props) => {
   const initial = { total: 0, debit: 0, rebate: 0 }
   const [calc, setCalc] = useState(initial)
   const context = useContext(userContext)
+  const floatVal = (value) => value ? parseFloat(value) : 0
 
   const [customer_final_payment] = useMutation(
     CUSTOMER_FINAL,
@@ -129,10 +128,7 @@ const FinalBooking = (props) => {
     _data = data
   }
   const trip_sap_receipt = get(_data, 'trip_sap_receipt', [])
-  const trip_sap_onhold_release = get(_data, 'trip_sap_onhold_release', [])
-  const on_hold = !isEmpty(trip_sap_onhold_release) ? trip_sap_onhold_release[0].onHoldAmount : 0
-  const tds = !isEmpty(trip_sap_onhold_release) ? trip_sap_onhold_release[0].TDS : 0
-
+  console.log('on-hold', trip_onHold)
   const customer_payment = !isEmpty(trip_sap_receipt) ? trip_sap_receipt.filter(d => d.doctype === 'I') : []
   const prevShortage = !isEmpty(customer_payment) && customer_payment.filter(d => d.mode === 'Write off Shortage')
   const prevPod = !isEmpty(customer_payment) && customer_payment.filter(d => d.mode === 'Write off POD Delay/Missing')
@@ -140,11 +136,11 @@ const FinalBooking = (props) => {
   const prevTDS = !isEmpty(customer_payment) && customer_payment.filter(d => d.mode === 'TDS')
   const prevLoading = !isEmpty(customer_payment) && customer_payment.filter(d => d.mode === 'Write off Loading Charge')
   const prevUnloading = !isEmpty(customer_payment) && customer_payment.filter(d => d.mode === 'Write off UnLoading Charge')
-  console.log('customer_payment', prevShortage)
 
   const disabled = !isEmpty(prevShortage) || !isEmpty(prevPod) || !isEmpty(prevLate) || !isEmpty(prevTDS) || !isEmpty(prevLoading) || !isEmpty(prevUnloading)
+  const disable_fr8_tds = !!(floatVal(form.getFieldValue('tds')))
+  const disable_partner_tds = !!(floatVal(form.getFieldValue('tds_fr8')))
 
-  const floatVal = (value) => value ? parseFloat(value) : 0
   const onBlurCalc = () => {
     const debit = floatVal(form.getFieldValue('sortage')) + floatVal(form.getFieldValue('pod_delay')) + floatVal(form.getFieldValue('late_delivery')) + floatVal(form.getFieldValue('tds')) + floatVal(form.getFieldValue('loading_charge')) + floatVal(form.getFieldValue('unloading_charge'))
     const total = debit + floatVal(form.getFieldValue('cash')) + floatVal(form.getFieldValue('mamul')) + floatVal(form.getFieldValue('price_difference')) + floatVal(form.getFieldValue('loading_halting')) + floatVal(form.getFieldValue('unloading_halting')) + floatVal(form.getFieldValue('tds_fr8'))
@@ -152,7 +148,7 @@ const FinalBooking = (props) => {
     setCalc({ ...calc, debit: debit, total: total - rebate, rebate: rebate })
     form.setFieldsValue({
       debit: debit,
-      release_amount: on_hold - debit
+      release_amount: Math.abs(trip_onHold) - debit
     })
     setHeader(null)
   }
@@ -285,7 +281,7 @@ const FinalBooking = (props) => {
               <h4 className='mt10'>Partner</h4>
               <Divider />
               <Row gutter={10}>
-                <Col sm={6}>  
+                <Col sm={6}>
                   <Form.Item label='Shortage/Damage' name='sortage' initialValue={(!isEmpty(prevShortage) && prevShortage[0].amount) || 0}>
                     <Input
                       placeholder='Shortage/Damage'
@@ -325,10 +321,10 @@ const FinalBooking = (props) => {
                   </Form.Item>
                 </Col>
                 <Col sm={6}>
-                  <Form.Item label='TDS Filed By Partner' name='tds' initialValue={(!isEmpty(prevTDS) && prevTDS[0].amount) || 0}>
+                  <Form.Item label='TDS Filed to Partner' name='tds' initialValue={(!isEmpty(prevTDS) && prevTDS[0].amount) || 0}>
                     <Input
                       placeholder='TDS'
-                      disabled={disabled}
+                      disabled={disabled || disable_partner_tds}
                       onBlur={onBlurCalc}
                       type='number'
                       min={0}
@@ -368,7 +364,7 @@ const FinalBooking = (props) => {
               </Row>
               <Row gutter={10}>
                 <Col sm={6}>
-                  <Form.Item label='On-Hold' name='on_hold' initialValue={on_hold || 0}>
+                  <Form.Item label='On-Hold' name='on_hold' initialValue={Math.abs(trip_onHold) || 0}>
                     <Input placeholder='On-Hold' disabled type='number' />
                   </Form.Item>
                 </Col>
@@ -437,10 +433,11 @@ const FinalBooking = (props) => {
               </Row>
               <Row gutter={10}>
                 <Col sm={6}>
-                  <Form.Item label='TDS Filed By FR8' name='tds_fr8' initialValue={0}>
+                  <Form.Item label='TDS Filed to FR8' name='tds_fr8' initialValue={0}>
                     <Input
                       placeholder='TDS Filed By FR8'
                       onBlur={onBlurCalc}
+                      disabled={disable_fr8_tds}
                       type='number'
                       min={0}
                       maxLength={u.maxLength}
