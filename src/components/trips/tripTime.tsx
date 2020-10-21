@@ -140,8 +140,8 @@ const TripTime = (props) => {
   const [removeSin] = useMutation(
     REMOVE_SIN_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() {
         message.success('Updated!!')
         form.resetFields()
       }
@@ -150,8 +150,8 @@ const TripTime = (props) => {
   const [removeSout] = useMutation(
     REMOVE_SOUT_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() {
         message.success('Updated!!')
         form.resetFields()
       }
@@ -161,8 +161,8 @@ const TripTime = (props) => {
   const [removeDin] = useMutation(
     REMOVE_DIN_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() {
         message.success('Updated!!')
         form.resetFields()
       }
@@ -171,8 +171,8 @@ const TripTime = (props) => {
   const [removeDout] = useMutation(
     REMOVE_DOUT_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() {
         message.success('Updated!!')
         form.resetFields()
       }
@@ -182,11 +182,11 @@ const TripTime = (props) => {
   const [processAdvance] = useMutation(
     PROCESS_ADVANCE_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         message.error(error.toString())
         setDisableBtn(false)
       },
-      onCompleted (data) {
+      onCompleted(data) {
         const status = get(data, 'partner_advance.status', null)
         const description = get(data, 'partner_advance.description', null)
         if (status === 'OK') {
@@ -242,7 +242,7 @@ const TripTime = (props) => {
       variables: {
         tripId: trip_info.id,
         createdBy: context.email,
-        customer_confirmation: customerConfirm
+        customer_confirmation: customerConfirm ? customerConfirm : false
       }
     })
   }
@@ -302,7 +302,7 @@ const TripTime = (props) => {
               <Checkbox
                 checked={get(trip_info, 'unloaded_private_godown', false)}
                 disabled={wh_update || get(trip_info, 'unloaded_private_godown', false) || lock}
-                onClick={get(trip_info, 'unloaded_private_godown', false) ? () => {} : () => onShow('godownReceipt')}
+                onClick={get(trip_info, 'unloaded_private_godown', false) ? () => { } : () => onShow('godownReceipt')}
               >Unloaded at private godown
               </Checkbox>
             </Col>
