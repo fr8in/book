@@ -121,7 +121,6 @@ const TruckActivation = (props) => {
 
   const onTruckActivationSubmit = (form) => {
     setDisableButton(true)
-    console.log('Traffic Added', truck_id)
     updateTruckActivation({
       variables: {
         id: truck_id,
@@ -161,7 +160,7 @@ const TruckActivation = (props) => {
                     label='Truck Type'
                     name='truck_type_id'
                     rules={[{ required: true }]}
-                    initialValue={truck_info.truck_type && truck_info.truck_type.name}
+                    initialValue={truck_info.truck_type && truck_info.truck_type.id}
                   >
                     <Select options={typeList} placeholder='Select TruckType' allowClear />
                   </Form.Item>
