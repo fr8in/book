@@ -79,7 +79,7 @@ mutation customer_final_payment(
 }`
 
 const FinalBooking = (props) => {
-  const { visible, onHide, cardcode, mamul, title, price, pending_data, trip_id, walletcode, wallet_balance, customer_id } = props
+  const { visible, onHide, cardcode, mamul, title, price, pending_data, trip_id, walletcode, wallet_balance, customer_id, refetch } = props
 
   const [form] = Form.useForm()
 
@@ -108,6 +108,7 @@ const FinalBooking = (props) => {
         if (status === 'OK') {
           setDisableButton(false)
           message.success(description || 'Processed!')
+          refetch()
           onHide()
         } else (message.error(description))
       }
@@ -133,13 +134,13 @@ const FinalBooking = (props) => {
   const tds = !isEmpty(trip_sap_onhold_release) ? trip_sap_onhold_release[0].TDS : 0
 
   const customer_payment = !isEmpty(trip_sap_receipt) ? trip_sap_receipt.filter(d => d.doctype === 'I') : []
-
   const prevShortage = !isEmpty(customer_payment) && customer_payment.filter(d => d.mode === 'Write off Shortage')
   const prevPod = !isEmpty(customer_payment) && customer_payment.filter(d => d.mode === 'Write off POD Delay/Missing')
   const prevLate = !isEmpty(customer_payment) && customer_payment.filter(d => d.mode === 'Write off Late Delivery')
   const prevTDS = !isEmpty(customer_payment) && customer_payment.filter(d => d.mode === 'TDS')
   const prevLoading = !isEmpty(customer_payment) && customer_payment.filter(d => d.mode === 'Write off Loading Charge')
   const prevUnloading = !isEmpty(customer_payment) && customer_payment.filter(d => d.mode === 'Write off UnLoading Charge')
+  console.log('customer_payment', prevShortage)
 
   const disabled = !isEmpty(prevShortage) || !isEmpty(prevPod) || !isEmpty(prevLate) || !isEmpty(prevTDS) || !isEmpty(prevLoading) || !isEmpty(prevUnloading)
 
@@ -284,8 +285,8 @@ const FinalBooking = (props) => {
               <h4 className='mt10'>Partner</h4>
               <Divider />
               <Row gutter={10}>
-                <Col sm={6}>
-                  <Form.Item label='Shortage/Damage' name='sortage' initialValue={0}>
+                <Col sm={6}>  
+                  <Form.Item label='Shortage/Damage' name='sortage' initialValue={(!isEmpty(prevShortage) && prevShortage[0].amount) || 0}>
                     <Input
                       placeholder='Shortage/Damage'
                       disabled={disabled}
@@ -298,7 +299,7 @@ const FinalBooking = (props) => {
                   </Form.Item>
                 </Col>
                 <Col sm={6}>
-                  <Form.Item label='POD Delay/Lost' name='pod_delay' initialValue={0}>
+                  <Form.Item label='POD Delay/Lost' name='pod_delay' initialValue={(!isEmpty(prevPod) && prevPod[0].amount) || 0}>
                     <Input
                       placeholder='POD Delay/Lost'
                       disabled={disabled}
@@ -311,7 +312,7 @@ const FinalBooking = (props) => {
                   </Form.Item>
                 </Col>
                 <Col sm={6}>
-                  <Form.Item label='Late Delivery' name='late_delivery' initialValue={0}>
+                  <Form.Item label='Late Delivery' name='late_delivery' initialValue={(!isEmpty(prevLate) && prevLate[0].amount) || 0}>
                     <Input
                       placeholder='Late Delivery'
                       disabled={disabled}
@@ -324,10 +325,10 @@ const FinalBooking = (props) => {
                   </Form.Item>
                 </Col>
                 <Col sm={6}>
-                  <Form.Item label='TDS Filed By Partner' name='tds' initialValue={tds || 0}>
+                  <Form.Item label='TDS Filed By Partner' name='tds' initialValue={(!isEmpty(prevTDS) && prevTDS[0].amount) || 0}>
                     <Input
                       placeholder='TDS'
-                      disabled={tds > 0}
+                      disabled={disabled}
                       onBlur={onBlurCalc}
                       type='number'
                       min={0}
@@ -339,7 +340,7 @@ const FinalBooking = (props) => {
               </Row>
               <Row gutter={10}>
                 <Col sm={6}>
-                  <Form.Item label='Loading Charge' name='loading_charge' initialValue={0}>
+                  <Form.Item label='Loading Charge' name='loading_charge' initialValue={(!isEmpty(prevLoading) && prevLoading[0].amount) || 0}>
                     <Input
                       placeholder='Loading Charge'
                       disabled={disabled}
@@ -352,7 +353,7 @@ const FinalBooking = (props) => {
                   </Form.Item>
                 </Col>
                 <Col sm={6}>
-                  <Form.Item label='Unloading Charge' name='unloading_charge' initialValue={0}>
+                  <Form.Item label='Unloading Charge' name='unloading_charge' initialValue={(!isEmpty(prevUnloading) && prevUnloading[0].amount) || 0}>
                     <Input
                       placeholder='Unloading Charge'
                       disabled={disabled}
@@ -456,8 +457,8 @@ const FinalBooking = (props) => {
           <Row>
             <Col flex='auto'>
               <div>Total: <b>{calc.total + (parseFloat(amount) || 0)}</b>, Rebate: <b>{calc.rebate}</b></div>
-              <p>Balance: <b>{pending_data.balance}</b></p>
-              <p>(Recievables: <b>{price}</b>,Mamul: <b>{mamul}</b>,Min-rebate: <b>{min_rebate}</b>)</p>
+              <div>Balance: <b>{pending_data.balance}</b></div>
+              <div>(Recievables: <b>{price}</b>, Mamul: <b>{mamul}</b>, Min-rebate: <b>{min_rebate}</b>)</div>
             </Col>
             <Col flex='100px' className='text-right'>
               {excess > 0 && !header ? <Button type='primary' onClick={() => onShow('excess')}>Book Excess Write Off</Button>

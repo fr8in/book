@@ -27,7 +27,7 @@ mutation customer_advance(
 }`
 
 const AdvanceBooking = (props) => {
-  const { visible, onHide, cardcode, mamul, title, price, pending_data, trip_id,loaded, walletcode, wallet_balance, customer_id } = props
+  const { visible, onHide, cardcode, mamul, title, price, pending_data, trip_id,loaded, walletcode, wallet_balance, customer_id, refetch } = props
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
@@ -39,7 +39,10 @@ const AdvanceBooking = (props) => {
   const [customer_advance_booking] = useMutation(
     CUSTOMER_ADVANCE,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString())
+      },
       onCompleted (data) {
         setDisableButton(false)
         const status = get(data, 'customer_advance.status', null)
@@ -47,6 +50,7 @@ const AdvanceBooking = (props) => {
         if (status === 'OK') {
           message.success(description || 'Processed!')
           onHide()
+          refetch()
         } else (message.error(description))
       }
     }

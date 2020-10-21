@@ -31,7 +31,7 @@ mutation customer_additional_invoice(
 }`
 
 const AdditionalInvoiceBooking = (props) => {
-  const { visible, onHide, cardcode, mamul, price, pending_data, trip_id, walletcode, wallet_balance, customer_id } = props
+  const { visible, onHide, cardcode, mamul, price, pending_data, trip_id, walletcode, wallet_balance, customer_id, refetch } = props
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
@@ -53,6 +53,7 @@ const AdditionalInvoiceBooking = (props) => {
         if (status === 'OK') {
           setDisableButton(false)
           message.success(description || 'Processed!')
+          refetch()
           onHide()
         } else (message.error(description))
       }

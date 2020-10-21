@@ -48,7 +48,7 @@ const CustomerPaymentsContainer = (props) => {
   const initial = { adv_visible: false, final_visible: false, title: null, adv_data: null, final_data: null, add_inv_visible: false, add_inv_data: null }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
-  const { loading, error, data } = useQuery(
+  const { loading, error, data, refetch } = useQuery(
     TRIP_CUSTOMER_PENDING_PAYMENTS,
     {
       variables: { trip_id: trip_id },
@@ -134,6 +134,7 @@ const CustomerPaymentsContainer = (props) => {
           wallet_balance={wallet_balance}
           customer_id={customer_id}
           loaded={loaded}
+          refetch={refetch}
         />}
       {object.final_visible &&
         <FinalBooking
@@ -148,6 +149,7 @@ const CustomerPaymentsContainer = (props) => {
           walletcode={walletcode}
           wallet_balance={wallet_balance}
           customer_id={customer_id}
+          refetch={refetch}
         />}
       {object.add_inv_visible &&
         <AdditionalInvoiceBooking
@@ -161,6 +163,7 @@ const CustomerPaymentsContainer = (props) => {
           walletcode={walletcode}
           wallet_balance={wallet_balance}
           customer_id={customer_id}
+          refetch={refetch}
         />}
     </>
   )
