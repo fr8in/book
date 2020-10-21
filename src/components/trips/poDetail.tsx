@@ -1,17 +1,12 @@
-import { Row, Col, Form, DatePicker, Checkbox, Select } from 'antd'
+import { Row, Col, Form, DatePicker, Checkbox } from 'antd'
 import CitySelect from '../common/citySelect'
 import Loading from '../common/loading'
 import Driver from '../partners/driver'
 import get from 'lodash/get'
+import LoadingPointContact from './loadingPointContact'
 
 const PoDetail = (props) => {
-  const { po_data, onSourceChange, onDestinationChange, driver_id, customer, loading, record } = props
-
-  const customer_user = get(customer, 'customer_users', [])
-
-  const customer_user_list = customer_user.map((data) => {
-    return { value: data.id, label: `${data.name.slice(0, 10)} - ${data.mobile}` }
-  })
+  const { po_data, onSourceChange, onDestinationChange, loading_contact_id, driver_id, customer, loading, record } = props
 
   return (
     loading ? <Loading /> : (
@@ -41,15 +36,7 @@ const PoDetail = (props) => {
               city={get(record, 'destination.name', null)}
               size='small'
             />
-            <Form.Item label='Loading Point Contact' name='loading_contact' rules={[{ required: true }]}>
-              <Select
-                placeholder='Customer contact...'
-                options={customer_user_list}
-                optionFilterProp='label'
-                showSearch
-                size='small'
-              />
-            </Form.Item>
+            <LoadingPointContact customer={customer} onUserChange={loading_contact_id} />
             <Driver partner_id={po_data.id} driver_id={driver_id} required size='small' />
             <Form.Item label='Including' initialValue='' name='charge_inclue' labelCol={{ sm: 4 }} wrapperCol={{ sm: 20 }}>
               <Checkbox.Group>

@@ -1,8 +1,8 @@
 import { Modal, Table, Checkbox } from 'antd'
 import { useState } from 'react'
 import get from 'lodash/get'
-
 import { gql, useQuery } from '@apollo/client'
+import Truncate from '../common/truncate'
 
 const ONHOLD_TRIPS_QUERY = gql`
 query partner_onhold($cardcode: String,$exp:float8_comparison_exp) {
@@ -53,7 +53,7 @@ const OnholdTrips = (props) => {
   ]
 
   const { visible, onHide, cardcode } = props
-  const [filter, setFilter] = useState('')
+  const [filter, setFilter] = useState(['Open'])
   console.log('filter', filter)
   const { loading, error, data } = useQuery(ONHOLD_TRIPS_QUERY, {
     variables: {
@@ -73,9 +73,6 @@ const OnholdTrips = (props) => {
   const partner = get(_data, 'partner', null)
 
   const trips = get(_data, 'partner[0].trips', null)
-
-  console.log('trips', trips)
-  console.log('partner', partner)
 
   const trip_status = status_list.map((data) => {
     return { value: data.text, label: data.text }
@@ -115,22 +112,15 @@ const OnholdTrips = (props) => {
     {
       title: 'Type',
       dataIndex: 'type',
-      width: '10%',
+      width: '15%',
       render: (text, record) => get(record, 'truck.truck_type.name', null)
-    },
-    {
-      title: 'Partner',
-      dataIndex: 'name',
-      sorter: (a, b) => (a.partner > b.partner ? 1 : -1),
-      width: '13%',
-      render: (text, record) => get(record, 'partner.name', null)
     },
     {
       title: 'Customer',
       dataIndex: 'name',
       sorter: (a, b) => (a.customer > b.customer ? 1 : -1),
-      width: '16%',
-      render: (text, record) => get(record, 'customer.name', null)
+      width: '18%',
+      render: (text, record) => <Truncate data={get(record, 'customer.name', null)} length={25} />
     },
     {
       title: 'Price',
@@ -161,7 +151,7 @@ const OnholdTrips = (props) => {
       filterDropdown: (
         <Checkbox.Group
           options={trip_status}
-          // defaultValue={filter.status_list}
+          defaultValue={filter}
           onChange={handleStatusList}
           className='filter-drop-down'
         />
@@ -184,6 +174,7 @@ const OnholdTrips = (props) => {
         size='small'
         scroll={{ x: 780, y: 400 }}
         pagination={false}
+        loading={loading}
       />
     </Modal>
   )

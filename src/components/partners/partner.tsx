@@ -17,7 +17,7 @@ const PartnerInfo = (props) => {
   const partner_id = get(partner, 'id', null)
   const partnerKycStatus = get(partner, 'partner_status.id', null)
   const partnerStatusName = get(partner, 'partner_status.name', null)
-  console.log('membership', membership)
+
   return (
     <>
       <Space align='center'>

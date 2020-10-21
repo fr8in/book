@@ -20,7 +20,7 @@ const CustomerPayments = (props) => {
     width: '18%'
   } : {},
   {
-    title: 'Amount',
+    title: 'Receivable',
     width: '16%',
     render: (record) => {
       const amounts = type_name ? record.amount : record.invoiced
