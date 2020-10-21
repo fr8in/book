@@ -31,8 +31,8 @@ subscription credit_debits($id:Int){
 `
 
 const CreditNoteTable = (props) => {
-  const { trip_id, trip_info } = props
-  console.log('trip_id', trip_id)
+  const { trip_id, trip_info, setCreditNoteRefetch } = props
+
   const context = useContext(userContext)
   const { role } = u
   const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing]
@@ -65,7 +65,7 @@ const CreditNoteTable = (props) => {
   }
 
   const credit_debit_list = get(_data, 'trip[0].credit_debits', null)
-  console.log('credit_debit_list', credit_debit_list)
+
   const columns = [
     {
       title: 'Type',
@@ -74,7 +74,6 @@ const CreditNoteTable = (props) => {
     },
     {
       title: 'Issue Type',
-      // dataIndex: 'issueType',
       width: authorised ? '17%' : '19%',
       render: (text, record) => {
         return get(record, 'credit_debit_type.name', null)
@@ -105,7 +104,6 @@ const CreditNoteTable = (props) => {
       }
     }, {
       title: 'Status',
-      // dataIndex: 'approvalStatus',
       width: authorised ? '12%' : '14%',
       render: (text, record) => {
         if ((record.approvedBy)) {
@@ -157,13 +155,14 @@ const CreditNoteTable = (props) => {
         scroll={{ x: authorised ? 780 : 650, y: 240 }}
         rowKey={record => record.id}
       />
-      {/* <ApprovalModal tripId={this.props.tripId} /> */}
+
       {object.approveVisible && (
         <Approve
           visible={object.approveVisible}
           onHide={handleHide}
           item_id={object.approveData}
           title={object.title}
+          setCreditNoteRefetch={setCreditNoteRefetch}
         />
       )}
     </div>

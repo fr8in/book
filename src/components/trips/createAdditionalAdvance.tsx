@@ -24,7 +24,7 @@ query ifsc_validation($ifsc: String!){
 }`
 
 const CreateAdditionalAdvance = (props) => {
-  const { trip_info } = props
+  const { trip_info, setAdvanceRefetch } = props
 
   const [radioValue, setRadioValue] = useState('WALLET')
   const [disableBtn, setDisableBtn] = useState(false)
@@ -72,6 +72,7 @@ const CreateAdditionalAdvance = (props) => {
         const description = get(data, 'additional_advance.description', null)
         if (status === 'OK') {
           setDisableBtn(false)
+          setAdvanceRefetch(true)
           message.success(description || 'Processed!')
         } else { (message.error(description)); setDisableBtn(false) }
       }
