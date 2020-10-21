@@ -170,7 +170,7 @@ const FinalBooking = (props) => {
     return floatVal(form.getFieldValue('sortage')) < excess && floatVal(form.getFieldValue('pod_delay')) < excess && floatVal(form.getFieldValue('late_delivery')) < excess &&
             floatVal(form.getFieldValue('loading_charge')) < excess && floatVal(form.getFieldValue('unloading_charge')) < excess
   }
-
+  const total_booking = (calc.total + (amount ? parseFloat(amount) : 0))
   const onFinalBooking = (form) => {
     const wallet_amount = (!isEmpty(selectedRow) && amount) ? floatVal(amount) : 0
     const rebate = form.rebate ? floatVal(form.rebate) : 0
@@ -195,9 +195,9 @@ const FinalBooking = (props) => {
       floatVal(form.unloading_halting) === 0
     ) {
       message.error('Book any value, all fileds value is zero!')
-    } else if ((calc.total + parseFloat(amount)) > pending_data.balance) {
+    } else if (total_booking > pending_data.balance) {
       message.error('Maximum booking amount is ' + pending_data.balance)
-    } else if (((calc.total + parseFloat(amount)) === pending_data.balance) && (calc.rebate < min_rebate)) {
+    } else if ((total_booking === pending_data.balance) && (calc.rebate < min_rebate)) {
       message.error('Rebate must be greater than or equal to Min-rebate')
     } else {
       setDisableButton(true)
