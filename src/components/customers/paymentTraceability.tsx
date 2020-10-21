@@ -26,7 +26,7 @@ query customer_incoming($walletcode: String!) {
 }
 `
 const PaymentTraceability = (props) => {
-  const { selectedRowKeys, selectOnchange, customer_id, amount, setAmount, form , walletcode, wallet_balance } = props
+  const { selectedRowKeys, selectOnchange, customer_id, amount, setAmount, form, walletcode, wallet_balance } = props
   const { visible, onShow, onHide } = useShowHide('')
 
   const { loading, data, error } = useQuery(

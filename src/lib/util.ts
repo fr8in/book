@@ -29,5 +29,15 @@ export default {
     if (e.target.value.length > e.target.maxLength) {
       e.target.value = e.target.value.slice(0, e.target.maxLength)
     }
+  },
+  membership_color: (membership) => {
+    return (
+      (membership === 1 || !membership) ? '#C0C0C0' : membership === 2 ? '#FFD700' : '#97b9ff'
+    )
+  },
+  membership: (membership) => {
+    return (
+      (membership === 1 || !membership) ? 'Silver' : membership === 2 ? 'Gold' : 'Platinum'
+    )
   }
 }

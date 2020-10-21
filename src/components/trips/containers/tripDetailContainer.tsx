@@ -38,6 +38,8 @@ const TripDetailContainer = (props) => {
 
   const [customerConfirm, setCustomerConfirm] = useState(null)
   const [trip_onHold, setTrip_onHold] = useState(null)
+  const [advanceRefetch, setAdvanceRefetch] = useState(false)
+  const [creditNoteRefetch, setCreditNoteRefetch] = useState(false)
 
   const { loading, error, data } = useSubscription(
     TRIP_DETAIL_SUBSCRIPTION,
@@ -151,8 +153,13 @@ const TripDetailContainer = (props) => {
                       <Collapse accordion className='small mt10'>
                         <Panel header='Additional Advance' key='1'>
                           {before_invoice && loaded && !lock &&
-                            <CreateAdditionalAdvance trip_info={trip_info} />}
-                          <AdditionalAdvance ad_trip_id={trip_info.id} loaded={loaded} />
+                            <CreateAdditionalAdvance trip_info={trip_info} setAdvanceRefetch={setAdvanceRefetch} />}
+                          <AdditionalAdvance
+                            ad_trip_id={trip_info.id}
+                            loaded={loaded}
+                            advanceRefetch={advanceRefetch}
+                            setAdvanceRefetch={setAdvanceRefetch}
+                          />
                         </Panel>
                       </Collapse>
                     </TabPane>
@@ -165,13 +172,18 @@ const TripDetailContainer = (props) => {
                       <Collapse accordion className='small box-0 mt10'>
                         <Panel header={<span>Customer - Receivables</span>} key='1'>
                           <Receivables trip_id={trip_id} setTrip_onHold={setTrip_onHold} />
-                          <CustomerPayments trip_info={trip_info} trip_onHold={trip_onHold} />
+                          <CustomerPayments
+                            trip_info={trip_info}
+                            trip_onHold={trip_onHold}
+                            creditNoteRefetch={creditNoteRefetch}
+                            setCreditNoteRefetch={setCreditNoteRefetch}
+                          />
                         </Panel>
                       </Collapse>
                       <Collapse accordion className='small mt10'>
                         <Panel header='Credit/Debit Note' key='1'>
                           <CreditNote trip_id={trip_id} trip_info={trip_info} />
-                          <CreditNoteTable trip_id={trip_id} trip_info={trip_info} />
+                          <CreditNoteTable trip_id={trip_id} trip_info={trip_info} setCreditNoteRefetch={setCreditNoteRefetch} />
                         </Panel>
                       </Collapse>
                     </TabPane>

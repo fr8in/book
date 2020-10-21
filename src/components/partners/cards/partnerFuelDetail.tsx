@@ -34,7 +34,7 @@ const PartnerFuelDetail = (props) => {
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
   const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
-  const { loading, error, data } = useQuery(
+  const { loading, error, data, refetch } = useQuery(
     FUEL_CARD_QUERY, {
       variables: {
         partner_id: partner_id
@@ -48,7 +48,10 @@ const PartnerFuelDetail = (props) => {
     UPDATE_FUEL_CARD_STATUS_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () {
+        message.success('Updated!!')
+        refetch()
+      }
     }
   )
   const onChange = (checked) => {

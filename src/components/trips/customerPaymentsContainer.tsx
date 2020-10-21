@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Row, Col } from 'antd'
 import AdvanceBooking from './advanceBooking'
 import CustomerPayments from './customerPayments'
@@ -13,9 +14,7 @@ query customerPaymentData($trip_id: Int!) {
       trip_id
       cardCode
       docentry
-      advanceReceived
-      additionalCharges
-      freight
+      invoiced
       received
       balance
       doctype
@@ -31,7 +30,7 @@ const TRIP_CUSTOMER = gql`
   }
   `
 const CustomerPaymentsContainer = (props) => {
-  const { trip_info, trip_onHold } = props
+  const { trip_info, trip_onHold, creditNoteRefetch, setCreditNoteRefetch } = props
 
   const trip_id = get(trip_info, 'id', null)
   const status = get(trip_info, 'trip_status.name', null)
@@ -78,7 +77,6 @@ const CustomerPaymentsContainer = (props) => {
 
   const balance_pending = get(_data, 'trip_sap_customer_balance_pending', [])
   const amount = get(trip_data, 'accounting_trip_receipt_summary[0].amount', 0)
-  console.log('balance_pending', balance_pending)
 
   const advance_pending_data = [
     { docentry: 1, amount: customer_price - mamul, received: amount, balance: (customer_price - amount) }
@@ -90,6 +88,14 @@ const CustomerPaymentsContainer = (props) => {
       handleShow('final_visible', 'Final', 'final_data', record)
     }
   }
+
+  useEffect(() => {
+    if (creditNoteRefetch) {
+      refetch()
+      setCreditNoteRefetch(false)
+    }
+  }, [creditNoteRefetch])
+
   return (
     <>
       {(status === 'Invoiced' || status === 'Paid') ? (

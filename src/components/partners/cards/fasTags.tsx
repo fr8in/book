@@ -60,7 +60,7 @@ const FasTags = (props) => {
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
   const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
-  const { loading, error, data } = useQuery(
+  const { loading, error, data, refetch } = useQuery(
     FASTAG_QUERY, {
       variables: {
         partner_id: partner_id
@@ -74,7 +74,10 @@ const FasTags = (props) => {
     UPDATE_FASTAG_STATUS_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () {
+        message.success('Updated!!')
+        refetch()
+      }
     }
   )
 
@@ -84,7 +87,7 @@ const FasTags = (props) => {
       onError (error) { message.error(error.toString()) },
       onCompleted (data) {
         const value = get(data, 'token', null)
-        // message.success('Updated!!')
+        refetch()
         setToken(value)
       }
     }
