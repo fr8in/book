@@ -1,10 +1,11 @@
-import { Space, Button } from 'antd'
+import { Space, Button, Tooltip } from 'antd'
 import { CheckCircleOutlined, CrownFilled, UserOutlined } from '@ant-design/icons'
 import PartnerUsers from '../../components/partners/partnerUsers'
 import PartnerName from './partnerName'
 import PartnerUser from './partnerUserNumber'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import get from 'lodash/get'
+import u from '../../lib/util'
 
 const PartnerInfo = (props) => {
   const { partner, loading } = props
@@ -14,24 +15,28 @@ const PartnerInfo = (props) => {
   const membership = get(partner, 'partner_memberships[0].membership_type.id', null)
   const number = get(partner, 'partner_users[0].mobile', null)
   const partner_id = get(partner, 'id', null)
-  const id = get(partner, 'partner_users[0].id', null)
   const partnerKycStatus = get(partner, 'partner_status.id', null)
-  console.log('partner', partner)
+  const partnerStatusName = get(partner, 'partner_status.name', null)
+  console.log('membership', membership)
   return (
     <>
       <Space align='center'>
-        <CrownFilled
-          style={{
-            color: membership === 1 ? '#C0C0C0' : membership === 2 ? '#FFD700' : '#97b9ff',
-            fontSize: '18px'
-          }}
-        />
-        <CheckCircleOutlined
-          style={{
-            color: partnerKycStatus === 2 ? '#28a745' : '#dc3545',
-            fontSize: '18px'
-          }}
-        />
+        <Tooltip title={u.membership(membership)}>
+          <CrownFilled
+            style={{
+              color: u.membership_color(membership),
+              fontSize: '18px'
+            }}
+          />
+        </Tooltip>
+        <Tooltip title={partnerStatusName}>
+          <CheckCircleOutlined
+            style={{
+              color: partnerKycStatus === 4 ? '#28a745' : '#dc3545',
+              fontSize: '18px'
+            }}
+          />
+        </Tooltip>
         <PartnerName
           cardcode={partner.cardcode}
           name={partner.name}

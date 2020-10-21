@@ -137,7 +137,7 @@ const FinalBooking = (props) => {
   const prevLoading = !isEmpty(customer_payment) && customer_payment.filter(d => d.mode === 'Write off Loading Charge')
   const prevUnloading = !isEmpty(customer_payment) && customer_payment.filter(d => d.mode === 'Write off UnLoading Charge')
 
-  const disabled = !isEmpty(prevShortage) || !isEmpty(prevPod) || !isEmpty(prevLate) || !isEmpty(prevTDS) || !isEmpty(prevLoading) || !isEmpty(prevUnloading)
+  const one_time_booked = !isEmpty(prevShortage) || !isEmpty(prevPod) || !isEmpty(prevLate) || !isEmpty(prevTDS) || !isEmpty(prevLoading) || !isEmpty(prevUnloading)
   const disable_fr8_tds = !!(floatVal(form.getFieldValue('tds')))
   const disable_partner_tds = !!(floatVal(form.getFieldValue('tds_fr8')))
 
@@ -209,19 +209,20 @@ const FinalBooking = (props) => {
           wallet: (!isEmpty(selectedRow) && amount) ? diff_wallet : 0,
           cash: floatVal(form.cash),
           rebate: floatVal(form.rebate),
-          shortage_write_off: floatVal(form.sortage),
-          pod_delay_missing_write_off: floatVal(form.pod_delay),
-          late_delivery_write_off: floatVal(form.late_delivery),
-          tds_filed_by_partner: floatVal(form.tds),
-          loading_charge_write_off: floatVal(form.loading_charge),
-          unloading_charge_write_off: floatVal(form.unloading_charge),
           mamul_write_off: floatVal(form.mamul),
           price_difference_write_off: floatVal(form.price_difference),
           source_halting_write_off: floatVal(form.loading_halting),
           destination_halting_write_off: floatVal(form.unloading_halting),
           tds_filed_by_fr8: floatVal(form.tds_fr8),
           header: header,
-          comment: form.comment
+          comment: form.comment,
+          // Onetime Booking Item
+          shortage_write_off: one_time_booked ? 0 : floatVal(form.sortage),
+          pod_delay_missing_write_off: one_time_booked ? 0 : floatVal(form.pod_delay),
+          late_delivery_write_off: one_time_booked ? 0 : floatVal(form.late_delivery),
+          tds_filed_by_partner: one_time_booked ? 0 : floatVal(form.tds),
+          loading_charge_write_off: one_time_booked ? 0 : floatVal(form.loading_charge),
+          unloading_charge_write_off: one_time_booked ? 0 : floatVal(form.unloading_charge)
         }
       })
     }
@@ -285,7 +286,7 @@ const FinalBooking = (props) => {
                   <Form.Item label='Shortage/Damage' name='sortage' initialValue={(!isEmpty(prevShortage) && prevShortage[0].amount) || 0}>
                     <Input
                       placeholder='Shortage/Damage'
-                      disabled={disabled}
+                      disabled={one_time_booked}
                       onBlur={onBlurCalc}
                       type='number'
                       min={0}
@@ -298,7 +299,7 @@ const FinalBooking = (props) => {
                   <Form.Item label='POD Delay/Lost' name='pod_delay' initialValue={(!isEmpty(prevPod) && prevPod[0].amount) || 0}>
                     <Input
                       placeholder='POD Delay/Lost'
-                      disabled={disabled}
+                      disabled={one_time_booked}
                       onBlur={onBlurCalc}
                       type='number'
                       min={0}
@@ -311,7 +312,7 @@ const FinalBooking = (props) => {
                   <Form.Item label='Late Delivery' name='late_delivery' initialValue={(!isEmpty(prevLate) && prevLate[0].amount) || 0}>
                     <Input
                       placeholder='Late Delivery'
-                      disabled={disabled}
+                      disabled={one_time_booked}
                       onBlur={onBlurCalc}
                       type='number'
                       min={0}
@@ -324,7 +325,7 @@ const FinalBooking = (props) => {
                   <Form.Item label='TDS Filed to Partner' name='tds' initialValue={(!isEmpty(prevTDS) && prevTDS[0].amount) || 0}>
                     <Input
                       placeholder='TDS'
-                      disabled={disabled || disable_partner_tds}
+                      disabled={one_time_booked || disable_partner_tds}
                       onBlur={onBlurCalc}
                       type='number'
                       min={0}
@@ -339,7 +340,7 @@ const FinalBooking = (props) => {
                   <Form.Item label='Loading Charge' name='loading_charge' initialValue={(!isEmpty(prevLoading) && prevLoading[0].amount) || 0}>
                     <Input
                       placeholder='Loading Charge'
-                      disabled={disabled}
+                      disabled={one_time_booked}
                       onBlur={onBlurCalc}
                       type='number'
                       min={0}
@@ -352,7 +353,7 @@ const FinalBooking = (props) => {
                   <Form.Item label='Unloading Charge' name='unloading_charge' initialValue={(!isEmpty(prevUnloading) && prevUnloading[0].amount) || 0}>
                     <Input
                       placeholder='Unloading Charge'
-                      disabled={disabled}
+                      disabled={one_time_booked}
                       onBlur={onBlurCalc}
                       type='number'
                       min={0}
