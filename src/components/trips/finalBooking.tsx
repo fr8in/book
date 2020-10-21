@@ -170,7 +170,7 @@ const FinalBooking = (props) => {
     return floatVal(form.getFieldValue('sortage')) < excess && floatVal(form.getFieldValue('pod_delay')) < excess && floatVal(form.getFieldValue('late_delivery')) < excess &&
             floatVal(form.getFieldValue('loading_charge')) < excess && floatVal(form.getFieldValue('unloading_charge')) < excess
   }
-  const total_booking = (calc.total + (amount ? parseFloat(amount) : 0))
+  const total_booking = (calc.total + floatVal(amount))
   const onFinalBooking = (form) => {
     const wallet_amount = (!isEmpty(selectedRow) && amount) ? floatVal(amount) : 0
     const rebate = form.rebate ? floatVal(form.rebate) : 0
