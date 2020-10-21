@@ -45,11 +45,6 @@ query customers_po($id:Int!){
       name
     }
     system_mamul
-    customer_users{
-      id
-      name
-      mobile
-    }
   }
   config(where:{key:{_eq:"trip"}}){
     value
@@ -118,6 +113,7 @@ const CREATE_PO = gql`
 
 const CreatePo = (props) => {
   const { visible, onHide, truck_id } = props
+  const [loading_contact_id, setLoading_contact_id] = useState(null)
   const [driver_id, setDriver_id] = useState(null)
   const [disableBtn, setDisableBtn] = useState(false)
 
@@ -296,6 +292,7 @@ const CreatePo = (props) => {
             </Form.Item>
             {!cus_loading && (customer && customer.id) &&
               <PoDetail
+                loading_contact_id={setLoading_contact_id}
                 driver_id={setDriver_id}
                 po_data={po_data && po_data.partner}
                 onSourceChange={onSourceChange}
