@@ -128,7 +128,7 @@ const FinalBooking = (props) => {
     _data = data
   }
   const trip_sap_receipt = get(_data, 'trip_sap_receipt', [])
-  console.log('on-hold', trip_onHold)
+
   const customer_payment = !isEmpty(trip_sap_receipt) ? trip_sap_receipt.filter(d => d.doctype === 'I') : []
   const prevShortage = !isEmpty(customer_payment) && customer_payment.filter(d => d.mode === 'Write off Shortage')
   const prevPod = !isEmpty(customer_payment) && customer_payment.filter(d => d.mode === 'Write off POD Delay/Missing')
