@@ -43,7 +43,7 @@ const WalletTopup = (props) => {
   const [disableButton, setDisableButton] = useState(true)
   const context = useContext(userContext)
 
-  const { loading, data, error } = useQuery(
+  const { loading, data, error, refetch } = useQuery(
     CUSTOMER_INCOMING_PAYMENTS,
     {
       variables: { search: search || null },
@@ -60,6 +60,7 @@ const WalletTopup = (props) => {
         const description = get(data, 'customer_topup.description', null)
         if (status === 'OK') {
           message.success(description || 'Processed!')
+          refetch()
           onHide()
         } else (message.error(description))
       }

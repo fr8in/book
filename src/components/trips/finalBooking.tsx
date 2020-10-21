@@ -195,9 +195,9 @@ const FinalBooking = (props) => {
       floatVal(form.unloading_halting) === 0
     ) {
       message.error('Book any value, all fileds value is zero!')
-    } else if (calc.total > pending_data.balance) {
+    } else if ((calc.total + parseFloat(amount)) > pending_data.balance) {
       message.error('Maximum booking amount is ' + pending_data.balance)
-    } else if ((calc.total === pending_data.balance) && (calc.rebate < min_rebate)) {
+    } else if (((calc.total + parseFloat(amount)) === pending_data.balance) && (calc.rebate < min_rebate)) {
       message.error('Rebate must be greater than or equal to Min-rebate')
     } else {
       setDisableButton(true)
