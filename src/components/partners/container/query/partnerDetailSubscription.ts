@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 export const PARTNER_DETAIL_SUBSCRIPTION = gql`
-subscription partner_detail($cardcode: String, $partner_id: bigint, $ongoing: [String!], $pod: [String!], $invoiced: [String!], $paid: [String!]) {
+subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [String!], $invoiced: [String!], $paid: [String!]) {
   partner(where: {cardcode: {_eq: $cardcode}}) {
     partner_accounting {
       cleared
@@ -38,7 +38,6 @@ subscription partner_detail($cardcode: String, $partner_id: bigint, $ongoing: [S
     id
     name
     cardcode
-    account_number
     display_account_number
     virtual_account
     partner_advance_percentage_id
