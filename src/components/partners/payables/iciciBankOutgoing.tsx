@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { Table, Button, message, Tooltip } from 'antd'
 import { gql, useMutation, useQuery } from '@apollo/client'
 
@@ -36,8 +36,9 @@ mutation execute_transfer($doc_num:String!,$updated_by:String!) {
 const OutGoing = (props) => {
   const { label } = props
   const context = useContext(userContext)
+  const [disableBtn, setDisableBtn] = useState(false)
 
-  const { loading, error, data } = useQuery(
+  const { loading, error, data, refetch } = useQuery(
     pendingTransaction, {
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
@@ -55,14 +56,26 @@ const OutGoing = (props) => {
   const [executeTransfer] = useMutation(
     Execute_Transfer,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () {
-        message.success('Updated!!')
+      onError (error) {
+        message.error(error.toString())
+        setDisableBtn(false)
+      },
+      onCompleted (data) {
+        setDisableBtn(false)
+        const status = get(data, 'execute_transfer.status', null)
+        const description = get(data, 'execute_transfer.description', null)
+        if (status) {
+          refetch()
+          message.success(description || 'Updated!!')
+        } else {
+          message.error(description)
+        }
       }
     }
   )
 
   const onSubmit = (record, docNum) => {
+    setDisableBtn(true)
     executeTransfer({
       variables: {
         doc_num: docNum.toString(),
@@ -165,6 +178,7 @@ const OutGoing = (props) => {
           <Button
             size='small' type='primary' onClick={() => onSubmit(record, record.docNum)}
             disabled={!(record.bank_name === 'ICICI Bank') || !record.account_no}
+            loading={disableBtn}
           >
             Execute
           </Button>

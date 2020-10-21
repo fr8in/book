@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Table } from 'antd'
 import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
@@ -20,9 +21,10 @@ query additional_advance($trip_id: Int_comparison_exp!) {
 }`
 
 const AdditionalAdvance = (props) => {
-  const { loading, error, data } = useQuery(
+  const { loaded, ad_trip_id, advanceRefetch, setAdvanceRefetch } = props
+  const { loading, error, data, refetch } = useQuery(
     ADDITIONAL_ADVANCE_QUERY, {
-      variables: { trip_id: { _eq: props.ad_trip_id } },
+      variables: { trip_id: { _eq: ad_trip_id } },
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     })
@@ -33,8 +35,15 @@ const AdditionalAdvance = (props) => {
   if (!loading) {
     _data = data
   }
+
+  useEffect(() => {
+    if (advanceRefetch) {
+      refetch()
+      setAdvanceRefetch(false)
+    }
+  }, [advanceRefetch])
+
   const additionalAdvance = get(_data, 'trip[0].additional_advance', [])
-  console.log('additionalAdvance', additionalAdvance)
 
   const columns = [
     {
@@ -82,7 +91,7 @@ const AdditionalAdvance = (props) => {
           scroll={{ x: 960 }}
           pagination={false}
         />)
-        : !(props.loaded) ? <p>Additional advance available after process advance</p>
+        : !(loaded) ? <p>Additional advance available after process advance</p>
           : <p>Additional advance not processed</p>}
     </div>
   )

@@ -27,13 +27,13 @@ const InvoiceDetail = (props) => {
   const [cancel_ap] = useMutation(
     CANCEL_AP,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) { message.error(error.toString() || 'Unable to cancel AP') },
       onCompleted (data) {
         setDisableAP(false)
         const status = get(data, 'cancel_ap.success', null)
-        const msg = get(data, 'cancel_ap.message', null)
+        const msg = get(data, 'cancel_ap.message', 'Unable to cancel AP')
         if (status) {
-          message.success(msg || 'Cancelled!')
+          message.success(msg || 'AP Cancelled!')
         } else (message.error(msg))
       }
     }
@@ -41,13 +41,13 @@ const InvoiceDetail = (props) => {
   const [cancel_ar] = useMutation(
     CANCEL_AR,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) { message.error(error.toString() || 'Unable to cancel AR') },
       onCompleted (data) {
         setDisableAR(false)
         const status = get(data, 'cancel_ar.success', null)
-        const msg = get(data, 'cancel_ar.message', null)
+        const msg = get(data, 'cancel_ar.message', 'Unable to cancel AR')
         if (status) {
-          message.success(msg || 'Cancelled!')
+          message.success(msg || 'AR Cancelled!')
         } else (message.error(msg))
       }
     }
