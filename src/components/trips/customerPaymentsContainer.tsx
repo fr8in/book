@@ -44,6 +44,7 @@ const CustomerPaymentsContainer = (props) => {
   const bank = get(trip_info, 'bank', 0)
   const loaded = get(trip_info, 'loaded', null)
   const lock = get(trip_info, 'transaction_lock', null)
+  const customer_price = get(trip_info, 'customer_price', 0)
 
   const initial = { adv_visible: false, final_visible: false, title: null, adv_data: null, final_data: null, add_inv_visible: false, add_inv_data: null }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
@@ -80,7 +81,7 @@ const CustomerPaymentsContainer = (props) => {
   console.log('balance_pending', balance_pending)
 
   const advance_pending_data = [
-    { docentry: 1, amount: bank, received: amount, balance: (bank - amount) }
+    { docentry: 1, amount: customer_price - mamul, received: amount, balance: (customer_price - amount) }
   ]
   const onFinalShow = (record) => {
     if (record && record.doctype === 'S') {
