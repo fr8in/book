@@ -28,6 +28,7 @@ const TripPod = (props) => {
     })
   })
   const lock = get(trip_info, 'transaction_lock', null)
+  const status_id = get(trip_info, 'trip_status.id', null)
 
   return (
     <div>
@@ -44,7 +45,7 @@ const TripPod = (props) => {
                 disable={lock}
               />
             </Col>
-            {access &&
+            {access && (status_id >= 12 && status_id !== 16) &&
               <Col xs={24} sm={10} className='text-right'>
                 <Button type='primary' onClick={() => onShow('billing')} disabled={lock}>Billing</Button>
               </Col>}
