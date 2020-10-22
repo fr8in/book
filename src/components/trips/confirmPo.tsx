@@ -1,6 +1,6 @@
 import userContext from '../../lib/userContaxt'
 import { useState, useContext } from 'react'
-import { Modal, Row, Button, Form, Col, Select, Card, Divider, message } from 'antd'
+import { Modal, Row, Button, Form, Col, Select, Divider, message } from 'antd'
 import Link from 'next/link'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
@@ -59,7 +59,7 @@ mutation confirm_po(
   $truck_id: Int!
   $partner_id: Int
   $po_date: timestamp
-  $loading_point_id: Int
+  $customer_user_id: Int
   $source_id: Int!, 
   $destination_id: Int!, 
   $customer_id: Int,
@@ -82,8 +82,7 @@ mutation confirm_po(
     partner_id: $partner_id,
     po_date: $po_date,
     updated_by:$updated_by,
-    loading_point_contact_id: $loading_point_id,
-    customer_office_id: $loading_point_id,
+    customer_user_id: $customer_user_id,
     source_id: $source_id,
     destination_id: $destination_id,
     customer_id: $customer_id,
@@ -111,6 +110,7 @@ mutation confirm_po(
 const ConfirmPo = (props) => {
   const { visible, onHide, truck_id, record, hideExess } = props
   console.log('trip.id', record)
+  const [loading_contact_id, setLoading_contact_id] = useState(null)
   const [driver_id, setDriver_id] = useState(null)
 
   const [form] = Form.useForm()
@@ -199,7 +199,7 @@ const ConfirmPo = (props) => {
           truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
           driver_id: parseInt(driver_id, 10),
           updated_by: context.email,
-          loading_point_id: form.loading_contact
+          customer_user_id: loading_contact_id
         }
       })
     }
@@ -258,6 +258,7 @@ const ConfirmPo = (props) => {
             </Form.Item>
             {(customer && customer.id) &&
               <PoDetail
+                loading_contact_id={setLoading_contact_id}
                 driver_id={setDriver_id}
                 po_data={po_data && po_data.partner}
                 onSourceChange={onSourceChange}
@@ -280,7 +281,7 @@ const ConfirmPo = (props) => {
         {(customer && customer.id) &&
           <Row justify='end'>
             <Divider />
-            <Button className='mt10' type='primary' htmlType='submit'>Create</Button>
+            <Button className='mt10' type='primary' htmlType='submit' loading={disableButton}>Create</Button>
           </Row>}
       </Form>
     </Modal>

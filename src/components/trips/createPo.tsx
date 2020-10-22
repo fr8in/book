@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react'
-import { Modal, Row, Button, Form, Col, Select, Card, Divider, message } from 'antd'
+import { Modal, Row, Button, Form, Col, Select, Divider, message } from 'antd'
 import Link from 'next/link'
 import { gql, useQuery, useLazyQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
@@ -80,7 +80,7 @@ const CREATE_PO = gql`
       $truck_id:Int,
       $truck_type_id: Int,
       $driver_id: Int,
-      $loading_point_id: Int) {
+      $customer_user_id: Int) {
     insert_trip(objects: {
       po_date:$po_date
       source_id: $source_id, 
@@ -91,8 +91,7 @@ const CREATE_PO = gql`
       truck_id: $truck_id,
       truck_type_id: $truck_type_id,
       driver_id: $driver_id,
-      loading_point_contact_id: $loading_point_id,
-      customer_office_id: $loading_point_id,
+      customer_user_id: $customer_user_id,
       customer_price: $customer_price,
       partner_price: $partner_price,
       ton: $ton,
@@ -226,7 +225,7 @@ const CreatePo = (props) => {
           truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
           driver_id: driver_id,
           created_by: context.email,
-          loading_point_id: form.loading_contact
+          customer_user_id: loading_contact_id
         }
       })
     }
