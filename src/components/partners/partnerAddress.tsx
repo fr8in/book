@@ -39,7 +39,6 @@ const EditAddress = (props) => {
 
   const onAddressSubmit = (form) => {
     setDisableButton(true)
-    console.log('inside form submit', form)
     const address = {
       no: form.no,
       address: form.address,
@@ -65,19 +64,19 @@ const EditAddress = (props) => {
         footer={null}
       >
         <Form layout='vertical' onFinish={onAddressSubmit}>
-          <Form.Item name='no' initialValue={get(partnerAddress, 'no', null)}>
+          <Form.Item name='no' initialValue={get(partnerAddress, 'no', null)} rules={[{ required: true }]}>
             <Input placeholder='Building Number' />
           </Form.Item>
-          <Form.Item name='address' initialValue={get(partnerAddress, 'address', null)}>
+          <Form.Item name='address' initialValue={get(partnerAddress, 'address', null)} rules={[{ required: true }]}>
             <Input placeholder='Address' />
           </Form.Item>
-          <Form.Item name='city' initialValue={get(partnerAddress, 'city', null)}>
+          <Form.Item name='city' initialValue={get(partnerAddress, 'city', null)} rules={[{ required: true }]}>
             <Input placeholder='City' />
           </Form.Item>
-          <Form.Item name='state' initialValue={get(partnerAddress, 'state', null)}>
+          <Form.Item name='state' initialValue={get(partnerAddress, 'state', null)} rules={[{ required: true }]}>
             <Input placeholder='State' />
           </Form.Item>
-          <Form.Item name='pin_code' initialValue={get(partnerAddress, 'pin_code', null)}>
+          <Form.Item name='pin_code' initialValue={get(partnerAddress, 'pin_code', null)} rules={[{ required: true }]}>
             <Input placeholder='Pin Code' />
           </Form.Item>
           <Row justify='end'>
