@@ -177,7 +177,7 @@ const OutGoing = (props) => {
         return (
           <Button
             size='small' type='primary' onClick={() => onSubmit(record, record.docNum)}
-            disabled={!(record.bank_name === 'ICICI Bank') || !record.account_no}
+            disabled={!record.account_no}
             loading={disableBtn}
           >
             Execute
