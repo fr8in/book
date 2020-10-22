@@ -19,7 +19,7 @@ const TripPod = (props) => {
   const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
   const files = get(trip_info, 'trip_files', [])
-  const pod_files = !isEmpty(files) ? files.filter(file => file.type === 'POD') : null
+  const pod_files = !isEmpty(files) ? files.filter(file => file.type === u.fileType.pod) : null
   const pod_file_list = !isEmpty(pod_files) && pod_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
@@ -39,8 +39,8 @@ const TripPod = (props) => {
               <FileUpload
                 id={trip_id}
                 type='trip'
-                folder='pod/'
-                file_type='POD'
+                folder={u.folder.pod_lr}
+                file_type={u.fileType.pod}
                 file_list={pod_file_list}
                 disable={lock}
               />

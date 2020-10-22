@@ -20,6 +20,7 @@ import ViewFile from '../common/viewFile'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import { gql, useMutation, useLazyQuery } from '@apollo/client'
+import u from '../../lib/util'
 
 import userContext from '../../lib/userContaxt'
 import LabelWithData from '../common/labelWithData'
@@ -275,7 +276,7 @@ const TripTime = (props) => {
   const remove_dout = (trip_status_name === 'Delivered')
   const advance_processed = (trip_info.loaded === 'Yes')
   const trip_files = get(trip_info, 'trip_files', [])
-  const wh_files = !isEmpty(trip_files) ? trip_files.filter(file => file.type === 'WH') : null
+  const wh_files = !isEmpty(trip_files) ? trip_files.filter(file => file.type === u.fileType.wh) : null
   const driver_number = get(trip_info, 'driver.mobile', null)
   const trip_status_id = get(trip_info, 'trip_status.id', null)
   const after_deliverd = (trip_status_id >= 9)
@@ -337,8 +338,8 @@ const TripTime = (props) => {
                     <ViewFile
                       id={trip_info.id}
                       type='trip'
-                      folder='warehousereceipt/'
-                      file_type='WH'
+                      folder={u.folder.wh}
+                      file_type={u.fileType.wh}
                       file_list={wh_files}
                     />) : null}
                 </Space>}

@@ -3,13 +3,14 @@ import { Row, Col, Form } from 'antd'
 import FileUpload from '../common/fileUpload'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
+import u from '../../lib/util'
 
 const truckDocuments = (props) => {
   const { truck_id, truck_info, partner_id } = props
 
   const files = get(truck_info, 'partner.partner_files', [])
   const truck_files = get(truck_info, 'truck_files', [])
-  const rc_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === 'RC') : null
+  const rc_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.rc) : null
   const rc_file_list = !isEmpty(rc_files) && rc_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
@@ -18,7 +19,7 @@ const truckDocuments = (props) => {
     })
   })
 
-  const insurance_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === 'insurance') : null
+  const insurance_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.insurance) : null
   const insurance_file_list = !isEmpty(insurance_files) && insurance_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
@@ -27,7 +28,7 @@ const truckDocuments = (props) => {
     })
   })
 
-  const permit_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === 'permit') : null
+  const permit_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.permit) : null
   const permit_file_list = !isEmpty(permit_files) && permit_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
@@ -36,7 +37,7 @@ const truckDocuments = (props) => {
     })
   })
 
-  const emi_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === 'EMI') : null
+  const emi_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.emi) : null
   const emi_file_list = !isEmpty(emi_files) && emi_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
@@ -45,7 +46,7 @@ const truckDocuments = (props) => {
     })
   })
 
-  const pan_files = !isEmpty(files) ? files.filter(file => file.type === 'PAN') : null
+  const pan_files = !isEmpty(files) ? files.filter(file => file.type === u.fileType.partner_pan) : null
   const pan_file_list = !isEmpty(pan_files) && pan_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
@@ -54,7 +55,7 @@ const truckDocuments = (props) => {
     })
   })
 
-  const tds_files = !isEmpty(files) ? files.filter(file => file.type === 'TDS') : null
+  const tds_files = !isEmpty(files) ? files.filter(file => file.type === u.fileType.tds) : null
   const tds_file_list = !isEmpty(tds_files) && tds_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
@@ -63,7 +64,7 @@ const truckDocuments = (props) => {
     })
   })
 
-  const cl_files = !isEmpty(files) ? files.filter(file => file.type === 'CL') : null
+  const cl_files = !isEmpty(files) ? files.filter(file => file.type === u.fileType.check_leaf) : null
   const cl_file_list = !isEmpty(cl_files) && cl_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
@@ -72,7 +73,7 @@ const truckDocuments = (props) => {
     })
   })
 
-  const vaahan_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === 'vaahan') : null
+  const vaahan_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.vaahan) : null
   const vaahan_file_list = !isEmpty(vaahan_files) && vaahan_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
@@ -94,8 +95,8 @@ const truckDocuments = (props) => {
               <FileUpload
                 id={partner_id}
                 type='partner'
-                folder='approvals/'
-                file_type='PAN'
+                folder={u.folder.approvals}
+                file_type={u.fileType.partner_pan}
                 file_list={pan_file_list}
               />
             </Form.Item>
@@ -109,8 +110,8 @@ const truckDocuments = (props) => {
               <FileUpload
                 id={partner_id}
                 type='partner'
-                folder='approvals/'
-                file_type='CL'
+                folder={u.folder.approvals}
+                file_type={u.fileType.check_leaf}
                 file_list={cl_file_list}
               />
             </Form.Item>
@@ -124,8 +125,8 @@ const truckDocuments = (props) => {
               <FileUpload
                 id={partner_id}
                 type='partner'
-                folder='approvals/'
-                file_type='TDS'
+                folder={u.folder.approvals}
+                file_type={u.fileType.tds}
                 file_list={tds_file_list}
               />
             </Form.Item>
@@ -136,8 +137,8 @@ const truckDocuments = (props) => {
               <FileUpload
                 id={truck_id}
                 type='truck'
-                folder='approvals/'
-                file_type='EMI'
+                folder={u.folder.approvals}
+                file_type={u.fileType.emi}
                 file_list={emi_file_list}
               />
             </Form.Item>
@@ -153,8 +154,8 @@ const truckDocuments = (props) => {
               <FileUpload
                 id={truck_id}
                 type='truck'
-                folder='approvals/'
-                file_type='RC'
+                folder={u.folder.approvals}
+                file_type={u.fileType.rc}
                 file_list={rc_file_list}
               />
             </Form.Item>
@@ -169,8 +170,8 @@ const truckDocuments = (props) => {
               <FileUpload
                 id={truck_id}
                 type='truck'
-                folder='approvals/'
-                file_type='vaahan'
+                folder={u.folder.approvals}
+                file_type={u.fileType.vaahan}
                 file_list={vaahan_file_list}
               />
             </Form.Item>
@@ -184,8 +185,8 @@ const truckDocuments = (props) => {
               <FileUpload
                 id={truck_id}
                 type='truck'
-                folder='approvals/'
-                file_type='insurance'
+                folder={u.folder.approvals}
+                file_type={u.fileType.insurance}
                 file_list={insurance_file_list}
               />
             </Form.Item>
@@ -199,8 +200,8 @@ const truckDocuments = (props) => {
               <FileUpload
                 id={truck_id}
                 type='truck'
-                folder='approvals/'
-                file_type='permit'
+                folder={u.folder.approvals}
+                file_type={u.fileType.permit}
                 file_list={permit_file_list}
               />
             </Form.Item>

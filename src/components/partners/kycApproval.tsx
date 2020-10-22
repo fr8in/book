@@ -21,10 +21,10 @@ import { gql, useMutation, useQuery, useSubscription } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
-import moment from 'moment'
 import Loading from '../common/loading'
 import Truncate from '../common/truncate'
 import NewTruck from './newTruck'
+import u from '../../lib/util'
 
 const PARTNERS_QUERY = gql`
   query create_partner{
@@ -141,9 +141,9 @@ const KycApproval = (props) => {
   const trucks = get(partnerDetail, 'trucks', [])
   const files = get(partnerDetail, 'partner_files', [])
 
-  const pan_files = !isEmpty(files) && files.filter(file => file.type === 'PAN')
-  const cheaque_files = !isEmpty(files) && files.filter(file => file.type === 'CL')
-  const cs_files = !isEmpty(files) && files.filter(file => file.type === 'CS')
+  const pan_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.partner_pan)
+  const cheaque_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.check_leaf)
+  const cs_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.cibil)
 
   const [createPartnerCode] = useMutation(
     CREATE_PARTNER_CODE_MUTATION,
@@ -286,15 +286,15 @@ const KycApproval = (props) => {
                             size='small'
                             id={partner_id}
                             type='partner'
-                            file_type='PAN'
-                            folder='approvals/'
+                            file_type={u.fileType.partner_pan}
+                            folder={u.folder.approvals}
                             file_list={pan_files}
                           />
                           <DeleteFile
                             size='small'
                             id={partner_id}
                             type='partner'
-                            file_type='PAN'
+                            file_type={u.fileType.partner_pan}
                             file_list={pan_files}
                           />
                         </Space>
@@ -303,8 +303,8 @@ const KycApproval = (props) => {
                           size='small'
                           id={partner_id}
                           type='partner'
-                          folder='approvals/'
-                          file_type='PAN'
+                          folder={u.folder.approvals}
+                          file_type={u.fileType.partner_pan}
                           file_list={pan_files}
                         />
                       )}
@@ -324,15 +324,15 @@ const KycApproval = (props) => {
                             size='small'
                             id={partner_id}
                             type='partner'
-                            file_type='CL'
-                            folder='approvals/'
+                            file_type={u.fileType.check_leaf}
+                            folder={u.folder.approvals}
                             file_list={cheaque_files}
                           />
                           <DeleteFile
                             size='small'
                             id={partner_id}
                             type='partner'
-                            file_type='CL'
+                            file_type={u.fileType.check_leaf}
                             file_list={cheaque_files}
                           />
                         </Space>
@@ -341,8 +341,8 @@ const KycApproval = (props) => {
                           size='small'
                           id={partner_id}
                           type='partner'
-                          folder='approvals/'
-                          file_type='CL'
+                          folder={u.folder.approvals}
+                          file_type={u.fileType.check_leaf}
                           file_list={cheaque_files}
                         />
                       )}
@@ -370,15 +370,15 @@ const KycApproval = (props) => {
                             size='small'
                             id={partner_id}
                             type='partner'
-                            file_type='CS'
-                            folder='approvals/'
+                            file_type={u.fileType.cibil}
+                            folder={u.folder.approvals}
                             file_list={cs_files}
                           />
                           <DeleteFile
                             size='small'
                             id={partner_id}
                             type='partner'
-                            file_type='CS'
+                            file_type={u.fileType.cibil}
                             file_list={cs_files}
                           />
                         </Space>
@@ -387,8 +387,8 @@ const KycApproval = (props) => {
                           size='small'
                           id={partner_id}
                           type='partner'
-                          folder='approvals/'
-                          file_type='CS'
+                          folder={u.folder.approvals}
+                          file_type={u.fileType.cibil}
                           file_list={cs_files}
                         />
                       )}

@@ -21,6 +21,7 @@ import ViewFile from '../common/viewFile'
 import { useState, useContext } from 'react'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
+import u from '../../lib/util'
 
 const TRUCKS_QUERY = gql`
 subscription truck_activation_detail($truck_id : Int){
@@ -106,8 +107,8 @@ const TruckActivation = (props) => {
   console.log('onboarded_by', onboarded_by)
   const partner_mobile = truck_info && truck_info.partner && truck_info.partner.partner_users && truck_info.partner.partner_users.mobile
 
-  const rc_files = truck_info && truck_info.truck_files && truck_info.truck_files.filter(file => file.type === 'RC')
-  const vaahan_files = truck_info && truck_info.truck_files && truck_info.truck_files.filter(file => file.type === 'vaahan')
+  const rc_files = truck_info && truck_info.truck_files && truck_info.truck_files.filter(file => file.type === u.fileType.rc)
+  const vaahan_files = truck_info && truck_info.truck_files && truck_info.truck_files.filter(file => file.type === u.fileType.vaahan)
 
   console.log('rc_files', rc_files, truck_info.truck_files)
 
@@ -173,14 +174,14 @@ const TruckActivation = (props) => {
                           <ViewFile
                             id={truck_id}
                             type='truck'
-                            file_type='RC'
-                            folder='approvals/'
+                            file_type={u.fileType.rc}
+                            folder={u.folder.approvals}
                             file_list={rc_files}
                           />
                           <DeleteFile
                             id={truck_id}
                             type='truck'
-                            file_type='RC'
+                            file_type={u.fileType.rc}
                             file_list={rc_files}
                           />
                         </Space>)
@@ -188,8 +189,8 @@ const TruckActivation = (props) => {
                           <FileUploadOnly
                             id={truck_id}
                             type='truck'
-                            folder='approvals/'
-                            file_type='RC'
+                            folder={u.folder.approvals}
+                            file_type={u.fileType.rc}
                           />)}
                     </Space>
                   </Form.Item>
@@ -209,14 +210,14 @@ const TruckActivation = (props) => {
                           <ViewFile
                             id={truck_id}
                             type='truck'
-                            file_type='vaahan'
-                            folder='approvals/'
+                            file_type={u.fileType.vaahan}
+                            folder={u.folder.approvals}
                             file_list={vaahan_files}
                           />
                           <DeleteFile
                             id={truck_id}
                             type='truck'
-                            file_type='vaahan'
+                            file_type={u.fileType.vaahan}
                             file_list={vaahan_files}
                           />
                         </Space>)
@@ -224,8 +225,8 @@ const TruckActivation = (props) => {
                           <FileUploadOnly
                             id={truck_id}
                             type='truck'
-                            folder='approvals/'
-                            file_type='vaahan'
+                            folder={u.folder.approvals}
+                            file_type={u.fileType.vaahan}
                           />)}
                     </Space>
                   </Form.Item>
