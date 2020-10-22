@@ -7,16 +7,21 @@ import u from '../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 
 const UPDATE_PARTNER_BLACKLIST_MUTATION = gql`
-mutation partner_blacklist($partner_status_id:Int,$cardcode:String!, $updated_by: String){
-  update_partner( _set: {partner_status_id: $partner_status_id, updated_by: $updated_by}, where: {cardcode:{_eq: $cardcode}} 
-  ){
-    returning{
-      cardcode
-      partner_status_id
-    }
+mutation partner_blacklist($id: Int!, $updated_by: String!) {
+  partner_blacklist(id: $id, updated_by: $updated_by) {
+   description
+   status
   }
-}
-`
+}`
+
+const UPDATE_PARTNER_UNBLACKLIST_MUTATION = gql`
+mutation partner_unblacklist($id: Int!, $updated_by: String!) {
+  partner_unblacklist(id: $id, updated_by: $updated_by) {
+    description
+    status
+  }
+}`
+
 const UPDATE_PARTNER_DE_ACTIVATE_MUTATION = gql`
 mutation partner_de_activate($partner_status_id:Int,$cardcode:String!, $updated_by: String){
   update_partner( _set: {partner_status_id: $partner_status_id, updated_by: $updated_by}, where: {cardcode:{_eq: $cardcode}} 
@@ -47,27 +52,59 @@ const PartnerStatus = (props) => {
   const partner_status = get(partnerInfo, 'partner_status.name', null)
   const is_blacklisted = (partner_status === 'Blacklisted')
   const is_deactivate = (partner_status === 'De-activate')
-  const admin_role =[role.admin, role.partner_manager, role.partner_support]
+  const admin_role = [role.admin, role.partner_manager, role.partner_support]
   const blockAccess_role = [role.admin, role.rm, role.onboarding, role.partner_manager, role.partner_support]
   const admin = !isEmpty(admin_role) ? context.roles.some(r => admin_role.includes(r)) : false
   const blockAccess = !isEmpty(blockAccess_role) ? context.roles.some(r => blockAccess_role.includes(r)) : false
-  
 
   const [updateBlacklist] = useMutation(
     UPDATE_PARTNER_BLACKLIST_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted (data) {
+        const status = get(data, 'partner_blacklist.status', null)
+        const description = get(data, 'partner_blacklist.description', null)
+        if (status === 'OK') {
+          message.success(description || 'Blacklisted!!')
+        } else {
+          message.error(description || 'Error Occured!!')
+        }
+      }
     }
   )
-  const blacklistChange = (e) => {
-    updateBlacklist({
-      variables: {
-        cardcode: partnerInfo.cardcode,
-        partner_status_id: e.target.checked ? 7 : 4,
-        updated_by: context.email
+
+  const [updateUnblacklist] = useMutation(
+    UPDATE_PARTNER_UNBLACKLIST_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted (data) {
+        const status = get(data, 'partner_unblacklist.status', null)
+        const description = get(data, 'partner_unblacklist.description', null)
+        if (status === 'OK') {
+          message.success(description || 'Unblacklisted!!')
+        } else {
+          message.error(description || 'Error Occured!!')
+        }
       }
-    })
+    }
+  )
+
+  const blacklistChange = (e) => {
+    if (e.target.checked) {
+      updateBlacklist({
+        variables: {
+          id: partnerInfo.id,
+          updated_by: context.email
+        }
+      })
+    } else {
+      updateUnblacklist({
+        variables: {
+          id: partnerInfo.id,
+          updated_by: context.email
+        }
+      })
+    }
   }
 
   const [updateDeactivate] = useMutation(
