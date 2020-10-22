@@ -140,8 +140,12 @@ const TripTime = (props) => {
   const [removeSin] = useMutation(
     REMOVE_SIN_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() {
+      onError (error) {
+        setDisableBtn(false)
+        message.error(error.toString())
+      },
+      onCompleted () {
+        setDisableBtn(false)
         message.success('Updated!!')
         form.resetFields()
       }
@@ -150,8 +154,12 @@ const TripTime = (props) => {
   const [removeSout] = useMutation(
     REMOVE_SOUT_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() {
+      onError (error) {
+        setDisableBtn(false)
+        message.error(error.toString())
+      },
+      onCompleted () {
+        setDisableBtn(false)
         message.success('Updated!!')
         form.resetFields()
       }
@@ -161,8 +169,12 @@ const TripTime = (props) => {
   const [removeDin] = useMutation(
     REMOVE_DIN_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() {
+      onError (error) {
+        setDisableBtn(false)
+        message.error(error.toString())
+      },
+      onCompleted () {
+        setDisableBtn(false)
         message.success('Updated!!')
         form.resetFields()
       }
@@ -171,8 +183,12 @@ const TripTime = (props) => {
   const [removeDout] = useMutation(
     REMOVE_DOUT_MUTATION,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() {
+      onError (error) {
+        setDisableBtn(false)
+        message.error(error.toString())
+      },
+      onCompleted () {
+        setDisableBtn(false)
         message.success('Updated!!')
         form.resetFields()
       }
@@ -182,18 +198,17 @@ const TripTime = (props) => {
   const [processAdvance] = useMutation(
     PROCESS_ADVANCE_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         message.error(error.toString())
         setDisableBtn(false)
       },
-      onCompleted(data) {
+      onCompleted (data) {
+        setDisableBtn(false)
         const status = get(data, 'partner_advance.status', null)
         const description = get(data, 'partner_advance.description', null)
         if (status === 'OK') {
-          setDisableBtn(false)
           message.success(description || 'Advance Processed!')
         } else {
-          setDisableBtn(false)
           message.error(description)
         }
       }
@@ -201,6 +216,7 @@ const TripTime = (props) => {
   )
 
   const onSinRemove = () => {
+    setDisableBtn(true)
     removeSin({
       variables: {
         id: trip_info.id,
@@ -210,6 +226,7 @@ const TripTime = (props) => {
     })
   }
   const onSoutRemove = () => {
+    setDisableBtn(true)
     removeSout({
       variables: {
         id: trip_info.id,
@@ -219,6 +236,7 @@ const TripTime = (props) => {
     })
   }
   const onDinRemove = () => {
+    setDisableBtn(true)
     removeDin({
       variables: {
         id: trip_info.id,
@@ -228,6 +246,7 @@ const TripTime = (props) => {
     })
   }
   const onDoutRemove = () => {
+    setDisableBtn(true)
     removeDout({
       variables: {
         id: trip_info.id,
@@ -242,7 +261,7 @@ const TripTime = (props) => {
       variables: {
         tripId: trip_info.id,
         createdBy: context.email,
-        customer_confirmation: customerConfirm ? customerConfirm : false
+        customer_confirmation: customerConfirm || false
       }
     })
   }
@@ -333,13 +352,13 @@ const TripTime = (props) => {
                 {process_advance &&
                   <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>}
                 {remove_sin &&
-                  <Button danger icon={<CloseCircleOutlined />} onClick={onSinRemove} disabled={lock}>S-In</Button>}
+                  <Button danger icon={<CloseCircleOutlined />} onClick={onSinRemove} disabled={lock} loading={disableBtn}>S-In</Button>}
                 {remove_sout &&
-                  <Button danger icon={<CloseCircleOutlined />} onClick={onSoutRemove} disabled={lock}>S-Out</Button>}
+                  <Button danger icon={<CloseCircleOutlined />} onClick={onSoutRemove} disabled={lock} loading={disableBtn}>S-Out</Button>}
                 {remove_din &&
-                  <Button danger icon={<CloseCircleOutlined />} onClick={onDinRemove} disabled={lock}>D-In</Button>}
+                  <Button danger icon={<CloseCircleOutlined />} onClick={onDinRemove} disabled={lock} loading={disableBtn}>D-In</Button>}
                 {remove_dout &&
-                  <Button danger icon={<CloseCircleOutlined />} onClick={onDoutRemove} disabled={lock}>D-Out</Button>}
+                  <Button danger icon={<CloseCircleOutlined />} onClick={onDoutRemove} disabled={lock} loading={disableBtn}>D-Out</Button>}
               </Space>
             </Col>
           </Row>
