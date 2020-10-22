@@ -72,21 +72,31 @@ subscription partner_kyc($id:Int){
       }
     }
   }
-}
-`
-
-const UPDATE_PARTNER_APPOVAL_MUTATION = gql`
-mutation update_partner_approval($onboarded_by_id:Int,$partner_advance_percentage_id:Int,$gst:String,$cibil:String,$emi:Boolean,$id:Int,$partner_status_id:Int,$updated_by: String!, $onboarded_date: timestamp){
-  update_partner(_set: {onboarded_by_id:$onboarded_by_id, partner_advance_percentage_id:$partner_advance_percentage_id, gst:$gst, cibil:$cibil, emi:$emi,partner_status_id:$partner_status_id,updated_by:$updated_by, onboarded_date: $onboarded_date}, where: {id: {_eq:$id}}) {
-    returning {
-      id
-    }
-  }
 }`
 
 const CREATE_PARTNER_CODE_MUTATION = gql`
-mutation create_partner_code($cardcode: String, $name: String!, $partner_id: Int!, $pay_terms_code: Int!,$pan_no:String!) {
-  create_partner_code(cardcode: $cardcode,name: $name, partner_id: $partner_id, pay_terms_code: $pay_terms_code, pan_no:$pan_no) {
+mutation create_partner_code(
+  $cardcode: String, 
+  $name: String!, 
+  $partner_id: Int!,
+  $pan_no:String!,
+  $onboarded_by_id: Int!,
+  $partner_advance_percentage_id: Int!
+  $gst:String,
+  $cibil: String!,
+  $emi: Boolean!,
+  $updated_by: String! ) {
+  create_partner_code(
+    cardcode: $cardcode,
+    name: $name, 
+    partner_id: $partner_id,
+    pan_no:$pan_no,
+    onboarded_by_id: $onboarded_by_id, 
+    partner_advance_percentage_id: $partner_advance_percentage_id, 
+    gst: $gst, 
+    cibil: $cibil, 
+    emi: $emi, 
+    updated_by: $updated_by) {
     description
     status
   }
@@ -135,20 +145,6 @@ const KycApproval = (props) => {
   const cheaque_files = !isEmpty(files) && files.filter(file => file.type === 'CL')
   const cs_files = !isEmpty(files) && files.filter(file => file.type === 'CS')
 
-  const [updatePartnerApproval] = useMutation(
-    UPDATE_PARTNER_APPOVAL_MUTATION,
-    {
-      onError (error) {
-        setDisableButton(false)
-        message.error(error.toString())
-      },
-      onCompleted () {
-        setDisableButton(false)
-        message.success('Saved!!')
-      }
-    }
-  )
-
   const [createPartnerCode] = useMutation(
     CREATE_PARTNER_CODE_MUTATION,
     {
@@ -162,7 +158,6 @@ const KycApproval = (props) => {
         const description = get(data, 'create_partner_code.description', null)
         if (status === 'OK') {
           message.success(description || 'Code created!')
-          onPartnerApprovalSubmit()
           onHide()
         } else {
           message.error(description)
@@ -205,24 +200,7 @@ const KycApproval = (props) => {
     }
   ]
 
-  const onPartnerApprovalSubmit = () => {
-    setDisableButton(true)
-    updatePartnerApproval({
-      variables: {
-        id: partner_id,
-        partner_status_id: 4,
-        gst: form.getFieldValue('gst'),
-        cibil: form.getFieldValue('cibil'),
-        emi: checked,
-        onboarded_by_id: form.getFieldValue('onboarded_by_id') || get(partnerDetail, 'onboarded_by.id', null),
-        updated_by: context.email,
-        partner_advance_percentage_id: form.getFieldValue('partner_advance_percentage_id') || get(partnerDetail, 'partner_advance_percentage.id', null),
-        onboarded_date: moment().format('YYYY-MM-DD')
-      }
-    })
-  }
-
-  const onCreatePartnerCodeSubmit = () => {
+  const onCreatePartnerCodeSubmit = (form) => {
     if (isEmpty(trucks)) {
       message.error('Add truck before approve Partner!')
     } else if (isEmpty(pan_files) || isEmpty(cheaque_files) || isEmpty(cs_files)) {
@@ -231,11 +209,16 @@ const KycApproval = (props) => {
       setDisableButton(true)
       createPartnerCode({
         variables: {
-          name: name,
-          pay_terms_code: form.getFieldValue('partner_advance_percentage_id') || get(partnerDetail, 'partner_advance_percentage.id', null),
           partner_id: partner_id,
+          cardcode: get(partnerDetail, 'cardcode', null),
+          name: name,
           pan_no: partnerDetail.pan,
-          cardcode: get(partnerDetail, 'cardcode', null)
+          onboarded_by_id: form.onboarded_by_id || get(partnerDetail, 'onboarded_by.id', null),
+          partner_advance_percentage_id: form.partner_advance_percentage_id || get(partnerDetail, 'partner_advance_percentage.id', null),
+          gst: form.gst,
+          cibil: form.cibil,
+          emi: checked,
+          updated_by: context.email
         }
       })
     }
