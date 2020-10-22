@@ -167,7 +167,7 @@ const CreateAdditionalAdvance = (props) => {
                     </Form.Item>
                   </Col>
                   <Col xs={12} sm={8}>
-                    <Form.Item label='Confirm Account No' rules={rules} dependencies={['account_number']} name='confirm' rules={[{ required: true }]}>
+                    <Form.Item label='Confirm Account No' rules={rules} dependencies={['account_number']} name='confirm'>
                       <Input placeholder='Confirm' type='password' />
                     </Form.Item>
                   </Col>

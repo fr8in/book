@@ -22,67 +22,44 @@ query region_state_type_emp_list{
 }`
 
 const CREATE_CARDCODE = gql`
-mutation create_customer_cardcode($cardcode:String,$company_name: String!, $customer_id: Int!) {
-  create_customer_cardcode(company_name: $company_name, customer_id: $customer_id, cardcode: $cardcode) {
-    description
-    status
-  }
-}`
-
-const CREATE_CUSTOMER_BRANCH = gql`
-mutation insert_customer_office(
-  $name: String!
-  $branch_name: String!
-  $customer_id: Int!
-  $address:String
-  $state: String
-  $state_id:Int
-  $city: String
-  $city_id: Int
-  $pincode: Int
-){
-  insert_customer_office(objects:{
-    name: $name,
-    branch_name: $branch_name
-    customer_id: $customer_id
-    address: $address
-    state: $state
-    state_id: $state_id
-    city: $city
-    city_id: $city_id
-    pincode: $pincode
-  }){
-    returning{
-      id
-    }
-  }
-}`
-
-const UPDATE_CUSTOMER = gql`
-mutation update_customer(
-  $onboarded_by_id: Int
-  $payment_manager_id: Int
-  $customer_type_id: Int
-  $mamul: Int
-  $id:Int!
-  $updated_by:String!
-  $city_id: Int!
+mutation create_customer_cardcode(
+  $id: Int!,
+  $cardcode:String
+  $name: String!,
+  $customer_type_id: Int!,
+  $onboarded_by_id: Int!,
+  $payment_manager_id: Int!,
+  $mamul: Int!,
+  $updated_by: String!,
+  $city_id: Int!,
+  $emp_name: String!,
+  $address: String!,
+  $state: String!,
+  $state_id: Int!,
+  $city: String!,
+  $pincode: String!
 ) {
-  update_customer(_set: {
-      customer_type_id: $customer_type_id, 
-      onboarded_by_id: $onboarded_by_id, 
-      payment_manager_id: $payment_manager_id, 
-      system_mamul: $mamul,
-      status_id: 5,
-      updated_by:$updated_by,
-      city_id: $city_id
-    }, 
-    where: {
-      id: {_eq:$id}
+  create_customer_cardcode( 
+    id: $id, 
+    cardcode: $cardcode,
+    name: $name,
+    customer_type_id: $customer_type_id, 
+    onboarded_by_id: $onboarded_by_id,
+    payment_manager_id: $payment_manager_id, 
+    mamul: $mamul, 
+    updated_by: $updated_by, 
+    city_id: $city_id, 
+    customer_office: {
+      name: $emp_name, 
+      branch_name: "Head Office", 
+      address: $address, 
+      state: $state, 
+      state_id: $state_id, 
+      city: $city, 
+      pincode: $pincode
     }) {
-    returning {
-      id
-    }
+    status
+    description
   }
 }`
 
@@ -116,31 +93,11 @@ const BranchCreation = (props) => {
         if (status === 'OK') {
           setDisableButton(false)
           message.success(description || 'KYC Approved!')
-          onBranchInsert()
           onHide()
         } else {
           message.error(description)
           setDisableButton(false)
         }
-      }
-    }
-  )
-
-  const [insert_customer_branch] = useMutation(
-    CREATE_CUSTOMER_BRANCH,
-    {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () {
-        onCustomerUpdate()
-      }
-    }
-  )
-
-  const [update_customer] = useMutation(
-    UPDATE_CUSTOMER,
-    {
-      onError (error) {
-        message.error(error.toString())
       }
     }
   )
@@ -165,43 +122,25 @@ const BranchCreation = (props) => {
     return { value: data.id, label: data.email }
   })
 
-  const onSubmit = () => {
+  const onSubmit = (form) => {
     setDisableButton(true)
     create_cardcode({
       variables: {
-        company_name: customer_data.name,
-        customer_id: customer_data.id,
-        cardcode: get(customer_data, 'cardcode', null)
-      }
-    })
-  }
-
-  const onBranchInsert = () => {
-    insert_customer_branch({
-      variables: {
-        name: form.getFieldValue('name'),
-        branch_name: form.getFieldValue('name'),
-        customer_id: customer_data.id,
-        address: form.getFieldValue('address'),
-        state: obj.state_name,
-        state_id: form.getFieldValue('state_id'),
-        city: form.getFieldValue('city').split(',')[0],
-        city_id: obj.city_id,
-        pincode: form.getFieldValue('pincode')
-      }
-    })
-  }
-
-  const onCustomerUpdate = () => {
-    update_customer({
-      variables: {
-        customer_type_id: form.getFieldValue('customer_type'),
-        onboarded_by_id: form.getFieldValue('onboardedby_id'),
-        payment_manager_id: form.getFieldValue('payment_manager_id'),
+        id: customer_data.id,
+        cardcode: get(customer_data, 'cardcode', null),
+        name: customer_data.name,
+        customer_type_id: form.customer_type,
+        onboarded_by_id: form.onboardedby_id,
+        payment_manager_id: form.payment_manager_id,
         mamul: parseInt(mamul),
         updated_by: context.email,
-        city_id: obj.city_id,
-        id: customer_data.id
+        city_id: parseInt(obj.city_id, 10),
+        emp_name: form.name,
+        address: form.address,
+        state: obj.state_name,
+        state_id: form.state_id,
+        city: form.city.split(',')[0],
+        pincode: form.pincode
       }
     })
   }
