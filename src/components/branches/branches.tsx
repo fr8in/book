@@ -1,4 +1,4 @@
-import React from 'react'
+import { useEffect } from 'react'
 import { Table, Tag } from 'antd'
 import AddTraffic from '../branches/addTraffic'
 import WeeklyTarget from '../branches/weeklyTarget'
@@ -34,7 +34,7 @@ subscription branches($week: Int!, $year: Int!) {
 }`
 
 const Branches = (props) => {
-  const { edit_access } = props
+  const { edit_access, setTotalBranch } = props
 
   const { role } = u
   const traffic_member_delete = [role.admin]
@@ -61,6 +61,11 @@ const Branches = (props) => {
   }
 
   const branches = get(_data, 'branch', [])
+  const total_branch = branches.length
+
+  useEffect(() => {
+    setTotalBranch(total_branch)
+  }, [branches])
 
   const column = [
     {

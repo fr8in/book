@@ -49,6 +49,7 @@ const CreateAdditionalAdvance = (props) => {
 
   const onRadioChange = (e) => {
     setRadioValue(e.target.value)
+    form.resetFields()
   }
 
   const validateIFSC = () => {
@@ -73,6 +74,7 @@ const CreateAdditionalAdvance = (props) => {
         if (status === 'OK') {
           setDisableBtn(false)
           setAdvanceRefetch(true)
+          form.resetFields()
           message.success(description || 'Processed!')
         } else { (message.error(description)); setDisableBtn(false) }
       }
@@ -155,30 +157,30 @@ const CreateAdditionalAdvance = (props) => {
               <div>
                 <Row gutter={10}>
                   <Col xs={12} sm={8}>
-                    <Form.Item label='Account Name' name='account_name'>
-                      <Input required placeholder='Account Name' />
+                    <Form.Item label='Account Name' name='account_name' rules={[{ required: true }]}>
+                      <Input placeholder='Account Name' />
                     </Form.Item>
                   </Col>
                   <Col xs={12} sm={8}>
-                    <Form.Item label='Account No' name='account_number'>
-                      <Input required placeholder='Account Number' />
+                    <Form.Item label='Account No' name='account_number' rules={[{ required: true }]}>
+                      <Input placeholder='Account Number' />
                     </Form.Item>
                   </Col>
                   <Col xs={12} sm={8}>
-                    <Form.Item label='Confirm Account No' rules={rules} dependencies={['account_number']} name='confirm'>
-                      <Input required placeholder='Confirm' />
+                    <Form.Item label='Confirm Account No' rules={rules} dependencies={['account_number']} name='confirm' rules={[{ required: true }]}>
+                      <Input placeholder='Confirm' type='password' />
                     </Form.Item>
                   </Col>
                 </Row>
                 <Row gutter={10}>
                   <Col xs={12} sm={8}>
                     <Form.Item label='IFSC Code' name='ifsc' extra={get(bank_detail, 'bank', null)} rules={[{ required: true, message: 'IFSC required!' }]}>
-                      <Input required onBlur={validateIFSC} />
+                      <Input onBlur={validateIFSC} />
                     </Form.Item>
                   </Col>
                   <Col xs={12} sm={8} className='reduceMarginTop1'>
-                    <Form.Item label='Amount' name='amount'>
-                      <Input placeholder='Amount' required />
+                    <Form.Item label='Amount' name='amount' rules={[{ required: true }]}>
+                      <Input placeholder='Amount' />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -186,15 +188,15 @@ const CreateAdditionalAdvance = (props) => {
               ? (
                 <Row gutter={10}>
                   <Col xs={12} sm={8}>
-                    <Form.Item label='Amount' name='amount' extra='*Limit PO value'>
-                      <Input required placeholder='Amount' />
+                    <Form.Item label='Amount' name='amount' extra='*Limit PO value' rules={[{ required: true }]}>
+                      <Input placeholder='Amount' />
                     </Form.Item>
                   </Col>
                 </Row>) : null}
           <Row gutter={10}>
             <Col xs={16}>
-              <Form.Item label='Comment' name='comment'>
-                <Input placeholder='Comment' required />
+              <Form.Item label='Comment' name='comment' rules={[{ required: true }]}>
+                <Input placeholder='Comment' />
               </Form.Item>
             </Col>
             <Col xs={8}>

@@ -459,7 +459,7 @@ const FinalBooking = (props) => {
               <div>(Recievables: <b>{price}</b>, Mamul: <b>{mamul}</b>, Min-rebate: <b>{min_rebate}</b>)</div>
             </Col>
             <Col flex='100px' className='text-right'>
-              {excess > 0 && !header ? <Button type='primary' onClick={() => onShow('excess')}>Book Excess Write Off</Button>
+              {excess >= 0 && !header && !one_time_booked ? <Button type='primary' onClick={() => onShow('excess')}>Book Excess Write Off</Button>
                 : <Button type='primary' htmlType='submit' loading={disableButton}>Book</Button>}
             </Col>
           </Row>
