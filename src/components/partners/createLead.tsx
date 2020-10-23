@@ -150,6 +150,7 @@ const CreateLead = (props) => {
         </Form.Item>
         <Form.Item
           name='contact_name'
+          rules={[{ required: true }]}
         >
           <Input placeholder=' Name' />
         </Form.Item>
@@ -157,6 +158,7 @@ const CreateLead = (props) => {
           <Col xs={24} sm={12}>
             <Form.Item
               name='mobile'
+              rules={[{ required: true }]}
             >
               <Input placeholder='Phone' />
             </Form.Item>
@@ -171,16 +173,25 @@ const CreateLead = (props) => {
           <Col xs={24} sm={12}>
             <Form.Item
               name='channel'
+              rules={[{ required: true }]}
             >
-              <Select defaultValue='Select Channel' onChange={handleChange} options={channelList} />
+              <Select
+                placeholder='Select Channel'
+                onChange={handleChange}
+                options={channelList}
+              />
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
             <Form.Item
               name='employee'
+              rules={[{ required: true }]}
             >
               <Select
-                                defaultValue='Select Owner' onChange={handleChange} options={employeeList} optionFilterProp='label'
+                placeholder='Select Owner'
+                onChange={handleChange}
+                options={employeeList}
+                optionFilterProp='label'
                 showSearch
               />
             </Form.Item>
