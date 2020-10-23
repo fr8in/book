@@ -58,6 +58,7 @@ const Trips = (props) => {
             type='trips'
             data={text}
             id={record.id}
+            blank
           />)
       },
       sorter: (a, b) => a.id - b.id,
@@ -74,6 +75,7 @@ const Trips = (props) => {
             data={name}
             id={cardcode}
             length={12}
+            blank
           />)
       },
       sorter: (a, b) => (a.customer.name > b.customer.name ? 1 : -1),
@@ -90,6 +92,7 @@ const Trips = (props) => {
             data={name}
             id={cardcode}
             length={12}
+            blank
           />)
       },
       sorter: (a, b) => (a.partner.name > b.partner.name ? 1 : -1),
@@ -116,6 +119,7 @@ const Trips = (props) => {
             type='trucks'
             data={truck_no + ' - ' + truck_type}
             id={truck_no}
+            blank
           />)
       },
       width: '16%'
@@ -150,6 +154,7 @@ const Trips = (props) => {
                   : status === 'Reported at destination' ? record.unloading_tat : null
         )
       },
+      defaultSortOrder: 'descend',
       sorter: (a, b) => {
         const status = get(a, 'trip_status.name', null)
         return (

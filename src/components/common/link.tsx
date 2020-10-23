@@ -7,7 +7,7 @@ const LinkComp = (props) => {
     blank ? (
       <Link href={`/${type}/[id]`} as={`/${type}/${id} `}>
         {data && data.length > length
-          ? <Tooltip title={data}><a target='_blank'>{data.slice(0, length) + '...'}</a></Tooltip>
+          ? <a target='_blank' title={data}>{data.slice(0, length) + '...'}</a>
           : <a target='_blank'>{data}</a>}
       </Link>)
       : (

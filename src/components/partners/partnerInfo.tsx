@@ -3,6 +3,7 @@ import LabelAndData from '../common/labelAndData'
 import PartnerOnBoardedBy from './partnerOnboardedByName'
 import get from 'lodash/get'
 import u from '../../lib/util'
+import FinalPaymentEdit from './finalPaymentEdit'
 
 const PartnerInfo = (props) => {
   const { partnerInfo } = props
@@ -37,6 +38,18 @@ const PartnerInfo = (props) => {
             cardcode={partnerInfo.cardcode}
             edit_access={access}
           />
+        }
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={12}
+      />
+      <LabelAndData
+        label='Final Payment Date'
+        data={
+          <label>
+            <FinalPaymentEdit partnerInfo={partnerInfo}  />
+            
+          </label>
         }
         mdSpan={4}
         smSpan={8}

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Table, Tooltip, Input, Pagination, Checkbox, Button } from 'antd'
-import Link from 'next/link'
+import LinkComp from '../common/link'
 import moment from 'moment'
 import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
 import TripFeedBack from '../trips/tripFeedBack'
@@ -102,9 +102,7 @@ const TripsTracking = (props) => {
       width: '7%',
       render: (text, record) => {
         return (
-          <Link href='/trips/[id]' as={`/trips/${record.id} `}>
-            <a>{text}</a>
-          </Link>)
+          <LinkComp type='trips' data={text} id={record.id} blank />)
       },
       filterDropdown: (
         <div>
@@ -133,11 +131,8 @@ const TripsTracking = (props) => {
       render: (text, record) => {
         const cardcode = record.customer && record.customer.cardcode
         return (
-          <Link href='/customers/[id]' as={`/customers/${cardcode} `}>
-            {record.customer && record.customer.name && record.customer.name.length > 12
-              ? <Tooltip title={record.customer && record.customer.name}><a>{record.customer.name.slice(0, 12) + '...'}</a></Tooltip>
-              : <a>{record.customer && record.customer.name}</a>}
-          </Link>)
+          <LinkComp type='customers' data={get(record, 'customer.name', null)} id={cardcode} length={12} blank />
+        )
       },
       filterDropdown: (
         <div>
@@ -155,11 +150,8 @@ const TripsTracking = (props) => {
       title: 'Partner',
       render: (text, record) => {
         return (
-          <Link href='/partners/[id]' as={`/partners/${record.partner && record.partner.cardcode} `}>
-            {record.partner && record.partner.name && record.partner.name.length > 12
-              ? <Tooltip title={record.partner && record.partner.name}><a>{record.partner && record.partner.name.slice(0, 12) + '...'}</a></Tooltip>
-              : <a>{record.partner && record.partner.name}</a>}
-          </Link>)
+          <LinkComp type='partners' data={get(record, 'partner.name', null)} id={get(record, 'partner.cardcode', null)} length={12} blank />
+        )
       },
       filterDropdown: (
         <div>
@@ -177,9 +169,8 @@ const TripsTracking = (props) => {
       title: 'Truck',
       render: (text, record) => {
         return (
-          <Link href='/trucks/[id]' as={`/trucks/${record.truck && record.truck.truck_no} `}>
-            <a>{record.truck && record.truck.truck_no}</a>
-          </Link>)
+          <LinkComp type='trucks' data={get(record, 'truck.truck_no', null)} id={get(record, 'truck.truck_no', null)} blank />
+        )
       },
       filterDropdown: (
         <div>

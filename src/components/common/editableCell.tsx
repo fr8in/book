@@ -3,14 +3,12 @@ import { useState } from 'react'
 import { CloseCircleTwoTone, CheckCircleTwoTone } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
 import EditAccess from './editAccess'
-import u from '../../lib/util'
 
 const EditableCell = (props) => {
-  const { label, onSubmit } = props
+  const { label, onSubmit, width, edit_access } = props
 
   const initial = { selectType: false }
   const { visible, onHide, onShow } = useShowHide(initial)
-  const edit_access = [u.role.admin, u.role.accounts, u.role.accounts_manager]
 
   const [inputValue, setinputValue] = useState(label)
 
@@ -35,7 +33,7 @@ const EditableCell = (props) => {
             <Input
               size='small'
               defaultValue={inputValue}
-              style={{ width: '40%' }}
+              style={{ width: width || '40%' }}
               onChange={onChange}
             />
             {' '}

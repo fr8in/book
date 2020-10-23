@@ -1,6 +1,7 @@
 import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import EditableCell from '../../common/editableCell'
+import u from '../../../lib/util'
 
 const UPDATE_REFERENCE_NUMBER_MUTATION = gql`
 mutation updateReferenceNumber ($doc_num:String!,$bank_reference_number:String!){
@@ -15,6 +16,7 @@ mutation updateReferenceNumber ($doc_num:String!,$bank_reference_number:String!)
 `
 const Referencenumber = (props) => {
   const { id, label } = props
+  const edit_access = [u.role.admin, u.role.accounts, u.role.accounts_manager]
 
   const [updateReferenceNumber] = useMutation(
     UPDATE_REFERENCE_NUMBER_MUTATION,
@@ -37,6 +39,8 @@ const Referencenumber = (props) => {
     <EditableCell
       label={label}
       onSubmit={onSubmit}
+      edit_access={edit_access}
+      width='70%'
     />
   )
 }

@@ -20,6 +20,7 @@ import DeleteFile from '../common/deleteFile'
 import ViewFile from '../common/viewFile'
 import { useState, useContext } from 'react'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
 import userContext from '../../lib/userContaxt'
 import u from '../../lib/util'
 
@@ -121,17 +122,21 @@ const TruckActivation = (props) => {
   }
 
   const onTruckActivationSubmit = (form) => {
-    setDisableButton(true)
-    updateTruckActivation({
-      variables: {
-        id: truck_id,
-        truck_status_id: 5,
-        available_at: form.available_at,
-        updated_by: context.email,
-        city_id: parseInt(city.city_id, 10),
-        truck_type_id: parseInt(form.truck_type_id, 10)
-      }
-    })
+    if (isEmpty(rc_files) && isEmpty(vaahan_files)) {
+      message.error('RC and Vaahan Document Required!')
+    } else {
+      setDisableButton(true)
+      updateTruckActivation({
+        variables: {
+          id: truck_id,
+          truck_status_id: 5,
+          available_at: form.available_at,
+          updated_by: context.email,
+          city_id: parseInt(city.city_id, 10),
+          truck_type_id: parseInt(form.truck_type_id, 10)
+        }
+      })
+    }
   }
 
   return (
@@ -169,7 +174,7 @@ const TruckActivation = (props) => {
                 <Col xs={24} sm={12}>
                   <Form.Item label='RC'>
                     <Space>
-                      {rc_files && rc_files.length > 0 ? (
+                      {!isEmpty(rc_files) ? (
                         <Space>
                           <ViewFile
                             id={truck_id}
@@ -205,7 +210,7 @@ const TruckActivation = (props) => {
                 <Col xs={24} sm={12}>
                   <Form.Item label='Vaahan Screen'>
                     <Space>
-                      {vaahan_files && vaahan_files.length > 0 ? (
+                      {!isEmpty(vaahan_files) ? (
                         <Space>
                           <ViewFile
                             id={truck_id}
@@ -239,7 +244,7 @@ const TruckActivation = (props) => {
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={12}>
-                  <CitySelect label='Available City' onChange={onCityChange} />
+                  <CitySelect label='Available City' name='city' onChange={onCityChange} required />
                 </Col>
               </Row>
               <Row>
