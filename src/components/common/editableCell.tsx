@@ -7,7 +7,7 @@ import EditAccess from './editAccess'
 const EditableCell = (props) => {
   const { label, onSubmit, width, edit_access } = props
 
-  const initial = { selectType: false }
+  const initial = { edit: false }
   const { visible, onHide, onShow } = useShowHide(initial)
 
   const [inputValue, setinputValue] = useState(label)
@@ -23,10 +23,10 @@ const EditableCell = (props) => {
 
   return (
     <div>
-      {!visible.selectType ? (
+      {!visible.edit ? (
         <label>
           {label}{' '}
-          <EditAccess edit_access={edit_access} onEdit={() => onShow('selectType')} />
+          <EditAccess edit_access={edit_access} onEdit={() => onShow('edit')} />
         </label>)
         : (
           <span>
@@ -39,7 +39,7 @@ const EditableCell = (props) => {
             {' '}
             <Space>
               <CheckCircleTwoTone onClick={handleSubmit} twoToneColor='#52c41a' />
-              <CloseCircleTwoTone onClick={onHide} />
+              <CloseCircleTwoTone onClick={() => onHide()} />
             </Space>
           </span>)}
     </div>
