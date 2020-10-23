@@ -3,6 +3,7 @@ import { useState } from 'react'
 import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
 import Truncate from '../common/truncate'
+import LinkComp from '../common/link'
 
 const ONHOLD_TRIPS_QUERY = gql`
 query partner_onhold($cardcode: String,$exp:float8_comparison_exp) {
@@ -70,8 +71,6 @@ const OnholdTrips = (props) => {
     _data = data
   }
 
-  const partner = get(_data, 'partner', null)
-
   const trips = get(_data, 'partner[0].trips', null)
 
   const trip_status = status_list.map((data) => {
@@ -88,7 +87,7 @@ const OnholdTrips = (props) => {
       dataIndex: 'id',
       sorter: (a, b) => (a.id > b.id ? 1 : -1),
       width: '7%',
-      render: (text, record) => get(record, 'id', null)
+      render: (text, record) => <LinkComp type='trips' data={get(record, 'id', null)} id={get(record, 'id', null)} blank />
     },
     {
       title: 'Source',

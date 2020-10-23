@@ -53,8 +53,8 @@ const DeletePO = (props) => {
         visible={visible}
         onCancel={onHide}
         footer={[
-          <Button key='back' onClick={onHide} loading={disableButton}>No</Button>,
-          <Button key='submit' type='primary' onClick={onPoDelete}>Yes</Button>
+          <Button key='back' onClick={onHide}>No</Button>,
+          <Button key='submit' type='primary' onClick={onPoDelete} loading={disableButton}>Yes</Button>
         ]}
       >
          Are you sure to Delete PO?

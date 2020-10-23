@@ -280,7 +280,7 @@ const TripTime = (props) => {
   const driver_number = get(trip_info, 'driver.mobile', null)
   const trip_status_id = get(trip_info, 'trip_status.id', null)
   const after_deliverd = (trip_status_id >= 9)
-  const wh_update = (trip_status_id > 4)
+  const wh_update = (trip_status_id > 5)
   const disable_pa = (!customerConfirm && isEmpty(lr_files))
   const lock = get(trip_info, 'transaction_lock', null)
 
