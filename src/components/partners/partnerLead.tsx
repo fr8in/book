@@ -160,27 +160,21 @@ const PartnerLead = (props) => {
     onChange: onSelectChange
   }
 
-  console.log('onboarded_by', onboarded_by)
   const where = {
     partner_users: filter.mobile ? { mobile: { _like: `%${filter.mobile}%` } } : null,
-    city: filter.city_name && { name: { _ilike: `%${filter.city_name}%` } },
-    onboarded_by: { email: { _ilike: filter.owner_name ? `%${filter.owner_name}%` : null, _in: onboarded_by || null } },
-    partner_status: { name: { _in: filter.partner_status_name && filter.partner_status_name.length > 0 ? filter.partner_status_name : null } },
-    // channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}},
-    _not: { partner_comments: filter.no_comment && filter.no_comment.length > 0 ? null : { id: { _is_null: true } } }
-  }
-  const whereNoCityFilter = {
-    partner_users: filter.mobile ? { mobile: { _like: `%${filter.mobile}%` } } : null,
-    onboarded_by: { email: { _ilike: filter.owner_name ? `%${filter.owner_name}%` : null, _in: onboarded_by || null } },
-    partner_status: { name: { _in: filter.partner_status_name ? filter.partner_status_name : null } },
-    // channel:  {name:{_in:filter.channel_name ? filter.channel_name : null}} ,
-    _not: { partner_comments: filter.no_comment && filter.no_comment.length > 0 ? null : { id: { _is_null: true } } }
+    partner_status: { name: { _in: !isEmpty(filter.partner_status_name) ? filter.partner_status_name : null } },
+    ...!isEmpty(onboarded_by) ? { onboarded_by: { email: { _ilike: filter.owner_name ? `%${filter.owner_name}%` : null, _in: onboarded_by || null } } } : filter.owner_name ? { onboarded_by: { email: { _ilike: filter.owner_name ? `%${filter.owner_name}%` : null } } } : null,
+    ...filter.city_name && { city: { name: { _ilike: `%${filter.city_name}%` } } },
+    ...!isEmpty(filter.channel_name) && { channel: { name: { _in: filter.channel_name } } },
+    _not: {
+      last_comment: !isEmpty(filter.no_comment) ? null : { id: { _is_null: true } }
+    }
   }
 
   const variables = {
     offset: filter.offset,
     limit: filter.limit,
-    where: filter.city_name ? where : whereNoCityFilter
+    where: where
   }
   const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
     PARTNERS_LEAD_SUBSCRIPTION,
@@ -190,7 +184,7 @@ const PartnerLead = (props) => {
   )
 
   const partnerQueryVars = {
-    where: filter.city_name ? where : whereNoCityFilter
+    where: where
   }
 
   const { loading, error, data } = useQuery(
