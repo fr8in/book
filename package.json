@@ -6,8 +6,7 @@
   "scripts": {
     "local": "next",
     "build": "next build",
-    "start": "next start -p $PORT",
-    "postinstall": "next build"
+    "start": "next start -p $PORT"
   },
   "author": "FR8",
   "dependencies": {
