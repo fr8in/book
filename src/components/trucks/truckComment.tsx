@@ -70,7 +70,6 @@ const TruckComment = (props) => {
 
   const onSubmit = (form) => {
     setDisableButton(true)
-    console.log('id', id)
     insertComment({
       variables: {
         truck_id: id,

@@ -76,7 +76,6 @@ const NewTruck = (props) => {
 
   const onSubmit = (form) => {
     setDisableButton(true)
-    console.log('id', form)
     insertTruck({
       variables: {
         partner_id: partner_info.id,

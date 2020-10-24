@@ -47,7 +47,6 @@ const AddFastagContainer = () => {
   )
 
   console.log('AddFastag Error', error)
-  console.log('AddFastag Data', data)
 
   const [getTrucks, { loading: truckLoading, data: truckList }] = useLazyQuery(
     PARTNER_TRUCK_NO_QUERY
@@ -77,16 +76,13 @@ const AddFastagContainer = () => {
     setObj({ ...obj, search: value })
   }
   const onParSelect = (value, partner) => {
-    console.log('partner.key', partner.key)
     setObj({ ...obj, partner_id: parseInt(partner.key, 10) })
     getTrucks({
       variables: { partner_id: parseInt(partner.key, 10) }
     })
   }
-  console.log('TruckList', truckList)
 
   const onTruckNoSelect = (value, truck) => {
-    console.log('truck.key', truck.key)
     setTruck_id(truck.key)
   }
 

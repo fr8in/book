@@ -156,7 +156,7 @@ const WaitingForLoad = (props) => {
         className='withAction'
         rowKey={record => record.id}
         size='small'
-        scroll={{ x: 1156 }}
+        scroll={{ x: 1256 }}
         pagination={false}
         loading={loading}
       />

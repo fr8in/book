@@ -4,7 +4,6 @@ const VasConfirmation = (props) => {
   const { visible, onHide, data, status } = props
 
   const updateVasStatus = () => {
-    console.log('data', data)
     onHide()
   }
 

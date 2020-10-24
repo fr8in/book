@@ -21,8 +21,6 @@ const ExcessToPo = (props) => {
 
   const [form] = Form.useForm()
 
-  console.log('po_data', record)
-
   const { loading, error, data } = useQuery(
     PARTNER_SEARCH_QUERY,
     {
@@ -39,7 +37,6 @@ const ExcessToPo = (props) => {
     _data = data
   }
   const partnerSearch = get(_data, 'search_partner', [])
-  console.log('partnerSearch', partnerSearch)
   const onPartnerSearch = (value) => {
     setObj({ ...obj, search: value })
   }
@@ -56,7 +53,7 @@ const ExcessToPo = (props) => {
   const onClosePoModal = () => {
     setObj(initial)
   }
-  console.log('obj_data', obj)
+
   return (
     <>
       <Modal

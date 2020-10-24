@@ -126,7 +126,6 @@ const CreditNote = (props) => {
   }) : []
 
   const create_credit_debit = (form) => {
-    console.log('form', form)
     if (radioType === 'Credit Note') {
       setDisableButton(true)
       upadateCreditNote({

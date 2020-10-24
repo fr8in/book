@@ -22,8 +22,6 @@ const CheckBoxModal = (props) => {
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
 
-  console.log('trip_info', trip_id)
-
   const [update_wh_detail] = useMutation(
     PRIVATE_GODWON_MUTATION,
     {

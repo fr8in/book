@@ -139,7 +139,6 @@ const BillingAndInvoiced = (props) => {
   }
 
   const onBranchChange = (value, branch) => {
-    console.log('branch', branch, customer_branch, value)
     const description = `${!isEmpty(customer_branch) ? customer_branch.branch_name : 'Nill'} to ${branch.children} changed`
     if ((!isEmpty(customer_branch) && customer_branch.id) !== value) {
       update_trip_customer_branch({

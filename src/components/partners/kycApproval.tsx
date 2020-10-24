@@ -130,7 +130,6 @@ const KycApproval = (props) => {
     })
 
   const partnerDetail = get(partnerData, 'partner[0]', [])
-  console.log('KycApproval error', partnerError, partnerDetail)
 
   useEffect(() => {
     setChecked(get(partnerDetail, 'emi', false))

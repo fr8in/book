@@ -88,7 +88,6 @@ const CreateExcessLoad = (props) => {
     EXCESS_LOAD_MUTATION,
     {
       onError (error) {
-        console.log('excess error', error)
         message.error(error.toString())
         setObj({ ...obj, disableButton: false })
       },
@@ -109,7 +108,6 @@ const CreateExcessLoad = (props) => {
   )
 
   const onChange = (e) => {
-    console.log('event', e)
     setChecked(e.target.checked)
   }
 

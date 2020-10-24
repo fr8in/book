@@ -5,7 +5,6 @@ const AccStatementMail = (props) => {
   const { visible, onHide } = props
 
   const onSubmit = () => {
-    console.log('Mail sent!')
     onHide()
   }
 
@@ -13,7 +12,6 @@ const AccStatementMail = (props) => {
     <Modal
       visible={visible}
       title='Account Statement'
-      onOk={onSubmit}
       onCancel={onHide}
       footer={[
         <Button key='back' size='small' onClick={onHide}>

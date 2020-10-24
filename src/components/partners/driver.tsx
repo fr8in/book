@@ -53,7 +53,6 @@ const Driver = (props) => {
     {
       onError (error) { message.error(error.toString()) },
       onCompleted (data) {
-        console.log('driver data', data)
         const id = get(data, 'insert_driver.returning[0].id', null)
         message.success('Updated!!')
         driver_id(id)

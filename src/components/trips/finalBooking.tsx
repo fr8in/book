@@ -227,7 +227,7 @@ const FinalBooking = (props) => {
       })
     }
   }
-  console.log('excess', excess)
+
   return (
     <>
       <Modal

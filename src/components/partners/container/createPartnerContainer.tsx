@@ -172,7 +172,6 @@ const CreatePartner = () => {
 
   const onPartnerChange = (form) => {
     setDisableButton(true)
-    console.log('inside form submit', form)
     const address = {
       no: form.no,
       address: form.address,

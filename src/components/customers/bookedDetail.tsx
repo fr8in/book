@@ -1,6 +1,6 @@
 import { Table, Modal } from 'antd'
 import IncomingPaymentsBooked from './incomingPaymentsBooked'
-import { gql, useQuery,useLazyQuery } from '@apollo/client'
+import { gql, useQuery, useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import Truncate from '../common/truncate'
@@ -59,24 +59,18 @@ const BookedDetail = (props) => {
   const customer = get(_data, 'customer[0]', [])
   const customer_incomings = get(customer, 'customer_incoming', 0)
 
-  const [getCustomerBooked,{ loading: cus_loading, data: cus_data, error: cus_error }] = useLazyQuery(customerBooked)
-    
-    let _cus_data = {}
-    if (!cus_loading) {
-      _cus_data = cus_data
-    }
+  const [getCustomerBooked, { loading: cus_loading, data: cus_data, error: cus_error }] = useLazyQuery(customerBooked)
+
+  let _cus_data = {}
+  if (!cus_loading) {
+    _cus_data = cus_data
+  }
   const customer_booked = get(_cus_data, 'accounting_customer_booked', null)
 
   const onExpand = (_, record) => {
-    console.log('onExpand', record)
     getCustomerBooked({
-      variables: {cardcode: record.cardcode,customer_incoming_id:record.customer_incoming_id}
+      variables: { cardcode: record.cardcode, customer_incoming_id: record.customer_incoming_id }
     })
-  }
-
-  const onSubmit = () => {
-    console.log('data Transfered!')
-    onHide()
   }
 
   const columns = [{
@@ -114,7 +108,6 @@ const BookedDetail = (props) => {
     <Modal
       title='Booked Amount'
       visible={visible}
-      onOk={onSubmit}
       onCancel={onHide}
       width={800}
       bodyStyle={{ padding: 5 }}
@@ -126,7 +119,7 @@ const BookedDetail = (props) => {
         size='small'
         scroll={{ x: 780, y: 400 }}
         pagination={false}
-        expandedRowRender={record => <IncomingPaymentsBooked  customer_booked={customer_booked}/>}
+        expandedRowRender={record => <IncomingPaymentsBooked customer_booked={customer_booked} />}
         onExpand={onExpand}
         loading={loading}
       />

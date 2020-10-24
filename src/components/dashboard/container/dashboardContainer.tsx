@@ -81,7 +81,7 @@ const DashboardContainer = (props) => {
   }
 
   const truck_tab_disable = !!((filters.branches && filters.branches.length === 0) || filters.branches === null)
-  console.log('truck_tab_disable', truck_tab_disable)
+
   return (
     <Row>
       <Col xs={24}>

@@ -1,9 +1,8 @@
 import { gql, useMutation } from '@apollo/client'
 import { Switch, Tooltip, message } from 'antd'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import isEmpty from 'lodash/isEmpty'
-
 
 const UPDATE_CUSTOMER_BLACKLIST_MUTATION = gql`
 mutation customer_blacklist($status_id:Int,$cardcode:String,$updated_by:String!) {
@@ -21,10 +20,9 @@ const customerStatus = {
   Active: 1
 }
 
-const Blacklist = ({ cardcode, statusId,edit_access }) => {
+const Blacklist = ({ cardcode, statusId, edit_access }) => {
   const context = useContext(userContext)
   const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
-
 
   const [updateStatusId] = useMutation(
     UPDATE_CUSTOMER_BLACKLIST_MUTATION,
@@ -45,18 +43,17 @@ const Blacklist = ({ cardcode, statusId,edit_access }) => {
   }
 
   const blacklisted = statusId === customerStatus.Blacklisted
-  console.log('blacklist', statusId, blacklisted)
+
   return (
-    access ?
-    <Tooltip title={blacklisted ? 'Unblacklist' : 'Blacklist'}>
-      <Switch
-        onChange={onChange}
-        checked={blacklisted}
-        className={blacklisted ? 'block' : 'unblock'}
-        disabled={false}
-      />
-    </Tooltip> 
-    : null
+    access ? (
+      <Tooltip title={blacklisted ? 'Unblacklist' : 'Blacklist'}>
+        <Switch
+          onChange={onChange}
+          checked={blacklisted}
+          className={blacklisted ? 'block' : 'unblock'}
+          disabled={false}
+        />
+      </Tooltip>) : null
   )
 }
 

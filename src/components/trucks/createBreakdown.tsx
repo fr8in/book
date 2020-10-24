@@ -61,7 +61,6 @@ const CreateBreakdown = (props) => {
   const truck_info = get(_data, 'truck[0]', { name: 'ID does not exist' })
 
   const truck_status = truck_info && truck_info.truck_status && truck_info.truck_status.name
-  console.log('truck_status', truck_status)
 
   const [insertUpdateCreateBreakdown] = useMutation(
     INSERT_UPDATE_CREATE_BREAKDOWN_MUTATION,

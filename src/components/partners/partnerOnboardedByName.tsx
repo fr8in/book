@@ -69,7 +69,6 @@ const OnBoardedBy = (props) => {
   })
 
   const onChange = (value) => {
-    console.log('credit_debit_id', credit_debit_id)
     if (credit_debit_id !== undefined) {
       UpdateCreditResponsibilityName({
         variables:

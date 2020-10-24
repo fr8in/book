@@ -141,11 +141,8 @@ const PartnerContainer = () => {
   const partner_status = get(_data, 'partner_status', [])
   const partner_aggregate = get(_data, 'partner_aggregate', 0)
   const region = get(_data, 'region', [])
-  console.log('partner_aggregate', partner_aggregate)
 
   const record_count = get(partner_aggregate, 'aggregate.count', 0)
-
-  console.log('record_count', record_count)
 
   const onFilter = (name) => {
     setFilter({ ...filter, partner_statusId: name })

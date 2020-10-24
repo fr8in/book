@@ -61,7 +61,6 @@ const TripComment = (props) => {
   const handleChange = (e) => {
     setTripComment(e.target.value)
   }
-  console.log('tripComment', comments)
 
   const onSubmit = () => {
     insertComment({

@@ -36,7 +36,6 @@ const EmployeeListFilter = (props) => {
 
   const onChange = (checkedValues) => {
     onFilterChange(checkedValues)
-    console.log('checked', checkedValues)
   }
 
   const onCheckall = (e) => {

@@ -17,8 +17,6 @@ mutation update_address($address:jsonb, $cardcode:String,$updated_by: String!){
 const EditAddress = (props) => {
   const { visible, onHide, cardcode, partnerAddress } = props
 
-  console.log('address', partnerAddress)
-
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
 

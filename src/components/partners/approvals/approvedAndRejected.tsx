@@ -75,7 +75,7 @@ const ApprovedAndRejected = () => {
     trip_id: null,
     type: null,
     issue_type: [],
-    created_by: null,
+    created_by: null
   }
 
   const [filter, setFilter] = useState(initial)
@@ -84,7 +84,7 @@ const ApprovedAndRejected = () => {
   const approvalQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
-    status: ["APPROVED", "REJECTED"],
+    status: ['APPROVED', 'REJECTED'],
     trip_id: filter.trip_id && filter.trip_id.length > 0 ? filter.trip_id : null,
     type: filter.type && filter.type.length > 0 ? filter.type : null,
     issue_type: filter.issue_type && filter.issue_type.length > 0 ? filter.issue_type : null,
@@ -100,32 +100,26 @@ const ApprovedAndRejected = () => {
     }
   )
   console.log('approvedRejected error', error)
-  console.log('approvedRejected data', data)
 
   const { data: issueType } = useSubscription(
-    CREDIT_DEBIT_TYPE_SUBSCRIPTION,
+    CREDIT_DEBIT_TYPE_SUBSCRIPTION
   )
-  console.log('approvedRejected issueType', issueType)
 
   let _data = {}
   if (!loading) {
     _data = data
   }
   const approvedAndRejected = get(_data, 'trip_credit_debit', null)
-  console.log('approvedAndRejected', approvedAndRejected)
 
   const List = issueType && issueType.credit_debit_type.length > 0 ? issueType.credit_debit_type : []
-  console.log('List', List)
   const issueTypeList = List.map((issueType) => {
     return { value: issueType.name, label: issueType.name }
   })
-  console.log('issueTypeList', issueTypeList)
 
   const creditDebitList = creditDebitType.map((data) => {
     return { value: data.text, label: data.text }
   })
   const record_count = get(_data, 'trip_credit_debit_aggregate.aggregate.count', 0)
-  console.log('record_count s',record_count)
 
   const onPageChange = (value) => {
     setFilter({ ...filter, offset: value })
@@ -140,12 +134,10 @@ const ApprovedAndRejected = () => {
     setFilter({ ...filter, trip_id: e.target.value })
   }
   const onIssueTypeFilter = (checked) => {
-    console.log('name', checked)
     setCurrentPage(1)
     setFilter({ ...filter, issue_type: checked, offset: 0 })
   }
   const onTypeFilter = (checked) => {
-    console.log('checked', checked)
     setCurrentPage(1)
     setFilter({ ...filter, type: checked, offset: 0 })
   }
@@ -209,7 +201,7 @@ const ApprovedAndRejected = () => {
           onChange={onIssueTypeFilter}
           className='filter-drop-down'
         />
-      ),
+      )
     },
     {
       title: 'Claim ₹',
@@ -288,15 +280,15 @@ const ApprovedAndRejected = () => {
         pagination={false}
       />
       {!loading && record_count ? (
-      <Pagination
-        size='small'
-        current={currentPage}
-        pageSize={filter.limit}
-        showSizeChanger={false}
-        total={record_count}
-        onChange={pageChange}
-        className='text-right p10'
-      />) : null}
+        <Pagination
+          size='small'
+          current={currentPage}
+          pageSize={filter.limit}
+          showSizeChanger={false}
+          total={record_count}
+          onChange={pageChange}
+          className='text-right p10'
+        />) : null}
     </>
   )
 }
