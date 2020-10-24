@@ -14,7 +14,6 @@ const wsLink = isBrowser ? new WebSocketLink({
     connectionParams: async () => {
       refreshToken()
       const token = await localStorage.getItem('token')
-      console.log('token', token)
       if (token) {
         return {
           headers: {
@@ -26,7 +25,6 @@ const wsLink = isBrowser ? new WebSocketLink({
   }
   // webSocketImpl: WebSocket
 }) : null
-console.log(' process.browser: ', process.browser)
 const httpLink = new HttpLink({
   uri: process.env.NEXT_PUBLIC_HTTP_CORE,
   credentials: 'same-origin' // Additional fetch() options like `credentials` or `headers`
@@ -35,7 +33,6 @@ const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
   refreshToken()
   const token = localStorage.getItem('token')
-  console.log('token', token)
   // return the headers to the context so httpLink can read them
   return {
     headers: {

@@ -1,11 +1,11 @@
-import { Table, Input, Tooltip, Button, Space, Checkbox } from 'antd'
+import { Table, Input, Tooltip, Button, Space } from 'antd'
 import {
   SearchOutlined,
   CommentOutlined,
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import Truncate from '../../common/truncate'
 import Link from 'next/link'
 import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
@@ -17,10 +17,9 @@ import moment from 'moment'
 import PartnerOnBoardedBy from '../partnerOnboardedByName'
 import LinkComp from '../../common/link'
 import u from '../../../lib/util'
-import { useContext } from 'react'
+
 import userContext from '../../../lib/userContaxt'
 import isEmpty from 'lodash/isEmpty'
-
 
 const PENDING_SUBSCRIPTION = gql`
 subscription trip_credit_debit($status: [String!]) {
@@ -60,23 +59,7 @@ subscription trip_credit_debit($status: [String!]) {
       name
     }
   }
-}
-`
-
-const RegionList = [
-  { text: 'North', value: 'North' },
-  { text: 'South-1', value: 'South-1' },
-  { text: 'East-1', value: 'East-1' },
-  { text: 'West-1', value: 'West-1' },
-  { text: 'South-2', value: 'South-2' },
-  { text: 'East-2', value: 'East-2' },
-  { text: 'West-2', value: 'West-2' }
-]
-
-const RequestedBy = [
-  { value: 1, text: 'Partner' },
-  { value: 2, text: 'Fr8' }
-]
+}`
 
 const Pending = () => {
   const { role } = u
@@ -116,7 +99,6 @@ const Pending = () => {
   }
 
   const pending_list = get(_data, 'trip_credit_debit', null)
-  console.log('pending_list', pending_list)
 
   useEffect(() => {
     setFilter({ ...filter, pending: pending_list })
@@ -135,10 +117,6 @@ const Pending = () => {
     } else {
       setFilter({ ...filter, pending: pending_list })
     }
-  }
-
-  function onChange(filters) {
-    console.log('filters', filters)
   }
 
   const ApprovalPending = [
@@ -182,20 +160,16 @@ const Pending = () => {
       title: 'Region',
       dataIndex: 'region',
       key: 'region',
-      filters: RegionList,
       width: '6%',
-      render: (text, record) => get(record, 'trip.branch.region.name', null),
-      onFilter: (value, record) => record.trip && record.trip.branch && record.trip.branch.region && record.trip.branch.region.name.indexOf(value) === 0
+      render: (text, record) => get(record, 'trip.branch.region.name', null)
 
     },
     {
       title: 'Created By',
       dataIndex: 'created_by',
       key: 'created_by',
-      filters: RequestedBy,
       width: '11%',
-      render: (text, record) => <Truncate data={text} length={15} />,
-      onFilter: (value, record) => value === 1 ? record.is_created_by_partner === true : value === 2 ? record.is_created_by_partner === false : record.created_by
+      render: (text, record) => <Truncate data={text} length={15} />
     },
     {
       title: 'Partner Name',
@@ -270,8 +244,8 @@ const Pending = () => {
               onClick={() => handleShow('commentVisible', null, 'commentData', record.trip_id)}
             />
           </Tooltip>
-          <Tooltip title='Accept'>{
-            approval_access ?
+          <Tooltip title='Accept'>
+            {approval_access ? (
               <Button
                 type='primary'
                 shape='circle'
@@ -280,11 +254,10 @@ const Pending = () => {
                 icon={<CheckOutlined />}
                 onClick={() =>
                   handleShow('approveVisible', 'Approved', 'approveData', record)}
-              /> : null
-          }
+              />) : null}
           </Tooltip>
-          <Tooltip title='Decline'>{
-            rejected_access ?
+          <Tooltip title='Decline'>
+            {rejected_access ? (
               <Button
                 type='primary'
                 shape='circle'
@@ -293,8 +266,7 @@ const Pending = () => {
                 icon={<CloseOutlined />}
                 onClick={() =>
                   handleShow('approveVisible', 'Rejected', 'approveData', record.id)}
-              /> : null
-          }
+              />) : null}
           </Tooltip>
         </Space>
       )
@@ -306,10 +278,9 @@ const Pending = () => {
       <Table
         columns={ApprovalPending}
         dataSource={filter.pending}
-        onChange={onChange}
         rowKey={(record) => record.id}
         size='small'
-        scroll={{ x: 1156, y: 600 }}
+        scroll={{ x: 1256, y: 600 }}
         pagination={false}
         className='withAction'
         loading={loading}
