@@ -1,5 +1,5 @@
 import { message, Select, Form } from 'antd'
-import { useMutation, useQuery, gql } from '@apollo/client'
+import { useMutation, useSubscription, gql } from '@apollo/client'
 import { useState } from 'react'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
@@ -7,7 +7,7 @@ import isEmpty from 'lodash/isEmpty'
 const { Option } = Select
 
 const DRIVER_QUERY = gql`
-query partner_driver($id:Int!){
+subscription partner_driver($id:Int!){
     partner(where:{id:{_eq:$id}}){
       drivers{
         id
@@ -34,11 +34,9 @@ const Driver = (props) => {
     setSearchText(value.substring(0, 10))
   }
 
-  const { loading, error, data } = useQuery(
+  const { loading, error, data } = useSubscription(
     DRIVER_QUERY, {
-      variables: { id: partner_id },
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
+      variables: { id: partner_id }
     }
   )
 
@@ -64,10 +62,10 @@ const Driver = (props) => {
     }
   )
   const onDriverChange = (value, option) => {
-    console.log('driver option', option)
-    const isNew = driver_data && driver_data.filter(_driver => _driver.mobile.search(value) !== -1)
-    console.log('mobile', value, (isEmpty(isNew)))
-    if ((isEmpty(isNew))) {
+    if (isEmpty(driver_data)) { return null }
+    const isNew = driver_data.findIndex(_driver => _driver.mobile === value)
+
+    if (isNew === -1) {
       insertDriver({
         variables: {
           id: partner_id,

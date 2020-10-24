@@ -1,14 +1,14 @@
 import { message, Select, Form } from 'antd'
-import { useMutation, useQuery, gql } from '@apollo/client'
-import { useState,useContext } from 'react'
+import { useMutation, useSubscription, gql } from '@apollo/client'
+import { useState, useContext } from 'react'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
-import _ from 'lodash'
+import isEmpty from 'lodash/isEmpty'
 
 const { Option } = Select
 
 const DRIVER_QUERY = gql`
-query partner_driver($id:Int!){
+subscription partner_driver($id:Int!){
     partner(where:{id:{_eq:$id}}){
       drivers{
         id
@@ -37,7 +37,7 @@ mutation truck_driver_update($driver_id:Int,$truck_id:Int,$updated_by: String!) 
 `
 
 const Driver = (props) => {
-  const { partner_id, driverChange, initialValue , truck_id } = props
+  const { partner_id, driverChange, initialValue, truck_id } = props
   if (!partner_id) return null
 
   const [searchText, setSearchText] = useState('')
@@ -46,11 +46,9 @@ const Driver = (props) => {
     setSearchText(value.substring(0, 10))
   }
 
-  const { loading, error, data } = useQuery(
+  const { loading, error, data } = useSubscription(
     DRIVER_QUERY, {
-      variables: { id: partner_id },
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
+      variables: { id: partner_id }
     }
   )
 
@@ -93,9 +91,10 @@ const Driver = (props) => {
   }
 
   const onDriverChange = (value, driver) => {
-    const isNew = driver_data && driver_data.filter(_driver => _driver.mobile.search(value) !== -1)
-    console.log('mobile', value, driver, (_.isEmpty(isNew)))
-    if ((_.isEmpty(isNew))) {
+    if (isEmpty(driver_data)) { return null }
+    const isNew = driver_data.findIndex(_driver => _driver.mobile === value)
+
+    if (isNew === -1) {
       insertDriver({
         variables: {
           id: partner_id,

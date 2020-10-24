@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { message, Form, Select } from 'antd'
-import { useMutation, useQuery, gql } from '@apollo/client'
+import { useMutation, useSubscription, gql } from '@apollo/client'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
 const { Option } = Select
 
 const CUSTOMER_USER_QUERY = gql`
-query customer_user($customer_id: Int!){
+subscription customer_user($customer_id: Int!){
   customer_user(where:{customer_id:{_eq:$customer_id}}) {
     id
     mobile
@@ -34,11 +34,9 @@ const LoadingPointContact = (props) => {
     setSearchText(value.substring(0, 10))
   }
 
-  const { loading, error, data } = useQuery(
+  const { loading, error, data } = useSubscription(
     CUSTOMER_USER_QUERY, {
-      variables: { customer_id },
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
+      variables: { customer_id }
     }
   )
 
@@ -65,10 +63,10 @@ const LoadingPointContact = (props) => {
   )
 
   const handleUserChange = (value, option) => {
-    console.log('user option', option)
-    const isNew = !isEmpty(user_data) && user_data.filter(_user => _user.mobile.search(value) !== -1)
+    if (isEmpty(user_data)) { return null }
+    const isNew = user_data.findIndex(_user => _user.mobile === value)
 
-    if ((isEmpty(isNew))) {
+    if (isNew === -1) {
       insert_customer_user({
         variables: {
           customer_id,
