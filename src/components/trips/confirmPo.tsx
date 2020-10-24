@@ -199,7 +199,7 @@ const ConfirmPo = (props) => {
           truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
           driver_id: parseInt(driver_id, 10),
           updated_by: context.email,
-          customer_user_id: loading_contact_id
+          customer_user_id: parseInt(loading_contact_id)
         }
       })
     }

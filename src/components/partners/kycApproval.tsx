@@ -214,7 +214,7 @@ const KycApproval = (props) => {
           name: name,
           pan_no: partnerDetail.pan,
           onboarded_by_id: form.onboarded_by_id || get(partnerDetail, 'onboarded_by.id', null),
-          partner_advance_percentage_id: form.partner_advance_percentage_id || get(partnerDetail, 'partner_advance_percentage.id', null),
+          partner_advance_percentage_id: parseInt(form.partner_advance_percentage_id) || get(partnerDetail, 'partner_advance_percentage.id', null),
           gst: form.gst,
           cibil: form.cibil,
           emi: checked,
