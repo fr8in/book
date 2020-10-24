@@ -10,23 +10,15 @@ import userContext from '../../../lib/userContaxt'
 
 const PARTNERS_SUBSCRIPTION = gql`
 subscription partners(
-  $offset: Int!, 
-  $limit: Int!,
-  $partner_statusId:[Int!], 
-  $name:String, 
-  $cardcode:String,
-  $region:[String!]
-  ) {
-  partner(
-    offset: $offset, 
-    limit: $limit,
-    where:{
-      city:{branch:{region:{name:{_in:$region}}}},
-      partner_status:{id:{_in:$partner_statusId}}, 
-      name: {_ilike: $name}, 
-      cardcode: {_ilike: $cardcode}
-    }
-    ) {
+  $offset: Int!, $limit: Int!, 
+  $partner_statusId: [Int!], 
+  $name: String, $cardcode: String, $region: [String!]) {
+  partner(offset: $offset,
+     limit: $limit, where: 
+     {_or: [{city: {connected_city: {branch: {region: {name: {_in: $region}}}}}}, 
+      {city: {connected_city: {branch_id: {_is_null: true}}}}], 
+      partner_status: {id: {_in: $partner_statusId}}, name: {_ilike: $name}, 
+      cardcode: {_ilike: $cardcode}}) {
     id
     name
     cardcode
@@ -37,64 +29,53 @@ subscription partners(
     partner_advance_percentage_id
     emi
     tds_percentage_id
-    onboarded_by{
+    onboarded_by {
       id
       name
     }
     created_at
-    partner_status{
+    partner_status {
       id
       name
     }
-     city {
-       branch {
-         region {
-           name
-         }
-       }
-     }
-    partner_users(limit:1 , where:{is_admin:{_eq:true}}){
+    city {
+      branch {
+        region {
+          name
+        }
+      }
+    }
+    partner_users(limit: 1, where: {is_admin: {_eq: true}}) {
       mobile
     }
-    last_comment{
+    last_comment {
       partner_id
       description
       created_at
       created_by
     }
-    trucks_aggregate(where:{truck_status_id:{_neq:7}}){
-      aggregate{
+    trucks_aggregate(where: {truck_status_id: {_neq: 7}}) {
+      aggregate {
         count
       }
     }
-  } 
+  }
 }`
 
 const PARTNERS_QUERY = gql`
-query partners(
-  $partner_statusId:[Int!], 
-  $name:String, 
-  $cardcode:String,
-  $region:[String!]
-  ) {
-    partner_aggregate(
-    where:{
-      city:{branch:{region:{name:{_in:$region}}}},
-      partner_status:{id:{_in:$partner_statusId}}, 
-      name: {_ilike: $name}, 
-      cardcode: {_ilike: $cardcode}
-    }
-  )
-  {
-    aggregate{
+query partners($partner_statusId: [Int!], $name: String, $cardcode: String, $region: [String!]) {
+  partner_aggregate(where: {_or: [{city: {connected_city: {branch: {region: {name: {_in: $region}}}}}},
+     {city: {connected_city: {branch_id: {_is_null: true}}}}], 
+     partner_status: {id: {_in: $partner_statusId}}, name: {_ilike: $name}, cardcode: {_ilike: $cardcode}}) {
+    aggregate {
       count
     }
   }
-  partner_status(where:{name: {_nin: ["Lead"]}}){
+  partner_status(where: {name: {_nin: ["Lead"]}}) {
     id
     name
   }
-  region{
+  region {
     name
     id
   }
