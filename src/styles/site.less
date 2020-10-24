@@ -24,6 +24,13 @@
             background: transparent;
         .ant-menu-item {
             padding: 0 12px;
+            border-radius: 3px;
+            &.ant-menu-item-active{
+                background-color: darken(@dark-blue, 5);
+            }
+            &.ant-menu-item-selected{
+                background-color: darken(@dark-blue, 8);
+            }
         }
     }
         .actions {
@@ -31,19 +38,22 @@
             height: 32px;
             margin-top: 2px;
             text-align: right;
-        button.ant-btn {
-            top: -18px;
-            &.ant-btn-icon-only.ant-btn-sm > * {
-            font-size: 12px;
-            }
-            &.ant-btn-ghost {
-            background-color: #192934;
-            border-color: #0a161f;
-            color: @white;
-            box-shadow: @box-shadow-white;
+            button.ant-btn {
+                top: -18px;
+                &.ant-btn-icon-only.ant-btn-sm > * {
+                    font-size: 12px;
+                }
+                &.ant-btn-ghost {
+                    background-color: #192934;
+                    border-color: #0a161f;
+                    color: @white;
+                    box-shadow: @box-shadow-white;
+                }
             }
         }
-        }
+    }
+    .ant-menu.ant-menu-dark .ant-menu-item-selected, .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
+        background-color: transparent;
     }
     .siteBody {
         position: relative;
