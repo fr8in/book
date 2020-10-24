@@ -114,10 +114,10 @@ const ApprovedAndRejected = () => {
   if (!filter_loading) {
     filter_data = f_data
   }
-  const List = !isEmpty(filter_data) ? filter_data.credit_debit_type : []
-  const issueTypeList = List.map((filter_data) => {
-    return { value: filter_data.name, label: filter_data.name }
-  })
+  const credit_debit_type = get(filter_data, 'credit_debit_type', [])
+  const issueTypeList = !isEmpty(credit_debit_type) ? credit_debit_type.map((data) => {
+    return { value: data.name, label: data.name }
+  }) : []
 
   const record_count = get(filter_data, 'trip_credit_debit_aggregate.aggregate.count', 0)
 
