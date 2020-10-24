@@ -39,8 +39,7 @@ mutation trip_driver($driver_id:Int,$trip_id:Int,$updated_by: String!) {
 const Driver = (props) => {
   const { trip_info, initialValue, disable } = props
 
-  const partner_id = trip_info && trip_info.partner && trip_info.partner.id
-
+  const partner_id = get(trip_info, 'partner.id', null)
   if (!partner_id) return null
 
   const [searchText, setSearchText] = useState('')
