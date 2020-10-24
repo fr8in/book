@@ -66,8 +66,6 @@ const WaitingForLoad = (props) => {
       sorter: (a, b) => (a.partner > b.partner ? 1 : -1),
       render: (text, record) => {
         const partner = record.partner && record.partner.name
-        const noOfLoadsTaken = 1 // TODO
-        const partnerEngagementPercent = 30 // TODO
         const membership_id = record.partner && record.partner.partner_memberships && record.partner.partner_memberships.membership_type_id
         return (
           <span>

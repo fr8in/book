@@ -1,23 +1,39 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Modal, Input, Radio, Button, Form, Select, Tag, message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
+import userContext from '../../lib/userContaxt'
 
-const POD_RECEIPT_BY_EMP_MUTATION = gql`
-mutation trip_pod_courier_update($objects: [trip_pod_receipt_insert_input!]!, $trip_ids: [Int!], $pod_time: trip_set_input!) {
+const POD_RECEIPT_VERIFIED_MUTATION = gql`
+mutation trip_pod_verified_at($objects: [trip_pod_receipt_insert_input!]!, $trip_ids: [Int!], $pod_verified_at: timestamp!, $updated_by: String! ) {
 insert_trip_pod_receipt(objects: $objects) {
   returning {
       id
     }
   }
-  update_trip(where: {id:{_in:$trip_ids}}, _set:$pod_time){
+  update_trip(where: {id:{_in:$trip_ids}}, _set:{pod_verified_at: $pod_verified_at, updated_by: $updated_by }){
     returning{
       id
       pod_verified_at
     }
     affected_rows
   }
-}
-`
+}`
+const POD_RECEIPT_DISPATCHED_MUTATION = gql`
+mutation trip_pod_dispatched_at($objects: [trip_pod_dispatch_insert_input!]!, $trip_ids: [Int!], $pod_dispatched_at: timestamp!, $updated_by: String! ) {
+insert_trip_pod_dispatch(objects: $objects) {
+  returning {
+      id
+    }
+  }
+  update_trip(where: {id:{_in:$trip_ids}}, _set:{pod_dispatched_at: $pod_dispatched_at, updated_by: $updated_by }){
+    returning{
+      id
+      pod_verified_at
+    }
+    affected_rows
+  }
+}`
+
 const ALL_EMP_AND_COURIER = gql`
  query emp_courier {
   employee(where:{active: {_eq: 1}}){
@@ -32,7 +48,12 @@ const ALL_EMP_AND_COURIER = gql`
 `
 const PodReceiptAndDispatch = (props) => {
   const { visible, onHide, trip_ids, onRemoveTag, podDispatch } = props
-  const listType = [{ label: 'Internal', value: 'Internal' }, { label: 'Courier', value: 'Courier' }]
+  const context = useContext(userContext)
+
+  const listType = [
+    { label: 'Internal', value: 'Internal' },
+    { label: 'Courier', value: 'Courier' }
+  ]
 
   const [selectValue, setSelectValue] = useState('Internal')
   const initialData = { emp_id: null, courier: null, docket: null }
@@ -45,8 +66,19 @@ const PodReceiptAndDispatch = (props) => {
     }
   )
 
-  const [updatePodCourierDetail] = useMutation(
-    POD_RECEIPT_BY_EMP_MUTATION,
+  const [updatePodVerifiedAt] = useMutation(
+    POD_RECEIPT_VERIFIED_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () {
+        message.success('Updated!!')
+        setPodData(initialData)
+        onHide()
+      }
+    }
+  )
+  const [updatePodDispatchedAt] = useMutation(
+    POD_RECEIPT_DISPATCHED_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
       onCompleted () {
@@ -96,7 +128,7 @@ const PodReceiptAndDispatch = (props) => {
   const empObjects = trip_ids && trip_ids.length > 0 ? trip_ids.map(id => {
     return {
       trip_id: id,
-      created_by_id: 110, // TODO USER ID GET from AUTH
+      // created_by_id: 110, // TODO USER ID GET from AUTH
       by_hand_id: podData.emp_id
     }
   }) : null
@@ -104,7 +136,7 @@ const PodReceiptAndDispatch = (props) => {
   const docketObjects = trip_ids && trip_ids.length > 0 ? trip_ids.map(id => {
     return {
       trip_id: id,
-      created_by_id: 110, // TODO USER ID GET from AUTH
+      // created_by_id: 110, // TODO USER ID GET from AUTH
       docket: podData.docket,
       courier_id: podData.courier
     }
@@ -112,13 +144,25 @@ const PodReceiptAndDispatch = (props) => {
 
   const onPodReceiptDispatchSubmit = () => {
     const now = new Date().toISOString()
-    updatePodCourierDetail({
-      variables: {
-        objects: (selectValue === 'Internal') ? empObjects : docketObjects,
-        trip_ids: trip_ids,
-        pod_time: podDispatch ? { pod_dispatched_at: now } : { pod_verified_at: now }
-      }
-    })
+    if (podDispatch) {
+      updatePodDispatchedAt({
+        variables: {
+          objects: (selectValue === 'Internal') ? empObjects : docketObjects,
+          trip_ids: trip_ids,
+          pod_dispatched_at: now,
+          updated_by: context.email
+        }
+      })
+    } else {
+      updatePodVerifiedAt({
+        variables: {
+          objects: (selectValue === 'Internal') ? empObjects : docketObjects,
+          trip_ids: trip_ids,
+          pod_verified_at: now,
+          updated_by: context.email
+        }
+      })
+    }
   }
 
   const isTripSelected = trip_ids && trip_ids.length > 0
