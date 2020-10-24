@@ -6,6 +6,7 @@ import ViewFile from '../common/viewFile'
 import userContext from '../../lib/userContaxt'
 import { useContext } from 'react'
 import get from 'lodash/get'
+import u from '../../lib/util'
 
 const UPDATE_LR_MUTATION = gql`
 mutation lr_number_update ($lr: String, $id: Int!,$updated_by: String!){
@@ -43,7 +44,7 @@ const TripLr = (props) => {
     setCustomerConfirm(e.target.checked)
   }
 
-  const lr_files = trip_info && trip_info.trip_files && trip_info.trip_files.filter(file => file.type === 'LR')
+  const lr_files = trip_info && trip_info.trip_files && trip_info.trip_files.filter(file => file.type === u.fileType.lr)
   const trip_status = get(trip_info, 'trip_status.name', null)
   const disableLr = (trip_status === 'Invoiced' && trip_status === 'Paid' && trip_status === 'Recieved' && trip_status === 'Closed')
   const loaded = (trip_info.loaded === 'Yes')
@@ -72,14 +73,14 @@ const TripLr = (props) => {
               <ViewFile
                 id={trip_info.id}
                 type='trip'
-                file_type='LR'
-                folder='pod/'
+                file_type={u.fileType.lr}
+                folder={u.folder.pod_lr}
                 file_list={lr_files}
               />
               <DeleteFile
                 id={trip_info.id}
                 type='trip'
-                file_type='LR'
+                file_type={u.fileType.lr}
                 file_list={lr_files}
                 disable={lock}
               />
@@ -88,8 +89,8 @@ const TripLr = (props) => {
               <FileUploadOnly
                 id={trip_info.id}
                 type='trip'
-                folder='pod/'
-                file_type='LR'
+                folder={u.folder.pod_lr}
+                file_type={u.fileType.lr}
                 disable={lock}
               />)}
           <Checkbox

@@ -5,7 +5,6 @@ import {
   CarOutlined,
   SmileOutlined,
   TeamOutlined,
-  // CreditCardOutlined,
   NodeIndexOutlined,
   CopyOutlined,
   LineChartOutlined,
@@ -13,42 +12,42 @@ import {
   FullscreenOutlined
 } from '@ant-design/icons'
 import Link from 'next/link'
+import router from 'next/router'
 
 const Nav = (props) => {
+  const path = router.pathname !== '/' ? router.pathname.split('/')[1] : 'dashboard'
+
   return (
-    <Menu theme='dark' mode={props.inline ? 'inline' : 'horizontal'} defaultSelectedKeys={['1']}>
-      <Menu.Item key='1' icon={<DashboardOutlined />}>
-        <Link href='/'><a>Dashboard</a></Link>
+    <Menu theme='dark' mode={props.inline ? 'inline' : 'horizontal'} defaultSelectedKeys={[path]}>
+      <Menu.Item key='dashboard'>
+        <Link href='/'><a><DashboardOutlined /><span className='menu-label'>Dashboard</span></a></Link>
       </Menu.Item>
-      <Menu.Item key='2' icon={<SwapOutlined />}>
-        <Link href='/trips'><a>Trips</a></Link>
+      <Menu.Item key='trips'>
+        <Link href='/trips'><a><SwapOutlined /><span className='menu-label'>Trips</span></a></Link>
       </Menu.Item>
-      <Menu.Item key='3' icon={<CarOutlined />}>
-        <Link href='/trucks'><a>Trucks</a></Link>
+      <Menu.Item key='trucks'>
+        <Link href='/trucks'><a><CarOutlined /><span className='menu-label'>Trucks</span></a></Link>
       </Menu.Item>
-      <Menu.Item key='4' icon={<SmileOutlined />}>
-        <Link href='/partners'><a>Partners</a></Link>
+      <Menu.Item key='partners'>
+        <Link href='/partners'><a><SmileOutlined /><span className='menu-label'>Partners</span></a></Link>
       </Menu.Item>
-      <Menu.Item key='5' icon={<TeamOutlined />}>
-        <Link href='/customers'><a>Customers</a></Link>
+      <Menu.Item key='customers'>
+        <Link href='/customers'><a><TeamOutlined /><span className='menu-label'>Customers</span></a></Link>
       </Menu.Item>
-      {/* <Menu.Item key='6' icon={<CreditCardOutlined />}>
-        <Link href='/cards'><a>Cards</a></Link>
-      </Menu.Item> */}
-      <Menu.Item key='7' icon={<NodeIndexOutlined />}>
-        <Link href='/branches'><a>Branches</a></Link>
+      <Menu.Item key='branches'>
+        <Link href='/branches'><a><NodeIndexOutlined /><span className='menu-label'>Branches</span></a></Link>
       </Menu.Item>
-      <Menu.Item key='8' icon={<CopyOutlined />}>
-        <Link href='/approvals'><a>Approvals</a></Link>
+      <Menu.Item key='approvals'>
+        <Link href='/approvals'><a><CopyOutlined /><span className='menu-label'>Approvals</span></a></Link>
       </Menu.Item>
-      <Menu.Item key='9' icon={<LineChartOutlined />}>
-        <Link href='/reports'><a>Reports</a></Link>
+      <Menu.Item key='reports'>
+        <Link href='/reports'><a><LineChartOutlined /><span className='menu-label'>Reports</span></a></Link>
       </Menu.Item>
-      <Menu.Item key='10' icon={<TransactionOutlined />}>
-        <Link href='/payables'><a>Payables</a></Link>
+      <Menu.Item key='payables'>
+        <Link href='/payables'><a><TransactionOutlined /><span className='menu-label'>Payables</span></a></Link>
       </Menu.Item>
-      <Menu.Item key='11' icon={<FullscreenOutlined />}>
-        <Link href='/sourcing'><a>Sourcing</a></Link>
+      <Menu.Item key='sourcing'>
+        <Link href='/sourcing'><a><FullscreenOutlined /><span className='menu-label'>Sourcing</span></a></Link>
       </Menu.Item>
     </Menu>
   )

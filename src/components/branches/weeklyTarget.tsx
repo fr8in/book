@@ -31,7 +31,7 @@ const WeeklyTarget = (props) => {
         branch_id: id,
         week: week,
         year: year,
-        trip_target: value
+        trip_target: parseInt(value, 10)
       }
     })
   }

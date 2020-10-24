@@ -39,7 +39,7 @@ mutation insert_branch(
 }`
 
 const AddBranch = (props) => {
-  const { visible, onHide } = props
+  const { visible, onHide, totalBranch } = props
   const [disableButton, setDisableButton] = useState(false)
 
   const { loading, error, data } = useQuery(
@@ -130,7 +130,7 @@ const AddBranch = (props) => {
             showSearch
           />
         </Form.Item>
-        <Form.Item name='display_position'>
+        <Form.Item name='display_position' extra={`Total Branches: ${totalBranch}`}>
           <Input placeholder='Display Position' />
         </Form.Item>
         <Row gutter={10}>

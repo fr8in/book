@@ -39,5 +39,29 @@ export default {
     return (
       (membership === 1 || !membership) ? 'Silver' : membership === 2 ? 'Gold' : 'Platinum'
     )
+  },
+  fileType: {
+    pod: 'POD',
+    lr: 'LR',
+    evidence: 'EVIDENCELIST',
+    wh: 'WH',
+    customer_pan: 'PAN',
+    partner_pan: 'PC',
+    emi: 'EMI',
+    rc: 'RC',
+    vaahan: 'vaahan',
+    insurance: 'insurance',
+    permit: 'permit',
+    check_leaf: 'CL',
+    tds: 'TDS',
+    agreement: 'AGREEMENT',
+    cibil: 'CIBIL'
+  },
+  folder: {
+    pod_lr: 'pod/',
+    customer_lr: 'lr/',
+    approvals: 'approvals/',
+    wh: 'warehousereceipt/',
+    customer_pan: 'pan/'
   }
 }

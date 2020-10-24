@@ -56,9 +56,9 @@ const PartnerDetailContainer = (props) => {
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
   const partner_access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
   const admin_role = [role.admin]
-  const admin_rm_role = [role.admin, role.rm]
+  const top_up_role = [role.admin, role.rm, role.partner_manager, role.partner_support]
   const admin = !isEmpty(admin_role) ? context.roles.some(r => admin_role.includes(r)) : false
-  const admin_rm = !isEmpty(admin_rm_role) ? context.roles.some(r => admin_rm_role.includes(r)) : false
+  const top_up_access = !isEmpty(top_up_role) ? context.roles.some(r => top_up_role.includes(r)) : false
 
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,
@@ -114,7 +114,7 @@ const PartnerDetailContainer = (props) => {
                     <Tooltip title='Wallet Statement'>
                       <Button icon={<FileTextOutlined />} shape='circle' onClick={() => onShow('statement')} />
                     </Tooltip>
-                    {admin_rm &&
+                    {top_up_access &&
                       <Tooltip title='Wallet Topup'>
                         <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('topUp')} />
                       </Tooltip>}

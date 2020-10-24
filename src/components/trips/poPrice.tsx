@@ -160,7 +160,7 @@ const PoPrice = (props) => {
       <>
         <Row gutter={20}>
           <Col xs={24} sm={24}>
-            <Form.Item name='trip_rate_type' initialValue={price.rate_type} wrapperCol={{ sm: 24 }}>
+            <Form.Item name='trip_rate_type' initialValue={price.rate_type} wrapperCol={{ sm: 24 }} className='mobile-100percent hide-label'>
               <Radio.Group onChange={onRadioChange} size='small'>
                 <Radio value='Rate/Trip'>Rate/Trip</Radio>
                 <Radio value='Rate/Ton'>Rate/Ton</Radio>

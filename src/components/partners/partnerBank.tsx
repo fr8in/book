@@ -1,7 +1,8 @@
 import { Modal, Button, Input, Row, Form, Space, message } from 'antd'
-import { gql, useMutation } from '@apollo/client'
+import { gql, useMutation, useLazyQuery } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import { useState, useContext } from 'react'
+import get from 'lodash/get'
 
 const UPDATE_PARTNER_BANK_MUTATION = gql`
 mutation update_account_no($id: Int!, $account_number: String!, $account_holder: String!, $ifsc_code: String!, $updated_by: String!) {
@@ -11,11 +12,34 @@ mutation update_account_no($id: Int!, $account_number: String!, $account_holder:
   }
 }`
 
+const IFSC_VALIDATION = gql`
+query ifsc_validation($ifsc: String!){
+  bank_detail(ifsc: $ifsc) {
+    bank
+    bankcode
+    branch
+  }
+}`
+
 const EditBank = (props) => {
   const { visible, onHide, partner_id } = props
 
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
+  const [form] = Form.useForm()
+
+  const [getBankDetail, { loading, data, error }] = useLazyQuery(
+    IFSC_VALIDATION,
+    {
+      onError (error) {
+        message.error(`Invalid IFSC: ${error}`)
+        form.resetFields(['ifsc_code'])
+      },
+      onCompleted (data) {
+        message.info(`Bank name: ${get(data, 'bank_detail.bank', '')}!!`)
+      }
+    }
+  )
 
   const [updatePartnerBank] = useMutation(
     UPDATE_PARTNER_BANK_MUTATION,
@@ -24,13 +48,26 @@ const EditBank = (props) => {
         setDisableButton(false)
         message.error(error.toString())
       },
-      onCompleted () {
+      onCompleted (data) {
         setDisableButton(false)
-        message.success('Updated!!')
-        onHide()
+        const description = get(data, 'update_account_no.description', null)
+        const status = get(data, 'update_account_no.status', null)
+        if (status === 'OK') {
+          message.success(description || 'Updated!!')
+          onHide()
+        } else {
+          message.error(description || 'Error Occured!!')
+        }
       }
     }
   )
+
+  const validateIFSC = () => {
+    if (form.getFieldValue('ifsc_code')) {
+      getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc_code') } })
+    } else return null
+  }
+
   const onBankSubmit = (form) => {
     setDisableButton(true)
     updatePartnerBank({
@@ -52,21 +89,24 @@ const EditBank = (props) => {
         onCancel={onHide}
         footer={null}
       >
-        <Form layout='vertical' onFinish={onBankSubmit}>
+        <Form layout='vertical' onFinish={onBankSubmit} form={form}>
           <Form.Item
             name='account_holder'
+            rules={[{ required: true }]}
           >
             <Input placeholder='Name' />
           </Form.Item>
           <Form.Item
-            name='account_number'
+            name='ifsc_code'
+            rules={[{ required: true }]}
           >
-            <Input placeholder=' Account Number' />
+            <Input placeholder=' IFSC Code' onBlur={validateIFSC} />
           </Form.Item>
           <Form.Item
-            name='ifsc_code'
+            name='account_number'
+            rules={[{ required: true }]}
           >
-            <Input placeholder=' IFSC Code' />
+            <Input placeholder=' Account Number' />
           </Form.Item>
 
           <Row justify='end'>

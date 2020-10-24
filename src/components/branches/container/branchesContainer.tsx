@@ -1,3 +1,4 @@
+import { useContext, useState } from 'react'
 import Branch from '../branches'
 import Employees from '../employees'
 import CityBranchMapping from '../cityBranchMapping'
@@ -6,7 +7,6 @@ import { PlusCircleOutlined } from '@ant-design/icons'
 import { Tabs, Card, Button } from 'antd'
 import u from '../../../lib/util'
 import useShowHide from '../../../hooks/useShowHide'
-import { useContext } from 'react'
 import userContext from '../../../lib/userContaxt'
 import isEmpty from 'lodash/isEmpty'
 
@@ -18,6 +18,7 @@ const BranchesContainer = () => {
   const traffic_member_edit = [role.admin]
   const initial = { showModal: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+  const [totalBranch, setTotalBranch] = useState(0)
 
   const context = useContext(userContext)
   const access = !isEmpty(add_branch_access) ? context.roles.some(r => add_branch_access.includes(r)) : false
@@ -39,7 +40,7 @@ const BranchesContainer = () => {
           </Button>) : null}
       >
         <TabPane tab='Branches' key='1'>
-          <Branch edit_access={traffic_member_edit} />
+          <Branch edit_access={traffic_member_edit} setTotalBranch={setTotalBranch} />
         </TabPane>
         <TabPane tab='Employess' key='2'>
           <Employees />
@@ -48,7 +49,7 @@ const BranchesContainer = () => {
           <CityBranchMapping />
         </TabPane>
       </Tabs>
-      {visible.showModal && <AddBranch visible={visible.showModal} onHide={onHide} />}
+      {visible.showModal && <AddBranch visible={visible.showModal} totalBranch={totalBranch} onHide={onHide} />}
     </Card>
   )
 }

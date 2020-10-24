@@ -36,7 +36,8 @@ mutation execute_transfer($doc_num:String!,$updated_by:String!) {
 const OutGoing = (props) => {
   const { label } = props
   const context = useContext(userContext)
-  const [disableBtn, setDisableBtn] = useState(false)
+  const initial = { loading: false, selected_id: null }
+  const [disableBtn, setDisableBtn] = useState(initial)
 
   const { loading, error, data, refetch } = useQuery(
     pendingTransaction, {
@@ -58,10 +59,10 @@ const OutGoing = (props) => {
     {
       onError (error) {
         message.error(error.toString())
-        setDisableBtn(false)
+        setDisableBtn(initial)
       },
       onCompleted (data) {
-        setDisableBtn(false)
+        setDisableBtn(initial)
         const status = get(data, 'execute_transfer.status', null)
         const description = get(data, 'execute_transfer.description', null)
         if (status) {
@@ -75,7 +76,7 @@ const OutGoing = (props) => {
   )
 
   const onSubmit = (record, docNum) => {
-    setDisableBtn(true)
+    setDisableBtn({ ...disableBtn, loading: true, selected_id: docNum })
     executeTransfer({
       variables: {
         doc_num: docNum.toString(),
@@ -177,8 +178,8 @@ const OutGoing = (props) => {
         return (
           <Button
             size='small' type='primary' onClick={() => onSubmit(record, record.docNum)}
-            disabled={!(record.bank_name === 'ICICI Bank') || !record.account_no}
-            loading={disableBtn}
+            disabled={!record.account_no}
+            loading={disableBtn.loading && (disableBtn.selected_id === record.docNum)}
           >
             Execute
           </Button>
@@ -195,6 +196,7 @@ const OutGoing = (props) => {
       scroll={{ x: 1156, y: 400 }}
       pagination={false}
       rowKey={(record) => record.docNum}
+      loading={loading}
     />
   )
 }

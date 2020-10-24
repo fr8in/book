@@ -2,8 +2,10 @@ import { Row, Col, Form, Input, Button, message, Divider } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import FileUpload from '../common/fileUpload'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
 import userContext from '../../lib/userContaxt'
 import { useState, useContext } from 'react'
+import u from '../../lib/util'
 
 const BILLING_COMMENT_MUTATION = gql`
 mutation update_billing_comment($id: Int!, $billing_remarks: String,$updated_by: String!){
@@ -47,14 +49,15 @@ const BillingComment = (props) => {
     })
   }
 
-  const Evidence_List_files = trip_info && trip_info.trip_files && trip_info.trip_files.length > 0 ? trip_info.trip_files.filter(file => file.type === 'EVIDENCELIST') : null
-  const evidence_file_list = Evidence_List_files && Evidence_List_files.length > 0 && Evidence_List_files.map((file, i) => {
+  const files = get(trip_info, 'trip_files', null)
+  const Evidence_List_files = !isEmpty(files) ? files.filter(file => file.type === u.fileType.evidence) : null
+  const evidence_file_list = !isEmpty(Evidence_List_files) ? Evidence_List_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
       name: file.file_path,
       status: 'done'
     })
-  })
+  }) : []
   const trip_status_id = get(trip_info, 'trip_status.id', null)
   const trip_status = (trip_status_id >= 12)
   const lock = get(trip_info, 'transaction_lock', null)
@@ -69,8 +72,8 @@ const BillingComment = (props) => {
               <FileUpload
                 id={trip_id}
                 type='trip'
-                folder='approvals/'
-                file_type='EVIDENCELIST'
+                folder={u.folder.approvals}
+                file_type={u.fileType.evidence}
                 file_list={evidence_file_list}
                 disable={trip_status || lock}
               />

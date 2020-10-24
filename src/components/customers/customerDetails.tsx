@@ -14,8 +14,8 @@ const CustomerDetails = (props) => {
   const customerGstEdit = [role.admin, role.accounts_manager, role.accounts]
   const customerOnboardedByEdit = [role.admin, role.accounts_manager, role.accounts]
 
-  const lr_files = customer_info && customer_info.customer_files && customer_info.customer_files.filter(file => file.type === 'LR')
-  const pan_files = customer_info && customer_info.customer_files && customer_info.customer_files.filter(file => file.type === 'PAN')
+  const lr_files = customer_info && customer_info.customer_files && customer_info.customer_files.filter(file => file.type === u.fileType.lr)
+  const pan_files = customer_info && customer_info.customer_files && customer_info.customer_files.filter(file => file.type === u.fileType.customer_pan)
   console.log('customer_info', customer_info)
   const cus_status = (
     <Tooltip title={get(customer_info, 'id', '-')}>{get(customer_info, 'status.name', '-')}</Tooltip>
@@ -33,8 +33,8 @@ const CustomerDetails = (props) => {
                     size='small'
                     id={customer_info.id}
                     type='customer'
-                    file_type='PAN'
-                    folder='pan/'
+                    file_type={u.fileType.customer_pan}
+                    folder={u.folder.customer_pan}
                     file_list={pan_files}
                   />
                 </Space>
@@ -43,8 +43,8 @@ const CustomerDetails = (props) => {
                   size='small'
                   id={customer_info.id}
                   type='customer'
-                  folder='pan/'
-                  file_type='PAN'
+                  folder={u.folder.customer_pan}
+                  file_type={u.fileType.customer_pan}
                   file_list={pan_files}
                 />
               )}
@@ -73,8 +73,8 @@ const CustomerDetails = (props) => {
                     size='small'
                     id={customer_info.id}
                     type='customer'
-                    file_type='LR'
-                    folder='lr/'
+                    file_type={u.fileType.lr}
+                    folder={u.folder.customer_lr}
                     file_list={lr_files}
                   />
                 </Space>
@@ -83,8 +83,8 @@ const CustomerDetails = (props) => {
                   size='small'
                   id={customer_info.id}
                   type='customer'
-                  folder='lr/'
-                  file_type='LR'
+                  folder={u.folder.customer_lr}
+                  file_type={u.fileType.lr}
                   file_list={lr_files}
                 />
               )}

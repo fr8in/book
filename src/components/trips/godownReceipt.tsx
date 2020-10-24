@@ -1,8 +1,9 @@
+import { useState, useContext } from 'react'
 import { Modal, Button, Row, Col, Form, Input, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import FileUploadOnly from '../common/fileUploadOnly'
 import userContext from '../../lib/userContaxt'
-import { useState,useContext } from 'react'
+import u from '../../lib/util'
 
 const PRIVATE_GODWON_MUTATION = gql`
 mutation update_private_godown($id: Int!, $private_godown_address: jsonb,$unloaded_private_godown:Boolean,$updated_by: String!) {
@@ -72,8 +73,8 @@ const CheckBoxModal = (props) => {
               <FileUploadOnly
                 id={trip_id}
                 type='trip'
-                folder='warehousereceipt/'
-                file_type='WH'
+                folder={u.folder.wh}
+                file_type={u.fileType.wh}
               />
             </div>
           </Row>

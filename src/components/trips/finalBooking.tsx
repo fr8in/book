@@ -142,7 +142,7 @@ const FinalBooking = (props) => {
   const disable_partner_tds = !!(floatVal(form.getFieldValue('tds_fr8')))
 
   const onBlurCalc = () => {
-    const debit = floatVal(form.getFieldValue('sortage')) + floatVal(form.getFieldValue('pod_delay')) + floatVal(form.getFieldValue('late_delivery')) + floatVal(form.getFieldValue('tds')) + floatVal(form.getFieldValue('loading_charge')) + floatVal(form.getFieldValue('unloading_charge'))
+    const debit = floatVal(form.getFieldValue('shortage')) + floatVal(form.getFieldValue('pod_delay')) + floatVal(form.getFieldValue('late_delivery')) + floatVal(form.getFieldValue('tds')) + floatVal(form.getFieldValue('loading_charge')) + floatVal(form.getFieldValue('unloading_charge'))
     const total = debit + floatVal(form.getFieldValue('cash')) + floatVal(form.getFieldValue('mamul')) + floatVal(form.getFieldValue('price_difference')) + floatVal(form.getFieldValue('loading_halting')) + floatVal(form.getFieldValue('unloading_halting')) + floatVal(form.getFieldValue('tds_fr8'))
     const rebate = floatVal(form.getFieldValue('rebate'))
     setCalc({ ...calc, debit: debit, total: total - rebate, rebate: rebate })
@@ -167,7 +167,7 @@ const FinalBooking = (props) => {
   const validateWriteOff = (writeOffValue, excess) => floatVal(writeOffValue) > excess
 
   const validateAllWriteOffs = (excess) => {
-    return floatVal(form.getFieldValue('sortage')) < excess && floatVal(form.getFieldValue('pod_delay')) < excess && floatVal(form.getFieldValue('late_delivery')) < excess &&
+    return floatVal(form.getFieldValue('shortage')) < excess && floatVal(form.getFieldValue('pod_delay')) < excess && floatVal(form.getFieldValue('late_delivery')) < excess &&
             floatVal(form.getFieldValue('loading_charge')) < excess && floatVal(form.getFieldValue('unloading_charge')) < excess
   }
   const total_booking = (calc.total + floatVal(amount))
@@ -183,7 +183,7 @@ const FinalBooking = (props) => {
       diff_wallet === 0 &&
       floatVal(form.cash) === 0 &&
       floatVal(form.rebate) === 0 &&
-      floatVal(form.sortage) === 0 &&
+      floatVal(form.shortage) === 0 &&
       floatVal(form.pod_delay) === 0 &&
       floatVal(form.late_delivery) === 0 &&
       floatVal(form.tds) === 0 &&
@@ -195,7 +195,7 @@ const FinalBooking = (props) => {
       floatVal(form.unloading_halting) === 0
     ) {
       message.error('Book any value, all fileds value is zero!')
-    } else if (total_booking > pending_data.balance) {
+    } else if ((total_booking > pending_data.balance) && !header) {
       message.error('Maximum booking amount is ' + pending_data.balance)
     } else if ((total_booking === pending_data.balance) && (calc.rebate < min_rebate)) {
       message.error('Rebate must be greater than or equal to Min-rebate')
@@ -217,7 +217,7 @@ const FinalBooking = (props) => {
           header: header,
           comment: form.comment,
           // Onetime Booking Item
-          shortage_write_off: one_time_booked ? 0 : floatVal(form.sortage),
+          shortage_write_off: one_time_booked ? 0 : floatVal(form.shortage),
           pod_delay_missing_write_off: one_time_booked ? 0 : floatVal(form.pod_delay),
           late_delivery_write_off: one_time_booked ? 0 : floatVal(form.late_delivery),
           tds_filed_by_partner: one_time_booked ? 0 : floatVal(form.tds),
@@ -227,7 +227,7 @@ const FinalBooking = (props) => {
       })
     }
   }
-
+  console.log('excess', excess)
   return (
     <>
       <Modal
@@ -283,7 +283,7 @@ const FinalBooking = (props) => {
               <Divider />
               <Row gutter={10}>
                 <Col sm={6}>
-                  <Form.Item label='Shortage/Damage' name='sortage' initialValue={(!isEmpty(prevShortage) && prevShortage[0].amount) || 0}>
+                  <Form.Item label='Shortage/Damage' name='shortage' initialValue={(!isEmpty(prevShortage) && prevShortage[0].amount) || 0}>
                     <Input
                       placeholder='Shortage/Damage'
                       disabled={one_time_booked}
@@ -459,7 +459,7 @@ const FinalBooking = (props) => {
               <div>(Recievables: <b>{price}</b>, Mamul: <b>{mamul}</b>, Min-rebate: <b>{min_rebate}</b>)</div>
             </Col>
             <Col flex='100px' className='text-right'>
-              {excess > 0 && !header ? <Button type='primary' onClick={() => onShow('excess')}>Book Excess Write Off</Button>
+              {excess > 0 && !header && !one_time_booked ? <Button type='primary' onClick={() => onShow('excess')}>Book Excess Write Off</Button>
                 : <Button type='primary' htmlType='submit' loading={disableButton}>Book</Button>}
             </Col>
           </Row>

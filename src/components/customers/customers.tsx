@@ -20,12 +20,12 @@ import BranchCreation from '../customers/branchCreation'
 import CustomerAdvancePercentage from './customerAdvancePercentage'
 import { gql, useMutation } from '@apollo/client'
 import moment from 'moment'
-import Truncate from '../common/truncate'
 import get from 'lodash/get'
 import FileUploadOnly from '../common/fileUploadOnly'
 import ViewFile from '../common/viewFile'
 import LinkComp from '../common/link'
 import isEmpty from 'lodash/isEmpty'
+import u from '../../lib/util'
 
 const CUSTOMER_REJECT_MUTATION = gql`
   mutation customer_reject($status_id: Int, $id: Int!,$updated_by:String!) {
@@ -245,7 +245,7 @@ const CustomerKyc = (props) => {
       width: '10%',
       render: (text, record) => {
         const statusId = get(record, 'status.id', null)
-        const pan_files = record && record.customer_files.filter(file => file.type === 'PAN')
+        const pan_files = record && record.customer_files.filter(file => file.type === u.fileType.customer_pan)
         return (
           <Space>
             {pan_files && pan_files.length > 0 ? (
@@ -254,8 +254,8 @@ const CustomerKyc = (props) => {
                   size='small'
                   id={record.id}
                   type='customer'
-                  folder='pan/'
-                  file_type='PAN'
+                  folder={u.folder.customer_pan}
+                  file_type={u.fileType.customer_pan}
                   file_list={pan_files}
                 />
               </Space>
@@ -264,8 +264,8 @@ const CustomerKyc = (props) => {
                 size='small'
                 id={record.id}
                 type='customer'
-                folder='pan/'
-                file_type='PAN'
+                folder={u.folder.customer_pan}
+                file_type={u.fileType.customer_pan}
                 file_list={pan_files}
               />
             )}

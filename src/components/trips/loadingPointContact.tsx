@@ -85,7 +85,12 @@ const LoadingPointContact = (props) => {
     users = !isEmpty(user_data) && user_data.filter(_user => _user.mobile.search(searchText) !== -1)
   }
   return (
-    <Form.Item label='Loading Point Contact' name='loading_contact' rules={[{ required: true }]}>
+    <Form.Item
+      label='Loading Point Contact'
+      name='loading_contact'
+      rules={[{ required: true }]}
+      className='mobile-100percent hide-label'
+    >
       <Select
         showSearch
         placeholder='Select user...'

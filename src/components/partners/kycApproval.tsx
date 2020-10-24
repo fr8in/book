@@ -21,10 +21,10 @@ import { gql, useMutation, useQuery, useSubscription } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
-import moment from 'moment'
 import Loading from '../common/loading'
 import Truncate from '../common/truncate'
 import NewTruck from './newTruck'
+import u from '../../lib/util'
 
 const PARTNERS_QUERY = gql`
   query create_partner{
@@ -72,21 +72,31 @@ subscription partner_kyc($id:Int){
       }
     }
   }
-}
-`
-
-const UPDATE_PARTNER_APPOVAL_MUTATION = gql`
-mutation update_partner_approval($onboarded_by_id:Int,$partner_advance_percentage_id:Int,$gst:String,$cibil:String,$emi:Boolean,$id:Int,$partner_status_id:Int,$updated_by: String!, $onboarded_date: timestamp){
-  update_partner(_set: {onboarded_by_id:$onboarded_by_id, partner_advance_percentage_id:$partner_advance_percentage_id, gst:$gst, cibil:$cibil, emi:$emi,partner_status_id:$partner_status_id,updated_by:$updated_by, onboarded_date: $onboarded_date}, where: {id: {_eq:$id}}) {
-    returning {
-      id
-    }
-  }
 }`
 
 const CREATE_PARTNER_CODE_MUTATION = gql`
-mutation create_partner_code($cardcode: String, $name: String!, $partner_id: Int!, $pay_terms_code: Int!,$pan_no:String!) {
-  create_partner_code(cardcode: $cardcode,name: $name, partner_id: $partner_id, pay_terms_code: $pay_terms_code, pan_no:$pan_no) {
+mutation create_partner_code(
+  $cardcode: String, 
+  $name: String!, 
+  $partner_id: Int!,
+  $pan_no:String!,
+  $onboarded_by_id: Int!,
+  $partner_advance_percentage_id: Int!
+  $gst:String,
+  $cibil: String!,
+  $emi: Boolean!,
+  $updated_by: String! ) {
+  create_partner_code(
+    cardcode: $cardcode,
+    name: $name, 
+    partner_id: $partner_id,
+    pan_no:$pan_no,
+    onboarded_by_id: $onboarded_by_id, 
+    partner_advance_percentage_id: $partner_advance_percentage_id, 
+    gst: $gst, 
+    cibil: $cibil, 
+    emi: $emi, 
+    updated_by: $updated_by) {
     description
     status
   }
@@ -131,23 +141,9 @@ const KycApproval = (props) => {
   const trucks = get(partnerDetail, 'trucks', [])
   const files = get(partnerDetail, 'partner_files', [])
 
-  const pan_files = !isEmpty(files) && files.filter(file => file.type === 'PAN')
-  const cheaque_files = !isEmpty(files) && files.filter(file => file.type === 'CL')
-  const cs_files = !isEmpty(files) && files.filter(file => file.type === 'CS')
-
-  const [updatePartnerApproval] = useMutation(
-    UPDATE_PARTNER_APPOVAL_MUTATION,
-    {
-      onError (error) {
-        setDisableButton(false)
-        message.error(error.toString())
-      },
-      onCompleted () {
-        setDisableButton(false)
-        message.success('Saved!!')
-      }
-    }
-  )
+  const pan_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.partner_pan)
+  const cheaque_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.check_leaf)
+  const cs_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.cibil)
 
   const [createPartnerCode] = useMutation(
     CREATE_PARTNER_CODE_MUTATION,
@@ -162,7 +158,6 @@ const KycApproval = (props) => {
         const description = get(data, 'create_partner_code.description', null)
         if (status === 'OK') {
           message.success(description || 'Code created!')
-          onPartnerApprovalSubmit()
           onHide()
         } else {
           message.error(description)
@@ -205,24 +200,7 @@ const KycApproval = (props) => {
     }
   ]
 
-  const onPartnerApprovalSubmit = () => {
-    setDisableButton(true)
-    updatePartnerApproval({
-      variables: {
-        id: partner_id,
-        partner_status_id: 4,
-        gst: form.getFieldValue('gst'),
-        cibil: form.getFieldValue('cibil'),
-        emi: checked,
-        onboarded_by_id: form.getFieldValue('onboarded_by_id') || get(partnerDetail, 'onboarded_by.id', null),
-        updated_by: context.email,
-        partner_advance_percentage_id: form.getFieldValue('partner_advance_percentage_id') || get(partnerDetail, 'partner_advance_percentage.id', null),
-        onboarded_date: moment().format('YYYY-MM-DD')
-      }
-    })
-  }
-
-  const onCreatePartnerCodeSubmit = () => {
+  const onCreatePartnerCodeSubmit = (form) => {
     if (isEmpty(trucks)) {
       message.error('Add truck before approve Partner!')
     } else if (isEmpty(pan_files) || isEmpty(cheaque_files) || isEmpty(cs_files)) {
@@ -231,11 +209,16 @@ const KycApproval = (props) => {
       setDisableButton(true)
       createPartnerCode({
         variables: {
-          name: name,
-          pay_terms_code: form.getFieldValue('partner_advance_percentage_id') || get(partnerDetail, 'partner_advance_percentage.id', null),
           partner_id: partner_id,
+          cardcode: get(partnerDetail, 'cardcode', null),
+          name: name,
           pan_no: partnerDetail.pan,
-          cardcode: get(partnerDetail, 'cardcode', null)
+          onboarded_by_id: form.onboarded_by_id || get(partnerDetail, 'onboarded_by.id', null),
+          partner_advance_percentage_id: form.partner_advance_percentage_id || get(partnerDetail, 'partner_advance_percentage.id', null),
+          gst: form.gst,
+          cibil: form.cibil,
+          emi: checked,
+          updated_by: context.email
         }
       })
     }
@@ -303,15 +286,15 @@ const KycApproval = (props) => {
                             size='small'
                             id={partner_id}
                             type='partner'
-                            file_type='PAN'
-                            folder='approvals/'
+                            file_type={u.fileType.partner_pan}
+                            folder={u.folder.approvals}
                             file_list={pan_files}
                           />
                           <DeleteFile
                             size='small'
                             id={partner_id}
                             type='partner'
-                            file_type='PAN'
+                            file_type={u.fileType.partner_pan}
                             file_list={pan_files}
                           />
                         </Space>
@@ -320,8 +303,8 @@ const KycApproval = (props) => {
                           size='small'
                           id={partner_id}
                           type='partner'
-                          folder='approvals/'
-                          file_type='PAN'
+                          folder={u.folder.approvals}
+                          file_type={u.fileType.partner_pan}
                           file_list={pan_files}
                         />
                       )}
@@ -341,15 +324,15 @@ const KycApproval = (props) => {
                             size='small'
                             id={partner_id}
                             type='partner'
-                            file_type='CL'
-                            folder='approvals/'
+                            file_type={u.fileType.check_leaf}
+                            folder={u.folder.approvals}
                             file_list={cheaque_files}
                           />
                           <DeleteFile
                             size='small'
                             id={partner_id}
                             type='partner'
-                            file_type='CL'
+                            file_type={u.fileType.check_leaf}
                             file_list={cheaque_files}
                           />
                         </Space>
@@ -358,8 +341,8 @@ const KycApproval = (props) => {
                           size='small'
                           id={partner_id}
                           type='partner'
-                          folder='approvals/'
-                          file_type='CL'
+                          folder={u.folder.approvals}
+                          file_type={u.fileType.check_leaf}
                           file_list={cheaque_files}
                         />
                       )}
@@ -387,15 +370,15 @@ const KycApproval = (props) => {
                             size='small'
                             id={partner_id}
                             type='partner'
-                            file_type='CS'
-                            folder='approvals/'
+                            file_type={u.fileType.cibil}
+                            folder={u.folder.approvals}
                             file_list={cs_files}
                           />
                           <DeleteFile
                             size='small'
                             id={partner_id}
                             type='partner'
-                            file_type='CS'
+                            file_type={u.fileType.cibil}
                             file_list={cs_files}
                           />
                         </Space>
@@ -404,8 +387,8 @@ const KycApproval = (props) => {
                           size='small'
                           id={partner_id}
                           type='partner'
-                          folder='approvals/'
-                          file_type='CS'
+                          folder={u.folder.approvals}
+                          file_type={u.fileType.cibil}
                           file_list={cs_files}
                         />
                       )}

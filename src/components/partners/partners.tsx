@@ -5,7 +5,7 @@ import {
   CloseOutlined,
   SearchOutlined
 } from '@ant-design/icons'
-import Link from 'next/link'
+import LinkComp from '../common/link'
 import KycReject from '../../components/partners/partnerKycReject'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from './comment'
@@ -82,9 +82,7 @@ const PartnerKyc = (props) => {
       width: '8%',
       render: (text, record) => {
         return (
-          <Link href='partners/[id]' as={`partners/${record.cardcode}`}>
-            <a>{text}</a>
-          </Link>
+          <LinkComp type='partners' data={text} id={record.cardcode} blank />
         )
       },
       filterDropdown: (

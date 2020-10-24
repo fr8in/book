@@ -47,7 +47,7 @@ const PartnerStatus = (props) => {
   const onblock = () => {
     updateStatusId({
       variables: {
-        id:id,
+        id: id,
         updated_by: context.email
       }
     })
@@ -56,20 +56,19 @@ const PartnerStatus = (props) => {
   const onunblock = () => {
     updateStatus({
       variables: {
-        id:id,
+        id: id,
         updated_by: context.email
       }
     })
   }
 
-  const blacklisted = status
-
+  const blacklisted = (status || status === null) // wallet_block null also blacklisted
   const onchange = blacklisted ? onunblock : onblock
 
   return (
     <Tooltip title={blacklisted ? 'Unblock Wallet' : 'Block Wallet'}>
       <Switch
-        onChange={ onchange}
+        onChange={onchange}
         checked={blacklisted}
         className={blacklisted ? 'block' : 'unblock'}
         disabled={!access}

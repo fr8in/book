@@ -6,11 +6,13 @@ import { gql, useSubscription, useMutation, useLazyQuery } from '@apollo/client'
 import Loading from '../common/loading'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
+import { isEmpty } from 'lodash'
 
 const CUSTOMER_BILLING_ADDRESS_FOR_INVOICE = gql`
 subscription customer_billing($cardcode: String!, $id: Int!) {
   customer(where: {cardcode: {_eq: $cardcode}}) {
     id
+    name
     trips(where: {id: {_eq: $id}}) {
       id
       gst
@@ -22,13 +24,19 @@ subscription customer_billing($cardcode: String!, $id: Int!) {
         address
         pincode
         mobile
+        city
         state 
       }
     }
     customer_offices{
       id
-      name
       branch_name
+      name
+      address
+      pincode
+      mobile
+      city
+      state 
     }
   }
 }`
@@ -39,21 +47,22 @@ query invoice_report($trip_id: Int!) {
 }`
 
 const UPDATE_TRIP_CUSTOMER_BRANCH = gql`
-mutation update_trip_customer_branch($branch_id: Int, $id: Int!,$updated_by: String!) {
-  update_trip(_set: {customer_office_id: $branch_id, updated_by:$updated_by}, where: {id: {_eq: $id}}) {
+mutation update_trip_customer_branch($branch_id: Int, $id: Int!, $updated_by: String!, $description: String!) {
+  update_trip(_set: {customer_office_id: $branch_id, updated_by: $updated_by}, where: {id: {_eq: $id}}) {
     returning {
-      customer_office {
-        id
-        name
-        branch_name
-      }
+      customer_office_id
+    }
+  }
+  insert_trip_comment(objects: {topic: "Billing Address Changed", description: $description, created_by: $updated_by, trip_id: $id}) {
+    returning {
+      id
     }
   }
 }`
 
 const UPDATE_TRIP_GST_HSN = gql`
-mutation update_trip_gst_hsn($gst: String, $hsn:String, $id:Int!,$updated_by:String!){
-  update_trip(_set:{gst:$gst, hsn:$hsn,updated_by:$updated_by}, where:{id:{_eq:$id}}){
+mutation update_trip_gst_hsn($gst: String, $hsn:String, $id:Int!,$updated_by:String!, $customer_office_id: Int!){
+  update_trip(_set:{gst:$gst, hsn:$hsn,updated_by:$updated_by, customer_office_id: $customer_office_id}, where:{id:{_eq:$id}}){
     returning{
       id
       gst
@@ -93,8 +102,7 @@ const BillingAndInvoiced = (props) => {
   const [update_trip_customer_branch] = useMutation(
     UPDATE_TRIP_CUSTOMER_BRANCH,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError (error) { message.error(error.toString()) }
     }
   )
 
@@ -123,19 +131,26 @@ const BillingAndInvoiced = (props) => {
   const trip = get(customer, 'trips[0]', null)
   const customer_branch = get(trip, 'customer_office', null)
   const customer_branches = get(customer, 'customer_offices', [])
+  const headoffice = !isEmpty(customer_branches) ? customer_branches.filter(branch => branch.branch_name === 'Head Office') : null
+  const trip_contact = customer_branch || (!isEmpty(headoffice) ? headoffice[0] : null)
 
   const onBillingComplete = (id) => {
     getInvoicePDF({ variables: { trip_id: id } })
   }
 
   const onBranchChange = (value, branch) => {
-    update_trip_customer_branch({
-      variables: {
-        id: trip_id,
-        branch_id: parseInt(branch.key),
-        updated_by: context.email
-      }
-    })
+    console.log('branch', branch, customer_branch, value)
+    const description = `${!isEmpty(customer_branch) ? customer_branch.branch_name : 'Nill'} to ${branch.children} changed`
+    if ((!isEmpty(customer_branch) && customer_branch.id) !== value) {
+      update_trip_customer_branch({
+        variables: {
+          id: trip_id,
+          branch_id: value,
+          description: description,
+          updated_by: context.email
+        }
+      })
+    } else return null
   }
 
   const onGstHsnChange = (form) => {
@@ -145,14 +160,26 @@ const BillingAndInvoiced = (props) => {
         id: trip_id,
         gst: form.gst,
         hsn: form.hsn,
+        customer_office_id: trip_contact.id,
         updated_by: context.email
       }
     })
   }
 
+  const email = (
+    <Row justify='start' key='footer' gutter={10}>
+      <Col flex='auto'>
+        <Input placeholder='Email Address' />
+      </Col>
+      <Col flex='120px'>
+        <Button type='primary'>Send Email</Button>
+      </Col>
+    </Row>
+  )
+
   const title = (
     <div>
-      Billing & Invoice - <Link href='/customers/[1d]' as={`/customers/${cardcode}`}><a target='_blank'>{cardcode}</a></Link>
+      Billing & Invoice - <Link href='/customers/[1d]' as={`/customers/${cardcode}`}><a target='_blank'>{get(customer, 'name', null)}</a></Link>
     </div>)
   return (
     <div>
@@ -160,16 +187,7 @@ const BillingAndInvoiced = (props) => {
         title={title}
         visible={visible}
         onCancel={onHide}
-        footer={[
-          <Row justify='start' key='footer' gutter={10}>
-            <Col flex='auto'>
-              <Input placeholder='Email Address' />
-            </Col>
-            <Col flex='120px'>
-              <Button type='primary'>Send Email</Button>
-            </Col>
-          </Row>
-        ]}
+        footer={[]}
       >
         {loading ? <Loading /> : (
           <Form layout='vertical' onFinish={onGstHsnChange}>
@@ -177,13 +195,13 @@ const BillingAndInvoiced = (props) => {
               <Col xs={24} sm={12}>
                 <Row>
                   <Col sm={24}>
-                    <Form.Item label='Branch Detail' name='branch_name' initialValue={get(customer_branch, 'branch_name', null)}>
+                    <Form.Item label='Branch Detail' name='branch_name' initialValue={get(trip_contact, 'branch_name', null)}>
                       <Select
                         placeholder='Select Branch'
                         onChange={onBranchChange}
                       >
                         {customer_branches && customer_branches.map(_branch => (
-                          <Select.Option key={_branch.id} value={_branch.id}>{_branch.name}</Select.Option>
+                          <Select.Option key={_branch.id} value={_branch.id}>{_branch.branch_name}</Select.Option>
                         ))}
                       </Select>
                     </Form.Item>
@@ -192,13 +210,13 @@ const BillingAndInvoiced = (props) => {
                 <Row>
                   <Col sm={24}>
                     <div className='userBranchList'>
-                      {customer_branch ? (
+                      {trip_contact ? (
                         <div className='loadDetailsRowz'>
-                          <div className='text-primary'><b>{customer_branch.branch_name}</b></div>
-                          <div>{customer_branch.address},</div>
-                          <div> <span>{customer_branch.state && customer_branch.state.name}</span>,</div>
-                          <div><span>Pincode: {customer_branch.pincode}</span></div>
-                          <div>Contact No: <b>{customer_branch && customer_branch.mobile}</b></div>
+                          <div className='text-primary'><b>{trip_contact.branch_name}</b></div>
+                          <div>{trip_contact.name},</div>
+                          <div>{trip_contact.address},</div>
+                          <div> <span>{trip_contact.city} - {trip_contact.pincode}, {trip_contact.state}</span></div>
+                          <div>Contact: <b>{trip_contact.mobile}</b></div>
                         </div>) : null}
                     </div>
                   </Col>

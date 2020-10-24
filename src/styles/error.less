@@ -1,0 +1,50 @@
+@import './variables.less';
+
+  html, body {
+    height:100vh;
+    min-height:100%;
+  }
+  .aligner {
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    justify-content: center;
+    background: repeating-linear-gradient(
+                    -45deg,
+                    rgba(0,0,0,0.02), 
+                    rgba(0,0,0,0.02) 2px,
+                    transparent 2px, /* Transparent beginning at pixel 2 */
+                    transparent 10px /* Transparent ending at pixel 12 (10 + 2) */
+                ), linear-gradient(to top, @dark-blue, @deep-blue);
+    background-size: cover;
+    > div {
+        text-align: center;
+        padding-bottom: 30px;
+        > h1 {
+            font-size: 48px;
+            color: @white;
+            margin-bottom: 0;
+            line-height: normal;
+            letter-spacing: 4px;
+            font-weight: 600;
+            text-shadow: @text-shadow-dark;
+            > span {
+                color: @primary
+            }
+        }
+        > button {
+            border-radius: 30px;
+            padding: 5px 45px;
+            height: 48px;
+            border: 0 none;
+            position: relative;
+            box-shadow: 0 12px 10px rgba(0,0,0,.2);
+            transition: all ease 0.2s;
+            border-top: solid 1px rgba(255,255,255,1);
+            border-bottom: solid 2px rgba(0,0,0,0.2);
+        }
+    }
+}
+
+  
+  

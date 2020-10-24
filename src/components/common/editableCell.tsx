@@ -1,12 +1,13 @@
 import { Input, Space } from 'antd'
 import { useState } from 'react'
-import { EditTwoTone, CloseCircleTwoTone, CheckCircleTwoTone } from '@ant-design/icons'
+import { CloseCircleTwoTone, CheckCircleTwoTone } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
 import EditAccess from './editAccess'
-const EditableCell = (props) => {
-  const { label, onSubmit , edit_access } = props
 
-  const initial = { selectType: false }
+const EditableCell = (props) => {
+  const { label, onSubmit, width, edit_access } = props
+
+  const initial = { edit: false }
   const { visible, onHide, onShow } = useShowHide(initial)
 
   const [inputValue, setinputValue] = useState(label)
@@ -22,23 +23,23 @@ const EditableCell = (props) => {
 
   return (
     <div>
-      {!visible.selectType ? (
+      {!visible.edit ? (
         <label>
           {label}{' '}
-          <EditAccess edit_access={edit_access} onEdit={() => onShow('selectType')} />
+          <EditAccess edit_access={edit_access} onEdit={() => onShow('edit')} />
         </label>)
         : (
           <span>
             <Input
               size='small'
               defaultValue={inputValue}
-              style={{ width: '40%' }}
+              style={{ width: width || '40%' }}
               onChange={onChange}
             />
             {' '}
             <Space>
               <CheckCircleTwoTone onClick={handleSubmit} twoToneColor='#52c41a' />
-              <CloseCircleTwoTone onClick={onHide} />
+              <CloseCircleTwoTone onClick={() => onHide()} />
             </Space>
           </span>)}
     </div>
