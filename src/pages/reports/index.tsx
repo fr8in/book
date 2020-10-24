@@ -5,6 +5,14 @@ const Reports = (props) => {
   return (
     <PageLayout {...props} title='Reports'>
       <p>Reports</p>
+      <div className='truckStatusReport'>
+            <iframe
+              width='100%'
+              height='100%'
+              src='https://app.powerbi.com/view?r=eyJrIjoiOTc0ZmJkMmItMzRiOS00OTljLTg4ZGEtZjc4NTE2OWE2ZDJiIiwidCI6IjE5ZWE5NTViLTE1MzYtNGM3Ni04NDIwLTUxZmJjNGM5YzM5NyIsImMiOjEwfQ=='
+            />
+            {/* <iframe width="600" height="373.5" src="https://app.powerbi.com/view?r=eyJrIjoiOTc0ZmJkMmItMzRiOS00OTljLTg4ZGEtZjc4NTE2OWE2ZDJiIiwidCI6IjE5ZWE5NTViLTE1MzYtNGM3Ni04NDIwLTUxZmJjNGM5YzM5NyIsImMiOjEwfQ==" frameborder="0" allowFullScreen="true"></iframe> */}
+        </div>
     </PageLayout>
   )
 }

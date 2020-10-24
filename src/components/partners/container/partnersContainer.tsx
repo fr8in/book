@@ -12,7 +12,7 @@ const PARTNERS_SUBSCRIPTION = gql`
 subscription partners(
   $offset: Int!, $limit: Int!, 
   $partner_statusId: [Int!], 
-  $name: String, $cardcode: String, $region: [citext!]) {
+  $name: String, $cardcode: String, $region: [String!]) {
   partner(offset: $offset,
      limit: $limit, where: 
      {_or: [{city: {connected_city: {branch: {region: {name: {_in: $region}}}}}}, 
