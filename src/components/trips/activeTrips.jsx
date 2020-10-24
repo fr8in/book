@@ -2,7 +2,7 @@ import { Table, Tooltip, Button, Popconfirm, message } from 'antd'
 import { PhoneOutlined, CommentOutlined, CheckOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
-import TripFeedBack from '../trips/tripFeedBack'
+import TripFeedBack from './tripFeedBack'
 import Truncate from '../common/truncate'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
@@ -161,7 +161,6 @@ const Trips = (props) => {
         const status = get(a, 'trip_status.name', null)
         return tat[status](a) > tat[status](b) ? 1 : -1
       },
-      // @ts-ignore
       defaultSortOrder: 'descend',
       width: '4%'
     },
