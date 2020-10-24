@@ -48,6 +48,15 @@ const Trips = (props) => {
     window.location.href = 'tel:' + record
   }
 
+  const tat = {
+    Assigned: (record) => record.confirmed_tat,
+    Confirmed: (record) => record.confirmed_tat,
+    'Reported at source': (record) => record.loading_tat,
+    Intransit: (record) => record.intransit_tat,
+    'Intransit halting': (record) => record.intransit_tat,
+    'Reported at destination': (record) => record.unloading_tat
+  }
+
   const columns = [
     {
       title: 'ID',
@@ -146,24 +155,14 @@ const Trips = (props) => {
       title: 'TAT',
       render: (text, record) => {
         const status = get(record, 'trip_status.name', null)
-        return (
-          (status === 'Assigned' || status === 'Confirmed') ? record.confirmed_tat
-            : status === 'Reported at source' ? record.loading_tat
-              : status === 'Intransit' ? record.intransit_tat
-                : status === 'Intransit halting' ? record.intransit_tat
-                  : status === 'Reported at destination' ? record.unloading_tat : null
-        )
+        return tat[status](record)
       },
-      defaultSortOrder: 'descend',
       sorter: (a, b) => {
         const status = get(a, 'trip_status.name', null)
-        return (
-          (status === 'Assigned' || status === 'Confirmed') ? a.confirmed_tat > b.confirmed_tat ? 1 : -1
-            : status === 'Reported at source' ? a.loading_tat > b.loading_tat ? 1 : -1
-              : status === 'Intransit' ? a.intransit_tat > b.intransit_tat ? 1 : -1
-                : status === 'Reported at destination' ? a.unloading_tat > b.unloading_tat ? 1 : -1 : null
-        )
+        return tat[status](a) > tat[status](b) ? 1 : -1
       },
+      // @ts-ignore
+      defaultSortOrder: 'descend',
       width: '4%'
     },
     props.intransit ? {
@@ -228,7 +227,7 @@ const Trips = (props) => {
           </span>
         )
       },
-      
+
       width: props.intransit ? '9%' : '11%'
     }
   ]
