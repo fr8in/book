@@ -105,13 +105,10 @@ const TruckActivation = (props) => {
   }
   const truck_info = get(_data, 'truck[0]', { name: 'ID does not exist' })
   const onboarded_by = truck_info && truck_info.partner && truck_info.partner.onboarded_by && truck_info.partner.onboarded_by.email
-  console.log('onboarded_by', onboarded_by)
   const partner_mobile = truck_info && truck_info.partner && truck_info.partner.partner_users && truck_info.partner.partner_users.mobile
 
   const rc_files = truck_info && truck_info.truck_files && truck_info.truck_files.filter(file => file.type === u.fileType.rc)
   const vaahan_files = truck_info && truck_info.truck_files && truck_info.truck_files.filter(file => file.type === u.fileType.vaahan)
-
-  console.log('rc_files', rc_files, truck_info.truck_files)
 
   const typeList = truck_type.map((data) => {
     return { value: data.id, label: data.name }

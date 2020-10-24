@@ -133,7 +133,7 @@ const CreateAdditionalAdvance = (props) => {
       }
     })
   ]
-  console.log('trip_info', trip_info)
+
   const trip_status = get(trip_info, 'trip_status.id', null)
   const loadedNo = get(trip_info, 'loaded', 'No')
   const disable_adv_btn = (trip_status >= 12 || loadedNo === 'No' || !access)

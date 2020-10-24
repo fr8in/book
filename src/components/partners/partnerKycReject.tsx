@@ -26,7 +26,6 @@ const KycReject = (props) => {
   const context = useContext(userContext)
   const [disableButton, setDisableButton] = useState(false)
 
-  console.log('partner_id', partner_id)
   const [insertComment] = useMutation(
     INSERT_PARTNER_REJECT_MUTATION,
     {
@@ -43,7 +42,6 @@ const KycReject = (props) => {
   const handleChange = (e) => {
     setUserComment(e.target.value)
   }
-  console.log('userComment', userComment)
 
   const onSubmit = () => {
     setDisableButton(true)

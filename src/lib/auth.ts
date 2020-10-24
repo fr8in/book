@@ -28,8 +28,6 @@ const auth = (setAuthState) => {
         if (hasuraClaim) {
           // @ts-ignore
           const roles = hasuraClaim['x-hasura-allowed-roles']
-          // roles.include(account_manager)
-          console.log('roles', roles)
           localStorage.setItem('token', token)
           setAuthState({ status: 'in', user, token, roles })
         } else {
@@ -45,7 +43,6 @@ const auth = (setAuthState) => {
             const token = await user.getIdToken(true)
             idTokenResult = await user.getIdTokenResult()
             hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims']
-            console.log('hasuraClaimm', hasuraClaim)
             if (hasuraClaim) {
               localStorage.setItem('token', token)
               const roles = hasuraClaim['x-hasura-allowed-roles']
@@ -70,7 +67,6 @@ const auth = (setAuthState) => {
 const provider = new firebase.auth.GoogleAuthProvider()
 const signInWithGoogle = async () => {
   try {
-    console.log('provicde', provider)
     await firebase.auth().signInWithPopup(provider)
   } catch (error) {
     console.log(error)
@@ -90,15 +86,10 @@ const refreshToken = () => {
   const decodedToken = jwt.decode(token)
   const expiryTime = decodedToken.exp
   const currentTime = new Date().getTime()
-  console.log('expiryToime', expiryTime)
-  console.log('currentTime', currentTime)
   // let userId = decodedToken.user_id;
   const appendExpiry = expiryTime + '000'
   const parsing = parseInt(appendExpiry) - 600000 // expire time minus 10 minutes
-  console.log('im out', (moment().diff(moment(parsing))) >= 0)
   if ((moment().diff(moment(parsing))) >= 0) {
-    console.log('im in', (moment().diff(moment(parsing))) >= 0)
-
     firebase.auth().onAuthStateChanged(async user => {
       if (user) {
         const token = await user.getIdToken(true)
@@ -107,20 +98,5 @@ const refreshToken = () => {
     })
   }
 }
-
-// const hasuraClaim = async (user, setAuthState) => {
-//   const token = await user.getIdToken()
-//   const idTokenResult = await user.getIdTokenResult()
-//   const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims']
-//   console.log('hasuraClaim', hasuraClaim)
-//   console.log('user', user)
-//   if (hasuraClaim) {
-//     // @ts-ignore
-//     setAuthState({ status: 'in', user, token })
-//     return true
-//   } else {
-//     return false
-//   }
-// }
 
 export { auth, signInWithGoogle, signOut, refreshToken }

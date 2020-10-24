@@ -44,7 +44,6 @@ mutation update_trip_price(
 
 const CustomerPrice = (props) => {
   const { visible, onHide, trip_id, trip_price, loaded } = props
-console.log('trip_price', trip_price)
   const [form] = Form.useForm()
   const context = useContext(userContext)
   const customer_advance_percentage = trip_price.customer_advance_percentage || 90
@@ -140,7 +139,7 @@ console.log('trip_price', trip_price)
     const netPrice = form.getFieldValue('customer_price') - value
     const cus_adv = netPrice * customer_advance_percentage / 100
     const bank = cus_adv - (parseFloat(form.getFieldValue('cash')) + parseFloat(form.getFieldValue('to_pay')))
-    console.log('bank', bank, cus_adv)
+
     form.setFieldsValue({
       bank: loaded ? trip_price.bank : (bank > 0 ? bank : 0)
     })

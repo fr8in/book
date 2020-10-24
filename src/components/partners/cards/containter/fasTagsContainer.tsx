@@ -31,14 +31,12 @@ const FasTags = () => {
     FASTAG_SUBSCRIPTION
   )
   console.log('FastagContainer Error', error)
-  console.log('FastagContainer Data', data)
 
   var fastag = []
   if (!loading) {
     fastag = data.fastag_tag
   }
 
-  console.log('fastag_tag', fastag)
   return (
     <FasTag fastag={fastag} />
   )

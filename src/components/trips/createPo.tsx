@@ -168,7 +168,6 @@ const CreatePo = (props) => {
   )
 
   console.log('CreateExcessLoad Search Error', search_error)
-  console.log('CreateExcessLoad Error', error, driver_id)
 
   let _search_data = {}
   if (!search_loading) {

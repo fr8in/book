@@ -5,7 +5,6 @@ const StatementMail = (props) => {
   const { visible, onHide } = props
 
   const onSubmit = () => {
-    console.log('Mail sent!')
     onHide()
   }
 

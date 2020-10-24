@@ -25,8 +25,6 @@ const TruckInfo = (props) => {
   
   const driver_number = truck_info && truck_info.driver && truck_info.driver.mobile
 
-  console.log('driver_number', driver_number)
-
   const [updateTruckInfo] = useMutation(
     UPDATE_TRUCK_INFO_MUTATION,
     {

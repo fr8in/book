@@ -205,7 +205,7 @@ const ExcessLoad = (props) => {
     }
   ]
   const expander = trips && trips.length > 0 && trips.filter(data => (data.leads && data.leads.length > 0)).map(data => data.id)
-  console.log('expander', expander)
+
   return (
     <>
       <Table

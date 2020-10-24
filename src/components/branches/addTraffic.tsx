@@ -53,9 +53,7 @@ mutation delete_traffic($id: Int!){
 
 const AddTraffic = (props) => {
   const { visible, onHide, branch_data, title, edit_access_delete } = props
-  console.log('edit_access_delete', edit_access_delete)
   const [emp_id, setEmp_id] = useState(null)
-  console.log('object', branch_data)
 
   const context = useContext(userContext)
   const access = !isEmpty(edit_access_delete) ? context.roles.some(r => edit_access_delete.includes(r)) : false

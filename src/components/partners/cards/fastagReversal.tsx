@@ -1,7 +1,7 @@
 import { Modal, Form, Input, message, Row, Col, Button, Space } from 'antd'
-import React from 'react'
+import { useState, useContext } from 'react'
 import { gql, useMutation } from '@apollo/client'
-import { useState,useContext } from 'react'
+
 import userContext from '../../../lib/userContaxt'
 
 const UPDATE_FASTAG_REVERSE_MUTATION = gql`
@@ -37,15 +37,16 @@ const FastagReversal = (props) => {
     {
       onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
-      onCompleted () { 
+        message.error(error.toString())
+      },
+      onCompleted () {
         setDisableButton(false)
-        message.success('Updated!!') }
+        message.success('Updated!!')
+      }
     }
   )
   const onSubmit = (form) => {
     setDisableButton(true)
-    console.log('form', form)
     reverse_fastag({
       variables: {
         truckId: fastag.truck_id,
@@ -70,7 +71,6 @@ const FastagReversal = (props) => {
           label='Reversal Amount'
           name='reversal_amount'
           initialValue={0}
-          // rules={[{ required: true }]}
         >
           <Input placeholder='Reversal Amount' />
           <p>Tag balance Amount:</p>

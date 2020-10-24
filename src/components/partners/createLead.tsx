@@ -106,9 +106,6 @@ const CreateLead = (props) => {
   const employeeList = employee.map((data) => {
     return { value: data.id, label: data.email }
   })
-  function handleChange (value) {
-    console.log(`selected ${value}`)
-  }
   const handleCommentChange = (e) => {
     setUserComment(e.target.value)
   }
@@ -118,7 +115,6 @@ const CreateLead = (props) => {
 
   const onPartnerLeadChange = (form) => {
     setDisableButton(true)
-    console.log('inside form submit', form, obj)
     updatePartnerLeadAddress({
       variables: {
         city_id: obj.city_id,
@@ -177,7 +173,6 @@ const CreateLead = (props) => {
             >
               <Select
                 placeholder='Select Channel'
-                onChange={handleChange}
                 options={channelList}
               />
             </Form.Item>
@@ -189,7 +184,6 @@ const CreateLead = (props) => {
             >
               <Select
                 placeholder='Select Owner'
-                onChange={handleChange}
                 options={employeeList}
                 optionFilterProp='label'
                 showSearch

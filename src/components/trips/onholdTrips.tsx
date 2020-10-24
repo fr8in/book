@@ -55,7 +55,7 @@ const OnholdTrips = (props) => {
 
   const { visible, onHide, cardcode } = props
   const [filter, setFilter] = useState(['Open'])
-  console.log('filter', filter)
+
   const { loading, error, data } = useQuery(ONHOLD_TRIPS_QUERY, {
     variables: {
       cardcode: cardcode,
@@ -78,7 +78,6 @@ const OnholdTrips = (props) => {
   })
 
   const handleStatusList = (checked) => {
-    console.log('checked', checked)
     setFilter(checked)
   }
   const columns = [

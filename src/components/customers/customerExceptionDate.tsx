@@ -32,7 +32,6 @@ const CustomerExceptionDate = (props) => {
     }
   )
   const onChange = (date, dateString) => {
-    console.log(dateString)
     updateCustomerException({
       variables: {
         cardcode,

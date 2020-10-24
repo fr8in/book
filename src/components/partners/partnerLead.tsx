@@ -194,7 +194,6 @@ const PartnerLead = (props) => {
       notifyOnNetworkStatusChange: true
     })
   console.log('partnerLead error', error)
-  console.log('partnerLead data', data)
 
   const [rejectLead] = useMutation(
     LEAD_REJECT_MUTATION, {
@@ -233,7 +232,6 @@ const PartnerLead = (props) => {
         updated_by: context.email
       }
     })
-    console.log('id priority', id)
   }
 
   const [updateCity] = useMutation(
@@ -292,7 +290,6 @@ const PartnerLead = (props) => {
   }
 
   const handleNoComment = (checked) => {
-    console.log('checked', checked)
     setCurrentPage(1)
     setFilter({ ...filter, no_comment: checked, offset: 0 })
   }

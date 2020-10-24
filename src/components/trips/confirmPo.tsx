@@ -110,7 +110,6 @@ mutation confirm_po(
 
 const ConfirmPo = (props) => {
   const { visible, onHide, truck_id, record, hideExess } = props
-  console.log('trip.id', record)
   const [loading_contact_id, setLoading_contact_id] = useState(null)
   const [driver_id, setDriver_id] = useState(null)
 

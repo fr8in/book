@@ -16,7 +16,6 @@ const CustomerDetails = (props) => {
 
   const lr_files = customer_info && customer_info.customer_files && customer_info.customer_files.filter(file => file.type === u.fileType.lr)
   const pan_files = customer_info && customer_info.customer_files && customer_info.customer_files.filter(file => file.type === u.fileType.customer_pan)
-  console.log('customer_info', customer_info)
   const cus_status = (
     <Tooltip title={get(customer_info, 'id', '-')}>{get(customer_info, 'status.name', '-')}</Tooltip>
   )

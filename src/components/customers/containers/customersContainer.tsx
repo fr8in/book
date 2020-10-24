@@ -79,7 +79,6 @@ const CUSTOMERS_QUERY = gql`
 `
 
 const CustomersContainer = (props) => {
-  console.log('cusProps', props)
   const initialFilter = {
     statusId: [3],
     name: null,
@@ -134,7 +133,6 @@ const CustomersContainer = (props) => {
   const customer_status_list = customer_status && customer_status.filter((data) => data.id !== 8)
   const record_count = get(customer_aggregate, 'aggregate.count', 0)
 
-  console.log('record_count', record_count)
   const onFilter = (value) => {
     setFilter({ ...filter, statusId: value })
   }

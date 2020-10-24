@@ -39,7 +39,6 @@ const BillingComment = (props) => {
 
   const billingRemark = (form) => {
     setDisableButton(true)
-    console.log('form', form)
     billingRemarks({
       variables: {
         id: trip_id,

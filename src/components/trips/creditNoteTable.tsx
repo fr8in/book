@@ -57,7 +57,6 @@ const CreditNoteTable = (props) => {
     }
   )
   console.log('CreditNoteTable error', error)
-  console.log('CreditNoteTable data', data)
 
   let _data = {}
   if (!loading) {

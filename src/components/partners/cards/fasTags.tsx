@@ -94,7 +94,6 @@ const FasTags = (props) => {
   )
 
   const onChange = (value, record) => {
-    console.log('record', record, value)
     updateFastagStatus({
       variables: {
         truckId: record.truck_id,

@@ -37,7 +37,6 @@ const TrucksForPO = (props) => {
   if (!loading) {
     _data = data
   }
-  console.log('TrucksForPO data', _data)
   const partner = get(_data, 'partner[0]', null)
   const truck_list = get(partner, 'trucks', [])
 

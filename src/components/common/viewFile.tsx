@@ -23,7 +23,6 @@ const ViewFile = (props) => {
       onError (error) { message.error(error.toString()) },
       onCompleted (data) {
         const url = data && data.fileDownload && data.fileDownload.url
-        console.log('url', url)
         if (preview.ext === 'pdf') {
           window.open(url, '_blank')
         } else {

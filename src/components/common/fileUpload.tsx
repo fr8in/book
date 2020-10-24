@@ -119,7 +119,6 @@ const FileUpload = (props) => {
   }
 
   const remove = (file) => {
-    console.log(file)
     const variables = { name: file.name, id: id, type: type, fileType: file_type }
     s3FileDelete({
       variables: variables
