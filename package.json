@@ -5,7 +5,6 @@
   "license": "UNLICENSED",
   "scripts": {
     "local": "next",
-    "dev": "next start -p $PORT",
     "build": "next build",
     "start": "next start -p $PORT",
     "postinstall": "next build"
