@@ -5,34 +5,21 @@ import Truncate from '../../common/truncate'
 import Link from 'next/link'
 import { gql, useQuery, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
 import moment from 'moment'
 import u from '../../../lib/util'
 
-const APPROVED_REJECTED_QUERY = gql`
-query trip_credit_debit_approval(
-  $status: [String!], 
+const APPROVED_REJECTED_SUBSCRIPTION = gql`
+subscription trip_credit_debit_approval(
   $offset: Int, 
   $limit: Int, 
-  $created_by: String, 
-  $issue_type: [String!], 
-  $type: [bpchar!], 
-  $trip_id: [Int!]) 
+  $where: trip_credit_debit_bool_exp!
+  ) 
   {
-    trip_credit_debit_aggregate(where:{credit_debit_status:{name:{_in:["APPROVED","REJECTED"]}}}){
-      aggregate{
-        count
-      }
-    }
   trip_credit_debit(
     order_by: {trip_id: desc}, 
     offset: $offset, limit: $limit,
-    where: {
-      credit_debit_status: {name: {_in: $status}}, 
-      created_by: {_ilike: $created_by}, 
-      credit_debit_type: {name: {_in: $issue_type}}, 
-      type: {_in: $type}, 
-      trip_id: {_in: $trip_id}
-    }) {
+    where: $where) {
     id
     trip_id
     type
@@ -51,10 +38,15 @@ query trip_credit_debit_approval(
       name
     }
   }
-}
-`
-const CREDIT_DEBIT_TYPE_SUBSCRIPTION = gql`
-subscription credit_debit_type{
+}`
+
+const CREDIT_DEBIT_TYPE_QUERY = gql`
+query credit_debit_agg_type($where: trip_credit_debit_bool_exp!){
+  trip_credit_debit_aggregate(where:$where){
+      aggregate{
+        count
+      }
+    }
   credit_debit_type {
     id
     active
@@ -81,28 +73,35 @@ const ApprovedAndRejected = () => {
   const [filter, setFilter] = useState(initial)
   const [currentPage, setCurrentPage] = useState(1)
 
+  const where = {
+    trip_id: filter.trip_id && filter.trip_id.length > 0 ? { _in: filter.trip_id } : { _in: null },
+    type: filter.type && filter.type.length > 0 ? { _in: filter.type } : { _in: null },
+    credit_debit_type: filter.issue_type && filter.issue_type.length > 0 ? { name: { _in: filter.issue_type } } : { name: { _in: null } },
+    created_by: filter.created_by ? { _ilike: `%${filter.created_by}%` } : { _ilike: null },
+    credit_debit_status: { name: { _in: ['APPROVED', 'REJECTED'] } }
+  }
   const approvalQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
-    status: ['APPROVED', 'REJECTED'],
-    trip_id: filter.trip_id && filter.trip_id.length > 0 ? filter.trip_id : null,
-    type: filter.type && filter.type.length > 0 ? filter.type : null,
-    issue_type: filter.issue_type && filter.issue_type.length > 0 ? filter.issue_type : null,
-    created_by: filter.created_by ? `%${filter.created_by}%` : null
+    where: where
   }
+  console.log('filter', filter)
 
-  const { loading, error, data } = useQuery(
-    APPROVED_REJECTED_QUERY,
+  const { loading, error, data } = useSubscription(
+    APPROVED_REJECTED_SUBSCRIPTION,
     {
-      variables: approvalQueryVars,
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
+      variables: approvalQueryVars
     }
   )
   console.log('approvedRejected error', error)
 
-  const { data: issueType } = useSubscription(
-    CREDIT_DEBIT_TYPE_SUBSCRIPTION
+  const { data: f_data, loading: filter_loading } = useQuery(
+    CREDIT_DEBIT_TYPE_QUERY,
+    {
+      variables: { where: where },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
   )
 
   let _data = {}
@@ -111,15 +110,20 @@ const ApprovedAndRejected = () => {
   }
   const approvedAndRejected = get(_data, 'trip_credit_debit', null)
 
-  const List = issueType && issueType.credit_debit_type.length > 0 ? issueType.credit_debit_type : []
-  const issueTypeList = List.map((issueType) => {
-    return { value: issueType.name, label: issueType.name }
+  let filter_data = {}
+  if (!filter_loading) {
+    filter_data = f_data
+  }
+  const List = !isEmpty(filter_data) ? filter_data.credit_debit_type : []
+  const issueTypeList = List.map((filter_data) => {
+    return { value: filter_data.name, label: filter_data.name }
   })
+
+  const record_count = get(filter_data, 'trip_credit_debit_aggregate.aggregate.count', 0)
 
   const creditDebitList = creditDebitType.map((data) => {
     return { value: data.text, label: data.text }
   })
-  const record_count = get(_data, 'trip_credit_debit_aggregate.aggregate.count', 0)
 
   const onPageChange = (value) => {
     setFilter({ ...filter, offset: value })
@@ -130,16 +134,16 @@ const ApprovedAndRejected = () => {
     onPageChange(newOffset)
   }
   const onTripIdSearch = (e) => {
-    setCurrentPage(1)
     setFilter({ ...filter, trip_id: e.target.value })
+    setCurrentPage(1)
   }
   const onIssueTypeFilter = (checked) => {
-    setCurrentPage(1)
     setFilter({ ...filter, issue_type: checked, offset: 0 })
+    setCurrentPage(1)
   }
   const onTypeFilter = (checked) => {
-    setCurrentPage(1)
     setFilter({ ...filter, type: checked, offset: 0 })
+    setCurrentPage(1)
   }
   const onCreatedBySearch = (e) => {
     setCurrentPage(1)
@@ -158,15 +162,11 @@ const ApprovedAndRejected = () => {
         </Link>
       ),
       filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search'
-            id='id'
-            name='id'
-            type='number'
-            onChange={onTripIdSearch}
-          />
-        </div>
+        <Input
+          placeholder='Search'
+          value={filter.trip_id}
+          onChange={onTripIdSearch}
+        />
       ),
       filterIcon: (filtered) => (
         <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
