@@ -27,7 +27,7 @@ mutation insert_city($name: String, $location: point) {
 }
 `
 const CitySelect = (props) => {
-  const { onChange, label, disabled, city, required, name, width, size } = props
+  const { onChange, label, disabled, city, required, name, width, size, style } = props
 
   const [citySearchMutation, { data }] = useMutation(
     CITY_SEARCH
@@ -82,7 +82,13 @@ const CitySelect = (props) => {
   const formatCity = (_city) => _city ? `${_city.name}, ${_city.stateName}` : null
 
   return (
-    <Form.Item label={label} name={name} rules={[{ required: required }]} initialValue={city}>
+    <Form.Item
+      label={label}
+      name={name}
+      rules={[{ required: required }]}
+      initialValue={city}
+      className={style || ''}
+    >
       <Select
         showSearch
         placeholder={label || 'Select City'}

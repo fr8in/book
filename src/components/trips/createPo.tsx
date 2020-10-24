@@ -259,7 +259,7 @@ const CreatePo = (props) => {
       onOk={onSubmit}
       onCancel={onHide}
       width={900}
-      style={{ top: 20 }}
+      style={{ top: 10 }}
       bodyStyle={{ paddingBottom: 0 }}
       footer={[]}
       className='no-header'
@@ -268,14 +268,20 @@ const CreatePo = (props) => {
         <Row gutter={20}>
           <Col xs={24} sm={14}>
             <Row>
-              <Col sm={12}><h4>{`PO: ${partner_name}`}</h4></Col>
-              <Col sm={12} className='text-right'>
+              <Col xs={12}><h4>{`PO: ${partner_name}`}</h4></Col>
+              <Col xs={12} className='text-right'>
                 <Link href='trucks/[id]' as={`trucks/${po_data.truck_no}`}>
                   <a>{po_data.truck_no}</a>
                 </Link>
               </Col>
             </Row>
-            <Form.Item label='Customer' name='customer' rules={[{ required: true }]} labelCol={{ sm: 6 }} wrapperCol={{ sm: 18 }}>
+            <Form.Item
+              label='Customer'
+              name='customer'
+              rules={[{ required: true }]}
+              labelCol={{ sm: 6 }} wrapperCol={{ sm: 18 }}
+              className='mobile-100percent hide-label'
+            >
               <Select
                 placeholder='Customer'
                 showSearch

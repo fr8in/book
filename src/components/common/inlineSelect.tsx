@@ -20,7 +20,7 @@ const InlineSelect = (props) => {
     <div>
       {!visible.selectType ? (
         <label>
-          {label}{' '}
+          {label && label.length > 15 ? (label.slice(0, 15) + '.. ') : (label + ' ')}
           <EditAccess edit_access={edit_access} onEdit={() => onShow('selectType')} />
         </label>)
         : (

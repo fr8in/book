@@ -17,6 +17,7 @@ const PoDetail = (props) => {
               label='PO Date'
               name='po_date'
               rules={[{ required: true }]}
+              className='mobile-100percent hide-label '
             >
               <DatePicker style={{ width: '100%' }} size='small' />
             </Form.Item>
@@ -27,6 +28,7 @@ const PoDetail = (props) => {
               name='source'
               city={get(record, 'source.name', null)}
               size='small'
+              style='mobile-100percent hide-label '
             />
             <CitySelect
               label='Destination'
@@ -35,10 +37,18 @@ const PoDetail = (props) => {
               name='destination'
               city={get(record, 'destination.name', null)}
               size='small'
+              style='mobile-100percent hide-label '
             />
             <LoadingPointContact customer={customer} onUserChange={loading_contact_id} />
-            <Driver partner_id={po_data.id} driver_id={driver_id} required size='small' />
-            <Form.Item label='Including' initialValue='' name='charge_inclue' labelCol={{ sm: 4 }} wrapperCol={{ sm: 20 }}>
+            <Driver partner_id={po_data.id} driver_id={driver_id} required size='small' style='mobile-100percent hide-label ' />
+            <Form.Item
+              label='Including'
+              initialValue=''
+              name='charge_inclue'
+              labelCol={{ xs: 7, sm: 4 }}
+              wrapperCol={{ xs: 17, sm: 20 }}
+              className='reset-custome-grid'
+            >
               <Checkbox.Group>
                 <Checkbox value='Loading'>Loading</Checkbox>
                 <Checkbox value='Unloading'>Unloading</Checkbox>

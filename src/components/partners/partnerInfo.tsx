@@ -39,18 +39,13 @@ const PartnerInfo = (props) => {
             edit_access={access}
           />
         }
-        mdSpan={4}
+        mdSpan={5}
         smSpan={8}
         xsSpan={12}
       />
       <LabelAndData
-        label='Final Payment Date'
-        data={
-          <label>
-            <FinalPaymentEdit partnerInfo={partnerInfo}  />
-            
-          </label>
-        }
+        label='Final Payment'
+        data={<FinalPaymentEdit partnerInfo={partnerInfo} />}
         mdSpan={4}
         smSpan={8}
         xsSpan={12}
