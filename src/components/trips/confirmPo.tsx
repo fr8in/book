@@ -7,6 +7,7 @@ import PoDetail from './poDetail'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
 import PoPrice from './poPrice'
+import Truncate from '../common/truncate'
 
 const PO_QUERY = gql`
 query po_query($id: Int!, $cus_id: Int!){
@@ -213,7 +214,7 @@ const ConfirmPo = (props) => {
     setObj({ ...obj, destination_id: city_id })
   }
 
-  const partner_name = get(po_data, 'partner.name', null)
+  const partner_name = get(po_data, 'partner.name', '-')
   const trip_id = get(record, 'id', null)
   const layout = {
     labelCol: { xs: 12 },
@@ -234,7 +235,7 @@ const ConfirmPo = (props) => {
         <Row gutter={20}>
           <Col xs={24} sm={14}>
             <Row>
-              <Col xs={12}><h4>{`PO: ${partner_name}`}</h4></Col>
+              <Col xs={12}><h4>PO: <Truncate data={partner_name} length={12} /></h4></Col>
               <Col xs={12} className='text-right'>
                 <Link href='trucks/[id]' as={`trucks/${po_data.truck_no}`}>
                   <a>{po_data.truck_no}</a>

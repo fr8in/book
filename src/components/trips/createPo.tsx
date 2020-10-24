@@ -7,6 +7,7 @@ import PoPrice from './poPrice'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 import LinkComp from '../common/link'
+import Truncate from '../common/truncate'
 
 const PO_QUERY = gql`
 query po_query($id: Int!){
@@ -248,7 +249,7 @@ const CreatePo = (props) => {
       variables: { id: customer.key }
     })
   }
-  const partner_name = po_data && po_data.partner && po_data.partner.name
+  const partner_name = get(po_data, 'partner.name', '-')
   const layout = {
     labelCol: { xs: 12 },
     wrapperCol: { xs: 12 }
@@ -268,7 +269,7 @@ const CreatePo = (props) => {
         <Row gutter={20}>
           <Col xs={24} sm={14}>
             <Row>
-              <Col xs={12}><h4>{`PO: ${partner_name}`}</h4></Col>
+              <Col xs={12}><h4>PO: <Truncate data={partner_name} length={12} /></h4></Col>
               <Col xs={12} className='text-right'>
                 <Link href='trucks/[id]' as={`trucks/${po_data.truck_no}`}>
                   <a>{po_data.truck_no}</a>

@@ -241,7 +241,7 @@ const TripsTracking = (props) => {
       )
     },
     {
-      title: 'Aging',
+      title: 'TAT',
       render: (text, record) => {
         const status = get(record, 'trip_status.name', null)
         const pod_verified = get(record, 'pod_verified_at', null)
@@ -250,7 +250,8 @@ const TripsTracking = (props) => {
           status === 'Delivered' ? record.delivered_tat
             : (status === 'Delivered' && pod_verified) ? record.pod_verified_tat
               : status === 'Invoiced' ? record.invoiced_tat
-                : (status === 'Invoiced' && pod_dispatched) ? record.pod_dispatched_tat : null
+                : (status === 'Invoiced' && pod_dispatched) ? record.pod_dispatched_tat
+                  : null
         )
       },
       width: '8%'

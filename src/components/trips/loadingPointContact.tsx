@@ -93,7 +93,7 @@ const LoadingPointContact = (props) => {
     >
       <Select
         showSearch
-        placeholder='Select user...'
+        placeholder='Select Loading Contact...'
         onSearch={onSearch}
         onChange={handleUserChange}
         size='small'

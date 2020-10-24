@@ -103,7 +103,8 @@ const WeeklyBranchTarget = (props) => {
     {
       title: 'Branch',
       dataIndex: 'name',
-      width: '24%'
+      width: '24%',
+      fixed: 'left'
     },
     {
       title: currentMonthTitle,
