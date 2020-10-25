@@ -30,13 +30,13 @@ const PartnerDetail = (props) => {
   const editAccess = notVerified ? beforeOnboard : afterOnboard
   const ad_pm_on = [role.admin, role.partner_manager, role.onboarding]
 
-  const address = partnerDetail && partnerDetail.address
-  const partner_address = address === null || isEmpty(address) ? null
-    : `${address.no || null},
+  const address = get(partnerDetail, 'address', '-')
+  const partner_address = !isEmpty(address) && (typeof address === 'object') ? (
+    `${address.no || null},
          ${address.address || null},
          ${address.city || null},
          ${address.state || null},
-         ${address.pin_code || null}`
+         ${address.pin_code || null}`) : address
   const cardcode = partnerDetail.cardcode
 
   return (
@@ -60,7 +60,7 @@ const PartnerDetail = (props) => {
           label=' Address'
           data={
             <Space>
-              <span>{partner_address}{' '}
+              <span style={{ wordBreak: 'break-all' }}>{partner_address}{' '}
                 <EditAccess
                   edit_access={beforeOnboard}
                   onEdit={() => onShow('addressVisible')}

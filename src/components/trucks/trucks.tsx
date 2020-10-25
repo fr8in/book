@@ -199,7 +199,7 @@ const Trucks = (props) => {
         dataSource={trucks}
         rowKey={(record) => record.id}
         size='small'
-        scroll={{ x: 1156, y: 500 }}
+        scroll={{ x: 1156 }}
         pagination={false}
         loading={loading}
       />

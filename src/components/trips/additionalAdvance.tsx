@@ -3,6 +3,7 @@ import { Table } from 'antd'
 import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
+import moment from 'moment'
 
 const ADDITIONAL_ADVANCE_QUERY = gql`
 query additional_advance($trip_id: Int_comparison_exp!) {
@@ -74,9 +75,7 @@ const AdditionalAdvance = (props) => {
     {
       title: 'Created On',
       dataIndex: 'created_on',
-      render: (text, record) => {
-        return text
-      },
+      render: (text, record) => (text ? moment(parseInt(text, 10)).format('DD-MMM-YY') : '-'),
       width: '14%'
     }
   ]

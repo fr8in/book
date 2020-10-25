@@ -216,7 +216,7 @@ const KycApproval = (props) => {
           partner_advance_percentage_id: parseInt(form.partner_advance_percentage_id) || get(partnerDetail, 'partner_advance_percentage.id', null),
           gst: form.gst,
           cibil: form.cibil,
-          emi: checked,
+          emi: !!checked,
           updated_by: context.email
         }
       })

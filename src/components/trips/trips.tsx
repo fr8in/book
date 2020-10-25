@@ -230,7 +230,7 @@ const Trips = (props) => {
         dataSource={trips}
         rowKey={(record) => record.id}
         size='small'
-        scroll={{ x: 1156, y: 530 }}
+        scroll={{ x: 1156 }}
         pagination={false}
         loading={loading}
       />

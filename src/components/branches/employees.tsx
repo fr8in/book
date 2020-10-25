@@ -48,7 +48,7 @@ const Employees = (props) => {
       columns={column}
       dataSource={employees}
       size='small'
-      scroll={{ x: 800, y: 400 }}
+      scroll={{ x: 800 }}
       rowKey={record => record.id}
       pagination={false}
       loading={loading}

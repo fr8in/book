@@ -55,7 +55,7 @@ const CityBranchMapping = () => {
       columns={column}
       dataSource={citymapping}
       size='small'
-      scroll={{ x: 1156, y: 400 }}
+      scroll={{ x: 1156 }}
       pagination={false}
       rowKey={(record) => record.id}
       loading={loading}

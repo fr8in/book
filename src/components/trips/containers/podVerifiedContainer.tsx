@@ -50,17 +50,20 @@ const DeliveredContainer = () => {
     }
   )
   console.log('DeliveredContainer error', error)
-  const { data: tripsdata } = useSubscription(
+  const { data: tripsdata, loading: tripsLoading } = useSubscription(
     TRIPS,
     {
       variables: variables
     }
   )
 
-  var _data = {}
-  var _tripsdata = {}
+  let _data = {}
   if (!loading) {
     _data = data
+  }
+
+  let _tripsdata = {}
+  if (!tripsLoading) {
     _tripsdata = tripsdata
   }
   // all trip data
@@ -97,7 +100,7 @@ const DeliveredContainer = () => {
   }
   return (
     <TripsTracking
-      trips={trip} loading={loading}
+      trips={trip} loading={tripsLoading}
       filter={filter}
       record_count={record_count}
       onPageChange={onPageChange}

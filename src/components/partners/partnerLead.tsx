@@ -503,7 +503,7 @@ const PartnerLead = (props) => {
         dataSource={partners}
         rowKey={(record) => record.id}
         size='small'
-        scroll={{ x: 1156, y: 550 }}
+        scroll={{ x: 1156 }}
         pagination={false}
         loading={s_loading}
         className='withAction'

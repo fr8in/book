@@ -193,7 +193,7 @@ const OutGoing = (props) => {
       columns={columns}
       dataSource={pendingtransaction}
       size='small'
-      scroll={{ x: 1156, y: 400 }}
+      scroll={{ x: 1156 }}
       pagination={false}
       rowKey={(record) => record.docNum}
       loading={loading}

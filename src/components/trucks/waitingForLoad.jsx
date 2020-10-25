@@ -2,8 +2,8 @@ import { Table, Tooltip, Badge, Button, Input } from 'antd'
 import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled, SearchOutlined, EditTwoTone } from '@ant-design/icons'
 import CreatePo from '../trips/createPo'
 import PartnerUsers from '../partners/partnerUsers'
-import TruckComment from '../trucks/truckComment'
-import CreateBreakdown from '../../components/trucks/createBreakdown'
+import TruckComment from './truckComment'
+import CreateBreakdown from './createBreakdown'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import LinkComp from '../common/link'
 import Truncate from '../common/truncate'
@@ -113,12 +113,13 @@ const WaitingForLoad = (props) => {
       title: 'TAT',
       dataIndex: 'tat',
       width: '6%',
-      sorter: (a, b) => (a.tat > b.tat ? 1 : -1)
+      sorter: (a, b) => (a.tat > b.tat ? 1 : -1),
+      defaultSortOrder: 'descend'
     },
     {
       title: 'Comment',
       render: (text, record) => {
-        const comment = record.last_comment && record.last_comment.description 
+        const comment = record.last_comment && record.last_comment.description
         return (
           <Truncate data={comment} length={30} />
         )

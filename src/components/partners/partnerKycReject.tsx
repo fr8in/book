@@ -1,4 +1,4 @@
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import { Row, Button, Input, message, Space } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
@@ -29,10 +29,11 @@ const KycReject = (props) => {
   const [insertComment] = useMutation(
     INSERT_PARTNER_REJECT_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         setDisableButton(false)
-        message.error(error.toString()) },
-      onCompleted() {
+        message.error(error.toString())
+      },
+      onCompleted () {
         setDisableButton(false)
         message.success('Updated!!')
         onHide()
@@ -69,7 +70,7 @@ const KycReject = (props) => {
       </Row>
       <br />
       <Row justify='end'>
-          <Button type='primary'  loading={disableButton} onClick={onSubmit}>Ok</Button>
+        <Button type='primary' loading={disableButton} onClick={onSubmit}>Ok</Button>
       </Row>
     </>
   )

@@ -47,7 +47,7 @@ const TripsContainer = () => {
     all_trip: { _and: [{ trip_status: { name: { _in: ['Delivered', 'Invoiced', 'Paid', 'Recieved', 'Closed'] } } }] },
     delivered_trip: { _and: [{ trip_status: { name: { _in: ['Delivered'] } }, pod_verified_at: { _is_null: true } }] },
     pod_verified_trip: { _and: [{ trip_status: { name: { _in: ['Delivered'] } }, pod_verified_at: { _is_null: false } }] },
-    invoiced_trip: { _and: [{ trip_status: { name: { _in: ['Invoiced', 'Paid', 'Recieved', 'Closed'] } }, pod_dispatched_at: { _is_null: false } }] }
+    invoiced_trip: { _and: [{ trip_status: { name: { _in: ['Invoiced', 'Paid', 'Recieved', 'Closed'] } }, pod_dispatched_at: { _is_null: true } }] }
   }
 
   const variables = {

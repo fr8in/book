@@ -53,7 +53,9 @@ const CreateAdditionalAdvance = (props) => {
   }
 
   const validateIFSC = () => {
-    getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc') } })
+    if (form.getFieldValue('ifsc')) {
+      getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc') } })
+    } else return null
   }
 
   console.log('IFSC validation Error', error)
@@ -201,7 +203,7 @@ const CreateAdditionalAdvance = (props) => {
             </Col>
             <Col xs={8}>
               <Form.Item label='save' className='hideLabel'>
-                <Button type='primary' disabled={disable_adv_btn} loading={disableBtn} htmlType='submit'>Pay Now</Button>
+                <Button type='primary' disabled={disable_adv_btn || !form.getFieldValue('ifsc')} loading={disableBtn} htmlType='submit'>Pay Now</Button>
               </Form.Item>
             </Col>
           </Row>

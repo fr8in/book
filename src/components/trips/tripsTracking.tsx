@@ -291,7 +291,7 @@ const TripsTracking = (props) => {
         rowKey={record => record.id}
         rowSelection={!verified ? rowSelection : null}
         size='small'
-        scroll={{ x: 1156, y: 500 }}
+        scroll={{ x: 1156 }}
         pagination={false}
         loading={loading}
         className='withAction'

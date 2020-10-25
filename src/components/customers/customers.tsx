@@ -311,7 +311,7 @@ const CustomerKyc = (props) => {
         dataSource={customers}
         rowKey={(record) => record.id}
         size='small'
-        scroll={{ x: 960, y: 530 }}
+        scroll={{ x: 1156 }}
         className='withIcon paginated'
         loading={loading}
         pagination={false}

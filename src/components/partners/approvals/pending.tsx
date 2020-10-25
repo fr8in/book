@@ -280,7 +280,7 @@ const Pending = () => {
         dataSource={filter.pending}
         rowKey={(record) => record.id}
         size='small'
-        scroll={{ x: 1256, y: 600 }}
+        scroll={{ x: 1256 }}
         pagination={false}
         className='withAction'
         loading={loading}

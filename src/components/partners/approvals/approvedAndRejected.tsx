@@ -276,7 +276,7 @@ const ApprovedAndRejected = () => {
         rowKey={(record) => record.id}
         loading={loading}
         size='small'
-        scroll={{ x: 1156, y: 550 }}
+        scroll={{ x: 1156 }}
         pagination={false}
       />
       {!loading && record_count ? (

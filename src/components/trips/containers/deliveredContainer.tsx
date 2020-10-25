@@ -52,7 +52,7 @@ const DeliveredContainer = (props) => {
   )
   console.log('DeliveredContainer error', error)
 
-  const { data: tripsdata } = useSubscription(
+  const { data: tripsdata, loading: tripsLoading } = useSubscription(
     TRIPS,
     {
       variables: variables
@@ -60,9 +60,12 @@ const DeliveredContainer = (props) => {
   )
 
   let _data = {}
-  let _tripdata = {}
   if (!loading) {
     _data = data
+  }
+
+  let _tripdata = {}
+  if (!tripsLoading) {
     _tripdata = tripsdata
   }
   // all trip data
@@ -100,7 +103,7 @@ const DeliveredContainer = (props) => {
   }
   return (
     <TripsTracking
-      trips={trip} loading={loading}
+      trips={trip} loading={tripsLoading}
       filter={filter}
       record_count={record_count}
       onPageChange={onPageChange}
