@@ -105,7 +105,7 @@ const Trucks = (props) => {
         return (
           <span>
             {id ? (
-              <span>{(source ? source.slice(0, 3) : null) + '-' + (destination ? destination.slice(0, 3) : null)}</span> 
+              <span>{(source ? source.slice(0, 3) : null) + '-' + (destination ? destination.slice(0, 3) : null)}</span>
             ) : (status === 'Waiting for Load' && partner_status === 'Active') ? (
               <a
                 className='link'

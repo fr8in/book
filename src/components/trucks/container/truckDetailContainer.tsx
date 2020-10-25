@@ -194,8 +194,7 @@ const TruckDetailContainer = (props) => {
             }
             extra={
               <Space>
-                {truck_status === 'Walting for Load' && partner_status === 'Active' &&
-                  <Button type='primary' shape='circle' onClick={() => onShow('poModal')} icon={<SnippetsOutlined />} />}
+                <Button type='primary' disabled={!(truck_status === 'Waiting for Load' && partner_status === 'Active')} shape='circle' onClick={() => onShow('poModal')} icon={<SnippetsOutlined />} />
                 <Tooltip title={`Id: ${get(truck_info, 'id', null)}`}><Tag className='status'>{get(truck_info, 'truck_status.name', null)}</Tag></Tooltip>
               </Space>
             }
@@ -225,10 +224,10 @@ const TruckDetailContainer = (props) => {
                       <Divider />
                       {access &&
                         <Row>
-                        <Col span={8}>
-                          <Button danger onClick={() => onSubmit(status_check)}>  {status_check ? 'Re-Activate' : 'De-Activate'} </Button>
-                        </Col>
-                      </Row>}
+                          <Col span={8}>
+                            <Button danger onClick={() => onSubmit(status_check)}>  {status_check ? 'Re-Activate' : 'De-Activate'} </Button>
+                          </Col>
+                        </Row>}
                     </Col>
                   </Row>
                 </TabPane>
