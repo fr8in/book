@@ -15,6 +15,7 @@ import BankBalance from './bankBalance'
 import u from '../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 import userContext from '../../lib/userContaxt'
+import moment from 'moment'
 
 
 const { Panel } = Collapse
@@ -91,7 +92,7 @@ const Actions = (props) => {
   const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
 
   const variables = {
-    now: initialFilter.now,
+    now: moment().format('YYYY-MM-DD'),
     regions: (filter.regions && filter.regions.length > 0) ? filter.regions : null
   }
   const { loading, data, error } = useQuery(GLOBAL_FILTER, { 
