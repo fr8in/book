@@ -53,7 +53,7 @@ const PageLayout = (props) => {
           <div className='pageCard'>
             <Head>
               <title>{props.title ? 'FR8 - ' + props.title : 'FR8 - Track'}</title>
-              <link rel='icon' href='/favicon.ico' type='image/x-icon' />
+              <link rel='icon' type='image/x-icon' href='/images/favicon.ico' />
               <meta charSet='utf-8' />
               <meta name='viewport' content='initial-scale=1.0, width=device-width' />
             </Head>

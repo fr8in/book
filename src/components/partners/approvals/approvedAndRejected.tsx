@@ -119,6 +119,8 @@ const ApprovedAndRejected = () => {
     return { value: data.name, label: data.name }
   }) : []
 
+  console.log('credit_debit_type', credit_debit_type, filter_data)
+
   const record_count = get(filter_data, 'trip_credit_debit_aggregate.aggregate.count', 0)
 
   const creditDebitList = creditDebitType.map((data) => {
