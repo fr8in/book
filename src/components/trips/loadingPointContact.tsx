@@ -63,10 +63,9 @@ const LoadingPointContact = (props) => {
   )
 
   const handleUserChange = (value, option) => {
-    if (isEmpty(user_data)) { return null }
-    const isNew = user_data.findIndex(_user => _user.mobile === value)
 
-    if (isNew === -1) {
+    if (isEmpty(user_data) || user_data.some(_user => _user.mobile === value))
+   {
       insert_customer_user({
         variables: {
           customer_id,

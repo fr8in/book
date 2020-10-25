@@ -64,4 +64,5 @@ export default {
     wh: 'warehousereceipt/',
     customer_pan: 'pan/'
   }
+  isEmptyArray:(arrray,default)=>
 }
