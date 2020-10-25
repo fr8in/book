@@ -47,6 +47,10 @@ subscription trucks_list(
           mobile
         }
         cardcode
+        partner_status{
+          id
+          name
+        }
       }
       trips(where: { trip_status_id: { _in: $trip_status_id } }) {
         id

@@ -14,6 +14,12 @@ subscription partners_truck($cardcode: String) {
       truck_type {
         name
       }
+      partner{
+        partner_status{
+          id
+          name
+        }
+      }
       city {
         name
       }
@@ -34,16 +40,6 @@ subscription partners_truck($cardcode: String) {
   }
 }
 `
-
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
-  },
-  getCheckboxProps: record => ({
-    disabled: record.name === 'Disabled User',
-    name: record.name
-  })
-}
 
 const TrucksByPartner = (props) => {
   const { cardcode } = props
@@ -109,13 +105,14 @@ const TrucksByPartner = (props) => {
         const source = record && record.trips[0] && record.trips[0].source ? record.trips[0].source.name : null
         const destination = record && record.trips[0] && record.trips[0].destination ? record.trips[0].destination.name : null
         const status = record.truck_status && record.truck_status.name
+        const partner_status = get(record, 'partner.partner_status.name', null)
         return (
           <span>{
             id ? (
               <span>
                 {source.slice(0, 3) + '-' + destination.slice(0, 3)}
               </span>)
-              : (status === 'Waiting for Load') ? <a type='link' onClick={() => handleShow('poVisible', record.partner, 'truckId', record.id)}>Assign</a>
+              : (status === 'Waiting for Load' && partner_status === 'Active') ? <a type='link' onClick={() => handleShow('poVisible', record.partner, 'truckId', record.id)}>Assign</a>
                 : 'NA'
           }
           </span>

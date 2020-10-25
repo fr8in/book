@@ -100,12 +100,13 @@ const Trucks = (props) => {
         const id = get(record, 'trips[0].id', null)
         const source = get(record, 'trips[0].source.name', null)
         const destination = get(record, 'trips[0].destination.name', null)
-        const status = get(record, ' truck_status.id', null)
+        const status = get(record, 'truck_status.name', null)
+        const partner_status = get(record, 'partner.partner_status.name', null)
         return (
           <span>
             {id ? (
               <span>{(source ? source.slice(0, 3) : null) + '-' + (destination ? destination.slice(0, 3) : null)}</span> 
-            ) : record.truck_status.id === 5 ? (
+            ) : (status === 'Waiting for Load' && partner_status === 'Active') ? (
               <a
                 className='link'
                 onClick={() => handleShow('poVisible', record.partner.name, 'truckId', record.id)}

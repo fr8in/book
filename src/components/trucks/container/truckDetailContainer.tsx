@@ -16,6 +16,7 @@ import CreatePo from '../../trips/createPo'
 import get from 'lodash/get'
 import u from '../../../lib/util'
 import isEmpty from 'lodash/isEmpty'
+import Loading from '../../common/loading'
 
 import { gql, useSubscription, useMutation } from '@apollo/client'
 
@@ -68,6 +69,10 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
             mobile
           }
           cardcode
+          partner_status{
+            id
+            name
+          }
         }
         trips {
           id
@@ -158,88 +163,92 @@ const TruckDetailContainer = (props) => {
     })
   }
 
+  const truck_status = get(truck_info, 'truck_status.name', null)
+  const partner_status = get(truck_info, 'partner.partner_status.name', null)
+
   return (
-    <Card
-      size='small'
-      className='border-top-blue'
-      title={
-        <DetailPageHeader
-          title={
-            <Space>
-              <h3>
-                <TruckNo
-                  id={truck_info.id}
-                  truck_no={truck_info.truck_no}
-                  loading={loading}
-                />
-              </h3>
-              <Divider type='vertical' />
-              <h4>
-                <TruckType
-                  truckType={get(truck_info, 'truck_type.name', null)}
-                  truckTypeId={get(truck_info, 'truck_type.id', null)}
-                  truck_no={get(truck_info, 'truck_no', null)}
-                />
-              </h4>
-            </Space>
-          }
-          extra={
-            <Space>
-              {truck_info && truck_info.truck_status && truck_info.truck_status.name && truck_info.truck_status.name === 'Waiting for Load' &&
-                <Button type='primary' shape='circle' onClick={() => onShow('poModal')} icon={<SnippetsOutlined />} />}
-              <Tooltip title={`Id: ${get(truck_info, 'id', null)}`}><Tag className='status'>{get(truck_info, 'truck_status.name', null)}</Tag></Tooltip>
-            </Space>
-          }
-        />
-      }
-    >
-      <Truck truck_info={truck_info} />
-      <Row>
-        <Col xs={24}>
-          <Card size='small' className='card-body-0 border-top-blue'>
-            <Tabs
-              defaultActiveKey='1'
-              onChange={subTabChange}
-              tabBarExtraContent={
-                <span>
-                  {subTabKey === '3' &&
-                    <Button shape='circle' icon={<CommentOutlined />} onClick={() => onShow('comment')} />}
-                </span>
-              }
-            >
-              <TabPane tab='Details' key='1'>
-                <Row>
-                  <Col xs={24} className='p20'>
-                    <TruckInfo truck_info={truck_info} loading={loading} id={truck_info.id} partner_id={partner_id} />
-                    <Divider />
-                    <Documents truck_id={truck_info.id} partner_id={partner_id} truck_info={truck_info} />
-                    <Divider />
-                    {access &&
-                      <Row>
+    loading ? <Loading /> : (
+      <Card
+        size='small'
+        className='border-top-blue'
+        title={
+          <DetailPageHeader
+            title={
+              <Space>
+                <h3>
+                  <TruckNo
+                    id={truck_info.id}
+                    truck_no={truck_info.truck_no}
+                    loading={loading}
+                  />
+                </h3>
+                <Divider type='vertical' />
+                <h4>
+                  <TruckType
+                    truckType={get(truck_info, 'truck_type.name', null)}
+                    truckTypeId={get(truck_info, 'truck_type.id', null)}
+                    truck_no={get(truck_info, 'truck_no', null)}
+                  />
+                </h4>
+              </Space>
+            }
+            extra={
+              <Space>
+                {truck_status === 'Walting for Load' && partner_status === 'Active' &&
+                  <Button type='primary' shape='circle' onClick={() => onShow('poModal')} icon={<SnippetsOutlined />} />}
+                <Tooltip title={`Id: ${get(truck_info, 'id', null)}`}><Tag className='status'>{get(truck_info, 'truck_status.name', null)}</Tag></Tooltip>
+              </Space>
+            }
+          />
+        }
+      >
+        <Truck truck_info={truck_info} />
+        <Row>
+          <Col xs={24}>
+            <Card size='small' className='card-body-0 border-top-blue'>
+              <Tabs
+                defaultActiveKey='1'
+                onChange={subTabChange}
+                tabBarExtraContent={
+                  <span>
+                    {subTabKey === '3' &&
+                      <Button shape='circle' icon={<CommentOutlined />} onClick={() => onShow('comment')} />}
+                  </span>
+                }
+              >
+                <TabPane tab='Details' key='1'>
+                  <Row>
+                    <Col xs={24} className='p20'>
+                      <TruckInfo truck_info={truck_info} loading={loading} id={truck_info.id} partner_id={partner_id} />
+                      <Divider />
+                      <Documents truck_id={truck_info.id} partner_id={partner_id} truck_info={truck_info} />
+                      <Divider />
+                      {access &&
+                        <Row>
                         <Col span={8}>
                           <Button danger onClick={() => onSubmit(status_check)}>  {status_check ? 'Re-Activate' : 'De-Activate'} </Button>
                         </Col>
                       </Row>}
-                  </Col>
-                </Row>
-              </TabPane>
-              <TabPane tab='Trips' key='2'>
-                <TripDetail truckPage trips={truck_info.trips} loading={loading} />
-              </TabPane>
-              <TabPane tab='Timeline' key='3'>
-                <Row>
-                  <Col xs={24} className='p20'>
-                    <TruckTimeline comments={truck_info.truck_comments} />
-                  </Col>
-                </Row>
-              </TabPane>
-            </Tabs>
-          </Card>
-        </Col>
-      </Row>
-      {visible.comment && <TruckComment visible={visible.comment} onHide={onHide} id={truck_info.id} truck_status={truck_info && truck_info.truck_status && truck_info.truck_status.name} />}
-      {visible.poModal && <CreatePo visible={visible.poModal} onHide={onHide} truck_id={truck_info.id} />}
-    </Card>
+                    </Col>
+                  </Row>
+                </TabPane>
+                <TabPane tab='Trips' key='2'>
+                  <TripDetail truckPage trips={truck_info.trips} loading={loading} />
+                </TabPane>
+                <TabPane tab='Timeline' key='3'>
+                  <Row>
+                    <Col xs={24} className='p20'>
+                      <TruckTimeline comments={truck_info.truck_comments} />
+                    </Col>
+                  </Row>
+                </TabPane>
+              </Tabs>
+            </Card>
+          </Col>
+        </Row>
+        {visible.comment && <TruckComment visible={visible.comment} onHide={onHide} id={truck_info.id} truck_status={truck_info && truck_info.truck_status && truck_info.truck_status.name} />}
+        {visible.poModal && <CreatePo visible={visible.poModal} onHide={onHide} truck_id={truck_info.id} />}
+      </Card>)
   )
 }
 export default TruckDetailContainer
