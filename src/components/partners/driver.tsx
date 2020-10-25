@@ -61,8 +61,7 @@ const Driver = (props) => {
     }
   )
   const onDriverChange = (value, option) => {
-
-    if (isEmpty(driver_data) || driver_data.some(_driver => _driver.mobile === value)) {
+    if (isEmpty(driver_data) || !driver_data.some(_driver => _driver.mobile === value)) {
       insertDriver({
         variables: {
           id: partner_id,
