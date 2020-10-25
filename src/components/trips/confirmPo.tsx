@@ -132,8 +132,9 @@ const ConfirmPo = (props) => {
     CONFIRM_PO,
     {
       onError (error) {
+        const msg = get(error, 'graphQLErrors[0].extensions.internal.error.message', error.toString())
+        message.error(msg)
         setDisableButton(false)
-        message.error(error.toString())
       },
       onCompleted (data) {
         const load_id = get(data, 'update_trip.returning[0].id', null)

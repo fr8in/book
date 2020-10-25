@@ -3,6 +3,7 @@ import { message } from 'antd'
 import DateUpdater from '../common/dateUpdater'
 import userContext from '../../lib/userContaxt'
 import { useState, useContext } from 'react'
+import get from 'lodash/get'
 
 const UPDATE_TRIP_DESTINATIONOUT_MUTATION = gql`
 mutation trip_destination_out($destination_out:timestamp,$id:Int,$updated_by: String!) {
@@ -25,7 +26,8 @@ const DestinationOutDate = (props) => {
     UPDATE_TRIP_DESTINATIONOUT_MUTATION,
     {
       onError (error) {
-        message.error(error.toString())
+        const msg = get(error, 'graphQLErrors[0].extensions.internal.error.message', error.toString())
+        message.error(msg)
         setDisableBtn(false)
       },
       onCompleted () {

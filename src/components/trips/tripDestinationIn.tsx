@@ -3,6 +3,7 @@ import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import DateUpdater from '../common/dateUpdater'
 import userContext from '../../lib/userContaxt'
+import get from 'lodash/get'
 
 const UPDATE_TRIP_DESTINATIONIN_MUTATION = gql`
 mutation trip_destination_in($destination_in:timestamp,$id:Int,$updated_by: String!) {
@@ -24,7 +25,8 @@ const DestinationInDate = (props) => {
     UPDATE_TRIP_DESTINATIONIN_MUTATION,
     {
       onError (error) {
-        message.error(error.toString())
+        const msg = get(error, 'graphQLErrors[0].extensions.internal.error.message', error.toString())
+        message.error(msg)
         setDisableBtn(false)
       },
       onCompleted () {

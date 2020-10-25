@@ -147,7 +147,8 @@ const CreatePo = (props) => {
     CREATE_PO,
     {
       onError (error) {
-        message.error(error.toString())
+        const msg = get(error, 'graphQLErrors[0].extensions.internal.error.message', error.toString())
+        message.error(msg)
         setDisableBtn(false)
       },
       onCompleted (data) {
