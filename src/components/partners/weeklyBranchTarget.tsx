@@ -169,7 +169,7 @@ const WeeklyBranchTarget = (props) => {
         dataSource={branchTargetWeekly}
         size='small'
         pagination={false}
-        scroll={{ x: 400, y: 420 }}
+        scroll={{ x: 400, y: 500 }}
         rowKey={record => record.id}
         className='weeklyTarget'
         loading={loading}

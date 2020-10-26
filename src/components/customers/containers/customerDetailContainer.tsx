@@ -5,7 +5,6 @@ import {
   FileDoneOutlined,
   WalletOutlined,
   PlusOutlined,
-  MailOutlined
 } from '@ant-design/icons'
 import useShowHide from '../../../hooks/useShowHide'
 import AccStmtMail from '../stmtMail'
@@ -30,7 +29,7 @@ import CustomerBranch from '../createCustomerBranch'
 import TitleWithCount from '../../common/titleWithCount'
 import u from '../../../lib/util'
 import userContext from '../../../lib/userContaxt'
-import { useState, useContext } from 'react'
+import { useContext } from 'react'
 import isEmpty from 'lodash/isEmpty'
 
 // Apollo Client
@@ -57,14 +56,12 @@ const CustomerDetailContainer = (props) => {
   const { visible, onShow, onHide } = useShowHide(initial)
   const { role } = u
   const customerNameEdit = [role.admin, role.accounts_manager, role.accounts]
-  const deleteUserEdit = [role.admin, role.accounts_manager, role.accounts]
-  const branchActionEdit = [role.admin, role.accounts_manager, role.accounts]
   const BlacklistEdit = [role.admin, role.accounts_manager, role.accounts]
   const context = useContext(userContext)
   const ad_am = [role.admin, role.accounts_manager]
-  const ad_am_ac = [role.admin, role.accounts_manager, role.accounts]
+  const customer_edit_role = [role.admin, role.accounts_manager, role.accounts, role.billing, role.billing_manager]
   const transferAccess = !isEmpty(ad_am) ? context.roles.some(r => ad_am.includes(r)) : false
-  const ad_am_ac_access = !isEmpty(ad_am_ac) ? context.roles.some(r => ad_am_ac.includes(r)) : false
+  const customer_access = !isEmpty(customer_edit_role) ? context.roles.some(r => customer_edit_role.includes(r)) : false
 
   const variables = {
     cardcode: cardcode,
@@ -144,7 +141,7 @@ const CustomerDetailContainer = (props) => {
                         </Space>)
                       : null}
 
-                    {ad_am_ac_access ? (
+                    {customer_access ? (
                       <Tooltip title='Wallet Topup'>
                         <Button
                           shape='circle'
@@ -201,16 +198,16 @@ const CustomerDetailContainer = (props) => {
                     </TabPane>
                     <TabPane tab='Users' key='6'>
                       <Row justify='end' className='m5'>
-                        {ad_am_ac_access ? (
+                        {customer_access ? (
                           <Button type='primary' onClick={() => onShow('addUser')}>
                             <PlusOutlined /> Add Users
                           </Button>) : null}
                       </Row>
-                      <Users cardcode={cardcode} edit_access={deleteUserEdit} />
+                      <Users cardcode={cardcode} edit_access={customer_edit_role} />
                     </TabPane>
                     <TabPane tab='Branch' key='7'>
                       <Row justify='end' className='m5'>
-                        {ad_am_ac_access ? (
+                        {customer_access ? (
                           <Button
                             type='primary'
                             onClick={() => onShow('addBranch')}
@@ -218,7 +215,7 @@ const CustomerDetailContainer = (props) => {
                             <PlusOutlined /> Add Branch
                           </Button>) : null}
                       </Row>
-                      <Branch cardcode={cardcode} edit_access={branchActionEdit} />
+                      <Branch cardcode={cardcode} edit_access={customer_edit_role} />
                     </TabPane>
                     <TabPane tab='FR8 Branch' key='8'>
                       <Fr8Branch cardcode={cardcode} id={customer_info && customer_info.id} />

@@ -54,14 +54,13 @@ const Driver = (props) => {
       onError (error) { message.error(error.toString()) },
       onCompleted (data) {
         const id = get(data, 'insert_driver.returning[0].id', null)
-        message.success('Updated!!')
         driver_id(id)
         setSearchText('')
       }
     }
   )
   const onDriverChange = (value, option) => {
-    if (isEmpty(driver_data) || !driver_data.some(_driver => _driver.mobile === value)) {
+    if (option.key === 'new') {
       insertDriver({
         variables: {
           id: partner_id,
@@ -73,9 +72,9 @@ const Driver = (props) => {
 
   let drivers = []
   if (searchText && searchText.length >= 10) {
-    drivers = [{ id: searchText, mobile: searchText }]
+    drivers = [{ id: 'new', mobile: searchText }]
   } else {
-    drivers = driver_data && driver_data.filter(_driver => _driver.mobile.search(searchText) !== -1)
+    drivers = driver_data && driver_data.filter(_driver => _driver.mobile.indexOf(searchText) !== -1)
   }
   return (
     <Form.Item label='Driver' name='driver' rules={[{ required: required }]} className={style || ''}>
