@@ -126,7 +126,7 @@ const CustomerDetailContainer = (props) => {
                     </Tooltip> */}
                     {transferAccess
                       ? (
-                        <span>
+                        <Space>
                           <Tooltip title='Transfer'>
                             <Button
                               icon={<BankFilled />}
@@ -141,7 +141,7 @@ const CustomerDetailContainer = (props) => {
                               onClick={() => onShow('rebate')}
                             />
                           </Tooltip>
-                        </span>)
+                        </Space>)
                       : null}
 
                     {ad_am_ac_access ? (

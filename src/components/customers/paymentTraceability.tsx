@@ -63,7 +63,8 @@ const PaymentTraceability = (props) => {
     title: 'Date',
     dataIndex: 'date',
     width: '12%',
-    render: (text, record) => text ? moment(text).format('DD-MMM-YY') : null
+    render: (text, record) => text ? moment(parseInt(text, 10)).format('DD-MMM-YY') : '-',
+    sorter: (a, b) => (a.date > b.date ? 1 : -1)
   },
   {
     title: 'Amount',

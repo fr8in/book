@@ -5,6 +5,7 @@ import { useState, useContext } from 'react'
 import sumBy from 'lodash/sumBy'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
+import moment from 'moment'
 
 const CUSTOMER_INCOMING_PAYMENTS = gql`
 query  bank_incoming($search:String){
@@ -111,7 +112,8 @@ const WalletTopup = (props) => {
       dataIndex: 'date',
       key: 'date',
       sorter: (a, b) => (a.date > b.date ? 1 : -1),
-      width: '12%'
+      width: '12%',
+      render:(text, record)=> text ? moment(parseInt(text)).format('DD-MMM-YY') : '-'
     },
     {
       title: 'Payment Details',

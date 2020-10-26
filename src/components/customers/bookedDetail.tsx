@@ -10,7 +10,7 @@ query customer_booked_incoming($cardcode:String){
   customer(where:{cardcode:{_eq:$cardcode}}){
     cardcode
     id
-    customer_incoming(where:{booked:{_neq:0}}){
+    customer_incoming(where:{balance:{_neq:0}}){
       cardcode
       wallet_moved_date
       comment
@@ -77,7 +77,8 @@ const BookedDetail = (props) => {
     title: 'Date',
     dataIndex: 'wallet_moved_date',
     width: '14%',
-    render: (text, render) => text ? moment(text).format('DD-MMM-YY') : '-'
+    render: (text, render) => text ? moment(text).format('DD-MMM-YY') : '-',
+    sorter: (a, b) => (a.wallet_moved_date > b.wallet_moved_date ? 1 : -1)
   },
   {
     title: 'Amount',
