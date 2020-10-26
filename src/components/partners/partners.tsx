@@ -191,7 +191,7 @@ const PartnerKyc = (props) => {
                 onClick={() => handleShow('commentVisible', null, 'partner_id', record.id)}
               />
             </Tooltip>
-            {(partner_status === 'Verification' || partner_status === 'Reverification') && edit_access &&
+            {(partner_status === 'Registered' || partner_status === 'Verification' || partner_status === 'Reverification') && edit_access &&
               <>
                 <Button
                   type='primary'

@@ -6,10 +6,10 @@ import OnHoldTrips from '../trips/onholdTrips'
 import get from 'lodash/get'
 
 const PendingBalance = (props) => {
-  const {partner_summary} = props
+  const { partner_summary } = props
   const initial = { onhold: false }
   const { visible, onShow, onHide } = useShowHide(initial)
-  console.log('partner_summary', partner_summary)
+
   return (
     <Card size='small'>
       <LabelData
@@ -25,7 +25,7 @@ const PendingBalance = (props) => {
         label='Cleared'
         value={get(partner_summary, 'partner_accounting.cleared', null) || 0}
       />
-      {visible.onhold && <OnHoldTrips visible={visible.onhold} onHide={onHide} cardcode={partner_summary.cardcode}/>}
+      {visible.onhold && <OnHoldTrips visible={visible.onhold} onHide={onHide} cardcode={partner_summary.cardcode} />}
     </Card>
   )
 }
