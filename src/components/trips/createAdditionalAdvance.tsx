@@ -177,7 +177,7 @@ const CreateAdditionalAdvance = (props) => {
                 <Row gutter={10}>
                   <Col xs={12} sm={8}>
                     <Form.Item label='IFSC Code' name='ifsc' extra={get(bank_detail, 'bank', null)} rules={[{ required: true, message: 'IFSC required!' }]}>
-                      <Input onBlur={validateIFSC} />
+                      <Input placeholder='IFSC Code' onBlur={validateIFSC} />
                     </Form.Item>
                   </Col>
                   <Col xs={12} sm={8} className='reduceMarginTop1'>
@@ -203,7 +203,7 @@ const CreateAdditionalAdvance = (props) => {
             </Col>
             <Col xs={8}>
               <Form.Item label='save' className='hideLabel'>
-                <Button type='primary' disabled={disable_adv_btn || !form.getFieldValue('ifsc')} loading={disableBtn} htmlType='submit'>Pay Now</Button>
+                <Button type='primary' disabled={disable_adv_btn || (radioValue === 'BANK' && !form.getFieldValue('ifsc'))} loading={disableBtn} htmlType='submit'>Pay Now</Button>
               </Form.Item>
             </Col>
           </Row>
