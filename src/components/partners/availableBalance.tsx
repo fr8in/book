@@ -30,7 +30,7 @@ const AvailableBalance = (props) => {
     _data = data
   }
 
-  const balance = get(_data, 'partner[0]')
+  const balance = get(_data, 'partner[0]', null)
 
   return (
     <Card size='small'>
