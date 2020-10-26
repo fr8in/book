@@ -93,6 +93,9 @@ const TripTime = (props) => {
   const { visible, onShow, onHide } = useShowHide(initial)
   const [disableBtn, setDisableBtn] = useState(false)
   const context = useContext(userContext)
+  const { role } = u
+  const po_delete_access = [role.admin, role.rm]
+  const access = !isEmpty(po_delete_access) ? context.roles.some(r => po_delete_access.includes(r)) : false
   const [form] = Form.useForm()
 
   const [getWord, { loading, data, error, called }] = useLazyQuery(GET_WORD)
@@ -349,7 +352,7 @@ const TripTime = (props) => {
             <Col xs={24}>
               <Space>
                 {po_delete &&
-                  <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')} disabled={lock}>PO</Button>}
+                  <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')} disabled={!access || lock}>PO</Button>}
                 {process_advance &&
                   <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>}
                 {remove_sin &&

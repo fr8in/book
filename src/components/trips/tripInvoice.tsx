@@ -325,7 +325,7 @@ const TripInvoice = (props) => {
             field_name='onHold'
             value={calc.on_hold ? calc.on_hold.toFixed(2) : 0}
           />
-          <Form.Item className='item' name='comment' rules={[{ required: true }]}>
+          <Form.Item className='item' name='comment'>
             <Input.TextArea
               placeholder='Comment'
             />
