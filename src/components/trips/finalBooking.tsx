@@ -88,7 +88,7 @@ const FinalBooking = (props) => {
   const [disableButton, setDisableButton] = useState(false)
   const [amount, setAmount] = useState(null)
   const [header, setHeader] = useState(null)
-  const initial = { total: 0, debit: 0, rebate: 0 }
+  const initial = { total: 0, debit: 0, rebate: 0, collapse_key: null }
   const [calc, setCalc] = useState(initial)
   const context = useContext(userContext)
   const floatVal = (value) => value ? parseFloat(value) : 0
@@ -228,6 +228,11 @@ const FinalBooking = (props) => {
     }
   }
 
+  const onChangeCollapse = (key) => {
+    console.log('collapse', key)
+    setCalc({ ...calc, collapse_key: key })
+  }
+
   return (
     <>
       <Modal
@@ -277,7 +282,7 @@ const FinalBooking = (props) => {
               </Form.Item>
             </Col>
           </Row>
-          <Collapse accordion className='small box-0' ghost>
+          <Collapse accordion className='small box-0 mb10' ghost onChange={onChangeCollapse}>
             <Panel header='Write Off' key='1'>
               <h4 className='mt10'>Partner</h4>
               <Divider />
@@ -447,7 +452,7 @@ const FinalBooking = (props) => {
                   </Form.Item>
                 </Col>
               </Row>
-              <Form.Item label='Comments' name='comment' rules={[{ required: true }]}>
+              <Form.Item label='Comments' name='comment' rules={[{ required: calc.collapse_key }]}>
                 <Input.TextArea placeholder='comment' />
               </Form.Item>
             </Panel>
