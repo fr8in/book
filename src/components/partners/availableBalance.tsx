@@ -35,8 +35,8 @@ const AvailableBalance = (props) => {
   return (
     <Card size='small'>
       <LabelData label='Wallet' value={get(partner_summary, 'partner_accounting.wallet_balance', null) || 0} />
-      <LabelData label='Fuel Card' value={balance.fuel_balance} />
-      <LabelData label='FasTag' value={balance.fastag_balance} />
+      <LabelData label='Fuel Card' value={get(balance, 'fuel_balance', 0)} />
+      <LabelData label='FasTag' value={get(balance, 'fastag_balance', 0)} />
     </Card>
   )
 }
