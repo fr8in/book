@@ -447,11 +447,11 @@ const FinalBooking = (props) => {
                   </Form.Item>
                 </Col>
               </Row>
+              <Form.Item label='Comments' name='comment' rules={[{ required: true }]}>
+                <Input.TextArea placeholder='comment' />
+              </Form.Item>
             </Panel>
           </Collapse>
-          <Form.Item label='Comments' name='comment'>
-            <Input.TextArea placeholder='comment' />
-          </Form.Item>
           <Row>
             <Col flex='auto'>
               <div>Total: <b>{calc.total + (parseFloat(amount) || 0)}</b>, Rebate: <b>{calc.rebate}</b></div>

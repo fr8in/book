@@ -10,6 +10,9 @@ subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [Stri
       commission
       billed
     }
+    partner_active{
+      amount
+    }
     ongoing: trips_aggregate(where: {trip_status: {name: {_in: $ongoing}}}) {
       aggregate {
         count
