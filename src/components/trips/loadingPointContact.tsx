@@ -48,6 +48,7 @@ const LoadingPointContact = (props) => {
   console.log('LoadingPointContact error', error)
 
   const user_data = get(_data, 'customer_user', [])
+  console.log('user_data', user_data)
 
   const [insert_customer_user] = useMutation(
     INSERT_CUSTOMER_USER,
@@ -55,7 +56,6 @@ const LoadingPointContact = (props) => {
       onError (error) { message.error(error.toString()) },
       onCompleted (data) {
         const id = get(data, 'insert_customer_user.returning[0].id', null)
-        message.success('Updated!!')
         onUserChange(id)
         setSearchText('')
       }
@@ -63,7 +63,7 @@ const LoadingPointContact = (props) => {
   )
 
   const handleUserChange = (value, option) => {
-    if (isEmpty(user_data) || !user_data.some(_user => _user.mobile === value)) {
+    if (option.key === 'new') {
       insert_customer_user({
         variables: {
           customer_id,
@@ -75,9 +75,9 @@ const LoadingPointContact = (props) => {
 
   let users = []
   if (searchText && searchText.length >= 10) {
-    users = [{ id: searchText, mobile: searchText }]
+    users = [{ id: 'new', mobile: searchText }]
   } else {
-    users = !isEmpty(user_data) && user_data.filter(_user => _user.mobile.search(searchText) !== -1)
+    users = !isEmpty(user_data) && user_data.filter(_user => _user.mobile.indexOf(searchText) !== -1)
   }
   return (
     <Form.Item
