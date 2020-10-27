@@ -19,7 +19,6 @@ const BankBalance = () => {
   )
 
   console.log('BankBalance Error', error)
-  console.log('BankBalance data', data)
   let _data = {}
   if (!loading) {
     _data = data
