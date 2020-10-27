@@ -65,7 +65,7 @@ const OutGoing = (props) => {
         setDisableBtn(initial)
         const status = get(data, 'execute_transfer.status', null)
         const description = get(data, 'execute_transfer.description', null)
-        if (status) {
+        if (status === 'OK') {
           refetch()
           message.success(description || 'Updated!!')
         } else {
