@@ -35,8 +35,8 @@ const CreditNoteTable = (props) => {
 
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing]
-  const authorised = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
+  const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing,role.partner_manager,role.partner_support]
+  const authorised = u.is_roles(edit_access,context)
 
   const invoiced = get(trip_info, 'invoiced_at', null)
   const received = get(trip_info, 'received_at', null)
