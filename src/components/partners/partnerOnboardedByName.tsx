@@ -3,6 +3,7 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 import userContext from '../../lib/userContaxt'
 import { useContext } from 'react'
+import u from '../../lib/util'
 
 const ALL_EMPLOYEE = gql`
   query all_employee {
@@ -13,7 +14,14 @@ const ALL_EMPLOYEE = gql`
 }`
 
 const UPDATE_PARTNER_ONBOARDED_BY_NAME_MUTATION = gql`
-mutation partner_onboarded_by_name($onboarded_by_id:Int,$cardcode:String,$updated_by: String!) {
+mutation partner_onboarded_by_name($description:String, $topic:String, $partner_id: Int,$updated_by: String!,$cardcode:String,$onboarded_by_id:Int){
+  insert_partner_comment(objects:{partner_id:$partner_id,topic:$topic,description:$description,created_by:$updated_by})
+    {
+      returning
+      {
+        id
+      }
+    }
 update_partner(_set:{onboarded_by_id: $onboarded_by_id,updated_by:$updated_by}, where:{cardcode: {_eq:$cardcode}}){
     returning{
       id
@@ -34,8 +42,9 @@ mutation update_credit_responsibility($responsibility_id:Int!,$id:Int! ){
 `
 
 const OnBoardedBy = (props) => {
-  const { onboardedById, onboardedBy, cardcode, credit_debit_id, edit_access } = props
+  const { onboardedById, onboardedBy, cardcode, credit_debit_id, edit_access,partner_id } = props
   const context = useContext(userContext)
+  const { topic } = u
 
   const { loading, error, data } = useQuery(
     ALL_EMPLOYEE,
@@ -82,7 +91,10 @@ const OnBoardedBy = (props) => {
         variables: {
           cardcode,
           onboarded_by_id: value,
-          updated_by: context.email
+          updated_by: context.email,
+          description:`${topic.onboarded_by} updated by ${context.email}`,
+        topic:topic.onboarded_by,
+        partner_id: partner_id
         }
       })
     }

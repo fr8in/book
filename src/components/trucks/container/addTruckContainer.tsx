@@ -95,7 +95,7 @@ const AddTruckContainer = (props) => {
         message.success('Created!!')
         const url = '/trucks/[id]'
         const as = `/trucks/${value[0].truck_no}`
-        router.push(url, as, 'shallow')
+        router.push(url, as, { shallow: true })
       }
     }
   )
