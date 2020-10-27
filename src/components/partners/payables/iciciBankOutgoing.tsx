@@ -1,12 +1,12 @@
 import { useContext, useState } from 'react'
 import { Table, Button, message, Tooltip } from 'antd'
 import { gql, useMutation, useQuery } from '@apollo/client'
-
 import userContext from '../../../lib/userContaxt'
 import Truncate from '../../common/truncate'
 import get from 'lodash/get'
 import moment from 'moment'
 import Refno from './refNum'
+import u from '../../../lib/util'
 
 const pendingTransaction = gql`
 query pending_transaction {
@@ -36,6 +36,7 @@ mutation execute_transfer($doc_num:String!,$updated_by:String!) {
 const OutGoing = (props) => {
   const { label } = props
   const context = useContext(userContext)
+  const execute_access = u.is_roles([u.role.admin, u.role.accounts_manager, u.role.accounts], context)
   const initial = { loading: false, selected_id: null }
   const [disableBtn, setDisableBtn] = useState(initial)
 
@@ -178,7 +179,7 @@ const OutGoing = (props) => {
         return (
           <Button
             size='small' type='primary' onClick={() => onSubmit(record, record.docNum)}
-            disabled={!record.account_no}
+            disabled={!(record.account_no && execute_access)}
             loading={disableBtn.loading && (disableBtn.selected_id === record.docNum)}
           >
             Execute

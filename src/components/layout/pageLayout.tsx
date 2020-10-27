@@ -1,5 +1,5 @@
 
-import { cloneElement, useState } from 'react'
+import { cloneElement, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { Layout, Row, Col } from 'antd'
 import Link from 'next/link'
@@ -10,6 +10,17 @@ import Router from 'next/router'
 import Loading from '../../components/common/loading'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
+import { gql, useQuery } from '@apollo/client'
+
+const EMPLOYEE_QUERY = gql`
+query employee_name($email:String){
+  employee (where:{email:{_eq:$email}}){
+    branch_employees{
+      branch_id
+    }
+  }
+}`
 
 const { Header, Content } = Layout
 
@@ -21,7 +32,6 @@ const PageLayout = (props) => {
     return <Loading preloading />
   }
   const initialFilter = {
-    now: new Date().toISOString(),
     regions: null,
     branches: null,
     cities: null,
@@ -29,9 +39,30 @@ const PageLayout = (props) => {
     types: null
   }
   const [filters, setFilters] = useState(initialFilter)
+
   const email = get(props, 'authState.user.email', null)
   const roles = get(props, 'authState.roles', null)
   const user = { email, roles }
+
+  const { loading, data, error } = useQuery(
+    EMPLOYEE_QUERY,
+    {
+      variables: { email: email },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
+  )
+  console.log('PageLayout Error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const employees = get(_data, 'employee[0].branch_employees', [])
+
+  useEffect(() => {
+    const branch_ids = employees.map(employee => employee.branch_id)
+    setFilters({ ...filters, branches: branch_ids })
+  }, [loading])
 
   return (
     <userContext.Provider value={user}>
@@ -41,7 +72,7 @@ const PageLayout = (props) => {
             <Col flex='70px' className='brand'>
               <Link href='/'><a>FR<span>8</span></a></Link>
             </Col>
-            <Actions onFilter={setFilters} initialFilter />
+            <Actions onFilter={setFilters} filters={filters} />
           </Row>
           <Row justify='center'>
             <Col xs={24} sm={24} md={24}>

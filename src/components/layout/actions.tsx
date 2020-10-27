@@ -80,12 +80,10 @@ query gloabl_filter($now: timestamp, $regions:[Int!], $branches:[Int!], $cities:
 const Clear =(props)=> <span className='clear' onClick={props.onClear}>CLEAR</span>
 
 const Actions = (props) => {
-  const { onFilter, initialFilter } = props
+  const { onFilter, filters } = props
   const initial = { filter: false, search: false, ssh: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   const [bank_visible, setBank_visible] = useState(false)
-
-  const [filter, setFilter] = useState(initialFilter)
 
   const context = useContext(userContext)
   const { role } = u
@@ -94,7 +92,7 @@ const Actions = (props) => {
 
   const variables = {
     now: moment().format('YYYY-MM-DD'),
-    regions: (filter.regions && filter.regions.length > 0) ? filter.regions : null
+    regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null
   }
   const { loading, data, error } = useQuery(GLOBAL_FILTER, { 
     variables,
@@ -146,14 +144,12 @@ const Actions = (props) => {
   const branch_options_sort = branch_options.sort((a,b)=> a.order - b.order)
 
   const onCheckBoxChange = (value, name) => {
-    setFilter({ ...filter, [name]: value })
-    onFilter({ ...filter, [name]: value })
+    onFilter({ ...filters, [name]: value })
   };
 
   const onClear = (e, name) => {
     e.stopPropagation()
-    setFilter({ ...filter, [name]: null })
-    onFilter({ ...filter, [name]: null })
+    onFilter({ ...filters, [name]: null })
   };
 
   const onBankDetailToggle = (visible) => {
@@ -194,33 +190,33 @@ const Actions = (props) => {
           <Collapse className='global-filter' defaultActiveKey={['branch']}>
             <Panel 
               header={<b>Region</b>} key='region' 
-              extra={filter.regions && filter.regions.length > 0 ? <Clear onClear={(e) => onClear(e, 'regions')} /> : ''}
+              extra={filters.regions && filters.regions.length > 0 ? <Clear onClear={(e) => onClear(e, 'regions')} /> : ''}
             >
-              <CheckBoxGroup value={filter.regions} options={region_options} onChange={(value) => onCheckBoxChange(value, 'regions')} />
+              <CheckBoxGroup value={filters.regions} options={region_options} onChange={(value) => onCheckBoxChange(value, 'regions')} />
             </Panel>
             <Panel 
               header={<b>Branch</b>} key="branch" 
-              extra={filter.branches && filter.branches.length > 0 ? <Clear onClear={(e) => onClear(e, 'branches')}/> : ''}
+              extra={filters.branches && filters.branches.length > 0 ? <Clear onClear={(e) => onClear(e, 'branches')}/> : ''}
             >
-              <CheckBoxGroup options={branch_options_sort} value={filter.branches} onChange={(value) => onCheckBoxChange(value, 'branches')} />
+              <CheckBoxGroup options={branch_options_sort} defaultValue={filters.branches} value={filters.branches} onChange={(value) => onCheckBoxChange(value, 'branches')} />
             </Panel>
             <Panel 
               header={<b>City</b>} key="city" 
-              extra={filter.cities && filter.cities.length > 0 ? <Clear onClear={(e) => onClear(e, 'cities')} /> : ''}
+              extra={filters.cities && filters.cities.length > 0 ? <Clear onClear={(e) => onClear(e, 'cities')} /> : ''}
             >
-              <CheckBoxGroup value={filter.cities} options={connected_city_options} onChange={(value) => onCheckBoxChange(value, 'cities')} />
+              <CheckBoxGroup value={filters.cities} options={connected_city_options} onChange={(value) => onCheckBoxChange(value, 'cities')} />
             </Panel>
             <Panel 
               header={<b>Manager</b>} key="manager" 
-              extra={filter.managers && filter.managers.length > 0 ? <Clear onClear={(e) => onClear(e, 'managers')} /> : ''}
+              extra={filters.managers && filters.managers.length > 0 ? <Clear onClear={(e) => onClear(e, 'managers')} /> : ''}
             >
-              <CheckBoxGroup options={branch_employee_options} value={filter.managers} onChange={(value) => onCheckBoxChange(value, 'managers')} />
+              <CheckBoxGroup options={branch_employee_options} defaultValue={filters.managers} value={filters.managers} onChange={(value) => onCheckBoxChange(value, 'managers')} />
             </Panel>
             <Panel 
               header={<b>Type</b>} key="type" 
-              extra={filter.types && filter.types.length > 0 ? <Clear onClear={(e) => onClear(e, 'types')} /> : ''}
+              extra={filters.types && filters.types.length > 0 ? <Clear onClear={(e) => onClear(e, 'types')} /> : ''}
             >
-              <CheckBoxGroup options={truck_type_options} value={filter.types} onChange={(value) => onCheckBoxChange(value, 'types')} />
+              <CheckBoxGroup options={truck_type_options} value={filters.types} onChange={(value) => onCheckBoxChange(value, 'types')} />
             </Panel>
           </Collapse>
         </Drawer>}
