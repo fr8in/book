@@ -13,6 +13,7 @@ import WaitingForLoadContainer from './waitingForLoadContainer'
 import Orders from '../../reports/orders'
 import Revenue from '../../reports/revenue'
 import Progress from '../../reports/progress'
+import moment from 'moment'
 const { TabPane } = Tabs
 
 const DashboardContainer = (props) => {
@@ -21,7 +22,7 @@ const DashboardContainer = (props) => {
   const { visible, onShow, onHide } = useShowHide(initial)
 
   const variables = {
-    now: filters.now,
+    now: moment().format('YYYY-MM-DD'),
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
     branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
     cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,

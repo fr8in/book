@@ -24,7 +24,7 @@ mutation truck_no_edit($description:String, $topic:String, $truck_id: Int,$updat
 }
 `
 const TruckNo = (props) => {
-  const { truck_no, id , loading } = props
+  const { truck_no, id, loading } = props
   const router = useRouter()
   const context = useContext(userContext)
 
@@ -52,7 +52,7 @@ const TruckNo = (props) => {
     })
     const url = '/trucks/[id]'
     const as = `/trucks/${text}`
-    router.push(url, as, 'shallow')
+    router.push(url, as, { shallow: true })
   }
 
   return (
