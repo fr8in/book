@@ -4,9 +4,17 @@ import { gql, useMutation } from '@apollo/client'
 import Driver from '../trucks/driver'
 import { useState,useContext } from 'react'
 import userContext from '../../lib/userContaxt'
+import u from '../../lib/util'
 
 const UPDATE_TRUCK_INFO_MUTATION = gql`
-mutation truck_info($length:float8,$breadth:float8,$height:float8,$id:Int!,$updated_by: String!) {
+mutation truck_info($description:String, $topic:String, $truck_id: Int,$updated_by: String!,$length:float8,$breadth:float8,$height:float8,$id:Int){
+  insert_truck_comment(objects:{truck_id:$truck_id,topic:$topic,description:$description,created_by:$updated_by})
+    {
+      returning
+      {
+        id
+      }
+    }
   update_truck(_set: {length:$length,breadth:$breadth,height:$height,updated_by:$updated_by}, where: {id: {_eq:$id }}){
     returning{
       id
@@ -16,11 +24,14 @@ mutation truck_info($length:float8,$breadth:float8,$height:float8,$id:Int!,$upda
     }
   }
 }
+
+
 `
 
 const TruckInfo = (props) => {
   const { truck_info, id, loading, partner_id } = props
   const [disableButton, setDisableButton] = useState(false)
+  const { topic } = u
   const context = useContext(userContext)
   
   const driver_number = truck_info && truck_info.driver && truck_info.driver.mobile
@@ -45,7 +56,10 @@ const TruckInfo = (props) => {
         length: parseFloat(form.length),
         breadth: parseFloat(form.breadth),
         height: parseFloat(form.height),
-        updated_by: context.email
+        updated_by: context.email,
+        description:`${topic.truck_dimension} updated by ${context.email}`,
+        topic:topic.truck_dimension,
+        truck_id: id
       }
     })
   }
