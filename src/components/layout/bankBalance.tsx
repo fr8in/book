@@ -13,7 +13,8 @@ const BankBalance = () => {
   const { loading, data, error } = useQuery(
     BANK_BALANCE, {
       fetchPolicy: 'network-only',
-      notifyOnNetworkStatusChange: true
+      notifyOnNetworkStatusChange: true,
+      errorPolicy: 'all'
     }
   )
 
