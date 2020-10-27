@@ -40,6 +40,7 @@ const PartnerInfo = (props) => {
         <PartnerName
           cardcode={partner.cardcode}
           name={partner.name}
+          partner_id={partner.id}
           loading={loading}
         />
         <h4>{partner.cardcode}</h4>

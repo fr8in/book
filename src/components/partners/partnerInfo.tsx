@@ -36,6 +36,7 @@ const PartnerInfo = (props) => {
             onboardedBy={get(partnerInfo, 'onboarded_by.email', '-')}
             onboardedById={get(partnerInfo, 'onboarded_by.id', null)}
             cardcode={partnerInfo.cardcode}
+            partner_id={partnerInfo.id}
             edit_access={access}
           />
         }

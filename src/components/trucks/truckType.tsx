@@ -14,7 +14,14 @@ const TRUCKS_TYPE_QUERY = gql`
 }
 `
 const UPDATE_TRUCK_TYPE_MUTATION = gql`
-mutation truck_type_edit($truck_type_id:Int,$truck_no:String,$updated_by: String!) {
+mutation truck_type_edit($description:String, $topic:String, $truck_id: Int,$updated_by: String!,$truck_no:String,$truck_type_id:Int){
+  insert_truck_comment(objects:{truck_id:$truck_id,topic:$topic,description:$description,created_by:$updated_by})
+    {
+      returning
+      {
+        id
+      }
+    }
     update_truck(_set:{truck_type_id: $truck_type_id,updated_by:$updated_by}, where:{truck_no: {_eq:$truck_no}}) {
       returning{
         id
@@ -22,13 +29,15 @@ mutation truck_type_edit($truck_type_id:Int,$truck_no:String,$updated_by: String
       }
     }
   }
+
+
 `
 
 const TruckType = (props) => {
-  const { truckTypeId, truckType, truck_no } = props
+  const { truckTypeId, truckType, truck_no,truck_id } = props
   const context = useContext(userContext)
 
-  const { role } = u
+  const { role,topic } = u
   const edit_access = [role.user]
 
   const { loading, error, data } = useQuery(
@@ -60,7 +69,10 @@ const TruckType = (props) => {
       variables: {
         truck_no,
         truck_type_id: value,
-        updated_by: context.email
+        updated_by: context.email,
+        description:`${topic.truck_type} updated by ${context.email}`,
+        topic:topic.truck_type,
+        truck_id: truck_id
       }
     })
   }

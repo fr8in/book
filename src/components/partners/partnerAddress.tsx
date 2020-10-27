@@ -3,10 +3,18 @@ import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import { useState, useContext } from 'react'
 import get from 'lodash/get'
+import u from '../../lib/util'
 
 const UPDATE_PARTNER_ADDRESS_MUTATION = gql`
-mutation update_address($address:jsonb, $cardcode:String,$updated_by: String!){
-  update_partner(_set:{address: $address,updated_by:$updated_by} where: {cardcode:{_eq:$cardcode}}){
+mutation update_address($description:String, $topic:String, $partner_id: Int,$updated_by: String!,$address:jsonb,$cardcode:String){
+  insert_partner_comment(objects:{partner_id:$partner_id,topic:$topic,description:$description,created_by:$updated_by})
+    {
+      returning
+      {
+        id
+      }
+    }
+   update_partner(_set:{address: $address,updated_by:$updated_by} where: {cardcode:{_eq:$cardcode}}){
     returning{
       id
       address
@@ -15,7 +23,8 @@ mutation update_address($address:jsonb, $cardcode:String,$updated_by: String!){
 }`
 
 const EditAddress = (props) => {
-  const { visible, onHide, cardcode, partnerAddress } = props
+  const { visible, onHide, cardcode, partnerAddress ,partner_id } = props
+  const { topic } = u
 
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
@@ -48,7 +57,10 @@ const EditAddress = (props) => {
       variables: {
         cardcode: cardcode,
         address: address,
-        updated_by: context.email
+        updated_by: context.email,
+        description:`${topic.address} updated by ${context.email}`,
+        topic:topic.address,
+        partner_id: partner_id
       }
     })
   }
