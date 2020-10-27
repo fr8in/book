@@ -83,6 +83,7 @@ const Actions = (props) => {
   const { onFilter, initialFilter } = props
   const initial = { filter: false, search: false, ssh: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+  const [bank_visible, setBank_visible] = useState(false)
 
   const [filter, setFilter] = useState(initialFilter)
 
@@ -154,6 +155,10 @@ const Actions = (props) => {
     setFilter({ ...filter, [name]: null })
     onFilter({ ...filter, [name]: null })
   };
+
+  const onBankDetailToggle = (visible) => {
+    setBank_visible(visible)
+  }
   
  
   const user = (
@@ -170,7 +175,7 @@ const Actions = (props) => {
         <Button size='small' type='ghost' shape='circle' icon={<FilterFilled />} onClick={() => onShow('filter')} />
         <Button size='small' type='ghost' shape='circle' icon={<SearchOutlined />} onClick={() => onShow('search')} />
        {access &&
-        <Dropdown overlay={<BankBalance />} trigger={['click']} placement='bottomRight'>
+        <Dropdown overlay={bank_visible ? <BankBalance /> : <Menu/>} trigger={['click']} placement='bottomRight' onVisibleChange={onBankDetailToggle}>
           <Button size='small' type='ghost' shape='circle' icon={<BankFilled />} />
         </Dropdown>}
         <Dropdown overlay={user} trigger={['click']} placement='bottomRight'>

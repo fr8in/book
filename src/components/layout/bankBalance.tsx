@@ -12,12 +12,13 @@ query bank_balance{
 const BankBalance = () => {
   const { loading, data, error } = useQuery(
     BANK_BALANCE, {
-      fetchPolicy: 'cache-and-network',
+      fetchPolicy: 'network-only',
       notifyOnNetworkStatusChange: true
     }
   )
 
   console.log('BankBalance Error', error)
+  console.log('BankBalance data', data)
   let _data = {}
   if (!loading) {
     _data = data
