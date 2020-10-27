@@ -63,5 +63,10 @@ export default {
     approvals: 'approvals/',
     wh: 'warehousereceipt/',
     customer_pan: 'pan/'
+  },
+  is_roles: (allowed_roles,context) => {
+    let result = context.roles.some(role => allowed_roles.includes(role))
+    return result;
   }
 }
+
