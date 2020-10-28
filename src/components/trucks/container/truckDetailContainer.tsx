@@ -187,6 +187,7 @@ const TruckDetailContainer = (props) => {
                   <TruckType
                     truckType={get(truck_info, 'truck_type.name', null)}
                     truckTypeId={get(truck_info, 'truck_type.id', null)}
+                    truck_id={truck_info.id}
                     truck_no={get(truck_info, 'truck_no', null)}
                   />
                 </h4>

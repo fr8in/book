@@ -7,7 +7,14 @@ import userContext from '../../lib/userContaxt'
 import u from '../../lib/util'
 
 const UPDATE_TRUCK_NO_MUTATION = gql`
-mutation truck_no_edit($truck_no:String,$id:Int,$updated_by: String!) {
+mutation truck_no_edit($description:String, $topic:String, $truck_id: Int,$updated_by: String!,$truck_no:String,$id:Int){
+  insert_truck_comment(objects:{truck_id:$truck_id,topic:$topic,description:$description,created_by:$updated_by})
+    {
+      returning
+      {
+        id
+      }
+    }
   update_truck(_set: {truck_no: $truck_no,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
@@ -17,11 +24,11 @@ mutation truck_no_edit($truck_no:String,$id:Int,$updated_by: String!) {
 }
 `
 const TruckNo = (props) => {
-  const { truck_no, id , loading } = props
+  const { truck_no, id, loading } = props
   const router = useRouter()
   const context = useContext(userContext)
 
-  const { role } = u
+  const { role,topic } = u
   const edit_access = [role.user]
 
   const [updateTruckNo] = useMutation(
@@ -37,12 +44,15 @@ const TruckNo = (props) => {
       variables: {
         id,
         truck_no: text,
-        updated_by: context.email
+        updated_by: context.email,
+        description:`${topic.truck_no} updated by ${context.email}`,
+        topic:topic.truck_no,
+        truck_id: id
       }
     })
     const url = '/trucks/[id]'
     const as = `/trucks/${text}`
-    router.push(url, as, 'shallow')
+    router.push(url, as, { shallow: true })
   }
 
   return (

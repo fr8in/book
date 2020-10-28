@@ -23,6 +23,21 @@ export default {
     billing: 'Billing',
     user: 'user'
   },
+  topic: {
+    partner_name:'Partner Name',
+    partner_kyc_reject:'Kyc Rejected',
+    onboarded_by: 'Partner OnBoardedBy',
+    address:'Address',
+    cibil_score:'Cibil Score',
+    gst:'GST',
+    pan:'PAN',
+    final_payment:'Partner Final Payment',
+    partner_advance_percentage:'Advance Percentage',
+    truck_no:'Truck Number',
+    truck_type:'Truck Type',
+    truck_dimension:'Truck Dimension',
+    truck_driver_number:'Driver Number'
+  },
   maxLength: 6,
   MIN_REBATE_PERCENTAGE: 0.25,
   handleLengthCheck: (e) => {
@@ -64,9 +79,8 @@ export default {
     wh: 'warehousereceipt/',
     customer_pan: 'pan/'
   },
-  is_roles: (allowed_roles,context) => {
-    let result = context.roles.some(role => allowed_roles.includes(role))
-    return result;
+  is_roles: (allowed_roles, context) => {
+    const result = context.roles.some(role => allowed_roles.includes(role))
+    return result
   }
 }
-
