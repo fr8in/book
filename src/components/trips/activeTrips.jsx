@@ -110,7 +110,7 @@ const Trips = (props) => {
     {
       title: 'Driver No',
       render: (text, record) => {
-        const mobile = get(record, 'truck.driver.mobile', null)
+        const mobile = get(record, 'driver.mobile', null)
         return (
           mobile ? <span onClick={() => callNow(mobile)} className='link'>{mobile}</span> : null
         )

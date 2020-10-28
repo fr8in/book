@@ -73,7 +73,7 @@ const IncomingPaymentsBooked = (props) => {
     <Table
       columns={column}
       dataSource={customer_booked}
-      rowKey={(record) => record.customer_incoming_id}
+      rowKey={(record) => record.id}
       size='small'
       pagination={false}
       loading={loading}
