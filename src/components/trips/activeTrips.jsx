@@ -29,13 +29,13 @@ const Trips = (props) => {
 
   const [assign_to_confirm] = useMutation(
     ASSIGN_TO_CONFIRM_STATUS_MUTATION, {
-      onError (error) {
-        message.error(error.toString())
-      },
-      onCompleted () {
-        message.success('Updated!!')
-      }
-    })
+    onError(error) {
+      message.error(error.toString())
+    },
+    onCompleted() {
+      message.success('Updated!!')
+    }
+  })
   const onSubmit = (id) => {
     assign_to_confirm({
       variables: {
@@ -109,7 +109,7 @@ const Trips = (props) => {
       render: (text, record) => {
         const mobile = get(record, 'driver.mobile', null)
         return (
-          mobile ? <Phone number={mobile} />: null
+          mobile ? <Phone number={mobile} /> : null
         )
       },
       width: props.intransit ? '10%' : '11%'
@@ -193,37 +193,36 @@ const Trips = (props) => {
         return (
           <span>
             <Tooltip title={record.driverPhoneNo}>
-            <Phone number={record.driverPhoneNo} />
+              <Phone number={record.driverPhoneNo} />
             </Tooltip>
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
             </Tooltip>
-            {/* <Tooltip title='click to copy message'>
-            <Button type='link' icon={<WhatsAppOutlined />} />
-          </Tooltip> */}
             <>
               {
                 assign_status === 'Assigned'
-                  ? <Popconfirm
-                    title='Are you sure you want to change this status to confirmed?'
-                    okText='Yes'
-                    cancelText='No'
-                    onConfirm={() => onSubmit(record.id)}
-                  >
-                    <Button
-                      icon={<CheckOutlined />}
-                      type='primary'
-                      size='small'
-                      shape='circle'
-                      disabled={is_execption && (expection_dates < todayDate || expection_dates === null)}
-                    />
-                  </Popconfirm> : null
+                  ? <>
+                    {is_execption && (expection_dates < todayDate || expection_dates === null) ?
+                      <Tooltip title={`Customer Exception`}>
+                        <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' danger block />
+                      </Tooltip>
+                       :
+                      <Popconfirm
+                        title='Are you sure you want to change this status to confirmed?'
+                        okText='Yes'
+                        cancelText='No'
+                        onConfirm={() => onSubmit(record.id)}
+                      >
+                        <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle'  />
+                      </Popconfirm>            
+                   }
+                  </>
+                  : null
               }
             </>
           </span>
         )
-      },
-
+        },    
       width: props.intransit ? '9%' : '11%'
     }
   ]
