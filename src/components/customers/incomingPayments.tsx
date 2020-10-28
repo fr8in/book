@@ -48,7 +48,8 @@ const IncomingPayments = (props) => {
       title: 'Date',
       dataIndex: 'wallet_moved_date',
       width: '15%',
-      render: (text, render) => text ? moment(text).format('DD-MMM-YY') : '-'
+      render: (text, render) => text ? moment(text).format('DD-MMM-YY') : '-',
+      sorter: (a, b) => (a.wallet_moved_date > b.wallet_moved_date ? 1 : -1)
     },
     {
       title: 'Amount',

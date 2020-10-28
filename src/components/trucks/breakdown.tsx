@@ -5,6 +5,7 @@ import { gql, useQuery } from '@apollo/client'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import CreateBreakdown from './createBreakdown'
 import u from '../../lib/util'
+import Phone from '../common/phone'
 
 const TRUCK_BREAKDOWN_QUERY = gql`
 query truck_breakdown($truck_status_name: [String!], $offset: Int!, $limit: Int! ,$onboarded_by: [String!]) {
@@ -76,10 +77,6 @@ const Breakdown = (props) => {
   const truck_info = get(_data, 'truck[0]', {})
   const record_count = get(_data, 'rows.aggregate.count', 0)
 
-  const callNow = data => {
-    window.location.href = 'tel:' + data
-  }
-
   const onPageChange = (value) => {
     setFilter({ ...filter, offset: value })
   }
@@ -101,7 +98,8 @@ const Breakdown = (props) => {
       width: '35%',
       render: (text, record) => {
         return (
-          record.partner && record.partner.name ? <span onClick={() => callNow(number)} className='link'>{record.partner && record.partner.name}</span> : null
+          record.partner && record.partner.name ? 
+          <Phone number={number} text={record.partner && record.partner.name} />: null
         )
       }
     },

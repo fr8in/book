@@ -4,6 +4,7 @@ import { Table, Space, Button } from 'antd'
 import mock from '../../../mock/customer/sourcingMock'
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import VasConfirmation from './vasConfirmation'
+import Phone from '../common/phone'
 
 const VasRequest = () => {
   const initial = { visible: false, data: [], status: null }
@@ -31,7 +32,8 @@ const VasRequest = () => {
     {
       title: 'Contact No',
       dataIndex: 'number',
-      width: '13%'
+      width: '13%',
+      render : (text,record) => <Phone number={record.number}/>
     },
     {
       title: 'Requested Service',

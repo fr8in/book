@@ -1,11 +1,12 @@
 import { Table, Tooltip, Button, Popconfirm, message } from 'antd'
-import { PhoneOutlined, CommentOutlined, CheckOutlined } from '@ant-design/icons'
+import { CommentOutlined, CheckOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import TripFeedBack from './tripFeedBack'
 import Truncate from '../common/truncate'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
+import Phone from '../common/phone'
 import { gql, useMutation } from '@apollo/client'
 
 const ASSIGN_TO_CONFIRM_STATUS_MUTATION = gql`
@@ -28,13 +29,13 @@ const Trips = (props) => {
 
   const [assign_to_confirm] = useMutation(
     ASSIGN_TO_CONFIRM_STATUS_MUTATION, {
-      onError (error) {
-        message.error(error.toString())
-      },
-      onCompleted () {
-        message.success('Updated!!')
-      }
-    })
+    onError(error) {
+      message.error(error.toString())
+    },
+    onCompleted() {
+      message.success('Updated!!')
+    }
+  })
   const onSubmit = (id) => {
     assign_to_confirm({
       variables: {
@@ -42,10 +43,6 @@ const Trips = (props) => {
         id: id
       }
     })
-  }
-
-  const callNow = record => {
-    window.location.href = 'tel:' + record
   }
 
   const tat = {
@@ -110,12 +107,12 @@ const Trips = (props) => {
     {
       title: 'Driver No',
       render: (text, record) => {
-        const mobile = get(record, 'truck.driver.mobile', null)
+        const mobile = get(record, 'driver.mobile', null)
         return (
-          mobile ? <span onClick={() => callNow(mobile)} className='link'>{mobile}</span> : null
+          mobile ? <Phone number={mobile} /> : null
         )
       },
-      width: props.intransit ? '8%' : '9%'
+      width: props.intransit ? '10%' : '11%'
     },
     {
       title: 'Truck',
@@ -140,7 +137,7 @@ const Trips = (props) => {
         return <Truncate data={source} length={10} />
       },
       sorter: (a, b) => (a.source.name > b.source.name ? 1 : -1),
-      width: '8%'
+      width: '7%'
     },
     {
       title: 'Destination',
@@ -149,7 +146,7 @@ const Trips = (props) => {
         return <Truncate data={destination} length={10} />
       },
       sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
-      width: '8%'
+      width: '7%'
     },
     {
       title: 'TAT',
@@ -195,38 +192,37 @@ const Trips = (props) => {
         const todayDate = new Date().toISOString().slice(0, 10)
         return (
           <span>
-            <Tooltip title={record.driverPhoneNo}>
-              <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.driverPhoneNo)} />
+            <Tooltip title={get(record, 'partner.partner_user.mobile', null)}>
+              <Phone  number={get(record, 'partner.partner_user.mobile', null)} icon={true}/>
             </Tooltip>
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
             </Tooltip>
-            {/* <Tooltip title='click to copy message'>
-            <Button type='link' icon={<WhatsAppOutlined />} />
-          </Tooltip> */}
             <>
               {
                 assign_status === 'Assigned'
-                  ? <Popconfirm
-                    title='Are you sure you want to change this status to confirmed?'
-                    okText='Yes'
-                    cancelText='No'
-                    onConfirm={() => onSubmit(record.id)}
-                  >
-                    <Button
-                      icon={<CheckOutlined />}
-                      type='primary'
-                      size='small'
-                      shape='circle'
-                      disabled={is_execption && (expection_dates < todayDate || expection_dates === null)}
-                    />
-                  </Popconfirm> : null
+                  ? <>
+                    {is_execption && (expection_dates < todayDate || expection_dates === null) ?
+                      <Tooltip title={`Customer Exception`}>
+                        <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' danger block />
+                      </Tooltip>
+                       :
+                      <Popconfirm
+                        title='Are you sure you want to change this status to confirmed?'
+                        okText='Yes'
+                        cancelText='No'
+                        onConfirm={() => onSubmit(record.id)}
+                      >
+                        <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle'  />
+                      </Popconfirm>            
+                   }
+                  </>
+                  : null
               }
             </>
           </span>
         )
-      },
-
+        },    
       width: props.intransit ? '9%' : '11%'
     }
   ]

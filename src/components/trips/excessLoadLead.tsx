@@ -117,7 +117,7 @@ const ExcessLoadLead = (props) => {
       <Table
         columns={data}
         dataSource={record.leads}
-        rowKey={record => get(record, 'leads.id', null)}
+        rowKey={record => get(record, 'id', null)}
         size='small'
         scroll={{ x: 1156 }}
         pagination={false}

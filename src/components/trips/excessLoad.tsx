@@ -3,69 +3,60 @@ import Link from 'next/link'
 import { RocketFilled, DeleteOutlined } from '@ant-design/icons'
 import ExcessLoadLead from './excessLoadLead'
 import { gql, useSubscription, useMutation } from '@apollo/client'
-import _ from 'lodash'
+import get from 'lodash/get'
 import moment from 'moment'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import ExcessToPo from '../trips/excessToPo'
 import userContext from '../../lib/userContaxt'
-import {useContext } from 'react'
+import { useContext } from 'react'
 
 const EXCESS_LOAD = gql`
 subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$trip_status: String, $truck_type:[Int!], $managers: [Int!]) {
-  region(where: {id: {_in: $regions}}) {
+  trip(where: {
+    trip_status:{name:{_eq:$trip_status}},
+    branch:{region_id:{_in:$regions}},
+    branch_id:{_in:$branches},
+    source_connected_city_id:{_in:$cities},
+    truck_type_id:{_in:$truck_type},
+    branch_employee_id:{_in: $managers}
+  }) {
     id
-    name
-    branches(where: {id: {_in: $branches}}) {
+    po_date
+    source {
       id
       name
-      connected_cities: cities(where: {_and: [{is_connected_city: {_eq: true}}, {id: {_in: $cities}}]}) {
+    }
+    destination {
+      id
+      name
+    }
+    truck_type{
+      id
+      name
+    }
+    customer {
+      id
+      cardcode
+      name
+    }
+    customer_price
+    is_price_per_ton
+    ton
+    price_per_ton
+    created_at
+    leads {
+      id
+      created_at
+      partner {
         id
+        cardcode
         name
-        cities {
+        partner_users(where: {is_admin: {_eq: true}}) {
+          mobile
+        }
+        trucks(where: {truck_status:{name:{_eq:"Waiting for Load"}}}){
           id
-          name
-          trips(where: {trip_status: {name: {_eq: $trip_status}}, truck_type:{id: {_in:$truck_type}}, branch_employee_id: {_in: $managers}}) {
-            id
-            po_date
-            source {
-              id
-              name
-            }
-            destination {
-              id
-              name
-            }
-            truck_type{
-              id
-              name
-            }
-            customer {
-              id
-              cardcode
-              name
-            }
-            customer_price
-            is_price_per_ton
-            ton
-            price_per_ton
-            created_at
-            leads {
-              id
-              created_at
-              partner {
-                id
-                cardcode
-                name
-                partner_users(where: {is_admin: {_eq: true}}) {
-                  mobile
-                }
-                trucks(where: {truck_status:{name:{_eq:"Waiting for Load"}}}){
-                  id
-                  truck_no
-                }
-              }
-            }
-          }
+          truck_no
         }
       }
     }
@@ -104,12 +95,12 @@ const ExcessLoad = (props) => {
   )
 
   console.log('Excess Load Error', error)
-  let trips = []
+  let newData = {}
   if (!loading) {
-    const newData = { data }
-
-    trips = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('trips').value()
+    newData = data
   }
+
+  const trips = get(newData, 'trip', [])
 
   const [cancel_load] = useMutation(
     CANCEL_LOAD_MUTATION,
