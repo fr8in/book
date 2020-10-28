@@ -10,12 +10,13 @@ import Router from 'next/router'
 import Loading from '../../components/common/loading'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
-import isEmpty from 'lodash/isEmpty'
 import { gql, useQuery } from '@apollo/client'
 
 const EMPLOYEE_QUERY = gql`
 query employee_name($email:String){
   employee (where:{email:{_eq:$email}}){
+    id
+    name
     branch_employees{
       branch_id
     }
@@ -42,7 +43,6 @@ const PageLayout = (props) => {
 
   const email = get(props, 'authState.user.email', null)
   const roles = get(props, 'authState.roles', null)
-  const user = { email, roles }
 
   const { loading, data, error } = useQuery(
     EMPLOYEE_QUERY,
@@ -58,12 +58,14 @@ const PageLayout = (props) => {
     _data = data
   }
   const employees = get(_data, 'employee[0].branch_employees', [])
+  const employee_id = get(_data, 'employee[0].id', null)
 
   useEffect(() => {
     const branch_ids = employees.map(employee => employee.branch_id)
     setFilters({ ...filters, branches: branch_ids })
   }, [loading])
 
+  const user = { email, roles, employee_id }
   return (
     <userContext.Provider value={user}>
       <Layout id='page'>
