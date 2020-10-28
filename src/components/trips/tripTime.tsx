@@ -95,7 +95,7 @@ const TripTime = (props) => {
   const context = useContext(userContext)
   const { role } = u
   const po_delete_access = [role.admin, role.rm]
-  const access = !isEmpty(po_delete_access) ? context.roles.some(r => po_delete_access.includes(r)) : false
+  const access = (trip_info.loaded === 'No') || u.is_roles(po_delete_access,context) 
   const [form] = Form.useForm()
 
   const [getWord, { loading, data, error, called }] = useLazyQuery(GET_WORD)
