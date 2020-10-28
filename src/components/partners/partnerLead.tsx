@@ -17,7 +17,7 @@ import Truncate from '../common/truncate'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import EditAccess from '../common/editAccess'
-
+import Phone from '../common/phone'
 const PARTNERS_LEAD_SUBSCRIPTION = gql`
 subscription partner_lead(
   $offset: Int!
@@ -323,7 +323,7 @@ const PartnerLead = (props) => {
       dataIndex: 'number',
       width: '9%',
       render: (text, record) => {
-        return record.partner_users[0] && record.partner_users[0].mobile
+        return <Phone number={record.partner_users[0] && record.partner_users[0].mobile} />
       },
       filterDropdown: (
         <div>

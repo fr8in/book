@@ -2,14 +2,10 @@
 import LabelAndData from '../common/labelAndData'
 import Link from 'next/link'
 import { Row } from 'antd'
-import { PhoneOutlined } from '@ant-design/icons'
+import Phone from '../common/phone'
 
 const Truck = (props) => {
   const { truck_info } = props
-
-  const callNow = data => {
-    window.location.href = 'tel:' + data
-  }
 
   const number = truck_info.partner && truck_info.partner.partner_users && truck_info.partner.partner_users.length > 0 &&
           truck_info.partner.partner_users[0].mobile ? truck_info.partner.partner_users[0].mobile : '-'
@@ -29,11 +25,7 @@ const Truck = (props) => {
       />
       <LabelAndData
         label='Partner No'
-        data={
-          <span className='link' onClick={() => callNow(number)}>
-            <PhoneOutlined /> {number}
-          </span>
-        }
+        data={ <Phone number={number} /> }
         mdSpan={4}
         smSpan={8}
         xsSpan={12}

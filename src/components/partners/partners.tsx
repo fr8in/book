@@ -14,6 +14,7 @@ import { useState } from 'react'
 import moment from 'moment'
 import Truncate from '../common/truncate'
 import get from 'lodash/get'
+import Phone from '../common/phone'
 
 const PartnerKyc = (props) => {
   const {
@@ -133,7 +134,7 @@ const PartnerKyc = (props) => {
       width: '9%',
       render: (text, record) => {
         const number = get(record, 'partner_users[0].mobile', '-')
-        return (number)
+        return (<Phone number={record.number} text={number}/>)    
       }
 
     },

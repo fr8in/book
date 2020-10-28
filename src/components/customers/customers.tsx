@@ -26,6 +26,7 @@ import ViewFile from '../common/viewFile'
 import LinkComp from '../common/link'
 import isEmpty from 'lodash/isEmpty'
 import u from '../../lib/util'
+import Phone from '../common/phone'
 
 const CUSTOMER_REJECT_MUTATION = gql`
   mutation customer_reject($status_id: Int, $id: Int!,$updated_by:String!) {
@@ -165,6 +166,7 @@ const CustomerKyc = (props) => {
       title: 'Mobile No',
       dataIndex: 'mobile',
       width: '10%',
+      render : (text,record) => <Phone number={record.mobile} />,
       filterDropdown: (
         <div>
           <Input

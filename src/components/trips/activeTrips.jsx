@@ -1,11 +1,12 @@
 import { Table, Tooltip, Button, Popconfirm, message } from 'antd'
-import { PhoneOutlined, CommentOutlined, CheckOutlined } from '@ant-design/icons'
+import { CommentOutlined, CheckOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import TripFeedBack from './tripFeedBack'
 import Truncate from '../common/truncate'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
+import Phone from '../common/phone'
 import { gql, useMutation } from '@apollo/client'
 
 const ASSIGN_TO_CONFIRM_STATUS_MUTATION = gql`
@@ -42,10 +43,6 @@ const Trips = (props) => {
         id: id
       }
     })
-  }
-
-  const callNow = record => {
-    window.location.href = 'tel:' + record
   }
 
   const tat = {
@@ -112,10 +109,10 @@ const Trips = (props) => {
       render: (text, record) => {
         const mobile = get(record, 'truck.driver.mobile', null)
         return (
-          mobile ? <span onClick={() => callNow(mobile)} className='link'>{mobile}</span> : null
+          mobile ? <Phone number={mobile} />: null
         )
       },
-      width: props.intransit ? '8%' : '9%'
+      width: props.intransit ? '10%' : '11%'
     },
     {
       title: 'Truck',
@@ -140,7 +137,7 @@ const Trips = (props) => {
         return <Truncate data={source} length={10} />
       },
       sorter: (a, b) => (a.source.name > b.source.name ? 1 : -1),
-      width: '8%'
+      width: '7%'
     },
     {
       title: 'Destination',
@@ -149,7 +146,7 @@ const Trips = (props) => {
         return <Truncate data={destination} length={10} />
       },
       sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
-      width: '8%'
+      width: '7%'
     },
     {
       title: 'TAT',
@@ -196,7 +193,7 @@ const Trips = (props) => {
         return (
           <span>
             <Tooltip title={record.driverPhoneNo}>
-              <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.driverPhoneNo)} />
+            <Phone number={record.driverPhoneNo} />
             </Tooltip>
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
