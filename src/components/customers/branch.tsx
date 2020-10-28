@@ -7,7 +7,7 @@ import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import userContext from '../../lib/userContaxt'
 import { useState,useContext } from 'react'
 import isEmpty from 'lodash/isEmpty'
-
+import Phone from '../common/phone'
 
 const CUSTOMER_BRANCH = gql`
 subscription customer_branch($cardcode: String) {
@@ -83,7 +83,8 @@ const Branch = (props) => {
     {
       title: 'Contact No',
       dataIndex: 'mobile',
-      width: '8%'
+      width: '8%',
+      render : (text,record) => <Phone number={record.mobile}/>
     },
     access ?
     {

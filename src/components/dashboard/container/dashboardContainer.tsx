@@ -13,6 +13,7 @@ import WaitingForLoadContainer from './waitingForLoadContainer'
 import Orders from '../../reports/orders'
 import Revenue from '../../reports/revenue'
 import Progress from '../../reports/progress'
+import moment from 'moment'
 const { TabPane } = Tabs
 
 const DashboardContainer = (props) => {
@@ -21,7 +22,7 @@ const DashboardContainer = (props) => {
   const { visible, onShow, onHide } = useShowHide(initial)
 
   const variables = {
-    now: filters.now,
+    now: moment().format('YYYY-MM-DD'),
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
     branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
     cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
@@ -46,37 +47,37 @@ const DashboardContainer = (props) => {
   if (!loading) {
     const newData = { data }
 
-    const unloading_aggrigate = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('unloading').flatMap('aggregate').value()
+    const unloading_aggrigate = _.chain(newData).flatMap('city').flatMap('unloading').flatMap('aggregate').value()
     unloading_count = _.sumBy(unloading_aggrigate, 'count')
 
-    const assigned_aggrigate = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('assigned').flatMap('aggregate').value()
+    const assigned_aggrigate = _.chain(newData).flatMap('city').flatMap('assigned').flatMap('aggregate').value()
     assigned_count = _.sumBy(assigned_aggrigate, 'count')
 
-    const confirmed_aggrigate = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('confirmed').flatMap('aggregate').value()
+    const confirmed_aggrigate = _.chain(newData).flatMap('city').flatMap('confirmed').flatMap('aggregate').value()
     confirmed_count = _.sumBy(confirmed_aggrigate, 'count')
 
-    const loading_aggrigate = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('loading').flatMap('aggregate').value()
+    const loading_aggrigate = _.chain(newData).flatMap('city').flatMap('loading').flatMap('aggregate').value()
     loading_count = _.sumBy(loading_aggrigate, 'count')
 
-    const intransit_aggrigate = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('intransit').flatMap('aggregate').value()
+    const intransit_aggrigate = _.chain(newData).flatMap('city').flatMap('intransit').flatMap('aggregate').value()
     intransit_count = _.sumBy(intransit_aggrigate, 'count')
 
-    const intransit_d_aggrigate = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('intransit_d').flatMap('aggregate').value()
+    const intransit_d_aggrigate = _.chain(newData).flatMap('city').flatMap('intransit_d').flatMap('aggregate').value()
     intransit_d_count = _.sumBy(intransit_d_aggrigate, 'count')
 
-    const unloading_d_aggrigate = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('unloading_d').flatMap('aggregate').value()
+    const unloading_d_aggrigate = _.chain(newData).flatMap('city').flatMap('unloading_d').flatMap('aggregate').value()
     unloading_d_count = _.sumBy(unloading_d_aggrigate, 'count')
 
-    const excess_aggrigate = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('excess').flatMap('aggregate').value()
+    const excess_aggrigate = _.chain(newData).flatMap('city').flatMap('excess').flatMap('aggregate').value()
     excess_count = _.sumBy(excess_aggrigate, 'count')
 
-    const hold_aggrigate = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('hold').flatMap('aggregate').value()
+    const hold_aggrigate = _.chain(newData).flatMap('city').flatMap('hold').flatMap('aggregate').value()
     hold_count = _.sumBy(hold_aggrigate, 'count')
 
-    const truck_aggrigate = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('trucks_total').flatMap('aggregate').value()
+    const truck_aggrigate = _.chain(newData).flatMap('city').flatMap('trucks_total').flatMap('aggregate').value()
     truck_count = _.sumBy(truck_aggrigate, 'count')
 
-    const truck_c_aggrigate = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('trucks_current').flatMap('aggregate').value()
+    const truck_c_aggrigate = _.chain(newData).flatMap('city').flatMap('trucks_current').flatMap('aggregate').value()
     truck_current_count = _.sumBy(truck_c_aggrigate, 'count')
   }
 

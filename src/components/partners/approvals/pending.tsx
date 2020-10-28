@@ -64,8 +64,8 @@ subscription trip_credit_debit($status: [String!]) {
 const Pending = () => {
   const { role } = u
   const access = [role.admin, role.rm]
-  const approve_access = [role.admin, role.rm]
-  const reject_access = [role.admin, role.rm]
+  const approve_roles = [role.admin, role.rm,role.partner_manager,role.partner_support]
+  const reject_roles = [role.admin, role.rm,role.partner_manager,role.partner_support]
   const initial = {
     commentData: [],
     commentVisible: false,
@@ -78,8 +78,8 @@ const Pending = () => {
   }
 
   const context = useContext(userContext)
-  const approval_access = !isEmpty(approve_access) ? context.roles.some(r => approve_access.includes(r)) : false
-  const rejected_access = !isEmpty(reject_access) ? context.roles.some(r => reject_access.includes(r)) : false
+  const approval_access =  u.is_roles(approve_roles,context)
+  const rejected_access =  u.is_roles(reject_roles,context)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const [filter, setFilter] = useState(initial)
 

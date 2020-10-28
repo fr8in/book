@@ -1,5 +1,5 @@
 import { Table, Tooltip, Badge, Button, Input } from 'antd'
-import { PhoneOutlined, CommentOutlined, WhatsAppOutlined, RocketFilled, SearchOutlined, EditTwoTone } from '@ant-design/icons'
+import { CommentOutlined, RocketFilled, SearchOutlined, EditTwoTone } from '@ant-design/icons'
 import CreatePo from '../trips/createPo'
 import PartnerUsers from '../partners/partnerUsers'
 import TruckComment from './truckComment'
@@ -7,6 +7,7 @@ import CreateBreakdown from './createBreakdown'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import LinkComp from '../common/link'
 import Truncate from '../common/truncate'
+import Phone from '../common/phone'
 
 const WaitingForLoad = (props) => {
   const { trucks, loading, onTruckNoSearch, vars } = props
@@ -22,10 +23,6 @@ const WaitingForLoad = (props) => {
     title: ''
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
-
-  const callNow = record => {
-    window.location.href = 'tel:' + record
-  }
 
   const handleTruckNo = (e) => {
     onTruckNoSearch(e.target.value)
@@ -132,7 +129,7 @@ const WaitingForLoad = (props) => {
         return (
           <span>
             <Tooltip title={record.driver && record.driver.mobile}>
-              <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.driver && record.driver.mobile)} />
+              <Phone  number={record.driver && record.driver.mobile} />
             </Tooltip>
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />

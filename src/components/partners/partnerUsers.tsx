@@ -1,10 +1,11 @@
 
 import { Modal, Button, Row, Input, Col, Table, Popconfirm, Form, message } from 'antd'
-import { PhoneOutlined, DeleteOutlined } from '@ant-design/icons'
+import { DeleteOutlined } from '@ant-design/icons'
 import { useSubscription, useMutation, gql } from '@apollo/client'
 import { useState, useContext } from 'react'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
+import Phone from '../common/phone'
 
 const PARTNER_USERS_SUBSCRIPTION = gql`
 subscription partner_user($cardcode: String){
@@ -114,15 +115,12 @@ const PartnerUsers = (props) => {
     })
   }
 
-  const callNow = record => {
-    window.location.href = 'tel:' + record
-  }
-
   const partnerUserColumn = [
     {
       title: 'Mobile No',
       dataIndex: 'mobile',
-      key: 'mobile'
+      key: 'mobile',
+      render:(text,record) =>  <Phone number={record.mobile} />
     },
     {
       title: 'Action',
@@ -130,7 +128,7 @@ const PartnerUsers = (props) => {
       key: 'action',
       render: (record) => (
         <span>
-          <Button type='link' icon={<PhoneOutlined />} onClick={() => callNow(record.mobileNo)} />
+          <Phone number={record.mobileNo} />
           {!record.is_admin &&
             <Popconfirm title='Sure to delete?' onConfirm={() => onDelete(record)}>
               <Button type='link' danger icon={<DeleteOutlined />} />

@@ -7,6 +7,7 @@ import get from 'lodash/get'
 import CustomerGst from './customerGst'
 import CustomerOnBoardedBy from './customerOnboardedByName'
 import u from '../../lib/util'
+import Phone from '../common/phone'
 
 const CustomerDetails = (props) => {
   const { customer_info } = props
@@ -92,7 +93,7 @@ const CustomerDetails = (props) => {
           labelSpan={10}
           dataSpan={14}
         />
-        <LabelWithData label='Mobile No' data={customer_info.mobile} labelSpan={10} dataSpan={14} />
+        <LabelWithData label='Mobile No' data={<Phone number={customer_info.mobile} />} labelSpan={10} dataSpan={14} />
         <LabelWithData
           label='OnBoarded By'
           data={

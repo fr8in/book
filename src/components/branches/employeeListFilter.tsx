@@ -1,14 +1,20 @@
-import { Modal, Checkbox, Row, Col } from 'antd'
+import { Modal, Checkbox, Row, Col, Tag } from 'antd'
 import { useState } from 'react'
 import { gql, useQuery } from '@apollo/client'
+import get from 'lodash/get'
 
 const EMP_LIST = gql`
-query all_employee{
-  employee(where:{active: {_eq: 1}}){
+query Employee {
+  employee(where: {onboardedbyPartners: {id: {_is_null: false}, partner_status_id: {_in: [2, 3, 8]}}}) {
     id
     email
+   onboardedbyPartners_aggregate {
+      aggregate {
+        count
+      }
+    }
   }
-}
+}				       
 `
 const EmployeeListFilter = (props) => {
   const { visible, onHide, onFilterChange, onboarded_by } = props
@@ -28,10 +34,11 @@ const EmployeeListFilter = (props) => {
 
   var employee = []
   if (!loading) {
-    employee = data && data.employee
+    employee = get(data,'employee',null)
   }
+ 
   const employeeList = employee.map((data) => {
-    return { value: data.email, label: data.email }
+    return { value: data.email && data.onboardedbyPartners_aggregate.aggregate.count, label: <span> {data.email} <Tag color='#40a9ff'>{data.onboardedbyPartners_aggregate.aggregate.count}</Tag></span>}
   })
 
   const onChange = (checkedValues) => {

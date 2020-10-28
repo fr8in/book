@@ -5,7 +5,7 @@ import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 import { useState,useContext } from 'react'
 import isEmpty from 'lodash/isEmpty'
-
+import Phone from '../common/phone'
 
 const CUSTOMER_USER = gql`
 subscription customer_users($cardcode: String!) {
@@ -73,7 +73,7 @@ const Users = (props) => {
     {
       title: 'Mobile No',
       dataIndex: 'mobile',
-      render: (text, record) => text,
+      render: (text, record) =>  <Phone number={record.mobile} />,
       width: '25%'
     },
     {

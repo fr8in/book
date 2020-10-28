@@ -1,68 +1,74 @@
 import { gql } from '@apollo/client'
 
 const DASHBOAD_TRIPS_QUERY = gql`
-subscription dashboard_trips($regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $managers: [Int!], $trip_status: String) {
-  region(where: {id: {_in: $regions}}) {
+subscription dashboard_trips(
+  $trip_status: String!,
+  $regions: [Int!], 
+  $branches: [Int!], 
+  $cities: [Int!], 
+  $truck_type: [Int!], 
+  $managers: [Int!]
+  ) {
+  trip(where:{
+    trip_status:{name:{_eq:$trip_status}},
+    branch:{region_id:{_in:$regions}},
+    branch_id:{_in:$branches},
+    source_connected_city_id:{_in:$cities},
+    truck_type_id:{_in:$truck_type},
+    branch_employee_id:{_in: $managers}
+  }) {
     id
-    branches(where:{_and: [ {region_id:{_in:$regions}} {id:{_in:$branches}}]}) {
+    source_connected_city_id
+    branch_id
+    branch {
+      region_id
+    }
+    destination_branch_id
+    delay
+    eta
+    customer {
       id
-      connected_cities: cities(where: {_and: [{is_connected_city: {_eq: true}}, {id: {_in: $cities}}]}) {
-        id
-        cities {
-          id
-          trips(where: {trip_status: {name: {_eq: $trip_status}}, truck_type: {id: {_in: $truck_type}}, branch_employee_id: {_in: $managers}}) {
-            id
-            delay
-            eta
-            customer {
-              id
-              cardcode
-              name
-              is_exception
-              exception_date
-            }
-            partner {
-              id
-              cardcode
-              name
-              partner_users(where: {is_admin: {_eq: true}}) {
-                mobile
-              }
-            }
-            source {
-              id
-              name
-            }
-            destination {
-              id
-              name
-            }
-            trip_status{
-              id
-              name
-            }
-            confirmed_tat
-            loading_tat
-            intransit_tat
-            unloading_tat
-            last_comment{
-              description
-              id
-            }
-            truck {
-              truck_no
-              truck_type {
-                name
-              }
-              driver {
-                mobile
-              }
-            }
-          }
-        }
+      cardcode
+      name
+      is_exception
+      exception_date
+    }
+    partner {
+      id
+      cardcode
+      name
+    }
+    source {
+      id
+      name
+    }
+    destination {
+      id
+      name
+    }
+    trip_status {
+      id
+      name
+    }
+    confirmed_tat
+    loading_tat
+    intransit_tat
+    unloading_tat
+    driver{
+      id
+      mobile
+    }
+    last_comment {
+      description
+      id
+    }
+    truck {
+      truck_no
+      truck_type {
+        name
       }
     }
   }
-}
-`
+}`
+
 export default DASHBOAD_TRIPS_QUERY
