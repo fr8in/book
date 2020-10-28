@@ -44,7 +44,7 @@ mutation customer_final_payment(
   $destination_halting_write_off: Float
   $tds_filed_by_fr8: Float
   $header: String
-  $comment: String!
+  $comment: String
 ) {
   customer_final_payment(
     trip_id: $trip_id, 
