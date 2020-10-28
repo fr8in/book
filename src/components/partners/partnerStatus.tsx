@@ -4,7 +4,9 @@ import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
 import u from '../../lib/util'
+import useShowHide from '../../hooks/useShowHide'
 import isEmpty from 'lodash/isEmpty'
+import PartnerDeactivation from '../partners/partnerDeactivationComment'
 
 const UPDATE_PARTNER_BLACKLIST_MUTATION = gql`
 mutation partner_blacklist($id: Int!, $updated_by: String!) {
@@ -22,17 +24,6 @@ mutation partner_unblacklist($id: Int!, $updated_by: String!) {
   }
 }`
 
-const UPDATE_PARTNER_DE_ACTIVATE_MUTATION = gql`
-mutation partner_de_activate($partner_status_id:Int,$cardcode:String!, $updated_by: String){
-  update_partner( _set: {partner_status_id: $partner_status_id, updated_by: $updated_by}, where: {cardcode:{_eq: $cardcode}} 
-  ){
-    returning{
-      cardcode
-      partner_status_id
-    }
-  }
-}
-`
 
 const UPDATE_PARTNER_DND_MUTATION = gql`
 mutation partner_dnd($dnd:Boolean,$cardcode:String!,$updated_by: String) {
@@ -49,11 +40,13 @@ const PartnerStatus = (props) => {
   const { partnerInfo } = props
   const { role } = u
   const context = useContext(userContext)
+  const initial = { dectivate: false}
+  const { visible, onShow, onHide } = useShowHide(initial)
   const partner_status = get(partnerInfo, 'partner_status.name', null)
   const is_blacklisted = (partner_status === 'Blacklisted')
   const is_deactivate = (partner_status === 'De-activate')
   const admin_role = [role.admin, role.partner_manager, role.partner_support]
-  const blockAccess_role = [role.admin, role.rm, role.onboarding, role.partner_manager, role.partner_support]
+  const blockAccess_role = [role.admin, role.rm, role.onboarding, role.partner_manager, role.partner_support,role.user]
   const admin = !isEmpty(admin_role) ? context.roles.some(r => admin_role.includes(r)) : false
   const blockAccess = !isEmpty(blockAccess_role) ? context.roles.some(r => blockAccess_role.includes(r)) : false
 
@@ -107,22 +100,6 @@ const PartnerStatus = (props) => {
     }
   }
 
-  const [updateDeactivate] = useMutation(
-    UPDATE_PARTNER_DE_ACTIVATE_MUTATION,
-    {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
-    }
-  )
-  const deActivateChange = (e) => {
-    updateDeactivate({
-      variables: {
-        cardcode: partnerInfo.cardcode,
-        partner_status_id: e.target.checked ? 6 : 4,
-        updated_by: context.email
-      }
-    })
-  }
 
   const [updateDnd] = useMutation(
     UPDATE_PARTNER_DND_MUTATION,
@@ -142,6 +119,7 @@ const PartnerStatus = (props) => {
   }
 
   return (
+    <>
     <Space>
       <Checkbox
         checked={is_blacklisted}
@@ -153,7 +131,7 @@ const PartnerStatus = (props) => {
       <Checkbox
         checked={is_deactivate}
         disabled={!blockAccess ? true : !((blockAccess && !is_blacklisted))}
-        onChange={deActivateChange}
+        onClick={() => onShow('dectivate')}
       >
           De-activate
       </Checkbox>
@@ -165,6 +143,8 @@ const PartnerStatus = (props) => {
           DND
       </Checkbox>
     </Space>
+     {visible.dectivate && <PartnerDeactivation visible={visible.dectivate} onHide={onHide} partnerInfo={partnerInfo} />}
+     </>
   )
 }
 
