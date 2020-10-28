@@ -7,7 +7,7 @@ import TitleWithCount from '../../common/titleWithCount'
 import useShowHide from '../../../hooks/useShowHide'
 import CreateExcessLoad from '../../trips/createExcessLoad'
 import DASHBOAD_QUERY from './query/dashboardQuery'
-import { useSubscription } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import _ from 'lodash'
 import WaitingForLoadContainer from './waitingForLoadContainer'
 import Orders from '../../reports/orders'
@@ -29,7 +29,7 @@ const DashboardContainer = (props) => {
     truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
     managers: (filters.managers && filters.managers.length > 0) ? filters.managers : null
   }
-  const { loading, data, error } = useSubscription(DASHBOAD_QUERY, { variables })
+  const { loading, data, error } = useQuery(DASHBOAD_QUERY, { variables })
   console.log('dashboard error', error)
 
   let unloading_count = 0

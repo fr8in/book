@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 const DASHBOAD_QUERY = gql`
-subscription dashboard_trips($now: timestamp,$regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $managers: [Int!]) {
+query dashboard_trips($now: timestamp,$regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $managers: [Int!]) {
   city {
     unloading: trips_aggregate(where: {trip_status: {name: {_eq: "Reported at destination"}}, branch: {region_id: {_in: $regions}}, branch_id: {_in: $branches}, source_connected_city_id: {_in: $cities}, truck_type_id: {_in: $truck_type}, branch_employee_id: {_in: $managers}}) {
       aggregate {
