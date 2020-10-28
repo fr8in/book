@@ -36,7 +36,11 @@ export default {
     truck_no:'Truck Number',
     truck_type:'Truck Type',
     truck_dimension:'Truck Dimension',
-    truck_driver_number:'Driver Number'
+    truck_driver_number:'Driver Number',
+    truck_deactivation:'Truck Deactivated',
+    truck_activation:'Truck activated',
+    partner_deactivation:'Partner Deactivated',
+    partner_activation:'Partner activated'
   },
   maxLength: 6,
   MIN_REBATE_PERCENTAGE: 0.25,

@@ -13,12 +13,13 @@ import TruckNo from '../../trucks/truckNo'
 import useShowHide from '../../../hooks/useShowHide'
 import TruckComment from '../../trucks/truckComment'
 import CreatePo from '../../trips/createPo'
+import TruckDeactivation from '../truckDeactivationComment' 
 import get from 'lodash/get'
 import u from '../../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 import Loading from '../../common/loading'
 
-import { gql, useSubscription, useMutation } from '@apollo/client'
+import { gql, useSubscription } from '@apollo/client'
 
 const TRUCK_DETAIL_SUBSCRIPTION = gql`
   subscription truck_detail($truck_no: String,$trip_status_id:[Int!]) {
@@ -96,19 +97,14 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
     }
 `
 
-const INSERT_TRUCK_REJECT_MUTATION = gql`
-mutation truck_reject ( $truck_status_id:Int,$id:Int!,$updated_by: String! ){
-  update_truck_by_pk(pk_columns: {id: $id}, _set: {truck_status_id:$truck_status_id,updated_by:$updated_by}) {
-    id
-  }
-}
-`
+
 
 const TabPane = Tabs.TabPane
 const tripStatusId = [2, 3, 4, 5, 6]
 
 const TruckDetailContainer = (props) => {
   const { truckNo } = props
+  const admin = true
   const context = useContext(userContext)
   const { role } = u
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
@@ -116,17 +112,10 @@ const TruckDetailContainer = (props) => {
 
   const [subTabKey, setSubTabKey] = useState('1')
 
-  const initial = { commment: false }
+  const initial = { commment: false,deactivate_comment: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
-  const [updateStatus] = useMutation(
-    INSERT_TRUCK_REJECT_MUTATION,
-    {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
-    }
-  )
-
+  
   const subTabChange = (key) => {
     setSubTabKey(key)
   }
@@ -152,16 +141,7 @@ const TruckDetailContainer = (props) => {
 
   const partner_id = truck_info && truck_info.partner && truck_info.partner.id
 
-  const onSubmit = (status_check) => {
-    console.log('truck_id', truck_info.id)
-    updateStatus({
-      variables: {
-        truck_status_id: status_check ? 5 : 6,
-        id: truck_info.id,
-        updated_by: context.email
-      }
-    })
-  }
+ 
 
   const truck_status = get(truck_info, 'truck_status.name', null)
   const partner_status = get(truck_info, 'partner.partner_status.name', null)
@@ -231,7 +211,7 @@ const TruckDetailContainer = (props) => {
                       {access &&
                         <Row>
                           <Col span={8}>
-                            <Button danger onClick={() => onSubmit(status_check)}>  {status_check ? 'Re-Activate' : 'De-Activate'} </Button>
+                            <Button danger={admin && !status_check} onClick={() => onShow('deactivate_comment')}>  {status_check ? 'Re-Activate' : 'De-Activate'} </Button>
                           </Col>
                         </Row>}
                     </Col>
@@ -253,6 +233,7 @@ const TruckDetailContainer = (props) => {
         </Row>
         {visible.comment && <TruckComment visible={visible.comment} onHide={onHide} id={truck_info.id} truck_status={truck_info && truck_info.truck_status && truck_info.truck_status.name} />}
         {visible.poModal && <CreatePo visible={visible.poModal} onHide={onHide} truck_id={truck_info.id} />}
+        {visible.deactivate_comment && <TruckDeactivation visible={visible.deactivate_comment} onHide={onHide} truck_info={truck_info} />}
       </Card>)
   )
 }
