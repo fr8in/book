@@ -1,74 +1,74 @@
 import React from 'react'
 import Trips from './activeTrips'
 import { gql, useSubscription } from '@apollo/client'
-import _ from 'lodash'
+import get from 'lodash/get'
 
 const TRIPS_QUERY = gql`
-subscription dashboard_trips_truks($regions: [Int!], $trip_status:String!, $branches: [Int!], $cities: [Int!], $truck_type:[Int!], $managers: [Int!] ) {
-  region(where: {id: {_in: $regions}}) {
+subscription dashboard_trips(
+  $trip_status: String!,
+  $regions: [Int!], 
+  $branches: [Int!], 
+  $cities: [Int!], 
+  $truck_type: [Int!], 
+  $managers: [Int!]
+  ) {
+  trip(where:{
+    trip_status:{name:{_eq:$trip_status}},
+    branch:{region_id:{_in:$regions}},
+    destination_branch_id:{_in:$branches},
+    destination_connected_city_id:{_in:$cities},
+    truck_type_id:{_in:$truck_type},
+    branch_employee_id:{_in: $managers}
+  }) {
     id
-    name
-    branches(where: {id: {_in: $branches}}) {
-      branch_employees {
-        id
-        employee {
-          id
-          name
-        }
-      }
+    source_connected_city_id
+    branch_id
+    branch {
+      region_id
+    }
+    destination_branch_id
+    delay
+    eta
+    customer {
+      id
+      cardcode
+      name
+      is_exception
+      exception_date
+    }
+    partner {
+      id
+      cardcode
+      name
+    }
+    source {
       id
       name
-      connected_cities: cities(where: {_and: [{is_connected_city: {_eq: true}}, {id: {_in: $cities}}]}) {
-        id
+    }
+    destination {
+      id
+      name
+    }
+    trip_status {
+      id
+      name
+    }
+    confirmed_tat
+    loading_tat
+    intransit_tat
+    unloading_tat
+    driver{
+      id
+      mobile
+    }
+    last_comment {
+      description
+      id
+    }
+    truck {
+      truck_no
+      truck_type {
         name
-        cities {
-          id
-          name
-          tripsByDestination(where: {trip_status: {name: {_eq: $trip_status}}, truck_type:{id: {_in:$truck_type}}, branch_employee_id: {_in: $managers}}) {
-            id
-            delay
-            eta
-            customer {
-              cardcode
-              name
-            }
-            partner {
-              cardcode
-              name
-              partner_users(where: {is_admin: {_eq: true}}) {
-                mobile
-              }
-            }
-            truck {
-              truck_no
-              truck_type {
-               name
-              }
-              driver {
-                mobile
-              }
-            }
-            source {
-              id
-              name
-            }
-            destination {
-              id
-              name
-            }
-            trip_status{
-              id
-              name
-            }
-            intransit_tat
-            unloading_tat
-            last_comment{
-              description
-              created_at
-              created_by
-            }
-          }
-        }
       }
     }
   }
@@ -85,20 +85,19 @@ const TripsByDestination = (props) => {
     managers: (filters.managers && filters.managers.length > 0) ? filters.managers : null,
     trip_status: trip_status
   }
+  console.log('TripsByDestination error', error)
 
   const { loading, error, data } = useSubscription(
     TRIPS_QUERY,
     { variables: variables }
   )
 
-  console.log('TripsByDestination error', error)
-
-  let trips = []
-
+  let newData = {}
   if (!loading) {
-    const newData = { data }
-    trips = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('tripsByDestination').value()
+    newData = data
   }
+
+  const trips = get(newData, 'trip', [])
 
   return (
     <Trips trips={trips} loading={loading} intransit={intransit} />
