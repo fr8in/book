@@ -46,7 +46,7 @@ const PartnerStatus = (props) => {
   const is_blacklisted = (partner_status === 'Blacklisted')
   const is_deactivate = (partner_status === 'De-activate')
   const admin_role = [role.admin, role.partner_manager, role.partner_support]
-  const blockAccess_role = [role.admin, role.rm, role.onboarding, role.partner_manager, role.partner_support,role.user]
+  const blockAccess_role = [role.admin, role.rm, role.onboarding, role.partner_manager, role.partner_support]
   const admin = !isEmpty(admin_role) ? context.roles.some(r => admin_role.includes(r)) : false
   const blockAccess = !isEmpty(blockAccess_role) ? context.roles.some(r => blockAccess_role.includes(r)) : false
 
