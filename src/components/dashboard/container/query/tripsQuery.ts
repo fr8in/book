@@ -35,6 +35,9 @@ subscription dashboard_trips(
     }
     partner {
       id
+       partner_users(where: {is_admin: {_eq: true}}) {
+                mobile
+              }
       cardcode
       name
     }
