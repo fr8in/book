@@ -122,8 +122,8 @@ const TruckDetailContainer = (props) => {
   const [updateStatus] = useMutation(
     INSERT_TRUCK_REJECT_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
 
@@ -195,7 +195,12 @@ const TruckDetailContainer = (props) => {
             }
             extra={
               <Space>
-                <Button type='primary' disabled={!(truck_status === 'Waiting for Load' && partner_status === 'Active')} shape='circle' onClick={() => onShow('poModal')} icon={<SnippetsOutlined />} />
+                {truck_status === 'Waiting for Load' && partner_status === 'Active' ?
+                  <Button type='primary' shape='circle' onClick={() => onShow('poModal')} icon={<SnippetsOutlined />} />
+                  : <Tooltip title={`Partner Status: ${get(truck_info, 'partner.partner_status.name', null)}`}>
+                    <Button type='primary' shape='circle' icon={<SnippetsOutlined />} block danger />
+                  </Tooltip>
+                }
                 <Tooltip title={`Id: ${get(truck_info, 'id', null)}`}><Tag className='status'>{get(truck_info, 'truck_status.name', null)}</Tag></Tooltip>
               </Space>
             }
