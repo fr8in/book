@@ -26,7 +26,7 @@ const PartnerDetail = (props) => {
   const notVerified = kycStatus === 'Verification' || kycStatus === 'Rejected' || kycStatus === 'Registered'
 
   const beforeOnboard = [role.admin, role.rm, role.onboarding]
-  const afterOnboard = [role.admin, role.rm]
+  const afterOnboard = [role.admin, role.rm,role.onboarding]
   const editAccess = notVerified ? beforeOnboard : afterOnboard
   const ad_pm_on = [role.admin, role.partner_manager, role.onboarding]
 
