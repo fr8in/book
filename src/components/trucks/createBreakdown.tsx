@@ -143,7 +143,7 @@ const CreateBreakdown = (props) => {
               </Radio.Group>
             </Form.Item>}
           <Row gutter={10}>
-            <Col sm={12}>
+            <Col xs={24} sm={12}>
               <Form.Item label='Available Date' name='available_at'>
                 <DatePicker
                   showTime
@@ -153,7 +153,7 @@ const CreateBreakdown = (props) => {
                 />
               </Form.Item>
             </Col>
-            <Col sm={12}>
+            <Col xs={24} sm={12}>
               <Form.Item>
                 <CitySelect
                   label='Current City'
