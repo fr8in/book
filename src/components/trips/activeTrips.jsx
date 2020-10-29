@@ -122,7 +122,7 @@ const Trips = (props) => {
           mobile ? <Phone number={mobile} /> : null
         )
       },
-      width: props.intransit ? '10%' : '11%'
+      width: props.intransit ? '8%' : '11%'
     },
     {
       title: 'Truck',
@@ -138,25 +138,25 @@ const Trips = (props) => {
             blank
           />)
       },
-      width: '16%'
+      width: '15%'
     },
     {
       title: 'Source',
       render: (text, record) => {
         const source = get(record, 'source.name', null)
-        return <Truncate data={source} length={10} />
+        return <Truncate data={source} length={8} />
       },
       sorter: (a, b) => (a.source.name > b.source.name ? 1 : -1),
-      width: '7%'
+      width: '8%'
     },
     {
       title: 'Destination',
       render: (text, record) => {
         const destination = get(record, 'destination.name', null)
-        return <Truncate data={destination} length={10} />
+        return <Truncate data={destination} length={8} />
       },
       sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
-      width: '7%'
+      width: '8%'
     },
     {
       title: 'TAT',
@@ -180,7 +180,7 @@ const Trips = (props) => {
     props.intransit ? {
       title: 'ETA',
       dataIndex: 'eta',
-      width: '6%',
+      width: '5%',
       sorter: (a, b) => (a.eta > b.eta ? 1 : -1),
       render: (text, record) => text ? moment(text).format('DD-MMM') : null
     } : {},
@@ -188,9 +188,12 @@ const Trips = (props) => {
       title: 'Comment',
       render: (text, record) => {
         const comment = get(record, 'last_comment.description', null)
-        return <Truncate data={comment} length={26} />
+        return (
+          props.intransit ? 
+        <Truncate data={comment} length={20} />:
+        <Truncate data={comment} length={26} />)
       },
-      width: props.intransit ? '9%' : '17%'
+      width: props.intransit ? '14%' : '17%'
     },
     {
       title: 'Action',
@@ -233,7 +236,7 @@ const Trips = (props) => {
           </span>
         )
       },
-      width: props.intransit ? '9%' : '11%'
+      width: props.intransit ? '6%' : '10%'
     }
   ]
   return (
