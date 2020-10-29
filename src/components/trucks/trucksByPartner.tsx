@@ -1,8 +1,10 @@
 import { Table } from 'antd'
 import LinkComp from '../common/link'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
+import { EditTwoTone } from '@ant-design/icons'
 import CreatePo from '../trips/createPo'
 import { gql, useSubscription } from '@apollo/client'
+import CreateBreakdown from '../../components/trucks/createBreakdown'
 import get from 'lodash/get'
 
 const PARTNER_TRUCKS_QUERY = gql`
@@ -46,6 +48,7 @@ const TrucksByPartner = (props) => {
   const initial = {
     truckId: null,
     poVisible: false,
+    editVisible: false,
     title: ''
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
@@ -124,6 +127,16 @@ const TrucksByPartner = (props) => {
       render: (text, record) => {
         return (record.city && record.city.name)
       }
+    },
+    {
+      title: '',
+      width: '3%',
+      render: (text, record) => (
+        <EditTwoTone
+          onClick={() =>
+            handleShow('editVisible', 'Breakdown', 'editData', record.id)}
+        />
+      )
     }
   ]
   return (
@@ -144,6 +157,14 @@ const TrucksByPartner = (props) => {
           onHide={handleHide}
           title={object.title}
         />}
+         {object.editVisible && (
+        <CreateBreakdown
+          visible={object.editVisible}
+          id={object.editData}
+          onHide={handleHide}
+          title={object.title}
+        />
+      )}
     </>
   )
 }
