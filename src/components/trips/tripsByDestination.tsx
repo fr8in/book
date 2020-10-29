@@ -85,12 +85,12 @@ const TripsByDestination = (props) => {
     managers: (filters.managers && filters.managers.length > 0) ? filters.managers : null,
     trip_status: trip_status
   }
-  console.log('TripsByDestination error', error)
 
   const { loading, error, data } = useSubscription(
     TRIPS_QUERY,
     { variables: variables }
   )
+  console.log('TripsByDestination error', error)
 
   let newData = {}
   if (!loading) {
