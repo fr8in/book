@@ -1,4 +1,4 @@
-import { Table, Tooltip, Button, Popconfirm, message } from 'antd'
+import { Table, Tooltip, Button, Popconfirm, message, Badge } from 'antd'
 import { CommentOutlined, CheckOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
@@ -60,12 +60,22 @@ const Trips = (props) => {
       dataIndex: 'id',
       render: (text, record) => {
         return (
-          <LinkComp
-            type='trips'
-            data={text}
-            id={record.id}
-            blank
-          />)
+          props.intransit ?
+            <span className='pl10'>
+              {record.loaded === "Yes" ? '' : <Badge className='pl5' dot style={{ backgroundColor: '#dc3545' }} />}
+              <LinkComp
+                type='trips'
+                data={text}
+                id={record.id}
+                blank
+              />
+            </span> :
+            <LinkComp
+              type='trips'
+              data={text}
+              id={record.id}
+              blank
+            />)
       },
       sorter: (a, b) => a.id - b.id,
       width: '7%'
@@ -193,7 +203,7 @@ const Trips = (props) => {
         return (
           <span>
             <Tooltip title={get(record, 'partner.partner_users[0].mobile', null)}>
-              <Phone  number={get(record, 'partner.partner_users[0].mobile', null)} icon={true}/>
+              <Phone number={get(record, 'partner.partner_users[0].mobile', null)} icon={true} />
             </Tooltip>
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
@@ -206,23 +216,23 @@ const Trips = (props) => {
                       <Tooltip title={`Customer Exception`}>
                         <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' danger block />
                       </Tooltip>
-                       :
+                      :
                       <Popconfirm
                         title='Are you sure you want to change this status to confirmed?'
                         okText='Yes'
                         cancelText='No'
                         onConfirm={() => onSubmit(record.id)}
                       >
-                        <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle'  />
-                      </Popconfirm>            
-                   }
+                        <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' />
+                      </Popconfirm>
+                    }
                   </>
                   : null
               }
             </>
           </span>
         )
-        },    
+      },
       width: props.intransit ? '9%' : '11%'
     }
   ]
