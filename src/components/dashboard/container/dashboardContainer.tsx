@@ -7,7 +7,7 @@ import TitleWithCount from '../../common/titleWithCount'
 import useShowHide from '../../../hooks/useShowHide'
 import CreateExcessLoad from '../../trips/createExcessLoad'
 import DASHBOAD_QUERY from './query/dashboardQuery'
-import { useSubscription } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import _ from 'lodash'
 import WaitingForLoadContainer from './waitingForLoadContainer'
 import Orders from '../../reports/orders'
@@ -29,7 +29,7 @@ const DashboardContainer = (props) => {
     truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
     managers: (filters.managers && filters.managers.length > 0) ? filters.managers : null
   }
-  const { loading, data, error } = useSubscription(DASHBOAD_QUERY, { variables })
+  const { loading, data, error } = useQuery(DASHBOAD_QUERY, { variables })
   console.log('dashboard error', error)
 
   let unloading_count = 0
@@ -47,37 +47,37 @@ const DashboardContainer = (props) => {
   if (!loading) {
     const newData = { data }
 
-    const unloading_aggrigate = _.chain(newData).flatMap('city').flatMap('unloading').flatMap('aggregate').value()
+    const unloading_aggrigate = _.chain(newData).flatMap('unloading').flatMap('aggregate').value()
     unloading_count = _.sumBy(unloading_aggrigate, 'count')
 
-    const assigned_aggrigate = _.chain(newData).flatMap('city').flatMap('assigned').flatMap('aggregate').value()
+    const assigned_aggrigate = _.chain(newData).flatMap('assigned').flatMap('aggregate').value()
     assigned_count = _.sumBy(assigned_aggrigate, 'count')
 
-    const confirmed_aggrigate = _.chain(newData).flatMap('city').flatMap('confirmed').flatMap('aggregate').value()
+    const confirmed_aggrigate = _.chain(newData).flatMap('confirmed').flatMap('aggregate').value()
     confirmed_count = _.sumBy(confirmed_aggrigate, 'count')
 
-    const loading_aggrigate = _.chain(newData).flatMap('city').flatMap('loading').flatMap('aggregate').value()
+    const loading_aggrigate = _.chain(newData).flatMap('loading').flatMap('aggregate').value()
     loading_count = _.sumBy(loading_aggrigate, 'count')
 
-    const intransit_aggrigate = _.chain(newData).flatMap('city').flatMap('intransit').flatMap('aggregate').value()
+    const intransit_aggrigate = _.chain(newData).flatMap('intransit').flatMap('aggregate').value()
     intransit_count = _.sumBy(intransit_aggrigate, 'count')
 
-    const intransit_d_aggrigate = _.chain(newData).flatMap('city').flatMap('intransit_d').flatMap('aggregate').value()
+    const intransit_d_aggrigate = _.chain(newData).flatMap('intransit_d').flatMap('aggregate').value()
     intransit_d_count = _.sumBy(intransit_d_aggrigate, 'count')
 
-    const unloading_d_aggrigate = _.chain(newData).flatMap('city').flatMap('unloading_d').flatMap('aggregate').value()
+    const unloading_d_aggrigate = _.chain(newData).flatMap('unloading_d').flatMap('aggregate').value()
     unloading_d_count = _.sumBy(unloading_d_aggrigate, 'count')
 
-    const excess_aggrigate = _.chain(newData).flatMap('city').flatMap('excess').flatMap('aggregate').value()
+    const excess_aggrigate = _.chain(newData).flatMap('excess').flatMap('aggregate').value()
     excess_count = _.sumBy(excess_aggrigate, 'count')
 
-    const hold_aggrigate = _.chain(newData).flatMap('city').flatMap('hold').flatMap('aggregate').value()
+    const hold_aggrigate = _.chain(newData).flatMap('hold').flatMap('aggregate').value()
     hold_count = _.sumBy(hold_aggrigate, 'count')
 
-    const truck_aggrigate = _.chain(newData).flatMap('city').flatMap('trucks_total').flatMap('aggregate').value()
+    const truck_aggrigate = _.chain(newData).flatMap('trucks_total').flatMap('aggregate').value()
     truck_count = _.sumBy(truck_aggrigate, 'count')
 
-    const truck_c_aggrigate = _.chain(newData).flatMap('city').flatMap('trucks_current').flatMap('aggregate').value()
+    const truck_c_aggrigate = _.chain(newData).flatMap('trucks_current').flatMap('aggregate').value()
     truck_current_count = _.sumBy(truck_c_aggrigate, 'count')
   }
 

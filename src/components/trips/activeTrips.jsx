@@ -192,8 +192,8 @@ const Trips = (props) => {
         const todayDate = new Date().toISOString().slice(0, 10)
         return (
           <span>
-            <Tooltip title={record.driverPhoneNo}>
-              <Phone number={record.driverPhoneNo} />
+            <Tooltip title={get(record, 'partner.partner_users[0].mobile', null)}>
+              <Phone  number={get(record, 'partner.partner_users[0].mobile', null)} icon={true}/>
             </Tooltip>
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />

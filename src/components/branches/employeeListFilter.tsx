@@ -38,7 +38,7 @@ const EmployeeListFilter = (props) => {
   }
  
   const employeeList = employee.map((data) => {
-    return { value: data.email && data.onboardedbyPartners_aggregate.aggregate.count, label: <span> {data.email} <Tag color='#40a9ff'>{data.onboardedbyPartners_aggregate.aggregate.count}</Tag></span>}
+    return { value:data.onboardedbyPartners_aggregate.aggregate.count &&data.email , label: <span> {data.email} <Tag color='#40a9ff'>{data.onboardedbyPartners_aggregate.aggregate.count}</Tag></span>}
   })
 
   const onChange = (checkedValues) => {
