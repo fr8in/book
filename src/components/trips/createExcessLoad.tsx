@@ -88,7 +88,8 @@ const CreateExcessLoad = (props) => {
     EXCESS_LOAD_MUTATION,
     {
       onError (error) {
-        message.error(error.toString())
+        const msg = get(error, 'graphQLErrors[0].extensions.internal.error.message', error.toString())
+        message.error(msg)
         setObj({ ...obj, disableButton: false })
       },
       onCompleted (data) {
