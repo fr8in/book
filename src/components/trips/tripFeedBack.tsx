@@ -1,9 +1,10 @@
 import { useContext } from 'react'
-import { Modal, Button, Row, Input, Col, Table, message, Tooltip, Form } from 'antd'
+import { Modal, Button, Row, Input, Col, Table, message,Form } from 'antd'
 import { gql, useSubscription, useMutation } from '@apollo/client'
 import moment from 'moment'
 import userContext from '../../lib/userContaxt'
 import { useState } from 'react'
+import Truncate from '../common/truncate'
 
 
 const TRIP_COMMENT_QUERY = gql`
@@ -74,16 +75,12 @@ const Tripcomment = (props) => {
   }
 
   const { trip_comments } = data && data.trip[0] ? data.trip[0] : []
-
+  
   const columns = [{
     title: 'Comments',
     dataIndex: 'description',
     width: '40%',
-    render: (text, record) => {
-      return (
-        text && text.length > 20 ? <Tooltip title={text}>{text.slice(0, 20 + '...')}</Tooltip> : text
-      )
-    }
+    render: (text, record) => <Truncate data={text} length={20} />
   },
   {
     dataIndex: 'created_by',
