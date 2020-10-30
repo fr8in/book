@@ -1,4 +1,4 @@
-import { Table, Tooltip, Button, Popconfirm, message } from 'antd'
+import { Table, Tooltip, Button, Popconfirm, message, Badge } from 'antd'
 import { CommentOutlined, CheckOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
@@ -60,12 +60,22 @@ const Trips = (props) => {
       dataIndex: 'id',
       render: (text, record) => {
         return (
-          <LinkComp
-            type='trips'
-            data={text}
-            id={record.id}
-            blank
-          />)
+          props.intransit ?
+            <span className='pl10'>
+              {record.loaded === "Yes" ? '' : <Badge className='pl5' dot style={{ backgroundColor: '#dc3545' }} />}
+              <LinkComp
+                type='trips'
+                data={text}
+                id={record.id}
+                blank
+              />
+            </span> :
+            <LinkComp
+              type='trips'
+              data={text}
+              id={record.id}
+              blank
+            />)
       },
       sorter: (a, b) => a.id - b.id,
       width: '7%'
@@ -112,7 +122,7 @@ const Trips = (props) => {
           mobile ? <Phone number={mobile} /> : null
         )
       },
-      width: props.intransit ? '10%' : '11%'
+      width: props.intransit ? '8%' : '11%'
     },
     {
       title: 'Truck',
@@ -128,25 +138,25 @@ const Trips = (props) => {
             blank
           />)
       },
-      width: '16%'
+      width: '15%'
     },
     {
       title: 'Source',
       render: (text, record) => {
         const source = get(record, 'source.name', null)
-        return <Truncate data={source} length={10} />
+        return <Truncate data={source} length={8} />
       },
       sorter: (a, b) => (a.source.name > b.source.name ? 1 : -1),
-      width: '7%'
+      width: '8%'
     },
     {
       title: 'Destination',
       render: (text, record) => {
         const destination = get(record, 'destination.name', null)
-        return <Truncate data={destination} length={10} />
+        return <Truncate data={destination} length={8} />
       },
       sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
-      width: '7%'
+      width: '8%'
     },
     {
       title: 'TAT',
@@ -170,7 +180,7 @@ const Trips = (props) => {
     props.intransit ? {
       title: 'ETA',
       dataIndex: 'eta',
-      width: '6%',
+      width: '5%',
       sorter: (a, b) => (a.eta > b.eta ? 1 : -1),
       render: (text, record) => text ? moment(text).format('DD-MMM') : null
     } : {},
@@ -178,9 +188,12 @@ const Trips = (props) => {
       title: 'Comment',
       render: (text, record) => {
         const comment = get(record, 'last_comment.description', null)
-        return <Truncate data={comment} length={26} />
+        return (
+          props.intransit ? 
+        <Truncate data={comment} length={20} />:
+        <Truncate data={comment} length={26} />)
       },
-      width: props.intransit ? '9%' : '17%'
+      width: props.intransit ? '14%' : '17%'
     },
     {
       title: 'Action',
@@ -193,7 +206,7 @@ const Trips = (props) => {
         return (
           <span>
             <Tooltip title={get(record, 'partner.partner_users[0].mobile', null)}>
-              <Phone  number={get(record, 'partner.partner_users[0].mobile', null)} icon={true}/>
+              <Phone number={get(record, 'partner.partner_users[0].mobile', null)} icon={true} />
             </Tooltip>
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
@@ -206,24 +219,24 @@ const Trips = (props) => {
                       <Tooltip title={`Customer Exception`}>
                         <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' danger block />
                       </Tooltip>
-                       :
+                      :
                       <Popconfirm
                         title='Are you sure you want to change this status to confirmed?'
                         okText='Yes'
                         cancelText='No'
                         onConfirm={() => onSubmit(record.id)}
                       >
-                        <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle'  />
-                      </Popconfirm>            
-                   }
+                        <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' />
+                      </Popconfirm>
+                    }
                   </>
                   : null
               }
             </>
           </span>
         )
-        },    
-      width: props.intransit ? '9%' : '11%'
+      },
+      width: props.intransit ? '6%' : '10%'
     }
   ]
   return (

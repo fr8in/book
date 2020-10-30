@@ -86,7 +86,7 @@ const truckDocuments = (props) => {
     <div>
       <Form layout='vertical'>
         <Row gutter={[10, 10]}>
-          <Col span={6}>
+          <Col xs={24} sm={6}>
             <Form.Item
               label='PAN'
               name='PAN'
@@ -102,7 +102,7 @@ const truckDocuments = (props) => {
             </Form.Item>
           </Col>
 
-          <Col span={6}>
+          <Col xs={24} sm={6}>
             <Form.Item
               label='Cheque/PassBook'
               name='CL'
@@ -117,7 +117,7 @@ const truckDocuments = (props) => {
             </Form.Item>
           </Col>
 
-          <Col span={6}>
+          <Col xs={24} sm={6}>
             <Form.Item
               label='TDS'
               name='TDS'
@@ -132,7 +132,7 @@ const truckDocuments = (props) => {
             </Form.Item>
           </Col>
 
-          <Col span={6}>
+          <Col xs={24} sm={6}>
             <Form.Item label='EMI' name='EMI'>
               <FileUpload
                 id={truck_id}
@@ -145,7 +145,7 @@ const truckDocuments = (props) => {
           </Col>
         </Row>
         <Row gutter={[10, 10]}>
-          <Col span={6}>
+          <Col xs={24} sm={6}>
             <Form.Item
               label='RC'
               name='RC'
@@ -161,7 +161,7 @@ const truckDocuments = (props) => {
             </Form.Item>
           </Col>
 
-          <Col span={6}>
+          <Col xs={24} sm={6}>
             <Form.Item
               label='Vaahan'
               name='vaahan'
@@ -177,7 +177,7 @@ const truckDocuments = (props) => {
             </Form.Item>
           </Col>
 
-          <Col span={6}>
+          <Col xs={24} sm={6}>
             <Form.Item
               label='Insurance'
               name='insurance'
@@ -192,7 +192,7 @@ const truckDocuments = (props) => {
             </Form.Item>
           </Col>
 
-          <Col span={6}>
+          <Col xs={24} sm={6}>
             <Form.Item
               label='Permit'
               name='permit'

@@ -29,6 +29,7 @@ subscription dashboard_trips(
     destination_branch_id
     delay
     eta
+    loaded
     customer {
       id
       cardcode
