@@ -148,7 +148,7 @@ const walletTopup = (props) => {
       dataIndex: 'date',
       key: 'date',
       width: '14%',
-      render: (text, render) => text ? moment(text).format('DD-MMM-YY') : '-'
+      render: (text, record) => text ? moment(text).format('DD-MMM-YY') : '-'
     },
     {
       title: 'Due Date',
