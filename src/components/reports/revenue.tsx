@@ -5,8 +5,8 @@ import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 
 const ANALYTICS_QUERY = gql`
-subscription monthly_billing($branch_ids: [Int!], $month: Int!, $year: Int!) {
-  analytics_monthly_billing_aggregate(where: {_and: {branch_id: {_in: $branch_ids}, month: {_eq: $month}, year: {_eq: $year}}}) {
+subscription monthly_billing($branch_ids: [Int!]) {
+  analytics_monthly_billing_aggregate(where: {_and: {branch_id: {_in: $branch_ids}}}) {
     aggregate {
       sum {
         receivable ## billing GMV
@@ -23,16 +23,14 @@ const Revenue = (props) => {
   const initial = { report: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
-  const year = new Date().getFullYear()
-  const month = new Date().getMonth() + 1
+  // const year = new Date().getFullYear()
+  // const month = new Date().getMonth() + 1
 
   const { loading, data, error } = useSubscription(
     ANALYTICS_QUERY,
     {
       variables: {
-        branch_ids: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
-        month: month,
-        year: year
+        branch_ids: (filters.branches && filters.branches.length > 0) ? filters.branches : null
       }
     }
   )
