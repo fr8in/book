@@ -1,4 +1,4 @@
-import { Row, Col, Card, Tabs, Button } from 'antd'
+import { Row, Col, Card, Tabs, Button} from 'antd'
 import TripsContainer from './dashboardTripsContainer'
 import TripsByDestination from '../../trips/tripsByDestination'
 import { CarOutlined } from '@ant-design/icons'
@@ -106,7 +106,7 @@ const DashboardContainer = (props) => {
           <Col xs={24} sm={24}>
             <Card size='small' className='card-body-0 border-top-blue'>
               <Tabs
-                defaultActiveKey='1'
+                defaultActiveKey='2'
                 tabBarExtraContent={
                   <Button size='small' type='primary' shape='circle' icon={<CarOutlined />} onClick={() => onShow('excessLoad')} />
                 }
@@ -114,8 +114,8 @@ const DashboardContainer = (props) => {
                 <TabPane tab={<TitleWithCount name='Unloading(S)' value={unloading_count} />} key='1'>
                   <TripsContainer filters={filters} trip_status='Reported at destination' />
                 </TabPane>
-                <TabPane disabled={truck_tab_disable} tab={<TitleWithCount name='WF.Load' value={truck_current_count + '/' + truck_count} />} key='2'>
-                  <WaitingForLoadContainer filters={filters} />
+                <TabPane tab={<TitleWithCount name='WF.Load' value={truck_current_count + '/' + truck_count} />} key='2'>
+                {truck_tab_disable ? <Row justify='center'> Use Filter to get Data </Row>: <WaitingForLoadContainer filters={filters} />}
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Assigned' value={assigned_count} />} key='3'>
                   <TripsContainer filters={filters} trip_status='Assigned' />

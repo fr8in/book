@@ -6,6 +6,7 @@ import PartnerUser from './partnerUserNumber'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import get from 'lodash/get'
 import u from '../../lib/util'
+import Phone from '../common/phone'
 
 const PartnerInfo = (props) => {
   const { partner, loading } = props
@@ -21,6 +22,7 @@ const PartnerInfo = (props) => {
   return (
     <>
       <Space align='center'>
+       <Phone  number={number} icon={true}/>
         <Tooltip title={u.membership(membership)}>
           <CrownFilled
             style={{
