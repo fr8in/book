@@ -54,11 +54,11 @@ const PartnerDetailContainer = (props) => {
   const context = useContext(userContext)
   const { role } = u
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
-  const partner_access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
-  const admin_role = [role.admin]
+  const partner_access = u.is_roles(edit_access,context)
+  const admin_role = [role.admin,role.partner_manager, role.partner_support]
   const top_up_role = [role.admin, role.rm, role.partner_manager, role.partner_support]
-  const admin = !isEmpty(admin_role) ? context.roles.some(r => admin_role.includes(r)) : false
-  const top_up_access = !isEmpty(top_up_role) ? context.roles.some(r => top_up_role.includes(r)) : false
+  const admin = u.is_roles(admin_role,context)
+  const top_up_access = u.is_roles(top_up_role,context)
 
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,

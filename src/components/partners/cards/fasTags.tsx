@@ -58,7 +58,7 @@ const FasTags = (props) => {
   const context = useContext(userContext)
   const { role } = u
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
-  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
+  const access = u.is_roles(edit_access,context)
 
   const { loading, error, data, refetch } = useQuery(
     FASTAG_QUERY, {

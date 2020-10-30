@@ -34,7 +34,7 @@ const TripDetailContainer = (props) => {
   const context = useContext(userContext)
   const { role } = u
   const edit_access = [role.admin, role.billing_manager, role.billing]
-  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
+  const access = u.is_roles(edit_access,context)
 
   const [customerConfirm, setCustomerConfirm] = useState(null)
   const [trip_onHold, setTrip_onHold] = useState(null)
