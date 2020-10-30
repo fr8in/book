@@ -2,10 +2,10 @@ import Stats from './stats'
 import useShowHide from '../../hooks/useShowHide'
 import { Modal } from 'antd'
 import get from 'lodash/get'
-import { gql, useSubscription } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 
 const ANALYTICS_QUERY = gql`
-subscription rolling {
+query rolling {
   analytics_rolling {
     partner
     customer
@@ -19,7 +19,7 @@ const Progress = (props) => {
   const initial = { report: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
-  const { loading, data, error } = useSubscription(ANALYTICS_QUERY)
+  const { loading, data, error } = useQuery(ANALYTICS_QUERY)
 
   let _data = {}
   if (!loading) {
