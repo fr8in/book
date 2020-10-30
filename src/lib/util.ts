@@ -21,6 +21,7 @@ export default {
     accounts: 'Accounts',
     onboarding: 'Onboarding',
     billing: 'Billing',
+    bm:'BM',
     user: 'user'
   },
   topic: {

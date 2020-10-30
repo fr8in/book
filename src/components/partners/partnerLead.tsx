@@ -152,8 +152,8 @@ const PartnerLead = (props) => {
   const ownerEdit = [role.admin, role.partner_manager, role.billing]
   const rejectEdit = [role.admin, role.partner_manager, role.billing]
   const priorityEdit = [role.admin, role.partner_manager, role.billing]
-  const priorityEditAccess = !isEmpty(priorityEdit) ? context.roles.some(r => priorityEdit.includes(r)) : false
-  const rejectEditAccess = !isEmpty(rejectEdit) ? context.roles.some(r => rejectEdit.includes(r)) : false
+  const priorityEditAccess = u.is_roles(priorityEdit,context)
+  const rejectEditAccess = u.is_roles(rejectEdit,context)
 
   const rowSelection = {
     selectedRowKeys,

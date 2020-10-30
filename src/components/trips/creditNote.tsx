@@ -60,7 +60,7 @@ const CreditNote = (props) => {
   const [radioType, setRadioType] = useState('Credit Note')
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing,role.partner_manager,role.partner_support]
+  const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing,role.partner_manager,role.partner_support,role.bm]
   const access = u.is_roles(edit_access,context)
   const [disableButton, setDisableButton] = useState(false)
   const [form] = Form.useForm()
