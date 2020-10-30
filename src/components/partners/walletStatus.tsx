@@ -25,8 +25,8 @@ const PartnerStatus = (props) => {
   const { id, status } = props
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.admin, role.partner_manager, role.onboarding]
-  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
+  const edit_access = [role.admin, role.partner_manager, role.onboarding,role.bm,role.bm]
+  const access = u.is_roles(edit_access,context)
 
   const [updateStatusId] = useMutation(
     UPDATE_PARTNER_WALLET_BLOCK_STATUS_MUTATION,

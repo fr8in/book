@@ -31,8 +31,8 @@ const CreateAdditionalAdvance = (props) => {
   const [form] = Form.useForm()
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.admin, role.rm, role.accounts_manager]
-  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
+  const edit_access = [role.admin, role.rm, role.bm]
+  const access = u.is_roles(edit_access,context)
 
   const [getBankDetail, { loading, data, error }] = useLazyQuery(
     IFSC_VALIDATION,
