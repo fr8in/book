@@ -1,9 +1,9 @@
 
 import { Button, Card, Col, Row } from 'antd'
-import { BarChartOutlined, InsertRowAboveOutlined } from '@ant-design/icons'
+import { BarChartOutlined } from '@ant-design/icons'
 
 const Stats = (props) => {
-  const { visibleStats, visibleOrders, data, showReport, period, bgColor, last } = props
+  const { visibleStats, data, showReport, period, bgColor, last } = props
   const dataComp = (count, name, i) => {
     return (
       <div className='data' key={i}>
@@ -21,8 +21,6 @@ const Stats = (props) => {
             : dataComp(0, 'null', 0)}
         </Col>
         <Col flex='85px' className='report'>
-          {visibleOrders &&
-            <Button shape='circle' onClick={() => showReport('orders')} icon={<InsertRowAboveOutlined />} />}
           {visibleStats &&
             <Button shape='circle' onClick={() => showReport('report')} icon={<BarChartOutlined />} />}
         </Col>

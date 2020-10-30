@@ -1,12 +1,11 @@
 import Stats from './stats'
 import useShowHide from '../../hooks/useShowHide'
-import WeeklyBranchTarget from '../partners/weeklyBranchTarget'
 import OrderReport from '../partners/orderReport'
-import { gql, useSubscription } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 
 const ANALYTICS_QUERY = gql`
-subscription monthly_orders($branch_ids: [Int!], $month: Int!,$year:Int!) {
+query monthly_orders($branch_ids: [Int!], $month: Int!,$year:Int!) {
   analytics_monthly_booking_aggregate(where: {_and: 
     {
       branch_id: {_in: $branch_ids}, 
@@ -33,7 +32,7 @@ const Orders = (props) => {
   const year = new Date().getFullYear()
   const month = new Date().getMonth() + 1
 
-  const { loading, data, error } = useSubscription(
+  const { loading, data, error } = useQuery(
     ANALYTICS_QUERY,
     {
       variables: {
@@ -59,14 +58,12 @@ const Orders = (props) => {
   return (
     <>
       <Stats
-        visibleOrders
         visibleStats
         data={stats_data}
         showReport={onShow}
         period='Current Month'
         bgColor='yellow'
       />
-      {visible.orders && <WeeklyBranchTarget visible={visible.orders} onHide={onHide} />}
       {visible.report && <OrderReport visible={visible.report} onHide={onHide} filters={filters} />}
     </>
   )

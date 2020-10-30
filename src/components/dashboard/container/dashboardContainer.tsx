@@ -1,7 +1,7 @@
-import { Row, Col, Card, Tabs, Button} from 'antd'
+import { Row, Col, Card, Tabs,Space, Button} from 'antd'
 import TripsContainer from './dashboardTripsContainer'
 import TripsByDestination from '../../trips/tripsByDestination'
-import { CarOutlined } from '@ant-design/icons'
+import { CarOutlined,DashboardOutlined,InsertRowAboveOutlined } from '@ant-design/icons'
 import ExcessLoad from '../../trips/excessLoad'
 import TitleWithCount from '../../common/titleWithCount'
 import useShowHide from '../../../hooks/useShowHide'
@@ -14,11 +14,12 @@ import Orders from '../../reports/orders'
 import Revenue from '../../reports/revenue'
 import Progress from '../../reports/progress'
 import moment from 'moment'
+import WeeklyBranchTarget from '../../partners/weeklyBranchTarget'
 const { TabPane } = Tabs
 
 const DashboardContainer = (props) => {
   const { filters } = props
-  const initial = { excessLoad: false }
+  const initial = { excessLoad: false,orders:false,Staticticsdata:false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
   const variables = {
@@ -87,7 +88,7 @@ const DashboardContainer = (props) => {
     <Row>
       <Col xs={24}>
         {/* Statictics data */}
-        <Row gutter={[0, 10]}>
+        {visible.Staticticsdata && <Row gutter={[0, 10]}>
           <Col xs={24} style={{ overflow: 'hidden' }}>
             <Row gutter={10}>
               <Col xs={24} sm={9} md={8}>
@@ -101,14 +102,18 @@ const DashboardContainer = (props) => {
               </Col>
             </Row>
           </Col>
-        </Row>
+        </Row>}
         <Row gutter={[0, 10]}>
           <Col xs={24} sm={24}>
             <Card size='small' className='card-body-0 border-top-blue'>
               <Tabs
                 defaultActiveKey='2'
                 tabBarExtraContent={
+                    <Space>
+                  <Button size='small' type='primary' shape='circle' icon={<DashboardOutlined />} onClick={() => onShow('Staticticsdata')} /> 
+                  <Button size='small' type='primary' shape='circle' icon={<InsertRowAboveOutlined />} onClick={() => onShow('orders')}  /> 
                   <Button size='small' type='primary' shape='circle' icon={<CarOutlined />} onClick={() => onShow('excessLoad')} />
+                  </Space>
                 }
               >
                 <TabPane tab={<TitleWithCount name='Unloading(S)' value={unloading_count} />} key='1'>
@@ -146,6 +151,8 @@ const DashboardContainer = (props) => {
           </Col>
         </Row>
       </Col>
+      {visible.Staticticsdata && onHide}
+      {visible.orders && <WeeklyBranchTarget visible={visible.orders} onHide={onHide} />}
       {visible.excessLoad && <CreateExcessLoad visible={visible.excessLoad} onHide={onHide} />}
     </Row>
   )

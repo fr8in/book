@@ -1,11 +1,11 @@
 import Stats from './stats'
 import useShowHide from '../../hooks/useShowHide'
 import { Modal } from 'antd'
-import { gql, useSubscription } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 
 const ANALYTICS_QUERY = gql`
-subscription monthly_billing($branch_ids: [Int!]) {
+query monthly_billing($branch_ids: [Int!]) {
   analytics_monthly_billing_aggregate(where: {_and: {branch_id: {_in: $branch_ids}}}) {
     aggregate {
       sum {
@@ -26,7 +26,7 @@ const Revenue = (props) => {
   // const year = new Date().getFullYear()
   // const month = new Date().getMonth() + 1
 
-  const { loading, data, error } = useSubscription(
+  const { loading, data, error } = useQuery(
     ANALYTICS_QUERY,
     {
       variables: {
