@@ -3,6 +3,7 @@ import { Modal, Table, Row, Button, Col, Radio, message } from 'antd'
 import _ from 'lodash'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
+import moment from 'moment'
 
 const PARTNER_MANUAL_TOPUP = gql`
 query partner_invoiced($id: Int!){
@@ -147,7 +148,7 @@ const walletTopup = (props) => {
       dataIndex: 'date',
       key: 'date',
       width: '14%',
-      render: (text, record) => text
+      render: (text, render) => text ? moment(text).format('DD-MMM-YY') : '-'
     },
     {
       title: 'Due Date',
