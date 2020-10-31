@@ -30,7 +30,6 @@ import Loading from '../../common/loading'
 import PartnerTripContainer from './partnerTripContainer'
 import WalletToBank from '../walletToBank'
 import u from '../../../lib/util'
-import isEmpty from 'lodash/isEmpty'
 import userContext from '../../../lib/userContaxt'
 
 const TabPane = Tabs.TabPane
@@ -53,12 +52,14 @@ const PartnerDetailContainer = (props) => {
   const { cardcode, partner_id } = props
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.admin, role.partner_manager, role.onboarding]
-  const partner_access = u.is_roles(edit_access,context)
-  const admin_role = [role.admin,role.partner_manager, role.partner_support]
-  const top_up_role = [role.admin, role.rm, role.partner_manager, role.partner_support]
-  const admin = u.is_roles(admin_role,context)
-  const top_up_access = u.is_roles(top_up_role,context)
+  const _edit_access = [role.admin, role.partner_manager, role.onboarding]
+  const partner_access = u.is_roles(_edit_access,context)
+  const _admin_role = [role.admin,role.partner_manager, role.partner_support]
+  const _top_up_role = [role.admin, role.rm, role.partner_manager, role.partner_support]
+  const admin = u.is_roles(_admin_role,context)
+  const top_up_access = u.is_roles(_top_up_role,context)
+  const _wallet_role = [role.admin]
+  const wallet_activate_role = u.is_roles(_wallet_role,context)
 
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,
@@ -114,7 +115,7 @@ const PartnerDetailContainer = (props) => {
                     <Tooltip title='Wallet Statement'>
                       <Button icon={<FileTextOutlined />} shape='circle' onClick={() => onShow('statement')} />
                     </Tooltip>
-                    {top_up_access &&
+                    { partner_info.partner_status === 'Blacklisted' ? wallet_activate_role : top_up_access &&
                       <Tooltip title='Wallet Topup'>
                         <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('topUp')} />
                       </Tooltip>}

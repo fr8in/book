@@ -45,10 +45,12 @@ const PartnerStatus = (props) => {
   const partner_status = get(partnerInfo, 'partner_status.name', null)
   const is_blacklisted = (partner_status === 'Blacklisted')
   const is_deactivate = (partner_status === 'De-activate')
-  const admin_role = [role.admin, role.partner_manager, role.partner_support]
-  const blockAccess_role = [role.admin, role.onboarding, role.partner_manager, role.partner_support]
-  const admin = u.is_roles(admin_role,context)
-  const blockAccess = u.is_roles(blockAccess_role,context)
+  const _admin_role = [role.admin, role.partner_manager,role.bm,role.rm]
+  const _blockAccess_role = [role.admin,role.bm,role.rm,role.onboarding,role.partner_manager, role.partner_support]
+  const admin = u.is_roles(_admin_role,context)
+  const blockAccess = u.is_roles(_blockAccess_role,context)
+  const _edit_access = [role.admin,role.partner_manager, role.onboarding,role.rm,role.bm,role.accounts_manager,role.accounts,role.billing,role.billing_manager,role.partner_support]
+  const access = u.is_roles(_edit_access,context)
 
   const [updateBlacklist] = useMutation(
     UPDATE_PARTNER_BLACKLIST_MUTATION,
@@ -130,14 +132,14 @@ const PartnerStatus = (props) => {
       </Checkbox>
       <Checkbox
         checked={is_deactivate}
-        disabled={!blockAccess ? true : !((blockAccess && !is_blacklisted))}
+        disabled={!blockAccess ? true : admin ? false : !((blockAccess && !is_blacklisted))}
         onClick={() => onShow('dectivate')}
       >
           De-activate
       </Checkbox>
       <Checkbox
         checked={partnerInfo.dnd}
-        disabled={!blockAccess || is_blacklisted || is_deactivate}
+        disabled={!access || is_blacklisted || is_deactivate}
         onChange={dndChange}
       >
           DND

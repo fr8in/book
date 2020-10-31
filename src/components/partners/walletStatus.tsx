@@ -3,7 +3,6 @@ import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import { useContext } from 'react'
 import u from '../../lib/util'
-import isEmpty from 'lodash/isEmpty'
 
 const UPDATE_PARTNER_WALLET_BLOCK_STATUS_MUTATION = gql`
 mutation partner_wallet_block ($id:Int!,$updated_by:String!){
@@ -25,8 +24,10 @@ const PartnerStatus = (props) => {
   const { id, status } = props
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.admin, role.partner_manager, role.onboarding,role.bm,role.bm]
-  const access = u.is_roles(edit_access,context)
+  const _edit_access = [role.admin, role.partner_manager, role.onboarding,role.rm,role.bm,role.accounts_manager,role.accounts,role.billing,role.billing_manager,role.partner_support]
+  const access = u.is_roles(_edit_access,context)
+  const _wallet_unblock = [role.admin, role.rm,role.bm,role.partner_manager,role.partner_support]
+  const wallet_unblock_roles = u.is_roles(_wallet_unblock,context)
 
   const [updateStatusId] = useMutation(
     UPDATE_PARTNER_WALLET_BLOCK_STATUS_MUTATION,
@@ -71,7 +72,7 @@ const PartnerStatus = (props) => {
         onChange={onchange}
         checked={blacklisted}
         className={blacklisted ? 'block' : 'unblock'}
-        disabled={!access}
+        disabled={!wallet_unblock_roles ? true : !access}
       />
     </Tooltip>
   )
