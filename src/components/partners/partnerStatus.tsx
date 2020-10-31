@@ -45,12 +45,12 @@ const PartnerStatus = (props) => {
   const partner_status = get(partnerInfo, 'partner_status.name', null)
   const is_blacklisted = (partner_status === 'Blacklisted')
   const is_deactivate = (partner_status === 'De-activate')
-  const admin_role = [role.admin, role.partner_manager,role.bm,role.rm]
-  const blockAccess_role = [role.admin,role.bm,role.rm,role.onboarding,role.partner_manager, role.partner_support,role.user]
-  const admin = u.is_roles(admin_role,context)
-  const blockAccess = u.is_roles(blockAccess_role,context)
-  const edit_access = [role.admin,role.partner_manager, role.onboarding,role.rm,role.bm,role.accounts_manager,role.accounts,role.billing,role.billing_manager,role.partner_support]
-  const access = u.is_roles(edit_access,context)
+  const _admin_role = [role.admin, role.partner_manager,role.bm,role.rm]
+  const _blockAccess_role = [role.admin,role.bm,role.rm,role.onboarding,role.partner_manager, role.partner_support,role.user]
+  const admin = u.is_roles(_admin_role,context)
+  const blockAccess = u.is_roles(_blockAccess_role,context)
+  const _edit_access = [role.admin,role.partner_manager, role.onboarding,role.rm,role.bm,role.accounts_manager,role.accounts,role.billing,role.billing_manager,role.partner_support]
+  const access = u.is_roles(_edit_access,context)
 
   const [updateBlacklist] = useMutation(
     UPDATE_PARTNER_BLACKLIST_MUTATION,
