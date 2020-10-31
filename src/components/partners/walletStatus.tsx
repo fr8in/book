@@ -25,8 +25,10 @@ const PartnerStatus = (props) => {
   const { id, status } = props
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.admin, role.partner_manager, role.onboarding,role.bm,role.bm]
+  const edit_access = [role.admin, role.partner_manager, role.onboarding,role.rm,role.bm,role.accounts_manager,role.accounts,role.billing,role.billing_manager,role.partner_support]
   const access = u.is_roles(edit_access,context)
+  const wallet_unblock = [role.admin, role.rm,role.bm,role.partner_manager,role.partner_support]
+  const wallet_unblock_roles = u.is_roles(wallet_unblock,context)
 
   const [updateStatusId] = useMutation(
     UPDATE_PARTNER_WALLET_BLOCK_STATUS_MUTATION,
@@ -71,7 +73,7 @@ const PartnerStatus = (props) => {
         onChange={onchange}
         checked={blacklisted}
         className={blacklisted ? 'block' : 'unblock'}
-        disabled={!access}
+        disabled={!wallet_unblock_roles ? true : !access}
       />
     </Tooltip>
   )

@@ -59,6 +59,8 @@ const PartnerDetailContainer = (props) => {
   const top_up_role = [role.admin, role.rm, role.partner_manager, role.partner_support]
   const admin = u.is_roles(admin_role,context)
   const top_up_access = u.is_roles(top_up_role,context)
+  const wallet_role = [role.admin]
+  const wallet_topup_role = u.is_roles(wallet_role,context)
 
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,
@@ -114,7 +116,7 @@ const PartnerDetailContainer = (props) => {
                     <Tooltip title='Wallet Statement'>
                       <Button icon={<FileTextOutlined />} shape='circle' onClick={() => onShow('statement')} />
                     </Tooltip>
-                    {top_up_access &&
+                    { partner_info.partner_status === 'Blacklisted' ? wallet_topup_role : top_up_access &&
                       <Tooltip title='Wallet Topup'>
                         <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('topUp')} />
                       </Tooltip>}
