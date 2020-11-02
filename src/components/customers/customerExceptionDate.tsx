@@ -11,41 +11,41 @@ import Phone from '../common/phone'
 import Truncate from '../common/truncate'
 
 const CUSTOMER_SUBCRIPTION = gql`
-subscription trip($cus_id:Int){
-  trip(where:{trip_status_id:{_eq:2},customer_id:{_eq:$cus_id}}){
-       id
-       partner {
-         name
-         cardcode
-       }
-       source {
-         name
-       }
-       destination {
-         name
-       }
-       driver {
-         mobile
-       }
-       truck {
-         truck_no
-         truck_type{
-           name
-         }
-       }
-     }
-   }
+subscription trip($customer_id: Int) {
+  trip(where: {customer_id: {_eq: $customer_id}, trip_status: {name: {_eq: "Assigned"}}}) {
+    id
+    partner {
+      name
+      cardcode
+    }
+    source {
+      name
+    }
+    destination {
+      name
+    }
+    driver {
+      mobile
+    }
+    truck {
+      truck_no
+      truck_type {
+        name
+      }
+    }
+  }
+}
 `
 const ASSIGN_TO_CONFIRM_STATUS_MUTATION = gql`
-mutation customer_exception($exception_date: timestamp, $id: Int, $updated_by: String!) {
-  update_customer(_set: {exception_date: $exception_date, updated_by: $updated_by}, where: {id: {_eq: $id}}) {
+mutation customer_exception($exception_date: timestamp, $customer_id: Int, $updated_by: String!) {
+  update_customer(_set: {exception_date: $exception_date, updated_by: $updated_by}, where: {id: {_eq: $customer_id}}) {
     returning {
       id
       name
       managed
     }
   }
-  update_trip(where: {trip_status_id: {_eq:2}, customer_id: {_eq: $id}}, _set: {trip_status_id:3}) {
+  update_trip(where: {customer_id: {_eq: $customer_id}, trip_status: {name: {_eq: "Assigned"}}}, _set: {trip_status_id: 3}) {
     returning {
       id
     }
@@ -63,7 +63,7 @@ const CustomerExceptionDate = (props) => {
   const { loading, error, data } = useSubscription(
     CUSTOMER_SUBCRIPTION,
     {
-      variables: { cus_id: id }
+      variables: { customer_id: id }
     }
   )
   console.log('Customer error', error)
@@ -87,7 +87,7 @@ const CustomerExceptionDate = (props) => {
   const onSubmit = (form) => {
     assign_to_confirm({
       variables: {
-        id: id,
+        customer_id: id,
         updated_by: context.email,
         exception_date: form.exception_date.format('YYYY-MM-DD')
       }
