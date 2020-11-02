@@ -5,55 +5,88 @@ import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
 import u from '../../lib/util'
 
-// const UPDATE_PARTNER_DE_ACTIVATE_MUTATION = gql`
-// mutation partner_de_activate($description:String, $topic:String, $partner_status_id:Int,$cardcode:String!,$updated_by: String!,$partner_id:Int!){
-//     insert_partner_comment(objects:{partner_id:$partner_id,topic:$topic,description:$description,created_by:$updated_by})
-//       {
-//         returning
-//         {
-//           id
-//         }
-//       }
-//     update_partner( _set: {partner_status_id: $partner_status_id, updated_by: $updated_by}, where: {cardcode:{_eq: $cardcode}} 
-//     ){
-//       returning{
-//         cardcode
-//         partner_status_id
-//       }
-//     }
-//   }
-// `
+const UPDATE_PARTNER_BLACKLIST_MUTATION = gql`
+mutation partner_blacklist($id: Int!, $updated_by: String!,$partner_comment:PartnerCommentInput) {
+  partner_blacklist(id: $id, updated_by: $updated_by,partner_comment:$partner_comment) {
+   description
+   status
+  }
+}`
+
+const UPDATE_PARTNER_UNBLACKLIST_MUTATION = gql`
+mutation partner_unblacklist($id: Int!, $updated_by: String!,$partner_comment:PartnerCommentInput) {
+  partner_unblacklist(id: $id, updated_by: $updated_by,partner_comment:$partner_comment) {
+    description
+    status
+  }
+}`
+
 const PartnerBlacklist = (props) => {
   const { partnerInfo,onHide,visible } = props
   const [form] = Form.useForm()
   const { topic } = u
   const partner_status = get(partnerInfo, 'partner_status.name', null)
+  const is_blacklisted = (partner_status === 'Blacklisted')
 
   const context = useContext(userContext)
  
 
-//   const [updateDeactivate] = useMutation(
-//     UPDATE_PARTNER_DE_ACTIVATE_MUTATION,
-//     {
-//       onError (error) { message.error(error.toString()) },
-//       onCompleted () { message.success('Updated!!') 
-//     onHide()}
-//     }
-//   )
+ const [updateBlacklist] = useMutation(
+    UPDATE_PARTNER_BLACKLIST_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted (data) {
+        const status = get(data, 'partner_blacklist.status', null)
+        const description = get(data, 'partner_blacklist.description', null)
+        if (status === 'OK') {
+          message.success(description || 'Blacklisted!!')
+        } else {
+          message.error(description || 'Error Occured!!')
+        }
+      }
+    }
+  )
 
-  const onSubmit = (form) => {
-      console.log('form')
-    // const is_deactivate = (partner_status === 'De-activate')
-    // updateDeactivate({
-    //   variables: {
-    //     cardcode: partnerInfo.cardcode,
-    //     partner_status_id:is_deactivate ? 4 : 6,
-    //     updated_by: context.email,
-    //     description: form.comment,
-    //     topic:is_deactivate ? topic.partner_activation : topic.partner_deactivation,
-    //     partner_id: partnerInfo.id
-    //   }
-    // })
+  const [updateUnblacklist] = useMutation(
+    UPDATE_PARTNER_UNBLACKLIST_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted (data) {
+        const status = get(data, 'partner_unblacklist.status', null)
+        const description = get(data, 'partner_unblacklist.description', null)
+        if (status === 'OK') {
+          message.success(description || 'Unblacklisted!!')
+        } else {
+          message.error(description || 'Error Occured!!')
+        }
+      }
+    }
+  )
+
+  const blacklistChange = (form) => {
+    if (is_blacklisted) {
+      updateUnblacklist({
+        variables: {
+          id: partnerInfo.id,
+          updated_by: context.email,
+          partner_comment: {
+            description: form.comment,
+            topic: topic.partner_unblacklist
+          }
+        }
+      })
+    } else {
+      updateBlacklist({
+        variables: {
+          id: partnerInfo.id,
+          updated_by: context.email,
+          partner_comment: {
+            description: form.comment,
+            topic: topic.partner_blacklist
+          }
+        }
+      })
+    }
   }
 
   return (
@@ -64,7 +97,7 @@ const PartnerBlacklist = (props) => {
         onCancel={onHide}
         footer={[]}
       >
-        <Form onFinish={onSubmit} form={form}>
+        <Form onFinish={blacklistChange} form={form}>
           <Row gutter={10} className='mb10'>
             <Col flex='auto'>
               <Form.Item name='comment'>
