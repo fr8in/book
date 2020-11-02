@@ -40,7 +40,7 @@ const CustomerInfo = (props) => {
         />
         <LabelAndData
           label='Exception'
-          data={<CustomerExceptionDate exceptionDate={customer_info.exception_date} cardcode={customer_info.cardcode} edit_access={exceptionDateEdit}/>}
+          data={<CustomerExceptionDate exceptionDate={customer_info.exception_date}  id={customer_info.id} edit_access={exceptionDateEdit}/>}
           mdSpan={4}
           smSpan={8}
           xsSpan={12}
