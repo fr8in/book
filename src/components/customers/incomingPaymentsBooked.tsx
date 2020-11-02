@@ -43,6 +43,7 @@ const IncomingPaymentsBooked = (props) => {
     {
       title: 'Date',
       dataIndex: 'created_at',
+      sorter: (a, b) => (a.created_at > b.created_at ? 1 : -1),
       width: '20%',
       render: (text, render) => text ? moment(text).format('DD-MMM-YY') : '-'
     },
