@@ -1,20 +1,58 @@
 import React from 'react'
-import { Modal, Button, Input } from 'antd'
+import { Modal, Button, Input, message, Form, Row, Col } from 'antd'
+import { gql, useMutation } from '@apollo/client'
+
+const Account_Statement = gql`
+mutation partner_Account_mail( $cardcode:String!,$emails:[String!]) {
+  report_mail(emails: $emails, partner_code: $cardcode) {
+    description
+    status
+  }
+}`
 
 const ReportEmail = (props) => {
-  const { visible, onHide } = props
+  const { visible, onHide, cardcode } = props
+  
+  const [account_Report] = useMutation(
+    Account_Statement,
+    {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Sented!!') }
+    }
+  )
 
+  const onSubmit = (form) => {
+    account_Report({
+      variables: {
+        cardcode: cardcode,
+        emails: form.email
+      }
+    })
+  }
   return (
     <Modal
       title='Account Statement'
       visible={visible}
       onCancel={onHide}
-      footer={[
-        <Button key='back'> Close </Button>,
-        <Button type='primary' key='send'> Send Email </Button>
-      ]}
+      footer={null}
     >
-      <Input placeholder='Your Email Address...' />
+      <Form onFinish={onSubmit} >
+        <Form.Item name='email'>
+          <Row gutter={10}>
+            <Col flex='auto'>
+              <Input placeholder='Your Email Address...' />
+            </Col>
+            <Col flex='100px'>
+              <Button
+                type='primary'
+                htmlType='submit'
+              >
+                Send Email
+              </Button>
+            </Col>
+          </Row>
+        </Form.Item>
+      </Form>
     </Modal>
   )
 }
