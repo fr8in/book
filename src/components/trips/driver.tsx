@@ -3,7 +3,6 @@ import { useMutation, useSubscription, gql } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import { useState, useContext } from 'react'
 import get from 'lodash/get'
-import isEmpty from 'lodash/isEmpty'
 
 const { Option } = Select
 
@@ -78,8 +77,7 @@ const Driver = (props) => {
   const [updateTruckDriver] = useMutation(
     UPDATE_TRUCK_DRIVER_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Saved!!') }
+      onError (error) { message.error(error.toString()) }
     }
   )
 
@@ -93,16 +91,17 @@ const Driver = (props) => {
     })
   }
 
-  const onDriverChange = (value, driver) => {
-    if (driver.key === 'new') {
+  const onDriverChange = (value) => {
+    const driver = driver_data.find(_driver => _driver.mobile === value)
+    if (driver)  {
+      onDriverUpdate(driver.id)
+    } else {
       insertDriver({
         variables: {
           id: partner_id,
           mobile: value
         }
       })
-    } else {
-      onDriverUpdate(driver.key)
     }
   }
 
