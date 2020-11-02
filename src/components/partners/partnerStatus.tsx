@@ -7,22 +7,23 @@ import u from '../../lib/util'
 import useShowHide from '../../hooks/useShowHide'
 import isEmpty from 'lodash/isEmpty'
 import PartnerDeactivation from '../partners/partnerDeactivationComment'
+import PartnerBlacklist from '../partners/partnerBlacklistComment'
 
-const UPDATE_PARTNER_BLACKLIST_MUTATION = gql`
-mutation partner_blacklist($id: Int!, $updated_by: String!) {
-  partner_blacklist(id: $id, updated_by: $updated_by) {
-   description
-   status
-  }
-}`
+// const UPDATE_PARTNER_BLACKLIST_MUTATION = gql`
+// mutation partner_blacklist($id: Int!, $updated_by: String!) {
+//   partner_blacklist(id: $id, updated_by: $updated_by) {
+//    description
+//    status
+//   }
+// }`
 
-const UPDATE_PARTNER_UNBLACKLIST_MUTATION = gql`
-mutation partner_unblacklist($id: Int!, $updated_by: String!) {
-  partner_unblacklist(id: $id, updated_by: $updated_by) {
-    description
-    status
-  }
-}`
+// const UPDATE_PARTNER_UNBLACKLIST_MUTATION = gql`
+// mutation partner_unblacklist($id: Int!, $updated_by: String!) {
+//   partner_unblacklist(id: $id, updated_by: $updated_by) {
+//     description
+//     status
+//   }
+// }`
 
 
 const UPDATE_PARTNER_DND_MUTATION = gql`
@@ -40,66 +41,67 @@ const PartnerStatus = (props) => {
   const { partnerInfo } = props
   const { role } = u
   const context = useContext(userContext)
-  const initial = { dectivate: false}
+  const initial = { dectivate: false,blacklist:false}
   const { visible, onShow, onHide } = useShowHide(initial)
   const partner_status = get(partnerInfo, 'partner_status.name', null)
   const is_blacklisted = (partner_status === 'Blacklisted')
   const is_deactivate = (partner_status === 'De-activate')
-  const _admin_role = [role.admin, role.partner_manager,role.bm,role.rm]
-  const _blockAccess_role = [role.admin,role.bm,role.rm,role.onboarding,role.partner_manager, role.partner_support]
+  const _admin_role = [role.admin, role.partner_manager,role.bm,role.rm,role.user]
+  const _blockAccess_role = [role.admin,role.bm,role.rm,role.onboarding,role.partner_manager, role.partner_support,role.user]
   const admin = u.is_roles(_admin_role,context)
   const blockAccess = u.is_roles(_blockAccess_role,context)
   const _edit_access = [role.admin,role.partner_manager, role.onboarding,role.rm,role.bm,role.accounts_manager,role.accounts,role.billing,role.billing_manager,role.partner_support]
   const access = u.is_roles(_edit_access,context)
 
-  const [updateBlacklist] = useMutation(
-    UPDATE_PARTNER_BLACKLIST_MUTATION,
-    {
-      onError (error) { message.error(error.toString()) },
-      onCompleted (data) {
-        const status = get(data, 'partner_blacklist.status', null)
-        const description = get(data, 'partner_blacklist.description', null)
-        if (status === 'OK') {
-          message.success(description || 'Blacklisted!!')
-        } else {
-          message.error(description || 'Error Occured!!')
-        }
-      }
-    }
-  )
+  // const [updateBlacklist] = useMutation(
+  //   UPDATE_PARTNER_BLACKLIST_MUTATION,
+  //   {
+  //     onError (error) { message.error(error.toString()) },
+  //     onCompleted (data) {
+  //       const status = get(data, 'partner_blacklist.status', null)
+  //       const description = get(data, 'partner_blacklist.description', null)
+  //       if (status === 'OK') {
+  //         message.success(description || 'Blacklisted!!')
+  //       } else {
+  //         message.error(description || 'Error Occured!!')
+  //       }
+  //     }
+  //   }
+  // )
 
-  const [updateUnblacklist] = useMutation(
-    UPDATE_PARTNER_UNBLACKLIST_MUTATION,
-    {
-      onError (error) { message.error(error.toString()) },
-      onCompleted (data) {
-        const status = get(data, 'partner_unblacklist.status', null)
-        const description = get(data, 'partner_unblacklist.description', null)
-        if (status === 'OK') {
-          message.success(description || 'Unblacklisted!!')
-        } else {
-          message.error(description || 'Error Occured!!')
-        }
-      }
-    }
-  )
+  // const [updateUnblacklist] = useMutation(
+  //   UPDATE_PARTNER_UNBLACKLIST_MUTATION,
+  //   {
+  //     onError (error) { message.error(error.toString()) },
+  //     onCompleted (data) {
+  //       const status = get(data, 'partner_unblacklist.status', null)
+  //       const description = get(data, 'partner_unblacklist.description', null)
+  //       if (status === 'OK') {
+  //         message.success(description || 'Unblacklisted!!')
+  //       } else {
+  //         message.error(description || 'Error Occured!!')
+  //       }
+  //     }
+  //   }
+  // )
 
   const blacklistChange = (e) => {
-    if (e.target.checked) {
-      updateBlacklist({
-        variables: {
-          id: partnerInfo.id,
-          updated_by: context.email
-        }
-      })
-    } else {
-      updateUnblacklist({
-        variables: {
-          id: partnerInfo.id,
-          updated_by: context.email
-        }
-      })
-    }
+    console.log('blacklist')
+    // if (e.target.checked) {
+    //   updateBlacklist({
+    //     variables: {
+    //       id: partnerInfo.id,
+    //       updated_by: context.email
+    //     }
+    //   })
+    // } else {
+    //   updateUnblacklist({
+    //     variables: {
+    //       id: partnerInfo.id,
+    //       updated_by: context.email
+    //     }
+    //   })
+    // }
   }
 
 
@@ -127,6 +129,7 @@ const PartnerStatus = (props) => {
         checked={is_blacklisted}
         disabled={!blockAccess ? true : admin ? false : !((blockAccess && !is_blacklisted))}
         onChange={blacklistChange}
+        onClick={() => onShow('blacklist')}
       >
           BlackList
       </Checkbox>
@@ -146,6 +149,7 @@ const PartnerStatus = (props) => {
       </Checkbox>
     </Space>
      {visible.dectivate && <PartnerDeactivation visible={visible.dectivate} onHide={onHide} partnerInfo={partnerInfo} />}
+     {visible.blacklist && <PartnerBlacklist visible={visible.blacklist} onHide={onHide} partnerInfo={partnerInfo} />}
      </>
   )
 }
