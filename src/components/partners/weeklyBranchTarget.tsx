@@ -107,7 +107,7 @@ const WeeklyBranchTarget = (props) => {
     },
     {
       title: currentMonthTitle,
-      width: '28%',
+      width: '24%',
       className: 'alignRight',
       render: (text, record) => {
         const actual = get(record, 'week1[0].trip_actual', 0)
@@ -149,20 +149,22 @@ const WeeklyBranchTarget = (props) => {
 
   return (
     <Modal
-      style={{ top: 20 }}
+      style={{ top: 100 }}
       bodyStyle={{ padding: 10 }}
       visible={visible}
       onCancel={onHide}
       closable={false}
-      footer={[
-        <Button
-          type='default'
-          key='back'
-          onClick={onHide}
-        >
-            Close
-        </Button>
-      ]}
+      width={580}
+      // footer={[
+      //   <Button
+      //     type='default'
+      //     key='back'
+      //     onClick={onHide}
+      //   >
+      //       Close
+      //   </Button>
+      // ]}
+      footer={null}
     >
       <Table
         columns={columns}
