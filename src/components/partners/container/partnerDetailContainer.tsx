@@ -233,7 +233,7 @@ const PartnerDetailContainer = (props) => {
             balance={get(partner_info, 'partner_accounting.wallet_balance', 0)}
           />}
         {visible.topUp && <WalletTopUp visible={visible.topUp} onHide={onHide} partner_id={partner_info.id} />}
-        {visible.reportMail && <ReportEmail visible={visible.reportMail} onHide={onHide} />}
+        {visible.reportMail && <ReportEmail visible={visible.reportMail} onHide={onHide} cardcode={cardcode}/>}
         {visible.statement && <WalletStatement visible={visible.statement} onHide={onHide} cardcode={partner_info.cardcode} />}
       </Row>)
   )
