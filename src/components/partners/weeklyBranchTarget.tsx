@@ -87,16 +87,19 @@ const WeeklyBranchTarget = (props) => {
     <Title
       name={<div>{`W - ${week[0]}`}</div>}
       data={`${w1_actual || 0} / ${w1_target || 0}`}
+      alignRight
     />)
   const lastMonthTitle = (
     <Title
       name={<div>{`W - ${week[1]}`}</div>}
       data={`${w2_actual || 0} / ${w2_target || 0}`}
+     alignRight
     />)
   const beforeLastMonthTitle = (
     <Title
       name={<div>{`W - ${week[2]}`}</div>}
       data={`${w3_actual || 0} / ${w3_target || 0}`}
+      alignRight
     />)
 
   const columns = [
@@ -149,21 +152,12 @@ const WeeklyBranchTarget = (props) => {
 
   return (
     <Modal
-      style={{ top: 100 }}
+      style={{ top:2 }}
       bodyStyle={{ padding: 10 }}
       visible={visible}
       onCancel={onHide}
       closable={false}
-      width={580}
-      // footer={[
-      //   <Button
-      //     type='default'
-      //     key='back'
-      //     onClick={onHide}
-      //   >
-      //       Close
-      //   </Button>
-      // ]}
+      width={560}
       footer={null}
     >
       <Table
@@ -171,7 +165,7 @@ const WeeklyBranchTarget = (props) => {
         dataSource={branchTargetWeekly}
         size='small'
         pagination={false}
-        scroll={{ x: 400, y: 500 }}
+        scroll={{ x: 400, y: 520 }}
         rowKey={record => record.id}
         className='weeklyTarget'
         loading={loading}
