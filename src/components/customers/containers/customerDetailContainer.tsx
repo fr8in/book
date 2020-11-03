@@ -204,7 +204,7 @@ const CustomerDetailContainer = (props) => {
                             <PlusOutlined /> Add Users
                           </Button>) : null}
                       </Row>
-                      <Users cardcode={cardcode} edit_access={customer_edit_role} />
+                      <Users cardcode={cardcode} customer_id={customer_info && customer_info.id} edit_access={customer_edit_role} />
                     </TabPane>
                     <TabPane tab='Branch' key='7'>
                       <Row justify='end' className='m5'>
@@ -216,7 +216,7 @@ const CustomerDetailContainer = (props) => {
                             <PlusOutlined /> Add Branch
                           </Button>) : null}
                       </Row>
-                      <Branch cardcode={cardcode} edit_access={customer_edit_role} />
+                      <Branch cardcode={cardcode} edit_access={customer_edit_role} customer_id={customer_info && customer_info.id} />
                     </TabPane>
                     <TabPane tab='FR8 Branch' key='8'>
                       <Fr8Branch cardcode={cardcode} id={customer_info && customer_info.id} />

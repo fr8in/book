@@ -54,7 +54,11 @@ export default {
     customer_onboardedby:'Customer OnboardedBy',
     managed_customer:'Managed Customer',
     customer_blacklist:'Customer Blacklisted',
-    customer_unblacklist:'Customer Unblacklisted'
+    customer_unblacklist:'Customer Unblacklisted',
+    customer_branch:'Customer Branch',
+    customer_user:'Customer User',
+    customer_fr8_employee:'Fr8 Employee',
+    customer_reject:'Customer Reject'
   },
   maxLength: 6,
   MIN_REBATE_PERCENTAGE: 0.25,

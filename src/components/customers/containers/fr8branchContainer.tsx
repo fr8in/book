@@ -64,6 +64,7 @@ const CustomersContainer = (props) => {
             id={record.id}
             edit_access={trafficEdit}
             branch_id={get(record, 'branch_employee.branch.id', null)}
+            customer_id={id}
           />
         )
       }
