@@ -2,6 +2,7 @@ import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 import userContext from '../../lib/userContaxt'
+import u from '../../lib/util'
 import { useState, useContext } from 'react'
 
 const ALL_EMPLOYEE = gql`
@@ -13,7 +14,12 @@ const ALL_EMPLOYEE = gql`
 }
 `
 const UPDATE_CUSTOMER_PAYMENT_MANAGER_MUTATION = gql`
-mutation customer_payment_manager($payment_manager_id:Int,$cardcode:String,$updated_by:String!) {
+mutation customer_payment_manager($description: String, $topic: String, $customer_id: Int, $created_by: String,$payment_manager_id:Int,$cardcode:String,$updated_by:String!) {
+  insert_customer_comment(objects: {description: $description, customer_id: $customer_id, topic: $topic, created_by: $created_by}) {
+    returning {
+      description
+    }
+  }
   update_customer(_set: {payment_manager_id: $payment_manager_id,updated_by:$updated_by}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id
@@ -21,10 +27,12 @@ mutation customer_payment_manager($payment_manager_id:Int,$cardcode:String,$upda
     }
   }
 }
+  
 `
 const CustomerPaymentManager = (props) => {
-  const { paymentManagerId, paymentManager, cardcode , edit_access } = props
+  const { paymentManagerId, paymentManager, cardcode , edit_access ,customer_id} = props
   const context = useContext(userContext)
+  const { topic } = u
 
   const { loading, error, data } = useQuery(ALL_EMPLOYEE, {
     fetchPolicy: 'cache-and-network',
@@ -56,7 +64,11 @@ const CustomerPaymentManager = (props) => {
       variables: {
         cardcode,
         updated_by: context.email,
-        payment_manager_id: value
+        payment_manager_id: value,
+        created_by: context.email,
+        description:`${topic.customer_payment_manager} updated by ${context.email}`,
+        topic:topic.customer_payment_manager,
+        customer_id: customer_id
       }
     })
   }

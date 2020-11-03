@@ -55,7 +55,7 @@ const CustomerDetails = (props) => {
         />
         <LabelWithData
           label='GST No'
-          data={<CustomerGst gst={customer_info.gst} cardcode={customer_info.cardcode} loading={props.loading} edit_access={customerGstEdit} />}
+          data={<CustomerGst gst={customer_info.gst} cardcode={customer_info.cardcode} customer_id={customer_info.id} loading={props.loading} edit_access={customerGstEdit} />}
           labelSpan={10}
           dataSpan={14}
         />
@@ -101,6 +101,7 @@ const CustomerDetails = (props) => {
               onboardedBy={get(customer_info, 'onboarded_by.email', '-')}
               onboardedById={get(customer_info, 'onboarded_by.id', null)}
               cardcode={customer_info.cardcode}
+              customer_id={customer_info.id}
               edit_access={customerOnboardedByEdit}
             />
           }

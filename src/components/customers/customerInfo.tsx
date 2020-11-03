@@ -26,14 +26,14 @@ const CustomerInfo = (props) => {
       <Row gutter={8}>
         <LabelAndData
           label='Type'
-          data={<CustomerType type={get(customer_info, 'customer_type.name', '-')} cardcode={customer_info.cardcode}  edit_access={customerTypeEdit}/>}
+          data={<CustomerType type={get(customer_info, 'customer_type.name', '-')} cardcode={customer_info.cardcode} customer_id={customer_info.id} edit_access={customerTypeEdit}/>}
           mdSpan={4}
           smSpan={8}
           xsSpan={12}
         />
         <LabelAndData
           label='Managed'
-          data={<ManagedCustomer isManaged={customer_info.managed} cardcode={customer_info.cardcode}  edit_access={managedCustomerEdit}/>}
+          data={<ManagedCustomer isManaged={customer_info.managed} cardcode={customer_info.cardcode} customer_id={customer_info.id} edit_access={managedCustomerEdit}/>}
           mdSpan={4}
           smSpan={8}
           xsSpan={12}
@@ -53,6 +53,7 @@ const CustomerInfo = (props) => {
               paymentManagerId={get(customer_info, 'payment_manager.id', null)}
               cardcode={customer_info.cardcode}
               edit_access={paymentManagerEdit}
+              customer_id={customer_info.id}
             />
           }
           mdSpan={4}
