@@ -111,7 +111,7 @@ const CreatePartner = (props) => {
           extra={<Tag className='status'>{get(partner_info, 'partner_status.name', 'New')}</Tag>}
         >
           <Row gutter={10}>
-            <Col xs={24} sm={8} md={8} lg={4}>
+            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
               <Form.Item
                 label='Partner Name (as per RC)'
                 name='name'
@@ -121,7 +121,7 @@ const CreatePartner = (props) => {
                 <Input placeholder='Partner Name' />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={8} md={8} lg={4}>
+            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
               <Form.Item
                 label='Contact Person'
                 name='contact_name'
@@ -131,7 +131,7 @@ const CreatePartner = (props) => {
                 <Input placeholder='Contact Person' />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={8} md={8} lg={4}>
+            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
               <Form.Item
                 label='Phone Number'
                 name='mobile'
@@ -141,7 +141,7 @@ const CreatePartner = (props) => {
                 <Input placeholder='Phone Number' disabled={!!partner_info} />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={8} md={8} lg={4}>
+            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
               <Form.Item
                 label='Email Address'
                 name='email'
@@ -151,7 +151,7 @@ const CreatePartner = (props) => {
                 <Input placeholder='Email Address' />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={8} md={8} lg={4}>
+            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
               <Form.Item
                 label='PAN'
                 name='pan_no'
@@ -161,7 +161,7 @@ const CreatePartner = (props) => {
                 <Input placeholder='Pan Number' />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={8} md={8} lg={4}>
+            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
               <Form.Item
                 label='Cibil'
                 name='cibil'
@@ -173,7 +173,7 @@ const CreatePartner = (props) => {
             </Col>
           </Row>
           <Row gutter={10}>
-            <Col xs={24} sm={8} md={8} lg={4}>
+            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
               <Form.Item
                 label='Building Number'
                 name='no'
@@ -183,7 +183,7 @@ const CreatePartner = (props) => {
                 <Input placeholder='Building Number' />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={8} md={8} lg={4}>
+            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
               <Form.Item
                 label='Address'
                 name='address'
@@ -193,10 +193,10 @@ const CreatePartner = (props) => {
                 <Input placeholder='Address' />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={8} md={8} lg={4}>
+            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
               <CitySelect onChange={onCityChange} label='City' name='city' required city={get(partner_info, 'city.name', null)} />
             </Col>
-            <Col xs={24} sm={8} md={8} lg={4}>
+            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
               <Form.Item
                 label='State'
                 name='state'
@@ -211,14 +211,14 @@ const CreatePartner = (props) => {
                 />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={8} md={8} lg={4}>
+            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
               <Form.Item
                 label='Pin Code'
                 name='pin_code'
                 rules={[{ required: true, message: 'Zip Code is required field' }]}
                 initialValue={get(partner_info, 'address.pin_code', null)}
               >
-                <Input placeholder='Zip Code' />
+                <Input placeholder='Pin Code' />
               </Form.Item>
             </Col>
           </Row>

@@ -44,7 +44,7 @@ query partner($id: Int!) {
   }
 }`
 
-const INSERT_PARTNER_MUTATION = gql`
+const UPDATE_PARTNER_MUTATION = gql`
 mutation create_partner_mutation(
   $name: String, $email: String, $cibil: String, $address: jsonb,
   $mobile: String, $pan_no: String, $contact_name: String, 
@@ -79,13 +79,6 @@ mutation create_partner_mutation(
   }
 }`
 
-const UPDATE_ACCOUNT_NO = gql`
-mutation update_account_no($id: Int!, $account_number: String!, $account_holder: String!, $ifsc_code: String!, $updated_by: String!) {
-  update_account_no(id: $id, account_number: $account_number, account_holder: $account_holder, ifsc_code: $ifsc_code, updated_by:$updated_by) {
-    description
-    status
-  }
-}`
 
 const PartnerOnboardingContainer = (props) => {
   const { partner_id } = props
@@ -121,25 +114,25 @@ const PartnerOnboardingContainer = (props) => {
   }
   const partner_info = get(_data, 'partner[0]', null)
 
-  const [update_account_no] = useMutation(
-    UPDATE_ACCOUNT_NO,
-    {
-      onError (error) {
-        message.error(error.toString())
-      },
-      onCompleted (data) {
-        const status = get(data, 'update_account_no.status', null)
-        const description = get(data, 'update_account_no.description', null)
-        if (status === 'OK') {
-          message.success(description || 'Account Created!')
-          router.push('/partners')
-        } else (message.error(description))
-      }
-    }
-  )
+  // const [update_account_no] = useMutation(
+  //   UPDATE_ACCOUNT_NO,
+  //   {
+  //     onError (error) {
+  //       message.error(error.toString())
+  //     },
+  //     onCompleted (data) {
+  //       const status = get(data, 'update_account_no.status', null)
+  //       const description = get(data, 'update_account_no.description', null)
+  //       if (status === 'OK') {
+  //         message.success(description || 'Account Created!')
+  //         router.push('/partners')
+  //       } else (message.error(description))
+  //     }
+  //   }
+  // )
 
-  const [insertPartner] = useMutation(
-    INSERT_PARTNER_MUTATION,
+  const [updatePartner] = useMutation(
+    UPDATE_PARTNER_MUTATION,
     {
       onError (error) {
         setDisableButton(false)
@@ -147,8 +140,6 @@ const PartnerOnboardingContainer = (props) => {
       },
       onCompleted (data) {
         message.success('Partner Created!!')
-        const partner_id = get(data, 'insert_partner.returning[0].id', null)
-        onUpdateAccount(partner_id)
         setDisableButton(false)
       }
     }
@@ -163,7 +154,7 @@ const PartnerOnboardingContainer = (props) => {
       state: form.state,
       pin_code: form.pin_code
     }
-    insertPartner({
+    updatePartner({
       variables: {
         name: form.name,
         contact_name: form.contact_name,
@@ -181,17 +172,17 @@ const PartnerOnboardingContainer = (props) => {
     })
   }
 
-  const onUpdateAccount = (id) => {
-    update_account_no({
-      variables: {
-        id: id,
-        account_number: form.getFieldValue('account_no'),
-        account_holder: form.getFieldValue('account_holder_name'),
-        ifsc_code: form.getFieldValue('ifsc'),
-        updated_by: context.email
-      }
-    })
-  }
+  // const onUpdateAccount = (id) => {
+  //   update_account_no({
+  //     variables: {
+  //       id: id,
+  //       account_number: form.getFieldValue('account_no'),
+  //       account_holder: form.getFieldValue('account_holder_name'),
+  //       ifsc_code: form.getFieldValue('ifsc'),
+  //       updated_by: context.email
+  //     }
+  //   })
+  // }
 
   return (
     <>

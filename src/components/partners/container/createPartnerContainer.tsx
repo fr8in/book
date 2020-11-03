@@ -8,43 +8,45 @@ import { useRouter } from 'next/router'
 import CreatePartner from '../createPartner'
 
 const INSERT_PARTNER_MUTATION = gql`
-mutation create_partner_mutation(
-  $name: String, $email: String, $cibil: String, $address: jsonb,
-  $mobile: String, $pan_no: String, $contact_name: String, 
-  $partner_status_id:Int,$city_id:Int,
-  $partner_advance_percentage_id:Int,$onboarded_by_id:Int,$created_by:String ) 
-  {
-  insert_partner(
-    objects: {
-      name: $name,
-      pan: $pan_no, 
-      cibil: $cibil, 
+mutation create_partner(
+  $address: String!,
+  $cibil: String!,
+  $city_id: Int!,
+  $name: String!,
+  $pan_no: String!,
+  $account_holder: String!,
+  $account_number: String!,
+  $ifsc_code: String!,
+  $updated_by:String!,
+  $onboarded_by_id: Int!,
+  $partner_advance_percentage_id: Int!,
+  $contact_name: String!,
+  $email:String!,
+  $mobile: String!
+) {
+  create_partner_track(
+    personal_detail: {
       address: $address, 
-      created_by:$created_by,
-      partner_users:
-      {data: {
-        mobile: $mobile,
-          name: $contact_name,
-          email: $email,
-          is_admin: true}
-        },
-      partner_status_id:$partner_status_id,
-      city_id:$city_id,
-      partner_advance_percentage_id:$partner_advance_percentage_id,
-      onboarded_by_id:$onboarded_by_id
+      cibil: $cibil, 
+      city_id: $city_id, 
+      name: $name, 
+      pan_no: $pan_no
+    }, 
+    bank_detail: {
+      account_holder: $account_holder, 
+      account_number: $account_number, 
+      ifsc_code: $ifsc_code, 
+      updated_by: $updated_by
+    }, 
+    fr8_detail: {
+      onboarded_by_id: $onboarded_by_id, 
+      partner_advance_percentage_id: $partner_advance_percentage_id
+    }, 
+    partner_user: {
+      contact_name: $contact_name, 
+      email: $email, 
+      mobile: $mobile
     }) {
-    returning {
-      id
-      account_number
-      account_holder
-      ifsc_code
-    }
-  }
-}`
-
-const UPDATE_ACCOUNT_NO = gql`
-mutation update_account_no($id: Int!, $account_number: String!, $account_holder: String!, $ifsc_code: String!, $updated_by: String!) {
-  update_account_no(id: $id, account_number: $account_number, account_holder: $account_holder, ifsc_code: $ifsc_code, updated_by:$updated_by) {
     description
     status
   }
@@ -66,23 +68,6 @@ const PartnerOnboardingContainer = () => {
     }
   })
 
-  const [update_account_no] = useMutation(
-    UPDATE_ACCOUNT_NO,
-    {
-      onError (error) {
-        message.error(error.toString())
-      },
-      onCompleted (data) {
-        const status = get(data, 'update_account_no.status', null)
-        const description = get(data, 'update_account_no.description', null)
-        if (status === 'OK') {
-          message.success(description || 'Account Created!')
-          router.push('/partners')
-        } else (message.error(description))
-      }
-    }
-  )
-
   const [insertPartner] = useMutation(
     INSERT_PARTNER_MUTATION,
     {
@@ -92,8 +77,6 @@ const PartnerOnboardingContainer = () => {
       },
       onCompleted (data) {
         message.success('Partner Created!!')
-        const partner_id = get(data, 'insert_partner.returning[0].id', null)
-        onUpdateAccount(partner_id)
         setDisableButton(false)
       }
     }
@@ -101,39 +84,26 @@ const PartnerOnboardingContainer = () => {
 
   const onPartnerSubmit = (form) => {
     setDisableButton(true)
-    const address = {
-      no: form.no,
-      address: form.address,
-      city: form.city.split(',')[0],
-      state: form.state,
-      pin_code: form.pin_code
-    }
     insertPartner({
       variables: {
-        name: form.name,
-        contact_name: form.contact_name,
-        mobile: form.mobile,
-        email: form.email,
-        pan_no: form.pan_no,
+        no: form.no,
+        address: form.address,
+        city: form.city.split(',')[0],
+        state: form.state,
+        pin_code: form.pin_code,
         cibil: form.cibil,
-        address: address,
-        partner_status_id: 1,
-        partner_advance_percentage_id: form.advance_percentage,
         city_id: parseInt(city),
-        created_by: context.email,
-        onboarded_by_id: form.on_boarded_by
-      }
-    })
-  }
-
-  const onUpdateAccount = (id) => {
-    update_account_no({
-      variables: {
-        id: id,
-        account_number: form.getFieldValue('account_no'),
-        account_holder: form.getFieldValue('account_holder_name'),
-        ifsc_code: form.getFieldValue('ifsc'),
-        updated_by: context.email
+        name: form.name,
+        pan_no: form.pan_no,
+        account_holder: form.account_holder_name,
+        account_number: form.account_no,
+        ifsc_code: form.ifsc,
+        updated_by: context.email,
+        onboarded_by_id: form.on_boarded_by,
+        partner_advance_percentage_id: form.advance_percentage,
+        contact_name: form.contact_name,
+        email: form.email,
+        mobile: form.mobile
       }
     })
   }
