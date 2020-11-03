@@ -8,7 +8,7 @@ import FinalPaymentEdit from './finalPaymentEdit'
 const PartnerInfo = (props) => {
   const { partnerInfo } = props
   const { role } = u
-  const access = [role.admin, role.rm, role.partner_manager, role.partner_support, role.onboarding]
+  const access = [role.admin, role.partner_manager, role.partner_support, role.onboarding]
 
   return (
     <Row gutter={8} className='mb10'>

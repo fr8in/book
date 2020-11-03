@@ -31,7 +31,8 @@ const TripsByStages = (props) => {
           type='trips'
           data={record.id}
           id={record.id}
-        />)
+        />),
+        sorter: (a, b) => (a.id > b.id ? 1 : -1)
     },
     {
       title: 'Order date',

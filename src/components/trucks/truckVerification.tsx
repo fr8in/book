@@ -66,7 +66,7 @@ const TruckVerification = (props) => {
   const { role } = u
   const context = useContext(userContext)
   const customerAdvancePercentageEdit = [role.admin, role.partner_manager, role.billing]
-  const truckActivationRejectAccess = !isEmpty(customerAdvancePercentageEdit) ? context.roles.some(r => customerAdvancePercentageEdit.includes(r)) : false
+  const truckActivationRejectAccess =  u.is_roles(customerAdvancePercentageEdit,context)
 
   const variables = {
     truck_statusName: filter.truck_statusName

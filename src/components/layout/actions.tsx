@@ -87,8 +87,8 @@ const Actions = (props) => {
 
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing_manager, role.partner_manager, role.accounts, role.billing]
-  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
+  const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing_manager, role.partner_manager, role.accounts, role.billing,role.bm]
+  const access = u.is_roles(edit_access,context)
 
   const variables = {
     now: moment().format('YYYY-MM-DD'),

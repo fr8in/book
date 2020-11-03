@@ -16,7 +16,7 @@ const TripPod = (props) => {
   const context = useContext(userContext)
   const { role } = u
   const edit_access = [role.admin, role.billing_manager, role.billing]
-  const access = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
+  const access = u.is_roles(edit_access,context)
 
   const files = get(trip_info, 'trip_files', [])
   const pod_files = !isEmpty(files) ? files.filter(file => file.type === u.fileType.pod) : null

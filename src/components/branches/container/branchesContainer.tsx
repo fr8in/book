@@ -21,7 +21,7 @@ const BranchesContainer = () => {
   const [totalBranch, setTotalBranch] = useState(0)
 
   const context = useContext(userContext)
-  const access = !isEmpty(add_branch_access) ? context.roles.some(r => add_branch_access.includes(r)) : false
+  const access =  u.is_roles(add_branch_access,context)
 
   return (
     <Card

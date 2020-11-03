@@ -71,7 +71,7 @@ const TruckInfo = (props) => {
           <Col sm={20}>
             <Form layout='vertical' onFinish={onDimensionSubmit}>
               <Row gutter={10}>
-                <Col span={6}>
+                <Col xs={24} sm={6}>
                   <Form.Item
                     label='Length(Ft)'
                     name='length'
@@ -81,7 +81,7 @@ const TruckInfo = (props) => {
                     <Input type='number' placeholder='Length(Ft)' disabled={false} />
                   </Form.Item>
                 </Col>
-                <Col span={6}>
+                <Col xs={24} sm={6}>
                   <Form.Item
                     label='Breadth(Ft)'
                     name='breadth'
@@ -95,7 +95,7 @@ const TruckInfo = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={6}>
+                <Col xs={24} sm={6}>
                   <Form.Item
                     label='Height(Ft)'
                     name='height'
@@ -109,7 +109,7 @@ const TruckInfo = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={6}>
+                <Col xs={24} sm={6}>
                   <Form.Item label='save' name='save' className='hideLabel'>
                     <Button type='primary' loading={disableButton} htmlType='submit'>Save</Button>
                   </Form.Item>
@@ -117,7 +117,7 @@ const TruckInfo = (props) => {
               </Row>
             </Form>
           </Col>
-          <Col span={4}>
+          <Col xs={24} sm={4}>
             <Form layout='vertical'>
               <Driver partner_id={partner_id} truck_id={id} initialValue={driver_number} />
             </Form>
