@@ -30,6 +30,7 @@ import TitleWithCount from '../../common/titleWithCount'
 import u from '../../../lib/util'
 import userContext from '../../../lib/userContaxt'
 import { useContext } from 'react'
+import CustomerComment from '../customerComment'
 import isEmpty from 'lodash/isEmpty'
 
 // Apollo Client
@@ -229,6 +230,11 @@ const CustomerDetailContainer = (props) => {
                           <PendingPayments />
                         </Col>
                       </Row>
+                    </TabPane>
+                    <TabPane tab='Comment' key='10'>
+                      <div className='p10'>
+                        <CustomerComment customer_id={customer_info.id} loading={loading} detailPage />
+                      </div>
                     </TabPane>
                   </Tabs>
                 </Card>

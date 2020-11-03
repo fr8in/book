@@ -46,7 +46,12 @@ export default {
     partner_wallet_unblock:'Partner Wallet Unblocked',
     partner_blacklist:'Partner Blacklisted',
     partner_unblacklist:'Partner Unblacklisted',
-    partner_bank_detail:'Bank Detail'
+    partner_bank_detail:'Bank Detail',
+    customer_type:'Customer Type',
+    customer_payment_manager:'Customer Payment Manager',
+    customer_exception:'Customer Exception Date',
+    customer_gst:'Customer Gst',
+    customer_onboardedby:'Customer OnboardedBy'
   },
   maxLength: 6,
   MIN_REBATE_PERCENTAGE: 0.25,

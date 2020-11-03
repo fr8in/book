@@ -3,6 +3,7 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
+import u from '../../lib/util'
 import { useState, useContext } from 'react'
 
 const CUSTOMERS_TYPE_QUERY = gql`
@@ -14,7 +15,12 @@ const CUSTOMERS_TYPE_QUERY = gql`
 }
 `
 const UPDATE_CUSTOMER_TYPE_MUTATION = gql`
-mutation customer_type_update($type_id:Int,$cardcode:String,$updated_by:String!) {
+mutation customer_type_update($description: String, $topic: String, $customer_id: Int, $created_by: String, $type_id:Int,$cardcode:String,$updated_by:String!) {
+  insert_customer_comment(objects: {description: $description, customer_id: $customer_id, topic: $topic, created_by: $created_by}) {
+    returning {
+      description
+    }
+  }
   update_customer(_set: {customer_type_id: $type_id,updated_by:$updated_by}, where: {cardcode: {_eq: $cardcode}}) {
     returning {
       id
@@ -25,8 +31,9 @@ mutation customer_type_update($type_id:Int,$cardcode:String,$updated_by:String!)
 `
 
 const CustomerType = (props) => {
-  const { type, cardcode, edit_access } = props
+  const { type, cardcode, edit_access,customer_id } = props
   const context = useContext(userContext)
+  const { topic } = u
 
   const { loading, error, data } = useQuery(CUSTOMERS_TYPE_QUERY, {
     fetchPolicy: 'cache-and-network',
@@ -54,7 +61,11 @@ const CustomerType = (props) => {
       variables: {
         cardcode,
         type_id: value,
-        updated_by: context.email
+        updated_by: context.email,
+        created_by: context.email,
+        description:`${topic.customer_type} updated by ${context.email}`,
+        topic:topic.customer_type,
+        customer_id: customer_id
       }
     })
   }
