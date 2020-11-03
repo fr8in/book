@@ -1,11 +1,48 @@
 import userContext from '../../../lib/userContaxt'
 import { useState, useContext, useEffect } from 'react'
 import { Form, message } from 'antd'
-import { gql, useMutation } from '@apollo/client'
+import { gql, useMutation, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import u from '../../../lib/util'
 import { useRouter } from 'next/router'
 import CreatePartner from '../createPartner'
+import KycApproval from '../kycApproval'
+
+const PARTNER_DETAIL_QUERY = gql`
+query partner($id: Int!) {
+  partner(where:{id:{_eq:$id}}){
+    id
+    cardcode
+    name
+    pan
+    cibil
+    partner_users(where:{is_admin:{_eq:true}}){
+      name
+      email
+      mobile
+    }
+    account_holder
+    display_account_number
+    ifsc_code
+    address
+    partner_status{
+      id
+      name
+    }
+    city{
+      id
+      name
+    }
+    partner_advance_percentage{
+      id
+      name
+    }
+    onboarded_by{
+      id
+      email
+    }
+  }
+}`
 
 const INSERT_PARTNER_MUTATION = gql`
 mutation create_partner_mutation(
@@ -50,10 +87,12 @@ mutation update_account_no($id: Int!, $account_number: String!, $account_holder:
   }
 }`
 
-const PartnerOnboardingContainer = () => {
+const PartnerOnboardingContainer = (props) => {
+  const { partner_id } = props
   const [city, setCity] = useState(null)
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
+  const [disableAddTruck, setDisableAddTruck] = useState(true)
   const router = useRouter()
   const context = useContext(userContext)
   const { role } = u
@@ -65,6 +104,22 @@ const PartnerOnboardingContainer = () => {
       router.push('/')
     }
   })
+
+  const { loading, data, error } = useQuery(
+    PARTNER_DETAIL_QUERY,
+    {
+      variables: { id: partner_id },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
+  )
+
+  console.log('PartnerOnboardingContainer Error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const partner_info = get(_data, 'partner[0]', null)
 
   const [update_account_no] = useMutation(
     UPDATE_ACCOUNT_NO,
@@ -139,13 +194,18 @@ const PartnerOnboardingContainer = () => {
   }
 
   return (
-    <CreatePartner
-      onSubmit={onPartnerSubmit}
-      form={form}
-      city={city}
-      setCity={setCity}
-      disableButton={disableButton}
-    />
+    <>
+      <CreatePartner
+        onSubmit={onPartnerSubmit}
+        form={form}
+        city={city}
+        setCity={setCity}
+        disableButton={disableButton}
+        loading={loading}
+        partner_info={partner_info}
+      />
+      <KycApproval partner_id={partner_id} disableAddTruck={disableAddTruck} />
+    </>
   )
 }
 export default PartnerOnboardingContainer

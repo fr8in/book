@@ -14,7 +14,7 @@ query fuel_fastag_balance($cardcode: String!) {
 
 const AvailableBalance = (props) => {
   const { partner_summary } = props
-
+  console.log('partner_summary', partner_summary)
   const { loading, error, data } = useQuery(
     FUEL_FASTAG_BALANCE_QUERY,
     {
