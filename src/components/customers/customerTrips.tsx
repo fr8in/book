@@ -1,6 +1,8 @@
-import { Table } from 'antd'
+import { Table,Input } from 'antd'
+import { useState } from 'react'
 import CUSTOMER_TRIPS from './containers/query/customerTrips'
 import { useSubscription } from '@apollo/client'
+import { SearchOutlined } from '@ant-design/icons'
 import get from 'lodash/get'
 import moment from 'moment'
 import Truncate from '../common/truncate'
@@ -9,9 +11,24 @@ import LinkComp from '../common/link'
 const CustomerTrips = (props) => {
   const { cardcode, status_names, delivered } = props
 
+  const initialFilter = {
+    partnername: null,
+    sourcename: null,
+    destinationname: null,
+    truckno: null,
+  }
+
+  const [filter, setFilter] = useState(initialFilter)
+
   const variables = {
     cardcode: cardcode,
-    trip_status: status_names
+    where: {
+          trip_status:{name:{_in:status_names}},
+          partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
+          source: { name: { _ilike: filter.sourcename ? `%${filter.sourcename}%` : null } },
+          destination: { name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } },
+          truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } }
+    }
   }
 
   const { loading, error, data } = useSubscription(
@@ -26,6 +43,20 @@ const CustomerTrips = (props) => {
     _data = data
   }
   const trips = get(_data, 'customer[0].trips', [])
+
+  const onTruckNoSearch = (e) => {
+    setFilter({ ...filter, truckno:e.target.value})
+  }
+  const onPartnerNameSearch = (e) => {
+    setFilter({ ...filter,partnername:e.target.value})
+  }
+  const onSourceNameSearch = (e) => {
+    setFilter({ ...filter,sourcename:e.target.value})
+  }
+  const onDestinationNameSearch = (e) => {
+    setFilter({ ...filter, destinationname:e.target.value})
+  }
+
   const finalPaymentsPending = [
     {
       title: 'ID',
@@ -48,7 +79,6 @@ const CustomerTrips = (props) => {
     },
     {
       title: 'Truck No',
-      sorter: (a, b) => (a.truckN0 > b.truckNo ? 1 : -1),
       width: '16%',
       render: (text, record) => {
         const truck_no = get(record, 'truck.truck_no', null)
@@ -60,7 +90,17 @@ const CustomerTrips = (props) => {
             data={`${truck_no} - ${truck_type}`}
             id={truck_no}
           />)
-      }
+      },
+      filterDropdown: (
+        <Input
+          placeholder='Search'
+          value={filter.truckno}
+          onChange={onTruckNoSearch}
+        />
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     {
       title: 'Partner',
@@ -75,19 +115,47 @@ const CustomerTrips = (props) => {
             id={cardcode}
             length={10}
           />)
-      }
+      },
+      filterDropdown: (
+        <Input
+          placeholder='Search'
+          value={filter.partnername}
+          onChange={onPartnerNameSearch}
+        />
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     {
       title: 'Source',
-      sorter: (a, b) => (a.source.name > b.source.name ? 1 : -1),
       width: '10%',
-      render: (text, record) => get(record, 'source.name', '-')
+      render: (text, record) => get(record, 'source.name', '-'),
+      filterDropdown: (
+        <Input
+          placeholder='Search'
+          value={filter.sourcename}
+          onChange={onSourceNameSearch}
+        />
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     {
       title: 'Destination',
-      sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
       width: '10%',
-      render: (text, record) => get(record, 'destination.name', '-')
+      render: (text, record) => get(record, 'destination.name', '-'),
+      filterDropdown: (
+        <Input
+          placeholder='Search'
+           value={filter.destinationname}
+          onChange={onDestinationNameSearch}
+        />
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     !delivered ? {
       title: 'Status',
