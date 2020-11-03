@@ -62,15 +62,18 @@ const LoadingPointContact = (props) => {
     }
   )
 
-  const handleUserChange = (value, option) => {
-    if (option.key === 'new') {
+  const handleUserChange = (value) => {
+    const option = user_data.find(_user => _user.mobile === value)
+    if (option) {
+      onUserChange(option.id)
+    } else {
       insert_customer_user({
-        variables: {
-          customer_id,
-          mobile: value
-        }
-      })
-    } else { onUserChange(option.key) }
+      variables: {
+        customer_id,
+        mobile: value
+      }
+    }) 
+  }
   }
 
   let users = []
