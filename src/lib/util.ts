@@ -58,7 +58,8 @@ export default {
     customer_branch:'Customer Branch',
     customer_user:'Customer User',
     customer_fr8_employee:'Fr8 Employee',
-    customer_reject:'Customer Reject'
+    customer_reject:'Customer Reject',
+    customer_advance_percentage:'Customer Advance Percentage'
   },
   maxLength: 6,
   MIN_REBATE_PERCENTAGE: 0.25,
