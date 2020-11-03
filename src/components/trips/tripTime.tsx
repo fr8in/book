@@ -352,7 +352,7 @@ const TripTime = (props) => {
             <Col xs={24}>
               <Space>
                 {po_delete &&
-                  <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')} disabled={!access || lock}>PO</Button>}
+                  <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')} disabled= {(trip_info.loaded === 'Yes') ? !access:null|| lock}>PO</Button>}
                 {process_advance &&
                   <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>}
                 {remove_sin &&

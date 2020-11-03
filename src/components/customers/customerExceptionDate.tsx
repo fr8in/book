@@ -4,11 +4,13 @@ import { gql, useMutation, useSubscription } from '@apollo/client'
 import useShowHide from '../../hooks/useShowHide'
 import userContext from '../../lib/userContaxt'
 import { useContext } from 'react'
+import u from '../../lib/util'
 import EditAccess from '../common/editAccess'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
 import Phone from '../common/phone'
 import Truncate from '../common/truncate'
+
 
 const CUSTOMER_SUBCRIPTION = gql`
 subscription trip($customer_id: Int) {
@@ -37,7 +39,7 @@ subscription trip($customer_id: Int) {
 }
 `
 const ASSIGN_TO_CONFIRM_STATUS_MUTATION = gql`
-mutation customer_exception($exception_date: timestamp, $customer_id: Int, $updated_by: String!) {
+mutation customer_exception($description: String, $topic: String, $id: Int, $created_by: String,$exception_date: timestamp, $customer_id: Int, $updated_by: String!) {
   update_customer(_set: {exception_date: $exception_date, updated_by: $updated_by}, where: {id: {_eq: $customer_id}}) {
     returning {
       id
@@ -50,14 +52,20 @@ mutation customer_exception($exception_date: timestamp, $customer_id: Int, $upda
       id
     }
   }
+insert_customer_comment(objects: {description: $description, customer_id: $id, topic: $topic, created_by: $created_by}) {
+    returning {
+      description
+    }
+  }
 }
+  
 `
 
 
 const CustomerExceptionDate = (props) => {
-  const { exceptionDate, edit_access, id } = props
-
+  const { exceptionDate, cardcode ,edit_access,customer_id,id} = props
   const context = useContext(userContext)
+  const { topic } = u
   const initial = { datePicker: false }
   const { visible, onHide, onShow } = useShowHide(initial)
   const { loading, error, data } = useSubscription(
@@ -83,12 +91,18 @@ const CustomerExceptionDate = (props) => {
       message.success('Updated!!')
     }
   })
+
+  
   
   const onSubmit = (form) => {
     assign_to_confirm({
       variables: {
         customer_id: id,
         updated_by: context.email,
+        created_by: context.email,
+        description:`${topic.customer_exception} updated by ${context.email}`,
+        topic:topic.customer_exception,
+        id:id,
         exception_date: form.exception_date.format('YYYY-MM-DD')
       }
     })

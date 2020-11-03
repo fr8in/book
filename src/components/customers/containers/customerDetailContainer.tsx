@@ -30,6 +30,7 @@ import TitleWithCount from '../../common/titleWithCount'
 import u from '../../../lib/util'
 import userContext from '../../../lib/userContaxt'
 import { useContext } from 'react'
+import CustomerComment from '../customerComment'
 import isEmpty from 'lodash/isEmpty'
 
 // Apollo Client
@@ -152,7 +153,7 @@ const CustomerDetailContainer = (props) => {
                       : null}
                     <WalletBalance wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)} cardcode={cardcode} />
                     <Blacklist
-                      cardcode={cardcode}
+                     customer_info={customer_info}
                       statusId={get(customer_info, 'status.id', null)}
                       edit_access={BlacklistEdit}
                     />
@@ -229,6 +230,11 @@ const CustomerDetailContainer = (props) => {
                           <PendingPayments />
                         </Col>
                       </Row>
+                    </TabPane>
+                    <TabPane tab='Comment' key='10'>
+                      <div className='p10'>
+                        <CustomerComment customer_id={customer_info.id} loading={loading} detailPage />
+                      </div>
                     </TabPane>
                   </Tabs>
                 </Card>

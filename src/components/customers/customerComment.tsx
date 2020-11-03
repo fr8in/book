@@ -6,13 +6,14 @@ import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
 
 const CUSTOMER_COMMENT_SUBSCRIPTION = gql`
-  subscription customer_comment($id: Int!){
+  subscription customer_comment($id: Int!, $limit: Int){
     customer(where:{id:{_eq:$id}}) {
       status{
         name
       }
-      customer_comments(limit:5,order_by:{created_at:desc}){
+      customer_comments(limit:$limit,order_by:{created_at:desc}){
         id
+        topic
         description
         created_at
         created_by
@@ -31,7 +32,7 @@ const INSERT_CUSTOMER_COMMENT_MUTATION = gql`
   }
 `
 const customerComment = (props) => {
-  const { customer_id } = props
+  const { customer_id,detailPage } = props
   const context = useContext(userContext)
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
@@ -39,7 +40,10 @@ const customerComment = (props) => {
   const { loading, error, data } = useSubscription(
     CUSTOMER_COMMENT_SUBSCRIPTION,
     {
-      variables: { id: customer_id }
+      variables: {
+         id: customer_id,
+         limit: detailPage ? 100 : 5
+       }
     }
   )
 
@@ -78,6 +82,11 @@ const customerComment = (props) => {
   }
 
   const columnsCurrent = [
+    detailPage ? {
+      title: 'Topic',
+      dataIndex: 'topic',
+      width: '15%'
+    } : {},
     {
       title: 'Comment',
       dataIndex: 'description',

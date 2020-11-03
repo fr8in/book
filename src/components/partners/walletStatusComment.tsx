@@ -31,7 +31,8 @@ const [updateStatusId] = useMutation(
     UPDATE_PARTNER_WALLET_BLOCK_STATUS_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () { message.success('Updated!!')
+      onHide() }
     }
   )
 
@@ -39,7 +40,8 @@ const [updateStatusId] = useMutation(
     UPDATE_PARTNER_WALLET_UNBLOCK_STATUS_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () { message.success('Updated!!')
+      onHide() }
     }
   )
 
@@ -61,8 +63,10 @@ const [updateStatusId] = useMutation(
       variables: {
         id: partner_id,
         updated_by: context.email,
-        description: form.comment,
-        topic: topic.partner_wallet_unblock
+        partner_comment: {
+          description: form.comment,
+          topic: topic.partner_wallet_unblock
+        }
       }
     })
   }
