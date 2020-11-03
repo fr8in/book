@@ -87,7 +87,7 @@ const PartnerContainer = () => {
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
   const access = u.is_roles(edit_access,context)
   const initialFilter = {
-    partner_statusId: [1],
+    partner_statusId: [4],
     region: null,
     offset: 0,
     limit: u.limit,

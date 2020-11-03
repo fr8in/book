@@ -1,11 +1,11 @@
-import { Tag } from 'antd'
+import { Tag, Row } from 'antd'
 
 const Title = (props) => {
-  const { name, data } = props
+  const { name, data, alignRight } = props
   return (
-    <div>{name}
-      {data && <Tag color='#108ee9'>{data}</Tag>}
-    </div>
+      <Row justify={alignRight ? 'end' : 'start'}>
+        {name}{data && <Tag color='#108ee9'>{data}</Tag>} 
+      </Row>
   )
 }
 
