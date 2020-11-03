@@ -33,7 +33,7 @@ const CustomerInfo = (props) => {
         />
         <LabelAndData
           label='Managed'
-          data={<ManagedCustomer isManaged={customer_info.managed} cardcode={customer_info.cardcode}  edit_access={managedCustomerEdit}/>}
+          data={<ManagedCustomer isManaged={customer_info.managed} cardcode={customer_info.cardcode} customer_id={customer_info.id} edit_access={managedCustomerEdit}/>}
           mdSpan={4}
           smSpan={8}
           xsSpan={12}

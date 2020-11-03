@@ -51,7 +51,10 @@ export default {
     customer_payment_manager:'Customer Payment Manager',
     customer_exception:'Customer Exception Date',
     customer_gst:'Customer Gst',
-    customer_onboardedby:'Customer OnboardedBy'
+    customer_onboardedby:'Customer OnboardedBy',
+    managed_customer:'Managed Customer',
+    customer_blacklist:'Customer Blacklisted',
+    customer_unblacklist:'Customer Unblacklisted'
   },
   maxLength: 6,
   MIN_REBATE_PERCENTAGE: 0.25,

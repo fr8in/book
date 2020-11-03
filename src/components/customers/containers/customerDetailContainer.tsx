@@ -153,7 +153,7 @@ const CustomerDetailContainer = (props) => {
                       : null}
                     <WalletBalance wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)} cardcode={cardcode} />
                     <Blacklist
-                      cardcode={cardcode}
+                     customer_info={customer_info}
                       statusId={get(customer_info, 'status.id', null)}
                       edit_access={BlacklistEdit}
                     />
