@@ -3,10 +3,12 @@ import { gql, useMutation, useLazyQuery } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import { useState, useContext } from 'react'
 import get from 'lodash/get'
+import u from '../../lib/util'
+
 
 const UPDATE_PARTNER_BANK_MUTATION = gql`
-mutation update_account_no($id: Int!, $account_number: String!, $account_holder: String!, $ifsc_code: String!, $updated_by: String!) {
-  update_account_no(id: $id, account_number: $account_number, account_holder: $account_holder, ifsc_code: $ifsc_code, updated_by:$updated_by) {
+mutation update_account_no($id: Int!, $account_number: String!, $account_holder: String!, $ifsc_code: String!, $updated_by: String!,$partner_comment:PartnerCommentInput) {
+  update_account_no(id: $id, account_number: $account_number, account_holder: $account_holder, ifsc_code: $ifsc_code, updated_by:$updated_by,partner_comment:$partner_comment) {
     description
     status
   }
@@ -21,8 +23,11 @@ query ifsc_validation($ifsc: String!){
   }
 }`
 
+const { TextArea } = Input
+
 const EditBank = (props) => {
   const { visible, onHide, partner_id } = props
+  const { topic } = u
 
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
@@ -76,7 +81,11 @@ const EditBank = (props) => {
         account_number: form.account_number,
         account_holder: form.account_holder,
         ifsc_code: form.ifsc_code,
-        updated_by: context.email
+        updated_by: context.email,
+        partner_comment: {
+          description: form.comment,
+          topic: topic.partner_bank_detail
+        }
       }
     })
   }
@@ -108,6 +117,16 @@ const EditBank = (props) => {
           >
             <Input placeholder=' Account Number' />
           </Form.Item>
+          <Form.Item
+            name='comment'
+            rules={[{ required: true }]}
+          >
+            <TextArea
+              placeholder='Enter Reason'
+              autoSize={{ minRows: 2, maxRows: 6 }}
+            />
+          </Form.Item>
+
 
           <Row justify='end'>
             <Space>

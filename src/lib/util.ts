@@ -41,7 +41,12 @@ export default {
     truck_deactivation:'Truck Deactivated',
     truck_activation:'Truck activated',
     partner_deactivation:'Partner Deactivated',
-    partner_activation:'Partner activated'
+    partner_activation:'Partner activated',
+    partner_wallet_block:'Partner Wallet Blocked',
+    partner_wallet_unblock:'Partner Wallet Unblocked',
+    partner_blacklist:'Partner Blacklisted',
+    partner_unblacklist:'Partner Unblacklisted',
+    partner_bank_detail:'Bank Detail'
   },
   maxLength: 6,
   MIN_REBATE_PERCENTAGE: 0.25,
