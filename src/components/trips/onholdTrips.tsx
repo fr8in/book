@@ -97,7 +97,7 @@ const OnholdTrips = (props) => {
     {
       title: 'Destination',
       dataIndex: 'name',
-      width: '9%',
+      width: '11%',
       render: (text, record) => get(record, 'destination.name', null)
     },
     {
@@ -117,7 +117,7 @@ const OnholdTrips = (props) => {
       title: 'Customer',
       dataIndex: 'name',
       sorter: (a, b) => (a.customer > b.customer ? 1 : -1),
-      width: '18%',
+      width: '14%',
       render: (text, record) => <Truncate data={get(record, 'customer.name', null)} length={25} />
     },
     {
@@ -131,7 +131,7 @@ const OnholdTrips = (props) => {
       title: 'On-hold',
       dataIndex: 'onhold',
       sorter: (a, b) => (a.onhold > b.onhold ? 1 : -1),
-      width: '8%',
+      width: '12%',
       render: (text, record) => get(record, 'trip_payables_aggregate.aggregate.sum.amount', null)
     },
     {

@@ -63,7 +63,7 @@ subscription trip_credit_debit($status: [String!]) {
 
 const Pending = () => {
   const { role } = u
-  const access = [role.admin, role.rm]
+  const access = [role.admin, role.rm,role.partner_support]
   const approve_roles = [role.admin, role.rm,role.partner_manager,role.partner_support]
   const reject_roles = [role.admin, role.rm,role.partner_manager,role.partner_support]
   const initial = {

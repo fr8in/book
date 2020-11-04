@@ -5,7 +5,8 @@ import { useState } from 'react'
 import get from 'lodash/get'
 import u from '../../../lib/util'
 
-const DeliveredContainer = () => {
+const DeliveredContainer = (props) => {
+  const {PodVerified_setCountFilter,PodVerified_countFilter} =props
   const initialFilter = {
     offset: 0,
     limit: u.limit,
@@ -79,9 +80,11 @@ const DeliveredContainer = () => {
   }
   const onPartnerNameSearch = (value) => {
     setFilter({ ...filter, partnername: value })
+    PodVerified_setCountFilter({ ...PodVerified_countFilter,pod_verified_partnername:value })
   }
   const onCustomerNameSearch = (value) => {
     setFilter({ ...filter, customername: value })
+    PodVerified_setCountFilter({ ...PodVerified_countFilter,pod_verified_customername:value })
   }
   const onSourceNameSearch = (value) => {
     setFilter({ ...filter, sourcename: value })
@@ -91,6 +94,7 @@ const DeliveredContainer = () => {
   }
   const onTruckNoSearch = (value) => {
     setFilter({ ...filter, truckno: value })
+    PodVerified_setCountFilter({ ...PodVerified_countFilter,pod_verified_truckno:value })
   }
   const onFilter = (value) => {
     setFilter({ ...filter, trip_statusName: value })
