@@ -45,40 +45,50 @@ query partner($id: Int!) {
 }`
 
 const UPDATE_PARTNER_MUTATION = gql`
-mutation create_partner_mutation(
-  $name: String, $email: String, $cibil: String, $address: jsonb,
-  $mobile: String, $pan_no: String, $contact_name: String, 
-  $partner_status_id:Int,$city_id:Int,
-  $partner_advance_percentage_id:Int,$onboarded_by_id:Int,$created_by:String ) 
-  {
-  insert_partner(
-    objects: {
-      name: $name,
-      pan: $pan_no, 
+mutation update_partner(
+  $partner_id: Int!,
+  $cibil: String!,
+  $city_id: Int!,
+  $name: String!,
+  $pan_no: String!,
+  $account_holder: String!,
+  $account_number: String!,
+  $ifsc_code: String!,
+  $updated_by:String!,
+  $onboarded_by_id: Int!,
+  $partner_advance_percentage_id: Int!
+){
+  update_partner_track(
+    partner_id: $partner_id,
+    personal_detail: {
       cibil: $cibil, 
-      address: $address, 
-      created_by:$created_by,
-      partner_users:
-      {data: {
-        mobile: $mobile,
-          name: $contact_name,
-          email: $email,
-          is_admin: true}
-        },
-      partner_status_id:$partner_status_id,
-      city_id:$city_id,
-      partner_advance_percentage_id:$partner_advance_percentage_id,
-      onboarded_by_id:$onboarded_by_id
-    }) {
-    returning {
-      id
-      account_number
-      account_holder
-      ifsc_code
+      city_id: $city_id, 
+      name: $name, 
+      pan_no: $pan_no,
+    }, 
+    bank_detail: {
+      account_holder: $account_holder, 
+      account_number: $account_number, 
+      ifsc_code: $ifsc_code, 
+      updated_by: $updated_by
+    }, 
+    fr8_detail: {
+      onboarded_by_id: $onboarded_by_id, 
+      partner_advance_percentage_id: $partner_advance_percentage_id
     }
+  ){
+    description
+    status
+    
   }
 }`
 
+const ADDRESS_UPDATE = gql`
+mutation partner_address($id: Int!, $address: jsonb){
+  update_partner(where:{id: {_eq:$id}}, _set:{address:$address}){
+    returning{ id }
+  }
+}`
 
 const PartnerOnboardingContainer = (props) => {
   const { partner_id } = props
@@ -101,7 +111,7 @@ const PartnerOnboardingContainer = (props) => {
   const { loading, data, error } = useQuery(
     PARTNER_DETAIL_QUERY,
     {
-      variables: { id: partner_id },
+      variables: { id: parseInt(partner_id, 10) },
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
@@ -114,23 +124,6 @@ const PartnerOnboardingContainer = (props) => {
   }
   const partner_info = get(_data, 'partner[0]', null)
 
-  // const [update_account_no] = useMutation(
-  //   UPDATE_ACCOUNT_NO,
-  //   {
-  //     onError (error) {
-  //       message.error(error.toString())
-  //     },
-  //     onCompleted (data) {
-  //       const status = get(data, 'update_account_no.status', null)
-  //       const description = get(data, 'update_account_no.description', null)
-  //       if (status === 'OK') {
-  //         message.success(description || 'Account Created!')
-  //         router.push('/partners')
-  //       } else (message.error(description))
-  //     }
-  //   }
-  // )
-
   const [updatePartner] = useMutation(
     UPDATE_PARTNER_MUTATION,
     {
@@ -139,50 +132,67 @@ const PartnerOnboardingContainer = (props) => {
         message.error(error.toString())
       },
       onCompleted (data) {
-        message.success('Partner Created!!')
         setDisableButton(false)
+        const status = get(data, 'update_partner_track.status', null)
+        const description = get(data, 'update_partner_track.description', null)
+        if (status === 'OK') {
+          onAddressUpdate()
+          setDisableAddTruck(false)
+          message.success(description || 'Updated!')
+        } else {
+          message.error(description)
+          setDisableButton(false)
+        }
       }
     }
   )
 
-  const onPartnerSubmit = (form) => {
-    setDisableButton(true)
-    const address = {
-      no: form.no,
-      address: form.address,
-      city: form.city.split(',')[0],
-      state: form.state,
-      pin_code: form.pin_code
+  const [update_address] = useMutation(
+    ADDRESS_UPDATE,
+    {
+      onError (error) {
+        message.error(error.toString())
+      }
     }
-    updatePartner({
+  )
+
+  const onAddressUpdate = () => {
+    const address = {
+      no: form.getFieldValue('no'),
+      address: form.getFieldValue('address'),
+      city: form.getFieldValue('city').split(',')[0],
+      state: form.getFieldValue('state'),
+      pin_code: form.getFieldValue('pin_code')
+    }
+    update_address({
       variables: {
-        name: form.name,
-        contact_name: form.contact_name,
-        mobile: form.mobile,
-        email: form.email,
-        pan_no: form.pan_no,
-        cibil: form.cibil,
-        address: address,
-        partner_status_id: 1,
-        partner_advance_percentage_id: form.advance_percentage,
-        city_id: parseInt(city),
-        created_by: context.email,
-        onboarded_by_id: form.on_boarded_by
+        id: partner_id,
+        address: address
       }
     })
   }
 
-  // const onUpdateAccount = (id) => {
-  //   update_account_no({
-  //     variables: {
-  //       id: id,
-  //       account_number: form.getFieldValue('account_no'),
-  //       account_holder: form.getFieldValue('account_holder_name'),
-  //       ifsc_code: form.getFieldValue('ifsc'),
-  //       updated_by: context.email
-  //     }
-  //   })
-  // }
+  const onPartnerSubmit = (form) => {
+    setDisableButton(true)
+    updatePartner({
+      variables: {
+        partner_id: parseInt(partner_id, 10),
+        // personal_detail
+        cibil: form.cibil,
+        city_id: parseInt(city) || get(partner_info, 'city.id', null),
+        name: form.name,
+        pan_no: form.pan_no,
+        // bank_detail
+        account_holder: form.account_holder_name,
+        account_number: form.account_no,
+        ifsc_code: form.ifsc,
+        updated_by: context.email,
+        // fr8_detail
+        onboarded_by_id: form.on_boarded_by,
+        partner_advance_percentage_id: form.advance_percentage
+      }
+    })
+  }
 
   return (
     <>

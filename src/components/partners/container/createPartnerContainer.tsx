@@ -2,14 +2,13 @@ import userContext from '../../../lib/userContaxt'
 import { useState, useContext, useEffect } from 'react'
 import { Form, message } from 'antd'
 import { gql, useMutation } from '@apollo/client'
-import get from 'lodash/get'
 import u from '../../../lib/util'
+import get from 'lodash/get'
 import { useRouter } from 'next/router'
 import CreatePartner from '../createPartner'
 
 const INSERT_PARTNER_MUTATION = gql`
 mutation create_partner(
-  $address: String!,
   $cibil: String!,
   $city_id: Int!,
   $name: String!,
@@ -26,12 +25,16 @@ mutation create_partner(
 ) {
   create_partner_track(
     personal_detail: {
-      address: $address, 
       cibil: $cibil, 
       city_id: $city_id, 
       name: $name, 
       pan_no: $pan_no
     }, 
+    partner_user: {
+      contact_name: $contact_name, 
+      email: $email, 
+      mobile: $mobile
+    },
     bank_detail: {
       account_holder: $account_holder, 
       account_number: $account_number, 
@@ -41,14 +44,16 @@ mutation create_partner(
     fr8_detail: {
       onboarded_by_id: $onboarded_by_id, 
       partner_advance_percentage_id: $partner_advance_percentage_id
-    }, 
-    partner_user: {
-      contact_name: $contact_name, 
-      email: $email, 
-      mobile: $mobile
     }) {
     description
     status
+  }
+}`
+
+const ADDRESS_UPDATE = gql`
+mutation partner_address($id: Int!, $address: jsonb){
+  update_partner(where:{id: {_eq:$id}}, _set:{address:$address}){
+    returning{ id }
   }
 }`
 
@@ -76,34 +81,67 @@ const PartnerOnboardingContainer = () => {
         message.error(error.toString())
       },
       onCompleted (data) {
-        message.success('Partner Created!!')
         setDisableButton(false)
+        const status = get(data, 'create_partner_track.status', null)
+        const description = get(data, 'create_partner_track.description', null)
+        if (status === 'OK') {
+          onAddressUpdate(parseInt(description))
+          message.success(description || 'Created!')
+          form.resetFields()
+          router.push('/partners', undefined, { shallow: true })
+        } else {
+          message.error(description)
+        }
       }
     }
   )
+
+  const [update_address] = useMutation(
+    ADDRESS_UPDATE,
+    {
+      onError (error) {
+        message.error(error.toString())
+      }
+    }
+  )
+
+  const onAddressUpdate = (partner_id) => {
+    const address = {
+      no: form.getFieldValue('no'),
+      address: form.getFieldValue('address'),
+      city: form.getFieldValue('city').split(',')[0],
+      state: form.getFieldValue('state'),
+      pin_code: form.getFieldValue('pin_code')
+    }
+    update_address({
+      variables: {
+        id: partner_id,
+        address: address
+      }
+    })
+  }
 
   const onPartnerSubmit = (form) => {
     setDisableButton(true)
     insertPartner({
       variables: {
-        no: form.no,
-        address: form.address,
-        city: form.city.split(',')[0],
-        state: form.state,
-        pin_code: form.pin_code,
+        // personal_detail
         cibil: form.cibil,
         city_id: parseInt(city),
         name: form.name,
         pan_no: form.pan_no,
+        // partner_user
+        contact_name: form.contact_name,
+        email: form.email,
+        mobile: form.mobile,
+        // bank_detail
         account_holder: form.account_holder_name,
         account_number: form.account_no,
         ifsc_code: form.ifsc,
         updated_by: context.email,
+        // fr8_detail
         onboarded_by_id: form.on_boarded_by,
-        partner_advance_percentage_id: form.advance_percentage,
-        contact_name: form.contact_name,
-        email: form.email,
-        mobile: form.mobile
+        partner_advance_percentage_id: form.advance_percentage
       }
     })
   }
@@ -118,4 +156,5 @@ const PartnerOnboardingContainer = () => {
     />
   )
 }
+
 export default PartnerOnboardingContainer

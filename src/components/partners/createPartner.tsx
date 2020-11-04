@@ -128,7 +128,7 @@ const CreatePartner = (props) => {
                 rules={[{ required: true, message: 'Contact name is required field!' }]}
                 initialValue={get(partner_info, 'partner_users[0].name', null)}
               >
-                <Input placeholder='Contact Person' />
+                <Input placeholder='Contact Person' disabled={!!partner_info} />
               </Form.Item>
             </Col>
             <Col xs={24} sm={8} md={8} lg={8} xl={4}>
@@ -148,7 +148,7 @@ const CreatePartner = (props) => {
                 rules={[{ required: true, message: 'Email is required field' }]}
                 initialValue={get(partner_info, 'partner_users[0].email', null)}
               >
-                <Input placeholder='Email Address' />
+                <Input placeholder='Email Address' disabled={!!partner_info} />
               </Form.Item>
             </Col>
             <Col xs={24} sm={8} md={8} lg={8} xl={4}>

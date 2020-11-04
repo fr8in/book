@@ -16,13 +16,14 @@ import LinkComp from '../common/link'
 import FileUploadOnly from '../common/fileUploadOnly'
 import ViewFile from '../common/viewFile'
 import DeleteFile from '../common/deleteFile'
-import { gql, useMutation, useQuery, useSubscription } from '@apollo/client'
+import { gql, useMutation, useSubscription } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import Loading from '../common/loading'
 import NewTruck from './newTruck'
 import u from '../../lib/util'
+import { useRouter } from 'next/router'
 
 const PARTNERS_SUBSCRIPTION = gql`
 subscription partner_kyc($id:Int){
@@ -93,6 +94,8 @@ mutation create_partner_code(
 
 const KycApproval = (props) => {
   const { partner_id, disableAddTruck } = props
+
+  const router = useRouter()
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
@@ -143,6 +146,9 @@ const KycApproval = (props) => {
         const status = get(data, 'create_partner_code.status', null)
         const description = get(data, 'create_partner_code.description', null)
         if (status === 'OK') {
+          const url = '/partners/[id]'
+          const as = `/partners/${description}`
+          router.push(url, as, { shallow: true })
           message.success(description || 'Code created!')
         } else {
           message.error(description)
@@ -183,14 +189,13 @@ const KycApproval = (props) => {
       setDisableButton(true)
       createPartnerCode({
         variables: {
-          partner_id: partner_id,
+          partner_id: parseInt(partner_id, 10),
           cardcode: cardcode,
           name: name,
           pan_no: partnerDetail.pan,
           gst: form.gst,
           emi: !!checked,
           updated_by: context.email,
-          // TODO: not required pls remove this from API
           onboarded_by_id: get(partnerDetail, 'onboarded_by.id', null),
           partner_advance_percentage_id: get(partnerDetail, 'partner_advance_percentage.id', null),
           cibil: get(partnerDetail, 'cibil', null)
