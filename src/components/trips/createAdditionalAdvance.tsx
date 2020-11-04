@@ -31,7 +31,7 @@ const CreateAdditionalAdvance = (props) => {
   const [form] = Form.useForm()
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.admin, role.rm, role.bm]
+  const edit_access = [role.admin, role.rm, role.accounts_manager]
   const access = u.is_roles(edit_access,context)
 
   const [getBankDetail, { loading, data, error }] = useLazyQuery(
