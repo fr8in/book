@@ -1,16 +1,23 @@
 
 import { Row, Col, Modal, Button, Input, Form, message } from 'antd'
 import { useMutation, gql } from '@apollo/client'
-import { useState } from 'react'
+import { useState,useContext } from 'react'
+import userContext from '../../lib/userContaxt'
+import u from '../../lib/util'
 
 const INSERT_CUSTOMER_USERS_MUTATION = gql`
-mutation customer_user_insert($name:String,$mobile:String,$email:String,$customer_id:Int,) {
+mutation customer_user_insert($description: String, $topic: String, $customer_id: Int, $created_by: String,$name:String,$mobile:String,$email:String,$id:Int) {
+  insert_customer_comment(objects: {description: $description, customer_id: $customer_id, topic: $topic, created_by: $created_by}) {
+    returning {
+      description
+    }
+  }
   insert_customer_user(
     objects: {
       name: $name, 
       mobile: $mobile,
       email:$email,
-      customer_id: $customer_id
+      customer_id: $id
     }
   ) {
     returning {
@@ -23,6 +30,8 @@ mutation customer_user_insert($name:String,$mobile:String,$email:String,$custome
 
 const CreateCustomerUser = (props) => {
   const { visible, onHide, customer } = props
+  const context = useContext(userContext)
+  const { topic } = u
 
   const [disableButton, setDisableButton] = useState(false)
 
@@ -48,7 +57,11 @@ const CreateCustomerUser = (props) => {
         customer_id: customer,
         mobile: form.mobile,
         email: `${form.mobile}.customer@fr8.in`,
-        name: form.name
+        name: form.name,
+        created_by: context.email,
+        description:`${topic.customer_user} inserted by ${context.email}`,
+        topic:topic.customer_user,
+        id: customer
       }
     })
   }

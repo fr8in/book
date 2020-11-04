@@ -15,8 +15,13 @@ const CUSTOMERS_ADVANCE_PERCENTAGE_QUERY = gql`
 }
 `
 const UPDATE_CUSTOMER_ADVANCE_MUTATION = gql`
-mutation customer_advance_update($advance_percentage_id:Int,$customer_id:Int!,$updated_by:String!) {
-  update_customer(_set: {advance_percentage_id: $advance_percentage_id,updated_by:$updated_by}, where: {id: {_eq: $customer_id}}) {
+mutation customer_advance_update($description: String, $topic: String, $customer_id: Int, $created_by: String,$advance_percentage_id:Int,$updated_by:String!,$id:Int!) {
+  insert_customer_comment(objects: {description: $description, customer_id: $customer_id, topic: $topic, created_by: $created_by}) {
+    returning {
+      description
+    }
+  }
+  update_customer(_set: {advance_percentage_id: $advance_percentage_id,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
     returning {
       id
       advance_percentage_id
@@ -28,7 +33,7 @@ mutation customer_advance_update($advance_percentage_id:Int,$customer_id:Int!,$u
 const CustomerAdvancePercentage = (props) => {
   const { record } = props
   const context = useContext(userContext)
-  const { role } = u
+  const { role,topic } = u
   const customerAdvancePercentageEdit = [role.admin, role.accounts_manager, role.accounts]
 
   const advancePercentage = get(record, 'customer_advance_percentage.name', '-')
@@ -67,7 +72,11 @@ const CustomerAdvancePercentage = (props) => {
       variables: {
         customer_id: customer_id,
         updated_by: context.email,
-        advance_percentage_id: value
+        advance_percentage_id: value,
+        created_by: context.email,
+        description:`${topic.customer_advance_percentage} updated by ${context.email}`,
+        topic:topic.customer_advance_percentage,
+        id: customer_id
       }
     })
   }
