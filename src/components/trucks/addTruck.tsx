@@ -5,27 +5,33 @@ import Driver from './driver'
 import Link from 'next/link'
 
 const AddTruck = (props) => {
-  const { partner_info, onSubmit, typeList, driverChange, onCityChange, disableButton, grid_column } = props
+  const { partner_info, onSubmit, typeList, driverChange, onCityChange, disableButton, disableAddTruck } = props
 
   return (
     <Form layout='vertical' onFinish={onSubmit}>
       <Row gutter={10}>
         <Col sm={24}>
-          <Form.Item
-            label='Truck Number'
-            name='truck_no'
-            rules={[{ required: true, message: 'Truck Number is required field!' }]}
-          >
-            <Input placeholder='Truck Number' />
-          </Form.Item>
-          <Form.Item>
-            <CitySelect
-              label='Current City'
-              onChange={onCityChange}
-              required
-              name='city'
-            />
-          </Form.Item>
+          <Row gutter={10}>
+            <Col xs={24} sm={12}>
+              <Form.Item
+                label='Truck Number'
+                name='truck_no'
+                rules={[{ required: true, message: 'Truck Number is required field!' }]}
+              >
+                <Input placeholder='Truck Number' />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={12}>
+              <Form.Item>
+                <CitySelect
+                  label='Current City'
+                  onChange={onCityChange}
+                  required
+                  name='city'
+                />
+              </Form.Item>
+            </Col>
+          </Row>
           <Row gutter={10}>
             <Col xs={24} sm={12}>
               <Form.Item
@@ -69,13 +75,13 @@ const AddTruck = (props) => {
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item className='text-right m5'>
+          <Form.Item className='text-right mb0'>
             <Space>
               {partner_info.cardcode &&
                 <Link href='/partners/[id]' as={`/partners/${partner_info.cardcode}`}>
                   <Button icon={<LeftOutlined />}>Back</Button>
                 </Link>}
-              <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
+              <Button type='primary' loading={disableButton} disabled={disableAddTruck} htmlType='submit'>Add Truck</Button>
             </Space>
           </Form.Item>
         </Col>
