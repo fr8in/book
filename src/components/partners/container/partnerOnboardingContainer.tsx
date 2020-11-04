@@ -202,7 +202,7 @@ const PartnerOnboardingContainer = (props) => {
         city={city}
         setCity={setCity}
         disableButton={disableButton}
-        loading={loading}
+        data_loading={loading}
         partner_info={partner_info}
       />
       <KycApproval partner_id={partner_id} disableAddTruck={disableAddTruck} />

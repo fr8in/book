@@ -32,7 +32,7 @@ query ifsc_validation($ifsc: String!){
 }`
 
 const CreatePartner = (props) => {
-  const { onSubmit, form, setCity, disableButton, partner_info } = props
+  const { onSubmit, form, setCity, disableButton, partner_info, data_loading } = props
 
   const { loading, error, data } = useQuery(
     PARTNERS_SUBSCRIPTION,
@@ -102,7 +102,7 @@ const CreatePartner = (props) => {
   ]
 
   return (
-    loading ? <Loading /> : (
+    data_loading ? <Loading /> : (
       <Form layout='vertical' onFinish={onSubmit} form={form}>
         <Card
           size='small'
