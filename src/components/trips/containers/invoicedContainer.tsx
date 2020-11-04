@@ -5,7 +5,9 @@ import { useState } from 'react'
 import get from 'lodash/get'
 import u from '../../../lib/util'
 
-const DeliveredContainer = (props) => {
+const InvoicedContainer = (props) => {
+  const {invoiced_setCountFilter,invoiced_countFilter} =props
+
   const initialFilter = {
     offset: 0,
     limit: u.limit,
@@ -56,8 +58,8 @@ const DeliveredContainer = (props) => {
       variables: variables
     }
   )
-  console.log('DeliveredContainer error', error)
-  console.log('DeliveredContainer Status Error', serror)
+  console.log('InvoicedContainer error', error)
+  console.log('InvoicedContainer Status Error', serror)
 
   let _tripsdata = {}
   if (!loading) {
@@ -80,9 +82,11 @@ const DeliveredContainer = (props) => {
   }
   const onPartnerNameSearch = (value) => {
     setFilter({ ...filter, partnername: value })
+    invoiced_setCountFilter({ ...invoiced_countFilter,invoiced_partnername:value })
   }
   const onCustomerNameSearch = (value) => {
     setFilter({ ...filter, customername: value })
+    invoiced_setCountFilter({ ...invoiced_countFilter,invoiced_customername:value })
   }
   const onSourceNameSearch = (value) => {
     setFilter({ ...filter, sourcename: value })
@@ -92,6 +96,7 @@ const DeliveredContainer = (props) => {
   }
   const onTruckNoSearch = (value) => {
     setFilter({ ...filter, truckno: value })
+    invoiced_setCountFilter({ ...invoiced_countFilter,invoiced_truckno:value })
   }
   const onFilter = (value) => {
     setFilter({ ...filter, trip_statusName: value })
@@ -113,9 +118,11 @@ const DeliveredContainer = (props) => {
       onTripIdSearch={onTripIdSearch}
       trip_status_list={trip_status}
       onFilter={onFilter}
+      invoiced_setCountFilter={invoiced_setCountFilter}
+      invoiced_countFilter={invoiced_countFilter}
       {...props}
     />
   )
 }
 
-export default DeliveredContainer
+export default InvoicedContainer

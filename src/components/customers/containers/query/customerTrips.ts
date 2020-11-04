@@ -7,6 +7,7 @@ query customer_trip_list($cardcode: String, $where:trip_bool_exp) {
       id
       order_date
       pod_dispatched_at
+      received_tat
       truck {
         truck_no
         truck_type {
