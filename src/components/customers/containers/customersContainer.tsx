@@ -6,35 +6,21 @@ import { gql, useQuery, useSubscription } from '@apollo/client'
 import u from '../../../lib/util'
 
 const CUSTOMERS_SUBSCRIPTION = gql`
-subscription customers(
-  $offset: Int!, 
-  $limit: Int!,
-  $statusId: [Int!]
-  $name: String
-  $mobile: String
-){
-  customer(
-    offset: $offset
-    limit: $limit
-    where: {
-      status: { id: { _in: $statusId } }
-      mobile: { _like: $mobile }
-      name: { _ilike: $name }
-    }
-  ) {
+subscription customers($offset: Int!, $limit: Int!,$branches:[Int!] $statusId: [Int!], $name: String, $mobile: String) {
+  customer(offset: $offset, limit: $limit, where: {status: {id: {_in: $statusId}}, mobile: {_like: $mobile}, name: {_ilike: $name}}) {
     id
     cardcode
     name
     mobile
     customer_type_id
-    customer_type{
+    customer_type {
       id
       name
     }
     created_at
     pan
     advance_percentage_id
-    customer_advance_percentage{
+    customer_advance_percentage {
       name
       id
     }
@@ -50,9 +36,15 @@ subscription customers(
       id
       created_at
     }
+    trips_aggregate(where:{
+    branch_id:{_in:$branches}
+  }){
+      aggregate {
+        count
+      }
+    }
   }
 }
-
 `
 const CUSTOMERS_QUERY = gql`
   query customers_aggregate(
@@ -79,10 +71,13 @@ const CUSTOMERS_QUERY = gql`
 `
 
 const CustomersContainer = (props) => {
+  const globalfilter = props
+
   const initialFilter = {
     statusId: [3],
     name: null,
     mobile: null,
+    branches:null,
     offset: 0,
     limit: u.limit
   }
@@ -90,12 +85,15 @@ const CustomersContainer = (props) => {
   const { role } = u
   const kycApprovalRejectEdit = [role.admin, role.accounts_manager, role.accounts]
 
+  const branch_filter = get(globalfilter, 'filters.branches', [])
+
   const variables = {
     offset: filter.offset,
     limit: filter.limit,
     statusId: filter.statusId,
     name: filter.name ? `%${filter.name}%` : null,
-    mobile: filter.mobile ? `%${filter.mobile}%` : null
+    mobile: filter.mobile ? `%${filter.mobile}%` : null,
+    branches: branch_filter
   }
   const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
     CUSTOMERS_SUBSCRIPTION,

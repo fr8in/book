@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useState,useContext } from 'react'
 import { Row, Button, Input, message, Col, Modal, Form } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
@@ -25,6 +25,7 @@ mutation partner_de_activate($description:String, $topic:String, $partner_status
 `
 const PartnerReject = (props) => {
   const { partnerInfo,onHide,visible } = props
+  const [disableButton, setDisableButton] = useState(false)
   const [form] = Form.useForm()
   const { topic } = u
   const partner_status = get(partnerInfo, 'partner_status.name', null)
@@ -35,13 +36,18 @@ const PartnerReject = (props) => {
   const [updateDeactivate] = useMutation(
     UPDATE_PARTNER_DE_ACTIVATE_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') 
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
+      onCompleted () {
+        setDisableButton(false)
+        message.success('Updated!!') 
     onHide()}
     }
   )
 
   const onSubmit = (form) => {
+    setDisableButton(true)
     const is_deactivate = (partner_status === 'De-activate')
     updateDeactivate({
       variables: {
@@ -74,7 +80,7 @@ const PartnerReject = (props) => {
             </Col>
             <Col flex='80px'>
               <Form.Item>
-                <Button type='primary' htmlType='submit'>Submit</Button>
+                <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
               </Form.Item>
             </Col>
           </Row>

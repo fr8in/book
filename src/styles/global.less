@@ -350,15 +350,18 @@ input[type=number] {
 }
 
 .search-title {
-  background-color: @light;
+  .ant-collapse-header {
   font-size: 11px;
   text-transform: uppercase;
-  padding: 5px 10px;
-  margin-bottom: 0;
+  }
+  .ant-collapse-content-box {
+    padding: 0;
+  }
 }
 .search-result {
-  padding: 6px 10px;
-  border-top: solid 1px @border-light;
+  padding: 6px 15px;
+  border-bottom: solid 1px @border-light;
+  &:last-child{ border-bottom: 0 none }
   &:hover{
     background-color: lighten(@primary, 42%);
   }

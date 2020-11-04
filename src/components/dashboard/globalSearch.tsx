@@ -1,11 +1,14 @@
 import { useState } from 'react'
-import { Drawer, Input } from 'antd'
+import { Drawer, Input, Collapse } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { gql, useQuery } from '@apollo/client'
 import Loading from '../common/loading'
 import LabelAndData from '../common/labelAndData'
 import Link from 'next/link'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
+
+const { Panel } = Collapse
 
 const GLOBAL_SEARCH = gql`
 query search($search:String){
@@ -25,6 +28,11 @@ query search($search:String){
     description
   }
   search_trip(args: {search: $search}) {
+    id
+    link
+    description
+  }
+  search_lead(args:{search:$search}){
     id
     link
     description
@@ -52,13 +60,15 @@ const GlobalSearch = (props) => {
   const partner = get(_data, 'search_partner', [])
   const trip = get(_data, 'search_trip', [])
   const truck = get(_data, 'search_truck', [])
+  const lead = get(_data, 'search_lead', [])
 
   console.log('GlobalSearch Error', error)
 
   const onSearch = (e) => {
     setSearch(e.target.value)
   }
-  const no_data = (customer && customer.length === 0) && (partner && partner.length === 0) && (trip && trip.length === 0) && (truck && truck.length === 0)
+  const no_data = (isEmpty(customer) && isEmpty(partner) && isEmpty(trip) && isEmpty(truck) && isEmpty(lead))
+  const activekey = !isEmpty(truck) ? '4' : !isEmpty(partner) ? '2' : !isEmpty(customer) ? '1' : !isEmpty(trip) ? '3' : '5'
   return (
     <Drawer
       title={<Input placeholder='Search...' prefix={<SearchOutlined />} onChange={onSearch} />}
@@ -71,43 +81,37 @@ const GlobalSearch = (props) => {
       {loading ? <Loading /> : no_data ? (
         <div className='hv-center text-gray'>
           {search && search.length >= 3 ? 'No Result' : <div className='text-center'>Search...<p>Min three char required</p></div>}
-        </div>) : ''}
-      {customer && customer.length > 0 &&
-        <span>
-          <h4 className='search-title'>Customer</h4>
-          {customer.map((result, i) => {
-            return (
-              <Result key={i} {...result} type='customers' />
-            )
-          })}
-        </span>}
-      {partner && partner.length > 0 &&
-        <span>
-          <h4 className='search-title'>Partner</h4>
-          {partner.map((result, i) => {
-            return (
-              <Result key={i} {...result} type='partners' />
-            )
-          })}
-        </span>}
-      {trip && trip.length > 0 &&
-        <span>
-          <h4 className='search-title'>Trip</h4>
-          {trip.map((result, i) => {
-            return (
-              <Result key={i} {...result} type='trips' />
-            )
-          })}
-        </span>}
-      {truck && truck.length > 0 &&
-        <span>
-          <h4 className='search-title'>Truck</h4>
-          {truck.map((result, i) => {
-            return (
-              <Result key={i} {...result} type='trucks' />
-            )
-          })}
-        </span>}
+        </div>)
+        : (
+          <Collapse accordion className='search-title' defaultActiveKey={[activekey]}>
+
+            {!isEmpty(customer) ? (
+              <Panel header='Customer' key='1'>
+                {customer.map((result, i) => <Result key={i} {...result} type='customers' />)}
+              </Panel>) : null}
+
+            {!isEmpty(partner) ? (
+              <Panel header='Partner' key='2'>
+                {partner.map((result, i) => <Result key={i} {...result} type='partners' />)}
+              </Panel>) : null}
+
+            {!isEmpty(trip) ? (
+              <Panel header='Trip' key='3'>
+                {trip.map((result, i) => <Result key={i} {...result} type='trips' />)}
+              </Panel>) : null}
+
+            {!isEmpty(truck) ? (
+              <Panel header='Truck' key='4'>
+                {truck.map((result, i) => <Result key={i} {...result} type='trucks' />)}
+              </Panel>) : null}
+
+            {!isEmpty(lead) ? (
+              <Panel header='Partner Lead' key='5'>
+                {lead.map((result, i) => <Result key={i} {...result} type='partners/create-partner' />)}
+              </Panel>) : null}
+
+          </Collapse>
+        )}
     </Drawer>
   )
 }

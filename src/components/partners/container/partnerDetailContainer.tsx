@@ -53,13 +53,13 @@ const PartnerDetailContainer = (props) => {
   const context = useContext(userContext)
   const { role } = u
   const _edit_access = [role.admin, role.partner_manager, role.onboarding]
-  const partner_access = u.is_roles(_edit_access,context)
-  const _admin_role = [role.admin,role.partner_manager, role.partner_support]
+  const partner_access = u.is_roles(_edit_access, context)
+  const _admin_role = [role.admin, role.partner_manager, role.partner_support]
   const _top_up_role = [role.admin, role.rm, role.partner_manager, role.partner_support]
-  const admin = u.is_roles(_admin_role,context)
-  const top_up_access = u.is_roles(_top_up_role,context)
+  const admin = u.is_roles(_admin_role, context)
+  const top_up_access = u.is_roles(_top_up_role, context)
   const _wallet_role = [role.admin]
-  const wallet_activate_role = u.is_roles(_wallet_role,context)
+  const wallet_activate_role = u.is_roles(_wallet_role, context)
 
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,
@@ -115,7 +115,7 @@ const PartnerDetailContainer = (props) => {
                     <Tooltip title='Wallet Statement'>
                       <Button icon={<FileTextOutlined />} shape='circle' onClick={() => onShow('statement')} />
                     </Tooltip>
-                    { partner_info.partner_status === 'Blacklisted' ? wallet_activate_role : top_up_access &&
+                    {partner_info.partner_status === 'Blacklisted' ? wallet_activate_role : top_up_access &&
                       <Tooltip title='Wallet Topup'>
                         <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('topUp')} />
                       </Tooltip>}
@@ -233,7 +233,7 @@ const PartnerDetailContainer = (props) => {
             balance={get(partner_info, 'partner_accounting.wallet_balance', 0)}
           />}
         {visible.topUp && <WalletTopUp visible={visible.topUp} onHide={onHide} partner_id={partner_info.id} />}
-        {visible.reportMail && <ReportEmail visible={visible.reportMail} onHide={onHide} cardcode={cardcode}/>}
+        {visible.reportMail && <ReportEmail visible={visible.reportMail} onHide={onHide} cardcode={cardcode} />}
         {visible.statement && <WalletStatement visible={visible.statement} onHide={onHide} cardcode={partner_info.cardcode} />}
       </Row>)
   )

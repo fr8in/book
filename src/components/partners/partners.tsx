@@ -15,6 +15,7 @@ import moment from 'moment'
 import Truncate from '../common/truncate'
 import get from 'lodash/get'
 import Phone from '../common/phone'
+import Link from 'next/link'
 
 const PartnerKyc = (props) => {
   const {
@@ -134,7 +135,7 @@ const PartnerKyc = (props) => {
       width: '9%',
       render: (text, record) => {
         const number = get(record, 'partner_users[0].mobile', '-')
-        return (<Phone number={record.number} text={number}/>)    
+        return (<Phone number={record.number} text={number} />)
       }
 
     },
@@ -192,22 +193,23 @@ const PartnerKyc = (props) => {
                 onClick={() => handleShow('commentVisible', null, 'partner_id', record.id)}
               />
             </Tooltip>
-            {(partner_status === 'Registered' || partner_status === 'Verification' || partner_status === 'Reverification') && edit_access &&
+            {(partner_status === 'Registered' || partner_status === 'Verification' || partner_status === 'Reverification' || partner_status === 'Rejected') && edit_access &&
               <>
-                <Button
-                  type='primary'
-                  size='small'
-                  shape='circle'
-                  className='btn-success'
-                  icon={<CheckOutlined />}
-                  onClick={() =>
-                    handleShow('approvalVisible', null, 'partner_id', record.id)}
-                />
+                <Link href='/partners/create-partner/[id]' as={`/partners/create-partner/${record.id} `}>
+                  <Button
+                    type='primary'
+                    size='small'
+                    shape='circle'
+                    className='btn-success'
+                    icon={<CheckOutlined />}
+                  />
+                </Link>
                 <Button
                   type='primary'
                   size='small'
                   shape='circle'
                   danger
+                  disabled={partner_status === 'Rejected'}
                   icon={<CloseOutlined />}
                   onClick={() =>
                     handleShow('rejectVisible', null, 'partner_id', record.id)}
