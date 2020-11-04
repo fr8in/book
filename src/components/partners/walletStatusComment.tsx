@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useState,useContext } from 'react'
 import { Row, Button, Input, message, Col, Modal, Form } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
@@ -21,6 +21,7 @@ mutation ($id:Int!,$updated_by:String!,$partner_comment:PartnerCommentInput){
   }`
 const PartnerWallet = (props) => {
   const { partner_id,onHide,visible,status } = props
+  const [disableButton, setDisableButton] = useState(false)
   const [form] = Form.useForm()
   const { topic } = u
   
@@ -31,19 +32,26 @@ const [updateStatusId] = useMutation(
     UPDATE_PARTNER_WALLET_BLOCK_STATUS_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onCompleted () { message.success('Updated!!')
+      onHide() }
     }
   )
 
   const [updateStatus] = useMutation(
     UPDATE_PARTNER_WALLET_UNBLOCK_STATUS_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
+      onCompleted () {
+        setDisableButton(false)
+        message.success('Updated!!')
+      onHide() }
     }
   )
 
    const onblock = (form) => {
+    setDisableButton(true)
     updateStatusId({
       variables: {
         id: partner_id,
@@ -57,12 +65,15 @@ const [updateStatusId] = useMutation(
   }
 
   const onunblock = (form) => {
+    setDisableButton(true)
     updateStatus({
       variables: {
         id: partner_id,
         updated_by: context.email,
-        description: form.comment,
-        topic: topic.partner_wallet_unblock
+        partner_comment: {
+          description: form.comment,
+          topic: topic.partner_wallet_unblock
+        }
       }
     })
   }
@@ -89,7 +100,7 @@ const [updateStatusId] = useMutation(
             </Col>
             <Col flex='80px'>
               <Form.Item>
-                <Button type='primary' htmlType='submit'>Submit</Button>
+                <Button type='primary' loading={disableButton}  htmlType='submit'>Submit</Button>
               </Form.Item>
             </Col>
           </Row>

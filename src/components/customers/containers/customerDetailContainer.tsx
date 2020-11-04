@@ -30,6 +30,7 @@ import TitleWithCount from '../../common/titleWithCount'
 import u from '../../../lib/util'
 import userContext from '../../../lib/userContaxt'
 import { useContext } from 'react'
+import CustomerComment from '../customerComment'
 import isEmpty from 'lodash/isEmpty'
 
 // Apollo Client
@@ -152,7 +153,7 @@ const CustomerDetailContainer = (props) => {
                       : null}
                     <WalletBalance wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)} cardcode={cardcode} />
                     <Blacklist
-                      cardcode={cardcode}
+                     customer_info={customer_info}
                       statusId={get(customer_info, 'status.id', null)}
                       edit_access={BlacklistEdit}
                     />
@@ -203,7 +204,7 @@ const CustomerDetailContainer = (props) => {
                             <PlusOutlined /> Add Users
                           </Button>) : null}
                       </Row>
-                      <Users cardcode={cardcode} edit_access={customer_edit_role} />
+                      <Users cardcode={cardcode} customer_id={customer_info && customer_info.id} edit_access={customer_edit_role} />
                     </TabPane>
                     <TabPane tab='Branch' key='7'>
                       <Row justify='end' className='m5'>
@@ -215,7 +216,7 @@ const CustomerDetailContainer = (props) => {
                             <PlusOutlined /> Add Branch
                           </Button>) : null}
                       </Row>
-                      <Branch cardcode={cardcode} edit_access={customer_edit_role} />
+                      <Branch cardcode={cardcode} edit_access={customer_edit_role} customer_id={customer_info && customer_info.id} />
                     </TabPane>
                     <TabPane tab='FR8 Branch' key='8'>
                       <Fr8Branch cardcode={cardcode} id={customer_info && customer_info.id} />
@@ -229,6 +230,11 @@ const CustomerDetailContainer = (props) => {
                           <PendingPayments />
                         </Col>
                       </Row>
+                    </TabPane>
+                    <TabPane tab='Comment' key='10'>
+                      <div className='p10'>
+                        <CustomerComment customer_id={customer_info.id} loading={loading} detailPage />
+                      </div>
                     </TabPane>
                   </Tabs>
                 </Card>

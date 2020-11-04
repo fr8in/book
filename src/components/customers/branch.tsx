@@ -30,7 +30,7 @@ subscription customer_branch($cardcode: String) {
 `
 
 const Branch = (props) => {
-  const { cardcode,edit_access } = props
+  const { cardcode,edit_access,customer_id } = props
   const initial = { visible: false, data: null }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
   const context = useContext(userContext)
@@ -119,6 +119,7 @@ const Branch = (props) => {
           visible={object.visible}
           customerbranches={object.data}
           onHide={handleHide}
+          customer_id={customer_id}
         />}
     </>
   )

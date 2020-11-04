@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useState,useContext } from 'react'
 import { Row, Button, Input, message, Col, Modal, Form } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
@@ -23,6 +23,7 @@ mutation partner_unblacklist($id: Int!, $updated_by: String!,$partner_comment:Pa
 
 const PartnerBlacklist = (props) => {
   const { partnerInfo,onHide,visible } = props
+  const [disableButton, setDisableButton] = useState(false)
   const [form] = Form.useForm()
   const { topic } = u
   const partner_status = get(partnerInfo, 'partner_status.name', null)
@@ -34,8 +35,11 @@ const PartnerBlacklist = (props) => {
  const [updateBlacklist] = useMutation(
     UPDATE_PARTNER_BLACKLIST_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted (data) {
+        setDisableButton(false)
         const status = get(data, 'partner_blacklist.status', null)
         const description = get(data, 'partner_blacklist.description', null)
         if (status === 'OK') {
@@ -50,8 +54,11 @@ const PartnerBlacklist = (props) => {
   const [updateUnblacklist] = useMutation(
     UPDATE_PARTNER_UNBLACKLIST_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
+      onError (error) { 
+        setDisableButton(false)
+        message.error(error.toString()) },
       onCompleted (data) {
+        setDisableButton(false)
         const status = get(data, 'partner_unblacklist.status', null)
         const description = get(data, 'partner_unblacklist.description', null)
         if (status === 'OK') {
@@ -65,6 +72,7 @@ const PartnerBlacklist = (props) => {
 
   const blacklistChange = (form) => {
     if (is_blacklisted) {
+      setDisableButton(true)
       updateUnblacklist({
         variables: {
           id: partnerInfo.id,
@@ -76,6 +84,7 @@ const PartnerBlacklist = (props) => {
         }
       })
     } else {
+      setDisableButton(true)
       updateBlacklist({
         variables: {
           id: partnerInfo.id,
@@ -108,7 +117,7 @@ const PartnerBlacklist = (props) => {
             </Col>
             <Col flex='80px'>
               <Form.Item>
-                <Button type='primary' htmlType='submit'>Submit</Button>
+                <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
               </Form.Item>
             </Col>
           </Row>

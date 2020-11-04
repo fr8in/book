@@ -2,39 +2,41 @@ import { useState,useContext } from 'react'
 import { Row, Button, Input, message, Col, Modal, Form } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
-import get from 'lodash/get'
 import u from '../../lib/util'
 
-const UPDATE_PARTNER_DE_ACTIVATE_MUTATION = gql`
-mutation partner_de_activate($description:String, $topic:String, $partner_status_id:Int,$cardcode:String!,$updated_by: String!,$partner_id:Int!){
-    insert_partner_comment(objects:{partner_id:$partner_id,topic:$topic,description:$description,created_by:$updated_by})
-      {
-        returning
-        {
-          id
-        }
+const UPDATE_CUSTOMER_BLACKLIST_MUTATION = gql`
+mutation customer_blacklist($description: String, $topic: String, $customer_id: Int, $created_by: String,$status_id:Int,$cardcode:String,$updated_by:String!) {
+    insert_customer_comment(objects: {description: $description, customer_id: $customer_id, topic: $topic, created_by: $created_by}) {
+      returning {
+        description
       }
-    update_partner( _set: {partner_status_id: $partner_status_id, updated_by: $updated_by}, where: {cardcode:{_eq: $cardcode}} 
-    ){
-      returning{
-        cardcode
-        partner_status_id
+    }
+    update_customer(_set: {status_id: $status_id,updated_by:$updated_by}, where: {cardcode: {_eq: $cardcode}}) {
+      returning {
+        id
+        status_id
       }
     }
   }
+    
 `
-const PartnerReject = (props) => {
-  const { partnerInfo,onHide,visible } = props
+
+const customerStatus = {
+    Blacklisted: 6,
+    Active: 1
+  }
+
+const CustomerBlacklist = (props) => {
+  const { customer_info,onHide,visible,blacklisted } = props
   const [disableButton, setDisableButton] = useState(false)
   const [form] = Form.useForm()
   const { topic } = u
-  const partner_status = get(partnerInfo, 'partner_status.name', null)
-
+  
   const context = useContext(userContext)
  
 
-  const [updateDeactivate] = useMutation(
-    UPDATE_PARTNER_DE_ACTIVATE_MUTATION,
+  const [updateStatusId] = useMutation(
+    UPDATE_CUSTOMER_BLACKLIST_MUTATION,
     {
       onError (error) {
         setDisableButton(false)
@@ -42,21 +44,24 @@ const PartnerReject = (props) => {
       onCompleted () {
         setDisableButton(false)
         message.success('Updated!!') 
-    onHide()}
+      onHide()}
     }
   )
 
-  const onSubmit = (form) => {
+ 
+
+  const onChange = (form) => {
     setDisableButton(true)
-    const is_deactivate = (partner_status === 'De-activate')
-    updateDeactivate({
+    updateStatusId({
       variables: {
-        cardcode: partnerInfo.cardcode,
-        partner_status_id:is_deactivate ? 4 : 6,
+        cardcode:customer_info.cardcode,
         updated_by: context.email,
-        description: form.comment,
-        topic:is_deactivate ? topic.partner_activation : topic.partner_deactivation,
-        partner_id: partnerInfo.id
+        status_id: blacklisted ? customerStatus.Active : customerStatus.Blacklisted,
+        created_by: context.email,
+        description:form.comment,
+        topic:blacklisted ? topic.customer_unblacklist : topic.customer_blacklist,
+        customer_id:customer_info.id
+         
       }
     })
   }
@@ -69,7 +74,7 @@ const PartnerReject = (props) => {
         onCancel={onHide}
         footer={[]}
       >
-        <Form onFinish={onSubmit} form={form}>
+        <Form onFinish={onChange} form={form}>
           <Row gutter={10} className='mb10'>
             <Col flex='auto'>
               <Form.Item name='comment'>
@@ -90,4 +95,4 @@ const PartnerReject = (props) => {
   )
 }
 
-export default PartnerReject
+export default CustomerBlacklist

@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { Table, Pagination } from 'antd'
+import { Table, Pagination,Input } from 'antd'
 import { gql, useSubscription } from '@apollo/client'
+import { SearchOutlined } from '@ant-design/icons'
 import get from 'lodash/get'
 import moment from 'moment'
 import Truncate from '../common/truncate'
@@ -8,14 +9,14 @@ import LinkComp from '../common/link'
 import u from '../../lib/util'
 
 const CLOSED_TRIPS = gql`
-subscription customer_closed_trip_list($cardcode: String, $trip_status: [String!],$limit: Int!, $offset:Int!) {
+subscription customer_closed_trip_list($cardcode: String,$where: trip_bool_exp,$limit: Int!, $offset:Int!) {
   customer(where: {cardcode: {_eq: $cardcode}}) {
-    trips_aggregate(where:{trip_status:{name:{_in:$trip_status}}}){
+    trips_aggregate(where:$where){
       aggregate{
         count
       }
     }
-    trips(limit: $limit, offset: $offset, where:{trip_status:{name:{_in:$trip_status}}}) {
+    trips(limit: $limit, offset: $offset, where:$where) {
       id
       order_date
       truck {
@@ -50,16 +51,26 @@ const CustomerClosedTrips = (props) => {
 
   const initialFilter = {
     offset: 0,
-    limit: u.limit
+    limit: u.limit,
+    partnername: null,
+    sourcename: null,
+    destinationname: null,
+    truckno: null,
   }
   const [filter, setFilter] = useState(initialFilter)
   const [currentPage, setCurrentPage] = useState(1)
 
   const variables = {
     cardcode: cardcode,
-    trip_status: recieved,
     limit: filter.limit,
-    offset: filter.offset
+    offset: filter.offset,
+    where: {
+        trip_status:{name:{_in:recieved}},
+        partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
+        source: { name: { _ilike: filter.sourcename ? `%${filter.sourcename}%` : null } },
+        destination: { name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } },
+        truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } }
+    }
   }
 
   const { loading, error, data } = useSubscription(
@@ -80,6 +91,23 @@ const CustomerClosedTrips = (props) => {
     const newOffset = page * pageSize - filter.limit
     setCurrentPage(page)
     setFilter({ ...filter, offset: newOffset })
+  }
+
+  const onTruckNoSearch = (e) => {
+    setFilter({ ...filter, truckno:e.target.value, offset: 0})
+    setCurrentPage(1)
+  }
+  const onPartnerNameSearch = (e) => {
+    setFilter({ ...filter,partnername:e.target.value,offset: 0  })
+    setCurrentPage(1)
+  }
+  const onSourceNameSearch = (e) => {
+    setFilter({ ...filter,sourcename:e.target.value, offset: 0})
+    setCurrentPage(1)
+  }
+  const onDestinationNameSearch = (e) => {
+    setFilter({ ...filter, destinationname:e.target.value, offset: 0})
+    setCurrentPage(1)
   }
 
   const column = [
@@ -104,7 +132,6 @@ const CustomerClosedTrips = (props) => {
     },
     {
       title: 'Truck No',
-      sorter: (a, b) => (a.truckN0 > b.truckNo ? 1 : -1),
       width: '16%',
       render: (text, record) => {
         const truck_no = get(record, 'truck.truck_no', null)
@@ -116,7 +143,17 @@ const CustomerClosedTrips = (props) => {
             data={`${truck_no} - ${truck_type}`}
             id={truck_no}
           />)
-      }
+      },
+      filterDropdown: (
+        <Input
+          placeholder='Search'
+          value={filter.truckno}
+          onChange={onTruckNoSearch}
+        />
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     {
       title: 'Partner',
@@ -131,19 +168,47 @@ const CustomerClosedTrips = (props) => {
             id={cardcode}
             length={10}
           />)
-      }
+      },
+      filterDropdown: (
+        <Input
+          placeholder='Search'
+          value={filter.partnername}
+          onChange={onPartnerNameSearch}
+        />
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     {
       title: 'Source',
-      sorter: (a, b) => (a.source.name > b.source.name ? 1 : -1),
       width: '10%',
-      render: (text, record) => get(record, 'source.name', '-')
+      render: (text, record) => get(record, 'source.name', '-'),
+      filterDropdown: (
+        <Input
+          placeholder='Search'
+          value={filter.sourcename}
+          onChange={onSourceNameSearch}
+        />
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     {
       title: 'Destination',
-      sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
       width: '10%',
-      render: (text, record) => get(record, 'destination.name', '-')
+      render: (text, record) => get(record, 'destination.name', '-'),
+      filterDropdown: (
+        <Input
+          placeholder='Search'
+           value={filter.destinationname}
+          onChange={onDestinationNameSearch}
+        />
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     {
       title: 'SO Price',
