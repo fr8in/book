@@ -240,6 +240,12 @@ const CustomerKyc = (props) => {
       render: (text, record) => <CustomerAdvancePercentage record={record} />
     },
     {
+      title: 'Loads',
+      width: '10%',
+      sorter: (a, b) => (a.trips_aggregate.aggregate.count > b.trips_aggregate.aggregate.count ? 1 : -1),
+      render: (text,record) => get (record,'trips_aggregate.aggregate.count',null)
+    },
+    {
       title: 'Status',
       render: (text, record) => get(record, 'status.name', null),
       width: '14%',
