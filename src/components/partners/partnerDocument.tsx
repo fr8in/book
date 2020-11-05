@@ -1,14 +1,23 @@
 import { useContext } from 'react'
-import { Row, Col, Tabs, Space } from 'antd'
-import LabelWithData from '../common/labelWithData'
+import { Row, Col, Space, Form, List, message, Button } from 'antd'
 import FileUploadOnly from '../common/fileUploadOnly'
 import ViewFile from '../common/viewFile'
 import DeleteFile from '../common/deleteFile'
 import u from '../../lib/util'
-import isEmpty from 'lodash/isEmpty'
+import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
+import isEmpty from 'lodash/isEmpty'
 
-const { TabPane } = Tabs
+const REVERIFICATION_APPROVAL_MUTATION = gql`
+mutation($id:Int){
+  update_partner(_set: {partner_status_id: 4}, where: {id: {_eq:$id}}) {
+    returning {
+      id
+    }
+  }
+}
+`
+
 const PartnerDocument = (props) => {
   const { partnerInfo } = props
   const context = useContext(userContext)
@@ -24,14 +33,33 @@ const PartnerDocument = (props) => {
   const agreement_files = files.filter(file => file.type === u.fileType.agreement)
   const cs_files = files.filter(file => file.type === u.fileType.cibil)
 
+  const [reverification_approval] = useMutation(
+    REVERIFICATION_APPROVAL_MUTATION,
+    {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
+    }
+  )
+
+  const _pan = !isEmpty(pan_files) ? pan_files : false
+  const _check_leaf = !isEmpty(cheaque_files) ? cheaque_files : false
+  const _civil = !isEmpty(cs_files) ? cs_files : false
+
+  const onDelete = () => {
+    reverification_approval({
+      variables: {
+        id: partnerInfo.id
+      }
+    })
+  }
   return (
-    <Tabs type='card' size='small'>
-      <TabPane tab='Main' key='1'>
-        <Row gutter={8} className='p10'>
-          <Col xs={24} sm={24} md={24}>
-            <LabelWithData
-              label='PAN'
-              data={
+    <Col xs={24} sm={24}>
+      <Form layout='vertical' onFinish={onDelete} >
+        <List bordered size='small' className='mb10'>
+          <List.Item key={1}>
+            <Col xs={24} sm={8}>PAN </Col>
+            <Col xs={12} sm={4} className='text-right'>
+              <Space>
                 <span>
                   {pan_files && pan_files.length > 0 ? (
                     <Space>
@@ -53,25 +81,24 @@ const PartnerDocument = (props) => {
                       />
                     </Space>
                   ) : (
-                    <FileUploadOnly
-                      size='small'
-                      id={partnerInfo.id}
-                      type='partner'
-                      folder={u.folder.approvals}
-                      file_type={u.fileType.partner_pan}
-                      file_list={pan_files}
-                      disable={!access}
-                    />
-                  )}
+                      <FileUploadOnly
+                        size='small'
+                        id={partnerInfo.id}
+                        type='partner'
+                        folder={u.folder.approvals}
+                        file_type={u.fileType.partner_pan}
+                        file_list={pan_files}
+                        disable={!access}
+                      />
+                    )}
                 </span>
-              }
-              labelSpan={8}
-              dataSpan={16}
-              margin_bottom
-            />
-            <LabelWithData
-              label='Cheque'
-              data={
+              </Space>
+            </Col>
+          </List.Item>
+          <List.Item key={2}>
+            <Col xs={24} sm={8}>Cheque</Col>
+            <Col xs={12} sm={4} className='text-right'>
+              <Space>
                 <span>
                   {cheaque_files && cheaque_files.length > 0 ? (
                     <Space>
@@ -93,25 +120,24 @@ const PartnerDocument = (props) => {
                       />
                     </Space>
                   ) : (
-                    <FileUploadOnly
-                      size='small'
-                      id={partnerInfo.id}
-                      type='partner'
-                      folder={u.folder.approvals}
-                      file_type={u.fileType.check_leaf}
-                      file_list={cheaque_files}
-                      disable={!access}
-                    />
-                  )}
+                      <FileUploadOnly
+                        size='small'
+                        id={partnerInfo.id}
+                        type='partner'
+                        folder={u.folder.approvals}
+                        file_type={u.fileType.check_leaf}
+                        file_list={cheaque_files}
+                        disable={!access}
+                      />
+                    )}
                 </span>
-              }
-              labelSpan={8}
-              dataSpan={16}
-              margin_bottom
-            />
-            <LabelWithData
-              label='TDS'
-              data={
+              </Space>
+            </Col>
+          </List.Item>
+          <List.Item key={2}>
+            <Col xs={24} sm={8}>TDS</Col>
+            <Col xs={12} sm={4} className='text-right'>
+              <Space>
                 <span>
                   {tds_files && tds_files.length > 0 ? (
                     <Space>
@@ -133,25 +159,24 @@ const PartnerDocument = (props) => {
                       />
                     </Space>
                   ) : (
-                    <FileUploadOnly
-                      size='small'
-                      id={partnerInfo.id}
-                      type='partner'
-                      folder={u.folder.approvals}
-                      file_type={u.fileType.tds}
-                      file_list={tds_files}
-                      disable={!access}
-                    />
-                  )}
+                      <FileUploadOnly
+                        size='small'
+                        id={partnerInfo.id}
+                        type='partner'
+                        folder={u.folder.approvals}
+                        file_type={u.fileType.tds}
+                        file_list={tds_files}
+                        disable={!access}
+                      />
+                    )}
                 </span>
-              }
-              labelSpan={8}
-              dataSpan={16}
-              margin_bottom
-            />
-            <LabelWithData
-              label='Agreement'
-              data={
+              </Space>
+            </Col>
+          </List.Item>
+          <List.Item key={2}>
+            <Col xs={24} sm={8}>Agreement</Col>
+            <Col xs={12} sm={4} className='text-right'>
+              <Space>
                 <span>
                   {agreement_files && agreement_files.length > 0 ? (
                     <Space>
@@ -173,25 +198,28 @@ const PartnerDocument = (props) => {
                       />
                     </Space>
                   ) : (
-                    <FileUploadOnly
-                      size='small'
-                      id={partnerInfo.id}
-                      type='partner'
-                      folder={u.folder.approvals}
-                      file_type={u.fileType.agreement}
-                      file_list={agreement_files}
-                      disable={!access}
-                    />
-                  )}
+                      <FileUploadOnly
+                        size='small'
+                        id={partnerInfo.id}
+                        type='partner'
+                        folder={u.folder.approvals}
+                        file_type={u.fileType.agreement}
+                        file_list={agreement_files}
+                        disable={!access}
+                      />
+                    )}
                 </span>
-              }
-              labelSpan={8}
-              dataSpan={16}
-              margin_bottom
-            />
-            <LabelWithData
-              label='Cibil Score'
-              data={
+              </Space>
+            </Col>
+          </List.Item>
+          <List.Item key={4}>
+            <Col xs={24} sm={20}>
+              <Row>
+                <Col xs={10}>Cibil Score</Col>
+              </Row>
+            </Col>
+            <Col xs={24} sm={4} className='text-right'>
+              <Space>
                 <span>
                   {cs_files && cs_files.length > 0 ? (
                     <Space>
@@ -213,26 +241,28 @@ const PartnerDocument = (props) => {
                       />
                     </Space>
                   ) : (
-                    <FileUploadOnly
-                      size='small'
-                      id={partnerInfo.id}
-                      type='partner'
-                      folder={u.folder.approvals}
-                      file_type={u.fileType.cibil}
-                      file_list={cs_files}
-                      disable={!access}
-                    />
-                  )}
+                      <FileUploadOnly
+                        size='small'
+                        id={partnerInfo.id}
+                        type='partner'
+                        folder={u.folder.approvals}
+                        file_type={u.fileType.cibil}
+                        file_list={cs_files}
+                        disable={!access}
+                      />
+                    )}
                 </span>
-              }
-              labelSpan={8}
-              dataSpan={16}
-              margin_bottom
-            />
-          </Col>
+              </Space>
+            </Col>
+          </List.Item>
+        </List>
+        <Row justify='end' className='mt10'>
+          <Button key='submit' type='primary'htmlType='submit' disabled={!access && !_pan || !_check_leaf || !_civil}  >
+            Approve KYC
+                    </Button> 
         </Row>
-      </TabPane>
-    </Tabs>
+      </Form>
+    </Col>
   )
 }
 
