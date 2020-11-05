@@ -1,16 +1,19 @@
 import { Upload, Button, message } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
+import userContext from '../../lib/userContaxt'
+import { useContext } from 'react'
 
 const FILE_UPLOAD_MUTATION = gql`
-mutation file_upload($name: String, $type: String, $base64Str: String,$id: Int, $folder: String,$fileType: String ) {
-  fileUpload(name: $name, type: $type, base64Str: $base64Str, id: $id, folder: $folder, fileType: $fileType) {
+mutation file_upload($name: String, $type: String, $base64Str: String,$id: Int, $folder: String,$fileType: String,$updated_by:String ) {
+  fileUpload(name: $name, type: $type, base64Str: $base64Str, id: $id, folder: $folder, fileType: $fileType,updated_by:$updated_by) {
     file_path
   }
 }`
 
 const FileUploadOnly = (props) => {
   const { type, id, folder, file_type, disable, size } = props
+  const context = useContext(userContext)
 
   let base64Str = null
   const [s3FileUpload] = useMutation(
@@ -45,7 +48,7 @@ const FileUploadOnly = (props) => {
   const fileUpload = (data) => {
     const file_name = data.file.name
     setTimeout(() => {
-      const variables = { name: file_name, type: type, base64Str: base64Str, id: id, folder: folder, fileType: file_type }
+      const variables = { name: file_name, type: type, base64Str: base64Str, id: id, folder: folder, fileType: file_type, updated_by: context.email }
       s3FileUpload({
         variables: variables
       })
