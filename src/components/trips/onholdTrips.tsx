@@ -85,60 +85,60 @@ const OnholdTrips = (props) => {
       title: 'LoadId',
       dataIndex: 'id',
       sorter: (a, b) => (a.id > b.id ? 1 : -1),
-      width: '7%',
+      width: '8%',
       render: (text, record) => <LinkComp type='trips' data={get(record, 'id', null)} id={get(record, 'id', null)} blank />
     },
     {
       title: 'Source',
       dataIndex: 'name',
       width: '8%',
-      render: (text, record) => get(record, 'source.name', null)
+      render: (text, record) => <Truncate data={get(record, 'source.name', null)} length={6} />
     },
     {
       title: 'Destination',
       dataIndex: 'name',
       width: '11%',
-      render: (text, record) => get(record, 'destination.name', null)
+      render: (text, record) => <Truncate data={get(record, 'destination.name', null)} length={8} />
     },
     {
       title: 'Truck',
       dataIndex: 'truck_no',
       sorter: (a, b) => (a.truck_no > b.truck_no ? 1 : -1),
       width: '9%',
-      render: (text, record) => get(record, 'truck.truck_no', null)
+      render: (text, record) => <Truncate data={get(record, 'truck.truck_no', null)} length={4} />
     },
     {
       title: 'Type',
       dataIndex: 'type',
       width: '15%',
-      render: (text, record) => get(record, 'truck.truck_type.name', null)
+      render: (text, record) => <Truncate data={get(record, 'truck.truck_type.name', null)} length={15} />
     },
     {
       title: 'Customer',
       dataIndex: 'name',
       sorter: (a, b) => (a.customer > b.customer ? 1 : -1),
       width: '14%',
-      render: (text, record) => <Truncate data={get(record, 'customer.name', null)} length={25} />
+      render: (text, record) => <Truncate data={get(record, 'customer.name', null)} length={12} />
     },
     {
       title: 'Price',
       dataIndex: 'price',
       sorter: (a, b) => (a.price > b.price ? 1 : -1),
-      width: '6%',
+      width: '8%',
       render: (text, record) => get(record, 'partner_price', null)
     },
     {
       title: 'On-hold',
       dataIndex: 'onhold',
       sorter: (a, b) => (a.onhold > b.onhold ? 1 : -1),
-      width: '12%',
+      width: '11%',
       render: (text, record) => get(record, 'trip_payables_aggregate.aggregate.sum.amount', null)
     },
     {
       title: 'Aging',
       dataIndex: 'paid_tat',
       sorter: (a, b) => (a.aging > b.aging ? 1 : -1),
-      width: '6%'
+      width: '7%'
     },
     {
       title: 'Status',
