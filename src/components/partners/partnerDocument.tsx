@@ -257,7 +257,7 @@ const PartnerDocument = (props) => {
           </List.Item>
         </List>
         <Row justify='end' className='mt10'>
-          <Button key='submit' type='primary'htmlType='submit' disabled={!access && !_pan || !_check_leaf || !_civil}  >
+          <Button key='submit' type='primary'htmlType='submit' disabled={!access || !_pan || !_check_leaf || !_civil}  >
             Approve KYC
                     </Button> 
         </Row>
