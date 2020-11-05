@@ -4,7 +4,7 @@ import CustomersContainer from '../../components/customers/containers/customersC
 const CustomersPage = (props) => {
   return (
     <PageLayout {...props} title='Customers'>
-      <CustomersContainer />
+      <CustomersContainer {...props}/>
     </PageLayout>
   )
 }

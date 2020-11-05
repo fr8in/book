@@ -6,6 +6,8 @@ import get from 'lodash/get'
 import u from '../../../lib/util'
 
 const DeliveredContainer = (props) => {
+  const {setCountFilter,countFilter} =props
+
   const initialFilter = {
     offset: 0,
     limit: u.limit,
@@ -82,9 +84,11 @@ const DeliveredContainer = (props) => {
   }
   const onPartnerNameSearch = (value) => {
     setFilter({ ...filter, partnername: value, offset: 0 })
+    setCountFilter({ ...countFilter,delivered_partnername:value })
   }
   const onCustomerNameSearch = (value) => {
     setFilter({ ...filter, customername: value, offset: 0 })
+    setCountFilter({ ...countFilter,delivered_customername:value })
   }
   const onSourceNameSearch = (value) => {
     setFilter({ ...filter, sourcename: value, offset: 0 })
@@ -94,6 +98,7 @@ const DeliveredContainer = (props) => {
   }
   const onTruckNoSearch = (value) => {
     setFilter({ ...filter, truckno: value, offset: 0 })
+    setCountFilter({...countFilter,delivered_truckno:value})
   }
   const onFilter = (value) => {
     setFilter({ ...filter, trip_statusName: value })
@@ -115,6 +120,9 @@ const DeliveredContainer = (props) => {
       onTripIdSearch={onTripIdSearch}
       trip_status_list={trip_status}
       onFilter={onFilter}
+      setCountFilter={setCountFilter}
+      countFilter={countFilter}
+      delivered
       {...props}
     />
   )

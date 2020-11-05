@@ -1,14 +1,52 @@
 import userContext from '../../../lib/userContaxt'
 import { useState, useContext, useEffect } from 'react'
 import { Form, message } from 'antd'
-import { gql, useMutation } from '@apollo/client'
-import u from '../../../lib/util'
+import { gql, useMutation, useQuery } from '@apollo/client'
 import get from 'lodash/get'
+import u from '../../../lib/util'
 import { useRouter } from 'next/router'
 import CreatePartner from '../createPartner'
+import KycApproval from '../kycApproval'
 
-const INSERT_PARTNER_MUTATION = gql`
-mutation create_partner(
+const PARTNER_DETAIL_QUERY = gql`
+query partner($id: Int!) {
+  partner(where:{id:{_eq:$id}}){
+    id
+    cardcode
+    name
+    pan
+    cibil
+    partner_users(where:{is_admin:{_eq:true}}){
+      name
+      email
+      mobile
+    }
+    account_holder
+    display_account_number
+    ifsc_code
+    address
+    partner_status{
+      id
+      name
+    }
+    city{
+      id
+      name
+    }
+    partner_advance_percentage{
+      id
+      name
+    }
+    onboarded_by{
+      id
+      email
+    }
+  }
+}`
+
+const UPDATE_PARTNER_MUTATION = gql`
+mutation update_partner(
+  $partner_id: Int!,
   $cibil: String!,
   $city_id: Int!,
   $name: String!,
@@ -18,23 +56,16 @@ mutation create_partner(
   $ifsc_code: String!,
   $updated_by:String!,
   $onboarded_by_id: Int!,
-  $partner_advance_percentage_id: Int!,
-  $contact_name: String!,
-  $email:String!,
-  $mobile: String!
-) {
-  create_partner_track(
+  $partner_advance_percentage_id: Int!
+){
+  update_partner_track(
+    partner_id: $partner_id,
     personal_detail: {
       cibil: $cibil, 
       city_id: $city_id, 
       name: $name, 
-      pan_no: $pan_no
+      pan_no: $pan_no,
     }, 
-    partner_user: {
-      contact_name: $contact_name, 
-      email: $email, 
-      mobile: $mobile
-    },
     bank_detail: {
       account_holder: $account_holder, 
       account_number: $account_number, 
@@ -44,9 +75,11 @@ mutation create_partner(
     fr8_detail: {
       onboarded_by_id: $onboarded_by_id, 
       partner_advance_percentage_id: $partner_advance_percentage_id
-    }) {
+    }
+  ){
     description
     status
+    
   }
 }`
 
@@ -57,10 +90,12 @@ mutation partner_address($id: Int!, $address: jsonb){
   }
 }`
 
-const PartnerOnboardingContainer = () => {
+const PartnerOnboardingContainer = (props) => {
+  const { partner_id } = props
   const [city, setCity] = useState(null)
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
+  const [disableAddTruck, setDisableAddTruck] = useState(true)
   const router = useRouter()
   const context = useContext(userContext)
   const { role } = u
@@ -73,8 +108,24 @@ const PartnerOnboardingContainer = () => {
     }
   })
 
-  const [insertPartner] = useMutation(
-    INSERT_PARTNER_MUTATION,
+  const { loading, data, error } = useQuery(
+    PARTNER_DETAIL_QUERY,
+    {
+      variables: { id: parseInt(partner_id, 10) },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
+  )
+
+  console.log('PartnerOnboardingContainer Error', error)
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const partner_info = get(_data, 'partner[0]', null)
+
+  const [updatePartner] = useMutation(
+    UPDATE_PARTNER_MUTATION,
     {
       onError (error) {
         setDisableButton(false)
@@ -82,15 +133,15 @@ const PartnerOnboardingContainer = () => {
       },
       onCompleted (data) {
         setDisableButton(false)
-        const status = get(data, 'create_partner_track.status', null)
-        const description = get(data, 'create_partner_track.description', null)
+        const status = get(data, 'update_partner_track.status', null)
+        const description = get(data, 'update_partner_track.description', null)
         if (status === 'OK') {
-          onAddressUpdate(parseInt(description))
-          message.success(description || 'Created!')
-          form.resetFields()
-          router.push('/partners', undefined, { shallow: true })
+          onAddressUpdate()
+          setDisableAddTruck(false)
+          message.success(description || 'Updated!')
         } else {
           message.error(description)
+          setDisableButton(false)
         }
       }
     }
@@ -105,7 +156,7 @@ const PartnerOnboardingContainer = () => {
     }
   )
 
-  const onAddressUpdate = (partner_id) => {
+  const onAddressUpdate = () => {
     const address = {
       no: form.getFieldValue('no'),
       address: form.getFieldValue('address'),
@@ -123,17 +174,14 @@ const PartnerOnboardingContainer = () => {
 
   const onPartnerSubmit = (form) => {
     setDisableButton(true)
-    insertPartner({
+    updatePartner({
       variables: {
+        partner_id: parseInt(partner_id, 10),
         // personal_detail
         cibil: form.cibil,
-        city_id: parseInt(city),
+        city_id: parseInt(city) || get(partner_info, 'city.id', null),
         name: form.name,
         pan_no: form.pan_no,
-        // partner_user
-        contact_name: form.contact_name,
-        email: form.email,
-        mobile: form.mobile,
         // bank_detail
         account_holder: form.account_holder_name,
         account_number: form.account_no,
@@ -147,14 +195,18 @@ const PartnerOnboardingContainer = () => {
   }
 
   return (
-    <CreatePartner
-      onSubmit={onPartnerSubmit}
-      form={form}
-      city={city}
-      setCity={setCity}
-      disableButton={disableButton}
-    />
+    <>
+      <CreatePartner
+        onSubmit={onPartnerSubmit}
+        form={form}
+        city={city}
+        setCity={setCity}
+        disableButton={disableButton}
+        data_loading={loading}
+        partner_info={partner_info}
+      />
+      <KycApproval partner_id={partner_id} disableAddTruck={disableAddTruck} />
+    </>
   )
 }
-
 export default PartnerOnboardingContainer

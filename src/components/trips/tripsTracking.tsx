@@ -9,6 +9,7 @@ import PodReceiptAndDispatch from '../trips/podReceiptAndDispatch'
 import get from 'lodash/get'
 
 const TripsTracking = (props) => {
+ 
   const initial = {
     commentData: [],
     commentVisible: false
@@ -31,7 +32,8 @@ const TripsTracking = (props) => {
     visible_receipt,
     visible_dispatch,
     onHide,
-    verified
+    verified,
+    setCountFilter,countFilter,invoiced_countFilter,invoiced_setCountFilter,delivered
   } = props
 
   const [currentPage, setCurrentPage] = useState(1)
@@ -43,6 +45,8 @@ const TripsTracking = (props) => {
     const trip_list = selectedRows && selectedRows.length > 0 ? selectedRows.map(row => row.id) : []
     setSelectedRowKeys(selectedRowKeys)
     setSelectedTrips(trip_list)
+    delivered ? setCountFilter({ ...countFilter,pod_receipt_count: selectedRows.length }) :
+    invoiced_setCountFilter({ ...invoiced_countFilter,pod_dispatch_count: selectedRows.length })
   }
   const onRemoveTag = (removed) => {
     const trip_list = selectedTrips.filter(t_id => t_id !== removed)

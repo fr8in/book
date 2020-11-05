@@ -2,7 +2,7 @@ import { Row, Col, Space, Tooltip } from 'antd'
 import LabelWithData from '../common/labelWithData'
 import FileUploadOnly from '../common/fileUploadOnly'
 import ViewFile from '../common/viewFile'
-import mockData from '../../../mock/customer/customerDetail'
+// import mockData from '../../../mock/customer/customerDetail'
 import get from 'lodash/get'
 import CustomerGst from './customerGst'
 import CustomerOnBoardedBy from './customerOnboardedByName'
@@ -108,7 +108,7 @@ const CustomerDetails = (props) => {
           labelSpan={10}
           dataSpan={14}
         />
-        <LabelWithData label='Receivable Days' data={mockData.receivableDays} labelSpan={10} dataSpan={14} />
+        {/* <LabelWithData label='Receivable Days' data={mockData.receivableDays} labelSpan={10} dataSpan={14} /> */}
       </Col>
     </Row>
   )
