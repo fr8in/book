@@ -18,8 +18,6 @@ import userContext from '../../lib/userContaxt'
 import isEmpty from 'lodash/isEmpty'
 import CustomerBranchEmployee from './customerBranchEmployee'
 
-
-
 const ALL_EMPLOYEE = gql`
 query all_employee {
   employee(where:{active: {_eq: 1}}){
@@ -27,20 +25,18 @@ query all_employee {
   email
 }
 }`
-const BRANCH_EMPLOYEE = gql`
-query branch_employee($id:Int){
-  branch_employee(where:{branch_id:{_eq:$id}}){
-    employee{
+const UPDATE_CUSTOMER_BRANCH_EMPLOYEE_MUTATION = gql`
+mutation customer_branch_employee($ids: [Int!], $branch_employee_id: Int) {
+  update_customer_branch_employee(where: {id: {_in: $ids}}, _set: {branch_employee_id: $branch_employee_id}) {
+    returning {
       id
-      name
-      email
     }
   }
-}`
-
+}
+`
 const IS_MANAGER_MUTATION = gql`
-mutation update_is_manager($is_manager: Boolean, $branch_id: Int!, $emp_id: Int!){
-  update_branch_employee(_set:{is_manager: $is_manager}, where:{branch_id:{_eq:$branch_id}, id: {_eq: $emp_id}}){
+mutation update_is_manager($is_manager: Boolean, $branch_id: Int!, $employee_id: Int!){
+  update_branch_employee(_set:{is_manager: $is_manager}, where:{branch_id:{_eq:$branch_id}, id: {_eq: $employee_id}}){
     returning{
       id
     }
@@ -48,8 +44,8 @@ mutation update_is_manager($is_manager: Boolean, $branch_id: Int!, $emp_id: Int!
 }`
 
 const INSERT_BRANCH_EMPLOYEE = gql`
-mutation insert_traffic($branch_id: Int!, $emp_id: Int!){
-  insert_branch_employee(objects:{branch_id: $branch_id, employee_id:$emp_id, is_manager: false}){
+mutation insert_traffic($branch_id: Int!, $employee_id: Int!){
+  insert_branch_employee(objects:{branch_id: $branch_id, employee_id:$employee_id, is_manager: false}){
     returning{
       id
     }
@@ -67,10 +63,13 @@ mutation delete_traffic($id: Int!){
 
 const AddTraffic = (props) => {
   const { visible, onHide, branch_data, title, edit_access_delete } = props
-  console.log('branch_data', branch_data)
-  const [emp_id, setEmp_id] = useState(null)
+  const initial = { customer_branch_employee_ids: 0 }
+
   const [addTraffic, setAddTraffic] = useState(false)
   const [swapTraffic, setSwapTraffic] = useState(false)
+  const [employee_id, setEmployee_id] = useState(null)
+  const [branchEmployee_id, setBranchEmployee_id] = useState(null)
+  const [customerBranchEmployee_ids, setCustomerBranchEmployee_ids] = useState(initial)
   const context = useContext(userContext)
   const access = !isEmpty(edit_access_delete) ? context.roles.some(r => edit_access_delete.includes(r)) : false
 
@@ -83,15 +82,16 @@ const AddTraffic = (props) => {
   )
   console.log('employee error', error)
 
-  const { data: employee_data, error : branch_employee_error } = useQuery(
-    BRANCH_EMPLOYEE,
+  const [branch_employee] = useMutation(
+    UPDATE_CUSTOMER_BRANCH_EMPLOYEE_MUTATION,
     {
-      variables: { id: branch_data.id },
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
+      onError(error) { message.error(error.toString()) },
+      onCompleted() {
+        message.success('Updated!!')
+        onHide()
+      }
     }
   )
-  console.log('branch_employee data',employee_data)
 
   const [is_manager_update] = useMutation(
     IS_MANAGER_MUTATION,
@@ -127,28 +127,18 @@ const AddTraffic = (props) => {
   )
 
   if (loading) return null
-  console.log('CustomerType error', error)
 
   const { employee } = data
-  console.log('employee',employee)
-  const employee_list = employee.map((data) => {
-    return { value: data.id, label: data.email }
+
+  const employee_list = employee.map((_employee) => {
+    return { value: _employee.id, label: _employee.email }
   })
-  const branch_employee_data =branch_data.branch_employees 
-  const branch_employee_list = branch_employee_data.map((data) => {
-    return { value: data.employee && data.employee.id, label:data.employee && data.employee.email }
+  const branch_employees = branch_data.branch_employees
+  const branch_employee_list = branch_employees.map((branch_employee) => {
+    return { value: branch_employee.id, label: branch_employee.employee.email }
   })
-  console.log('data',branch_employee_data)
-  console.log('list',branch_employee_list)
-  const onIsManagerChange = (e, emp_id) => {
-    is_manager_update({
-      variables: {
-        is_manager: e.target.checked,
-        emp_id: emp_id,
-        branch_id: branch_data.id
-      }
-    })
-  }
+
+
   const onSetChange = (value) => {
     setAddTraffic(value)
   }
@@ -156,17 +146,36 @@ const AddTraffic = (props) => {
     setSwapTraffic(true)
   }
   const onChange = (value) => {
-    setEmp_id(value)
+    setEmployee_id(value)
+  }
+  const onBranchEmployeeChange = (value) => {
+    setBranchEmployee_id(value)
   }
   const onAddTraffic = () => {
     insert_traffic({
       variables: {
         branch_id: branch_data.id,
-        emp_id: emp_id
+        employee_id: employee_id
       }
     })
   }
-
+  const onSwapTraffic = () => {
+    branch_employee({
+      variables: {
+        ids: customerBranchEmployee_ids.customer_branch_employee_ids,
+        branch_employee_id: branchEmployee_id
+      }
+    })
+  }
+  const onIsManagerChange = (e, employee_id) => {
+    is_manager_update({
+      variables: {
+        is_manager: e.target.checked,
+        employee_id: employee_id,
+        branch_id: branch_data.id
+      }
+    })
+  }
   const onDelete = (id) => {
     delete_traffic({
       variables: {
@@ -176,7 +185,7 @@ const AddTraffic = (props) => {
   }
   const BranchTraffic = (
     <Row><Space>
-      <Button size='small' type='primary' defaultChecked={addTraffic} icon={<PlusOutlined />} onClick={onSetChange} /> 
+      <Button size='small' type='primary' defaultChecked={addTraffic} icon={<PlusOutlined />} onClick={onSetChange} />
       <Button size='small' type='primary' icon={<SwapOutlined />} onClick={onSwapChange} />
     </Space>
     </Row>
@@ -217,7 +226,7 @@ const AddTraffic = (props) => {
       visible={visible}
       title={` ${title} Traffic`}
       onCancel={onHide}
-      style={{ top:2 }}
+      style={{ top: 2 }}
       width={750}
       footer={[]}
     >
@@ -240,7 +249,7 @@ const AddTraffic = (props) => {
                   type='primary'
                   onClick={onAddTraffic}
                 >
-                  Add 
+                  Add
               </Button>
               </Col>
             </Row>
@@ -255,7 +264,7 @@ const AddTraffic = (props) => {
                     placeholder='Select Type'
                     options={branch_employee_list}
                     optionFilterProp='label'
-                    onChange={onChange}
+                    onChange={onBranchEmployeeChange}
                     showSearch
                   />
                 </Col>
@@ -263,9 +272,9 @@ const AddTraffic = (props) => {
                   <Button
                     key='submit'
                     type='primary'
-                    onClick={onAddTraffic}
+                    onClick={onSwapTraffic}
                   >
-                    Swap 
+                    Swap
                  </Button>
                 </Col>
               </Row>
@@ -276,11 +285,17 @@ const AddTraffic = (props) => {
       <Table
         columns={Traffic}
         dataSource={branch_data.branch_employees}
-        expandedRowRender={record => <CustomerBranchEmployee record={record} />}
         size='small'
         pagination={false}
         scroll={{ x: 420 }}
         rowKey={(record) => record.id}
+        expandedRowRender={record =>
+          <CustomerBranchEmployee
+            record={record}
+            customerBranchEmployee_ids={customerBranchEmployee_ids}
+            setCustomerBranchEmployee_ids={setCustomerBranchEmployee_ids}
+          />
+        }
       />
     </Modal>
   )

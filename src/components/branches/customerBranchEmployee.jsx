@@ -1,41 +1,50 @@
 import { Table } from 'antd'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import { useState } from 'react'
 
-const CUSTOMER_BRANCH_EMPLOYEE_QUERY = gql`
-query customer_branch_employee($id:Int){
-    customer_branch_employee(where: {branch_employee_id: {_eq: $id}}) {
-      customer {
-        id
-        name
-        mobile
-        trips_aggregate(where: {branch_employee_id: {_eq: $id}}){
-          aggregate{
-            count
-          }
+const CUSTOMER_BRANCH_EMPLOYEE_SUBSCRIPTION = gql`
+subscription customer_branch_employee($id:Int){
+  customer_branch_employee(where:{branch_employee_id:{_eq:$id}}){
+    id
+    customer{
+      id
+      name
+      mobile
+      trips_aggregate{
+        aggregate{
+          count
         }
       }
     }
-  }  
+  }
+}
 `
-
 const CustomerBranchEmployee = (props) => {
-  const { record } = props
-  console.log('id', record.id)
-  const [selectedTrips, setSelectedTrips] = useState([])
+  const { record, customerBranchEmployee_ids, setCustomerBranchEmployee_ids } = props
+
+  const [selectedCustomer, setSelectedCustomer] = useState([])
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
- 
-  
-  const { loading, data, error } = useQuery(
-    CUSTOMER_BRANCH_EMPLOYEE_QUERY,
+  const onSelectChange = (selectedRowKeys, selectedRows) => {
+    const customer_list = selectedRows && selectedRows.length > 0 ? selectedRows.map(row => row.id) : []
+    setSelectedRowKeys(selectedRowKeys)
+    setSelectedCustomer(customer_list)
+    setCustomerBranchEmployee_ids({...customerBranchEmployee_ids,customer_branch_employee_ids:customer_list})
+  }
+
+  const rowSelection =  {
+    selectedRowKeys,
+    onChange: onSelectChange
+  }
+
+  const { loading, data, error } = useSubscription(
+    CUSTOMER_BRANCH_EMPLOYEE_SUBSCRIPTION,
     {
       variables: { id: record.id }
     }
   )
   console.log('CustomerBranchEmployee Error', error)
-  console.log('CustomerBranchEmployee data', data)
 
   let _data = {}
   if (!loading) {
@@ -43,23 +52,6 @@ const CustomerBranchEmployee = (props) => {
   }
 
   const customer = get(_data, 'customer_branch_employee')
-
-  console.log('customer', customer)
-
-  const onSelectChange = (selectedRowKeys, selectedRows) => {
-    console.log('selectedRows',selectedRows.map(row => row.id)) 
-    const employee_list = selectedRows && selectedRows.length > 0 ? selectedRows.map(row => row.customer && row.customer.customer && row.customer.customer.id) : []
-    setSelectedRowKeys(selectedRowKeys)
-    setSelectedTrips(employee_list)
-    console.log('employee_list',employee_list)
-  }
-  
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange
-  }
-  console.log('rowSelection',rowSelection)
-
 
   const columns = [
     {
