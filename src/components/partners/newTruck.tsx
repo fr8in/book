@@ -24,7 +24,7 @@ mutation add_truck($truck_no:String,  $partner_id: Int!, $breadth:float8,$length
 }`
 
 const NewTruck = (props) => {
-  const { partner_info } = props
+  const { partner_info, disableAddTruck } = props
   const [city_id, setCity_id] = useState(null)
   const [driver_id, setDriver_id] = useState(null)
   const [disableButton, setDisableButton] = useState(false)
@@ -101,6 +101,7 @@ const NewTruck = (props) => {
         onCityChange={onCityChange}
         disableButton={disableButton}
         grid_column={24}
+        disableAddTruck={disableAddTruck}
       />
     </>
   )

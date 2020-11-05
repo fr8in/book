@@ -192,8 +192,8 @@ const CustomerTrips = (props) => {
     },
     {
       title: 'Aging',
-      dataIndex: 'tat',
-      sorter: (a, b) => (a.tat > b.tat ? 1 : -1),
+      dataIndex: 'received_tat',
+      sorter: (a, b) => (a.received_tat > b.received_tat ? 1 : -1),
       width: '7%'
     }
   ]

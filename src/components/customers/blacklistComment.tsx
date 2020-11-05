@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useState,useContext } from 'react'
 import { Row, Button, Input, message, Col, Modal, Form } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
@@ -28,6 +28,7 @@ const customerStatus = {
 
 const CustomerBlacklist = (props) => {
   const { customer_info,onHide,visible,blacklisted } = props
+  const [disableButton, setDisableButton] = useState(false)
   const [form] = Form.useForm()
   const { topic } = u
   
@@ -37,8 +38,12 @@ const CustomerBlacklist = (props) => {
   const [updateStatusId] = useMutation(
     UPDATE_CUSTOMER_BLACKLIST_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') 
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString()) },
+      onCompleted () {
+        setDisableButton(false)
+        message.success('Updated!!') 
       onHide()}
     }
   )
@@ -46,6 +51,7 @@ const CustomerBlacklist = (props) => {
  
 
   const onChange = (form) => {
+    setDisableButton(true)
     updateStatusId({
       variables: {
         cardcode:customer_info.cardcode,
@@ -79,7 +85,7 @@ const CustomerBlacklist = (props) => {
             </Col>
             <Col flex='80px'>
               <Form.Item>
-                <Button type='primary' htmlType='submit'>Submit</Button>
+                <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
               </Form.Item>
             </Col>
           </Row>

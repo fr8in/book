@@ -1,8 +1,10 @@
 import { Row, Col, Modal, Button, Input, Select, Form, message } from 'antd'
 import { useMutation, gql, useQuery } from '@apollo/client'
-import { useState } from 'react'
 import CitySelect from '../common/citySelect'
 import get from 'lodash/get'
+import userContext from '../../lib/userContaxt'
+import u from '../../lib/util'
+import { useState, useContext } from 'react'
 
 const CUSTOMER_BRANCH_QUERY = gql`
   query customer_branch_state{
@@ -13,7 +15,12 @@ const CUSTOMER_BRANCH_QUERY = gql`
   }
 `
 const INSERT_CUSTOMER_BRANCH_MUTATION = gql`
-mutation customer_branch_insert($address: String,$id:Int ,$branch_name: String, $mobile: String, $name: String, $pincode: String, $state_id: Int,$state:String, $city_id: Int,$city:String) {
+mutation customer_branch_insert($description: String, $topic: String, $customer_id: Int, $created_by: String,$address: String, $id: Int!, $branch_name: String, $mobile: String, $name: String, $pincode: Int, $state_id: Int,$state:String, $city_id: Int,$city:String) {
+  insert_customer_comment(objects: {description: $description, customer_id: $customer_id, topic: $topic, created_by: $created_by}) {
+    returning {
+      description
+    }
+  }
   insert_customer_office(objects: {customer_id:$id,address: $address, branch_name: $branch_name, mobile: $mobile, name: $name, pincode: $pincode,state_id: $state_id,state:$state,city_id: $city_id,city:$city}) {
     returning {
       customer_id
@@ -23,7 +30,12 @@ mutation customer_branch_insert($address: String,$id:Int ,$branch_name: String, 
 }
 `
 const UPDATE_CUSTOMER_BRANCH_MUTATION = gql`
-mutation customer_branch_update($address: String, $id: Int!, $branch_name: String, $mobile: String, $name: String, $pincode: String, $state_id: Int,$state:String, $city_id: Int,$city:String) {
+mutation customer_branch_update($description: String, $topic: String, $customer_id: Int, $created_by: String,$address: String, $id: Int!, $branch_name: String, $mobile: String, $name: String, $pincode: Int, $state_id: Int,$state:String, $city_id: Int,$city:String) {
+  insert_customer_comment(objects: {description: $description, customer_id: $customer_id, topic: $topic, created_by: $created_by}) {
+    returning {
+      description
+    }
+  }
   update_customer_office(_set: {address: $address, branch_name: $branch_name, city_id: $city_id,city:$city, mobile: $mobile, name: $name, pincode: $pincode, state_id: $state_id,state:$state}, where: { id: {_eq:  $id}}) {
     returning {
       customer_id
@@ -42,7 +54,9 @@ const CreateCustomerBranch = (props) => {
   const initial = { city_id: null, state_name: ((customerbranches && customerbranches.state) || null) }
   const [obj, setObj] = useState(initial)
   const [disableButton, setDisableButton] = useState(false)
-
+  const context = useContext(userContext)
+  const { topic } = u
+  
   const { loading, error, data } = useQuery(
     CUSTOMER_BRANCH_QUERY,
     {
@@ -114,7 +128,11 @@ const CreateCustomerBranch = (props) => {
           pincode: form.pincode,
           state_id: isNaN(form.state_id) ? customerbranches.state_id : form.state_id,
           state:  obj.state_name ,
-          branch_name: form.branch_name
+          branch_name: form.branch_name,
+          created_by: context.email,
+          description:`${topic.customer_branch} updated by ${context.email}`,
+          topic:topic.customer_branch,
+          customer_id: customer_id
         }
       })
     } else {
@@ -130,7 +148,11 @@ const CreateCustomerBranch = (props) => {
           pincode: form.pincode,
           state_id: form.state_id,
           state: obj.state_name,
-          branch_name: form.branch_name
+          branch_name: form.branch_name,
+          created_by: context.email,
+          description:`${topic.customer_branch} inserted by ${context.email}`,
+          topic:topic.customer_branch,
+          customer_id: customer_id
         }
       })
     }

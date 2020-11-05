@@ -29,7 +29,12 @@ import u from '../../lib/util'
 import Phone from '../common/phone'
 
 const CUSTOMER_REJECT_MUTATION = gql`
-  mutation customer_reject($status_id: Int, $id: Int!,$updated_by:String!) {
+mutation customer_reject($description: String, $topic: String, $customer_id: Int, $created_by: String,$status_id: Int, $id: Int!,$updated_by:String!) {
+  insert_customer_comment(objects: {description: $description, customer_id: $customer_id, topic: $topic, created_by: $created_by}) {
+    returning {
+      description
+    }
+  }
     update_customer_by_pk(
       pk_columns: { id: $id }
       _set: { status_id: $status_id,updated_by:$updated_by }
@@ -66,6 +71,7 @@ const CustomerKyc = (props) => {
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const mamulInitial = { mamul: null, selectedId: null }
+  const { topic } = u
   const [defaultMamul, setDefaultMamul] = useState(mamulInitial)
   const [currentPage, setCurrentPage] = useState(1)
   const approvalRejectAccess = !isEmpty(edit_access) ? context.roles.some(r => edit_access.includes(r)) : false
@@ -114,7 +120,11 @@ const CustomerKyc = (props) => {
       variables: {
         status_id: 7,
         updated_by: context.email,
-        id: id
+        id: id,
+        created_by: context.email,
+        description:`${topic.customer_reject} updated by ${context.email}`,
+        topic:topic.customer_reject,
+        customer_id: id
       }
     })
   }
@@ -228,6 +238,12 @@ const CustomerKyc = (props) => {
       title: 'Adv %',
       width: '10%',
       render: (text, record) => <CustomerAdvancePercentage record={record} />
+    },
+    {
+      title: 'Loads',
+      width: '10%',
+      sorter: (a, b) => (a.trips_aggregate.aggregate.count > b.trips_aggregate.aggregate.count ? 1 : -1),
+      render: (text,record) => get (record,'trips_aggregate.aggregate.count',null)
     },
     {
       title: 'Status',

@@ -13,21 +13,24 @@ const TruckTimeline = (props) => {
               return (
                 <Timeline key={i}>
                   <Timeline.Item>
+                  <Row gutter={16}>
+                    <Col span={24}>
                     <p>{data.topic}</p>
                     <p className='time'>
                       {moment(data.created_at).format(
                         'YYYY-MM-DD HH:mm'
                       )}
                     </p>
-
+                    </Col>
+                    </Row>
                     <Row key={i}>
-                      <Col span={24}>
+                      <Col span={12}>
                         <span>{data.description}</span>
                         <span className='pull-right'>
                           {data.created_by}
                         </span>
                       </Col>
-                      <Col span={24}>
+                      <Col span={12}>
                         <span className='pull-right'>
                           {moment(data.created_at).format(
                             'YYYY-MM-DD HH:mm')}

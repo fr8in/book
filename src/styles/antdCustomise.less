@@ -1,4 +1,4 @@
- .card-body-0 {
+.card-body-0 {
     > .ant-card-body { 
         padding: 0;
         .ant-tabs-nav {
@@ -33,8 +33,29 @@ td .ant-badge {position: absolute; left: -3px;top: 20px;}
 .withAction .ant-table.ant-table-small .ant-table-tbody .ant-table-wrapper:only-child .ant-table { margin-top: -4px; margin-bottom: -4px;}
 .ant-card-head .inline-text-input { font-size: 16px; font-weight: 500;}
 .ant-card-small > .ant-card-head .inline-text-input { font-size: 14px; font-weight: 500;}
-.ant-switch.block { background-color: @red;}
-.ant-switch.unblock { background-color: @green;}
+.block {
+    &.ant-switch { 
+        background-color: @red;
+    }
+    .ant-switch {
+        &:disabled{ 
+            background-color: @red;
+            opacity: 0.9;
+        }
+    } 
+}
+.unblock {
+    &.ant-switch { 
+        background-color: @green;
+    }
+    .ant-switch {
+        &:disabled{ 
+            background-color: @green;
+            opacity: 0.9;
+        }
+    } 
+}
+
 .ant-btn {
     border-radius: 4px;
     &.ant-btn-circle { border-radius: 50%; }
