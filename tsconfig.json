@@ -19,6 +19,6 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/pages/dashboard/index.tsx"
+    "src/pages/dashboard/index.tsx", "src/components/branches/customerBranchEmployee.jsx"
   ]
 }
