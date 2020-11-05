@@ -1,7 +1,7 @@
 import { Row } from 'antd'
 import LabelAndData from '../common/labelAndData'
 import SystemMamul from '../customers/systemMamul'
-import mockData from '../../../mock/customer/customerDetail'
+// import mockData from '../../../mock/customer/customerDetail'
 import useShowHide from '../../hooks/useShowHide'
 import ManagedCustomer from './managedCustomer'
 import CustomerExceptionDate from './customerExceptionDate'
@@ -71,13 +71,13 @@ const CustomerInfo = (props) => {
           smSpan={8}
           xsSpan={24}
         />
-        <LabelAndData
+        {/* <LabelAndData
           label='Pending'
           data={<label>{mockData.paymentPending}</label>}
           mdSpan={4}
           smSpan={8}
           xsSpan={24}
-        />
+        /> */}
       </Row>
       {visible.mamulVisible && (
         <SystemMamul visible={visible.mamulVisible} onHide={onHide} cardcode={customer_info.cardcode} />
