@@ -55,7 +55,7 @@ const PartnerDetailContainer = (props) => {
   const _edit_access = [role.admin, role.partner_manager, role.onboarding]
   const partner_access = u.is_roles(_edit_access, context)
   const _admin_role = [role.admin, role.partner_manager, role.partner_support]
-  const _top_up_role = [role.admin, role.rm, role.partner_manager, role.partner_support , role.user]
+  const _top_up_role = [role.admin, role.rm, role.partner_manager, role.partner_support]
   const admin = u.is_roles(_admin_role, context)
   const top_up_access = u.is_roles(_top_up_role, context)
   const _wallet_role = [role.admin]
