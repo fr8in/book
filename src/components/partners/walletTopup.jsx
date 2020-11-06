@@ -141,38 +141,50 @@ const walletTopup = (props) => {
       title: 'Trip Id',
       dataIndex: 'trip_id',
       key: 'loadid',
-      width: '15%'
+      width: '15%',
+      sorter: (a, b) => (a.id > b.id ? 1 : -1),
     },
     {
       title: 'AP Date',
       dataIndex: 'date',
       key: 'date',
       width: '14%',
-      render: (text, record) => text ? moment(text).format('DD-MMM-YY') : '-'
+      render: (text, record) => {
+        const date = parseInt(record.date, 10)
+        return(
+          date ? moment(date).format('DD MMM YY') : '-'
+        )    
+      },
+      sorter: (a, b) => (a.date > b.date ? 1 : -1)
     },
     {
       title: 'Due Date',
       dataIndex: 'due_date',
       key: 'docDueDate',
       width: '14%',
-      render: (text, record) => text
+      render: (text, record) => moment(record.due_date).format('DD MMM YY'),
+      sorter: (a, b) => (a.date > b.date ? 1 : -1)
     },
     {
       title: 'Price',
       dataIndex: 'amount',
       key: 'amount',
-      width: '15%'
+      width: '15%',
+      sorter: (a, b) => (a.amount > b.amount ? 1 : -1),
+      defaultSortOrder: 'ascend'
     },
     {
       title: 'Balance',
       dataIndex: 'balance',
       width: '12%',
-      render: (text, record) => text
+      render: (text, record) => text,
+      sorter: (a, b) => (a.balance > b.balance ? 1 : -1)
     },
     {
       title: 'Top Up',
       width: '12%',
-      render: (text, record) => record.balance
+      render: (text, record) => record.balance,
+      sorter: (a, b) => (a.record.balance > b.record.balance ? 1 : -1)
     },
     {
       title: 'Deduction',
