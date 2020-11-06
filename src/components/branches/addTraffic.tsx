@@ -139,7 +139,7 @@ const AddTraffic = (props) => {
   })
 
 
-  const onSetChange = (value) => {
+  const onTrafficChange = (value) => {
     setAddTraffic(value)
   }
   const onSwapChange = () => {
@@ -185,7 +185,7 @@ const AddTraffic = (props) => {
   }
   const BranchTraffic = (
     <Row><Space>
-      <Button size='small' type='primary' defaultChecked={addTraffic} icon={<PlusOutlined />} onClick={onSetChange} />
+      <Button size='small' type='primary' defaultChecked={addTraffic} icon={<PlusOutlined />} onClick={onTrafficChange} />
       <Button size='small' type='primary' icon={<SwapOutlined />} onClick={onSwapChange} />
     </Space>
     </Row>
