@@ -69,7 +69,7 @@ const Tripcomment = (props) => {
         trip_id: tripid,
         created_by: context.email,
         description: form.comment,
-        topic: 'text'
+        topic: 'Trip Notes'
       }
     })
   }

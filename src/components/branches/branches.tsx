@@ -24,6 +24,7 @@ subscription branches($week: Int!, $year: Int!) {
         id
         name
         mobileno
+        email
       }
     }
     cities {
