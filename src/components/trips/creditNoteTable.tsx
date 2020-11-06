@@ -98,13 +98,8 @@ const CreditNoteTable = (props) => {
       width: authorised ? '24%' : '27%',
       render: (text, record) => {
         return (
-          // <Tooltip
-          //   title={'\ncreated_at:\t' + record.created_at && moment(record.created_at).format('DD-MMM-YYYY') +
-          //                 '\ncreatedBy:\t' + record.created_by}
-          // >
              <Tooltip
-            title={` Created_at: ${record.created_at && moment(record.created_at).format('DD-MMM-YYYY')}  ` +
-             `Created_by: ${record.created_by}`}
+            title={` Created_at: ${record.created_at && moment(record.created_at).format('DD-MMM-YYYY')} Created_by: ${record.created_by}`}
           >
             <span>{record.comment}</span>
           </Tooltip>)
@@ -113,18 +108,15 @@ const CreditNoteTable = (props) => {
       title: 'Status',
       width: authorised ? '12%' : '14%',
       render: (text, record) => {
-        if ((record.approved_by)) {
-          console.log(record.approved_by)
           return (
-            <Tooltip
-            title={`Approved_at: ${record.approved_at && moment(record.approved_at).format('DD MMM YYYY')}  ` + 
-             `Approved_by: ${record.approved_by}`}
-          >
-              {get(record, 'credit_debit_status.name', null)}
-            </Tooltip>)
-        }
-        return get(record, 'credit_debit_status.name', null)
-      }
+           record.approved_by ? (
+             <Tooltip
+                title={`Approved_at: ${record.approved_at && moment(record.approved_at).format('DD MMM YYYY')} Approved_by: ${record.approved_by}`}
+              >
+                {get(record, 'credit_debit_status.name', null)}
+              </Tooltip>) 
+            : get(record, 'credit_debit_status.name', null)
+          )}
     },
     authorised
       ? {
