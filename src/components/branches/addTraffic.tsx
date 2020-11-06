@@ -88,7 +88,6 @@ const AddTraffic = (props) => {
       onError(error) { message.error(error.toString()) },
       onCompleted() {
         message.success('Updated!!')
-        onHide()
       }
     }
   )

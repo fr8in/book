@@ -51,26 +51,26 @@ const CustomerBranchEmployee = (props) => {
     _data = data
   }
 
-  const customer = get(_data, 'customer_branch_employee')
+  const customers = get(_data, 'customer_branch_employee')
 
   const columns = [
     {
       title: 'Name',
       key:'name',
       width: '45%',
-      render: (text, record) => get(record, 'customer.name')
+      render: (text, record) => get(record, 'customer.name', '-')
     },
     {
       title: 'Mobile No',
       key: 'mobileNo',
       width: '35%',
-      render: (text, record) => get(record, 'customer.mobile')
+      render: (text, record) => get(record, 'customer.mobile', '-')
     },
     {
       title: 'Load',
       key: 'load',
       width: '20%',
-      render: (text, record) => get(record, 'customer.trips_aggregate.aggregate.count'),
+      render: (text, record) => get(record, 'customer.trips_aggregate.aggregate.count', 0),
       sorter: (a, b) => a.customer.trips_aggregate.aggregate.count - b.customer.trips_aggregate.aggregate.count,
       defaultSortOrder:'descend'
     }
@@ -78,7 +78,7 @@ const CustomerBranchEmployee = (props) => {
   return (
     <Table
       columns={columns}
-      dataSource={customer}
+      dataSource={customers}
       size='small'
       scroll={{ x: 450, y: 330 }}
       pagination={false}
