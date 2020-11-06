@@ -5,8 +5,14 @@ query customer_trip_list($cardcode: String, $where:trip_bool_exp) {
   customer(where: {cardcode: {_eq: $cardcode}}) {
     trips(where:$where order_by:{trip_receipts_aggregate:{sum:{amount:asc_nulls_first}}}) {
       id
-      order_date
-      pod_dispatched_at
+      created_at
+      pod_verified_at
+      delivered_tat
+      invoiced_tat
+      confirmed_tat
+      loading_tat
+      intransit_tat
+      unloading_tat
       received_tat
       truck {
         truck_no

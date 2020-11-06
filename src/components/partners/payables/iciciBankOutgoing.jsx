@@ -92,6 +92,7 @@ const OutGoing = (props) => {
       dataIndex: 'docNum',
       key: 'docNum',
       sorter: (a, b) => (a.docNum > b.docNum ? 1 : -1),
+      defaultSortOrder: 'descend',
       width: '8%'
     },
     {

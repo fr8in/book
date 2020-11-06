@@ -57,6 +57,17 @@ const CustomerTrips = (props) => {
     setFilter({ ...filter, destinationname:e.target.value})
   }
 
+  const tat = {
+    'Assigned': (record) => record.confirmed_tat,
+    'Confirmed': (record) => record.confirmed_tat,
+    'Reported at source': (record) => record.loading_tat,
+    'Intransit': (record) => record.intransit_tat,
+    'Intransit halting': (record) => record.intransit_tat,
+    'Reported at destination': (record) => record.unloading_tat,
+    'Delivered':(record) => record.delivered_tat,
+    'Invoiced':(record) => record.received_tat
+  }
+
   const finalPaymentsPending = [
     {
       title: 'ID',
@@ -73,7 +84,7 @@ const CustomerTrips = (props) => {
     },
     {
       title: 'O.Date',
-      dataIndex: 'order_date',
+      dataIndex: 'created_at',
       width: '8%',
       render: (text, record) => text ? moment(text).format('DD-MMM-YY') : '-'
     },
@@ -163,9 +174,9 @@ const CustomerTrips = (props) => {
       render: (text, record) => <Truncate data={get(record, 'trip_status.name', '-')} length={15} />
     } : {},
     delivered ? {
-      title: 'Pod Dispatched',
+      title: 'Pod Verified at',
       width: '11%',
-      dataIndex: 'pod_dispatched_at',
+      dataIndex: 'pod_verified_at',
       render:  (text, record) => text ? moment(text).format('DD-MMM-YY') : '-' 
     } : {},
     {
@@ -192,8 +203,15 @@ const CustomerTrips = (props) => {
     },
     {
       title: 'Aging',
-      dataIndex: 'received_tat',
-      sorter: (a, b) => (a.received_tat > b.received_tat ? 1 : -1),
+      render: (text, record) => {
+        const status = get(record, 'trip_status.name', null)
+        console.log('status',status)
+        return tat[status](record)
+      },
+      sorter: (a, b) => {
+        const status = get(a, 'trip_status.name', null)
+        return tat[status](a) > tat[status](b) ? 1 : -1
+      },
       width: '7%'
     }
   ]
