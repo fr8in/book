@@ -42,7 +42,7 @@ const PayablesStatus = (props) => {
          <LabelWithData
         label='Status'
         data={
-          transaction_status.status
+         get(transaction_status,'status',null)
         }
         mdSpan={4}
         smSpan={8}
@@ -50,14 +50,14 @@ const PayablesStatus = (props) => {
       />
       <LabelWithData
         label='Response'
-        data={transaction_status.response}
+        data={get(transaction_status,'response',null)}
         mdSpan={4}
         smSpan={8}
         xsSpan={12}
       />
       <LabelWithData
         label='Description'
-        data={transaction_status.message}
+        data={get(transaction_status,'message',null)}
         mdSpan={4}
         smSpan={8}
         xsSpan={12}
