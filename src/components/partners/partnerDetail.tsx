@@ -158,6 +158,7 @@ const PartnerDetail = (props) => {
           <EditBank
             visible={visible.bankVisible}
             partner_id={partnerDetail.id}
+            partner_info={partnerDetail}
             onHide={onHide}
           />}
       </Col>

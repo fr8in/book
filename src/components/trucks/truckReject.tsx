@@ -42,7 +42,7 @@ const TruckReject = (props) => {
         truck_id: truck_id,
         created_by: context.email,
         description: rejectComment,
-        topic: 'text',
+        topic: 'Truck Rejected',
         truck_status_id: 12,
         id: truck_id,
         updated_by: context.email
