@@ -24,7 +24,7 @@ const PayablesStatus = (props) => {
   )
   console.log('transaction_status error', error)
 
-  var _data = []
+  let _data = {}
   if (!loading) {
     _data = data
   }
