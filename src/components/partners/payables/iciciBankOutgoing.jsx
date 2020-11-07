@@ -7,7 +7,7 @@ import get from 'lodash/get'
 import moment from 'moment'
 import Refno from './refNum'
 import u from '../../../lib/util'
-import useShowHide from '../../../hooks/useShowHide'
+import useShowHidewithRecord from '../../../hooks/useShowHideWithRecord'
 import PayablesStatus from './payablesStatus'
 
 const pendingTransaction = gql`
@@ -39,9 +39,9 @@ const OutGoing = (props) => {
   const { label } = props
   const context = useContext(userContext)
   const execute_access = u.is_roles([u.role.admin, u.role.accounts_manager, u.role.accounts], context)
-  const initial = { loading: false, selected_id: null ,payable_status:false}
+  const initial = { loading: false, selected_id: null ,payable_status:false,partner_status_data: []}
   const [disableBtn, setDisableBtn] = useState(initial)
-  const { visible, onShow, onHide } = useShowHide(initial)
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
   const { loading, error, data, refetch } = useQuery(
     pendingTransaction, {
@@ -57,9 +57,6 @@ const OutGoing = (props) => {
   }
 
   const pendingtransaction = get(_data, 'pending_transaction', [])
-  const transaction_info = get(_data, 'pending_transaction[0]', [])
-  const doc_num= transaction_info.docNum
-
  
 
   const [executeTransfer] = useMutation(
@@ -99,8 +96,8 @@ const OutGoing = (props) => {
       dataIndex: 'docNum',
       key: 'docNum',
       sorter: (a, b) => (a.docNum > b.docNum ? 1 : -1),
+      width: '8%',
       defaultSortOrder: 'descend',
-      width: '8%'
     },
     {
       title: 'DocDate',
@@ -194,7 +191,7 @@ const OutGoing = (props) => {
           >
             Execute
           </Button>
-          <Button size='small' type='primary' style={{ background: "green", borderColor: "green" }} onClick={() => onShow('payable_status')}>
+          <Button size='small' type='primary' style={{ background: "green", borderColor: "green" }} onClick={() =>handleShow('payable_status', null, 'partner_status_data', record.docNum)}>
           Status
         </Button>
         </Space>
@@ -215,7 +212,14 @@ const OutGoing = (props) => {
       rowKey={(record) => record.docNum}
       loading={loading}
     />
-    {visible.payable_status && <PayablesStatus visible={visible.payable_status} onHide={onHide} doc_num={doc_num} />}
+      {object.payable_status && (
+        <PayablesStatus
+          visible={object.payable_status}
+          doc_num={object.partner_status_data}
+          onHide={handleHide}
+          title={object.title}
+        />
+      )}
     </>
   )
 }
