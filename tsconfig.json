@@ -19,6 +19,9 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/pages/dashboard/index.tsx"
+    "src/pages/dashboard/index.tsx", 
+    "src/components/partners/walletTopup.jsx", 
+    "src/components/partners/payables/iciciBankOutgoing.jsx",
+    "src/components/branches/customerBranchEmployee.jsx" 
   ]
 }

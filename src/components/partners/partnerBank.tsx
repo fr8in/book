@@ -26,7 +26,7 @@ query ifsc_validation($ifsc: String!){
 const { TextArea } = Input
 
 const EditBank = (props) => {
-  const { visible, onHide, partner_id } = props
+  const { visible, onHide, partner_id,partner_info } = props
   const { topic } = u
 
   const [disableButton, setDisableButton] = useState(false)
@@ -102,18 +102,21 @@ const EditBank = (props) => {
           <Form.Item
             name='account_holder'
             rules={[{ required: true }]}
+            initialValue={get(partner_info, 'account_holder', null)}
           >
-            <Input placeholder='Name' />
+            <Input placeholder='Account_Holder Name' />
           </Form.Item>
           <Form.Item
             name='ifsc_code'
             rules={[{ required: true }]}
+            initialValue={get(partner_info, 'ifsc_code', null)}
           >
             <Input placeholder=' IFSC Code' onBlur={validateIFSC} />
           </Form.Item>
           <Form.Item
             name='account_number'
             rules={[{ required: true }]}
+            initialValue={get(partner_info, 'display_account_number', null)}
           >
             <Input placeholder=' Account Number' />
           </Form.Item>
