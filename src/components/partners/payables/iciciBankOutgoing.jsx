@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react'
-import { Table, Button, message, Tooltip } from 'antd'
+import { Table, Button, message, Tooltip,Row, Space } from 'antd'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import userContext from '../../../lib/userContaxt'
 import Truncate from '../../common/truncate'
@@ -7,6 +7,8 @@ import get from 'lodash/get'
 import moment from 'moment'
 import Refno from './refNum'
 import u from '../../../lib/util'
+import useShowHidewithRecord from '../../../hooks/useShowHideWithRecord'
+import PayablesStatus from './payablesStatus'
 
 const pendingTransaction = gql`
 query pending_transaction {
@@ -37,8 +39,9 @@ const OutGoing = (props) => {
   const { label } = props
   const context = useContext(userContext)
   const execute_access = u.is_roles([u.role.admin, u.role.accounts_manager, u.role.accounts], context)
-  const initial = { loading: false, selected_id: null }
+  const initial = { loading: false, selected_id: null ,payable_status:false,doc_num:null}
   const [disableBtn, setDisableBtn] = useState(initial)
+  const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
   const { loading, error, data, refetch } = useQuery(
     pendingTransaction, {
@@ -54,6 +57,7 @@ const OutGoing = (props) => {
   }
 
   const pendingtransaction = get(_data, 'pending_transaction', [])
+ 
 
   const [executeTransfer] = useMutation(
     Execute_Transfer,
@@ -92,13 +96,13 @@ const OutGoing = (props) => {
       dataIndex: 'docNum',
       key: 'docNum',
       sorter: (a, b) => (a.docNum > b.docNum ? 1 : -1),
+      width: '8%',
       defaultSortOrder: 'descend',
-      width: '8%'
     },
     {
       title: 'DocDate',
       sorter: (a, b) => (a.docDate > b.docDate ? 1 : -1),
-      width: '8%',
+      width: '7%',
       render: (text, record) => {
         const DocDate = get(record, 'docDate', '-')
         return (DocDate ? moment(DocDate).format('DD-MMM-YY') : null)
@@ -154,7 +158,7 @@ const OutGoing = (props) => {
     },
     {
       title: 'Payable Stat',
-      width: '9%',
+      width: '8%',
       render: (text, record) => {
         const user = get(record, 'payable_status', '-')
         return (
@@ -164,7 +168,7 @@ const OutGoing = (props) => {
     },
     {
       title: 'Ref Number',
-      width: '10%',
+      width: '9%',
       render: (text, record) => {
         return (
           <Refno id={record.docNum} label={label} />
@@ -175,9 +179,11 @@ const OutGoing = (props) => {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      width: '7%',
+      width: '11%',
       render: (text, record) => {
         return (
+          <>
+          <Space>
           <Button
             size='small' type='primary' onClick={() => onSubmit(record, record.docNum)}
             disabled={!(record.account_no && execute_access)}
@@ -185,12 +191,18 @@ const OutGoing = (props) => {
           >
             Execute
           </Button>
+          <Button size='small' type='primary' className='btn-success' onClick={() =>handleShow('payable_status', null, 'doc_num', record.docNum)}>
+          Status
+        </Button>
+        </Space>
+        </>
         )
       }
     }
   ]
 
   return (
+    <>
     <Table
       columns={columns}
       dataSource={pendingtransaction}
@@ -200,6 +212,14 @@ const OutGoing = (props) => {
       rowKey={(record) => record.docNum}
       loading={loading}
     />
+      {object.payable_status && (
+        <PayablesStatus
+          visible={object.payable_status}
+          doc_num={object.doc_num}
+          onHide={handleHide}
+        />
+      )}
+    </>
   )
 }
 

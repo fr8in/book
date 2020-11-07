@@ -138,11 +138,14 @@ const AddTraffic = (props) => {
   })
 
 
-  const onTrafficChange = (value) => {
-    setAddTraffic(value)
+  const onTrafficChange = () => {
+    setAddTraffic(!addTraffic)
+    setSwapTraffic(false)
   }
+   
   const onSwapChange = () => {
-    setSwapTraffic(true)
+    setSwapTraffic(!swapTraffic)
+    setAddTraffic(false)
   }
   const onChange = (value) => {
     setEmployee_id(value)
@@ -210,9 +213,16 @@ const AddTraffic = (props) => {
     },
     {
       title: 'Action',
-      render: (record) =>
+      render: (record) =>{
+        const count = get(record, 'customer_branch_employees_aggregate.aggregate.count' ,0) 
+      return(
         access
-          ? <DeleteTwoTone twoToneColor='#eb2f96' onClick={() => onDelete(record.id)} /> : null
+          ?<Button 
+          type="link" 
+          icon={<DeleteTwoTone twoToneColor='#eb2f96'/>  }  
+          onClick={() => onDelete(record.id)} 
+          disabled={record.is_manager || !!count }
+          /> : null)}
     },
     {
       title: BranchTraffic,
