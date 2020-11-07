@@ -315,14 +315,19 @@ const CreatePartner = (props) => {
         </Card>
         <Row justify='end'>
           <Col xs={24} className='text-right mb10'>
-            <Space>
+            
               {partner_info ? 
-              <Button onClick={() => setDisableAddTruck(!disableAddTruck)} >Skip</Button> : (
+              <Space>
+              <Button onClick={() => setDisableAddTruck(!disableAddTruck)} >Skip</Button>
+              <Button type='primary' loading={disableButton} disabled={!access || !disableAddTruck} htmlType='submit'>Submit</Button>
+              </Space> : (
+                <Space>
                 <Link href='/partners'>
                   <Button>Back</Button>
-                </Link>)}
-              <Button type='primary' loading={disableButton} disabled={!access || !disableAddTruck} htmlType='submit'>Submit</Button>
-            </Space>
+                </Link>
+                <Button type='primary' loading={disableButton} disabled={!access} htmlType='submit'>Submit</Button>
+                </Space>)}
+              
           </Col>
         </Row>
       </Form>)
