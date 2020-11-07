@@ -102,12 +102,6 @@ const PartnerOnboardingContainer = (props) => {
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
   const access = u.is_roles(edit_access, context)
 
-  useEffect(() => {
-    if (!access) {
-      router.push('/')
-    }
-  })
-
   const { loading, data, error } = useQuery(
     PARTNER_DETAIL_QUERY,
     {
@@ -204,6 +198,7 @@ const PartnerOnboardingContainer = (props) => {
         disableButton={disableButton}
         data_loading={loading}
         partner_info={partner_info}
+        access={access}
       />
       <KycApproval partner_id={partner_id} disableAddTruck={disableAddTruck} />
     </>
