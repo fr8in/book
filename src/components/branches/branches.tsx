@@ -38,7 +38,7 @@ const Branches = (props) => {
   const { edit_access, setTotalBranch } = props
 
   const { role } = u
-  const traffic_member_delete = [role.admin]
+  const traffic_member_delete = [role.admin,role.hr]
   const initial = {
     trafficVisible: false,
     title: null,
