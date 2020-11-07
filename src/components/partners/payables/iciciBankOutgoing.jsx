@@ -217,7 +217,6 @@ const OutGoing = (props) => {
           visible={object.payable_status}
           doc_num={object.doc_num}
           onHide={handleHide}
-          title={object.title}
         />
       )}
     </>

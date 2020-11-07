@@ -34,7 +34,7 @@ const PayablesStatus = (props) => {
   return (
     <>
       <Modal
-        title='Transaction Status'
+        title={`${doc_num}: Transaction Status`}
         visible={visible}
         onCancel={onHide}
         footer={[]}
