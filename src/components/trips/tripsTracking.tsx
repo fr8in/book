@@ -99,6 +99,13 @@ const TripsTracking = (props) => {
     return { value: data.name, label: data.name }
   })
 
+  const tat = {
+    'Delivered':(record) => parseInt(record.delivered_tat,10),
+    'Invoiced':(record) => parseInt(record.received_tat,10),
+    'Paid':(record) => parseInt(record.paid_tat,10),
+    'Received':(record) => parseInt(record.received_tat,10),
+    'Closed':(record) => parseInt(record.closed_tat,10)
+  }
   const columns = [
     {
       title: 'ID',
@@ -258,6 +265,11 @@ const TripsTracking = (props) => {
                   : null
         )
       },
+      sorter: (a, b) => {
+        const status = get(a, 'trip_status.name', null)
+        return tat[status](a) > tat[status](b) ? 1 : -1
+      },
+      defaultSortOrder: 'descend',
       width: '8%'
     },
     {

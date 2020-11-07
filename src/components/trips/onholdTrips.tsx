@@ -92,7 +92,7 @@ const OnholdTrips = (props) => {
       title: 'Source',
       dataIndex: 'name',
       width: '8%',
-      render: (text, record) => <Truncate data={get(record, 'source.name', null)} length={6} />
+      render: (text, record) => <Truncate data={get(record, 'source.name', null)} length={4} />
     },
     {
       title: 'Destination',
@@ -137,7 +137,7 @@ const OnholdTrips = (props) => {
     {
       title: 'Aging',
       dataIndex: 'paid_tat',
-      sorter: (a, b) => (a.aging > b.aging ? 1 : -1),
+      sorter: (a, b) => (parseInt(a.aging, 10) > parseInt(b.aging) ? 1 : -1),
       width: '7%'
     },
     {
