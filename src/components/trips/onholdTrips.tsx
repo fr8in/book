@@ -137,7 +137,7 @@ const OnholdTrips = (props) => {
     {
       title: 'Aging',
       dataIndex: 'paid_tat',
-      sorter: (a, b) => (parseInt(a.aging, 10) > parseInt(b.aging) ? 1 : -1),
+      sorter: (a, b) => (parseInt(a.paid_tat, 10) > parseInt(b.paid_tat) ? 1 : -1),
       width: '7%'
     },
     {
