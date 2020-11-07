@@ -65,7 +65,10 @@ const CustomerTrips = (props) => {
     'Intransit halting': (record) => record.intransit_tat,
     'Reported at destination': (record) => record.unloading_tat,
     'Delivered':(record) => record.delivered_tat,
-    'Invoiced':(record) => record.received_tat
+    'Invoiced':(record) => record.invoiced_tat,
+    'Paid':(record) => record.paid_tat,
+    'Received':(record) => record.received_tat,
+    'Closed':(record) => record.closed_tat
   }
 
   const finalPaymentsPending = [
@@ -208,10 +211,10 @@ const CustomerTrips = (props) => {
         console.log('status',status)
         return tat[status](record)
       },
-      sorter: (a, b) => {
-        const status = get(a, 'trip_status.name', null)
-        return tat[status](a) > tat[status](b) ? 1 : -1
-      },
+      // sorter: (a, b) => {
+      //   const status = get(a, 'trip_status.name', null)
+      //   return tat[status](a) > tat[status](b) ? 1 : -1
+      // },
       width: '7%'
     }
   ]
