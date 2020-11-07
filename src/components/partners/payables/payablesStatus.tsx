@@ -4,7 +4,7 @@ import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
 
 const TRANSACTION_STATUS = gql`
-  query transaction_status($doc_num:Float) {
+  query transaction_status($doc_num:Float!) {
     transaction_status(doc_num:$doc_num) {
       message
       response
