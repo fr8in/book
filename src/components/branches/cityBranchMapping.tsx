@@ -20,7 +20,7 @@ const CityBranchMapping = () => {
   const { loading, error, data } = useSubscription(CITY_QUERY)
   console.log('error', error)
   const { role } = u
-  const access = [role.admin]
+  const access = [role.admin,role.hr]
 
   let _data = []
   if (!loading) {

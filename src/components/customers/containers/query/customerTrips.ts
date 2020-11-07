@@ -7,6 +7,8 @@ query customer_trip_list($cardcode: String, $where:trip_bool_exp) {
       id
       created_at
       pod_verified_at
+      paid_tat
+      closed_tat
       delivered_tat
       invoiced_tat
       confirmed_tat

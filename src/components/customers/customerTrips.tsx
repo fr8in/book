@@ -65,7 +65,10 @@ const CustomerTrips = (props) => {
     'Intransit halting': (record) => parseInt(record.intransit_tat,10),
     'Reported at destination': (record) => parseInt(record.unloading_tat,10),
     'Delivered':(record) => parseInt(record.delivered_tat,10),
-    'Invoiced':(record) => parseInt(record.received_tat,10)
+    'Invoiced':(record) => parseInt(record.invoiced_tat,10),
+    'Paid':(record) => parseInt(record.paid_tat,10),
+    'Received':(record) => parseInt(record.received_tat,10),
+    'Closed':(record) => parseInt(record.closed_tat,10)
   }
 
   const finalPaymentsPending = [
