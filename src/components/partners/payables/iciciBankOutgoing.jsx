@@ -39,7 +39,7 @@ const OutGoing = (props) => {
   const { label } = props
   const context = useContext(userContext)
   const execute_access = u.is_roles([u.role.admin, u.role.accounts_manager, u.role.accounts], context)
-  const initial = { loading: false, selected_id: null ,payable_status:false,partner_status_data: []}
+  const initial = { loading: false, selected_id: null ,payable_status:false,doc_num:null}
   const [disableBtn, setDisableBtn] = useState(initial)
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
@@ -191,7 +191,7 @@ const OutGoing = (props) => {
           >
             Execute
           </Button>
-          <Button size='small' type='primary' style={{ background: "green", borderColor: "green" }} onClick={() =>handleShow('payable_status', null, 'partner_status_data', record.docNum)}>
+          <Button size='small' type='primary' style={{ background: "green", borderColor: "green" }} onClick={() =>handleShow('payable_status', null, 'doc_num', record.docNum)}>
           Status
         </Button>
         </Space>
@@ -215,7 +215,7 @@ const OutGoing = (props) => {
       {object.payable_status && (
         <PayablesStatus
           visible={object.payable_status}
-          doc_num={object.partner_status_data}
+          doc_num={object.doc_num}
           onHide={handleHide}
           title={object.title}
         />
