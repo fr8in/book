@@ -269,7 +269,6 @@ const TripsTracking = (props) => {
         const status = get(a, 'trip_status.name', null)
         return tat[status](a) > tat[status](b) ? 1 : -1
       },
-      defaultSortOrder: 'descend',
       width: '8%'
     },
     {
