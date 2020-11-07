@@ -221,7 +221,7 @@ const AddTraffic = (props) => {
           type="link" 
           icon={<DeleteTwoTone twoToneColor='#eb2f96'/>  }  
           onClick={() => onDelete(record.id)} 
-          disabled={record.is_manager === true || count === 0 }
+          disabled={record.is_manager || !!count }
           /> : null)}
     },
     {
