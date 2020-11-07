@@ -196,6 +196,8 @@ const PartnerOnboardingContainer = (props) => {
         city={city}
         setCity={setCity}
         disableButton={disableButton}
+        setDisableAddTruck={setDisableAddTruck}
+        disableAddTruck={disableAddTruck}
         data_loading={loading}
         partner_info={partner_info}
         access={access}

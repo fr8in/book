@@ -32,7 +32,7 @@ query ifsc_validation($ifsc: String!){
 }`
 
 const CreatePartner = (props) => {
-  const { onSubmit, form, setCity, disableButton, partner_info, data_loading,access } = props
+  const { onSubmit, form, setCity, disableButton, partner_info, data_loading,access,setDisableAddTruck,disableAddTruck } = props
 
   const { loading, error, data } = useQuery(
     PARTNERS_SUBSCRIPTION,
@@ -316,11 +316,12 @@ const CreatePartner = (props) => {
         <Row justify='end'>
           <Col xs={24} className='text-right mb10'>
             <Space>
-              {partner_info ? null : (
+              {partner_info ? 
+              <Button onClick={() => setDisableAddTruck(!disableAddTruck)} >Skip</Button> : (
                 <Link href='/partners'>
                   <Button>Back</Button>
                 </Link>)}
-              <Button type='primary' loading={disableButton} disabled={!access} htmlType='submit'>Submit</Button>
+              <Button type='primary' loading={disableButton} disabled={!access || !disableAddTruck} htmlType='submit'>Submit</Button>
             </Space>
           </Col>
         </Row>
