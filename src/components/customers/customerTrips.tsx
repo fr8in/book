@@ -211,10 +211,10 @@ const CustomerTrips = (props) => {
         console.log('status',status)
         return tat[status](record)
       },
-      // sorter: (a, b) => {
-      //   const status = get(a, 'trip_status.name', null)
-      //   return tat[status](a) > tat[status](b) ? 1 : -1
-      // },
+      sorter: (a, b) => {
+        const status = get(a, 'trip_status.name', null)
+        return tat[status](a) > tat[status](b) ? 1 : -1
+      },
       width: '7%'
     }
   ]
