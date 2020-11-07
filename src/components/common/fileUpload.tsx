@@ -1,14 +1,15 @@
-import { useState } from 'react'
+import { useState ,useContext} from 'react'
 import { Row, Col, Upload, Button, message, Modal } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
+import userContext from '../../lib/userContaxt'
 
 const FILE_UPLOAD_MUTATION = gql`
-  mutation file_upload ($name: String, $type: String, $base64Str: String,$id: Int, $folder: String,$fileType: String ) {
-    fileUpload(name: $name, type: $type, base64Str: $base64Str, id: $id, folder: $folder, fileType: $fileType) {
-      file_path
-    }
+mutation file_upload($name: String, $type: String, $base64Str: String,$id: Int, $folder: String,$fileType: String,$updated_by:String ) {
+  fileUpload(name: $name, type: $type, base64Str: $base64Str, id: $id, folder: $folder, fileType: $fileType,updated_by:$updated_by) {
+    file_path
   }
+}
 `
 
 const FILE_DOWNLOAD_MUTATION = gql`
@@ -20,11 +21,11 @@ const FILE_DOWNLOAD_MUTATION = gql`
   `
 
 const FILE_DELETE_MUTATION = gql`
-    mutation delete_file($name:String,$id:Int,$type: String, $fileType: String) {
-    fileDelete(name: $name,id:$id, type:$type, fileType: $fileType) {
-        affected
-        }
-    }
+mutation delete_file($name: String, $id: Int, $type: String, $fileType: String,$updated_by:String) {
+  fileDelete(name: $name, id: $id, type: $type, fileType: $fileType,updated_by:$updated_by) {
+    affected
+  }
+}
     `
 
 const FileUpload = (props) => {
@@ -33,6 +34,7 @@ const FileUpload = (props) => {
   const [names, setNames] = useState(null)
   const [file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
+  const context = useContext(userContext)
   const previewInitial = { visible: false, image: '', title: '', ext: '' }
   const [preview, setPreview] = useState(previewInitial)
 
@@ -102,7 +104,7 @@ const FileUpload = (props) => {
 
   const fileUpload = (name) => {
     setLoading(true)
-    const variables = { name: name, type: type, base64Str: base64Str, id: id, folder: folder, fileType: file_type }
+    const variables = { name: name, type: type, base64Str: base64Str, id: id, folder: folder, fileType: file_type,updated_by: context.email }
     s3FileUpload({
       variables: variables
     })
@@ -119,7 +121,7 @@ const FileUpload = (props) => {
   }
 
   const remove = (file) => {
-    const variables = { name: file.name, id: id, type: type, fileType: file_type }
+    const variables = { name: file.name, id: id, type: type, fileType: file_type,updated_by: context.email }
     s3FileDelete({
       variables: variables
     })
