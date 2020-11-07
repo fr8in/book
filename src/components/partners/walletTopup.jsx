@@ -162,7 +162,12 @@ const walletTopup = (props) => {
       dataIndex: 'due_date',
       key: 'docDueDate',
       width: '14%',
-      render: (text, record) => moment(record.due_date).format('DD MMM YY'),
+      render: (text, record) => {
+        const date = parseInt(record.due_date, 10)
+        return(
+          moment(date).format('DD MMM YY')
+        )  
+      },
       sorter: (a, b) => (a.date > b.date ? 1 : -1)
     },
     {
