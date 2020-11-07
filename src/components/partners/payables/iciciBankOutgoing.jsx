@@ -191,7 +191,7 @@ const OutGoing = (props) => {
           >
             Execute
           </Button>
-          <Button size='small' type='primary' style={{ background: "green", borderColor: "green" }} onClick={() =>handleShow('payable_status', null, 'doc_num', record.docNum)}>
+          <Button size='small' type='primary' className='btn-success' onClick={() =>handleShow('payable_status', null, 'doc_num', record.docNum)}>
           Status
         </Button>
         </Space>
