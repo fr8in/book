@@ -17,6 +17,7 @@ import { gql, useMutation, useQuery } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import isEmpty from 'lodash/isEmpty'
 import CustomerBranchEmployee from './customerBranchEmployee'
+import moment from 'moment'
 
 const ALL_EMPLOYEE = gql`
 query all_employee {
@@ -53,13 +54,14 @@ mutation insert_traffic($branch_id: Int!, $employee_id: Int!){
 }`
 
 const DELETE_BRANCH_EMPLOYEE = gql`
-mutation delete_traffic($id: Int!){
-  delete_branch_employee(where:{id:{_eq: $id}}){
-    returning{
+mutation update_branch_employee($id: Int!, $date: timestamp) {
+  update_branch_employee(where: {id: {_eq: $id}}, _set: {deleted_at: $date}) {
+    returning {
       id
     }
   }
-}`
+}
+`
 
 const AddTraffic = (props) => {
   const { visible, onHide, branch_data, title, edit_access_delete } = props
@@ -137,6 +139,7 @@ const AddTraffic = (props) => {
     return { value: branch_employee.id, label: branch_employee.employee.email }
   })
 
+const date =moment(new Date().toISOString()).format('DD-MMM-YY')
 
   const onTrafficChange = () => {
     setAddTraffic(!addTraffic)
@@ -181,7 +184,8 @@ const AddTraffic = (props) => {
   const onDelete = (id) => {
     delete_traffic({
       variables: {
-        id: id
+        id: id,
+        date: date
       }
     })
   }
