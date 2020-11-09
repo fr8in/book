@@ -29,7 +29,7 @@ const PartnerStatus = (props) => {
   const partner_status = get(partnerInfo, 'partner_status.name', null)
   const is_blacklisted = (partner_status === 'Blacklisted')
   const is_deactivate = (partner_status === 'De-activate')
-  const _admin_role = [role.admin, role.partner_manager,role.bm,role.rm]
+  const _admin_role = [role.admin, role.partner_manager,role.bm,role.rm,role.partner_support]
   const _blockAccess_role = [role.admin,role.bm,role.rm,role.onboarding,role.partner_manager, role.partner_support]
   const admin = u.is_roles(_admin_role,context)
   const blockAccess = u.is_roles(_blockAccess_role,context)

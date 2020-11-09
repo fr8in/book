@@ -16,7 +16,7 @@ mutation update_branch_weekly_target($trip_target: Int!, $branch_id: Int!, $week
 const WeeklyTarget = (props) => {
   const { id, label, week, year } = props
   const { role } = u
-  const weekly_target = [role.admin]
+  const weekly_target = [role.admin,role.hr]
   const [updateTruckNo] = useMutation(
     UPDATE_BRABCH_WEEKLY_TARGET_MUTATION,
     {
