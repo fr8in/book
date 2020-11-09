@@ -2,11 +2,11 @@ import { Table,Modal,Tooltip } from 'antd'
 import get from 'lodash/get'
 import Link from 'next/link'
 import Phone from '../common/phone'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useSubscription } from '@apollo/client'
 import _ from 'lodash'
 
 const PARTNER_TRIPS = gql`
-query partner_trips($id:Int){
+subscription partner_trips($id:Int){
   trip(where: {id: {_eq: $id}}) {
     id
     partner_trips{
@@ -14,6 +14,7 @@ query partner_trips($id:Int){
     partner{
       id
       name
+      cardcode
       partner_users{
         id
         mobile
@@ -26,14 +27,11 @@ query partner_trips($id:Int){
 
 const SuggestedPartners = (props) => {
  const { visible, onHide,trip_id } = props
- console.log('trip_id',trip_id)
 
- const { loading, error, data } = useQuery(
+ const { loading, error, data } = useSubscription(
   PARTNER_TRIPS,
   {
-    variables: { id: trip_id },
-    fetchPolicy: 'cache-and-network',
-    notifyOnNetworkStatusChange: true
+    variables: { id: trip_id }
   }
 )
 console.log('PartnerTrips error',error)
