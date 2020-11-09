@@ -91,8 +91,8 @@ const OnholdTrips = (props) => {
     {
       title: 'Source',
       dataIndex: 'name',
-      width: '8%',
-      render: (text, record) => <Truncate data={get(record, 'source.name', null)} length={6} />
+      width: '9%',
+      render: (text, record) => <Truncate data={get(record, 'source.name', null)} length={8} />
     },
     {
       title: 'Destination',
@@ -104,14 +104,14 @@ const OnholdTrips = (props) => {
       title: 'Truck',
       dataIndex: 'truck_no',
       sorter: (a, b) => (a.truck_no > b.truck_no ? 1 : -1),
-      width: '9%',
-      render: (text, record) => <Truncate data={get(record, 'truck.truck_no', null)} length={4} />
+      width: '10%',
+      render: (text, record) => <Truncate data={get(record, 'truck.truck_no', null)} />
     },
     {
       title: 'Type',
       dataIndex: 'type',
-      width: '15%',
-      render: (text, record) => <Truncate data={get(record, 'truck.truck_type.name', null)} length={15} />
+      width: '13%',
+      render: (text, record) => <Truncate data={get(record, 'truck.truck_type.name', null)} length={10} />
     },
     {
       title: 'Customer',
@@ -137,7 +137,7 @@ const OnholdTrips = (props) => {
     {
       title: 'Aging',
       dataIndex: 'paid_tat',
-      sorter: (a, b) => (a.aging > b.aging ? 1 : -1),
+      sorter: (a, b) => (parseInt(a.paid_tat, 10) > parseInt(b.paid_tat) ? 1 : -1),
       width: '7%'
     },
     {
@@ -170,7 +170,7 @@ const OnholdTrips = (props) => {
         dataSource={trips}
         rowKey={(record) => record.id}
         size='small'
-        scroll={{ x: 780, y: 400 }}
+        scroll={{ x: 1000, y: 400 }}
         pagination={false}
         loading={loading}
       />

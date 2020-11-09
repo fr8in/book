@@ -153,6 +153,7 @@ const PartnerOnboardingContainer = () => {
       city={city}
       setCity={setCity}
       disableButton={disableButton}
+      access={access}
     />
   )
 }

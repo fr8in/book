@@ -18,12 +18,18 @@ subscription branches($week: Int!, $year: Int!) {
       trip_target
     }
     branch_employees {
+      customer_branch_employees_aggregate{
+        aggregate{
+          count
+        }
+      }
       id
       is_manager
       employee {
         id
         name
         mobileno
+        email
       }
     }
     cities {
@@ -37,7 +43,7 @@ const Branches = (props) => {
   const { edit_access, setTotalBranch } = props
 
   const { role } = u
-  const traffic_member_delete = [role.admin]
+  const traffic_member_delete = [role.admin,role.hr]
   const initial = {
     trafficVisible: false,
     title: null,

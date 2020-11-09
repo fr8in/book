@@ -57,6 +57,20 @@ const CustomerTrips = (props) => {
     setFilter({ ...filter, destinationname:e.target.value})
   }
 
+  const tat = {
+    'Assigned': (record) => parseInt(record.confirmed_tat,10),
+    'Confirmed': (record) => parseInt(record.confirmed_tat,10),
+    'Reported at source': (record) => parseInt(record.loading_tat,10),
+    'Intransit': (record) => parseInt(record.intransit_tat,10),
+    'Intransit halting': (record) => parseInt(record.intransit_tat,10),
+    'Reported at destination': (record) => parseInt(record.unloading_tat,10),
+    'Delivered':(record) => parseInt(record.delivered_tat,10),
+    'Invoiced':(record) => parseInt(record.invoiced_tat,10),
+    'Paid':(record) => parseInt(record.paid_tat,10),
+    'Received':(record) => parseInt(record.received_tat,10),
+    'Closed':(record) => parseInt(record.closed_tat,10)
+  }
+
   const finalPaymentsPending = [
     {
       title: 'ID',
@@ -73,7 +87,7 @@ const CustomerTrips = (props) => {
     },
     {
       title: 'O.Date',
-      dataIndex: 'order_date',
+      dataIndex: 'created_at',
       width: '8%',
       render: (text, record) => text ? moment(text).format('DD-MMM-YY') : '-'
     },
@@ -163,9 +177,9 @@ const CustomerTrips = (props) => {
       render: (text, record) => <Truncate data={get(record, 'trip_status.name', '-')} length={15} />
     } : {},
     delivered ? {
-      title: 'Pod Dispatched',
+      title: 'Pod Verified at',
       width: '11%',
-      dataIndex: 'pod_dispatched_at',
+      dataIndex: 'pod_verified_at',
       render:  (text, record) => text ? moment(text).format('DD-MMM-YY') : '-' 
     } : {},
     {
@@ -192,8 +206,15 @@ const CustomerTrips = (props) => {
     },
     {
       title: 'Aging',
-      dataIndex: 'received_tat',
-      sorter: (a, b) => (a.received_tat > b.received_tat ? 1 : -1),
+      render: (text, record) => {
+        const status = get(record, 'trip_status.name', null)
+        console.log('status',status)
+        return tat[status](record)
+      },
+      sorter: (a, b) => {
+        const status = get(a, 'trip_status.name', null)
+        return tat[status](a) > tat[status](b) ? 1 : -1
+      },
       width: '7%'
     }
   ]

@@ -33,6 +33,8 @@ const PartnerDocument = (props) => {
   const agreement_files = files.filter(file => file.type === u.fileType.agreement)
   const cs_files = files.filter(file => file.type === u.fileType.cibil)
 
+  const active = partnerInfo.partner_status.name === 'Active' 
+  
   const [reverification_approval] = useMutation(
     REVERIFICATION_APPROVAL_MUTATION,
     {
@@ -257,7 +259,7 @@ const PartnerDocument = (props) => {
           </List.Item>
         </List>
         <Row justify='end' className='mt10'>
-          <Button key='submit' type='primary'htmlType='submit' disabled={!access && !_pan || !_check_leaf || !_civil}  >
+          <Button key='submit' type='primary'htmlType='submit' disabled={!access || !_pan || !_check_leaf || !_civil || active}  >
             Approve KYC
                     </Button> 
         </Row>

@@ -47,6 +47,9 @@ subscription trips_status($offset: Int!, $limit: Int!, $where: trip_bool_exp, $d
     pod_verified_tat
     pod_dispatched_tat
     invoiced_tat
+    paid_tat
+    received_tat
+    closed_tat
     last_comment {
       description
       created_at

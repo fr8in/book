@@ -76,10 +76,11 @@ const CustomerPaymentsContainer = (props) => {
   }
 
   const balance_pending = get(_data, 'trip_sap_customer_balance_pending', [])
-  const amount = get(trip_data, 'accounting_trip_receipt_summary[0].amount', 0)
+  const received = get(trip_data, 'accounting_trip_receipt_summary[0].amount', 0)
+  const trip_price = customer_price - mamul
 
   const advance_pending_data = [
-    { docentry: 1, amount: customer_price - mamul, received: amount, balance: (customer_price - amount) }
+    { docentry: 1, amount: trip_price, received: received, balance: (trip_price - received) }
   ]
   const onFinalShow = (record) => {
     if (record && record.doctype === 'S') {

@@ -452,7 +452,7 @@ const FinalBooking = (props) => {
                   </Form.Item>
                 </Col>
               </Row>
-              <Form.Item label='Comments' name='comment' rules={[{ required: calc.collapse_key }]}>
+              <Form.Item label='Comments' name='comment'>
                 <Input.TextArea placeholder='comment' />
               </Form.Item>
             </Panel>

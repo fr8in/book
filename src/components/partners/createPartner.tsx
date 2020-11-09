@@ -32,7 +32,7 @@ query ifsc_validation($ifsc: String!){
 }`
 
 const CreatePartner = (props) => {
-  const { onSubmit, form, setCity, disableButton, partner_info, data_loading } = props
+  const { onSubmit, form, setCity, disableButton, partner_info, data_loading,access,setDisableAddTruck,disableAddTruck } = props
 
   const { loading, error, data } = useQuery(
     PARTNERS_SUBSCRIPTION,
@@ -125,7 +125,6 @@ const CreatePartner = (props) => {
               <Form.Item
                 label='Contact Person'
                 name='contact_name'
-                rules={[{ required: true, message: 'Contact name is required field!' }]}
                 initialValue={get(partner_info, 'partner_users[0].name', null)}
               >
                 <Input placeholder='Contact Person' disabled={!!partner_info} />
@@ -316,13 +315,19 @@ const CreatePartner = (props) => {
         </Card>
         <Row justify='end'>
           <Col xs={24} className='text-right mb10'>
-            <Space>
-              {partner_info ? null : (
+            
+              {partner_info ? 
+              <Space>
+              <Button onClick={() => setDisableAddTruck(!disableAddTruck)} >Skip</Button>
+              <Button type='primary' loading={disableButton} disabled={!access || !disableAddTruck} htmlType='submit'>Submit</Button>
+              </Space> : (
+                <Space>
                 <Link href='/partners'>
                   <Button>Back</Button>
-                </Link>)}
-              <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
-            </Space>
+                </Link>
+                <Button type='primary' loading={disableButton} disabled={!access} htmlType='submit'>Submit</Button>
+                </Space>)}
+              
           </Col>
         </Row>
       </Form>)
