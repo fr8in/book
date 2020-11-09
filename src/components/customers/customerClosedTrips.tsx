@@ -18,7 +18,7 @@ subscription customer_closed_trip_list($cardcode: String,$where: trip_bool_exp,$
     }
     trips(limit: $limit, offset: $offset, where:$where) {
       id
-      order_date
+      created_at
       truck {
         truck_no
         truck_type {
@@ -126,7 +126,7 @@ const CustomerClosedTrips = (props) => {
     },
     {
       title: 'O.Date',
-      dataIndex: 'order_date',
+      dataIndex: 'created_at',
       width: '8%',
       render: (text, record) => text ? moment(text).format('DD-MMM-YY') : '-'
     },

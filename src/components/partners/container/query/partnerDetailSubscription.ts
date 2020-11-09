@@ -46,6 +46,7 @@ subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [Stri
     partner_advance_percentage_id
     gst
     ifsc_code
+    account_holder
     address
     pan
     pin_code

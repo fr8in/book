@@ -18,12 +18,18 @@ subscription branches($week: Int!, $year: Int!) {
       trip_target
     }
     branch_employees {
+      customer_branch_employees_aggregate{
+        aggregate{
+          count
+        }
+      }
       id
       is_manager
       employee {
         id
         name
         mobileno
+        email
       }
     }
     cities {
