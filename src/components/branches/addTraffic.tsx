@@ -307,6 +307,7 @@ const date =moment(new Date().toISOString()).format('DD-MMM-YY')
             record={record}
             customerBranchEmployee_ids={customerBranchEmployee_ids}
             setCustomerBranchEmployee_ids={setCustomerBranchEmployee_ids}
+            branch_id={branch_data.id}
           />
         }
       />

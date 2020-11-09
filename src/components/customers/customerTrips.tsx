@@ -58,17 +58,17 @@ const CustomerTrips = (props) => {
   }
 
   const tat = {
-    'Assigned': (record) => record.confirmed_tat,
-    'Confirmed': (record) => record.confirmed_tat,
-    'Reported at source': (record) => record.loading_tat,
-    'Intransit': (record) => record.intransit_tat,
-    'Intransit halting': (record) => record.intransit_tat,
-    'Reported at destination': (record) => record.unloading_tat,
-    'Delivered':(record) => record.delivered_tat,
-    'Invoiced':(record) => record.invoiced_tat,
-    'Paid':(record) => record.paid_tat,
-    'Received':(record) => record.received_tat,
-    'Closed':(record) => record.closed_tat
+    'Assigned': (record) => parseInt(record.confirmed_tat,10),
+    'Confirmed': (record) => parseInt(record.confirmed_tat,10),
+    'Reported at source': (record) => parseInt(record.loading_tat,10),
+    'Intransit': (record) => parseInt(record.intransit_tat,10),
+    'Intransit halting': (record) => parseInt(record.intransit_tat,10),
+    'Reported at destination': (record) => parseInt(record.unloading_tat,10),
+    'Delivered':(record) => parseInt(record.delivered_tat,10),
+    'Invoiced':(record) => parseInt(record.invoiced_tat,10),
+    'Paid':(record) => parseInt(record.paid_tat,10),
+    'Received':(record) => parseInt(record.received_tat,10),
+    'Closed':(record) => parseInt(record.closed_tat,10)
   }
 
   const finalPaymentsPending = [

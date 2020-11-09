@@ -2,9 +2,10 @@ import { Modal} from 'antd'
 import LabelWithData from '../../common/labelWithData'
 import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
+import Loading from '../../common/loading'
 
 const TRANSACTION_STATUS = gql`
-  query transaction_status($doc_num:Float) {
+  query transaction_status($doc_num:Float!) {
     transaction_status(doc_num:$doc_num) {
       message
       response
@@ -39,6 +40,8 @@ const PayablesStatus = (props) => {
         onCancel={onHide}
         footer={[]}
       >
+       { loading ? <Loading/> :
+        <div>
          <LabelWithData
         label='Status'
         data={
@@ -62,7 +65,8 @@ const PayablesStatus = (props) => {
         smSpan={8}
         xsSpan={12}
       />
-      </Modal>
+      </div>
+ } </Modal>
     </>
   )
 }
