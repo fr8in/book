@@ -7,6 +7,7 @@ import { gql, useMutation } from '@apollo/client'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import get from 'lodash/get'
 import ConfirmPo from '../trips/confirmPo'
+import Phone from '../common/phone'
 
 const DELETE_LEAD = gql`
 mutation delete_lead($deleted_at: timestamp, $id: Int){
@@ -74,7 +75,7 @@ const ExcessLoadLead = (props) => {
   {
     title: 'Partner No',
     width: '20%',
-    render: (text, record) => get(record, 'partner.partner_users[0].mobile', '-')
+    render: (text, record) =><Phone number={get(record, 'partner.partner_users[0].mobile', '-')} /> 
   },
   {
     title: 'Date',
