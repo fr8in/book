@@ -22,6 +22,7 @@ export default {
     onboarding: 'Onboarding',
     billing: 'Billing',
     bm:'BM',
+    hr:'HR',
     user: 'user'
   },
   topic: {

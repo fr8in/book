@@ -13,7 +13,7 @@ const EmployeeNumber = (props) => {
   const { id, label } = props
 
   const { role } = u
-  const employee_number = [role.admin]
+  const employee_number = [role.admin,role.hr]
 
   const [updateTruckNo] = useMutation(
     UPDATE_EMPLOYEE_NO_MUTATION,

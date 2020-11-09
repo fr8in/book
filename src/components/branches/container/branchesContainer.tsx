@@ -14,8 +14,8 @@ const TabPane = Tabs.TabPane
 
 const BranchesContainer = () => {
   const { role } = u
-  const add_branch_access = [role.admin]
-  const traffic_member_edit = [role.admin]
+  const add_branch_access = [role.admin,role.hr]
+  const traffic_member_edit = [role.admin,role.hr]
   const initial = { showModal: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   const [totalBranch, setTotalBranch] = useState(0)
