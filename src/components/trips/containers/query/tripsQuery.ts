@@ -14,7 +14,7 @@ query trips_list_status_filter($trip_statusName:[String!], $where: trip_bool_exp
 }  
 `
 export const TRIPS = gql`
-query trips_status($offset: Int!, $limit: Int!, $where: trip_bool_exp, $date_sort: order_by) {
+subscription trips_status($offset: Int!, $limit: Int!, $where: trip_bool_exp, $date_sort: order_by) {
   trip(offset: $offset, limit: $limit, where: $where, order_by: {created_at: $date_sort}) {
     id
     order_date
