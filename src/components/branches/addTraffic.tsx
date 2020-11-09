@@ -303,6 +303,7 @@ const AddTraffic = (props) => {
             record={record}
             customerBranchEmployee_ids={customerBranchEmployee_ids}
             setCustomerBranchEmployee_ids={setCustomerBranchEmployee_ids}
+            branch_id={branch_data.id}
           />
         }
       />
