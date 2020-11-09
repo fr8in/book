@@ -1,6 +1,6 @@
 import { Table, Tooltip, Button, Modal, message } from 'antd'
 import Link from 'next/link'
-import { RocketFilled, DeleteOutlined } from '@ant-design/icons'
+import { RocketFilled, DeleteOutlined ,SearchOutlined} from '@ant-design/icons'
 import ExcessLoadLead from './excessLoadLead'
 import { gql, useSubscription, useMutation } from '@apollo/client'
 import get from 'lodash/get'
@@ -9,6 +9,7 @@ import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import ExcessToPo from '../trips/excessToPo'
 import userContext from '../../lib/userContaxt'
 import { useContext } from 'react'
+import PartnerTrips from './partnerTrips'
 
 const EXCESS_LOAD = gql`
 subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$trip_status: String, $truck_type:[Int!], $managers: [Int!]) {
@@ -76,7 +77,7 @@ mutation cancel_Excess_load($trip_status_id: Int!, $id: Int!,$updated_by: String
 const ExcessLoad = (props) => {
   const { trip_status, filters } = props
 
-  const initial = { cancel_visible: false, po_visible: false, record: null }
+  const initial = { cancel_visible: false, po_visible: false, record: null,partner_trips_visible:false }
   const { object, handleShow, handleHide } = useShowHideWithRecord(initial)
   const context = useContext(userContext)
 
@@ -190,6 +191,9 @@ const ExcessLoad = (props) => {
           <Tooltip title='Quick Po'>
             <Button type='link' icon={<RocketFilled />} onClick={() => handleShow('po_visible', null, 'record', record)} />
           </Tooltip>
+          <Tooltip title='Favourites'>
+            <Button type='link' icon={<SearchOutlined />} onClick={() => handleShow('partner_trips_visible', null, 'record', record.id)} />
+          </Tooltip>
         </span>
       ),
       width: '12%'
@@ -229,6 +233,12 @@ const ExcessLoad = (props) => {
         <ExcessToPo
           visible={object.po_visible}
           record={object.record}
+          onHide={handleHide}
+        />}
+        {object.partner_trips_visible &&
+        <PartnerTrips
+          visible={object.partner_trips_visible}
+          trip_id={object.record}
           onHide={handleHide}
         />}
     </>
