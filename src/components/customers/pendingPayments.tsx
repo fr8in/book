@@ -1,65 +1,78 @@
 
-import { Row, Col, Card, Tag, Table } from 'antd'
-import { totalPending, paymentBlock } from '../../../mock/customer/pendingPayments'
+import { Row, Col,Tag} from 'antd'
+import LabelWithData from '../common/labelWithData'
+import get from 'lodash/get'
 
-const PendingPayments = () => {
-  const PaymentBlockIndicator = (
-    <div className='text-right'>
-      <Tag color={paymentBlock.paymentBlock ? '#dc3545' : '#28a745'}>{paymentBlock.paymentBlock ? 'Yes' : 'No'}</Tag>
-    </div>
-  )
+const PendingPayments = (props) => {
+  const {customer_info} = props
+     const customer_exception = get(customer_info,'customer_exception',[])
 
-  const pendingPaymentColumn = [
-    {
-      title: 'Total',
-      dataIndex: 'pendingType',
-      width: '60%'
-    },
-    {
-      dataIndex: 'value',
-      width: '40%',
-      className: 'text-right'
-    }
-  ]
-  const PaymentBlockColumn = [
-    {
-      title: 'Payment Block',
-      dataIndex: 'pendingType',
-      width: '60%'
-    },
-    {
-      title: PaymentBlockIndicator,
-      dataIndex: 'value',
-      width: '40%',
-      className: 'text-right'
-    }
-  ]
+const payment_block = get(customer_exception,'is_exception',null)
 
   return (
-    <Row gutter={10}>
-      <Col xs={24} sm={12}>
-        <Card size='small' className='card-body-0'>
-          <Table
-            columns={pendingPaymentColumn}
-            dataSource={totalPending}
-            rowKey={(record) => record.id}
-            size='small'
-            pagination={false}
-          />
-        </Card>
+    <>
+    <Row>
+    <Col xs={12} sm={11}>
+    <Row>
+     <Col xs={12} sm={12}>
+     <label>Exception</label>
+    </Col>
+    <Col style={{ textAlign: 'right' }}>
+      <Tag color={payment_block ? '#dc3545' : '#28a745'}>{payment_block ? 'Yes' : 'No'}</Tag>
       </Col>
-      <Col xs={24} sm={12}>
-        <Card size='small' className='card-body-0'>
-          <Table
-            columns={PaymentBlockColumn}
-            dataSource={paymentBlock.pending}
-            rowKey={(record) => record.id}
-            size='small'
-            pagination={false}
-          />
-        </Card>
-      </Col>
-    </Row>
+      </Row>
+        <LabelWithData
+        label='Advance Pending'
+        data={
+          get(customer_exception,'advance_pending_amount',null)
+        }
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={12}
+      /> 
+      <LabelWithData
+        label='Invoice Pending'
+        data={get(customer_exception,'invoice_pending',null)}
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={12}
+      />
+      <LabelWithData
+        label= 'Invoiced'
+        data={get(customer_exception,'total_outstanding',null)}
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={12}
+      />
+    </Col>
+
+     <Col xs={12} sm={13}>
+     <LabelWithData
+     label='Advance Pending (>5 D)'
+     data={
+      get(customer_exception,'advance_pending_for_more_than_5_days',null)
+     }
+     mdSpan={4}
+     smSpan={8}
+     xsSpan={12}
+   />
+   <LabelWithData
+     label='Invoiced (>30 D)'
+     data={get(customer_exception,'payment_pending_for_more_than_30_days',null)}
+     mdSpan={4}
+     smSpan={8}
+     xsSpan={12}
+   />
+   <LabelWithData
+     label='Receipts (<30 D)'
+     data={get(customer_exception,'final_payment_received_in_the_last_30_days',null)}
+     mdSpan={4}
+     smSpan={8}
+     xsSpan={12}
+   />
+ </Col>
+ </Row>
+</>
 
   )
 }

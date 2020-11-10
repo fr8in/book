@@ -38,6 +38,15 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
     gst
     managed
     pan
+    customer_exception{
+      invoice_pending
+     advance_pending_amount
+     total_outstanding
+     is_exception
+     final_payment_received_in_the_last_30_days
+     advance_pending_for_more_than_5_days
+     payment_pending_for_more_than_30_days
+     }
     customer_files {
       id
       type
