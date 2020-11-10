@@ -67,6 +67,7 @@ let newData = {}
     dataIndex: 'count',
     key: 'count',
     sorter: (a, b) => (a.count > b.count ? 1 : -1),
+    defaultSortOrder:'descend',
     width: '10%'
   }
   ]
