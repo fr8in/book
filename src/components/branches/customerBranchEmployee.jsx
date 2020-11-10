@@ -4,14 +4,14 @@ import get from 'lodash/get'
 import { useState } from 'react'
 
 const CUSTOMER_BRANCH_EMPLOYEE_SUBSCRIPTION = gql`
-subscription customer_branch_employee($id:Int){
-  customer_branch_employee(where:{branch_employee_id:{_eq:$id}}){
+subscription customer_branch_employee($branch_employee_id:Int,$branch_id:Int){
+  customer_branch_employee(where:{branch_employee_id:{_eq:$branch_employee_id}}){
     id
     customer{
       id
       name
       mobile
-      trips_aggregate{
+      trips_aggregate(where:{branch_id:{_eq:$branch_id}}){
         aggregate{
           count
         }
@@ -21,7 +21,7 @@ subscription customer_branch_employee($id:Int){
 }
 `
 const CustomerBranchEmployee = (props) => {
-  const { record, customerBranchEmployee_ids, setCustomerBranchEmployee_ids } = props
+  const { record, customerBranchEmployee_ids, setCustomerBranchEmployee_ids,branch_id } = props
 
   const [selectedCustomer, setSelectedCustomer] = useState([])
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
@@ -41,7 +41,10 @@ const CustomerBranchEmployee = (props) => {
   const { loading, data, error } = useSubscription(
     CUSTOMER_BRANCH_EMPLOYEE_SUBSCRIPTION,
     {
-      variables: { id: record.id }
+      variables: { 
+        branch_employee_id: record.id ,
+        branch_id:branch_id
+       }
     }
   )
   console.log('CustomerBranchEmployee Error', error)

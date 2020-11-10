@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react'
-import { Table, Button, message, Tooltip,Row, Space } from 'antd'
+import { Table, Button, message, Tooltip, Space } from 'antd'
 import { gql, useMutation, useQuery } from '@apollo/client'
+import { RocketFilled ,EyeOutlined} from '@ant-design/icons'
 import userContext from '../../../lib/userContaxt'
 import Truncate from '../../common/truncate'
 import get from 'lodash/get'
@@ -184,16 +185,16 @@ const OutGoing = (props) => {
         return (
           <>
           <Space>
+          <Tooltip title='Execute'>
           <Button
-            size='small' type='primary' onClick={() => onSubmit(record, record.docNum)}
+            size='small' type='link' icon={<RocketFilled />} onClick={() => onSubmit(record, record.docNum)}
             disabled={!(record.account_no && execute_access)}
             loading={disableBtn.loading && (disableBtn.selected_id === record.docNum)}
-          >
-            Execute
-          </Button>
-          <Button size='small' type='primary' className='btn-success' onClick={() =>handleShow('payable_status', null, 'doc_num', record.docNum)}>
-          Status
-        </Button>
+          />
+          </Tooltip>
+           <Tooltip title='Status'>
+          <Button size='small' shape='circle'  icon={<EyeOutlined />} type='primary' className='btn-success' onClick={() =>handleShow('payable_status', null, 'doc_num', record.docNum)}/>
+          </Tooltip>
         </Space>
         </>
         )
