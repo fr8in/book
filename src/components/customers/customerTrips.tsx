@@ -67,7 +67,7 @@ const CustomerTrips = (props) => {
     'Delivered':(record) => parseInt(record.delivered_tat,10),
     'Invoiced':(record) => parseInt(record.invoiced_tat,10),
     'Paid':(record) => parseInt(record.paid_tat,10),
-    'Received':(record) => parseInt(record.received_tat,10),
+    'Recieved':(record) => parseInt(record.received_tat,10),
     'Closed':(record) => parseInt(record.closed_tat,10)
   }
 

@@ -99,12 +99,31 @@ const TripsTracking = (props) => {
     return { value: data.name, label: data.name }
   })
 
-  const tat = {
-    'Delivered':(record) => parseInt(record.delivered_tat,10),
-    'Invoiced':(record) => parseInt(record.received_tat,10),
-    'Paid':(record) => parseInt(record.paid_tat,10),
-    'Received':(record) => parseInt(record.received_tat,10),
-    'Closed':(record) => parseInt(record.closed_tat,10)
+  const tat=(record) => {
+
+    const status = get(record, 'trip_status.name', null)
+    const pod_verified = get(record, 'pod_verified_at', null)
+    const pod_dispatched = get(record, 'pod_dispatched_at', null)
+    let tat = null
+    switch(status)
+    {
+    case 'Delivered':
+      tat = pod_verified?record.pod_verified_tat:record.delivered_tat
+      break
+    case 'Invoiced':
+      tat = pod_dispatched?record.pod_dispatched_tat:record.invoiced_tat
+      break
+    case 'Paid':
+    tat = record.paid_tat
+    break
+    case 'Recieved':
+    tat = record.received_tat
+    break
+    case 'Closed':
+    tat = record.closed_tat
+    break
+    }
+    return parseInt(tat,10)
   }
   const columns = [
     {
@@ -253,21 +272,11 @@ const TripsTracking = (props) => {
     },
     {
       title: 'TAT',
-      render: (text, record) => {
-        const status = get(record, 'trip_status.name', null)
-        const pod_verified = get(record, 'pod_verified_at', null)
-        const pod_dispatched = get(record, 'pod_dispatched_at', null)
-        return (
-          status === 'Delivered' ? record.delivered_tat
-            : (status === 'Delivered' && pod_verified) ? record.pod_verified_tat
-              : status === 'Invoiced' ? record.invoiced_tat
-                : (status === 'Invoiced' && pod_dispatched) ? record.pod_dispatched_tat
-                  : null
-        )
-      },
+      render: (text, record) => tat(record),
       sorter: (a, b) => {
         const status = get(a, 'trip_status.name', null)
-        return tat[status](a) > tat[status](b) ? 1 : -1
+        console.log(trip_status.name);
+        return status ? (tat(a) > tat(b) ? 1 : -1) : null
       },
       width: '8%'
     },
