@@ -3,18 +3,18 @@ import { useState } from 'react'
 import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 
-const EMP_LIST = gql`
+const EMPLOYEE_LIST = gql`
 query Employee {
-  employee(where: {onboardedbyPartners: {id: {_is_null: false}, partner_status_id: {_in: [2, 3, 8]}}}) {
+  employee(where: {employee_roles: {role: {name: {_eq: "Sourcing"}}}}) {
     id
     email
-   onboardedbyPartners_aggregate {
+    onboardedbyPartners_aggregate(where: {partner_status: {name: {_eq: "Lead"}}}) {
       aggregate {
         count
       }
     }
   }
-}				       
+}           
 `
 const EmployeeListFilter = (props) => {
   const { visible, onHide, onFilterChange, onboarded_by } = props
@@ -24,7 +24,7 @@ const EmployeeListFilter = (props) => {
   const [checkAll, setCheckAll] = useState(initial)
 
   const { loading, error, data } = useQuery(
-    EMP_LIST,
+    EMPLOYEE_LIST,
     {
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
@@ -38,7 +38,7 @@ const EmployeeListFilter = (props) => {
   }
  
   const employeeList = employee.map((data) => {
-    return { value:data.onboardedbyPartners_aggregate.aggregate.count &&data.email , label: <span> {data.email} <Tag color='#40a9ff'>{data.onboardedbyPartners_aggregate.aggregate.count}</Tag></span>}
+    return { value: data.email , label: <span> {data.email} <Tag color='#40a9ff'>{data.onboardedbyPartners_aggregate.aggregate.count}</Tag></span>}
   })
 
   const onChange = (checkedValues) => {
