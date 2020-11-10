@@ -116,7 +116,7 @@ const TripsTracking = (props) => {
     case 'Paid':
     tat = record.paid_tat
     break
-    case 'Received':
+    case 'Recieved':
     tat = record.received_tat
     break
     case 'Closed':

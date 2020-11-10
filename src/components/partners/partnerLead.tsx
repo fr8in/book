@@ -161,7 +161,7 @@ const PartnerLead = (props) => {
   }
 
   const where = {
-    partner_users: filter.mobile ? { mobile: { _like: `%${filter.mobile}%` } } : null,
+    ...!isEmpty(filter.mobile) && { mobile: { _like: `%${filter.mobile}%` } },
     partner_status: { name: { _in: !isEmpty(filter.partner_status_name) ? filter.partner_status_name : null } },
     ...!isEmpty(onboarded_by) ? { onboarded_by: { email: { _ilike: filter.owner_name ? `%${filter.owner_name}%` : null, _in: onboarded_by || null } } } : filter.owner_name ? { onboarded_by: { email: { _ilike: filter.owner_name ? `%${filter.owner_name}%` : null } } } : null,
     ...filter.city_name && { city: { name: { _ilike: `%${filter.city_name}%` } } },
