@@ -45,15 +45,13 @@ let newData = {}
     title: 'Partner Name',
     dataIndex: 'partner',
     key: 'partner',
-    width: '15%',
+    width: '25%',
     render: (text, record) => {
       const cardcode = get(record, 'partner.cardcode', null)
       const name = get(record, 'partner.name', null)
       return (
         <Link href='/partners/[id]' as={`/partners/${cardcode} `}>
-          {name && name.length > 12
-            ? <Tooltip title={name}><a>{name.slice(0, 12) + '...'}</a></Tooltip>
-            : <a>{name}</a>}
+           <a>{name}</a>
         </Link>)
     }
   },
@@ -68,14 +66,14 @@ let newData = {}
     title: 'Loads',
     dataIndex: 'count',
     key: 'count',
-    width: '15%'
+    sorter: (a, b) => (a.count > b.count ? 1 : -1),
+    width: '10%'
   }
   ]
 
   return (
     <>
     <Modal
-      title='Suggested Partners'
       visible={visible}
       onCancel={onHide}
       width={800}
@@ -87,7 +85,7 @@ let newData = {}
         dataSource={partner_trips}
         rowKey={record => get(record, 'id', null)}
         size='small'
-        scroll={{ x: 700,y:420 }}
+        scroll={{ x: 650 }}
         pagination={false}
         className='withAction'
       />
