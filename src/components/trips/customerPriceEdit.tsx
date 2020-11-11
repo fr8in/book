@@ -59,7 +59,8 @@ const CustomerPriceEdit = (props) => {
   const customer_advance_percentage = trip_price.customer_advance_percentage
   const partner_advance_percentage = trip_price.partner_advance_percentage
   const [disableButton, setDisableButton] = useState(false)
-  const part_advance = ((trip_price.partner_price) * partner_advance_percentage / 100) - (trip_price.cash + trip_price.to_pay)
+  const part_advance_calc = ((trip_price.partner_price) * partner_advance_percentage / 100) - (trip_price.cash + trip_price.to_pay)
+  const part_advance = part_advance_calc < 0 ? 0 : part_advance_calc
 
   const { loading, data, error } = useSubscription(TRIP_MAX_PRICE)
 
