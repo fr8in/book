@@ -78,22 +78,13 @@ const PartnerDetail = (props) => {
           dataSpan={14}
         />
         <LabelWithData
-          label='Bank'
-          data={
-            <span>
-              {get(partnerDetail, 'bank.name', '-')}{' '}
-              <EditAccess
+          label='Account Number '
+          data={<span>{partnerDetail.display_account_number}
+           <EditAccess
                 edit_access={editAccess}
                 onEdit={() => onShow('bankVisible')}
               />
-            </span>
-          }
-          labelSpan={10}
-          dataSpan={14}
-        />
-        <LabelWithData
-          label='Account Number '
-          data={<span>{partnerDetail.display_account_number}</span>}
+            </span>}
           labelSpan={10}
           dataSpan={14}
         />
