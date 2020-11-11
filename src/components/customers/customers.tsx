@@ -62,8 +62,8 @@ const CustomerKyc = (props) => {
     edit_access
   } = props
 
-  const context = useContext(userContext)
-
+ const context = useContext(userContext)
+  
   const initial = {
     visible: false,
     createBranchVisible: false,
@@ -136,7 +136,9 @@ const CustomerKyc = (props) => {
       message.error("Mamul can't be negative")
     } else if (pan_files && pan_files.length === 0) {
       message.error('PAN document required!')
-    } else {
+    } else if (record.customer_advance_percentage === null){
+      message.error('Advance Percentage Required!')
+    }else {
       handleShow('createBranchVisible', null, 'createBranchData', record)
     }
   }
