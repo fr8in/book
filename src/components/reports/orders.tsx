@@ -48,12 +48,13 @@ const Orders = (props) => {
   }
   console.log('AnalyticsContainer Error', error)
   const analytics = get(_data, 'analytics_monthly_booking_aggregate.aggregate.sum', null)
-
   const booked = get(analytics, 'amount', 0)
+  const revenue = booked* 0.04 
 
   const stats_data = [
     { count: get(analytics, 'count', 0), name: 'Orders' },
-    { count: booked ? (booked / 100000).toFixed(1) : 0, name: 'GMV (Bo)' }
+    { count: booked ? (booked / 100000).toFixed(1) : 0, name: 'GMV (Bo)' },
+    { count: revenue.toFixed(1), name: 'Revenue' }
   ]
   return (
     <>
