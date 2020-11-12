@@ -32,22 +32,23 @@ mutation partner_bank_transfer_track(
 
 const WalletToBank = (props) => {
   const { visible, onHide, partner_id, balance } = props
-  const {loading,data:{token}} = useQuery(GET_TOKEN,{variables:{partner_id} ,fetchPolicy:'network-only'})
+  const {loading,data} = useQuery(GET_TOKEN,{variables:{partner_id} ,fetchPolicy:'network-only'})
   const [partner_bank_transfer_track,{loading:mutationLoading}] = useMutation(
     WALLET_TO_BANK,
     {
       
       onError (error) {
+        onHide()
         message.error(error.toString())
-        setDisableButton(false)
+       
       },
       onCompleted (data) {
-        setDisableButton(false)
+        onHide()
         const status = get(data, 'partner_bank_transfer_track.status', null)
         const description = get(data, 'partner_bank_transfer_track.description', null)
         if (status === 'OK') {
           message.success(description || 'Processed!')
-          onHide()
+         
         } else (message.error(description))
       }
     }
@@ -65,7 +66,7 @@ const WalletToBank = (props) => {
     setDisableButton(true)
     partner_bank_transfer_track({
       variables: {
-        token,
+        token:data.token,
         partner_id,
         amount: parseFloat(form.amount),
         created_by: context.email
