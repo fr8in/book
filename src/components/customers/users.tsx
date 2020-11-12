@@ -46,7 +46,7 @@ const Users = (props) => {
     { variables: { cardcode: cardcode } }
   )
 
-  console.log('customer_users Error', error)
+
   let _data = {}
   if (!loading) {
     _data = data

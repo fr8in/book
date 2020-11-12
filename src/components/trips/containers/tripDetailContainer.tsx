@@ -47,7 +47,6 @@ const TripDetailContainer = (props) => {
       variables: { id: trip_id }
     }
   )
-  console.log('TripDetailContainer Error', error)
   let _data = {}
   if (!loading) {
     _data = data
@@ -95,9 +94,13 @@ const TripDetailContainer = (props) => {
           }
         >
           {(trip_status_id === 1 || trip_status_id === 7) ? (
-            <Row>
-              <Col sm={24}>
+            <Row gutter={10}>
+              <Col xs={24} sm={24} md={14}>
                 <TripInfo trip_info={trip_info} trip_id={trip_info.id} />
+              </Col>
+              <Space/>
+              <Col xs={24} sm={24} md={10}>
+              <TripComment trip_id={trip_info.id} trip_status={get(trip_info, 'trip_status.name', null)} />
               </Col>
             </Row>)
             : (

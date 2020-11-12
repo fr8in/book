@@ -102,7 +102,7 @@ const BranchCreation = (props) => {
     }
   )
 
-  console.log('BranchCreation error', error)
+
   let _data = {}
   if (!loading) {
     _data = data

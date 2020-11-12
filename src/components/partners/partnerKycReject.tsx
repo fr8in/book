@@ -55,7 +55,7 @@ const KycReject = (props) => {
         updated_by: context.email,
         description: userComment,
         topic:topic.partner_kyc_reject,
-        partner_status_id: 3,
+        partner_status_id: 2,
         id: partner_id
       }
     })

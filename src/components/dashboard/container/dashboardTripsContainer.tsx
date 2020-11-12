@@ -14,7 +14,7 @@ const TripsContainer = (props) => {
     managers: (filters.managers && filters.managers.length > 0) ? filters.managers : null
   }
   const { loading, data, error } = useSubscription(DASHBOAD_TRIPS_QUERY, { variables })
-  console.log('TripsContainer error', error)
+
 
   let newData = {}
   if (!loading) {

@@ -17,7 +17,7 @@ import Transfer from '../transfer'
 import Rebate from '../rebate'
 import WalletTopup from '../walletTopup'
 import WalletBalance from '../walletBalance'
-// import PendingPayments from '../pendingPayments'
+ import PendingPayments from '../pendingPayments'
 import CustomerTrips from '../customerTrips'
 import CustomerClosedTrips from '../customerClosedTrips'
 import IncomingPayments from '../incomingPayments'
@@ -79,7 +79,7 @@ const CustomerDetailContainer = (props) => {
     }
   )
 
-  console.log('CustomerDetailContainer Error', error)
+
   let _data = {}
 
   if (!loading) {
@@ -227,7 +227,7 @@ const CustomerDetailContainer = (props) => {
                           <CustomerDetails customer_info={customer_info} loading={loading} />
                         </Col>
                         <Col xs={24} sm={24} md={12}>
-                          {/* <PendingPayments /> */}
+                          <PendingPayments customer_info={customer_info} />
                         </Col>
                       </Row>
                     </TabPane>

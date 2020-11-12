@@ -41,7 +41,7 @@ const Branch = (props) => {
     { variables: { cardcode: cardcode } }
   )
 
-  console.log('customer_Branch Error', error)
+
   let _data = {}
   if (!loading) {
     _data = data

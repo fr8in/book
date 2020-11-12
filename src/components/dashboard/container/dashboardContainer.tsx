@@ -31,7 +31,7 @@ const DashboardContainer = (props) => {
     managers: (filters.managers && filters.managers.length > 0) ? filters.managers : null
   }
   const { loading, data, error } = useQuery(DASHBOAD_QUERY, { variables })
-  console.log('dashboard error', error)
+
 
   let unloading_count = 0
   let assigned_count = 0

@@ -18,7 +18,7 @@ subscription connected_city {
 `
 const CityBranchMapping = () => {
   const { loading, error, data } = useSubscription(CITY_QUERY)
-  console.log('error', error)
+
   const { role } = u
   const access = [role.admin,role.hr]
 

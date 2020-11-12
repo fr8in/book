@@ -113,7 +113,7 @@ const CustomersContainer = (props) => {
     notifyOnNetworkStatusChange: true
   })
 
-  console.log('CustomersContainer error', error)
+
 
   let _sdata = {}
   if (!s_loading) {

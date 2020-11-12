@@ -74,7 +74,7 @@ const CustomerExceptionDate = (props) => {
       variables: { customer_id: id }
     }
   )
-  console.log('Customer error', error)
+
 
   let _data = {}
   if (!loading) {

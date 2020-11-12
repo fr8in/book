@@ -44,6 +44,7 @@ const PartnerBlacklist = (props) => {
         const description = get(data, 'partner_blacklist.description', null)
         if (status === 'OK') {
           message.success(description || 'Blacklisted!!')
+          onHide()
         } else {
           message.error(description || 'Error Occured!!')
         }
@@ -63,6 +64,7 @@ const PartnerBlacklist = (props) => {
         const description = get(data, 'partner_unblacklist.description', null)
         if (status === 'OK') {
           message.success(description || 'Unblacklisted!!')
+          onHide()
         } else {
           message.error(description || 'Error Occured!!')
         }

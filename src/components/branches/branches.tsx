@@ -60,7 +60,7 @@ const Branches = (props) => {
     }
   )
 
-  console.log('Branches Error', error)
+
   let _data = {}
   if (!loading) {
     _data = data

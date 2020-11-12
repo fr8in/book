@@ -65,7 +65,6 @@ const OnholdTrips = (props) => {
     notifyOnNetworkStatusChange: true
   })
 
-  console.log('Onhold trips error', error)
   let _data = {}
   if (!loading) {
     _data = data
@@ -138,6 +137,7 @@ const OnholdTrips = (props) => {
       title: 'Aging',
       dataIndex: 'paid_tat',
       sorter: (a, b) => (parseInt(a.paid_tat, 10) > parseInt(b.paid_tat) ? 1 : -1),
+      defaultSortOrder: 'descend',
       width: '7%'
     },
     {

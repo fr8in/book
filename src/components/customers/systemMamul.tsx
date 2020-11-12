@@ -25,7 +25,6 @@ const SystemMamul = (props) => {
     SYSTEM_MAMUL, { variables: { cardcode } }
   )
 
-  console.log('SystemMamul Error', error)
   const customer_mamul_summary = []
   if (!loading) {
     const mamul_summary = get(data, 'accounting_customer_mamul[0]', null)

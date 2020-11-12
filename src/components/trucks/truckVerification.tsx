@@ -82,7 +82,7 @@ const TruckVerification = (props) => {
     { variables: variables }
   )
 
-  console.log('TrucksVerification error', error, s_error)
+
 
   let _data = {}
   if (!loading) {

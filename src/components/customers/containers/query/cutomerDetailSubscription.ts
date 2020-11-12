@@ -38,6 +38,7 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
     gst
     managed
     pan
+
     customer_files {
       id
       type

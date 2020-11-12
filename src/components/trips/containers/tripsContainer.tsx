@@ -80,7 +80,7 @@ const TripsContainer = () => {
     }
   )
 
-  console.log('TripsContainer error', error)
+
   var _data = {}
   if (!loading) {
     _data = data

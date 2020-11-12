@@ -31,7 +31,7 @@ const EmployeeList = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
-  console.log('CreatePartnersContainer error', error)
+
 
   const [updateOwner] = useMutation(
     UPDATE_OWNER_MUTATION,

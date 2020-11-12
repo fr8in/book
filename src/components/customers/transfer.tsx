@@ -90,7 +90,7 @@ const Transfer = (props) => {
     getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc') } })
   }
 
-  console.log('IFSC validation Error', error)
+
   let _data = {}
   if (!loading) {
     _data = data

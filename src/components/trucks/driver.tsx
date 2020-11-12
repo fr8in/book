@@ -57,7 +57,7 @@ const Driver = (props) => {
     _data = data
   }
 
-  console.log('Driver error', error)
+
   const driver_data = get(_data, 'partner[0].drivers', [])
 
   const [insertDriver] = useMutation(

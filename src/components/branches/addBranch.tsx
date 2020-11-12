@@ -49,7 +49,7 @@ const AddBranch = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
-  console.log('AddBranch error', error)
+
 
   const [updateBranch] = useMutation(
     INSERT_BRANCH_MUTATION,

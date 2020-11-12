@@ -68,7 +68,7 @@ const WaitingForLoadContainer = (props) => {
     truck_no: null
   }
   const { loading, data, error } = useSubscription(DASHBOARD_TRUCK_QUERY, { variables })
-  console.log('WaitingForLoadContainer error', error)
+
 
   let trucks = []
   if (!loading) {

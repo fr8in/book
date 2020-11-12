@@ -45,10 +45,8 @@ const LoadingPointContact = (props) => {
     _data = data
   }
 
-  console.log('LoadingPointContact error', error)
 
   const user_data = get(_data, 'customer_user', [])
-  console.log('user_data', user_data)
 
   const [insert_customer_user] = useMutation(
     INSERT_CUSTOMER_USER,

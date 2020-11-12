@@ -37,7 +37,7 @@ const CustomerTrips = (props) => {
       variables: variables
     }
   )
-  console.log('CustomerTrips Error', error)
+
   let _data = []
   if (!loading) {
     _data = data
@@ -67,7 +67,7 @@ const CustomerTrips = (props) => {
     'Delivered':(record) => parseInt(record.delivered_tat,10),
     'Invoiced':(record) => parseInt(record.invoiced_tat,10),
     'Paid':(record) => parseInt(record.paid_tat,10),
-    'Received':(record) => parseInt(record.received_tat,10),
+    'Recieved':(record) => parseInt(record.received_tat,10),
     'Closed':(record) => parseInt(record.closed_tat,10)
   }
 
@@ -208,7 +208,7 @@ const CustomerTrips = (props) => {
       title: 'Aging',
       render: (text, record) => {
         const status = get(record, 'trip_status.name', null)
-        console.log('status',status)
+
         return tat[status](record)
       },
       sorter: (a, b) => {

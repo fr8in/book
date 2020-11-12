@@ -35,7 +35,7 @@ const Payables = (props) => {
     }
   )
 
-  console.log('Payables Error', error)
+
   let _data = {}
   if (!loading) {
     _data = data

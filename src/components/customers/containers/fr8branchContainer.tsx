@@ -39,7 +39,7 @@ const CustomersContainer = (props) => {
     EMPLOYEE_SUBSCRIPTION,
     { variables: { id: id } }
   )
-  console.log('error', error)
+
 
   let _data = []
   if (!loading) {

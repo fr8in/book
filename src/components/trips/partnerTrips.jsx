@@ -34,7 +34,6 @@ const SuggestedPartners = (props) => {
     variables: { id: trip_id }
   }
 )
-console.log('PartnerTrips error',error)
 let newData = {}
   if (!loading) {
     newData = {data}
@@ -67,6 +66,7 @@ let newData = {}
     dataIndex: 'count',
     key: 'count',
     sorter: (a, b) => (a.count > b.count ? 1 : -1),
+    defaultSortOrder:'descend',
     width: '10%'
   }
   ]
