@@ -30,7 +30,7 @@ const BankBalance = () => {
 
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.admin]
+  const edit_access = [role.hr]
   const access = u.is_roles(edit_access, context)
 
   const { loading, data, error } = useQuery(
@@ -72,20 +72,14 @@ const BankBalance = () => {
     })
   }
   return (
-    <span>
-      { access ||
-        <span>
           <Menu>
             <Menu.Item>
-              <Checkbox onChange={(e) => onChangeDownTime(e, 'icici_bank')} checked={!displayData.downtime.icici_bank} >ICICI <b>₹{icici ? icici.toFixed(2) : 0}</b>   </Checkbox>
+              <Checkbox onChange={(e) => onChangeDownTime(e, 'icici_bank')} disabled={!access} checked={!displayData.downtime.icici_bank} >ICICI <b>₹{icici ? icici.toFixed(2) : 0}</b>   </Checkbox>
             </Menu.Item>
             <Menu.Item>
-              <Checkbox onChange={(e) => onChangeDownTime(e, 'reliance_fuel')} checked={!displayData.downtime.reliance_fuel} >Reliance <b>₹{reliance ? reliance.toFixed(2) : 0}</b> </Checkbox>
+              <Checkbox onChange={(e) => onChangeDownTime(e, 'reliance_fuel')} disabled={!access} checked={!displayData.downtime.reliance_fuel} >Reliance <b>₹{reliance ? reliance.toFixed(2) : 0}</b> </Checkbox>
             </Menu.Item>
           </Menu>
-        </span>
-      }
-    </span>
   )
 }
 
