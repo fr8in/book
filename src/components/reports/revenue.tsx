@@ -11,7 +11,6 @@ query monthly_billing($branch_ids: [Int!]) {
       sum {
         receivable ## billing GMV
         count
-        revenue ## Commmision
       }
     }
   }
@@ -41,11 +40,9 @@ const Revenue = (props) => {
   console.log('AnalyticsContainer Error', error)
   const analytics = get(_data, 'analytics_monthly_billing_aggregate.aggregate.sum', null)
   const receivable = get(analytics, 'receivable', 0) / 100000
-  const revenue = get(analytics, 'revenue', 0) / 100000
-
+ 
   const stats_data = [
-    { count: receivable.toFixed(1), name: 'GMV (Bi)' },
-    { count: revenue.toFixed(1), name: 'Revenue' }
+    { count: receivable.toFixed(1), name: 'GMV (Bi)' }
   ]
   return (
     <>

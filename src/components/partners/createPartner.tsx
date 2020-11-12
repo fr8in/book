@@ -123,15 +123,6 @@ const CreatePartner = (props) => {
             </Col>
             <Col xs={24} sm={8} md={8} lg={8} xl={4}>
               <Form.Item
-                label='Contact Person'
-                name='contact_name'
-                initialValue={get(partner_info, 'partner_users[0].name', null)}
-              >
-                <Input placeholder='Contact Person' disabled={!!partner_info} />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
-              <Form.Item
                 label='Phone Number'
                 name='mobile'
                 rules={[{ required: true, message: 'Mobile is required field' }]}
@@ -170,8 +161,6 @@ const CreatePartner = (props) => {
                 <Input placeholder='Cibil Score ' />
               </Form.Item>
             </Col>
-          </Row>
-          <Row gutter={10}>
             <Col xs={24} sm={8} md={8} lg={8} xl={4}>
               <Form.Item
                 label='Building Number'
@@ -182,6 +171,8 @@ const CreatePartner = (props) => {
                 <Input placeholder='Building Number' />
               </Form.Item>
             </Col>
+          </Row>
+          <Row gutter={10}>
             <Col xs={24} sm={8} md={8} lg={8} xl={4}>
               <Form.Item
                 label='Address'
