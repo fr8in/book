@@ -7,15 +7,22 @@ import jwt from 'jsonwebtoken'
 import moment from 'moment'
 
 if (!firebase.apps.length) {
+  const { API_KEY,
+    AUTH_DOMAIN,
+    DATABASE_URL,
+    PROJECT_ID,
+    STORAGE_BUCKET,
+    MESSAGING_ID } = process.env
   firebase.initializeApp({
-    apiKey: 'AIzaSyD_CyxvqMnr-xH0lhJfNGCkegLizGtaLfQ',
-    authDomain: 'track-fr8.firebaseapp.com',
-    databaseURL: 'https://track-fr8.firebaseio.com',
-    projectId: 'track-fr8',
-    storageBucket: 'track-fr8.appspot.com',
-    messagingSenderId: '664491790520'
+    apiKey: API_KEY,
+    authDomain: AUTH_DOMAIN,
+    databaseURL: DATABASE_URL,
+    projectId: PROJECT_ID,
+    storageBucket: STORAGE_BUCKET,
+    messagingSenderId: MESSAGING_ID
   })
 }
+
 
 const auth = (setAuthState) => {
   return firebase.auth().onAuthStateChanged(async user => {

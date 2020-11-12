@@ -3,6 +3,7 @@ import { Modal, Button, message, Form, Input } from 'antd'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
+import Loading from '../common/loading'
 
 const GET_TOKEN = gql`
 query get_token (
@@ -32,16 +33,10 @@ mutation partner_bank_transfer_track(
 const WalletToBank = (props) => {
   const { visible, onHide, partner_id, balance } = props
   const {loading,data:{token}} = useQuery(GET_TOKEN,{variables:{partner_id} ,fetchPolicy:'network-only'})
-  if (loading)
-  {
-    return null
-  }
-
-  const [disableButton, setDisableButton] = useState(false)
-  const context = useContext(userContext)
-  const [partner_bank_transfer_track] = useMutation(
+  const [partner_bank_transfer_track,{loading:mutationLoading}] = useMutation(
     WALLET_TO_BANK,
     {
+      
       onError (error) {
         message.error(error.toString())
         setDisableButton(false)
@@ -57,6 +52,14 @@ const WalletToBank = (props) => {
       }
     }
   )
+  if (loading && mutationLoading)
+  {
+    return <Loading/>
+  }
+
+  const [disableButton, setDisableButton] = useState(false)
+  const context = useContext(userContext)
+  
 
   const onSubmit = (form) => {
     setDisableButton(true)
