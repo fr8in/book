@@ -1,6 +1,6 @@
-import { Menu, Checkbox, message, Row, Space } from 'antd'
+import { Menu, Checkbox, message} from 'antd'
 import { useContext } from 'react'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { gql, useQuery, useMutation} from '@apollo/client'
 import get from 'lodash/get'
 import u from '../../lib/util'
 import userContext from '../../lib/userContaxt'
@@ -77,14 +77,18 @@ const BankBalance = () => {
   }
   return (
     <span>
-      { access &&
-        <Menu >
-          <Row>
-            <Checkbox onChange={(e) => onChangeDownTime(e, 'icici_bank')} checked={downtime === true} >ICICI <b>₹{icici ? icici.toFixed(2) : 0}</b>   </Checkbox>
-          </Row>
-          <Row>
-            <Checkbox onChange={(e) => onChangeDownTime(e, 'reliance_fuel')} checked={downtime === true} >Reliance <b>₹{reliance ? reliance.toFixed(2) : 0}</b> </Checkbox>
-          </Row> </Menu>}
+      { access ||
+        <span>
+          <Menu>
+            <Menu.Item>
+              <Checkbox onChange={(e) => onChangeDownTime(e, 'icici_bank')}  >ICICI <b>₹{icici ? icici.toFixed(2) : 0}</b>   </Checkbox>
+            </Menu.Item>
+            <Menu.Item>
+              <Checkbox onChange={(e) => onChangeDownTime(e, 'reliance_fuel')}  >Reliance <b>₹{reliance ? reliance.toFixed(2) : 0}</b> </Checkbox>
+            </Menu.Item>
+          </Menu>
+        </span>
+      }
     </span>
   )
 }
