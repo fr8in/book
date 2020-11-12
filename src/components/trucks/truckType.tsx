@@ -57,7 +57,7 @@ const TruckType = (props) => {
   )
 
   if (loading) return null
-  console.log('TruckType error', error)
+
 
   const { truck_type } = data
   const truckList = truck_type.map(data => {

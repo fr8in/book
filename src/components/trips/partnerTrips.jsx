@@ -34,7 +34,6 @@ const SuggestedPartners = (props) => {
     variables: { id: trip_id }
   }
 )
-console.log('PartnerTrips error',error)
 let newData = {}
   if (!loading) {
     newData = {data}

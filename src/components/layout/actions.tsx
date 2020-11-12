@@ -100,7 +100,7 @@ const Actions = (props) => {
     notifyOnNetworkStatusChange: true
   })
 
-  console.log('Actions Error', error)
+
   let region_options = []
   //2nd level branch_options 
   let branch_options = []

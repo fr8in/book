@@ -38,7 +38,7 @@ const PaymentTraceability = (props) => {
     }
   )
 
-  console.log('Incoming Error', error)
+
 
   let _data = {}
   if (!loading) {

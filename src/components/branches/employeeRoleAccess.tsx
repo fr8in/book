@@ -34,7 +34,7 @@ const EmployeeRoleAccess = (props) => {
 
     const { visible, onHide, employee_data, title, edit_access_delete } = props
     const [role_id, setRole_id] = useState(null)
-    console.log('employee_data', employee_data.employee_roles)
+
 
     const { loading, data, error } = useQuery(
         ALL_ROLE_QUERY,
@@ -43,7 +43,7 @@ const EmployeeRoleAccess = (props) => {
             notifyOnNetworkStatusChange: true
         }
     )
-    console.log('employee_role error', error)
+
 
     const [insert_employee_role] = useMutation(
         ADD_EMPLOYEE_ROLE,
@@ -69,7 +69,7 @@ const EmployeeRoleAccess = (props) => {
     if (loading) return null
 
     const roles = get(data, 'role', null)
-    console.log('roles', roles)
+
 
     const role_list = roles.map((role) => {
         return { value: role.id, label: role.name }
@@ -106,7 +106,7 @@ const EmployeeRoleAccess = (props) => {
             title: 'Action',
             width: '40%',
             render: (record) => {
-                console.log('record',record.id)
+        
                 return (
                     <Button
                         type="link"

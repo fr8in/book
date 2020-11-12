@@ -47,7 +47,6 @@ const TripDetailContainer = (props) => {
       variables: { id: trip_id }
     }
   )
-  console.log('TripDetailContainer Error', error)
   let _data = {}
   if (!loading) {
     _data = data

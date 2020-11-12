@@ -28,7 +28,7 @@ mutation update_announcement($id: Int, $deleted: Boolean) {
 `
 const Announcement = () => {
   const { loading, error, data } = useSubscription(ANNOUNCEMENT_QUERY)
-  console.log('Announcement error', error)
+
 
   let _data = []
   if (!loading) {

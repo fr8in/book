@@ -79,7 +79,7 @@ const CustomerDetailContainer = (props) => {
     }
   )
 
-  console.log('CustomerDetailContainer Error', error)
+
   let _data = {}
 
   if (!loading) {

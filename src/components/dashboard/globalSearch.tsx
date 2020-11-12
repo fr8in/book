@@ -62,7 +62,7 @@ const GlobalSearch = (props) => {
   const truck = get(_data, 'search_truck', [])
   const lead = get(_data, 'search_lead', [])
 
-  console.log('GlobalSearch Error', error)
+
 
   const onSearch = (e) => {
     setSearch(e.target.value)

@@ -65,7 +65,6 @@ const OnholdTrips = (props) => {
     notifyOnNetworkStatusChange: true
   })
 
-  console.log('Onhold trips error', error)
   let _data = {}
   if (!loading) {
     _data = data

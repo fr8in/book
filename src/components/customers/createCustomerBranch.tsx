@@ -64,7 +64,7 @@ const CreateCustomerBranch = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
-  console.log('createCustomerBranch error', error)
+
 
   const [insertCustomerBranch] = useMutation(
     INSERT_CUSTOMER_BRANCH_MUTATION,

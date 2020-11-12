@@ -74,7 +74,7 @@ const CreateLead = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
-  console.log('CreatePartnersLeadContainer error', error)
+
 
   const [updatePartnerLeadAddress] = useMutation(
     INSERT_PARTNER_LEAD_MUTATION,

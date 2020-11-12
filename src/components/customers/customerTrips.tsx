@@ -37,7 +37,7 @@ const CustomerTrips = (props) => {
       variables: variables
     }
   )
-  console.log('CustomerTrips Error', error)
+
   let _data = []
   if (!loading) {
     _data = data
@@ -208,7 +208,7 @@ const CustomerTrips = (props) => {
       title: 'Aging',
       render: (text, record) => {
         const status = get(record, 'trip_status.name', null)
-        console.log('status',status)
+
         return tat[status](record)
       },
       sorter: (a, b) => {

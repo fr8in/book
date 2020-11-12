@@ -60,7 +60,7 @@ const customerComment = (props) => {
       }
     }
   )
-  console.log('customerComment error', error)
+
 
   let _data = {}
   if (!loading) {

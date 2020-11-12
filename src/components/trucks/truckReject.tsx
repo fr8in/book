@@ -34,7 +34,6 @@ const TruckReject = (props) => {
   const handleChange = (e) => {
     setRejectComment(e.target.value)
   }
-  console.log('rejectComment', rejectComment)
 
   const onSubmit = () => {
     insertComment({

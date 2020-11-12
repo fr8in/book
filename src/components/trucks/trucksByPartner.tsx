@@ -62,7 +62,7 @@ const TrucksByPartner = (props) => {
     }
   )
 
-  console.log('PartnerTripContainer Error', error)
+ 
   let _data = {}
   if (!loading) {
     _data = data

@@ -39,9 +39,7 @@ const FileUploadOnly = (props) => {
       const baseStr = btoa(reader.result)
       base64Str = baseStr
     }
-    reader.onerror = function () {
-      console.log('unable to parse file')
-    }
+
     return false
   }
 

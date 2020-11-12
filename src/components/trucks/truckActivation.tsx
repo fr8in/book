@@ -65,9 +65,7 @@ mutation truck_activation($available_at:timestamp,$id:Int,$city_id:Int,$truck_ty
   }
 }`
 
-const onChange = (date, dateString) => {
-  console.log(date, dateString)
-}
+
 
 const TruckActivation = (props) => {
   const { visible, onHide, truck_id, title, truck_type } = props
@@ -81,7 +79,7 @@ const TruckActivation = (props) => {
     TRUCKS_QUERY,
     { variables: { truck_id: truck_id } }
   )
-  console.log('TrucksActivation error', error)
+
 
   const [updateTruckActivation] = useMutation(
     UPDATE_TRUCK_ACTIVATION_MUTATION,
@@ -201,7 +199,7 @@ const TruckActivation = (props) => {
               <Row gutter={20}>
                 <Col xs={24} sm={12}>
                   <Form.Item label='Available From' name='available_at' initialValue={moment(truck_info.available_at, 'YYYY-MM-DD')}>
-                    <DatePicker onChange={onChange} style={{ width: '100%' }} />
+                    <DatePicker  style={{ width: '100%' }} />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={12}>

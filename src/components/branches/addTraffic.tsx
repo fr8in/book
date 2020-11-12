@@ -82,7 +82,7 @@ const AddTraffic = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
-  console.log('employee error', error)
+
 
   const [branch_employee] = useMutation(
     UPDATE_CUSTOMER_BRANCH_EMPLOYEE_MUTATION,
