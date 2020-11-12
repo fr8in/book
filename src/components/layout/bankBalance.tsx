@@ -30,7 +30,7 @@ const BankBalance = () => {
 
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.hr]
+  const edit_access = [role.admin]
   const access = u.is_roles(edit_access, context)
 
   const { loading, data, error } = useQuery(
