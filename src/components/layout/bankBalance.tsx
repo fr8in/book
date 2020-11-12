@@ -1,6 +1,6 @@
-import { Menu, Checkbox, message, Row, Space } from 'antd'
+import { Menu, Checkbox, message} from 'antd'
 import { useContext } from 'react'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { gql, useQuery, useMutation, useSubscription} from '@apollo/client'
 import get from 'lodash/get'
 import u from '../../lib/util'
 import userContext from '../../lib/userContaxt'
@@ -11,7 +11,7 @@ query bank_balance{
   reliance
 }`
 
-const TRANSACTION_DOWNTIME = gql` query{
+const TRANSACTION_DOWNTIME = gql` subscription{
   config(where: {key: {_eq: "transaction_downtime"}}){
     value
   }
@@ -41,17 +41,14 @@ const BankBalance = () => {
   }
   )
 
-  let displayData = { icici: null, reliance: null, downtime: null }
+  let displayData = { icici: null, reliance: null, downtime: {icici_bank:null,reliance_fuel:null} }
   if (!loading) {
     displayData.icici = get(data, 'icici', null)
     displayData.reliance = get(data, 'reliance', null)
 
   }
-  const { loading: _loading, data: _data, error: _error } = useQuery(
-    TRANSACTION_DOWNTIME, {
-    fetchPolicy: 'network-only',
-    notifyOnNetworkStatusChange: true
-  })
+  const { loading: _loading, data: _data, error: _error } = useSubscription(
+    TRANSACTION_DOWNTIME)
   if (!_loading) {
     displayData.downtime = get(_data, 'config[0].value', null)
   }
@@ -61,14 +58,13 @@ const BankBalance = () => {
   const [UpdateDownTime] = useMutation(
     UPDATE_DOWNTIME,
     {
-      onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) }
     }
   )
 
   const onChangeDownTime = (e, type) => {
     const updated_downtime = { ...downtime }
-    updated_downtime[type] = e.target.checked
+    updated_downtime[type] = !e.target.checked
     UpdateDownTime({
       variables: {
         value: updated_downtime
@@ -77,14 +73,18 @@ const BankBalance = () => {
   }
   return (
     <span>
-      { access &&
-        <Menu >
-          <Row>
-            <Checkbox onChange={(e) => onChangeDownTime(e, 'icici_bank')} checked={downtime === true} >ICICI <b>₹{icici ? icici.toFixed(2) : 0}</b>   </Checkbox>
-          </Row>
-          <Row>
-            <Checkbox onChange={(e) => onChangeDownTime(e, 'reliance_fuel')} checked={downtime === true} >Reliance <b>₹{reliance ? reliance.toFixed(2) : 0}</b> </Checkbox>
-          </Row> </Menu>}
+      { access ||
+        <span>
+          <Menu>
+            <Menu.Item>
+              <Checkbox onChange={(e) => onChangeDownTime(e, 'icici_bank')} checked={!displayData.downtime.icici_bank} >ICICI <b>₹{icici ? icici.toFixed(2) : 0}</b>   </Checkbox>
+            </Menu.Item>
+            <Menu.Item>
+              <Checkbox onChange={(e) => onChangeDownTime(e, 'reliance_fuel')} checked={!displayData.downtime.reliance_fuel} >Reliance <b>₹{reliance ? reliance.toFixed(2) : 0}</b> </Checkbox>
+            </Menu.Item>
+          </Menu>
+        </span>
+      }
     </span>
   )
 }
