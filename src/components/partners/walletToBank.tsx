@@ -31,17 +31,23 @@ mutation partner_bank_transfer_track(
 
 const WalletToBank = (props) => {
   const { visible, onHide, partner_id, balance } = props
-  const {loading,data} = useQuery(GET_TOKEN,{variables:{partner_id} ,fetchPolicy:'network-only'})
+  const {loading,data,error} = useQuery(GET_TOKEN,{variables:{partner_id} ,fetchPolicy:'network-only'})
+
+  if(error)
+  {
+    message.error(error.toString())
+    onHide()
+  }
+
   const [partner_bank_transfer_track,{loading:mutationLoading}] = useMutation(
     WALLET_TO_BANK,
     {
-      
       onError (error) {
         message.error(error.toString())
-        setDisableButton(false)
+        onHide()
       },
       onCompleted (data) {
-        setDisableButton(false)
+       
         const status = get(data, 'partner_bank_transfer_track.status', null)
         const description = get(data, 'partner_bank_transfer_track.description', null)
         if (status === 'OK') {
@@ -53,12 +59,12 @@ const WalletToBank = (props) => {
   )
 
 
-  const [disableButton, setDisableButton] = useState(false)
+
   const context = useContext(userContext)
   
 
   const onSubmit = (form) => {
-    setDisableButton(true)
+   
     partner_bank_transfer_track({
       variables: {
         token:data.token,
@@ -81,7 +87,7 @@ const WalletToBank = (props) => {
           <Input type='number' placeholder='Amount' />
         </Form.Item>
         <Form.Item className='text-right'>
-          <Button type='primary' loading={disableButton} htmlType='submit'>Pay to Bank</Button>
+          <Button type='primary' loading={loading } htmlType='submit'>Pay to Bank</Button>
         </Form.Item>
       </Form>
     </Modal>
