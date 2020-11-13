@@ -68,7 +68,7 @@ const WalletTopup = (props) => {
     }
   )
 
-  console.log('WalletTopup Error', error)
+
 
   let _data = {}
   if (!loading) {

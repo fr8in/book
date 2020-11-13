@@ -51,7 +51,7 @@ const CreateBreakdown = (props) => {
     }
   )
 
-  console.log('CreateBreakdown Error', error)
+
 
   let _data = {}
 

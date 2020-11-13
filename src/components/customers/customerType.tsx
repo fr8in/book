@@ -49,7 +49,7 @@ const CustomerType = (props) => {
   if (!loading) {
     _data = data
   }
-  console.log('CustomerType error', error)
+
 
   const customer_type = get(_data, 'customer_type', [])
   const typeList = customer_type.map((data) => {

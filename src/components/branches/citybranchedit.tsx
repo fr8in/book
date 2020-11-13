@@ -46,7 +46,7 @@ const Fr8Employee = (props) => {
   if (!loading) {
     _data = data
   }
-  console.log('error', error)
+
 
   const branches = get(_data, 'branch', [])
   const branchlist = branches.map(data => {

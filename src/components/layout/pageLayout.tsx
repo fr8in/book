@@ -52,7 +52,7 @@ const PageLayout = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
-  console.log('PageLayout Error', error)
+
   let _data = {}
   if (!loading) {
     _data = data

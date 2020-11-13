@@ -42,7 +42,7 @@ const Employees = (props) => {
     }
   )
 
-  console.log('BranchesContainer error', error)
+
   let _data = {}
   if (!loading) {
     _data = data

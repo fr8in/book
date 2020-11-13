@@ -30,7 +30,7 @@ const EmployeeListFilter = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
-  console.log('CreatePartnersContainer error', error)
+
 
   var employee = []
   if (!loading) {

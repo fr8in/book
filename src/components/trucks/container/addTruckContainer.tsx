@@ -67,7 +67,7 @@ const AddTruckContainer = (props) => {
     }
   )
 
-  console.log('AddTruck error', error)
+
 
   let _data = {}
 
@@ -102,7 +102,7 @@ const AddTruckContainer = (props) => {
 
   const onSubmit = (form) => {
     setDisableButton(true)
-    console.log('id', form)
+  
     insertTruck({
       variables: {
         partner_id: partner_info.id,

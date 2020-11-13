@@ -56,7 +56,7 @@ const CreatePartner = (props) => {
       }
     }
   )
-  console.log('CreatePartnersContainer error', error)
+
   let _data = {}
   if (!loading) {
     _data = data

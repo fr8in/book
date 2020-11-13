@@ -48,7 +48,7 @@ const Fr8Employee = (props) => {
     }
   )
 
-  console.log('error', error)
+
   let _data = {}
   if (!loading) {
     _data = data

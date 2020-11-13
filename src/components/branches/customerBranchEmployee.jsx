@@ -47,7 +47,7 @@ const CustomerBranchEmployee = (props) => {
        }
     }
   )
-  console.log('CustomerBranchEmployee Error', error)
+
 
   let _data = {}
   if (!loading) {

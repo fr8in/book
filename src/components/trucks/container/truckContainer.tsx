@@ -122,7 +122,6 @@ const TruckContainer = () => {
     notifyOnNetworkStatusChange: true
   })
 
-  console.log('TrucksContainer error', error)
   let _sdata = {}
   if (!s_loading) {
     _sdata = s_data

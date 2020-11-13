@@ -79,7 +79,7 @@ const CustomerClosedTrips = (props) => {
       variables: variables
     }
   )
-  console.log('CustomerTrips Error', error)
+
   let _data = []
   if (!loading) {
     _data = data

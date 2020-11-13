@@ -32,7 +32,7 @@ const IncomingPaymentsBooked = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
-  console.log('IncomingPaymentsBooked error', error)
+
   let _data = {}
   if (!loading) {
     _data = data

@@ -66,7 +66,6 @@ const Breakdown = (props) => {
     }
   )
 
-  console.log('Breakdown error', error)
 
   var _data = {}
   if (!loading) {

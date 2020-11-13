@@ -24,7 +24,6 @@ const AvailableBalance = (props) => {
     }
   )
 
-  console.log('AvailableBalance error', error)
   let _data = {}
   if (!loading) {
     _data = data

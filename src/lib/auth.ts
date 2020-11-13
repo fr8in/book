@@ -6,16 +6,18 @@ import { message } from 'antd'
 import jwt from 'jsonwebtoken'
 import moment from 'moment'
 
+
 if (!firebase.apps.length) {
   firebase.initializeApp({
-    apiKey: 'AIzaSyD_CyxvqMnr-xH0lhJfNGCkegLizGtaLfQ',
-    authDomain: 'track-fr8.firebaseapp.com',
-    databaseURL: 'https://track-fr8.firebaseio.com',
-    projectId: 'track-fr8',
-    storageBucket: 'track-fr8.appspot.com',
-    messagingSenderId: '664491790520'
+    apiKey: process.env.NEXT_PUBLIC_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
+    databaseURL: process.env.NEXT_PUBLIC_DATABASE_URL,
+    projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_MESSAGING_ID
   })
 }
+
 
 const auth = (setAuthState) => {
   return firebase.auth().onAuthStateChanged(async user => {

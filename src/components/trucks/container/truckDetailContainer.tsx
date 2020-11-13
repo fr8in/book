@@ -119,7 +119,7 @@ const TruckDetailContainer = (props) => {
   const subTabChange = (key) => {
     setSubTabKey(key)
   }
-  console.log('truck Id', truckNo)
+
 
   const { loading, error, data } = useSubscription(
     TRUCK_DETAIL_SUBSCRIPTION,
@@ -128,7 +128,7 @@ const TruckDetailContainer = (props) => {
     }
   )
 
-  console.log('TruckDetailContainer Error', error)
+
 
   var _data = {}
 

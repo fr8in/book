@@ -1,11 +1,19 @@
 import { useState,useContext } from 'react'
 import { Modal, Button, message, Form, Input } from 'antd'
-import { gql, useMutation } from '@apollo/client'
+import { gql, useMutation, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 
+const GET_TOKEN = gql`
+query get_token (
+  $partner_id: Int!
+){
+  token(partner_id: $partner_id, process: "BANK_TRANSFER_TRACK")
+}`
+
 const WALLET_TO_BANK = gql`
 mutation partner_bank_transfer_track(
+  $token:String!
   $partner_id: Int!,
   $amount: Float!,
   $created_by: String!,
@@ -13,7 +21,8 @@ mutation partner_bank_transfer_track(
   partner_bank_transfer_track(
     partner_id: $partner_id,
     amount: $amount, 
-    created_by:$created_by
+    created_by:$created_by,
+    token:$token
   ){
     status
     description
@@ -22,12 +31,11 @@ mutation partner_bank_transfer_track(
 
 const WalletToBank = (props) => {
   const { visible, onHide, partner_id, balance } = props
-  const [disableButton, setDisableButton] = useState(false)
-  const context = useContext(userContext)
-
-  const [partner_bank_transfer_track] = useMutation(
+  const {loading,data} = useQuery(GET_TOKEN,{variables:{partner_id} ,fetchPolicy:'network-only'})
+  const [partner_bank_transfer_track,{loading:mutationLoading}] = useMutation(
     WALLET_TO_BANK,
     {
+      
       onError (error) {
         message.error(error.toString())
         setDisableButton(false)
@@ -44,17 +52,24 @@ const WalletToBank = (props) => {
     }
   )
 
+
+  const [disableButton, setDisableButton] = useState(false)
+  const context = useContext(userContext)
+  
+
   const onSubmit = (form) => {
     setDisableButton(true)
     partner_bank_transfer_track({
       variables: {
-        partner_id: partner_id,
+        token:data.token,
+        partner_id,
         amount: parseFloat(form.amount),
         created_by: context.email
       }
     })
   }
   return (
+  
     <Modal
       title='Wallet To Bank'
       visible={visible}

@@ -62,7 +62,7 @@ const Comment = (props) => {
       }
     }
   )
-  console.log('PartnerComment error', error)
+
   let _data = {}
   if (!loading) {
     _data = data

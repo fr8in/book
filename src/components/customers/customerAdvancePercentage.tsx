@@ -60,7 +60,7 @@ const CustomerAdvancePercentage = (props) => {
   if (!loading) {
     _data = data
   }
-  console.log('CustomerType error', error)
+
 
   const customer_advance_percentage = get(_data, 'customer_advance_percentage', [])
   const advancePercentageList = customer_advance_percentage.map(data => {
