@@ -9,12 +9,6 @@ import moment from 'moment'
 
 if (!firebase.apps.length) {
   firebase.initializeApp({
-    // apiKey: 'AIzaSyDPsCA1cR4wW30RruyoZAktEQkFrgsBKNY',
-    // authDomain: 'dtrack-fr8.firebaseapp.com',
-    // databaseURL: 'https://dtrack-fr8.firebaseio.com',
-    // projectId: 'dtrack-fr8',
-    // storageBucket: 'dtrack-fr8.appspot.com',
-    // messagingSenderId: '358072061785'
     apiKey: process.env.NEXT_PUBLIC_API_KEY,
     authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
     databaseURL: process.env.NEXT_PUBLIC_DATABASE_URL,
