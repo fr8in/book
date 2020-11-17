@@ -53,7 +53,12 @@ const WalletToBank = (props) => {
         if (status === 'OK') {
           message.success(description || 'Processed!')
           onHide()
-        } else (message.error(description))
+        } else 
+        {
+          message.error(description)
+          onHide()
+        }
+
       }
     }
   )
