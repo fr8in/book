@@ -1,8 +1,9 @@
-import { useState,useContext } from 'react'
+import { useState, useContext } from 'react'
 import { Modal, Button, message, Form, Input } from 'antd'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
+import Loading from '../common/loading'
 
 const GET_TOKEN = gql`
 query get_token (
@@ -31,15 +32,14 @@ mutation partner_bank_transfer_track(
 
 const WalletToBank = (props) => {
   const { visible, onHide, partner_id, balance } = props
-  const {loading,data,error} = useQuery(GET_TOKEN,{variables:{partner_id} ,fetchPolicy:'network-only'})
+  const { loading, data, error } = useQuery(GET_TOKEN, { variables: { partner_id }, fetchPolicy: 'network-only' })
 
-  if(error)
-  {
+  if (error) {
     message.error(error.toString())
     onHide()
   }
 
-  const [partner_bank_transfer_track,{loading:mutationLoading}] = useMutation(
+  const [partner_bank_transfer_track, { loading: mutationLoading }] = useMutation(
     WALLET_TO_BANK,
     {
       onError (error) {
@@ -47,32 +47,25 @@ const WalletToBank = (props) => {
         onHide()
       },
       onCompleted (data) {
-       
         const status = get(data, 'partner_bank_transfer_track.status', null)
         const description = get(data, 'partner_bank_transfer_track.description', null)
         if (status === 'OK') {
           message.success(description || 'Processed!')
           onHide()
-        } else 
-        {
+        } else {
           message.error(description)
           onHide()
         }
-
       }
     }
   )
 
-
-
   const context = useContext(userContext)
-  
 
   const onSubmit = (form) => {
-   
     partner_bank_transfer_track({
       variables: {
-        token:data.token,
+        token: data.token,
         partner_id,
         amount: parseFloat(form.amount),
         created_by: context.email
@@ -80,7 +73,7 @@ const WalletToBank = (props) => {
     })
   }
   return (
-  
+
     <Modal
       title='Wallet To Bank'
       visible={visible}
@@ -95,6 +88,7 @@ const WalletToBank = (props) => {
           <Button type='primary' loading={loading || mutationLoading} htmlType='submit'>Pay to Bank</Button>
         </Form.Item>
       </Form>
+      <Loading fixed />
     </Modal>
   )
 }
