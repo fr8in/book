@@ -85,10 +85,11 @@ const WalletToBank = (props) => {
           <Input type='number' placeholder='Amount' />
         </Form.Item>
         <Form.Item className='text-right'>
-          <Button type='primary' loading={loading || mutationLoading} htmlType='submit'>Pay to Bank</Button>
+          <Button type='primary' htmlType='submit'>Pay to Bank</Button>
         </Form.Item>
       </Form>
-      <Loading fixed />
+      {(loading || mutationLoading) &&
+        <Loading fixed />}
     </Modal>
   )
 }
