@@ -2,7 +2,8 @@ import { Table, Input, Switch, Popconfirm, Button, Tooltip, message, Pagination,
 import {
   CommentOutlined,
   CloseOutlined,
-  SearchOutlined
+  SearchOutlined,
+  EditTwoTone
 } from '@ant-design/icons'
 import userContext from '../../lib/userContaxt'
 import { useState, useContext } from 'react'
@@ -18,7 +19,7 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import EditAccess from '../common/editAccess'
 import Phone from '../common/phone'
-import LinkComp from '../common/link'
+import ReferredByPartner from '../partners/referredByPartnerList'
 
 const PARTNERS_LEAD_SUBSCRIPTION = gql`
 subscription partner_lead(
@@ -39,7 +40,7 @@ subscription partner_lead(
     lead_priority
     referred_by {
       id
-      cardcode
+      name
     }
     onboarded_by{
       id
@@ -131,6 +132,8 @@ const PartnerLead = (props) => {
     employeeList: false,
     ownerVisible: false,
     ownerData: [],
+    referredByVisible: false,
+    referredByData: [],
     offset: 0,
     limit: u.limit,
     mobile: null,
@@ -328,9 +331,13 @@ const PartnerLead = (props) => {
       title: 'Referred By',
       width: '7%',
       render: (text, record) => {
-        const cardcode = get(record, 'referred_by.cardcode', null)
+        const name = get(record, 'referred_by.name', null)
         return (
-          <LinkComp type='partners' data={cardcode} id={cardcode} length={10} />
+          <div>
+            <span>{name}&nbsp;</span>
+            <EditTwoTone  onClick={() => handleShow('referredByVisible', null, 'referredByData', record.id)} />
+          </div>
+         // <LinkComp type='partners' data={cardcode} id={cardcode} length={10} />
         )
       }
       },
@@ -555,6 +562,13 @@ const PartnerLead = (props) => {
         <EmployeeList
           visible={object.ownerVisible}
           partner_ids={object.ownerData}
+          onHide={handleHide}
+        />
+      )}
+       {object.referredByVisible && (
+        <ReferredByPartner
+          visible={object.referredByVisible}
+          partner_id={object.referredByData}
           onHide={handleHide}
         />
       )}
