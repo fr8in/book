@@ -1,6 +1,6 @@
 import userContext from '../../lib/userContaxt'
 import { useState, useContext } from 'react'
-import { Modal, Row, Button, Form, Col, Select, Divider, message } from 'antd'
+import { Modal, Row, Button, Form, Col, Select, Divider, message, Checkbox } from 'antd'
 import Link from 'next/link'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
@@ -117,6 +117,7 @@ const ConfirmPo = (props) => {
   const initial = { search: '', source_id: null, destination_id: null }
   const [obj, setObj] = useState(initial)
   const [disableButton, setDisableButton] = useState(false)
+  const [isToPay, setIsToPay] = useState(false)
   const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(
@@ -214,6 +215,9 @@ const ConfirmPo = (props) => {
     setObj({ ...obj, destination_id: city_id })
   }
 
+  const onIsToPayChange = (e) =>{
+    setIsToPay(e.target.checked)
+  }
   const partner_name = get(po_data, 'partner.name', '-')
   const trip_id = get(record, 'id', null)
   const layout = {
@@ -276,7 +280,9 @@ const ConfirmPo = (props) => {
               />}
           </Col>
           <Col xs={24} sm={10}>
+            <Checkbox checked={isToPay} onChange={onIsToPayChange}> To Pay </Checkbox>
             {(customer && customer.id) &&
+            
               <PoPrice
                 po_data={po_data && po_data.partner}
                 form={form}
