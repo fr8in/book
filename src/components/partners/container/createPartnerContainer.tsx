@@ -19,7 +19,6 @@ mutation create_partner(
   $updated_by:String!,
   $onboarded_by_id: Int!,
   $partner_advance_percentage_id: Int!,
-  $contact_name: String!,
   $email:String!,
   $mobile: String!
 ) {
@@ -31,7 +30,6 @@ mutation create_partner(
       pan_no: $pan_no
     }, 
     partner_user: {
-      contact_name: $contact_name, 
       email: $email, 
       mobile: $mobile
     },
@@ -131,7 +129,6 @@ const PartnerOnboardingContainer = () => {
         name: form.name,
         pan_no: form.pan_no,
         // partner_user
-        contact_name: form.contact_name,
         email: form.email,
         mobile: form.mobile,
         // bank_detail
