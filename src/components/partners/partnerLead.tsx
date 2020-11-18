@@ -18,6 +18,8 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import EditAccess from '../common/editAccess'
 import Phone from '../common/phone'
+import LinkComp from '../common/link'
+
 const PARTNERS_LEAD_SUBSCRIPTION = gql`
 subscription partner_lead(
   $offset: Int!
@@ -35,6 +37,10 @@ subscription partner_lead(
     name
     created_at
     lead_priority
+    referred_by {
+      id
+      cardcode
+    }
     onboarded_by{
       id
       email
@@ -319,6 +325,16 @@ const PartnerLead = (props) => {
       render: (text, record) => <Truncate data={text} length={12} />
     },
     {
+      title: 'Referred By',
+      width: '7%',
+      render: (text, record) => {
+        const cardcode = get(record, 'referred_by.cardcode', null)
+        return (
+          <LinkComp type='partners' data={cardcode} id={cardcode} length={10} />
+        )
+      }
+      },
+    {
       title: 'Phone',
       dataIndex: 'number',
       width: '9%',
@@ -343,7 +359,7 @@ const PartnerLead = (props) => {
     },
     {
       title: 'City',
-      width: '14%',
+      width: '10%',
       render: (text, record) => {
         return (
           <InlineCitySelect
@@ -416,7 +432,7 @@ const PartnerLead = (props) => {
     },
     {
       title: 'Status',
-      width: '11%',
+      width: '9%',
       filterDropdown: (
         <Checkbox.Group
           options={partners_status}
@@ -450,14 +466,14 @@ const PartnerLead = (props) => {
     {
       title: 'Created At',
       dataIndex: 'date',
-      width: '10%',
+      width: '9%',
       render: (text, record) => record.created_at ? moment(record.created_at).format('DD-MMM-YY') : '-',
       sorter: (a, b) => (a.date > b.date ? 1 : -1)
     },
     {
       title: 'Priority',
       dataIndex: 'lead_priority',
-      width: '7%',
+      width: '6%',
       render: (text, record) => priorityEditAccess ? <Switch onChange={(checked) => onChange(checked, record.id)} checked={text} /> : null
     },
     {
