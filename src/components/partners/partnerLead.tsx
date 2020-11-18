@@ -330,7 +330,7 @@ const PartnerLead = (props) => {
       render: (text, record) => {
         const cardcode = get(record, 'referred_by.cardcode', null)
         return (
-          <LinkComp type='partners' data={cardcode} id={cardcode} length={20} />
+          <LinkComp type='partners' data={cardcode} id={cardcode} length={10} />
         )
       }
       },
