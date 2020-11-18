@@ -17,7 +17,7 @@ const ReportEmail = (props) => {
     Account_Statement,
     {
       onError(error) { message.error(error.toString()) },
-      onCompleted() { message.success('Sented!!') 
+      onCompleted() { message.success('Sent!!') 
       onHide()
     }  
     }
