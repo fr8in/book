@@ -8,18 +8,26 @@ import { useState, useContext } from 'react'
 import u from '../../lib/util'
 
 const BILLING_COMMENT_MUTATION = gql`
-mutation update_billing_comment($id: Int!, $billing_remarks: String,$updated_by: String!){
+mutation update_billing_comment($id: Int!, $billing_remarks: String,$updated_by: String!,$description:String, $topic:String, $trip_id: Int, $created_by:String){
   update_trip(_set: {billing_remarks: $billing_remarks,updated_by:$updated_by}, where: {id: {_eq:$id}}) {
     returning {
       billing_remarks
     }
   }
+   insert_trip_comment(objects: {description: $description, trip_id: $trip_id, topic: $topic, created_by: $created_by}) {
+    returning {
+      id
+      description
+      trip_id
+    }
+  }
 }
+
 `
 
 const BillingComment = (props) => {
   const { trip_id, trip_info } = props
-
+  const { topic } = u
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
 
@@ -43,7 +51,11 @@ const BillingComment = (props) => {
       variables: {
         id: trip_id,
         billing_remarks: form.billing_remarks,
-        updated_by: context.email
+        updated_by: context.email,
+        trip_id:trip_id,
+        description: form.billing_remarks,
+        topic: topic.billing_comment,
+        created_by: context.email
       }
     })
   }
