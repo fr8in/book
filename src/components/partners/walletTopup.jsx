@@ -187,12 +187,12 @@ const walletTopup = (props) => {
           <Space>
             <Col>
               <Checkbox defaultChecked={selectedTopUps} onChange={onChange}>2% Discount</Checkbox>
-              <b> {discount} </b>
+              <b> {discount.toFixed(2)} </b>
             </Col>
           </Space>
           <Col flex='180'>
             <Space>
-              <b> Amount : {net_topup} </b>
+              <b> Amount : {net_topup.toFixed(2)} </b>
               <Button onClick={onHide}>Cancel</Button>
               <Button type='primary' onClick={onSubmit} loading={disbleBtn}>Top Up</Button>
             </Space>
