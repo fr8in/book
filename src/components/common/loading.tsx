@@ -1,9 +1,9 @@
 import { Spin } from 'antd'
 
 const Loading = (props) => {
-  const { preloading } = props
+  const { preloading, fixed } = props
   return (
-    <div className={`${preloading && 'preloading'} hv-center`}>
+    <div className={`${preloading ? 'preloading' : ''} ${fixed && 'fixed'} hv-center`}>
       <div className='text-center'>
         {preloading &&
           <div>

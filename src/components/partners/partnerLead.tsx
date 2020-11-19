@@ -2,7 +2,8 @@ import { Table, Input, Switch, Popconfirm, Button, Tooltip, message, Pagination,
 import {
   CommentOutlined,
   CloseOutlined,
-  SearchOutlined
+  SearchOutlined,
+  EditTwoTone
 } from '@ant-design/icons'
 import userContext from '../../lib/userContaxt'
 import { useState, useContext } from 'react'
@@ -18,6 +19,9 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import EditAccess from '../common/editAccess'
 import Phone from '../common/phone'
+import LinkComp from '../common/link'
+import ReferredByPartner from '../partners/referredByPartnerList'
+
 const PARTNERS_LEAD_SUBSCRIPTION = gql`
 subscription partner_lead(
   $offset: Int!
@@ -35,6 +39,11 @@ subscription partner_lead(
     name
     created_at
     lead_priority
+    referred_by {
+      id
+      name
+      cardcode
+    }
     onboarded_by{
       id
       email
@@ -125,6 +134,8 @@ const PartnerLead = (props) => {
     employeeList: false,
     ownerVisible: false,
     ownerData: [],
+    referredByVisible: false,
+    referredByData: [],
     offset: 0,
     limit: u.limit,
     mobile: null,
@@ -258,6 +269,7 @@ const PartnerLead = (props) => {
     _sdata = s_data
   }
   const partners = get(s_data, 'partner', [])
+  const referredByName = get(partners, 'referred_by.name', null)
 
   let _data = {}
 
@@ -270,6 +282,7 @@ const PartnerLead = (props) => {
   const channel = get(_data, 'channel', [])
 
   const record_count = get(partner_aggregate, 'aggregate.count', 0)
+  
 
   const partners_status = partner_status.map((data) => {
     return { value: data.name, label: data.name }
@@ -319,6 +332,21 @@ const PartnerLead = (props) => {
       render: (text, record) => <Truncate data={text} length={12} />
     },
     {
+      title: 'Referred By',
+      width: '10%',
+      render: (text, record) => {
+        const name = get(record, 'referred_by.name', null)
+        const cardcode = get(record, 'referred_by.cardcode', null)
+        return (
+          <div>
+            <span> <LinkComp type='partners' data={name} id={cardcode} length={10} />&nbsp;</span>
+            <EditTwoTone  onClick={() => handleShow('referredByVisible', null, 'referredByData', record.id)} />
+          </div>
+         
+        )
+      }
+      },
+    {
       title: 'Phone',
       dataIndex: 'number',
       width: '9%',
@@ -343,7 +371,7 @@ const PartnerLead = (props) => {
     },
     {
       title: 'City',
-      width: '14%',
+      width: '10%',
       render: (text, record) => {
         return (
           <InlineCitySelect
@@ -401,7 +429,7 @@ const PartnerLead = (props) => {
     {
       title: 'Channel',
       dataIndex: 'source',
-      width: '11%',
+      width: '9%',
       filterDropdown: (
         <Checkbox.Group
           options={channels}
@@ -416,7 +444,7 @@ const PartnerLead = (props) => {
     },
     {
       title: 'Status',
-      width: '11%',
+      width: '9%',
       filterDropdown: (
         <Checkbox.Group
           options={partners_status}
@@ -450,14 +478,14 @@ const PartnerLead = (props) => {
     {
       title: 'Created At',
       dataIndex: 'date',
-      width: '10%',
+      width: '8%',
       render: (text, record) => record.created_at ? moment(record.created_at).format('DD-MMM-YY') : '-',
       sorter: (a, b) => (a.date > b.date ? 1 : -1)
     },
     {
       title: 'Priority',
       dataIndex: 'lead_priority',
-      width: '7%',
+      width: '6%',
       render: (text, record) => priorityEditAccess ? <Switch onChange={(checked) => onChange(checked, record.id)} checked={text} /> : null
     },
     {
@@ -540,6 +568,14 @@ const PartnerLead = (props) => {
           visible={object.ownerVisible}
           partner_ids={object.ownerData}
           onHide={handleHide}
+        />
+      )}
+       {object.referredByVisible && (
+        <ReferredByPartner
+          visible={object.referredByVisible}
+          partner_id={object.referredByData}
+          onHide={handleHide}
+          initialValue={referredByName}
         />
       )}
     </>
