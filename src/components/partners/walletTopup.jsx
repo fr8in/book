@@ -51,11 +51,11 @@ const walletTopup = (props) => {
   const [partner_manual_topup] = useMutation(
     MANUAL_TOPUP_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         message.error(error.toString())
         setDisbleBtn(false)
       },
-      onCompleted (data) {
+      onCompleted(data) {
         const status = _.get(data, 'partner_manual_topup.status', null)
         const description = _.get(data, 'partner_manual_topup.description', null)
         if (status === 'OK') {
@@ -101,7 +101,7 @@ const walletTopup = (props) => {
       }
     })
   }
-  
+
   const selectOnchange = (keys, rows) => {
     if (selectedRowKeys.length > 10) {
       message.error('Please Select maximum 10 trips')
@@ -115,12 +115,12 @@ const walletTopup = (props) => {
     selectedRowKeys,
     onChange: selectOnchange
   }
-  
+
   const onChange = (e) => {
     setSelectedTopUps(e.target.checked)
   }
 
-  const discount = selectedTopUps ? total*2/100: 0 
+  const discount = selectedTopUps ? total * 2 / 100 : 0
   const net_topup = total - discount
 
   const walletColumns = [
@@ -138,9 +138,9 @@ const walletTopup = (props) => {
       width: '14%',
       render: (text, record) => {
         const date = parseInt(record.date, 10)
-        return(
+        return (
           date ? moment(date).format('DD MMM YY') : '-'
-        )    
+        )
       },
       sorter: (a, b) => (a.date > b.date ? 1 : -1)
     },
@@ -151,9 +151,9 @@ const walletTopup = (props) => {
       width: '14%',
       render: (text, record) => {
         const date = parseInt(record.due_date, 10)
-        return(
+        return (
           moment(date).format('DD MMM YY')
-        )  
+        )
       },
       sorter: (a, b) => (a.date > b.date ? 1 : -1)
     },
@@ -171,12 +171,6 @@ const walletTopup = (props) => {
       width: '12%',
       render: (text, record) => text,
       sorter: (a, b) => (a.balance > b.balance ? 1 : -1)
-    },
-    {
-      title: 'Top Up',
-      width: '12%',
-      render: (text, record) => record.balance,
-      sorter: (a, b) => (a.record.balance > b.record.balance ? 1 : -1)
     }
   ]
 
@@ -191,21 +185,17 @@ const walletTopup = (props) => {
       footer={
         <Row justify='start' className='m5'>
           <Space>
-          <Col>
-           Amount: {total}
-          </Col>
-          <Col>
-           2% Discount:
-          <Checkbox defaultChecked={selectedTopUps} onChange={onChange}>2%</Checkbox>
-          {discount}
-          </Col>
-          <Col>
-          Net TopUp : {net_topup}
-          </Col>
+            <Col>
+              <Checkbox defaultChecked={selectedTopUps} onChange={onChange}>2% Discount</Checkbox>
+              <b> {discount} </b>
+            </Col>
           </Space>
           <Col flex='180'>
-            <Button onClick={onHide}>Cancel</Button>
-            <Button type='primary' onClick={onSubmit} loading={disbleBtn}>Top Up</Button>
+            <Space>
+              <b> Amount : {net_topup} </b>
+              <Button onClick={onHide}>Cancel</Button>
+              <Button type='primary' onClick={onSubmit} loading={disbleBtn}>Top Up</Button>
+            </Space>
           </Col>
         </Row>
       }
