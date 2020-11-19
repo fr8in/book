@@ -78,6 +78,7 @@ mutation confirm_po(
   $bank:Float,
   $cash: Float,
   $to_pay: Float,
+  $is_topay: Boolean
   ){
   update_trip(_set:{
     truck_id: $truck_id,
@@ -100,7 +101,8 @@ mutation confirm_po(
     including_unloading: $including_unloading,
     bank: $bank,
     to_pay:$to_pay,
-    cash:$cash
+    cash:$cash,
+    is_topay: $is_topay
   }, 
   where:{id:{_eq:$trip_id}}){
     returning{
@@ -202,7 +204,8 @@ const ConfirmPo = (props) => {
           truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
           driver_id: parseInt(driver_id, 10),
           updated_by: context.email,
-          customer_user_id: parseInt(loading_contact_id)
+          customer_user_id: parseInt(loading_contact_id),
+          is_topay: !!isToPay
         }
       })
     }
@@ -218,6 +221,7 @@ const ConfirmPo = (props) => {
 
   const onIsToPayChange = (e) => {
     setIsToPay(e.target.checked)
+    form.resetFields()
   }
   const partner_name = get(po_data, 'partner.name', '-')
   const trip_id = get(record, 'id', null)
