@@ -1,4 +1,4 @@
-import { Modal, Button, Row, Col, Form, Input, message, Divider } from 'antd'
+import { Modal, Button, Row, Col, Form, Input, message, Divider, Checkbox } from 'antd'
 import { gql, useMutation, useSubscription } from '@apollo/client'
 import { useState, useContext } from 'react'
 import userContext from '../../lib/userContaxt'
@@ -293,6 +293,7 @@ const CustomerPriceEdit = (props) => {
               />
             </Form.Item>
           </div>) : null}
+          <Checkbox checked={false} disabled /> &nbsp; To Pay  
         <Form.Item
           label='Customer Price'
           name='customer_price'
