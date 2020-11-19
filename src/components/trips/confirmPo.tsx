@@ -8,6 +8,7 @@ import get from 'lodash/get'
 import LinkComp from '../common/link'
 import PoPrice from './poPrice'
 import Truncate from '../common/truncate'
+import ToPayPrice from '../trips/toPayPrice'
 
 const PO_QUERY = gql`
 query po_query($id: Int!, $cus_id: Int!){
@@ -132,12 +133,12 @@ const ConfirmPo = (props) => {
   const [confirm_po_mutation] = useMutation(
     CONFIRM_PO,
     {
-      onError (error) {
+      onError(error) {
         const msg = get(error, 'graphQLErrors[0].extensions.internal.error.message', error.toString())
         message.error(msg)
         setDisableButton(false)
       },
-      onCompleted (data) {
+      onCompleted(data) {
         const load_id = get(data, 'update_trip.returning[0].id', null)
         const msg = (
           <span>
@@ -215,7 +216,7 @@ const ConfirmPo = (props) => {
     setObj({ ...obj, destination_id: city_id })
   }
 
-  const onIsToPayChange = (e) =>{
+  const onIsToPayChange = (e) => {
     setIsToPay(e.target.checked)
   }
   const partner_name = get(po_data, 'partner.name', '-')
@@ -282,13 +283,20 @@ const ConfirmPo = (props) => {
           <Col xs={24} sm={10}>
             <Checkbox checked={isToPay} onChange={onIsToPayChange}> To Pay </Checkbox>
             {(customer && customer.id) &&
-            
+              isToPay ?
+              <ToPayPrice
+                po_data={po_data && po_data.partner}
+                form={form}
+                customer={customer}
+                record={record}
+              />:
               <PoPrice
                 po_data={po_data && po_data.partner}
                 form={form}
                 customer={customer}
                 record={record}
-              />}
+              /> 
+            }
           </Col>
         </Row>
         {(customer && customer.id) &&
