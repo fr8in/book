@@ -225,7 +225,7 @@ const ToPayCustomerPriceEdit = (props) => {
                 >
                     <Input
                         placeholder='Customer price'
-                        disabled={trip_price.is_price_per_ton || !authorised}
+                        disabled={trip_price.is_price_per_ton || !authorised || loaded}
                         size='small'
                         type='number'
                         min={0}
@@ -271,6 +271,7 @@ const ToPayCustomerPriceEdit = (props) => {
                         type='number'
                         min={0}
                         maxLength={6}
+                        disabled={loaded || !authorised}
                         onInput={u.handleLengthCheck}
                     />
                 </Form.Item>
@@ -286,7 +287,7 @@ const ToPayCustomerPriceEdit = (props) => {
                         size='small'
                     />
                 </Form.Item>
-                {authorised && !lock ? (
+                {authorised && !lock && !loaded ? (
                     <div>
                         <Form.Item
                             name='comment'
