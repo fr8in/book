@@ -195,6 +195,7 @@ const ConfirmPo = (props) => {
           ton: form.ton ? form.ton : null,
           per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
           is_per_ton: !!form.ton,
+          bank: 0,
           including_loading: loading_charge,
           including_unloading: unloading_charge,
           cash: parseFloat(form.to_pay_cash),
@@ -311,7 +312,7 @@ const ConfirmPo = (props) => {
               />}
           </Col>
           <Col xs={24} sm={10}>
-            {/* <Checkbox checked={isToPay} onChange={onIsToPayChange}> To Pay </Checkbox> */}
+            <Checkbox checked={isToPay} onChange={onIsToPayChange}> To Pay </Checkbox>
             {(customer && customer.id) &&
               isToPay ?
               <ToPayPrice
