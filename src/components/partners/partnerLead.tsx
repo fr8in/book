@@ -163,6 +163,7 @@ const PartnerLead = (props) => {
   const ownerEdit = [role.admin, role.partner_manager, role.billing,role.onboarding]
   const rejectEdit = [role.admin, role.partner_manager, role.billing,role.onboarding]
   const priorityEdit = [role.admin, role.partner_manager, role.billing,role.onboarding]
+  const referredByEdit = [role.admin, role.partner_manager,role.onboarding]
   const priorityEditAccess = u.is_roles(priorityEdit,context)
   const rejectEditAccess = u.is_roles(rejectEdit,context)
 
@@ -340,9 +341,8 @@ const PartnerLead = (props) => {
         return (
           <div>
             <span> <LinkComp type='partners' data={name} id={cardcode} length={10} />&nbsp;</span>
-            <EditTwoTone  onClick={() => handleShow('referredByVisible', null, 'referredByData', record.id)} />
+            <EditAccess edit_access={referredByEdit} onEdit={() => handleShow('referredByVisible', null, 'referredByData', record.id)} />
           </div>
-         
         )
       }
       },
