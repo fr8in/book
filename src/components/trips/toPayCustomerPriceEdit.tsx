@@ -21,6 +21,7 @@ mutation update_trip_price(
     $to_pay: Float, 
     $partner_price: Float, 
     $ton: Float, 
+    $bank: Float
     $price_per_ton: Float,
     $is_price_per_ton: Boolean,
     $comment: String,
@@ -31,6 +32,7 @@ mutation update_trip_price(
         customer_price: $customer_price, 
         updated_by:$updated_by
         cash: $cash, 
+        bank: $bank, 
         to_pay: $to_pay,  
         partner_price: $partner_price, 
         ton: $ton, 
@@ -102,6 +104,7 @@ const ToPayCustomerPriceEdit = (props) => {
                     partner_price: parseFloat(form.partner_price_total),
                     ton: form.ton ? parseInt(form.ton, 10) : null,
                     is_price_per_ton: !!form.ton,
+                    bank: 0,
                     price_per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
                     comment: comment,
                     created_by: context.email,
