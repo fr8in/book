@@ -33,7 +33,7 @@ const PartnerDocument = (props) => {
   const agreement_files = files.filter(file => file.type === u.fileType.agreement)
   const cs_files = files.filter(file => file.type === u.fileType.cibil)
 
-  const active = partnerInfo.partner_status.name === 'Active' 
+  const Reverification = partnerInfo.partner_status.name === 'Reverification' 
   
   const [reverification_approval] = useMutation(
     REVERIFICATION_APPROVAL_MUTATION,
@@ -45,7 +45,7 @@ const PartnerDocument = (props) => {
 
   const _pan = !isEmpty(pan_files) ? pan_files : false
   const _check_leaf = !isEmpty(cheaque_files) ? cheaque_files : false
-  const _civil = !isEmpty(cs_files) ? cs_files : false
+  const _cibil = !isEmpty(cs_files) ? cs_files : false
 
   const onDelete = () => {
     reverification_approval({
@@ -259,8 +259,8 @@ const PartnerDocument = (props) => {
           </List.Item>
         </List>
         <Row justify='end' className='mt10'>
-          <Button key='submit' type='primary'htmlType='submit' disabled={!access || !_pan || !_check_leaf || !_civil || active}  >
-            Approve KYC
+          <Button key='submit' type='primary'htmlType='submit' disabled={!access || !_pan || !_check_leaf || !_cibil || !Reverification}  >
+          Reverification
                     </Button> 
         </Row>
       </Form>
