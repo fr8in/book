@@ -31,6 +31,7 @@ query ifsc_validation($ifsc: String!){
   }
 }`
 
+
 const CreatePartner = (props) => {
   const { onSubmit, form, setCity, disableButton, partner_info, data_loading,access,setDisableAddTruck,disableAddTruck } = props
 
@@ -299,6 +300,19 @@ const CreatePartner = (props) => {
                   options={employeeList}
                   optionFilterProp='label'
                   showSearch
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={8}>
+              <Form.Item
+                label='Final Payment date'
+                name='final_payment_date'
+                rules={[{ required: true, message: 'Final Payment date is required field!' }]}
+                initialValue={get(partner_info, 'final_payment_date', null)}
+              >
+                <Input
+                  placeholder='Final Payment date'
+                  type='number'
                 />
               </Form.Item>
             </Col>
