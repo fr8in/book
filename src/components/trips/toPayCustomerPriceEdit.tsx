@@ -31,6 +31,7 @@ mutation update_trip_price(
         customer_price: $customer_price, 
         updated_by:$updated_by
         cash: $cash, 
+        bank: 0, 
         to_pay: $to_pay,  
         partner_price: $partner_price, 
         ton: $ton, 
