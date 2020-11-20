@@ -19,6 +19,7 @@ mutation create_partner(
   $updated_by:String!,
   $onboarded_by_id: Int!,
   $partner_advance_percentage_id: Int!,
+  $final_payment_date: Int!,
   $email:String!,
   $mobile: String!
 ) {
@@ -41,7 +42,8 @@ mutation create_partner(
     }, 
     fr8_detail: {
       onboarded_by_id: $onboarded_by_id, 
-      partner_advance_percentage_id: $partner_advance_percentage_id
+      partner_advance_percentage_id: $partner_advance_percentage_id,
+      final_payment_date: $final_payment_date
     }) {
     description
     status
@@ -120,6 +122,9 @@ const PartnerOnboardingContainer = () => {
   }
 
   const onPartnerSubmit = (form) => {
+    if (form.final_payment_date < 1 || form.final_payment_date > 31){
+      message.error('Enter Valid Final Payment Date')
+    } else {
     setDisableButton(true)
     insertPartner({
       variables: {
@@ -138,9 +143,11 @@ const PartnerOnboardingContainer = () => {
         updated_by: context.email,
         // fr8_detail
         onboarded_by_id: form.on_boarded_by,
-        partner_advance_percentage_id: form.advance_percentage
+        partner_advance_percentage_id: form.advance_percentage,
+        final_payment_date: parseInt(form.final_payment_date, 10)
       }
     })
+  }
   }
 
   return (

@@ -16,6 +16,7 @@ query partner($id: Int!) {
     name
     pan
     cibil
+    final_payment_date
     partner_users(where:{is_admin:{_eq:true}}){
       name
       email
@@ -56,7 +57,8 @@ mutation update_partner(
   $ifsc_code: String!,
   $updated_by:String!,
   $onboarded_by_id: Int!,
-  $partner_advance_percentage_id: Int!
+  $partner_advance_percentage_id: Int!,
+  $final_payment_date: Int!
 ){
   update_partner_track(
     partner_id: $partner_id,
@@ -75,6 +77,7 @@ mutation update_partner(
     fr8_detail: {
       onboarded_by_id: $onboarded_by_id, 
       partner_advance_percentage_id: $partner_advance_percentage_id
+      final_payment_date: $final_payment_date
     }
   ){
     description
@@ -183,7 +186,8 @@ const PartnerOnboardingContainer = (props) => {
         updated_by: context.email,
         // fr8_detail
         onboarded_by_id: form.on_boarded_by,
-        partner_advance_percentage_id: form.advance_percentage
+        partner_advance_percentage_id: form.advance_percentage,
+        final_payment_date: parseInt(form.final_payment_date, 10)
       }
     })
   }
