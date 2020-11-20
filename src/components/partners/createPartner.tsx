@@ -5,6 +5,7 @@ import { Row, Col, Card, Input, Form, Button, Select, Space, message, Tag } from
 import { gql, useQuery, useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
 import Loading from '../common/loading'
+import u from '../../lib/util'
 
 const PARTNERS_SUBSCRIPTION = gql`
   query advance_state_emp{
@@ -313,6 +314,9 @@ const CreatePartner = (props) => {
                 <Input
                   placeholder='Final Payment date'
                   type='number'
+                  min={1}
+                  maxLength={2}
+                  onInput={u.handleLengthCheck}
                 />
               </Form.Item>
             </Col>
