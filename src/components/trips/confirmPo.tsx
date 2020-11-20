@@ -192,7 +192,7 @@ const ConfirmPo = (props) => {
           customer_price: parseFloat(form.customer_price),
           partner_price: parseFloat(form.partner_price),
           ton: form.ton ? form.ton : null,
-          per_ton: form.per_ton_rate ? parseFloat(form.per_ton_rate) : null,
+          per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
           is_per_ton: !!form.ton,
           mamul: parseFloat(form.mamul),
           including_loading: loading_charge,

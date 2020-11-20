@@ -18,7 +18,7 @@ const ToPayPrice = (props) => {
 
     const onRadioChange = (e) => {
         setPrice({ ...price, rate_type: e.target.value })
-        form.resetFields(['cash'])
+        form.resetFields(['to_pay_cash'])
     }
 
     const onPerTonPriceChange = (e) => {
@@ -26,7 +26,7 @@ const ToPayPrice = (props) => {
         const customer_price = value * (form.getFieldValue('ton') || 1)
         const partner_price = customer_price
         const customer_partner_total = customer_price
-        const to_pay = customer_price
+        const to_pay = customer_price - parseFloat(form.getFieldValue('to_pay_cash'))
 
         form.setFieldsValue({
             customer_price: customer_price < 0 ? 0 : customer_price,
@@ -35,27 +35,29 @@ const ToPayPrice = (props) => {
             to_pay_balance: to_pay < 0 ? 0 : to_pay
         })
     }
-    const onCustomerPriceChange = (e) => {
-        const { value } = e.target
-        const partner_price = (value ? parseFloat(value) : 0)
-        const customer_partner_total = (value ? parseFloat(value) : 0)
-        const to_pay = (value ? parseFloat(value) : 0)
 
-        form.setFieldsValue({
-            partner_price_total: partner_price < 0 ? 0 : partner_price,
-            customer_to_partner_total: customer_partner_total < 0 ? 0 : customer_partner_total,
-            to_pay_balance: to_pay < 0 ? 0 : to_pay
-        })
-    }
     const onTonChange = (e) => {
         const { value } = e.target
         const customer_price = value * (form.getFieldValue('price_per_ton') || 1)
         const partner_price = customer_price
         const customer_partner_total = customer_price
-        const to_pay = customer_price
+        const to_pay = customer_price - parseFloat(form.getFieldValue('to_pay_cash'))
 
         form.setFieldsValue({
             customer_price: customer_price,
+            partner_price_total: partner_price < 0 ? 0 : partner_price,
+            customer_to_partner_total: customer_partner_total < 0 ? 0 : customer_partner_total,
+            to_pay_balance: to_pay < 0 ? 0 : to_pay
+        })
+    }
+
+    const onCustomerPriceChange = (e) => {
+        const { value } = e.target
+        const partner_price = (value ? parseFloat(value) : 0)
+        const customer_partner_total = (value ? parseFloat(value) : 0)
+        const to_pay = (value ? parseFloat(value) - parseFloat(form.getFieldValue('to_pay_cash')) : 0)
+
+        form.setFieldsValue({
             partner_price_total: partner_price < 0 ? 0 : partner_price,
             customer_to_partner_total: customer_partner_total < 0 ? 0 : customer_partner_total,
             to_pay_balance: to_pay < 0 ? 0 : to_pay
@@ -148,7 +150,7 @@ const ToPayPrice = (props) => {
                 </Form.Item>
                 <Form.Item
                     label={<span>Advance <span>Cash/Bank/Diesel</span></span>}
-                    name='cash'
+                    name='to_pay_cash'
                     rules={[{ required: true }]}
                     initialValue={0}
                     className='indent'

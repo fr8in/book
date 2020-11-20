@@ -53,7 +53,7 @@ mutation update_trip_price(
 
 const CustomerPriceEdit = (props) => {
   const { visible, onHide, trip_id, trip_price, loaded, trip_status_id, edit_access, lock } = props
-
+  const { topic } = u
   const [form] = Form.useForm()
   const context = useContext(userContext)
   const customer_advance_percentage = trip_price.customer_advance_percentage
@@ -117,7 +117,7 @@ const CustomerPriceEdit = (props) => {
           comment: comment,
           created_by: context.email,
           updated_by: context.email,
-          topic: 'Trip Price Changed'
+          topic: topic.trip_price_change
         }
       })
     }
@@ -256,6 +256,7 @@ const CustomerPriceEdit = (props) => {
       className='no-header'
     >
       <Form onFinish={onCustomerPriceSubmit} form={form} {...layout} labelAlign='left' colon={false} className='form-sheet'>
+      <Checkbox checked={false} disabled /> &nbsp; To Pay  
         {trip_price.is_price_per_ton ? (
           <div>
             <Form.Item
@@ -293,7 +294,6 @@ const CustomerPriceEdit = (props) => {
               />
             </Form.Item>
           </div>) : null}
-          <Checkbox checked={false} disabled /> &nbsp; To Pay  
         <Form.Item
           label='Customer Price'
           name='customer_price'
