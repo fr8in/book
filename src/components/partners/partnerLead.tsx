@@ -2,7 +2,8 @@ import { Table, Input, Switch, Popconfirm, Button, Tooltip, message, Pagination,
 import {
   CommentOutlined,
   CloseOutlined,
-  SearchOutlined
+  SearchOutlined,
+  EditTwoTone
 } from '@ant-design/icons'
 import userContext from '../../lib/userContaxt'
 import { useState, useContext } from 'react'
@@ -19,6 +20,7 @@ import isEmpty from 'lodash/isEmpty'
 import EditAccess from '../common/editAccess'
 import Phone from '../common/phone'
 import LinkComp from '../common/link'
+import ReferredByPartner from '../partners/referredByPartnerList'
 
 const PARTNERS_LEAD_SUBSCRIPTION = gql`
 subscription partner_lead(
@@ -39,6 +41,7 @@ subscription partner_lead(
     lead_priority
     referred_by {
       id
+      name
       cardcode
     }
     onboarded_by{
@@ -131,6 +134,8 @@ const PartnerLead = (props) => {
     employeeList: false,
     ownerVisible: false,
     ownerData: [],
+    referredByVisible: false,
+    referredByData: [],
     offset: 0,
     limit: u.limit,
     mobile: null,
@@ -158,6 +163,7 @@ const PartnerLead = (props) => {
   const ownerEdit = [role.admin, role.partner_manager, role.billing,role.onboarding]
   const rejectEdit = [role.admin, role.partner_manager, role.billing,role.onboarding]
   const priorityEdit = [role.admin, role.partner_manager, role.billing,role.onboarding]
+  const referredByEdit = [role.admin, role.partner_manager,role.onboarding]
   const priorityEditAccess = u.is_roles(priorityEdit,context)
   const rejectEditAccess = u.is_roles(rejectEdit,context)
 
@@ -264,6 +270,7 @@ const PartnerLead = (props) => {
     _sdata = s_data
   }
   const partners = get(s_data, 'partner', [])
+  const referredByName = get(partners, 'referred_by.name', null)
 
   let _data = {}
 
@@ -276,6 +283,7 @@ const PartnerLead = (props) => {
   const channel = get(_data, 'channel', [])
 
   const record_count = get(partner_aggregate, 'aggregate.count', 0)
+  
 
   const partners_status = partner_status.map((data) => {
     return { value: data.name, label: data.name }
@@ -326,11 +334,15 @@ const PartnerLead = (props) => {
     },
     {
       title: 'Referred By',
-      width: '7%',
+      width: '10%',
       render: (text, record) => {
+        const name = get(record, 'referred_by.name', null)
         const cardcode = get(record, 'referred_by.cardcode', null)
         return (
-          <LinkComp type='partners' data={cardcode} id={cardcode} length={10} />
+          <div>
+            <span> <LinkComp type='partners' data={name} id={cardcode} length={10} />&nbsp;</span>
+            <EditAccess edit_access={referredByEdit} onEdit={() => handleShow('referredByVisible', null, 'referredByData', record.id)} />
+          </div>
         )
       }
       },
@@ -417,7 +429,7 @@ const PartnerLead = (props) => {
     {
       title: 'Channel',
       dataIndex: 'source',
-      width: '11%',
+      width: '9%',
       filterDropdown: (
         <Checkbox.Group
           options={channels}
@@ -466,7 +478,7 @@ const PartnerLead = (props) => {
     {
       title: 'Created At',
       dataIndex: 'date',
-      width: '9%',
+      width: '8%',
       render: (text, record) => record.created_at ? moment(record.created_at).format('DD-MMM-YY') : '-',
       sorter: (a, b) => (a.date > b.date ? 1 : -1)
     },
@@ -556,6 +568,14 @@ const PartnerLead = (props) => {
           visible={object.ownerVisible}
           partner_ids={object.ownerData}
           onHide={handleHide}
+        />
+      )}
+       {object.referredByVisible && (
+        <ReferredByPartner
+          visible={object.referredByVisible}
+          partner_id={object.referredByData}
+          onHide={handleHide}
+          initialValue={referredByName}
         />
       )}
     </>

@@ -24,7 +24,7 @@ mutation final_payment_update($description:String, $topic:String, $partner_id: I
 
 const FinalPaymentEdit = (props) => {
   const { partnerInfo } = props
-  const edit_access = [u.role.admin, u.role.rm, u.role.partner_manager, u.role.partner_support]
+  const edit_access = [u.role.admin, u.role.rm, u.role.partner_manager, u.role.partner_support, u.role.onboarding]
   const { topic } = u
   const context = useContext(userContext)
   const [final_payment_update] = useMutation(
