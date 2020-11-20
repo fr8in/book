@@ -5,6 +5,7 @@ import { Row, Col, Card, Input, Form, Button, Select, Space, message, Tag } from
 import { gql, useQuery, useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
 import Loading from '../common/loading'
+import u from '../../lib/util'
 
 const PARTNERS_SUBSCRIPTION = gql`
   query advance_state_emp{
@@ -30,6 +31,7 @@ query ifsc_validation($ifsc: String!){
     branch
   }
 }`
+
 
 const CreatePartner = (props) => {
   const { onSubmit, form, setCity, disableButton, partner_info, data_loading,access,setDisableAddTruck,disableAddTruck } = props
@@ -299,6 +301,22 @@ const CreatePartner = (props) => {
                   options={employeeList}
                   optionFilterProp='label'
                   showSearch
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={8}>
+              <Form.Item
+                label='Final Payment date'
+                name='final_payment_date'
+                rules={[{ required: true, message: 'Final Payment date is required field!' }]}
+                initialValue={get(partner_info, 'final_payment_date', null)}
+              >
+                <Input
+                  placeholder='Final Payment date'
+                  type='number'
+                  min={1}
+                  maxLength={2}
+                  onInput={u.handleLengthCheck}
                 />
               </Form.Item>
             </Col>
