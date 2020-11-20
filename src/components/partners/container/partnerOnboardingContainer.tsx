@@ -170,6 +170,9 @@ const PartnerOnboardingContainer = (props) => {
   }
 
   const onPartnerSubmit = (form) => {
+    if (form.final_payment_date < 1 || form.final_payment_date > 31){
+      message.error('Enter Valid Final Payment Date')
+    } else {
     setDisableButton(true)
     updatePartner({
       variables: {
@@ -190,6 +193,7 @@ const PartnerOnboardingContainer = (props) => {
         final_payment_date: parseInt(form.final_payment_date, 10)
       }
     })
+  }
   }
 
   return (
