@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { Modal, Table, Row, Button, Col, Radio, message } from 'antd'
+import { Modal, Table, Row, Button, Col, message, Space, Checkbox } from 'antd'
 import _ from 'lodash'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
@@ -34,7 +34,7 @@ const walletTopup = (props) => {
 
   const [invocedTrips, setInvoicedTrips] = useState([])
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
-  const [selectedTopUps, setSelectedTopUps] = useState([])
+  const [selectedTopUps, setSelectedTopUps] = useState(true)
   const [disbleBtn, setDisbleBtn] = useState(false)
   const [total, setTotal] = useState(0)
   const context = useContext(userContext)
@@ -51,11 +51,11 @@ const walletTopup = (props) => {
   const [partner_manual_topup] = useMutation(
     MANUAL_TOPUP_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         message.error(error.toString())
         setDisbleBtn(false)
       },
-      onCompleted (data) {
+      onCompleted(data) {
         const status = _.get(data, 'partner_manual_topup.status', null)
         const description = _.get(data, 'partner_manual_topup.description', null)
         if (status === 'OK') {
@@ -71,7 +71,6 @@ const walletTopup = (props) => {
     }
   )
 
-  console.log('walletTopup Error', error)
   let _data = {}
   if (!loading) {
     _data = data
@@ -82,8 +81,7 @@ const walletTopup = (props) => {
   useEffect(() => {
     const all = invoiced.map(data => {
       return {
-        ...data,
-        is_with_deduction: '2%'
+        ...data
       }
     })
     setInvoicedTrips(all)
@@ -94,31 +92,14 @@ const walletTopup = (props) => {
     partner_manual_topup({
       variables: {
         created_by: context.email,
-        topups: selectedTopUps.map(data => {
+        topups: selectedRowKeys.map(docnum => {
           return {
-            docnum: data.docnum.toString(),
-            is_with_deduction: data.is_with_deduction === '2%'
+            docnum: docnum.toString(),
+            is_with_deduction: !!selectedTopUps
           }
         })
       }
     })
-  }
-
-  const handleRadioChange = (record, e) => {
-    const selected = selectedTopUps.map(data => {
-      return {
-        ...data,
-        is_with_deduction: data.docnum === record.docnum ? e.target.value : data.is_with_deduction
-      }
-    })
-    setSelectedTopUps(selected)
-    const all = invocedTrips.map(data => {
-      return {
-        ...data,
-        is_with_deduction: data.docnum === record.docnum ? e.target.value : data.is_with_deduction
-      }
-    })
-    setInvoicedTrips(all)
   }
 
   const selectOnchange = (keys, rows) => {
@@ -126,7 +107,6 @@ const walletTopup = (props) => {
       message.error('Please Select maximum 10 trips')
     } else {
       setSelectedRowKeys(keys)
-      setSelectedTopUps(rows)
       setTotal(_.sumBy(rows, 'balance'))
     }
   }
@@ -135,6 +115,13 @@ const walletTopup = (props) => {
     selectedRowKeys,
     onChange: selectOnchange
   }
+
+  const onChange = (e) => {
+    setSelectedTopUps(e.target.checked)
+  }
+
+  const discount = selectedTopUps ? total * 2 / 100 : 0
+  const net_topup = total - discount
 
   const walletColumns = [
     {
@@ -151,9 +138,9 @@ const walletTopup = (props) => {
       width: '14%',
       render: (text, record) => {
         const date = parseInt(record.date, 10)
-        return(
+        return (
           date ? moment(date).format('DD MMM YY') : '-'
-        )    
+        )
       },
       sorter: (a, b) => (a.date > b.date ? 1 : -1)
     },
@@ -164,9 +151,9 @@ const walletTopup = (props) => {
       width: '14%',
       render: (text, record) => {
         const date = parseInt(record.due_date, 10)
-        return(
+        return (
           moment(date).format('DD MMM YY')
-        )  
+        )
       },
       sorter: (a, b) => (a.date > b.date ? 1 : -1)
     },
@@ -184,30 +171,6 @@ const walletTopup = (props) => {
       width: '12%',
       render: (text, record) => text,
       sorter: (a, b) => (a.balance > b.balance ? 1 : -1)
-    },
-    {
-      title: 'Top Up',
-      width: '12%',
-      render: (text, record) => record.balance,
-      sorter: (a, b) => (a.record.balance > b.record.balance ? 1 : -1)
-    },
-    {
-      title: 'Deduction',
-      dataIndex: 'is_with_deduction',
-      width: '18%',
-      render: (text, record) => {
-        const enableSelectedRows = _.includes(selectedRowKeys, record.docnum)
-        return (
-          <Radio.Group
-            defaultValue={text}
-            onChange={(e) => handleRadioChange(record, e)} disabled={!enableSelectedRows}
-          >
-            <Row>
-              <Radio value='0%'>0%</Radio>
-              <Radio value='2%'>2%</Radio>
-            </Row>
-          </Radio.Group>)
-      }
     }
   ]
 
@@ -221,12 +184,18 @@ const walletTopup = (props) => {
       style={{ top: 20 }}
       footer={
         <Row justify='start' className='m5'>
-          <Col>
-           Amount: {total}
-          </Col>
+          <Space>
+            <Col>
+              <Checkbox defaultChecked={selectedTopUps} onChange={onChange}>2% Discount</Checkbox>
+              <b> {discount.toFixed(2)} </b>
+            </Col>
+          </Space>
           <Col flex='180'>
-            <Button onClick={onHide}>Cancel</Button>
-            <Button type='primary' onClick={onSubmit} loading={disbleBtn}>Top Up</Button>
+            <Space>
+              <b> Amount : {net_topup.toFixed(2)} </b>
+              <Button onClick={onHide}>Cancel</Button>
+              <Button type='primary' onClick={onSubmit} loading={disbleBtn}>Top Up</Button>
+            </Space>
           </Col>
         </Row>
       }
