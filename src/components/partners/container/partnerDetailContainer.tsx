@@ -119,6 +119,9 @@ const PartnerDetailContainer = (props) => {
                       <Tooltip title='Wallet Topup'>
                         <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('topUp')} />
                       </Tooltip>}
+                      <Tooltip title='Adhoc Wallet Topup'>
+                        <Button shape='circle' icon={<WalletOutlined />} />
+                      </Tooltip>
                     <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${cardcode}`}>
                       <Tooltip title='Add Truck'>
                         <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />} disabled={!partner_access} />
