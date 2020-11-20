@@ -57,18 +57,47 @@ const CustomerTrips = (props) => {
     setFilter({ ...filter, destinationname:e.target.value})
   }
 
-  const tat = {
-    'Assigned': (record) => parseInt(record.confirmed_tat,10),
-    'Confirmed': (record) => parseInt(record.confirmed_tat,10),
-    'Reported at source': (record) => parseInt(record.loading_tat,10),
-    'Intransit': (record) => parseInt(record.intransit_tat,10),
-    'Intransit halting': (record) => parseInt(record.intransit_tat,10),
-    'Reported at destination': (record) => parseInt(record.unloading_tat,10),
-    'Delivered':(record) => parseInt(record.delivered_tat,10),
-    'Invoiced':(record) => parseInt(record.invoiced_tat,10),
-    'Paid':(record) => parseInt(record.paid_tat,10),
-    'Recieved':(record) => parseInt(record.received_tat,10),
-    'Closed':(record) => parseInt(record.closed_tat,10)
+  
+  const tat=(record) => {
+    const status = get(record, 'trip_status.name', null)
+    let tat = null
+    switch(status)
+    {
+    case 'Assigned':
+    tat = record.confirmed_tat
+    break 
+    case 'Confirmed':
+    tat = record.confirmed_tat
+    break
+    case 'Reported at source':
+    tat = record.loading_tat
+    break 
+    case 'Intransit':
+    tat = record.intransit_tat
+    break
+    case 'Intransit halting':
+    tat = record.intransit_tat
+    break 
+    case 'Reported at destination':
+    tat = record.unloading_tat
+    break 
+    case 'Delivered':  
+    tat = record.delivered_tat
+    break
+    case 'Invoiced':
+    tat = record.invoiced_tat
+    break       
+    case 'Paid':
+    tat = record.paid_tat
+    break
+    case 'Recieved':
+    tat = record.received_tat
+    break
+    case 'Closed':
+    tat = record.closed_tat
+    break
+    }
+    return parseInt(tat,10)
   }
 
   const finalPaymentsPending = [
@@ -206,14 +235,10 @@ const CustomerTrips = (props) => {
     },
     {
       title: 'Aging',
-      render: (text, record) => {
-        const status = get(record, 'trip_status.name', null)
-
-        return tat[status](record)
-      },
+      render: (text, record) => tat(record),
       sorter: (a, b) => {
         const status = get(a, 'trip_status.name', null)
-        return tat[status](a) > tat[status](b) ? 1 : -1
+        return status ? (tat(a) > tat(b) ? 1 : -1) : null
       },
       width: '7%'
     }
