@@ -311,7 +311,7 @@ const ConfirmPo = (props) => {
               />}
           </Col>
           <Col xs={24} sm={10}>
-            <Checkbox checked={isToPay} onChange={onIsToPayChange}> To Pay </Checkbox>
+            {/* <Checkbox checked={isToPay} onChange={onIsToPayChange}> To Pay </Checkbox> */}
             {(customer && customer.id) &&
               isToPay ?
               <ToPayPrice
