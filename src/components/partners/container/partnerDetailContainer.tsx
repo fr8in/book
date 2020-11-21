@@ -94,7 +94,7 @@ const PartnerDetailContainer = (props) => {
   const partner_status = get(partner_info, 'partner_status.name', null)
   const after_onboard = partner_status === 'Active' || partner_status === 'De-activate' || partner_status === 'Blacklisted'
   const adhocWalleTopup_validation = wallet_activate_role 
-  // ? partner_status !== 'Blacklisted'|| partner_status === 'Blacklisted' && partner_info.wallet_block === false : null
+ 
   return (
     loading ? <Loading /> : (
       <Row>

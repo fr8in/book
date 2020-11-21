@@ -7,10 +7,15 @@ import userContext from '../../lib/userContaxt'
 import Loading from '../common/loading'
 
 const GET_TOKEN = gql`
-query get_token (
-  $partner_id: Int!
-){
-  token(partner_id: $partner_id, process:"WALLET_TOP_UP_ADHOC")
+query get_token ($partner_id: Int!,$cardcode:String!){
+  token(partner_id: $partner_id, process:"WALLET_TOP_UP_ADHOC"),
+  partner_sap_accounting(cardcode: $cardcode) {
+    billed
+    cleared
+    commission
+    wallet
+    on_hold
+  }
 }`
 
 const ADHOC_WALLET_TOPUP = gql`
@@ -24,7 +29,7 @@ mutation partner_wallet_topup_adhoc($partner_id: Int!, $amount: Float!, $created
 const AdhocwalletTopup = (props) => {
   const { visible, onHide, partner_id,partner_info } = props
   
-   const { loading, data, error } = useQuery(GET_TOKEN, { variables: { partner_id }, fetchPolicy: 'network-only' })
+   const { loading, data, error } = useQuery(GET_TOKEN, { variables: { partner_id,cardcode:partner_info.cardcode }, fetchPolicy: 'network-only' })
 
   if (error) {
     message.error(error.toString())
@@ -38,10 +43,10 @@ const AdhocwalletTopup = (props) => {
   const context = useContext(userContext)
   const [form] = Form.useForm()
 
-  const onhold = get(partner_info, 'partner_accounting.onhold', 0)
-  const cleared = get(partner_info, 'partner_accounting.cleared', 0)
+  const onhold = get(data, 'partner_sap_accounting.on_hold', 0)
+  const cleared = get(data, 'partner_sap_accounting.cleared', 0)
   const max_amount_limit = onhold + cleared
-// parseInt(form.getFieldValue('amount'), 10)
+
   const handlediscountchange = (e) => {
     const amount= form.getFieldValue('amount') || 0
     setSelectedTopUps(e.target.checked)
@@ -84,9 +89,19 @@ const AdhocwalletTopup = (props) => {
 
   const onSubmit = (form) => {
     setDisbleBtn(true)
-    if(partner_info.partner_status === 'Blacklisted'){
-      message.error('partner is Blacklisted')
-    }else{
+    if(partner_info.partner_status.name === 'Blacklisted'){
+      message.error('Partner Blacklisted')
+      setDisbleBtn(false)
+      
+    }else if (partner_info.wallet_block === true){
+      message.error('Wallet Block')
+      setDisbleBtn(false)
+    }
+    else if (form.amount > max_amount_limit){
+      message.error('Enter Valid Amount')
+      setDisbleBtn(false)
+    }
+    else{
     partner_bank_transfer_track({
       variables: {
         token: data.token,
@@ -111,7 +126,7 @@ const AdhocwalletTopup = (props) => {
       footer={[]}
     >
       <Form layout='vertical' onFinish={onSubmit} form={form}>
-        <Form.Item label='Amount' name='amount' rules={[{ required: true }]}>
+        <Form.Item label='Amount' name='amount' rules={[{ required: true }]} extra={`Maximum Limit: ₹${max_amount_limit}`}>
           <Input type='number' min={1} placeholder='Amount' onChange={handleamountvalue} />
         </Form.Item>
         <Form.Item label='Comment' name='comment' rules={[{ required: true, message: 'Comment required' }]} >
