@@ -106,19 +106,25 @@ const PartnerDetailContainer = (props) => {
                 extra={
                   <Space>
                     {admin &&
+                    <div className='alignCenter'>
                       <Tooltip title='Wallet to Bank'>
                         <Button icon={<BankOutlined />} shape='circle' onClick={() => onShow('walletToBank')} />
-                      </Tooltip>}
-                    <Tooltip title='Account Statement'>
+                      </Tooltip>
+                      <p className='tinyAction'>Bank</p>
+                      </div>}
+                    <div className='alignCenter'>
                       <Button icon={<MailOutlined />} shape='circle' onClick={() => onShow('reportMail')} />
-                    </Tooltip>
-                    <Tooltip title='Wallet Statement'>
+                      <p className='tinyAction'>Email</p>
+                    </div>
+                    <div className='alignCenter'>
                       <Button icon={<FileTextOutlined />} shape='circle' onClick={() => onShow('statement')} />
-                    </Tooltip>
+                      <p className='tinyAction'>Statement</p>
+                      </div>
                     {partner_info.partner_status === 'Blacklisted' ? wallet_activate_role : top_up_access &&
-                      <Tooltip title='Wallet Topup'>
+                       <div className='alignCenter'>
                         <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('topUp')} />
-                      </Tooltip>}
+                        <p className='tinyAction'>Topup</p>
+                      </div>}
                     <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${cardcode}`}>
                       <Tooltip title='Add Truck'>
                         <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />} disabled={!partner_access} />
