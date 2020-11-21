@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useState, useContext } from 'react'
 import { Row, Col, Card, Tabs, Button, Space, Tooltip } from 'antd'
-import { CarOutlined, WalletOutlined, FileTextOutlined, MailOutlined, PlusCircleOutlined, BankOutlined } from '@ant-design/icons'
+import { CarOutlined, WalletOutlined, FileTextOutlined, MailOutlined,BookOutlined ,PlusCircleOutlined, BankOutlined } from '@ant-design/icons'
 import DetailPageHeader from '../../common/detailPageHeader'
 import HeaderInfo from '../partner'
 import WalletStatus from '../walletStatus'
@@ -31,6 +31,7 @@ import PartnerTripContainer from './partnerTripContainer'
 import WalletToBank from '../walletToBank'
 import u from '../../../lib/util'
 import userContext from '../../../lib/userContaxt'
+import AdhocWalletTopup from '../adhocWalleTopup'
 
 const TabPane = Tabs.TabPane
 
@@ -70,7 +71,7 @@ const PartnerDetailContainer = (props) => {
         ongoing: on_going,
         pod: pod,
         invoiced: invoiced,
-        paid: paid
+        paid: paid  
       }
     }
   )
@@ -92,7 +93,8 @@ const PartnerDetailContainer = (props) => {
 
   const partner_status = get(partner_info, 'partner_status.name', null)
   const after_onboard = partner_status === 'Active' || partner_status === 'De-activate' || partner_status === 'Blacklisted'
-
+  const adhocWalleTopup_validation = wallet_activate_role 
+  // ? partner_status !== 'Blacklisted'|| partner_status === 'Blacklisted' && partner_info.wallet_block === false : null
   return (
     loading ? <Loading /> : (
       <Row>
@@ -119,6 +121,10 @@ const PartnerDetailContainer = (props) => {
                       <Tooltip title='Wallet Topup'>
                         <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('topUp')} />
                       </Tooltip>}
+                     { adhocWalleTopup_validation &&
+                      <Tooltip title='Adhoc Wallet Topup'>
+                        <Button shape='circle' icon={<BookOutlined />} onClick={() => onShow('adhoctopUp')}/>
+                      </Tooltip> } 
                     <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${cardcode}`}>
                       <Tooltip title='Add Truck'>
                         <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />} disabled={!partner_access} />
@@ -233,6 +239,7 @@ const PartnerDetailContainer = (props) => {
             balance={get(partner_info, 'partner_accounting.wallet_balance', 0)}
           />}
         {visible.topUp && <WalletTopUp visible={visible.topUp} onHide={onHide} partner_id={partner_info.id} />}
+        {visible.adhoctopUp && <AdhocWalletTopup visible={visible.adhoctopUp} onHide={onHide} partner_info={partner_info} partner_id={partner_info.id} />}
         {visible.reportMail && <ReportEmail visible={visible.reportMail} onHide={onHide} cardcode={cardcode} />}
         {visible.statement && <WalletStatement visible={visible.statement} onHide={onHide} cardcode={partner_info.cardcode} />}
       </Row>)
