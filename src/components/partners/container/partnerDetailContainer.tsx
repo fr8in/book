@@ -106,22 +106,22 @@ const PartnerDetailContainer = (props) => {
                 extra={
                   <Space>
                     {admin &&
-                    <div className='alignCenter'>
+                    <div className='text-center'>
                       <Tooltip title='Wallet to Bank'>
                         <Button icon={<BankOutlined />} shape='circle' onClick={() => onShow('walletToBank')} />
                       </Tooltip>
                       <p className='tinyAction'>Bank</p>
                       </div>}
-                    <div className='alignCenter'>
+                    <div className='text-center'>
                       <Button icon={<MailOutlined />} shape='circle' onClick={() => onShow('reportMail')} />
                       <p className='tinyAction'>Email</p>
                     </div>
-                    <div className='alignCenter'>
+                    <div className='text-center'>
                       <Button icon={<FileTextOutlined />} shape='circle' onClick={() => onShow('statement')} />
                       <p className='tinyAction'>Statement</p>
                       </div>
                     {partner_info.partner_status === 'Blacklisted' ? wallet_activate_role : top_up_access &&
-                       <div className='alignCenter'>
+                       <div className='text-center'>
                         <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('topUp')} />
                         <p className='tinyAction'>Topup</p>
                       </div>}

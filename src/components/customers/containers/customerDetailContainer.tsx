@@ -115,7 +115,7 @@ const CustomerDetailContainer = (props) => {
                 }
                 extra={
                   <Space>
-                    {/* <div className='alignCenter'>
+                    {/* <div className='text-center'>
                       <Button
                         icon={<MailOutlined />}
                         shape='circle'
@@ -126,7 +126,7 @@ const CustomerDetailContainer = (props) => {
                     {transferAccess
                       ? (
                         <Space>
-                          <div className='alignCenter'>
+                          <div className='text-center'>
                             <Button
                               icon={<BankFilled />}
                               shape='circle'
@@ -134,7 +134,7 @@ const CustomerDetailContainer = (props) => {
                             />
                             <p className='tinyAction'>Transfer</p>
                           </div>
-                          <div className='alignCenter'>
+                          <div className='text-center'>
                             <Button
                               icon={<FileDoneOutlined />}
                               shape='circle'
@@ -146,7 +146,7 @@ const CustomerDetailContainer = (props) => {
                       : null}
 
                     {customer_access ? (
-                      <div className='alignCenter'>
+                      <div className='text-center'>
                         <Button
                           shape='circle'
                           icon={<WalletOutlined />}
