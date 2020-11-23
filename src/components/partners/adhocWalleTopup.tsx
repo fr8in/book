@@ -45,7 +45,8 @@ const AdhocwalletTopup = (props) => {
 
   const onhold = get(data, 'partner_sap_accounting.on_hold', 0)
   const cleared = get(data, 'partner_sap_accounting.cleared', 0)
-  const max_amount_limit = onhold + cleared
+  const max_amount = onhold + cleared
+  const max_amount_limit = max_amount > 0 ? max_amount : 0
 
   const handlediscountchange = (e) => {
     const amount= form.getFieldValue('amount') || 0
@@ -96,12 +97,7 @@ const AdhocwalletTopup = (props) => {
     }else if (partner_info.wallet_block === true){
       message.error('Wallet Block')
       setDisbleBtn(false)
-    }
-    else if (form.amount > max_amount_limit){
-      message.error('Enter Valid Amount')
-      setDisbleBtn(false)
-    }
-    else{
+    }else{
     partner_bank_transfer_track({
       variables: {
         token: data.token,
