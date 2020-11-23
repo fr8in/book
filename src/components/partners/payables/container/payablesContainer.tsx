@@ -24,9 +24,9 @@ const PayablesContainer = () => {
     }
     const tooLate = dates[0] && current.diff(dates[0], 'days') > 30
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30
-    const isNotGreaterThanToday = current && current > moment().endOf('day')
-    return (isNotGreaterThanToday || (tooEarly || tooLate))
+    return ( (tooEarly || tooLate))
   }
+  
   const [icici_statement] = useMutation(
     DATE_SELECT_MUTATION,
     {

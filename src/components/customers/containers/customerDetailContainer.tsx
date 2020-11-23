@@ -1,4 +1,4 @@
-import { Row, Col, Card, Button, Space, Tabs, Tooltip } from 'antd'
+import { Row, Col, Card, Button, Space, Tabs } from 'antd'
 import get from 'lodash/get'
 import {
   BankFilled,
@@ -115,41 +115,45 @@ const CustomerDetailContainer = (props) => {
                 }
                 extra={
                   <Space>
-                    {/* <Tooltip title='Account Statement'>
+                    {/* <div className='text-center'>
                       <Button
                         icon={<MailOutlined />}
                         shape='circle'
                         onClick={() => onShow('showModal')}
                       />
-                    </Tooltip> */}
+                      <p className='tinyAction'>Statement</p>
+                    </div> */}
                     {transferAccess
                       ? (
                         <Space>
-                          <Tooltip title='Transfer'>
+                          <div className='text-center'>
                             <Button
                               icon={<BankFilled />}
                               shape='circle'
                               onClick={() => onShow('transfer')}
                             />
-                          </Tooltip>
-                          <Tooltip title='Excess'>
+                            <p className='tinyAction'>Transfer</p>
+                          </div>
+                          <div className='text-center'>
                             <Button
                               icon={<FileDoneOutlined />}
                               shape='circle'
                               onClick={() => onShow('rebate')}
                             />
-                          </Tooltip>
+                            <p className='tinyAction'>Excess</p>
+                          </div>
                         </Space>)
                       : null}
 
                     {customer_access ? (
-                      <Tooltip title='Wallet Topup'>
+                      <div className='text-center'>
                         <Button
                           shape='circle'
                           icon={<WalletOutlined />}
                           onClick={() => onShow('wallet')}
                         />
-                      </Tooltip>)
+                        <p className='tinyAction'>Topup</p>
+                      </div>)
                       : null}
                     <WalletBalance wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)} cardcode={cardcode} />
                     <Blacklist
