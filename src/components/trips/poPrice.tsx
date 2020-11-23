@@ -10,13 +10,13 @@ const PoPrice = (props) => {
   const { po_data, form, customer, loading, record } = props
 
   const default_mamul = get(customer, 'system_mamul', 0)
-  const cus_price = get(record, 'customer_price', null)
+  const customer_price = get(record, 'customer_price', null)
   const customer_advance_percentage = get(customer, 'customer_advance_percentage.name', 90)
   const partner_advance_percentage = get(po_data, 'partner_advance_percentage.name', 70)
   const price_type = get(record, 'is_price_per_ton', false)
-  const part_price = cus_price - default_mamul
-  const bank = cus_price ? (cus_price * customer_advance_percentage / 100) : 0
-  const wallet = part_price ? (part_price * partner_advance_percentage / 100) : 0
+  const partner_price = customer_price - default_mamul
+  const bank = customer_price ? (customer_price * customer_advance_percentage / 100) : 0
+  const wallet = partner_price ? (partner_price * partner_advance_percentage / 100) : 0
 
   const initial = {
     part_adv: wallet,
@@ -39,19 +39,19 @@ const PoPrice = (props) => {
 
   const onPerTonPriceChange = (e) => {
     const { value } = e.target
-    const cus_price = value * (form.getFieldValue('ton') || 1)
-    const part_price = cus_price - form.getFieldValue('mamul')
-    const cus_adv = cus_price * customer_advance_percentage / 100
-    const fr8_total = cus_price - (parseFloat(form.getFieldValue('p_total')))
+    const customer_price = value * (form.getFieldValue('ton') || 1)
+    const partner_price = customer_price - form.getFieldValue('mamul')
+    const cus_adv = customer_price * customer_advance_percentage / 100
+    const fr8_total = customer_price - (parseFloat(form.getFieldValue('p_total')))
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
     const balance = (fr8_total < 0 ? 0 : fr8_total) - (bank > 0 ? bank : 0)
-    const fr8_part_total = part_price - (parseFloat(form.getFieldValue('p_total')))
-    const wallet = (part_price * partner_advance_percentage / 100) - parseFloat(form.getFieldValue('p_total'))
+    const fr8_part_total = partner_price - (parseFloat(form.getFieldValue('p_total')))
+    const wallet = (partner_price * partner_advance_percentage / 100) - parseFloat(form.getFieldValue('p_total'))
     const fr8_part_balance = (fr8_part_total < 0 ? 0 : fr8_part_total) - (wallet < 0 ? 0 : wallet)
 
     form.setFieldsValue({
-      customer_price: cus_price,
-      partner_price: part_price < 0 ? 0 : part_price,
+      customer_price: customer_price,
+      partner_price: partner_price < 0 ? 0 : partner_price,
       total: fr8_total < 0 ? 0 : fr8_total,
       bank: (bank > 0 ? bank : 0),
       balance: balance < 0 ? 0 : balance,
@@ -62,19 +62,19 @@ const PoPrice = (props) => {
   }
   const onTonChange = (e) => {
     const { value } = e.target
-    const cus_price = value * (form.getFieldValue('price_per_ton') || 1)
-    const part_price = cus_price - form.getFieldValue('mamul')
-    const cus_adv = cus_price * customer_advance_percentage / 100
-    const fr8_total = cus_price - (parseFloat(form.getFieldValue('p_total')))
+    const customer_price = value * (form.getFieldValue('price_per_ton') || 1)
+    const partner_price = customer_price - form.getFieldValue('mamul')
+    const cus_adv = customer_price * customer_advance_percentage / 100
+    const fr8_total = customer_price - (parseFloat(form.getFieldValue('p_total')))
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
     const balance = (fr8_total < 0 ? 0 : fr8_total) - (bank > 0 ? bank : 0)
-    const fr8_part_total = part_price - (parseFloat(form.getFieldValue('p_total')))
-    const wallet = (part_price * partner_advance_percentage / 100) - parseFloat(form.getFieldValue('p_total'))
+    const fr8_part_total = partner_price - (parseFloat(form.getFieldValue('p_total')))
+    const wallet = (partner_price * partner_advance_percentage / 100) - parseFloat(form.getFieldValue('p_total'))
     const fr8_part_balance = (fr8_part_total < 0 ? 0 : fr8_part_total) - (wallet < 0 ? 0 : wallet)
 
     form.setFieldsValue({
-      customer_price: cus_price,
-      partner_price: part_price < 0 ? 0 : part_price,
+      customer_price: customer_price,
+      partner_price: partner_price < 0 ? 0 : partner_price,
       total: fr8_total < 0 ? 0 : fr8_total,
       bank: (bank > 0 ? bank : 0),
       balance: balance < 0 ? 0 : balance,
@@ -85,17 +85,17 @@ const PoPrice = (props) => {
   }
   const onCustomerPriceChange = (e) => {
     const { value } = e.target
-    const part_price = (value ? parseFloat(value) : 0) - form.getFieldValue('mamul')
+    const partner_price = (value ? parseFloat(value) : 0) - form.getFieldValue('mamul')
     const cus_adv = (value ? parseFloat(value) : 0) * customer_advance_percentage / 100
     const fr8_total = value - (parseFloat(form.getFieldValue('p_total')))
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
     const balance = (fr8_total < 0 ? 0 : fr8_total) - (bank > 0 ? bank : 0)
-    const fr8_part_total = part_price - (parseFloat(form.getFieldValue('p_total')))
-    const wallet = ((part_price * partner_advance_percentage) / 100) - form.getFieldValue('p_total')
+    const fr8_part_total = partner_price - (parseFloat(form.getFieldValue('p_total')))
+    const wallet = ((partner_price * partner_advance_percentage) / 100) - form.getFieldValue('p_total')
     const fr8_part_balance = (fr8_part_total < 0 ? 0 : fr8_part_total) - (wallet < 0 ? 0 : wallet)
 
     form.setFieldsValue({
-      partner_price: part_price < 0 ? 0 : part_price,
+      partner_price: partner_price < 0 ? 0 : partner_price,
       total: fr8_total < 0 ? 0 : fr8_total,
       bank: (bank < 0 ? 0 : bank),
       balance: balance < 0 ? 0 : balance,
@@ -106,17 +106,17 @@ const PoPrice = (props) => {
   }
   const onMamulChange = (e) => {
     const { value } = e.target
-    const part_price = form.getFieldValue('customer_price') - value
+    const partner_price = form.getFieldValue('customer_price') - value
     const cus_adv = form.getFieldValue('customer_price') * customer_advance_percentage / 100
     const fr8_total = form.getFieldValue('customer_price') - (parseFloat(form.getFieldValue('p_total')))
     const bank = cus_adv - (parseFloat(form.getFieldValue('p_total')))
     const balance = (fr8_total < 0 ? 0 : fr8_total) - (bank > 0 ? bank : 0)
     const fr8_part_total = form.getFieldValue('total') - (value ? parseFloat(value) : 0)
-    const wallet = (part_price * partner_advance_percentage / 100) - (parseFloat(form.getFieldValue('p_total')))
+    const wallet = (partner_price * partner_advance_percentage / 100) - (parseFloat(form.getFieldValue('p_total')))
     const fr8_part_balance = (fr8_part_total < 0 ? 0 : fr8_part_total) - (wallet < 0 ? 0 : wallet)
 
     form.setFieldsValue({
-      partner_price: part_price < 0 ? 0 : part_price,
+      partner_price: partner_price < 0 ? 0 : partner_price,
       total: fr8_total < 0 ? 0 : fr8_total,
       bank: (bank > 0 ? bank : 0),
       balance: balance < 0 ? 0 : balance,
@@ -197,7 +197,7 @@ const PoPrice = (props) => {
               label='Customer Price'
               name='customer_price'
               rules={[{ required: true }]}
-              initialValue={cus_price}
+              initialValue={customer_price}
             >
               <Input
                 placeholder='Customer price'
@@ -231,7 +231,7 @@ const PoPrice = (props) => {
                 onInput={u.handleLengthCheck}
               />
             </Form.Item>
-            <Form.Item label='Partner Price' name='partner_price' initialValue={part_price < 0 ? 0 : part_price}>
+            <Form.Item label='Partner Price' name='partner_price' initialValue={partner_price < 0 ? 0 : partner_price}>
               <Input
                 placeholder='Partner Price'
                 disabled
@@ -284,7 +284,7 @@ const PoPrice = (props) => {
             <Form.Item
               label='Customer To FR8'
               name='total'
-              initialValue={cus_price || 0}
+              initialValue={customer_price || 0}
             >
               <Input placeholder='Total' disabled size='small' type='number' />
             </Form.Item>
@@ -300,7 +300,7 @@ const PoPrice = (props) => {
             <Form.Item
               label='Balance'
               name='balance'
-              initialValue={cus_price - bank}
+              initialValue={customer_price - bank}
               className='indent last'
             >
               <Input placeholder='Balance' disabled size='small' type='number' />
@@ -309,7 +309,7 @@ const PoPrice = (props) => {
             <Form.Item
               label='FR8 To Partner'
               name='fp_total'
-              initialValue={part_price < 0 ? 0 : part_price}
+              initialValue={partner_price < 0 ? 0 : partner_price}
             >
               <Input placeholder='Total' disabled size='small' type='number' />
             </Form.Item>
@@ -325,7 +325,7 @@ const PoPrice = (props) => {
             <Form.Item
               label={<span>Balance <span>Including Commission</span></span>}
               name='fp_balance'
-              initialValue={(part_price - wallet) < 0 ? 0 : (part_price - wallet)}
+              initialValue={(partner_price - wallet) < 0 ? 0 : (partner_price - wallet)}
               className='indent'
             >
               <Input placeholder='Balance' disabled size='small' type='number' />

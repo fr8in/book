@@ -1,4 +1,4 @@
-import { Modal, Button, Row, Col, Form, Input, message, Divider } from 'antd'
+import { Modal, Button, Row, Col, Form, Input, message, Divider, Checkbox } from 'antd'
 import { gql, useMutation, useSubscription } from '@apollo/client'
 import { useState, useContext } from 'react'
 import userContext from '../../lib/userContaxt'
@@ -53,7 +53,7 @@ mutation update_trip_price(
 
 const CustomerPriceEdit = (props) => {
   const { visible, onHide, trip_id, trip_price, loaded, trip_status_id, edit_access, lock } = props
-
+  const { topic } = u
   const [form] = Form.useForm()
   const context = useContext(userContext)
   const customer_advance_percentage = trip_price.customer_advance_percentage
@@ -117,7 +117,7 @@ const CustomerPriceEdit = (props) => {
           comment: comment,
           created_by: context.email,
           updated_by: context.email,
-          topic: 'Trip Price Changed'
+          topic: topic.trip_price_change
         }
       })
     }
@@ -256,6 +256,7 @@ const CustomerPriceEdit = (props) => {
       className='no-header'
     >
       <Form onFinish={onCustomerPriceSubmit} form={form} {...layout} labelAlign='left' colon={false} className='form-sheet'>
+      <Checkbox checked={false} disabled /> &nbsp; To Pay  
         {trip_price.is_price_per_ton ? (
           <div>
             <Form.Item

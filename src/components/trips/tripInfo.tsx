@@ -9,6 +9,7 @@ import CustomerPriceEdit from '../trips/customerPriceEdit'
 import moment from 'moment'
 import get from 'lodash/get'
 import u from '../../lib/util'
+import ToPayCustomerPriceEdit from '../trips/toPayCustomerPriceEdit'
 
 const TripInfo = (props) => {
   const { trip_info, trip_id } = props
@@ -39,6 +40,7 @@ const TripInfo = (props) => {
   const pod_verified = get(trip_info, 'pod_verified_at', null)
   const pod_dispatched = get(trip_info, 'pod_dispatched_at', null)
   const lock = get(trip_info, 'transaction_lock', null)
+  const is_topay = trip_info.is_topay
 
   return (
     <Row>
@@ -121,12 +123,25 @@ const TripInfo = (props) => {
           </Col>
         </Row>
       </Col>
-      {visible.price &&
-        <CustomerPriceEdit
+      {visible.price && is_topay === true ? 
+      <ToPayCustomerPriceEdit
+      visible={visible.price}
+      onHide={onHide}
+      trip_price={trip_prices || {}}
+      trip_id={trip_id}
+      is_topay={is_topay}
+      loaded={trip_info.loaded === 'Yes'}
+      trip_status_id={trip_status_id}
+      edit_access={price_edit_access}
+      lock={lock}
+    />
+      :
+       <CustomerPriceEdit
           visible={visible.price}
           onHide={onHide}
           trip_price={trip_prices || {}}
           trip_id={trip_id}
+          is_topay={is_topay}
           loaded={trip_info.loaded === 'Yes'}
           trip_status_id={trip_status_id}
           edit_access={price_edit_access}

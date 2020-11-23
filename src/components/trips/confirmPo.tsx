@@ -1,6 +1,6 @@
 import userContext from '../../lib/userContaxt'
 import { useState, useContext } from 'react'
-import { Modal, Row, Button, Form, Col, Select, Divider, message } from 'antd'
+import { Modal, Row, Button, Form, Col, Select, Divider, message, Checkbox } from 'antd'
 import Link from 'next/link'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
@@ -8,6 +8,7 @@ import get from 'lodash/get'
 import LinkComp from '../common/link'
 import PoPrice from './poPrice'
 import Truncate from '../common/truncate'
+import ToPayPrice from '../trips/toPayPrice'
 
 const PO_QUERY = gql`
 query po_query($id: Int!, $cus_id: Int!){
@@ -77,6 +78,7 @@ mutation confirm_po(
   $bank:Float,
   $cash: Float,
   $to_pay: Float,
+  $is_topay: Boolean
   ){
   update_trip(_set:{
     truck_id: $truck_id,
@@ -99,7 +101,8 @@ mutation confirm_po(
     including_unloading: $including_unloading,
     bank: $bank,
     to_pay:$to_pay,
-    cash:$cash
+    cash:$cash,
+    is_topay: $is_topay
   }, 
   where:{id:{_eq:$trip_id}}){
     returning{
@@ -117,6 +120,7 @@ const ConfirmPo = (props) => {
   const initial = { search: '', source_id: null, destination_id: null }
   const [obj, setObj] = useState(initial)
   const [disableButton, setDisableButton] = useState(false)
+  const [isToPay, setIsToPay] = useState(false)
   const context = useContext(userContext)
 
   const { loading, error, data } = useQuery(
@@ -131,12 +135,12 @@ const ConfirmPo = (props) => {
   const [confirm_po_mutation] = useMutation(
     CONFIRM_PO,
     {
-      onError (error) {
+      onError(error) {
         const msg = get(error, 'graphQLErrors[0].extensions.internal.error.message', error.toString())
         message.error(msg)
         setDisableButton(false)
       },
-      onCompleted (data) {
+      onCompleted(data) {
         const load_id = get(data, 'update_trip.returning[0].id', null)
         const msg = (
           <span>
@@ -177,6 +181,33 @@ const ConfirmPo = (props) => {
       message.error('Mamul Should be greater than system mamul!')
     } else {
       setDisableButton(true)
+      isToPay ? 
+      confirm_po_mutation({
+        variables: {
+          trip_id: record.id,
+          po_date: form.po_date.format('YYYY-MM-DD'),
+          source_id: obj.source_id ? parseInt(obj.source_id, 10) : get(record, 'source.id', null),
+          destination_id: obj.destination_id ? parseInt(obj.destination_id, 10) : get(record, 'destination.id', null),
+          customer_id: customer.id,
+          partner_id: po_data && po_data.partner && po_data.partner.id,
+          customer_price: parseFloat(form.customer_price),
+          partner_price: parseFloat(form.partner_price_total),
+          ton: form.ton ? form.ton : null,
+          per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
+          is_per_ton: !!form.ton,
+          bank: 0,
+          including_loading: loading_charge,
+          including_unloading: unloading_charge,
+          cash: parseFloat(form.to_pay_cash),
+          to_pay: parseFloat(form.to_pay_balance),
+          truck_id: po_data && po_data.id,
+          truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
+          driver_id: parseInt(driver_id, 10),
+          updated_by: context.email,
+          customer_user_id: parseInt(loading_contact_id),
+          is_topay: !!isToPay
+        }
+      }) :
       confirm_po_mutation({
         variables: {
           trip_id: record.id,
@@ -188,7 +219,7 @@ const ConfirmPo = (props) => {
           customer_price: parseFloat(form.customer_price),
           partner_price: parseFloat(form.partner_price),
           ton: form.ton ? form.ton : null,
-          per_ton: form.per_ton_rate ? parseFloat(form.per_ton_rate) : null,
+          per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
           is_per_ton: !!form.ton,
           mamul: parseFloat(form.mamul),
           including_loading: loading_charge,
@@ -200,7 +231,8 @@ const ConfirmPo = (props) => {
           truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
           driver_id: parseInt(driver_id, 10),
           updated_by: context.email,
-          customer_user_id: parseInt(loading_contact_id)
+          customer_user_id: parseInt(loading_contact_id),
+          is_topay: !!isToPay
         }
       })
     }
@@ -214,6 +246,10 @@ const ConfirmPo = (props) => {
     setObj({ ...obj, destination_id: city_id })
   }
 
+  const onIsToPayChange = (e) => {
+    setIsToPay(e.target.checked)
+    form.resetFields()
+  }
   const partner_name = get(po_data, 'partner.name', '-')
   const trip_id = get(record, 'id', null)
   const layout = {
@@ -276,13 +312,22 @@ const ConfirmPo = (props) => {
               />}
           </Col>
           <Col xs={24} sm={10}>
+            <Checkbox checked={isToPay} onChange={onIsToPayChange}> To Pay </Checkbox>
             {(customer && customer.id) &&
+              isToPay ?
+              <ToPayPrice
+                po_data={po_data && po_data.partner}
+                form={form}
+                customer={customer}
+                record={record}
+              />:
               <PoPrice
                 po_data={po_data && po_data.partner}
                 form={form}
                 customer={customer}
                 record={record}
-              />}
+              /> 
+            }
           </Col>
         </Row>
         {(customer && customer.id) &&
