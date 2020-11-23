@@ -83,6 +83,9 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
         id
         name
       }
+      trip_payments{
+        amount
+      }
       customer_price
       partner_price
       cash

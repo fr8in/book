@@ -1,10 +1,11 @@
 import { useState, useContext } from 'react'
-import { Row, Col, Radio, Form, Input, Button, message } from 'antd'
+import { Row, Col, Radio, Form, Input, Button, message, Popconfirm } from 'antd'
 import { gql, useMutation, useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 import u from '../../lib/util'
 import isEmpty from 'lodash/isEmpty'
+import sumBy from 'lodash/sumBy'
 
 const CREATE_ADDITIONAL_ADVANCE = gql`
 mutation create_additional_advance($input: AdditionalAdvanceInput) {
@@ -33,7 +34,8 @@ const CreateAdditionalAdvance = (props) => {
   const { role } = u
   const edit_access = [role.admin, role.rm, role.accounts_manager,role.bm]
   const access = u.is_roles(edit_access,context)
-
+  const partner_advance_percentage = trip_info.partner_price * 90 / 100
+  const payments = (sumBy(trip_info.trip_payments, 'amount') + (form.getFieldValue('amount') ? form.getFieldValue('amount') : 0))
   const [getBankDetail, { loading, data, error }] = useLazyQuery(
     IFSC_VALIDATION,
     {
@@ -202,9 +204,23 @@ const CreateAdditionalAdvance = (props) => {
               </Form.Item>
             </Col>
             <Col xs={8}>
-              <Form.Item label='save' className='hideLabel'>
-                <Button type='primary' disabled={disable_adv_btn || (radioValue === 'BANK' && !form.getFieldValue('ifsc'))} loading={disableBtn} htmlType='submit'>Pay Now</Button>
-              </Form.Item>
+              {
+                payments > partner_advance_percentage ?
+                  <Popconfirm
+                    title='Total advance percentage is more than 90%.
+                       Do you want to proceed?'
+                    okText='Yes'
+                    cancelText='No'
+                    onConfirm={onSubmit}
+                  >
+                    <Form.Item label='save' className='hideLabel'>
+                    <Button type='primary' disabled={disable_adv_btn || (radioValue === 'BANK' && !form.getFieldValue('ifsc'))} loading={disableBtn} htmlType='submit'>Pay Now</Button>
+                    </Form.Item>
+                  </Popconfirm> :
+                  <Form.Item label='save' className='hideLabel'>
+                     <Button type='primary' disabled={disable_adv_btn || (radioValue === 'BANK' && !form.getFieldValue('ifsc'))} loading={disableBtn} htmlType='submit'>Pay Now</Button>
+                  </Form.Item>
+              }
             </Col>
           </Row>
         </Form>
