@@ -108,23 +108,32 @@ const PartnerDetailContainer = (props) => {
                 extra={
                   <Space>
                     {admin &&
+                    <div className='text-center'>
                       <Tooltip title='Wallet to Bank'>
                         <Button icon={<BankOutlined />} shape='circle' onClick={() => onShow('walletToBank')} />
-                      </Tooltip>}
-                    <Tooltip title='Account Statement'>
+                      </Tooltip>
+                      <p className='tinyAction'>Bank</p>
+                      </div>}
+                    <div className='text-center'>
                       <Button icon={<MailOutlined />} shape='circle' onClick={() => onShow('reportMail')} />
-                    </Tooltip>
-                    <Tooltip title='Wallet Statement'>
+                      <p className='tinyAction'>Email</p>
+                    </div>
+                    <div className='text-center'>
                       <Button icon={<FileTextOutlined />} shape='circle' onClick={() => onShow('statement')} />
-                    </Tooltip>
+                      <p className='tinyAction'>Statement</p>
+                      </div>
                     {partner_info.partner_status === 'Blacklisted' ? wallet_activate_role : top_up_access &&
-                      <Tooltip title='Wallet Topup'>
+                       <div className='text-center'>
                         <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('topUp')} />
-                      </Tooltip>}
+                        <p className='tinyAction'>Topup</p>
+                      </div>}
                      { adhocWalleTopup_validation &&
+                     <div className='text-center'>
                       <Tooltip title='Adhoc Wallet Topup'>
                         <Button shape='circle' icon={<BookOutlined />} onClick={() => onShow('adhoctopUp')}/>
-                      </Tooltip> } 
+                      </Tooltip>
+                       <p className='tinyAction'>Adhoc</p>
+                       </div>} 
                     <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${cardcode}`}>
                       <Tooltip title='Add Truck'>
                         <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />} disabled={!partner_access} />

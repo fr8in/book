@@ -181,6 +181,33 @@ const ConfirmPo = (props) => {
       message.error('Mamul Should be greater than system mamul!')
     } else {
       setDisableButton(true)
+      isToPay ? 
+      confirm_po_mutation({
+        variables: {
+          trip_id: record.id,
+          po_date: form.po_date.format('YYYY-MM-DD'),
+          source_id: obj.source_id ? parseInt(obj.source_id, 10) : get(record, 'source.id', null),
+          destination_id: obj.destination_id ? parseInt(obj.destination_id, 10) : get(record, 'destination.id', null),
+          customer_id: customer.id,
+          partner_id: po_data && po_data.partner && po_data.partner.id,
+          customer_price: parseFloat(form.customer_price),
+          partner_price: parseFloat(form.partner_price_total),
+          ton: form.ton ? form.ton : null,
+          per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
+          is_per_ton: !!form.ton,
+          bank: 0,
+          including_loading: loading_charge,
+          including_unloading: unloading_charge,
+          cash: parseFloat(form.to_pay_cash),
+          to_pay: parseFloat(form.to_pay_balance),
+          truck_id: po_data && po_data.id,
+          truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
+          driver_id: parseInt(driver_id, 10),
+          updated_by: context.email,
+          customer_user_id: parseInt(loading_contact_id),
+          is_topay: !!isToPay
+        }
+      }) :
       confirm_po_mutation({
         variables: {
           trip_id: record.id,
