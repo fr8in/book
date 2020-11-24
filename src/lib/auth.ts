@@ -85,6 +85,7 @@ const signOut = async () => {
 
 const refreshToken = () => {
   const token = localStorage.getItem('token')
+  if(token){
   const decodedToken = jwt.decode(token)
   const expiryTime = decodedToken.exp
   const currentTime = new Date().getTime()
@@ -99,6 +100,7 @@ const refreshToken = () => {
       }
     })
   }
+}
 }
 
 export { auth, signInWithGoogle, signOut, refreshToken }
