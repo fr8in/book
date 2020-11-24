@@ -33,6 +33,14 @@ mutation create_partner_lead($description: String, $topic: String, $created_by: 
 }
 
 `
+const REGISTRATION_ERROR_EMAIL = gql`
+mutation registration_error_email($name:String!,$truck_type:String!,$mobile:String!,$city:String!){
+  registration_error_email(truck_registration_input: {name: $name, mobile: $mobile, truck_type: $truck_type, city: $city}) {
+    description
+    status
+  }
+}`
+
 
 const Lead = () => {
 
@@ -73,7 +81,6 @@ const Lead = () => {
         message.error(error.toString())
       },
       onCompleted (data) {
-
         if(data.partner_user_aggregate.aggregate.count ===0){
           updatePartnerLead({
             variables: {
@@ -95,33 +102,49 @@ const Lead = () => {
     }
   )
 
-  const _get_partner_aggregate = (mobile)=>     getPartnerAggregate({ variables: { mobile } })
+  const _get_partner_aggregate_by_mobile = (mobile)=>getPartnerAggregate({ variables: { mobile } })
 
-  const validate_mobile_no_and_create_lead = () => 
- _get_partner_aggregate( form.getFieldValue( "mobile")) 
+  const   validate_mobile_no_and_create_lead   = () => 
+  _get_partner_aggregate_by_mobile( form.getFieldValue( "mobile")) 
   
   const [updatePartnerLead] = useMutation(
     INSERT_PARTNER_LEAD_MUTATION,
     {
-      onError (error) {
-        message.error(error.toString())
+      onError () {
+        onRegisterEmail()
         setDisableButton(false)
       },
       onCompleted () { 
         setDisableButton(false)
         setRegistration_complete(true) 
-        
       }
     }
   )
 
+  const [registerErrorEmail] = useMutation(
+    REGISTRATION_ERROR_EMAIL,
+    {
+      onError () {
+      },
+      onCompleted () { 
+      }
+    }
+  )
+
+  const onRegisterEmail = () => {
+    registerErrorEmail({
+     variables:{
+       name:form.getFieldValue("name"),
+       mobile:form.getFieldValue("mobile"),
+       truck_type:''.concat(form.getFieldValue("truck_type")),
+       city:form.getFieldValue("city")
+     }
+    })
+  }
+
   const onCityChange = (city_id) => {
     setCity_id(city_id)
   }
-
- 
-
-  
 
   return (
     <Card size='small' className='mt10' style={{width:320}}> 
