@@ -25,7 +25,7 @@ query ifsc_validation($ifsc: String!){
 }`
 
 const CreateAdditionalAdvance = (props) => {
-  const { trip_info, setAdvanceRefetch } = props
+  const { trip_info, setAdvanceRefetch,lock } = props
 
   const [radioValue, setRadioValue] = useState('WALLET')
   const [disableBtn, setDisableBtn] = useState(false)
@@ -89,7 +89,10 @@ const CreateAdditionalAdvance = (props) => {
 
   const onSubmit = (form) => {
     setDisableBtn(true)
-    if (radioValue === 'WALLET') {
+    if(lock === true){
+      message.error('previous Transaction Pending')
+      setDisableBtn(false)
+    } else if (radioValue === 'WALLET') {
       createAdditionalAdvance({
         variables: {
           input: {

@@ -155,8 +155,8 @@ const TripDetailContainer = (props) => {
                         </Collapse>}
                       <Collapse accordion className='small mt10'>
                         <Panel header='Additional Advance' key='1'>
-                          {before_invoice && loaded && !lock &&
-                            <CreateAdditionalAdvance trip_info={trip_info} setAdvanceRefetch={setAdvanceRefetch} />}
+                          {before_invoice && loaded && 
+                            <CreateAdditionalAdvance trip_info={trip_info} setAdvanceRefetch={setAdvanceRefetch} lock={lock} />}
                           <AdditionalAdvance
                             ad_trip_id={trip_info.id}
                             loaded={loaded}
