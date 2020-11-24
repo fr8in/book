@@ -14,6 +14,7 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import get from 'lodash/get'
 import u from '../../../lib/util'
 import isEmpty from 'lodash/isEmpty'
+import LinkComp from '../../common/link'
 
 const FASTAG_QUERY = gql`
 query fastags_by_partner($partner_id: Int!) {
@@ -129,11 +130,14 @@ const FasTags = (props) => {
       width: '8%',
       render: (text, record) => {
         return (
-          <Link href='trucks/[id]' as={`trucks/${text}`}>
-            <a>{text}</a>
-          </Link>
-        )
-      }
+          <LinkComp
+            type='trucks'
+            data={record.truck_no}
+            id={record.truck_no}
+            length={10}
+            blank
+          />)
+        }
     },
     {
       title: 'Tag Bal',
