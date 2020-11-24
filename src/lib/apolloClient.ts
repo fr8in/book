@@ -34,12 +34,13 @@ const authLink = setContext((_, { headers }) => {
   refreshToken()
   const token = localStorage.getItem('token')
   // return the headers to the context so httpLink can read them
+  if(token){
   return {
     headers: {
       ...headers,
       authorization: token ? `Bearer ${token}` : ''
     }
-  }
+  }}
 })
 
 const link = isBrowser ? split(

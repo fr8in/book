@@ -96,6 +96,11 @@ const CustomerExceptionDate = (props) => {
     _data = data
   }
   const trips = get(_data, 'trip', [])
+  useEffect(() => {
+    const trip_ids = trips.map(trip => trip.id)
+    setSelectedRowKeys(trip_ids)
+    console.log('trip_ids', trip_ids)
+  }, [loading])
 
   useEffect(() => {
     const trip_ids = trips.map(trip => trip.id)
