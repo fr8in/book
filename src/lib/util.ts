@@ -62,6 +62,7 @@ export default {
     customer_reject:'Customer Reject',
     customer_advance_percentage:'Customer Advance Percentage',
     billing_comment:'Billing Comment',
+    truck_owner_registration:'Truck Owner Registration',
     trip_price_change: 'Trip Price Changed'
   },
   maxLength: 6,
