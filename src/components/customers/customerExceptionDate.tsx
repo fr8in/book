@@ -1,4 +1,4 @@
-import { message, DatePicker, Modal, Table, Row, Form,Space,Button, } from 'antd'
+import { message, DatePicker, Modal, Table, Row, Form, Space, Button, } from 'antd'
 import moment from 'moment'
 import { gql, useMutation, useSubscription } from '@apollo/client'
 import useShowHide from '../../hooks/useShowHide'
@@ -10,7 +10,7 @@ import get from 'lodash/get'
 import LinkComp from '../common/link'
 import Phone from '../common/phone'
 import Truncate from '../common/truncate'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 
 const CUSTOMER_SUBCRIPTION = gql`
@@ -64,7 +64,7 @@ mutation customer_exception($trip_id:[Int!],$description: String, $topic: String
 
 
 const CustomerExceptionDate = (props) => {
-  const { exceptionDate, cardcode ,edit_access,customer_id,id} = props
+  const { exceptionDate, cardcode, edit_access, customer_id, id } = props
   const context = useContext(userContext)
   const { topic } = u
   const initial = { datePicker: false }
@@ -97,6 +97,11 @@ const CustomerExceptionDate = (props) => {
     _data = data
   }
   const trips = get(_data, 'trip', [])
+  useEffect(() => {
+    const trip_ids = trips.map(trip => trip.id)
+    setSelectedRowKeys(trip_ids)
+    console.log('trip_ids', trip_ids)
+  }, [loading])
 
   const [assign_to_confirm] = useMutation(
     ASSIGN_TO_CONFIRM_STATUS_MUTATION, {
@@ -117,8 +122,8 @@ const CustomerExceptionDate = (props) => {
         trip_id: selectedTrip,
         updated_by: context.email,
         created_by: context.email,
-        description:`${topic.customer_exception} updated by ${context.email}`,
-        topic:topic.customer_exception,
+        description: `${topic.customer_exception} updated by ${context.email}`,
+        topic: topic.customer_exception,
         exception_date: form.exception_date.format('YYYY-MM-DD')
       }
     })
@@ -227,37 +232,34 @@ const CustomerExceptionDate = (props) => {
               footer={null}
             >
               <Form layout='vertical' onFinish={onSubmit}>
-              <Form.Item label='Exception Date' name='exception_date'>
-                <DatePicker
-                  showToday={false}
-                  placeholder='Exception Date'
-                  defaultValue={exceptionDate ? moment(exceptionDate, dateFormat) : null} 
-                  format={dateFormat} 
-                  size='middle'
+                <Form.Item label='Exception Date' name='exception_date'>
+                  <DatePicker
+                    showToday={false}
+                    placeholder='Exception Date'
+                    defaultValue={exceptionDate ? moment(exceptionDate, dateFormat) : null}
+                    format={dateFormat}
+                    size='middle'
+                  />
+                </Form.Item>
+                <p>Below trips will change to confirm status</p>
+                <Table
+                  columns={columns}
+                  dataSource={trips}
+                  rowKey={(record) => record.id}
+                  size='small'
+                  rowSelection={{ ...rowSelection }}
+                  scroll={{ x: 620, y: 250 }}
+                  pagination={false}
+                  className='withAction'
                 />
-              </Form.Item>
-              <p>Below trips will change to confirm status</p>
-              <Table
-                columns={columns}
-                dataSource={trips}
-                rowKey={(record) => record.id}
-                size='small'
-                rowSelection={{...rowSelection }}
-                scroll={{ x: 620 , y:250}}
-                pagination={false}
-                className='withAction'
-              />
-              <br />
-              <Row justify='end'>
-            <Form.Item>
-              <Space>
-                <Button key='back' onClick={onHide}>Close</Button>
-                <Button type='primary' key='submit' htmlType='submit'>Ok</Button>
-              </Space>
-            </Form.Item>
-          </Row>
+                <br />
+                <Row justify='end'>
+                  <Form.Item>
+                    <Button type='primary' key='submit' htmlType='submit'>Ok</Button>
+                  </Form.Item>
+                </Row>
               </Form>
-              
+
             </Modal>
           </span>)}
     </div>
