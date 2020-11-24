@@ -150,8 +150,10 @@ const Lead = () => {
     <>
     {
       registration_complete   ? 
-
+     <div>
       <h2 className='h2color'>Thank you for your interest,We will contact you shortly</h2>
+      <h2 className='h2color'>Contact No:9362200200</h2>
+      </div>
     :
     <Card size='small' className='mt10' style={{width:320}}> 
     <Form layout='vertical' onFinish={()=>validate_mobile_no_and_create_lead()} form={form} >
