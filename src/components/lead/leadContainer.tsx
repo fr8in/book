@@ -37,7 +37,6 @@ mutation create_partner_lead($description: String, $topic: String, $created_by: 
 const Lead = () => {
 
   const [city_id, setCity_id] = useState(null)
-  const [parter_agrregate_count,set_parter_agrregate_count]=useState(0)
   const [disableButton, setDisableButton] = useState(false)
  const [registration_complete,setRegistration_complete] = useState(false)
  const { topic } = u
@@ -74,26 +73,24 @@ const Lead = () => {
         message.error(error.toString())
       },
       onCompleted (data) {
-        if(data.partner_user_aggregate.aggregate.count !==0){
-          setRegistration_complete(true) 
-return
+
+        if(data.partner_user_aggregate.aggregate.count ===0){
+          updatePartnerLead({
+            variables: {
+              city_id:  parseInt(city_id, 10),
+              name:  form.getFieldValue("name"),
+              mobile:form.getFieldValue("mobile") ,
+              onboarded_by_id:employee_id,
+              partner_status_id: 8,
+              channel_id: 2,
+              created_by:form.getFieldValue("mobile"),
+              description:''.concat(form.getFieldValue("truck_type")),
+          topic:topic.truck_owner_registration
+            }
+          }) 
         }
-      //do the create partner mutation here
       setDisableButton(true) 
-    updatePartnerLead({
-      variables: {
-        city_id:  parseInt(city_id, 10),
-        name:  form.getFieldValue("name"),
-        mobile:form.getFieldValue("mobile") ,
-        onboarded_by_id:employee_id,
-        partner_status_id: 8,
-        channel_id: 2,
-        created_by:form.getFieldValue("mobile"),
-        description:''.concat(form.getFieldValue("truck_type")),
-    topic:topic.truck_owner_registration
-      }
-    }) 
-        
+      setRegistration_complete(true)     
       }
     }
   )
@@ -102,10 +99,6 @@ return
 
   const validate_mobile_no_and_create_lead = () => 
  _get_partner_aggregate( form.getFieldValue( "mobile")) 
-
-
-  
-
   
   const [updatePartnerLead] = useMutation(
     INSERT_PARTNER_LEAD_MUTATION,
@@ -128,25 +121,7 @@ return
 
  
 
-  const onPartnerLeadChange = (form) => { 
-    validate_mobile_no_and_create_lead()
-
-// put this in oncomplete
-    // setDisableButton(true) 
-    // updatePartnerLead({
-    //   variables: {
-    //     city_id:  parseInt(city_id, 10),
-    //     name: form.name,
-    //     mobile: form.mobile,
-    //     onboarded_by_id:employee_id,
-    //     partner_status_id: 8,
-    //     channel_id: 2,
-    //     created_by:form.mobile,
-    //     description:''.concat(form.truck_type),
-    // topic:topic.truck_owner_registration
-    //   }
-    // }) 
-  }
+  
 
   return (
     <Card size='small' className='mt10' style={{width:320}}> 
@@ -155,7 +130,7 @@ return
 
       <h2>Thank you for your interest ,FR8 team will contact you shortly</h2>
     :
-    <Form layout='vertical' onFinish={onPartnerLeadChange} form={form}>
+    <Form layout='vertical' onFinish={()=>validate_mobile_no_and_create_lead()} form={form}>
       <h3>Truck Owner Registration</h3>
               <Form.Item
                 label='Name'
