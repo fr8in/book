@@ -147,29 +147,30 @@ const Lead = () => {
   }
 
   return (
-    <Card size='small' className='mt10' style={{width:320}}> 
+    <>
     {
       registration_complete   ? 
 
-      <h2>Thank you for your interest ,FR8 team will contact you shortly</h2>
+      <h2 className='h2color'>Thank you for your interest,We will contact you shortly</h2>
     :
-    <Form layout='vertical' onFinish={()=>validate_mobile_no_and_create_lead()} form={form}>
+    <Card size='small' className='mt10' style={{width:320}}> 
+    <Form layout='vertical' onFinish={()=>validate_mobile_no_and_create_lead()} form={form} >
       <h3>Truck Owner Registration</h3>
               <Form.Item
                 label='Name'
                 name='name'
                 rules={[{ required: true, message: 'Name is required field!' }]}
               >
-                <Input placeholder='Name' maxLength={100}/>
+                <Input placeholder='Name' maxLength={100} autoComplete='off'/>
               </Form.Item>
               <Form.Item
                 label='Phone Number'
                 name='mobile'
                 rules={[{ required: true, message: 'Phone Number is required field' }]}
               >
-               <Input placeholder='Phone Number' maxLength={10}	/>
+               <Input placeholder='Phone Number' maxLength={10}	autoComplete='off'/>
               </Form.Item>
-              <Form.Item>
+              <Form.Item >
                 <CitySelect
                   label='City'
                   onChange={onCityChange}
@@ -191,10 +192,11 @@ const Lead = () => {
               <Button type='primary'  key='back' loading={disableButton} htmlType='submit'>Submit</Button>
           </Form.Item>
          
-      </Form>}
-      </Card> 
-       
+      </Form>
+    </Card> }
+      </>
   )
 }
+
 
 export default Lead
