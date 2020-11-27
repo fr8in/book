@@ -16,7 +16,7 @@ mutation truck_info($id:Int,$insurance_expiry_at:timestamp){
 
 const TruckInsuranceExpiry = (props) => {
 
-  const initial = { selectType: false }
+  const initial = { dateType: false }
   const { visible, onHide, onShow } = useShowHide(initial)
 
   const {record} = props
@@ -44,15 +44,12 @@ const TruckInsuranceExpiry = (props) => {
     }
 
   return (
-    <Form.Item
-      name='insurance_expiry_at'
-    >
       <div>
-        {!visible.selectType ? (
+        {!visible.dateType ? (
        <label>
          {record.insurance_expiry_at ? moment(record.insurance_expiry_at).format('DD-MMM-YY') : ''}
           <EditTwoTone
-          onClick={() => onShow('selectType')}
+          onClick={() => onShow('dateType')}
         />
         </label>)
          : (
@@ -62,15 +59,13 @@ const TruckInsuranceExpiry = (props) => {
         allowClear
         format='YYYY-MM-DD HH:mm'
         placeholder='Select Time'
-        style={{ width: '100%' }}
+        style={{ width: '70%' }}
         onChange={onSubmit}
         size="small"
       />{' '}
       <CloseCircleTwoTone onClick={onHide} />
           </span>)}
     </div>
-     
-    </Form.Item>
   )
 }
 
