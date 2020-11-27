@@ -6,7 +6,7 @@ import DetailPageHeader from '../../common/detailPageHeader'
 import HeaderInfo from '../partner'
 import WalletStatus from '../walletStatus'
 import BasicDetail from '../partnerInfo'
-// import Barchart from '../barChart'
+import Barchart from '../barChart'
 import AccountSummary from '../accountSummary'
 import PendingBalance from '../pendingBalance'
 import AvailableBalance from '../availableBalance'
@@ -190,7 +190,7 @@ const PartnerDetailContainer = (props) => {
                                 <AvailableBalance partner_summary={partner_info} />
                               </TabPane>
                               <TabPane tab='Order Report' key='2'>
-                                {/* <Barchart /> */}
+                                <Barchart partner_id={partner_info.id}/>
                               </TabPane>
                               <TabPane tab='Documents' key='3'>
                                 <Document partnerInfo={partner_info} />
