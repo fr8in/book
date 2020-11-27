@@ -20,6 +20,7 @@ import isEmpty from 'lodash/isEmpty'
 import EditAccess from '../common/editAccess'
 import Phone from '../common/phone'
 import LinkComp from '../common/link'
+import Link from 'next/link'
 import ReferredByPartner from '../partners/referredByPartnerList'
 
 const PARTNERS_LEAD_SUBSCRIPTION = gql`
@@ -330,7 +331,13 @@ const PartnerLead = (props) => {
       title: 'Name',
       dataIndex: 'name',
       width: '9%',
-      render: (text, record) => <Truncate data={text} length={12} />
+      render: (text, record) => {
+        const id = get(record, 'id', null)
+return(
+  <Link href='/partners/create-partner/[id]' as={`/partners/create-partner/${id} `}>
+     {text}
+  </Link>
+)}
     },
     {
       title: 'Referred By',

@@ -24,8 +24,8 @@ query add_truck ( $cardcode: String!){
 }`
 
 const INSERT_ADD_TRUCK_MUTATION = gql`
-mutation add_truck($truck_no:String,  $partner_id: Int!, $breadth:float8,$length:float8,$height:float8,$city_id:Int,$truck_type_id:Int, $driver_id: Int,$created_by:String ) {
-  insert_truck(objects: {truck_no: $truck_no,breadth: $breadth, height: $height, length: $length,created_by:$created_by, partner_id: $partner_id,  truck_type_id: $truck_type_id, city_id: $city_id, driver_id: $driver_id, truck_status_id: 5}) {
+mutation add_truck($truck_no:String,  $partner_id: Int!, $breadth:float8,$length:float8,$height:float8,$city_id:Int,$truck_type_id:Int, $driver_id: Int,$created_by:String ,$insurance_expiry_at:timestamp) {
+  insert_truck(objects: {truck_no: $truck_no,breadth: $breadth, height: $height, length: $length,created_by:$created_by, partner_id: $partner_id,  truck_type_id: $truck_type_id, city_id: $city_id, driver_id: $driver_id,insurance_expiry_at:$insurance_expiry_at, truck_status_id: 5}) {
     returning {
       id
       truck_no
@@ -113,7 +113,8 @@ const AddTruckContainer = (props) => {
         truck_no: (form.truck_no),
         created_by: context.email,
         truck_type_id: parseInt(form.truck_type, 10),
-        driver_id: driver_id
+        driver_id: driver_id,
+        insurance_expiry_at:form.insurance_expiry_at.format('YYYY-MM-DD')
       }
     })
   }

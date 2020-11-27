@@ -1,4 +1,4 @@
-import { Table, Pagination, Radio, Input } from 'antd'
+import { Table, Pagination, Radio, Input,DatePicker } from 'antd'
 import { useState } from 'react'
 import { EditTwoTone, SearchOutlined } from '@ant-design/icons'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
@@ -7,6 +7,7 @@ import CreatePo from '../../components/trips/createPo'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
+import InsuranceExpiry from './insuranceExpiryDateEdit'
 
 const Trucks = (props) => {
   const initial = {
@@ -165,7 +166,7 @@ const Trucks = (props) => {
     {
       title: 'Status',
       render: (text, record) => record.truck_status && record.truck_status.name,
-      width: '14%',
+      width: '12%',
       filterDropdown: (
         <Radio.Group
           options={truck_status}
@@ -174,6 +175,12 @@ const Trucks = (props) => {
           className='filter-drop-down'
         />
       )
+    },
+    {
+      title: 'Ins Expiry Date',
+      width: '16%',
+      render: (text, record) => <InsuranceExpiry record={record} />,
+      sorter: (a, b) => (a.insurance_expiry_at > b.insurance_expiry_at ? 1 : -1),
     },
     {
       title: 'City',

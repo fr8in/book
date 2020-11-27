@@ -28,6 +28,7 @@ subscription trucks_list(
       id
       truck_no
       available_at
+      insurance_expiry_at
       truck_type_id
       truck_status_id
       truck_type {

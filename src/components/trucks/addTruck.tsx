@@ -1,4 +1,4 @@
-import { Row, Col, Input, Button, Form, Space, Select } from 'antd'
+import { Row, Col, Input, Button, Form, Space, Select,DatePicker } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
 import CitySelect from '../common/citySelect'
 import Driver from './driver'
@@ -6,6 +6,7 @@ import Link from 'next/link'
 
 const AddTruck = (props) => {
   const { partner_info, onSubmit, typeList, driverChange, onCityChange, disableButton, disableAddTruck } = props
+  const dateFormat = 'YYYY-MM-DD'
 
   return (
     <Form layout='vertical' onFinish={onSubmit}>
@@ -47,7 +48,7 @@ const AddTruck = (props) => {
             </Col>
           </Row>
           <Row gutter={10}>
-            <Col xs={24} sm={8}>
+            <Col xs={24} sm={5}>
               <Form.Item
                 label='Length(Ft)'
                 name='length'
@@ -56,7 +57,7 @@ const AddTruck = (props) => {
                 <Input placeholder='Length(Ft)' type='number' disabled={false} />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={8}>
+            <Col xs={24} sm={5}>
               <Form.Item
                 label='Breadth(Ft)'
                 name='breadth'
@@ -65,7 +66,7 @@ const AddTruck = (props) => {
                 <Input placeholder='Breadth(Ft)' type='number' disabled={false} />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={8}>
+            <Col xs={24} sm={5}>
               <Form.Item
                 label='Height(Ft)'
                 name='height'
@@ -74,6 +75,20 @@ const AddTruck = (props) => {
                 <Input placeholder='Height(Ft)' type='number' disabled={false} />
               </Form.Item>
             </Col>
+            <Col xs={24} sm={9}>
+            <Form.Item 
+                label='Insurance Expiry Date'
+                name='insurance_expiry_at'
+                rules={[{ required: true, message: 'Insurance Expiry Date is required field' }]}
+                 >
+                  <DatePicker
+                    showToday={false}
+                    placeholder='Insurance Expiry Date'
+                    format={dateFormat}
+                    size='middle'
+                  />
+                </Form.Item>
+                </Col>
           </Row>
           <Form.Item className='text-right mb0'>
             <Space>

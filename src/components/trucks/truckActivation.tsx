@@ -28,6 +28,7 @@ const TRUCKS_QUERY = gql`
 subscription truck_activation_detail($truck_id : Int){
   truck(where: {id: {_eq: $truck_id}}) {
     height
+    insurance_expiry_at
     truck_no
     truck_files {
       id
@@ -57,8 +58,8 @@ subscription truck_activation_detail($truck_id : Int){
 }`
 
 const UPDATE_TRUCK_ACTIVATION_MUTATION = gql`
-mutation truck_activation($available_at:timestamp,$id:Int,$city_id:Int,$truck_type_id:Int,$truck_status_id:Int,$updated_by: String!) {
-  update_truck(_set: {available_at: $available_at, city_id:$city_id, truck_type_id:$truck_type_id,truck_status_id:$truck_status_id,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
+mutation truck_activation($available_at:timestamp,$id:Int,$city_id:Int,$truck_type_id:Int,$truck_status_id:Int,$updated_by: String!,$insurance_expiry_at:timestamp) {
+  update_truck(_set: {available_at: $available_at, city_id:$city_id, truck_type_id:$truck_type_id,truck_status_id:$truck_status_id,updated_by:$updated_by,insurance_expiry_at:$insurance_expiry_at}, where: {id: {_eq: $id}}) {
     returning {
       id
     }
@@ -128,11 +129,14 @@ const TruckActivation = (props) => {
           available_at: form.available_at,
           updated_by: context.email,
           city_id: parseInt(city.city_id, 10),
-          truck_type_id: parseInt(form.truck_type_id, 10)
+          truck_type_id: parseInt(form.truck_type_id, 10),
+          insurance_expiry_at:form.insurance_expiry_at.format('YYYY-MM-DD')
         }
       })
     }
   }
+
+  const dateFormat = 'YYYY-MM-DD'
 
   return (
     <>
@@ -241,6 +245,21 @@ const TruckActivation = (props) => {
                 <Col xs={24} sm={12}>
                   <CitySelect label='Available City' name='city' onChange={onCityChange} required />
                 </Col>
+              </Row>
+              <Row gutter={20}>
+              <Form.Item 
+                label='Insurance Expiry Date'
+                name='insurance_expiry_at'
+                rules={[{ required: true, message: 'Insurance Expiry Date is required field' }]}
+                initialValue={truck_info.insurance_expiry_at ? moment(truck_info.insurance_expiry_at, dateFormat) : null}
+                 >
+                  <DatePicker
+                    showToday={false}
+                    placeholder='Insurance Expiry Date'
+                    format={dateFormat}
+                    size='middle'
+                  />
+                </Form.Item>
               </Row>
               <Row>
                 <Col xs={24} sm={12}>

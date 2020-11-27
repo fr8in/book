@@ -29,6 +29,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
         length
         breadth
         height
+        insurance_expiry_at
         driver{
           id
           mobile
