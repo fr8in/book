@@ -1,4 +1,4 @@
-export default {
+ const util = {
   limit: 100,
   getWeekNumber: (d) => {
     d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()))
@@ -10,6 +10,16 @@ export default {
     // Calculate full weeks to nearest Thursday
     var weekNo = Math.ceil((((d - Number(yearStart)) / 86400000) + 1) / 7)
     return { year: d.getUTCFullYear(), week: weekNo }
+  },
+  getLastSixMonth: () =>{
+    const today = new Date()
+    const period = []
+  
+    for (var i = 0; i < 6; i++) {
+      const d = new Date(today.getFullYear(), today.getMonth() - i, 1)
+      period.push({ month: d.getMonth()+1, year: d.getFullYear() })
+    }
+  return period
   },
   role: {
     admin: 'Admin',
@@ -111,3 +121,5 @@ export default {
     return result
   }
 }
+
+export default util
