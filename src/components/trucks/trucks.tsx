@@ -1,4 +1,4 @@
-import { Table, Pagination, Radio, Input } from 'antd'
+import { Table, Pagination, Radio, Input,DatePicker } from 'antd'
 import { useState } from 'react'
 import { EditTwoTone, SearchOutlined } from '@ant-design/icons'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
@@ -7,6 +7,7 @@ import CreatePo from '../../components/trips/createPo'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
+import InsuranceExpiry from './insuranceExpiryDateEdit'
 
 const Trucks = (props) => {
   const initial = {
@@ -27,6 +28,7 @@ const Trucks = (props) => {
     record_count,
     onPageChange,
     onNameSearch,
+    onInsuranceFilter,
     onTruckNoSearch,
     filter,
     truck_status_list,
@@ -42,6 +44,11 @@ const Trucks = (props) => {
   const handleStatus = (e) => {
     onFilter(e.target.value)
   }
+  const handleInsuranceFilter = (e) => {
+    onInsuranceFilter(e.target.value)
+  }
+
+
 
   const handleName = (e) => {
     onNameSearch(e.target.value)
@@ -54,6 +61,7 @@ const Trucks = (props) => {
   const truck_status = truck_status_list.map((data) => {
     return { value: data.id, label: data.name }
   })
+
 
   const columns = [
     {
@@ -165,13 +173,28 @@ const Trucks = (props) => {
     {
       title: 'Status',
       render: (text, record) => record.truck_status && record.truck_status.name,
-      width: '14%',
+      width: '12%',
       filterDropdown: (
         <Radio.Group
           options={truck_status}
           defaultValue={filter.truck_statusId[0]}
           onChange={handleStatus}
           className='filter-drop-down'
+        />
+      )
+      
+    },
+    {
+      title: 'Ins Expiry Date',
+      width: '10%',
+      render: (text, record) => <InsuranceExpiry record={record} />,
+      filterDropdown: (
+        <Radio.Group
+          options={[{ value: 'All', label: 'All'},{ value: '15', label: '<15'},{ value: '30', label: '<30'}]}
+          defaultValue='All'
+          onChange={handleInsuranceFilter}
+          className='filter-drop-down'
+          
         />
       )
     },
