@@ -8,7 +8,7 @@ import { gql, useQuery, useSubscription } from '@apollo/client'
 import moment from 'moment'
 
 const TRUCKS_SUBSCRIPTION = gql`
-query trucks_list(
+subscription trucks_list(
   $offset: Int!
   $limit: Int!
   $truck_statusId: Int!
@@ -73,7 +73,7 @@ query trucks_list(
 
 const TRUCKS_QUERY = gql`
   query trucks(
-    $trip_status_id: [Int!]
+    
     $truck_statusId: [Int!]
     $name: String
     $truckno: String
@@ -111,7 +111,7 @@ const TruckContainer = () => {
     insurance_end:filter.insurance_end,
     insurance_start:filter.insurance_start
   }
-  const { loading: s_loading, error: s_error, data: s_data } = useQuery(
+  const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
     TRUCKS_SUBSCRIPTION,
     {
       variables: variables
@@ -120,7 +120,6 @@ const TruckContainer = () => {
 
   const trucksQueryVars = {
     truck_statusId: filter.truck_statusId,
-    trip_status_id: [2, 3, 4, 5, 6, 8],
     truckno: filter.truckno ? `%${filter.truckno}%` : null,
     name: filter.name ? `%${filter.name}%` : null
   }
@@ -167,8 +166,8 @@ const TruckContainer = () => {
   const insurance_filter =
   {
     'All':{insurance_start:null, insurance_end:null},
-    '15':{insurance_start:moment(),insurance_end:moment().add(15,'days')},
-    '30':{insurance_start:moment(),insurance_end:moment().add(30,'days')},
+    '15':{insurance_start:moment().add(-1,'days'),insurance_end:moment().add(15,'days')},
+    '30':{insurance_start:moment().add(-1,'days'),insurance_end:moment().add(30,'days')},
   }
 
   const onInsuranceFilter = (value) => {
