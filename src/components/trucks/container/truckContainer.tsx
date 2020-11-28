@@ -5,24 +5,29 @@ import u from '../../../lib/util'
 import get from 'lodash/get'
 
 import { gql, useQuery, useSubscription } from '@apollo/client'
+import moment from 'moment'
 
 const TRUCKS_SUBSCRIPTION = gql`
-subscription trucks_list(
+query trucks_list(
   $offset: Int!
   $limit: Int!
-  $trip_status_id: [Int!]
-  $truck_statusId: [Int!]
+  $truck_statusId: Int!
   $name: String
   $truckno: String
+  $insurance_start: timestamp
+  $insurance_end: timestamp
   )
   {
     truck(
       offset: $offset
       limit: $limit
       where: {
-        truck_status: { id: { _in: $truck_statusId } }
+        truck_status: { id: { _eq: $truck_statusId } }
         partner: { name: { _ilike: $name } }
         truck_no: { _ilike: $truckno }
+        _and:[ {insurance_expiry_at: {_gte:$insurance_start}},
+        {insurance_expiry_at: {_lte:$insurance_end}}
+        ]
       }
     ) {
       id
@@ -53,7 +58,7 @@ subscription trucks_list(
           name
         }
       }
-      trips(where: { trip_status_id: { _in: $trip_status_id } }) {
+      trips(limit: 1, order_by:{id:desc}, where:{trip_status_id:{_neq:7}}) {
         id
         source {
           name
@@ -87,11 +92,13 @@ const TRUCKS_QUERY = gql`
 
 const TruckContainer = () => {
   const initialFilter = {
-    truck_statusId: [5],
+    truck_statusId: 5,
     name: null,
     truckno: null,
     offset: 0,
-    limit: u.limit
+    limit: u.limit,
+    insurance_end:null,
+    insurance_start:null
   }
   const [filter, setFilter] = useState(initialFilter)
 
@@ -99,11 +106,12 @@ const TruckContainer = () => {
     offset: filter.offset,
     limit: filter.limit,
     truck_statusId: filter.truck_statusId,
-    trip_status_id: [2, 3, 4, 5, 6, 8],
     truckno: filter.truckno ? `%${filter.truckno}%` : null,
-    name: filter.name ? `%${filter.name}%` : null
+    name: filter.name ? `%${filter.name}%` : null,
+    insurance_end:filter.insurance_end,
+    insurance_start:filter.insurance_start
   }
-  const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
+  const { loading: s_loading, error: s_error, data: s_data } = useQuery(
     TRUCKS_SUBSCRIPTION,
     {
       variables: variables
@@ -156,6 +164,16 @@ const TruckContainer = () => {
   const onTruckNoSearch = (value) => {
     setFilter({ ...filter, truckno: value })
   }
+  const insurance_filter =
+  {
+    'All':{insurance_start:null, insurance_end:null},
+    '15':{insurance_start:moment(),insurance_end:moment().add(15,'days')},
+    '30':{insurance_start:moment(),insurance_end:moment().add(30,'days')},
+  }
+
+  const onInsuranceFilter = (value) => {
+    setFilter({ ...filter, ...insurance_filter[value] })
+  }
 
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
@@ -172,6 +190,7 @@ const TruckContainer = () => {
               onPageChange={onPageChange}
               onNameSearch={onNameSearch}
               onTruckNoSearch={onTruckNoSearch}
+              onInsuranceFilter={onInsuranceFilter}
               record_count={record_count}
             />
           </Card>

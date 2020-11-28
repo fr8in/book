@@ -28,6 +28,7 @@ const Trucks = (props) => {
     record_count,
     onPageChange,
     onNameSearch,
+    onInsuranceFilter,
     onTruckNoSearch,
     filter,
     truck_status_list,
@@ -43,6 +44,11 @@ const Trucks = (props) => {
   const handleStatus = (e) => {
     onFilter(e.target.value)
   }
+  const handleInsuranceFilter = (e) => {
+    onInsuranceFilter(e.target.value)
+  }
+
+
 
   const handleName = (e) => {
     onNameSearch(e.target.value)
@@ -55,6 +61,7 @@ const Trucks = (props) => {
   const truck_status = truck_status_list.map((data) => {
     return { value: data.id, label: data.name }
   })
+
 
   const columns = [
     {
@@ -175,12 +182,21 @@ const Trucks = (props) => {
           className='filter-drop-down'
         />
       )
+      
     },
     {
       title: 'Ins Expiry Date',
-      width: '16%',
+      width: '10%',
       render: (text, record) => <InsuranceExpiry record={record} />,
-      sorter: (a, b) => (a.insurance_expiry_at > b.insurance_expiry_at ? 1 : -1),
+      filterDropdown: (
+        <Radio.Group
+          options={[{ value: 'All', label: 'All'},{ value: '15', label: '<15'},{ value: '30', label: '<30'}]}
+          defaultValue='All'
+          onChange={handleInsuranceFilter}
+          className='filter-drop-down'
+          
+        />
+      )
     },
     {
       title: 'City',
