@@ -48,7 +48,7 @@ query partner($id: Int!) {
 const UPDATE_PARTNER_MUTATION = gql`
 mutation update_partner(
   $partner_id: Int!,
-  $cibil: String!,
+
   $city_id: Int!,
   $name: String!,
   $pan_no: String!,
@@ -63,7 +63,7 @@ mutation update_partner(
   update_partner_track(
     partner_id: $partner_id,
     personal_detail: {
-      cibil: $cibil, 
+ 
       city_id: $city_id, 
       name: $name, 
       pan_no: $pan_no,
@@ -86,12 +86,7 @@ mutation update_partner(
   }
 }`
 
-const ADDRESS_UPDATE = gql`
-mutation partner_address($id: Int!, $address: jsonb){
-  update_partner(where:{id: {_eq:$id}}, _set:{address:$address}){
-    returning{ id }
-  }
-}`
+
 
 const PartnerOnboardingContainer = (props) => {
   const { partner_id } = props
@@ -133,7 +128,7 @@ const PartnerOnboardingContainer = (props) => {
         const status = get(data, 'update_partner_track.status', null)
         const description = get(data, 'update_partner_track.description', null)
         if (status === 'OK') {
-          onAddressUpdate()
+      
           setDisableAddTruck(false)
           message.success(description || 'Updated!')
         } else {
@@ -144,30 +139,9 @@ const PartnerOnboardingContainer = (props) => {
     }
   )
 
-  const [update_address] = useMutation(
-    ADDRESS_UPDATE,
-    {
-      onError (error) {
-        message.error(error.toString())
-      }
-    }
-  )
 
-  const onAddressUpdate = () => {
-    const address = {
-      no: form.getFieldValue('no'),
-      address: form.getFieldValue('address'),
-      city: form.getFieldValue('city').split(',')[0],
-      state: form.getFieldValue('state'),
-      pin_code: form.getFieldValue('pin_code')
-    }
-    update_address({
-      variables: {
-        id: partner_id,
-        address: address
-      }
-    })
-  }
+
+
 
   const onPartnerSubmit = (form) => {
     if (form.final_payment_date < 1 || form.final_payment_date > 31){
