@@ -1,5 +1,5 @@
 
-import { Row, Col, Tag } from 'antd'
+import { Row, Col, Alert } from 'antd'
 import LabelWithData from '../common/labelWithData'
 import get from 'lodash/get'
 
@@ -73,6 +73,21 @@ const PendingPayments = (props) => {
             xsSpan={12}
           />
         </Col>
+      </Row>
+      <Row>
+        <Alert 
+        message=' 
+        Transporter- Managed No Exception.
+        
+       Transporter- Non Managed:
+        a) Advance pending for more than 5 days
+        b) Final Payment Pending For More than 30 Days => 10000 and  receipt to receivables ratio < 1.00. 
+        
+         Brokers
+        Final Payment Pending For More than 30 Days.'
+        type="warning"
+        showIcon
+        />
       </Row>
     </>
 
