@@ -199,10 +199,8 @@ const Trips = (props) => {
       title: 'Action',
       render: (text, record) => {
         const is_execption = get(record, 'customer.is_exception', null)
-        const expection_date = get(record, 'customer.exception_date', null)
         const assign_status = get(record, 'trip_status.name', null)
-        const expection_dates = expection_date ? moment(expection_date).format('YYYY-MM-DD') : null
-        const todayDate = new Date().toISOString().slice(0, 10)
+       
         return (
           <span>
             <Tooltip title={get(record, 'partner.partner_users[0].mobile', null)}>
@@ -215,7 +213,7 @@ const Trips = (props) => {
               {
                 assign_status === 'Assigned'
                   ? <>
-                    {is_execption && (expection_dates < todayDate || expection_dates === null) ?
+                    {is_execption ?
                       <Tooltip title={`Customer Exception`}>
                         <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' danger block />
                       </Tooltip>

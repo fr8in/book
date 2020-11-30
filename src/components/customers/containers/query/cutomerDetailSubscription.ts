@@ -34,13 +34,14 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
     name
     mobile
     approved_by_id
-    exception_date
     gst
     managed
     pan
     customer_exception{
     invoice_pending
     advance_pending_amount
+    total_advance_pending_amount
+    receipts_and_receivables_ratio
     total_outstanding
     is_exception
      final_payment_received_in_the_last_30_days

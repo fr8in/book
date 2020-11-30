@@ -14,7 +14,7 @@ const PendingPayments = (props) => {
           <LabelWithData
             label='Advance Pending'
             data={
-              get(customer_exception, 'advance_pending_amount', null)
+              get(customer_exception, 'total_advance_pending_amount', null)
             }
             mdSpan={4}
             smSpan={8}
@@ -44,7 +44,7 @@ const PendingPayments = (props) => {
             xsSpan={12}
           />
         </Col>
-       <Col sm={9} xs={9}>
+       <Col sm={8} xs={8}>
           <LabelWithData
             label='Advance Pending (>5 D)'
             data={
@@ -55,9 +55,9 @@ const PendingPayments = (props) => {
             xsSpan={12}
           />
            <LabelWithData
-            label='Receipts/Invoice'
+            label='Receivable Ratio'
             data={
-              get(customer_exception, 'advance_pending_for_more_than_5_days', null)
+              get(customer_exception, 'receipts_and_receivables_ratio', null)
             }
             mdSpan={4}
             smSpan={8}
