@@ -48,8 +48,6 @@ query partner($id: Int!) {
 const UPDATE_PARTNER_MUTATION = gql`
 mutation update_partner(
   $partner_id: Int!,
-
-  $city_id: Int!,
   $name: String!,
   $pan_no: String!,
   $account_holder: String!,
@@ -63,8 +61,6 @@ mutation update_partner(
   update_partner_track(
     partner_id: $partner_id,
     personal_detail: {
- 
-      city_id: $city_id, 
       name: $name, 
       pan_no: $pan_no,
     }, 
@@ -153,7 +149,6 @@ const PartnerOnboardingContainer = (props) => {
         partner_id: parseInt(partner_id, 10),
         // personal_detail
         cibil: form.cibil,
-        city_id: parseInt(city) || get(partner_info, 'city.id', null),
         name: form.name,
         pan_no: form.pan_no,
         // bank_detail

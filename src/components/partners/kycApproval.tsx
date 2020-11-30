@@ -74,7 +74,8 @@ mutation create_partner_code(
   $partner_advance_percentage_id: Int!
   $gst:String,
   $emi: Boolean!,
-  $updated_by: String! ) {
+  $updated_by: String!,
+  $approved_by: String! ) {
   create_partner_code(
     cardcode: $cardcode,
     name: $name, 
@@ -84,7 +85,8 @@ mutation create_partner_code(
     partner_advance_percentage_id: $partner_advance_percentage_id, 
     gst: $gst, 
     emi: $emi, 
-    updated_by: $updated_by) {
+    updated_by: $updated_by,
+    approved_by:$approved_by) {
     description
     status
   }
@@ -201,6 +203,7 @@ const KycApproval = (props) => {
           gst: form.gst,
           emi: !!checked,
           updated_by: context.email,
+          approved_by:context.email,
           onboarded_by_id: get(partnerDetail, 'onboarded_by.id', null),
           partner_advance_percentage_id: get(partnerDetail, 'partner_advance_percentage.id', null),
          
@@ -339,7 +342,7 @@ const KycApproval = (props) => {
                     </List.Item>
                   </List>
                   <Row justify='end' className='mt10'>
-                    <Button key='submit' type='primary' loading={disableButton} disabled={ isEmpty(trucks) || disableAddTruck} htmlType='submit'>
+                    <Button key='submit' type='primary' loading={disableButton} disabled={ isEmpty(trucks) || disableAddTruck || !access} htmlType='submit'>
                       Approve KYC
                     </Button>
                   </Row>

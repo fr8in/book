@@ -84,9 +84,6 @@ const CreatePartner = (props) => {
     )
   }
 
-  const onCityChange = (city_id) => {
-    setCity(city_id)
-  }
 
   const rules = [
     {
