@@ -54,13 +54,13 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
 `
 const WaitingForLoadContainer = (props) => {
   const { filters, dndCheck } = props
-
+ 
 const where = {
   _and: [
   {truck_status: {name: {_eq: "Waiting for Load"}}}, 
     {partner:{partner_status:{name:{"_eq":"Active"}}}},
    {truck_type: (filters.types && filters.types.length > 0) ? filters.types : null},
-   {truck_no: null}
+   {truck_no: {_ilike:  null}}
   ], _or:[{ partner:{dnd:{_neq:true}}},{truck_type: {id:{_nin: [25,27]}}}]
 }
 const dndWhere = {
@@ -68,18 +68,18 @@ const dndWhere = {
   {truck_status: {name: {_eq: "Waiting for Load"}}}, 
     {partner:{partner_status:{name:{"_eq":"Active"}}}},
     {truck_type: (filters.types && filters.types.length > 0) ? filters.types : null},
-    {truck_no: null}
+    {truck_no: {_ilike:  null}}
   ], _or:[{ partner:{dnd:{_neq:null}}}]
 }
   const variables = {
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
     branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
     cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
-    where: dndCheck === false ? dndWhere : where
+    where: dndCheck === true ? dndWhere : where
   }
   const { loading, data, error } = useSubscription(DASHBOARD_TRUCK_QUERY, { variables })
 
-
+ 
   let trucks = []
   if (!loading) {
     const newData = { data }

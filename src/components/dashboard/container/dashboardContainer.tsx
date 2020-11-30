@@ -22,7 +22,7 @@ const DashboardContainer = (props) => {
   const { filters } = props
   const initial = { excessLoad: false,orders:false,Staticticsdata:false }
   const { visible, onShow, onHide } = useShowHide(initial)
-  const [dndCheck,setDndCheck] = useState(true)
+  const [dndCheck,setDndCheck] = useState(false)
 
   const variables = {
     now: moment().format('YYYY-MM-DD'),

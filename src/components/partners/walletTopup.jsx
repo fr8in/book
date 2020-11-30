@@ -51,11 +51,11 @@ const walletTopup = (props) => {
   const [partner_manual_topup] = useMutation(
     MANUAL_TOPUP_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         message.error(error.toString())
         setDisbleBtn(false)
       },
-      onCompleted(data) {
+      onCompleted (data) {
         const status = _.get(data, 'partner_manual_topup.status', null)
         const description = _.get(data, 'partner_manual_topup.description', null)
         if (status === 'OK') {
@@ -129,7 +129,7 @@ const walletTopup = (props) => {
       dataIndex: 'trip_id',
       key: 'loadid',
       width: '15%',
-      sorter: (a, b) => (a.id > b.id ? 1 : -1),
+      sorter: (a, b) => (a.id > b.id ? 1 : -1)
     },
     {
       title: 'AP Date',

@@ -23,15 +23,15 @@ const tripData = [
     createdOn: '15-07-2020 10:02:09',
     lead: [
       {
-        id:1,
+        id: 1,
         partner: 'Shiva',
-        phone:'3456784',
+        phone: '3456784',
         createdOn: '15-07-2020 10:02:09'
       },
       {
-        id:2,
+        id: 2,
         partner: 'Shiva',
-        phone:'3456784',
+        phone: '3456784',
         createdOn: '15-07-2020 10:02:09'
       }
     ]
@@ -60,15 +60,15 @@ const tripData = [
     createdOn: '16-07-2020 10:02:09',
     lead: [
       {
-        id:1,
+        id: 1,
         partner: 'Shiva',
-        phone:'3456784',
+        phone: '3456784',
         createdOn: '15-07-2020 10:02:09'
       },
       {
-        id:2,
+        id: 2,
         partner: 'Shiva',
-        phone:'3456784',
+        phone: '3456784',
         createdOn: '15-07-2020 10:02:09'
       }
     ]
@@ -97,15 +97,15 @@ const tripData = [
     createdOn: '17-07-2020 10:02:09',
     lead: [
       {
-        id:1,
+        id: 1,
         partner: 'Shiva',
-        phone:'3456784',
+        phone: '3456784',
         createdOn: '15-07-2020 10:02:09'
       },
       {
-        id:2,
+        id: 2,
         partner: 'Shiva',
-        phone:'3456784',
+        phone: '3456784',
         createdOn: '15-07-2020 10:02:09'
       }
     ]
@@ -134,15 +134,15 @@ const tripData = [
     createdOn: '15-07-2020 10:02:09',
     lead: [
       {
-        id:1,
+        id: 1,
         partner: 'Shiva',
-        phone:'3456784',
+        phone: '3456784',
         createdOn: '15-07-2020 10:02:09'
       },
       {
-        id:2,
+        id: 2,
         partner: 'Shiva',
-        phone:'3456784',
+        phone: '3456784',
         createdOn: '15-07-2020 10:02:09'
       }
     ]
@@ -171,15 +171,15 @@ const tripData = [
     createdOn: '16-07-2020 10:02:09',
     lead: [
       {
-        id:1,
+        id: 1,
         partner: 'Shiva',
-        phone:'3456784',
+        phone: '3456784',
         createdOn: '15-07-2020 10:02:09'
       },
       {
-        id:2,
+        id: 2,
         partner: 'Shiva',
-        phone:'3456784',
+        phone: '3456784',
         createdOn: '15-07-2020 10:02:09'
       }
     ]
@@ -208,15 +208,15 @@ const tripData = [
     createdOn: '18-07-2020 10:02:09',
     lead: [
       {
-        id:1,
+        id: 1,
         partner: 'Shiva',
-        phone:'3456784',
+        phone: '3456784',
         createdOn: '15-07-2020 10:02:09'
       },
       {
-        id:2,
+        id: 2,
         partner: 'Shiva',
-        phone:'3456784',
+        phone: '3456784',
         createdOn: '15-07-2020 10:02:09'
       }
     ]
@@ -245,19 +245,19 @@ const tripData = [
     createdOn: '15-07-2020 10:02:09',
     lead: [
       {
-        id:1,
+        id: 1,
         partner: 'Shiva',
-        phone:'3456784',
+        phone: '3456784',
         createdOn: '15-07-2020 10:02:09'
       },
       {
-        id:2,
+        id: 2,
         partner: 'Shiva',
-        phone:'3456784',
+        phone: '3456784',
         createdOn: '15-07-2020 10:02:09'
       }
-    ] 
-   },
+    ]
+  },
   {
     id: 187557,
     orderDate: 1594717031873,
@@ -282,15 +282,15 @@ const tripData = [
     createdOn: '17-07-2020 10:02:09',
     lead: [
       {
-        id:1,
+        id: 1,
         partner: 'Shiva',
-        phone:'3456784',
+        phone: '3456784',
         createdOn: '15-07-2020 10:02:09'
       },
       {
-        id:2,
+        id: 2,
         partner: 'Shiva',
-        phone:'3456784',
+        phone: '3456784',
         createdOn: '15-07-2020 10:02:09'
       }
     ]

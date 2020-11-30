@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react'
 import { Table, Button, message, Tooltip, Space } from 'antd'
 import { gql, useMutation, useQuery } from '@apollo/client'
-import { RocketFilled ,EyeOutlined} from '@ant-design/icons'
+import { RocketFilled, EyeOutlined } from '@ant-design/icons'
 import userContext from '../../../lib/userContaxt'
 import Truncate from '../../common/truncate'
 import get from 'lodash/get'
@@ -40,7 +40,7 @@ const OutGoing = (props) => {
   const { label } = props
   const context = useContext(userContext)
   const execute_access = u.is_roles([u.role.admin, u.role.accounts_manager, u.role.accounts], context)
-  const initial = { loading: false, selected_id: null ,payable_status:false,doc_num:null}
+  const initial = { loading: false, selected_id: null, payable_status: false, doc_num: null }
   const [disableBtn, setDisableBtn] = useState(initial)
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
@@ -52,13 +52,12 @@ const OutGoing = (props) => {
   )
   console.log('pendingTransaction error', error)
 
-  var _data = []
+  let _data = []
   if (!loading) {
     _data = data
   }
 
   const pendingtransaction = get(_data, 'pending_transaction', [])
- 
 
   const [executeTransfer] = useMutation(
     Execute_Transfer,
@@ -98,7 +97,7 @@ const OutGoing = (props) => {
       key: 'docNum',
       sorter: (a, b) => (a.docNum > b.docNum ? 1 : -1),
       width: '8%',
-      defaultSortOrder: 'descend',
+      defaultSortOrder: 'descend'
     },
     {
       title: 'DocDate',
@@ -184,19 +183,19 @@ const OutGoing = (props) => {
       render: (text, record) => {
         return (
           <>
-          <Space>
-          <Tooltip title='Execute'>
-          <Button
-            size='small' type='link' icon={<RocketFilled />} onClick={() => onSubmit(record, record.docNum)}
-            disabled={!(record.account_no && execute_access)}
-            loading={disableBtn.loading && (disableBtn.selected_id === record.docNum)}
-          />
-          </Tooltip>
-           <Tooltip title='Status'>
-          <Button size='small' shape='circle'  icon={<EyeOutlined />} type='primary' className='btn-success' onClick={() =>handleShow('payable_status', null, 'doc_num', record.docNum)}/>
-          </Tooltip>
-        </Space>
-        </>
+            <Space>
+              <Tooltip title='Execute'>
+                <Button
+                  size='small' type='link' icon={<RocketFilled />} onClick={() => onSubmit(record, record.docNum)}
+                  disabled={!(record.account_no && execute_access)}
+                  loading={disableBtn.loading && (disableBtn.selected_id === record.docNum)}
+                />
+              </Tooltip>
+              <Tooltip title='Status'>
+                <Button size='small' shape='circle' icon={<EyeOutlined />} type='primary' className='btn-success' onClick={() => handleShow('payable_status', null, 'doc_num', record.docNum)} />
+              </Tooltip>
+            </Space>
+          </>
         )
       }
     }
@@ -204,15 +203,15 @@ const OutGoing = (props) => {
 
   return (
     <>
-    <Table
-      columns={columns}
-      dataSource={pendingtransaction}
-      size='small'
-      scroll={{ x: 1156 }}
-      pagination={false}
-      rowKey={(record) => record.docNum}
-      loading={loading}
-    />
+      <Table
+        columns={columns}
+        dataSource={pendingtransaction}
+        size='small'
+        scroll={{ x: 1156 }}
+        pagination={false}
+        rowKey={(record) => record.docNum}
+        loading={loading}
+      />
       {object.payable_status && (
         <PayablesStatus
           visible={object.payable_status}
