@@ -3,7 +3,7 @@ import { gql, useSubscription } from '@apollo/client'
 import _ from 'lodash'
 
 const DASHBOARD_TRUCK_QUERY = gql`
-subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int!], $where:truck_bool_exp) {
+subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $truck_no: String,$dnd:Boolean) {
   region(where: {id: {_in: $regions}}) {
     id
     branches(where: {id: {_in: $branches}}) {
@@ -12,7 +12,13 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
         id
         cities {
           id
-          trucks(where:$where ) {
+          trucks(where: {
+            truck_status: {name: {_eq: "Waiting for Load"}},
+            truck_no: {_ilike: $truck_no},
+            truck_type: {id:{_in: $truck_type}},
+            partner:{partner_status:{name:{_eq:"Active"}}},
+            _or:[{ partner:{dnd:{_neq:$dnd}}}, {truck_type: {id:{_nin: [25,27]}}}]
+          } ) {
             id
             truck_no
             truck_type {
@@ -54,32 +60,17 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
 `
 const WaitingForLoadContainer = (props) => {
   const { filters, dndCheck } = props
- 
-const where = {
-  _and: [
-  {truck_status: {name: {_eq: "Waiting for Load"}}}, 
-    {partner:{partner_status:{name:{"_eq":"Active"}}}},
-   {truck_type: (filters.types && filters.types.length > 0) ? filters.types : null},
-   {truck_no: {_ilike:  null}}
-  ], _or:[{ partner:{dnd:{_neq:true}}},{truck_type: {id:{_nin: [25,27]}}}]
-}
-const dndWhere = {
-  _and: [
-  {truck_status: {name: {_eq: "Waiting for Load"}}}, 
-    {partner:{partner_status:{name:{"_eq":"Active"}}}},
-    {truck_type: (filters.types && filters.types.length > 0) ? filters.types : null},
-    {truck_no: {_ilike:  null}}
-  ], _or:[{ partner:{dnd:{_neq:null}}}]
-}
+
   const variables = {
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
     branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
     cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
-    where: dndCheck === true ? dndWhere : where
+    truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
+    truck_no: null,
+    dnd: dndCheck === true ? null : true
   }
   const { loading, data, error } = useSubscription(DASHBOARD_TRUCK_QUERY, { variables })
-
- 
+  
   let trucks = []
   if (!loading) {
     const newData = { data }
