@@ -59,8 +59,6 @@ const CustomerTrips = (props) => {
 
   const tat = (record) => {
     const status = get(record, 'trip_status.name', null)
-    const pod_verified = get(record, 'pod_verified_at', null)
-    const pod_dispatched = get(record, 'pod_dispatched_at', null)
     let tat = null
     switch (status) {
       case 'Assigned':
@@ -82,10 +80,10 @@ const CustomerTrips = (props) => {
         tat = record.unloading_tat
         break
       case 'Delivered':
-        tat = pod_verified ? record.pod_verified_tat : record.delivered_tat
+        tat = record.delivered_tat
         break
       case 'Invoiced':
-        tat = pod_dispatched ? record.pod_dispatched_tat : record.invoiced_tat
+        tat = record.invoiced_tat
         break
       case 'Paid':
         tat = record.paid_tat
