@@ -72,45 +72,40 @@ const SourcingContainer = () => {
         onChange={mainTabChange}
         tabBarExtraContent={
           <span>
-            {mainTabKey === '2' &&
-              <Button shape='circle' icon={<FilterOutlined />} onClick={() => onShow('filterList')} />}
-            {mainTabKey === '3' &&
-              <Button shape='circle' type='primary' icon={<PlusOutlined />} onClick={() => onShow('createAnnouncenmemt')} />}
-          </span>
-        }
-      >
-        <TabPane tab='Partner' key='1'>
-          <Tabs
-            onChange={subTabChange} type='card'
-            tabBarExtraContent={
-              <span>
-                {subTabKey === '2' &&
+             {mainTabKey === '1' &&
                   <Space>
                     <Button type='primary' onClick={() => onShow('employeeList')}>Assign</Button>
                     <Button shape='circle' icon={<FilterOutlined />} onClick={() => onShow('filterList')} onChange={onFilterChange} />
                     <Button type='primary' shape='circle' icon={<UserAddOutlined />} onClick={() => onShow('createLead')} />
                   </Space>}
-              </span>
-            }
-          >
-            <TabPane tab='Truck Verification' key='1'>
-              <Card size='small' className='card-body-0'>
-                <TruckVerification />
-              </Card>
-            </TabPane>
-            <TabPane tab={<TitleWithCount name='Lead' value={lead_count} />} key='2'>
+            {mainTabKey === '3' &&
+              <Button shape='circle' icon={<FilterOutlined />} onClick={() => onShow('filterList')} />}
+            {mainTabKey === '4' &&
+              <Button shape='circle' type='primary' icon={<PlusOutlined />} onClick={() => onShow('createAnnouncenmemt')} />}
+             
+          </span>
+        }
+      >
+            <TabPane tab={<TitleWithCount name='Lead' value={lead_count} />} key='1'>
               <Card size='small' className='card-body-0'>
                 <PartnerLead visible={visible.employeeList} onHide={onHide} onboarded_by={filter} />
               </Card>
             </TabPane>
-          </Tabs>
+            
+            
+         
+       
+        <TabPane tab='Truck Verification' key='2'>
+              <Card size='small' className='card-body-0'>
+                <TruckVerification />
+              </Card>
         </TabPane>
-        <TabPane tab={<TitleWithCount name='Waiting for Load' value={waiting_for_load_count} />} key='2'>
+        <TabPane tab={<TitleWithCount name='Waiting for Load' value={waiting_for_load_count} />} key='3'>
           <Card size='small' className='card-body-0'>
             <Breakdown truck_status={['Waiting for Load']} loading={loading} visible={visible.employeeList} onHide={onHide} onboarded_by={filter} />
           </Card>
         </TabPane>
-        <TabPane tab='Announcement' key='3'>
+        <TabPane tab='Announcement' key='4'>
           <Card size='small' className='card-body-0'>
             <Announcenmemt />
           </Card>
