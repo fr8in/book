@@ -1,10 +1,9 @@
-import { Row } from 'antd'
+import { Row, Tag } from 'antd'
 import LabelAndData from '../common/labelAndData'
 import SystemMamul from '../customers/systemMamul'
 // import mockData from '../../../mock/customer/customerDetail'
 import useShowHide from '../../hooks/useShowHide'
 import ManagedCustomer from './managedCustomer'
-import CustomerExceptionDate from './customerExceptionDate'
 import CustomerType from './customerType'
 import CustomerPaymentManager from './customerPaymentManager'
 import get from 'lodash/get'
@@ -21,6 +20,8 @@ const CustomerInfo = (props) => {
   const modelInitial = { mamulVisible: false }
   const { visible, onHide, onShow } = useShowHide(modelInitial)
   const system_mamul = get(customer_info, 'system_mamul', 0)
+  const customer_exception = get(customer_info,'customer_exception.is_exception',null)
+  
   return (
     <>
       <Row gutter={8}>
@@ -40,7 +41,7 @@ const CustomerInfo = (props) => {
         />
         <LabelAndData
           label='Exception'
-          data={<CustomerExceptionDate exceptionDate={customer_info.exception_date}  id={customer_info.id} edit_access={exceptionDateEdit}/>}
+          data={ <Tag color={customer_exception ? '#dc3545' : '#28a745'}>{customer_exception ? 'Yes' : 'No'}</Tag>}
           mdSpan={4}
           smSpan={8}
           xsSpan={12}
