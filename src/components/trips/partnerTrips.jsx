@@ -1,4 +1,4 @@
-import { Table,Modal,Tooltip } from 'antd'
+import { Table, Modal, Tooltip } from 'antd'
 import get from 'lodash/get'
 import Link from 'next/link'
 import Phone from '../common/phone'
@@ -26,17 +26,17 @@ subscription partner_trips($id:Int){
 `
 
 const SuggestedPartners = (props) => {
- const { visible, onHide,trip_id } = props
+  const { visible, onHide, trip_id } = props
 
- const { loading, error, data } = useSubscription(
-  PARTNER_TRIPS,
-  {
-    variables: { id: trip_id }
-  }
-)
-let newData = {}
+  const { loading, error, data } = useSubscription(
+    PARTNER_TRIPS,
+    {
+      variables: { id: trip_id }
+    }
+  )
+  let newData = {}
   if (!loading) {
-    newData = {data}
+    newData = { data }
   }
   const partner_trips = _.chain(newData).flatMap('trip').flatMap('partner_trips').value()
 
@@ -50,8 +50,9 @@ let newData = {}
       const name = get(record, 'partner.name', null)
       return (
         <Link href='/partners/[id]' as={`/partners/${cardcode} `}>
-           <a>{name}</a>
-        </Link>)
+          <a>{name}</a>
+        </Link>
+      )
     }
   },
   {
@@ -59,36 +60,36 @@ let newData = {}
     width: '15%',
     dataIndex: 'mobile',
     key: 'mobile',
-    render: (text, record) =><Phone number={get(record, 'partner.partner_users[0].mobile', '-')} />
+    render: (text, record) => <Phone number={get(record, 'partner.partner_users[0].mobile', '-')} />
   },
   {
     title: 'Loads',
     dataIndex: 'count',
     key: 'count',
     sorter: (a, b) => (a.count > b.count ? 1 : -1),
-    defaultSortOrder:'descend',
+    defaultSortOrder: 'descend',
     width: '10%'
   }
   ]
 
   return (
     <>
-    <Modal
-      visible={visible}
-      onCancel={onHide}
-      width={800}
-      style={{top:2}}
-      footer={null}
-    >
-      <Table
-        columns={columns}
-        dataSource={partner_trips}
-        rowKey={record => get(record, 'id', null)}
-        size='small'
-        scroll={{ x: 650 }}
-        pagination={false}
-        className='withAction'
-      />
+      <Modal
+        visible={visible}
+        onCancel={onHide}
+        width={800}
+        style={{ top: 2 }}
+        footer={null}
+      >
+        <Table
+          columns={columns}
+          dataSource={partner_trips}
+          rowKey={record => get(record, 'id', null)}
+          size='small'
+          scroll={{ x: 650 }}
+          pagination={false}
+          className='withAction'
+        />
       </Modal>
     </>
   )

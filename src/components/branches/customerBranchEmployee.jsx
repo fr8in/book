@@ -21,7 +21,7 @@ subscription customer_branch_employee($branch_employee_id:Int,$branch_id:Int){
 }
 `
 const CustomerBranchEmployee = (props) => {
-  const { record, customerBranchEmployee_ids, setCustomerBranchEmployee_ids,branch_id } = props
+  const { record, customerBranchEmployee_ids, setCustomerBranchEmployee_ids, branch_id } = props
 
   const [selectedCustomer, setSelectedCustomer] = useState([])
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
@@ -30,10 +30,10 @@ const CustomerBranchEmployee = (props) => {
     const customer_list = selectedRows && selectedRows.length > 0 ? selectedRows.map(row => row.id) : []
     setSelectedRowKeys(selectedRowKeys)
     setSelectedCustomer(customer_list)
-    setCustomerBranchEmployee_ids({...customerBranchEmployee_ids,customer_branch_employee_ids:customer_list})
+    setCustomerBranchEmployee_ids({ ...customerBranchEmployee_ids, customer_branch_employee_ids: customer_list })
   }
 
-  const rowSelection =  {
+  const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange
   }
@@ -41,13 +41,12 @@ const CustomerBranchEmployee = (props) => {
   const { loading, data, error } = useSubscription(
     CUSTOMER_BRANCH_EMPLOYEE_SUBSCRIPTION,
     {
-      variables: { 
-        branch_employee_id: record.id ,
-        branch_id:branch_id
-       }
+      variables: {
+        branch_employee_id: record.id,
+        branch_id: branch_id
+      }
     }
   )
-
 
   let _data = {}
   if (!loading) {
@@ -59,7 +58,7 @@ const CustomerBranchEmployee = (props) => {
   const columns = [
     {
       title: 'Name',
-      key:'name',
+      key: 'name',
       width: '45%',
       render: (text, record) => get(record, 'customer.name', '-')
     },
@@ -75,7 +74,7 @@ const CustomerBranchEmployee = (props) => {
       width: '20%',
       render: (text, record) => get(record, 'customer.trips_aggregate.aggregate.count', 0),
       sorter: (a, b) => a.customer.trips_aggregate.aggregate.count - b.customer.trips_aggregate.aggregate.count,
-      defaultSortOrder:'descend'
+      defaultSortOrder: 'descend'
     }
   ]
   return (
@@ -85,7 +84,7 @@ const CustomerBranchEmployee = (props) => {
       size='small'
       scroll={{ x: 450, y: 330 }}
       pagination={false}
-      rowSelection={{...rowSelection }}
+      rowSelection={{ ...rowSelection }}
       rowKey={(record) => record.id}
       loading={loading}
       className='withAction'
