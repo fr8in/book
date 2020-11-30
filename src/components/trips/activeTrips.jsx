@@ -29,13 +29,13 @@ const Trips = (props) => {
 
   const [assign_to_confirm] = useMutation(
     ASSIGN_TO_CONFIRM_STATUS_MUTATION, {
-    onError(error) {
-      message.error(error.toString())
-    },
-    onCompleted() {
-      message.success('Updated!!')
-    }
-  })
+      onError (error) {
+        message.error(error.toString())
+      },
+      onCompleted () {
+        message.success('Updated!!')
+      }
+    })
   const onSubmit = (id) => {
     assign_to_confirm({
       variables: {
@@ -46,12 +46,12 @@ const Trips = (props) => {
   }
 
   const tat = {
-    Assigned: (record) => parseInt(record.confirmed_tat,10),
-    Confirmed: (record) => parseInt(record.confirmed_tat,10),
-    'Reported at source': (record) => parseInt(record.loading_tat,10),
-    Intransit: (record) => parseInt(record.intransit_tat,10),
-    'Intransit halting': (record) => parseInt(record.intransit_tat,10),
-    'Reported at destination': (record) => parseInt(record.unloading_tat,10)
+    Assigned: (record) => parseInt(record.confirmed_tat, 10),
+    Confirmed: (record) => parseInt(record.confirmed_tat, 10),
+    'Reported at source': (record) => parseInt(record.loading_tat, 10),
+    Intransit: (record) => parseInt(record.intransit_tat, 10),
+    'Intransit halting': (record) => parseInt(record.intransit_tat, 10),
+    'Reported at destination': (record) => parseInt(record.unloading_tat, 10)
   }
 
   const columns = [
@@ -60,22 +60,22 @@ const Trips = (props) => {
       dataIndex: 'id',
       render: (text, record) => {
         return (
-          props.intransit ?
-            <span className='pl10'>
-              {record.loaded === "Yes" ? '' : <Badge className='pl5' dot style={{ backgroundColor: '#dc3545' }} />}
+          props.intransit
+            ? <span className='pl10'>
+              {record.loaded === 'Yes' ? '' : <Badge className='pl5' dot style={{ backgroundColor: '#dc3545' }} />}
               <LinkComp
                 type='trips'
                 data={text}
                 id={record.id}
                 blank
               />
-            </span> :
-            <LinkComp
-              type='trips'
-              data={text}
-              id={record.id}
-              blank
-            />)
+              </span>
+            : <LinkComp
+                type='trips'
+                data={text}
+                id={record.id}
+                blank
+              />)
       },
       sorter: (a, b) => a.id - b.id,
       width: '7%'
@@ -92,7 +92,8 @@ const Trips = (props) => {
             id={cardcode}
             length={12}
             blank
-          />)
+          />
+        )
       },
       sorter: (a, b) => (a.customer.name > b.customer.name ? 1 : -1),
       width: '10%'
@@ -109,7 +110,8 @@ const Trips = (props) => {
             id={cardcode}
             length={10}
             blank
-          />)
+          />
+        )
       },
       sorter: (a, b) => (a.partner.name > b.partner.name ? 1 : -1),
       width: '10%'
@@ -136,7 +138,8 @@ const Trips = (props) => {
             data={truck_no + ' - ' + truck_type}
             id={truck_no}
             blank
-          />)
+          />
+        )
       },
       width: '15%'
     },
@@ -189,9 +192,9 @@ const Trips = (props) => {
       render: (text, record) => {
         const comment = get(record, 'last_comment.description', null)
         return (
-          props.intransit ? 
-        <Truncate data={comment} length={20} />:
-        <Truncate data={comment} length={26} />)
+          props.intransit
+            ? <Truncate data={comment} length={20} />
+            : <Truncate data={comment} length={26} />)
       },
       width: props.intransit ? '14%' : '17%'
     },
@@ -204,7 +207,7 @@ const Trips = (props) => {
         return (
           <span>
             <Tooltip title={get(record, 'partner.partner_users[0].mobile', null)}>
-              <Phone number={get(record, 'partner.partner_users[0].mobile', null)} icon={true} />
+              <Phone number={get(record, 'partner.partner_users[0].mobile', null)} icon />
             </Tooltip>
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
@@ -216,17 +219,15 @@ const Trips = (props) => {
                     {is_execption ?
                       <Tooltip title={`Customer Exception`}>
                         <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' danger block />
-                      </Tooltip>
-                      :
-                      <Popconfirm
-                        title='Are you sure you want to change this status to confirmed?'
-                        okText='Yes'
-                        cancelText='No'
-                        onConfirm={() => onSubmit(record.id)}
-                      >
+                        </Tooltip>
+                      : <Popconfirm
+                          title='Are you sure you want to change this status to confirmed?'
+                          okText='Yes'
+                          cancelText='No'
+                          onConfirm={() => onSubmit(record.id)}
+                        >
                         <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' />
-                      </Popconfirm>
-                    }
+                      </Popconfirm>}
                   </>
                   : null
               }
