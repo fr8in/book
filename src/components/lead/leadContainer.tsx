@@ -27,7 +27,7 @@ query partner_aggregate($mobile:String!){
 
 const INSERT_PARTNER_LEAD_MUTATION = gql`
 mutation create_partner_lead($description: String, $topic: String, $created_by: String, $name: String, $mobile: String, $city_id: Int, $onboarded_by_id: Int, $partner_status_id: Int, $channel_id: Int) {
-  insert_partner(objects: {name: $name, city_id: $city_id, partner_status_id: $partner_status_id, channel_id: $channel_id, onboarded_by_id: $onboarded_by_id, partner_users: {data: {mobile: $mobile}}, partner_comments: {data: {description: $description, created_by: $created_by, topic: $topic}}}) {
+  insert_partner(objects: {name: $name, city_id: $city_id, partner_status_id: $partner_status_id, channel_id: $channel_id, onboarded_by_id: $onboarded_by_id, partner_users : {data: {mobile: $mobile,is_admin:true}}, partner_comments: {data: {description: $description, created_by: $created_by, topic: $topic}}}) {
     affected_rows
   }
 }

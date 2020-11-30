@@ -126,7 +126,7 @@ const WaitingForLoad = (props) => {
         return (
           <span>
             <Tooltip title={record.driver && record.driver.mobile}>
-              <Phone  number={record.driver && record.driver.mobile} icon={true}/>
+              <Phone number={record.driver && record.driver.mobile} icon />
             </Tooltip>
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />

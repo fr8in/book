@@ -48,34 +48,6 @@ const AddTruck = (props) => {
             </Col>
           </Row>
           <Row gutter={10}>
-            <Col xs={24} sm={5}>
-              <Form.Item
-                label='Length(Ft)'
-                name='length'
-                rules={[{ required: true, message: 'Length(Ft) is required field' }]}
-              >
-                <Input placeholder='Length(Ft)' type='number' disabled={false} />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={5}>
-              <Form.Item
-                label='Breadth(Ft)'
-                name='breadth'
-                rules={[{ required: true, message: 'Breadth(Ft) is required field' }]}
-              >
-                <Input placeholder='Breadth(Ft)' type='number' disabled={false} />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={5}>
-              <Form.Item
-                label='Height(Ft)'
-                name='height'
-                rules={[{ required: true, message: 'Height(Ft) is required field' }]}
-              >
-                <Input placeholder='Height(Ft)' type='number' disabled={false} />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={9}>
             <Form.Item 
                 label='Insurance Expiry Date'
                 name='insurance_expiry_at'
@@ -88,7 +60,6 @@ const AddTruck = (props) => {
                     size='middle'
                   />
                 </Form.Item>
-                </Col>
           </Row>
           <Form.Item className='text-right mb0'>
             <Space>

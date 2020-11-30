@@ -72,44 +72,6 @@ const TruckInfo = (props) => {
           <Col sm={20}>
             <Form layout='vertical' onFinish={onDimensionSubmit}>
               <Row gutter={10}>
-                <Col xs={24} sm={5}>
-                  <Form.Item
-                    label='Length(Ft)'
-                    name='length'
-                    rules={[{ required: true, message: 'Length(Ft) is required field' }]}
-                    initialValue={truck_info.length}
-                  >
-                    <Input type='number' placeholder='Length(Ft)' disabled={false} />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={5}>
-                  <Form.Item
-                    label='Breadth(Ft)'
-                    name='breadth'
-                    rules={[{ required: true, message: 'Breadth(Ft) is required field' }]}
-                    initialValue={truck_info.breadth}
-                  >
-                    <Input
-                      type='number'
-                      placeholder='Breadth(Ft)'
-                      disabled={false}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={5}>
-                  <Form.Item
-                    label='Height(Ft)'
-                    name='height'
-                    rules={[{ required: true, message: 'Height(Ft) is required field' }]}
-                    initialValue={truck_info.height}
-                  >
-                    <Input
-                      placeholder='Height(Ft)'
-                      type='number'
-                      disabled={false}
-                    />
-                  </Form.Item>
-                </Col>
                 <Col xs={24} sm={4}>
                 <Form.Item 
                 label='Insurance Expiry Date'

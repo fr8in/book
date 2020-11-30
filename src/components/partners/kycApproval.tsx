@@ -25,6 +25,7 @@ import NewTruck from './newTruck'
 import u from '../../lib/util'
 import { useRouter } from 'next/router'
 
+
 const PARTNERS_SUBSCRIPTION = gql`
 subscription partner_kyc($id:Int){
   partner(where:{id:{_eq:$id}}){
@@ -42,7 +43,6 @@ subscription partner_kyc($id:Int){
     }
     display_account_number
     gst
-    cibil
     emi
     partner_files {
       id
@@ -73,9 +73,9 @@ mutation create_partner_code(
   $onboarded_by_id: Int!,
   $partner_advance_percentage_id: Int!
   $gst:String,
-  $cibil: String!,
   $emi: Boolean!,
-  $updated_by: String! ) {
+  $updated_by: String!,
+  $approved_by: String! ) {
   create_partner_code(
     cardcode: $cardcode,
     name: $name, 
@@ -84,16 +84,16 @@ mutation create_partner_code(
     onboarded_by_id: $onboarded_by_id, 
     partner_advance_percentage_id: $partner_advance_percentage_id, 
     gst: $gst, 
-    cibil: $cibil, 
     emi: $emi, 
-    updated_by: $updated_by) {
+    updated_by: $updated_by,
+    approved_by:$approved_by) {
     description
     status
   }
 }`
 
 const KycApproval = (props) => {
-  const { partner_id, disableAddTruck } = props
+  const { partner_id, disableAddTruck} = props
 
   const router = useRouter()
   const [form] = Form.useForm()
@@ -132,8 +132,9 @@ const KycApproval = (props) => {
 
   const pan_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.partner_pan)
   const cheaque_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.check_leaf)
-  const cs_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.cibil)
-
+  const { role } = u
+  const edit_access = [role.admin, role.partner_manager, role.onboarding]
+  const access = u.is_roles(edit_access, context)
   const [createPartnerCode] = useMutation(
     CREATE_PARTNER_CODE_MUTATION,
     {
@@ -183,9 +184,15 @@ const KycApproval = (props) => {
   const onCreatePartnerCodeSubmit = (form) => {
     if (isEmpty(trucks)) {
       message.error('Add truck before approve Partner!')
-    } else if (isEmpty(pan_files) || isEmpty(cheaque_files) || isEmpty(cs_files)) {
-      message.error('All documents are mandatory!')
-    } else {
+    } else if (isEmpty(pan_files)) {
+      message.error('PAN documents are mandatory!')
+    } 
+    else if (isEmpty(cheaque_files)) {
+      message.error('Cheque/Passbook documents are mandatory!')
+    } 
+    
+    
+    else {
       setDisableButton(true)
       createPartnerCode({
         variables: {
@@ -196,9 +203,10 @@ const KycApproval = (props) => {
           gst: form.gst,
           emi: !!checked,
           updated_by: context.email,
+          approved_by:context.email,
           onboarded_by_id: get(partnerDetail, 'onboarded_by.id', null),
           partner_advance_percentage_id: get(partnerDetail, 'partner_advance_percentage.id', null),
-          cibil: get(partnerDetail, 'cibil', null)
+         
         }
       })
     }
@@ -311,48 +319,7 @@ const KycApproval = (props) => {
                         </Space>
                       </Col>
                     </List.Item>
-                    <List.Item key={4}>
-                      <Col xs={24} sm={20}>
-                        <Row>
-                          <Col xs={10}>Cibil Score</Col>
-                          <Col xs={14} sm={12}>{get(partnerDetail, 'cibil', null)}</Col>
-                        </Row>
-                      </Col>
-                      <Col xs={24} sm={4} className='text-right'>
-                        <Space>
-                          <span>
-                            {!isEmpty(cs_files) ? (
-                              <Space>
-                                <ViewFile
-                                  size='small'
-                                  id={partner_id}
-                                  type='partner'
-                                  file_type={u.fileType.cibil}
-                                  folder={u.folder.approvals}
-                                  file_list={cs_files}
-                                />
-                                <DeleteFile
-                                  size='small'
-                                  id={partner_id}
-                                  type='partner'
-                                  file_type={u.fileType.cibil}
-                                  file_list={cs_files}
-                                />
-                              </Space>
-                            ) : (
-                              <FileUploadOnly
-                                size='small'
-                                id={partner_id}
-                                type='partner'
-                                folder={u.folder.approvals}
-                                file_type={u.fileType.cibil}
-                                file_list={cs_files}
-                              />
-                            )}
-                          </span>
-                        </Space>
-                      </Col>
-                    </List.Item>
+      
                     <List.Item key={5}>
                       <Col xs={24} sm={20}>
                         <Row>
@@ -375,7 +342,7 @@ const KycApproval = (props) => {
                     </List.Item>
                   </List>
                   <Row justify='end' className='mt10'>
-                    <Button key='submit' type='primary' loading={disableButton} disabled={isEmpty(trucks) || disableAddTruck} htmlType='submit'>
+                    <Button key='submit' type='primary' loading={disableButton} disabled={ isEmpty(trucks) || disableAddTruck || !access} htmlType='submit'>
                       Approve KYC
                     </Button>
                   </Row>
