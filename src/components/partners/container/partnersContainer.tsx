@@ -71,7 +71,7 @@ query partners($partner_statusId: [Int!], $name: String, $cardcode: String, $reg
       count
     }
   }
-  partner_status(where: {name: {_nin: ["Lead"]}}) {
+  partner_status(where: {name: {_nin: ["Lead","Registered","Rejected","Verification"]}}) {
     id
     name
   }

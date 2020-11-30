@@ -83,7 +83,7 @@ query partner_lead_aggregate(
       count
     }
   }
-  partner_status(where:{name: {_in: ["Lead","Registered","Rejected"]}}, order_by: {id: asc}) {
+  partner_status(where:{name: {_in: ["Lead","Registered","Rejected","Verification"]}}, order_by: {id: asc}) {
     id
     name
   }
@@ -142,7 +142,7 @@ const PartnerLead = (props) => {
     mobile: null,
     city_name: null,
     owner_name: null,
-    partner_status_name: ['Lead', 'Registered'],
+    partner_status_name: ['Lead', 'Registered','Verification'],
     channel_name: null
   }
 

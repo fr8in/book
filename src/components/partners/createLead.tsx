@@ -42,7 +42,7 @@ const INSERT_PARTNER_LEAD_MUTATION = gql`
         }
         partner_users:
         {data: { 
-          mobile: $mobile,
+          mobile: $mobile,,is_admin:true,
           name: $contact_name}
         },
         partner_status_id: $partner_status_id,

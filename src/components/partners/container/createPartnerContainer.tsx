@@ -9,8 +9,7 @@ import CreatePartner from '../createPartner'
 
 const INSERT_PARTNER_MUTATION = gql`
 mutation create_partner(
-  $cibil: String!,
-  $city_id: Int!,
+
   $name: String!,
   $pan_no: String!,
   $account_holder: String!,
@@ -20,18 +19,14 @@ mutation create_partner(
   $onboarded_by_id: Int!,
   $partner_advance_percentage_id: Int!,
   $final_payment_date: Int!,
-  $email:String!,
   $mobile: String!
 ) {
   create_partner_track(
     personal_detail: {
-      cibil: $cibil, 
-      city_id: $city_id, 
       name: $name, 
       pan_no: $pan_no
     }, 
     partner_user: {
-      email: $email, 
       mobile: $mobile
     },
     bank_detail: {
@@ -50,12 +45,7 @@ mutation create_partner(
   }
 }`
 
-const ADDRESS_UPDATE = gql`
-mutation partner_address($id: Int!, $address: jsonb){
-  update_partner(where:{id: {_eq:$id}}, _set:{address:$address}){
-    returning{ id }
-  }
-}`
+
 
 const PartnerOnboardingContainer = () => {
   const [city, setCity] = useState(null)
@@ -85,7 +75,7 @@ const PartnerOnboardingContainer = () => {
         const status = get(data, 'create_partner_track.status', null)
         const description = get(data, 'create_partner_track.description', null)
         if (status === 'OK') {
-          onAddressUpdate(parseInt(description))
+         
           message.success(description || 'Created!')
           form.resetFields()
           router.push('/partners', undefined, { shallow: true })
@@ -96,30 +86,8 @@ const PartnerOnboardingContainer = () => {
     }
   )
 
-  const [update_address] = useMutation(
-    ADDRESS_UPDATE,
-    {
-      onError (error) {
-        message.error(error.toString())
-      }
-    }
-  )
 
-  const onAddressUpdate = (partner_id) => {
-    const address = {
-      no: form.getFieldValue('no'),
-      address: form.getFieldValue('address'),
-      city: form.getFieldValue('city').split(',')[0],
-      state: form.getFieldValue('state'),
-      pin_code: form.getFieldValue('pin_code')
-    }
-    update_address({
-      variables: {
-        id: partner_id,
-        address: address
-      }
-    })
-  }
+
 
   const onPartnerSubmit = (form) => {
     if (form.final_payment_date < 1 || form.final_payment_date > 31){
@@ -128,13 +96,10 @@ const PartnerOnboardingContainer = () => {
     setDisableButton(true)
     insertPartner({
       variables: {
-        // personal_detail
-        cibil: form.cibil,
-        city_id: parseInt(city),
         name: form.name,
         pan_no: form.pan_no,
         // partner_user
-        email: form.email,
+       
         mobile: form.mobile,
         // bank_detail
         account_holder: form.account_holder_name,

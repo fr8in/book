@@ -34,7 +34,7 @@ query ifsc_validation($ifsc: String!){
 
 
 const CreatePartner = (props) => {
-  const { onSubmit, form, setCity, disableButton, partner_info, data_loading,access,setDisableAddTruck,disableAddTruck } = props
+  const { onSubmit, form, setCity, disableButton, partner_info, data_loading,setDisableAddTruck,disableAddTruck } = props
 
   const { loading, error, data } = useQuery(
     PARTNERS_SUBSCRIPTION,
@@ -84,9 +84,6 @@ const CreatePartner = (props) => {
     )
   }
 
-  const onCityChange = (city_id) => {
-    setCity(city_id)
-  }
 
   const rules = [
     {
@@ -133,16 +130,7 @@ const CreatePartner = (props) => {
                 <Input placeholder='Phone Number' disabled={!!partner_info} />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
-              <Form.Item
-                label='Email Address'
-                name='email'
-                rules={[{ required: true, message: 'Email is required field' }]}
-                initialValue={get(partner_info, 'partner_users[0].email', null)}
-              >
-                <Input placeholder='Email Address' disabled={!!partner_info} />
-              </Form.Item>
-            </Col>
+           
             <Col xs={24} sm={8} md={8} lg={8} xl={4}>
               <Form.Item
                 label='PAN'
@@ -153,67 +141,10 @@ const CreatePartner = (props) => {
                 <Input placeholder='Pan Number' />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
-              <Form.Item
-                label='Cibil'
-                name='cibil'
-                rules={[{ required: true, message: 'Cibil Score is required field!' }]}
-                initialValue={get(partner_info, 'cibil', null)}
-              >
-                <Input placeholder='Cibil Score ' />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
-              <Form.Item
-                label='Building Number'
-                name='no'
-                rules={[{ required: true, message: 'Building Number is required field!' }]}
-                initialValue={get(partner_info, 'address.no', null)}
-              >
-                <Input placeholder='Building Number' />
-              </Form.Item>
-            </Col>
+            
+           
           </Row>
-          <Row gutter={10}>
-            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
-              <Form.Item
-                label='Address'
-                name='address'
-                rules={[{ required: true, message: 'Address is required field!' }]}
-                initialValue={get(partner_info, 'address.address', null)}
-              >
-                <Input placeholder='Address' />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
-              <CitySelect onChange={onCityChange} label='City' name='city' required city={get(partner_info, 'city.name', null)} />
-            </Col>
-            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
-              <Form.Item
-                label='State'
-                name='state'
-                rules={[{ required: true, message: 'State is required field!' }]}
-                initialValue={get(partner_info, 'address.state', null)}
-              >
-                <Select
-                  placeholder='Select State'
-                  options={state_list}
-                  optionFilterProp='label'
-                  showSearch
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={8} md={8} lg={8} xl={4}>
-              <Form.Item
-                label='Pin Code'
-                name='pin_code'
-                rules={[{ required: true, message: 'Zip Code is required field' }]}
-                initialValue={get(partner_info, 'address.pin_code', null)}
-              >
-                <Input placeholder='Pin Code' />
-              </Form.Item>
-            </Col>
-          </Row>
+     
         </Card>
         <Card title='Bank Details' size='small' className='border-top-blue mb10'>
           <Row gutter={10}>
@@ -328,13 +259,13 @@ const CreatePartner = (props) => {
               {partner_info ? 
               <Space>
               <Button onClick={() => setDisableAddTruck(!disableAddTruck)} >Skip</Button>
-              <Button type='primary' loading={disableButton} disabled={!access || !disableAddTruck} htmlType='submit'>Submit</Button>
+              <Button type='primary' loading={disableButton} disabled={!disableAddTruck} htmlType='submit'>Submit</Button>
               </Space> : (
                 <Space>
                 <Link href='/partners'>
                   <Button>Back</Button>
                 </Link>
-                <Button type='primary' loading={disableButton} disabled={!access} htmlType='submit'>Submit</Button>
+                <Button type='primary' loading={disableButton}  htmlType='submit'>Submit</Button>
                 </Space>)}
               
           </Col>
