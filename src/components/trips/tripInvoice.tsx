@@ -1,9 +1,10 @@
 import { useState, useContext } from 'react'
-import { Row, Col, Input, Button, Checkbox, Space, Form, message } from 'antd'
+import { Row, Col, Input, Button, Checkbox, Space, Form, message, Popconfirm } from 'antd'
 import InvoiceItem from './invoiceItem'
 import get from 'lodash/get'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
+import sumBy from 'lodash/sumBy'
 
 const CALCULATE_ONHOLD = gql`
 mutation calculate_onHold(
@@ -118,15 +119,17 @@ const TripInvoice = (props) => {
   }
   const [calc, setCalc] = useState(initial)
   const [form] = Form.useForm()
+  const customer_advance_percentage = get(trip_info, 'trip_receivables[0].amount', null) * 50 / 100
+  const receipts = sumBy(trip_info.trip_receipts, 'amount')
 
   const [calculate_onHold] = useMutation(
     CALCULATE_ONHOLD,
     {
-      onError (error) {
+      onError(error) {
         message.error(error.toString())
         setCalc({ ...calc, loading_clac: false })
       },
-      onCompleted (data) {
+      onCompleted(data) {
         const commission = get(data, 'calculate_onHold.commission', null)
         const balance = get(data, 'calculate_onHold.customer_balance', null)
         const on_hold = get(data, 'calculate_onHold.onHold', null)
@@ -158,11 +161,11 @@ const TripInvoice = (props) => {
   const [create_invoice] = useMutation(
     CREATE_INVOICE,
     {
-      onError (error) {
+      onError(error) {
         message.error(error.toString())
         setCalc({ ...calc, loading_submit: false })
       },
-      onCompleted (data) {
+      onCompleted(data) {
         const success = get(data, 'create_invoice.success', null)
         const description = get(data, 'create_invoice.message', null)
         if (success) {
@@ -237,6 +240,10 @@ const TripInvoice = (props) => {
     form.resetFields()
     setCalc(initial)
   }
+
+  const onConfirm = () => {
+    form.submit();
+  };
 
   return (
     <Form className='invoice' onFinish={onInvoiceSubmit} form={form}>
@@ -334,7 +341,7 @@ const TripInvoice = (props) => {
       {trip_info.billing_remarks &&
         <Form.Item className='item' name='remarks' valuePropName='checked'>
           <Checkbox disabled={calc.completed}>
-                Confirm other charges booked for Customer/Partner
+            Confirm other charges booked for Customer/Partner
           </Checkbox>
         </Form.Item>}
       <Row className='item'>
@@ -352,14 +359,32 @@ const TripInvoice = (props) => {
             >
               Calculate On-Hold
             </Button>
-            <Button
-              type='primary'
-              htmlType='submit'
-              disabled={!calc.completed}
-              loading={calc.loading_submit}
-            >
-              Submit
-            </Button>
+            {
+              customer_advance_percentage > receipts ?
+                <Popconfirm
+                  title='Customer advance not received / less than 50%.
+                       Do you want to proceed?'
+                  okText='Yes'
+                  cancelText='No'
+                  onConfirm={onConfirm}
+                >
+                  <Button
+                    type='primary'
+                    htmlType='submit'
+                    disabled={!calc.completed}
+                    loading={calc.loading_submit}
+                  >
+                    Submit
+                  </Button>
+                </Popconfirm> :
+                <Button
+                  type='primary'
+                  htmlType='submit'
+                  disabled={!calc.completed}
+                  loading={calc.loading_submit}
+                >
+                  Submit
+                </Button>}
           </Space>
         </Col>
       </Row>

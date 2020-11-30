@@ -1,9 +1,10 @@
-@import './variables.less';
-@import './utils.less';
-@import './antdCustomise.less';
-@import './inlineEdit.less';
+@import "./variables.less";
+@import "./utils.less";
+@import "./antdCustomise.less";
+@import "./inlineEdit.less";
 
-html, body {
+html,
+body {
   min-height: 100%;
   font-size: 13px;
 }
@@ -11,10 +12,13 @@ label {
   font-weight: 600;
   line-height: 24px;
 }
-a, .link {
+a,
+.link {
   color: @blue;
   cursor: pointer;
-  &:hover { color: @primary}
+  &:hover {
+    color: @primary;
+  }
 }
 /* Remove Arrows/Spinners for Input type number*/
 /* Chrome, Safari, Edge, Opera */
@@ -24,7 +28,7 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 .hv-center {
@@ -36,12 +40,14 @@ input[type=number] {
   &.preloading {
     height: 100vh;
     background: repeating-linear-gradient(
-                    -45deg,
-                    rgba(0,0,0,0.02), 
-                    rgba(0,0,0,0.02) 2px,
-                    transparent 2px, /* Transparent beginning at pixel 2 */
-                    transparent 10px /* Transparent ending at pixel 12 (10 + 2) */
-                ), linear-gradient(to top, @dark-blue, @deep-blue);
+        -45deg,
+        rgba(0, 0, 0, 0.02),
+        rgba(0, 0, 0, 0.02) 2px,
+        transparent 2px,
+        /* Transparent beginning at pixel 2 */ transparent 10px
+          /* Transparent ending at pixel 12 (10 + 2) */
+      ),
+      linear-gradient(to top, @dark-blue, @deep-blue);
     background-size: cover;
     h1 {
       font-size: 48px;
@@ -52,7 +58,7 @@ input[type=number] {
       font-weight: 600;
       text-shadow: @text-shadow-dark;
       > span {
-          color: @primary
+        color: @primary;
       }
     }
     p {
@@ -63,11 +69,11 @@ input[type=number] {
   }
   &.fixed {
     position: fixed;
-    top:0;
-    right:0;
+    top: 0;
+    right: 0;
     bottom: 0;
     left: 0;
-    background-color: rgba(255,255,255,0.3);
+    background-color: rgba(255, 255, 255, 0.3);
     z-index: 999;
   }
 }
@@ -98,17 +104,19 @@ input[type=number] {
   border: 0;
   border-top: 1px solid @border-light;
   width: 100%;
-  .clear{
+  .clear {
     float: right;
     font-size: 10px;
     line-height: 20px;
-    background:@primary;
+    background: @primary;
     color: @white;
     padding: 0 5px;
     border-radius: 12px;
-    box-shadow: inset 0 1px 0 rgba(0,0,0,0.2);
+    box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.2);
   }
-  .ant-checkbox-group { width:100% }
+  .ant-checkbox-group {
+    width: 100%;
+  }
   .ant-checkbox-group-item {
     display: block;
     line-height: 24px;
@@ -123,36 +131,53 @@ input[type=number] {
   background-color: @primary;
   position: relative;
   border: 0 none;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
-  .data { 
-    float: left; 
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  .data {
+    float: left;
     padding: 0 10px;
-    border-right: solid 1px rgba(0,0,0,0.2);
-    border-left: solid 1px rgba(255,255,255,0.2);
-    &:first-child { padding-left: 0; border-left: 0 none;}
-    &:last-child { border-right: 0 none;}
-    h2, p { margin: 0; color: @white; text-shadow: 0 1px 0 rgba(0,0,0,0.5); line-height: normal; font-size: 12px; }
-    h2 {margin-bottom: 5px; font-size: 18px;}
-  }
-  .report { 
-    text-align: right;
-    button { 
-      margin-left: 8px;
-      margin-top: -3px;
-      background-color: rgba(0,0,0,0.4);
+    border-right: solid 1px rgba(0, 0, 0, 0.2);
+    border-left: solid 1px rgba(255, 255, 255, 0.2);
+    &:first-child {
+      padding-left: 0;
+      border-left: 0 none;
+    }
+    &:last-child {
+      border-right: 0 none;
+    }
+    h2,
+    p {
+      margin: 0;
       color: @white;
-      border: 0 none;
-      box-shadow: inset 0 1px 0 rgba(0,0,0,0.5), @box-shadow-white;
-      opacity: 0.6;
-      &:hover { opacity: 1;}
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+      line-height: normal;
+      font-size: 12px;
+    }
+    h2 {
+      margin-bottom: 5px;
+      font-size: 18px;
     }
   }
-  .period { 
+  .report {
+    text-align: right;
+    button {
+      margin-left: 8px;
+      margin-top: -3px;
+      background-color: rgba(0, 0, 0, 0.4);
+      color: @white;
+      border: 0 none;
+      box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.5), @box-shadow-white;
+      opacity: 0.6;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+  .period {
     position: absolute;
     right: 10px;
     bottom: -6px;
     font-size: 10px;
-    text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
     color: @white;
   }
 }
@@ -187,12 +212,16 @@ input[type=number] {
 }
 
 .weeklyTarget {
-  .ant-table.ant-table-small .ant-table-tbody > tr > td{
+  .ant-table.ant-table-small .ant-table-tbody > tr > td {
     padding: 3px 8px;
   }
   .alignRight {
     text-align: right;
-    .ant-tag { margin: 0; margin-left: 5px; border-radius: 4px;}
+    .ant-tag {
+      margin: 0;
+      margin-left: 5px;
+      border-radius: 4px;
+    }
   }
 }
 .status {
@@ -206,9 +235,14 @@ input[type=number] {
     border-bottom: solid 1px #f9f9f9;
     line-height: 24px;
     position: relative;
-    p { margin: 0;}
-    label { font-size: @font-size-base; padding: 0 10px 0 28px }
-    b{
+    p {
+      margin: 0;
+    }
+    label {
+      font-size: @font-size-base;
+      padding: 0 10px 0 28px;
+    }
+    b {
       .ant-checkbox-wrapper {
         padding: 0;
         position: absolute;
@@ -216,23 +250,39 @@ input[type=number] {
         left: 8px;
       }
     }
-    .ant-checkbox-wrapper { padding-left: 0 }
+    .ant-checkbox-wrapper {
+      padding-left: 0;
+    }
     .ant-form-item {
       display: inline-block;
       width: 85px;
       margin-bottom: 0;
       line-height: normal;
-      .ant-form-item-control-input { min-height: auto;}
+      .ant-form-item-control-input {
+        min-height: auto;
+      }
     }
-    &.ant-form-item { margin-bottom: 0 }
+    &.ant-form-item {
+      margin-bottom: 0;
+    }
   }
 }
 .additonalAdv {
   margin: -10px;
-  p { background-color: @light; padding: 10px; text-align: center; margin-bottom: 0;}
+  p {
+    background-color: @light;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 0;
+  }
 }
-.payableHead { padding: 8px; background-color: @border-light;}
-.cardFix { margin: 0 -10px -10px;}
+.payableHead {
+  padding: 8px;
+  background-color: @border-light;
+}
+.cardFix {
+  margin: 0 -10px -10px;
+}
 
 .timeLine {
   &.editPage {
@@ -268,14 +318,18 @@ input[type=number] {
     }
   }
   .ant-timeline {
-    li { 
+    li {
       padding-bottom: 10px;
-      .ant-timeline-item-content { border-bottom: solid 1px @border-light; }
+      .ant-timeline-item-content {
+        border-bottom: solid 1px @border-light;
+      }
     }
-    &:last-child { 
-      li { 
+    &:last-child {
+      li {
         padding-bottom: 0;
-        .ant-timeline-item-content { border-bottom: 0 none }
+        .ant-timeline-item-content {
+          border-bottom: 0 none;
+        }
       }
     }
   }
@@ -299,7 +353,7 @@ input[type=number] {
   position: relative;
   overflow: hidden;
   &::after {
-    content: '\002B';
+    content: "\002B";
     position: absolute;
     color: #1890ff;
     font-size: 12px;
@@ -315,7 +369,7 @@ input[type=number] {
 .walletList {
   margin: -10px;
   > div {
-    > h4{
+    > h4 {
       background-color: @light-bg;
       margin-bottom: 0;
       padding: 5px 10px;
@@ -323,26 +377,39 @@ input[type=number] {
     > .ant-row {
       padding: 10px;
       border-bottom: solid 1px @border-light;
-      p{
+      p {
         margin-bottom: 0;
       }
-      .creditAmount { color: @green; font-weight: 500; }
-      .debitAmount { color: @red; font-weight: 500;}
+      .creditAmount {
+        color: @green;
+        font-weight: 500;
+      }
+      .debitAmount {
+        color: @red;
+        font-weight: 500;
+      }
     }
   }
 }
-.tinyLabel, .tinyLabel label {
+.tinyLabel,
+.tinyLabel label,
+.tinyAction {
   font-size: 10px;
   text-transform: uppercase;
   color: @light-gray;
   font-weight: normal;
 }
+.tinyAction {
+  text-transform: none;
+  margin-bottom: -5px;
+  align-items: center;
+}
 .search {
   position: relative;
   .search-drop {
     position: absolute;
-    top:0;
-    right:0;
+    top: 0;
+    right: 0;
     z-index: 2;
     border-radius: 0;
     height: 36px;
@@ -351,8 +418,8 @@ input[type=number] {
 .search-field {
   padding: 5px;
   background-color: @white;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-  input{
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  input {
     max-width: 100%;
     width: 300px;
   }
@@ -360,8 +427,8 @@ input[type=number] {
 
 .search-title {
   .ant-collapse-header {
-  font-size: 11px;
-  text-transform: uppercase;
+    font-size: 11px;
+    text-transform: uppercase;
   }
   .ant-collapse-content-box {
     padding: 0;
@@ -370,11 +437,15 @@ input[type=number] {
 .search-result {
   padding: 6px 15px;
   border-bottom: solid 1px @border-light;
-  &:last-child{ border-bottom: 0 none }
-  &:hover{
+  &:last-child {
+    border-bottom: 0 none;
+  }
+  &:hover {
     background-color: lighten(@primary, 42%);
   }
-  .tinyLabel { color: @gray}
+  .tinyLabel {
+    color: @gray;
+  }
 }
 .file-upload {
   .ant-upload {
@@ -396,13 +467,13 @@ input[type=number] {
   }
 }
 .cell-wrapper {
-    padding-right: 20px;
-    position: relative;
-    .cell-icon{
-      position: absolute;
-      right: 0;
-      top: calc(50% - 7px);
-      cursor: pointer;
+  padding-right: 20px;
+  position: relative;
+  .cell-icon {
+    position: absolute;
+    right: 0;
+    top: calc(50% - 7px);
+    cursor: pointer;
   }
 }
 .small-tag {
@@ -439,16 +510,23 @@ input[type=number] {
 @media only screen and (max-width: 767px) {
   .stats {
     margin-bottom: 10px;
-    &.last { margin-bottom: 0;}
+    &.last {
+      margin-bottom: 0;
+    }
   }
-  
 }
 
 @media only screen and (max-width: 575px) {
   .hidden-xs {
-    display: none
+    display: none;
   }
   .create-po .hide-label {
-    .ant-form-item-label { display: none; }
+    .ant-form-item-label {
+      display: none;
+    }
   }
+}
+
+.h2color {
+  color: @white;
 }

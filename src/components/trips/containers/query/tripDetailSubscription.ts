@@ -4,6 +4,7 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
   subscription trips_detail($id: Int) {
     trip(where: {id:{_eq:$id}}){
       id
+      is_topay
       order_date
       created_at
       source_in
@@ -81,6 +82,15 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
       trip_status{
         id
         name
+      }
+      trip_payments{
+        amount
+      }
+      trip_receivables{
+        amount
+      }
+      trip_receipts{
+        amount
       }
       customer_price
       partner_price

@@ -1,4 +1,4 @@
-export default {
+ const util = {
   limit: 100,
   getWeekNumber: (d) => {
     d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()))
@@ -10,6 +10,16 @@ export default {
     // Calculate full weeks to nearest Thursday
     var weekNo = Math.ceil((((d - Number(yearStart)) / 86400000) + 1) / 7)
     return { year: d.getUTCFullYear(), week: weekNo }
+  },
+  getLastSixMonth: () =>{
+    const today = new Date()
+    const period = []
+  
+    for (var i = 0; i < 6; i++) {
+      const d = new Date(today.getFullYear(), today.getMonth() - i, 1)
+      period.push({ month: d.getMonth()+1, year: d.getFullYear() })
+    }
+  return period
   },
   role: {
     admin: 'Admin',
@@ -61,7 +71,9 @@ export default {
     customer_fr8_employee:'Fr8 Employee',
     customer_reject:'Customer Reject',
     customer_advance_percentage:'Customer Advance Percentage',
-    billing_comment:'Billing Comment'
+    billing_comment:'Billing Comment',
+    truck_owner_registration:'Truck Owner Registration',
+    trip_price_change: 'Trip Price Changed'
   },
   maxLength: 6,
   MIN_REBATE_PERCENTAGE: 0.25,
@@ -109,3 +121,5 @@ export default {
     return result
   }
 }
+
+export default util

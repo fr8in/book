@@ -1,13 +1,14 @@
 
-import { Row, Col, Form, Input, Button, message } from 'antd'
+import { Row, Col, Form, Input, Button, message ,DatePicker} from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import Driver from '../trucks/driver'
 import { useState,useContext } from 'react'
 import userContext from '../../lib/userContaxt'
 import u from '../../lib/util'
+import moment from 'moment'
 
 const UPDATE_TRUCK_INFO_MUTATION = gql`
-mutation truck_info($description:String, $topic:String, $truck_id: Int,$updated_by: String!,$length:float8,$breadth:float8,$height:float8,$id:Int){
+mutation truck_info($description:String, $topic:String, $truck_id: Int,$updated_by: String!,$length:float8,$breadth:float8,$height:float8,$id:Int,$insurance_expiry_at:timestamp){
   insert_truck_comment(objects:{truck_id:$truck_id,topic:$topic,description:$description,created_by:$updated_by})
     {
       returning
@@ -15,7 +16,7 @@ mutation truck_info($description:String, $topic:String, $truck_id: Int,$updated_
         id
       }
     }
-  update_truck(_set: {length:$length,breadth:$breadth,height:$height,updated_by:$updated_by}, where: {id: {_eq:$id }}){
+  update_truck(_set: {length:$length,breadth:$breadth,height:$height,updated_by:$updated_by,insurance_expiry_at:$insurance_expiry_at}, where: {id: {_eq:$id }}){
     returning{
       id
       length
@@ -24,8 +25,6 @@ mutation truck_info($description:String, $topic:String, $truck_id: Int,$updated_
     }
   }
 }
-
-
 `
 
 const TruckInfo = (props) => {
@@ -33,6 +32,7 @@ const TruckInfo = (props) => {
   const [disableButton, setDisableButton] = useState(false)
   const { topic } = u
   const context = useContext(userContext)
+  const dateFormat = 'YYYY-MM-DD'
   
   const driver_number = truck_info && truck_info.driver && truck_info.driver.mobile
 
@@ -59,7 +59,8 @@ const TruckInfo = (props) => {
         updated_by: context.email,
         description:`${topic.truck_dimension} updated by ${context.email}`,
         topic:topic.truck_dimension,
-        truck_id: id
+        truck_id: id,
+        insurance_expiry_at:form.insurance_expiry_at.format('YYYY-MM-DD')
       }
     })
   }
@@ -71,7 +72,7 @@ const TruckInfo = (props) => {
           <Col sm={20}>
             <Form layout='vertical' onFinish={onDimensionSubmit}>
               <Row gutter={10}>
-                <Col xs={24} sm={6}>
+                <Col xs={24} sm={5}>
                   <Form.Item
                     label='Length(Ft)'
                     name='length'
@@ -81,7 +82,7 @@ const TruckInfo = (props) => {
                     <Input type='number' placeholder='Length(Ft)' disabled={false} />
                   </Form.Item>
                 </Col>
-                <Col xs={24} sm={6}>
+                <Col xs={24} sm={5}>
                   <Form.Item
                     label='Breadth(Ft)'
                     name='breadth'
@@ -95,7 +96,7 @@ const TruckInfo = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col xs={24} sm={6}>
+                <Col xs={24} sm={5}>
                   <Form.Item
                     label='Height(Ft)'
                     name='height'
@@ -109,7 +110,22 @@ const TruckInfo = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col xs={24} sm={6}>
+                <Col xs={24} sm={4}>
+                <Form.Item 
+                label='Insurance Expiry Date'
+                name='insurance_expiry_at'
+                rules={[{ required: true, message: 'Insurance Expiry Date is required field' }]}
+                initialValue={truck_info.insurance_expiry_at ? moment(truck_info.insurance_expiry_at, dateFormat) : null}
+                 >
+                  <DatePicker
+                    showToday={false}
+                    placeholder='Insurance Expiry Date'
+                    format={dateFormat}
+                    size='middle'
+                  />
+                </Form.Item>
+                </Col>
+                <Col xs={24} sm={5}>
                   <Form.Item label='save' name='save' className='hideLabel'>
                     <Button type='primary' loading={disableButton} htmlType='submit'>Save</Button>
                   </Form.Item>
