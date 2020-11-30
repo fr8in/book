@@ -1,6 +1,7 @@
 import WaitingForLoad from '../../trucks/waitingForLoad'
 import { gql, useSubscription } from '@apollo/client'
 import _ from 'lodash'
+import { useState } from 'react'
 
 const DASHBOARD_TRUCK_QUERY = gql`
 subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $truck_no: String,$dnd:Boolean) {
@@ -60,24 +61,30 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
 `
 const WaitingForLoadContainer = (props) => {
   const { filters, dndCheck } = props
+  const initial = { truckno: null}
+  const [truckNo , setTruckNo] = useState(initial)
 
   const variables = {
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
     branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
     cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
     truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
-    truck_no: null,
+    truck_no: truckNo.truckno ? `%${truckNo.truckno}%` : null,
     dnd: dndCheck === true ? null : true
   }
   const { loading, data, error } = useSubscription(DASHBOARD_TRUCK_QUERY, { variables })
   
+  const onTruckNoSearch = (value) => {
+    setTruckNo({ ...truckNo, truckno: value })
+  }
+
   let trucks = []
   if (!loading) {
     const newData = { data }
     trucks = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('trucks').value()
   }
   return (
-    <WaitingForLoad trucks={trucks} loading={loading} />
+    <WaitingForLoad trucks={trucks} loading={loading} onTruckNoSearch={onTruckNoSearch} truckNo={truckNo}/>
   )
 }
 

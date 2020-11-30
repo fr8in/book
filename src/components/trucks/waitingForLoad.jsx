@@ -10,7 +10,7 @@ import Truncate from '../common/truncate'
 import Phone from '../common/phone'
 
 const WaitingForLoad = (props) => {
-  const { trucks, loading, onTruckNoSearch, vars } = props
+  const { trucks, loading, onTruckNoSearch, truckNo } = props
   const initial = {
     usersData: [],
     usersVisible: false,
@@ -48,9 +48,7 @@ const WaitingForLoad = (props) => {
         <div>
           <Input
             placeholder='Search Truck'
-            id='truck'
-            name='truck'
-            value={vars && vars.truck_no}
+            value={truckNo.truck_no}
             onChange={handleTruckNo}
           />
         </div>
