@@ -10,21 +10,35 @@ import {
   Space,
   Table,
   message,
-  Card
+  Card,
+  Tooltip
 } from 'antd'
 import LinkComp from '../common/link'
+import useShowHide from '../../hooks/useShowHide'
 import FileUploadOnly from '../common/fileUploadOnly'
+import { CheckOutlined,CarOutlined} from '@ant-design/icons'
 import ViewFile from '../common/viewFile'
 import DeleteFile from '../common/deleteFile'
-import { gql, useMutation, useSubscription } from '@apollo/client'
+import { gql, useMutation, useSubscription ,useQuery} from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
+import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Loading from '../common/loading'
-import NewTruck from './newTruck'
 import u from '../../lib/util'
+import NewTruck from './newTruck'
+import TruckActivation from '../trucks/truckActivation'
 import { useRouter } from 'next/router'
 
+
+const TRUCKS_QUERY = gql`
+query trucks_type_status{
+  truck_type {
+    id
+    name
+  }
+} 
+`
 
 const PARTNERS_SUBSCRIPTION = gql`
 subscription partner_kyc($id:Int){
@@ -52,6 +66,7 @@ subscription partner_kyc($id:Int){
       created_at
     }
     trucks{
+      id
       truck_no
       truck_type{
         name
@@ -95,16 +110,36 @@ mutation create_partner_code(
 const KycApproval = (props) => {
   const { partner_id, disableAddTruck} = props
 
+  const initial = {
+    truckActivationVisible: false,
+    truckActivationData: [],
+    showModal: false 
+  }
+
   const router = useRouter()
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
+  const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+  const { visible, onShow, onHide } = useShowHide(initial)
 
   const [checked, setChecked] = useState(false)
 
   const onChange = (e) => {
     setChecked(e.target.checked)
   }
+
+  const { loading:query_loading, error:query_error, data:query_data } = useQuery(TRUCKS_QUERY, {
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  })
+
+  let truck_data = {}
+  if (!query_loading) {
+    truck_data = query_data
+  }
+ 
+  const truck_type = get(truck_data, 'truck_type', [])
 
   const { data, error, loading } = useSubscription(
     PARTNERS_SUBSCRIPTION, {
@@ -131,6 +166,7 @@ const KycApproval = (props) => {
   const files = get(partnerDetail, 'partner_files', [])
 
   const pan_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.partner_pan)
+  const tds_files = files.filter(file => file.type === u.fileType.tds)
   const cheaque_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.check_leaf)
   const { role } = u
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
@@ -178,6 +214,22 @@ const KycApproval = (props) => {
     {
       title: 'Status',
       render: (text, record) => get(record, 'truck_status.name', null)
+    },
+    {
+      title: 'Action',
+      render: (text, record) => {
+        return (
+          <Button
+                  type='primary'
+                  size='small'
+                  shape='circle'
+                  className='btn-success'
+                  disabled={!access}
+                  icon={<CheckOutlined />}
+                  onClick={() => handleShow('truckActivationVisible', null, 'truckActivationData', record.id)}
+                />
+        )
+      }
     }
   ]
 
@@ -221,10 +273,16 @@ const KycApproval = (props) => {
               <Card
                 size='small'
                 title={isEmpty(trucks) ? 'Add Truck' : 'Trucks Detail'}
+                extra={
+                  <Tooltip title='Add Truck'>
+                    <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />}  onClick={() => onShow('showModal')} />
+                  </Tooltip>
+              }
                 className='border-top-blue'
               >
-                {isEmpty(trucks) ? <NewTruck partner_info={partnerDetail} disableAddTruck={disableAddTruck} />
-                  : (
+                {!isEmpty(trucks) ? 
+                   (
+                    <>
                     <Table
                       columns={column}
                       dataSource={trucks}
@@ -232,7 +290,17 @@ const KycApproval = (props) => {
                       pagination={false}
                       rowKey={record => record.truck_no}
                     />
-                  )}
+                    {object.truckActivationVisible && (
+                      <TruckActivation
+                        visible={object.truckActivationVisible}
+                        onHide={handleHide}
+                        truck_id={object.truckActivationData}
+                        truck_type={truck_type}
+                      />
+                    )}
+                     {visible.showModal && <NewTruck visible={visible.showModal} partner_info={partnerDetail} disableAddTruck={disableAddTruck} onHide={onHide} />}
+                    </>
+                  ):null}
               </Card>
             </Col>
             <Col xs={24} sm={12}>
@@ -319,7 +387,44 @@ const KycApproval = (props) => {
                         </Space>
                       </Col>
                     </List.Item>
-      
+                    <List.Item key={2}>
+                      <Col xs={24} sm={8}>TDS</Col>
+                      <Col xs={12} sm={12}>{partnerDetail && partnerDetail.tds}</Col>
+                      <Col xs={12} sm={4} className='text-right'>
+                        <Space>
+                          <span>
+                            {!isEmpty(tds_files) ? (
+                              <Space>
+                                <ViewFile
+                                  size='small'
+                                  id={partner_id}
+                                  type='partner'
+                                  file_type={u.fileType.tds}
+                                  folder={u.folder.approvals}
+                                  file_list={tds_files}
+                                />
+                                <DeleteFile
+                                  size='small'
+                                  id={partner_id}
+                                  type='partner'
+                                  file_type={u.fileType.tds}
+                                  file_list={tds_files}
+                                />
+                              </Space>
+                            ) : (
+                              <FileUploadOnly
+                                size='small'
+                                id={partner_id}
+                                type='partner'
+                                folder={u.folder.approvals}
+                                file_type={u.fileType.tds}
+                                file_list={tds_files}
+                              />
+                            )}
+                          </span>
+                        </Space>
+                      </Col>
+                    </List.Item>
                     <List.Item key={5}>
                       <Col xs={24} sm={20}>
                         <Row>

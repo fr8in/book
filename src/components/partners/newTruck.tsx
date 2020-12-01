@@ -4,6 +4,7 @@ import { message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import get from 'lodash/get'
 import AddTruck from '../trucks/addTruck'
+import Modal from 'antd/lib/modal/Modal'
 
 const TRUCK_TYPE_QUERY = gql`
 query add_truck{
@@ -15,7 +16,7 @@ query add_truck{
 
 const INSERT_ADD_TRUCK_MUTATION = gql`
 mutation add_truck($truck_no:String,  $partner_id: Int!, $breadth:float8,$length:float8,$height:float8,$city_id:Int,$truck_type_id:Int, $driver_id: Int,$created_by:String ) {
-  insert_truck(objects: {truck_no: $truck_no,breadth: $breadth, height: $height, length: $length,created_by:$created_by, partner_id: $partner_id,  truck_type_id: $truck_type_id, city_id: $city_id, driver_id: $driver_id, truck_status_id: 5}) {
+  insert_truck(objects: {truck_no: $truck_no,breadth: $breadth, height: $height, length: $length,created_by:$created_by, partner_id: $partner_id,  truck_type_id: $truck_type_id, city_id: $city_id, driver_id: $driver_id, truck_status_id: 6}) {
     returning {
       id
       truck_no
@@ -24,7 +25,7 @@ mutation add_truck($truck_no:String,  $partner_id: Int!, $breadth:float8,$length
 }`
 
 const NewTruck = (props) => {
-  const { partner_info, disableAddTruck } = props
+  const { partner_info, disableAddTruck ,visible,onHide} = props
   const [city_id, setCity_id] = useState(null)
   const [driver_id, setDriver_id] = useState(null)
   const [disableButton, setDisableButton] = useState(false)
@@ -70,6 +71,7 @@ const NewTruck = (props) => {
       onCompleted () {
         setDisableButton(false)
         message.success('Created!!')
+        onHide()
       }
     }
   )
@@ -93,6 +95,11 @@ const NewTruck = (props) => {
 
   return (
     <>
+    <Modal
+     visible={visible}
+     onCancel={onHide}
+     footer={[]}
+    >
       <AddTruck
         partner_info={partner_info}
         onSubmit={onSubmit}
@@ -103,6 +110,7 @@ const NewTruck = (props) => {
         grid_column={24}
         disableAddTruck={disableAddTruck}
       />
+      </Modal>
     </>
   )
 }

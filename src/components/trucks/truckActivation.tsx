@@ -171,7 +171,8 @@ const TruckActivation = (props) => {
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={12}>
-                  <Form.Item label='RC'>
+                  <Form.Item label='RC'  name='RC'
+                    rules={[{ required: true }]}>
                     <Space>
                       {!isEmpty(rc_files) ? (
                         <Space>
@@ -207,7 +208,9 @@ const TruckActivation = (props) => {
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={12}>
-                  <Form.Item label='Vaahan Screen'>
+                  <Form.Item label='Vaahan Screen'
+                  name='Vaahan Screen'
+                  rules={[{ required: true }]}>
                     <Space>
                       {!isEmpty(vaahan_files) ? (
                         <Space>
