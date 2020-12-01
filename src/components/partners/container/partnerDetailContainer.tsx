@@ -136,7 +136,7 @@ const PartnerDetailContainer = (props) => {
                        </div>} 
                     <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${cardcode}`}>
                       <Tooltip title='Add Truck'>
-                        <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />} disabled={!partner_access} />
+                        <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />}  />
                       </Tooltip>
                     </Link>
                     <WalletStatus id={partner_info.id} status={partner_info.wallet_block} />

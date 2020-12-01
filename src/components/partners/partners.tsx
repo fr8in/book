@@ -6,10 +6,8 @@ import {
   SearchOutlined
 } from '@ant-design/icons'
 import LinkComp from '../common/link'
-import KycReject from '../../components/partners/partnerKycReject'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from './comment'
-import KycApproval from '../partners/kycApproval'
 import { useState } from 'react'
 import moment from 'moment'
 import Truncate from '../common/truncate'
@@ -221,23 +219,6 @@ const PartnerKyc = (props) => {
         >
           <Comment partner_id={object.partner_id} onHide={handleHide} />
         </Modal>
-      )}
-      {object.rejectVisible && (
-        <Modal
-          title='Reject Partner'
-          visible={object.rejectVisible}
-          onCancel={handleHide}
-          footer={null}
-        >
-          <KycReject partner_id={object.partner_id} onHide={handleHide} />
-        </Modal>
-      )}
-      {object.approvalVisible && (
-        <KycApproval
-          visible={object.approvalVisible}
-          onHide={handleHide}
-          partner_id={object.partner_id}
-        />
       )}
       {!loading &&
         <Pagination
