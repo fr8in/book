@@ -280,7 +280,7 @@ const KycApproval = (props) => {
               }
                 className='border-top-blue'
               >
-                {!isEmpty(trucks) ? 
+                {isEmpty(trucks) ? 
                    (
                     <>
                     <Table
