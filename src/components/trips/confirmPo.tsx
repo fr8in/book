@@ -32,7 +32,6 @@ query po_query($id: Int!, $cus_id: Int!){
     id
     cardcode
     name
-    exception_date
     managed
     customer_advance_percentage{
       id
