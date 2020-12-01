@@ -59,13 +59,12 @@ const CustomerDetailContainer = (props) => {
   const { visible, onShow, onHide } = useShowHide(initial)
   const { role } = u
   const customerNameEdit = [role.admin, role.accounts_manager, role.accounts]
-  const ConfirmAccess = [role.admin, role.accounts_manager]
  const BlacklistEdit = [role.admin, role.accounts_manager, role.accounts, role.bm, role.rm, role.partner_manager, role.partner_support, role.onboarding]
   const context = useContext(userContext)
   const ad_am = [role.admin, role.accounts_manager]
   const customer_edit_role = [role.admin, role.accounts_manager, role.accounts, role.billing, role.billing_manager]
-  const transferAccess = u.is_roles(ad_am,context)
-  const customer_access = u.is_roles(customer_edit_role,context)
+  const transferAccess = u.is_roles(ad_am, context)
+  const customer_access = u.is_roles(customer_edit_role, context)
 
   const variables = {
     cardcode: cardcode,
@@ -129,16 +128,14 @@ const CustomerDetailContainer = (props) => {
                     {transferAccess
                       ? (
                         <Space>
-                          {
-                            ConfirmAccess ?
                           <div className='text-center'>
-                            <Button
-                              icon={<CodeOutlined />}
-                              shape='circle'
-                              onClick={() => onShow('confirm')}
-                            />
-                            <p className='tinyAction'>Confirm</p>
-                          </div> : null}
+                          <Button
+                            icon={<CodeOutlined />}
+                            shape='circle'
+                            onClick={() => onShow('confirm')}
+                          />
+                          <p className='tinyAction'>Confirm</p>
+                        </div> 
                           <div className='text-center'>
                             <Button
                               icon={<BankFilled />}
@@ -247,7 +244,7 @@ const CustomerDetailContainer = (props) => {
                     </TabPane>
                     <TabPane tab='Details' key='10'>
                       <Row className='p10'>
-                        <Col xs={24} sm={24} md={12}>
+                        <Col xs={24} sm={24} md={24}>
                           <CustomerDetails customer_info={customer_info} loading={loading} />
                         </Col>
                       </Row>
@@ -267,11 +264,11 @@ const CustomerDetailContainer = (props) => {
                 <CustomerBranch visible={visible.addBranch} onHide={onHide} customer_id={customer_info && customer_info.id} />
               )}
               {visible.confirm && (
-               <AssignToConfirm 
-               visible={visible.confirm}
-               id={customer_info.id} 
-               onHide={onHide}
-               />
+                <AssignToConfirm
+                  visible={visible.confirm}
+                  id={customer_info.id}
+                  onHide={onHide}
+                />
               )}
               {visible.transfer && (
                 <Transfer

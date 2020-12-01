@@ -8,6 +8,10 @@ import get from 'lodash/get'
 import LinkComp from '../common/link'
 import Phone from '../common/phone'
 import { gql, useMutation } from '@apollo/client'
+import u from '../../lib/util'
+import { useContext } from 'react'
+import userContext from '../../lib/userContaxt'
+
 
 const ASSIGN_TO_CONFIRM_STATUS_MUTATION = gql`
 mutation update_trip_status($id: Int , $trip_status_id : Int) {
@@ -27,15 +31,19 @@ const Trips = (props) => {
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
+  const { role } = u
+  const context = useContext(userContext)
+  const ad_am = [role.admin,role.accounts_manager]
+  const confirm_access = u.is_roles(ad_am, context)
   const [assign_to_confirm] = useMutation(
     ASSIGN_TO_CONFIRM_STATUS_MUTATION, {
-      onError (error) {
-        message.error(error.toString())
-      },
-      onCompleted () {
-        message.success('Updated!!')
-      }
-    })
+    onError(error) {
+      message.error(error.toString())
+    },
+    onCompleted() {
+      message.success('Updated!!')
+    }
+  })
   const onSubmit = (id) => {
     assign_to_confirm({
       variables: {
@@ -69,13 +77,13 @@ const Trips = (props) => {
                 id={record.id}
                 blank
               />
-              </span>
+            </span>
             : <LinkComp
-                type='trips'
-                data={text}
-                id={record.id}
-                blank
-              />)
+              type='trips'
+              data={text}
+              id={record.id}
+              blank
+            />)
       },
       sorter: (a, b) => a.id - b.id,
       width: '7%'
@@ -203,7 +211,7 @@ const Trips = (props) => {
       render: (text, record) => {
         const is_execption = get(record, 'customer.is_exception', null)
         const assign_status = get(record, 'trip_status.name', null)
-       
+
         return (
           <span>
             <Tooltip title={get(record, 'partner.partner_users[0].mobile', null)}>
@@ -212,26 +220,26 @@ const Trips = (props) => {
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
             </Tooltip>
-            <>
-              {
-                assign_status === 'Assigned'
-                  ? <>
-                    {is_execption ?
-                      <Tooltip title={`Customer Exception`}>
-                        <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' danger block />
-                        </Tooltip>
-                      : <Popconfirm
-                          title='Are you sure you want to change this status to confirmed?'
-                          okText='Yes'
-                          cancelText='No'
-                          onConfirm={() => onSubmit(record.id)}
-                        >
-                        <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' />
-                      </Popconfirm>}
-                  </>
-                  : null
-              }
-            </>
+             <>
+                  {
+                   confirm_access && assign_status === 'Assigned'
+                      ? <>
+                        {is_execption ?
+                          <Tooltip title={`Customer Exception`}>
+                            <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' danger block />
+                          </Tooltip>
+                          : <Popconfirm
+                            title='Are you sure you want to change this status to confirmed?'
+                            okText='Yes'
+                            cancelText='No'
+                            onConfirm={() => onSubmit(record.id)}
+                          >
+                            <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' />
+                          </Popconfirm>}
+                      </>
+                      : null
+                  }
+                </> 
           </span>
         )
       },

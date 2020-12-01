@@ -2,7 +2,7 @@
 import { Row, Col, Alert } from 'antd'
 import LabelWithData from '../common/labelWithData'
 import get from 'lodash/get'
-
+import { InfoCircleOutlined } from '@ant-design/icons'
 const PendingPayments = (props) => {
   const { customer_info } = props
   const customer_exception = get(customer_info, 'customer_exception', [])
@@ -10,7 +10,7 @@ const PendingPayments = (props) => {
   return (
     <>
       <Row>
-       <Col sm={7} xs={7}>
+        <Col xs={24} sm={12} md={7}>
           <LabelWithData
             label='Advance Pending'
             data={
@@ -28,7 +28,7 @@ const PendingPayments = (props) => {
             xsSpan={12}
           />
         </Col>
-        <Col sm={7} xs={7}>
+        <Col xs={24} sm={12} md={7}>
           <LabelWithData
             label='Invoiced (>30 D)'
             data={get(customer_exception, 'payment_pending_for_more_than_30_days', null)}
@@ -44,7 +44,7 @@ const PendingPayments = (props) => {
             xsSpan={12}
           />
         </Col>
-       <Col sm={8} xs={8}>
+        <Col xs={24} sm={12} md={7}>
           <LabelWithData
             label='Advance Pending (>5 D)'
             data={
@@ -54,7 +54,7 @@ const PendingPayments = (props) => {
             smSpan={8}
             xsSpan={12}
           />
-           <LabelWithData
+          <LabelWithData
             label='Receivable Ratio'
             data={
               get(customer_exception, 'receipts_and_receivables_ratio', null)
@@ -64,7 +64,7 @@ const PendingPayments = (props) => {
             xsSpan={12}
           />
         </Col>
-       <Col sm={7} xs={7}>
+        <Col xs={24} sm={12} md={7}>
           <LabelWithData
             label='Invoiced'
             data={get(customer_exception, 'total_outstanding', null)}
@@ -74,24 +74,14 @@ const PendingPayments = (props) => {
           />
         </Col>
       </Row>
-      <Row>
-        <Alert 
-        message=' 
-        Transporter- Managed No Exception.
-        
-       Transporter- Non Managed:
-        a) Advance pending for more than 5 days
-        b) Final Payment Pending For More than 30 Days => 10000 and  receipt to receivables ratio < 1.00. 
-        
-         Brokers
-        Final Payment Pending For More than 30 Days.'
-        type="warning"
-        showIcon
-        />
-      </Row>
+     <br />
+        <h3> <InfoCircleOutlined /> Criteria for Payment Block </h3> 
+              <p>a) Advance pending for more than 5 days<br />
+             b) Final Payment Pending For More than 30 Days Payments received in last 30 days.<br />
+             No Payment block for managed customers.</p>
     </>
 
   )
 }
-
+ 
 export default PendingPayments

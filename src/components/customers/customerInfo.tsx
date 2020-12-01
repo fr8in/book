@@ -20,8 +20,7 @@ const CustomerInfo = (props) => {
   const modelInitial = { mamulVisible: false }
   const { visible, onHide, onShow } = useShowHide(modelInitial)
   const system_mamul = get(customer_info, 'system_mamul', 0)
-  const customer_exception = get(customer_info,'customer_exception.is_exception',null)
-  
+  const customer_exception = get(customer_info,'is_exception',null)
   return (
     <>
       <Row gutter={8}>

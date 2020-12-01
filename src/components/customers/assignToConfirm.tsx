@@ -87,17 +87,14 @@ const AssignToConfirm = (props) => {
     _data = data
   }
   const trips = get(_data, 'trip', [])
-  useEffect(() => {
-    const trip_ids = trips.map(trip => trip.id)
-    setSelectedRowKeys(trip_ids)
-    console.log('trip_ids', trip_ids)
-  }, [loading])
 
   useEffect(() => {
     const trip_ids = trips.map(trip => trip.id)
     setSelectedRowKeys(trip_ids)
+    setSelectedTrip(trip_ids)
     console.log('trip_ids', trip_ids)
   }, [loading])
+
 
   const [assign_to_confirm] = useMutation(
     ASSIGN_TO_CONFIRM_STATUS_MUTATION, {

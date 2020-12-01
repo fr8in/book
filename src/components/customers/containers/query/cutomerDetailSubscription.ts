@@ -37,6 +37,7 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
     gst
     managed
     pan
+    is_exception
     customer_exception{
     invoice_pending
     advance_pending_amount
