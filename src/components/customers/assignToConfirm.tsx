@@ -11,7 +11,7 @@ import LinkComp from '../common/link'
 import Phone from '../common/phone'
 import Truncate from '../common/truncate'
 import { useState, useEffect } from 'react'
-
+import Loading from '../common/loading'
 
 const CUSTOMER_SUBCRIPTION = gql`
 subscription trip($customer_id: Int) {
@@ -40,14 +40,7 @@ subscription trip($customer_id: Int) {
 }
 `
 const ASSIGN_TO_CONFIRM_STATUS_MUTATION = gql`
-mutation customer_exception($trip_id:[Int!],$description: String, $topic: String, $created_by: String, $exception_date: timestamp, $customer_id: Int, $updated_by: String!) {
-  update_customer(_set: {exception_date: $exception_date, updated_by: $updated_by}, where: {id: {_eq: $customer_id}}) {
-    returning {
-      id
-      name
-      managed
-    }
-  }
+mutation customer_exception($trip_id: [Int!], $description: String, $topic: String, $created_by: String, $customer_id: Int) {
   update_trip(where: {customer_id: {_eq: $customer_id}, trip_status: {name: {_eq: "Assigned"}}, id: {_in: $trip_id}}, _set: {trip_status_id: 3}) {
     returning {
       id
@@ -59,16 +52,14 @@ mutation customer_exception($trip_id:[Int!],$description: String, $topic: String
     }
   }
 }
-  
 `
 
 
-const CustomerExceptionDate = (props) => {
-  const { exceptionDate, cardcode, edit_access, customer_id, id } = props
+const AssignToConfirm = (props) => {
+  const { onHide, id, visible } = props
   const context = useContext(userContext)
   const { topic } = u
-  const initial = { datePicker: false }
-  const { visible, onHide, onShow } = useShowHide(initial)
+
 
   const [selectedTrip, setSelectedTrip] = useState([])
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
@@ -79,7 +70,7 @@ const CustomerExceptionDate = (props) => {
     setSelectedTrip(trip_list)
   }
 
-  const rowSelection =  {
+  const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange
   }
@@ -96,17 +87,14 @@ const CustomerExceptionDate = (props) => {
     _data = data
   }
   const trips = get(_data, 'trip', [])
-  useEffect(() => {
-    const trip_ids = trips.map(trip => trip.id)
-    setSelectedRowKeys(trip_ids)
-    console.log('trip_ids', trip_ids)
-  }, [loading])
 
   useEffect(() => {
     const trip_ids = trips.map(trip => trip.id)
     setSelectedRowKeys(trip_ids)
+    setSelectedTrip(trip_ids)
     console.log('trip_ids', trip_ids)
   }, [loading])
+
 
   const [assign_to_confirm] = useMutation(
     ASSIGN_TO_CONFIRM_STATUS_MUTATION, {
@@ -118,17 +106,15 @@ const CustomerExceptionDate = (props) => {
     }
   })
 
-  
-  const onSubmit = (form) => {
+
+  const onSubmit = () => {
     assign_to_confirm({
       variables: {
         customer_id: id,
         trip_id: selectedTrip,
-        updated_by: context.email,
         created_by: context.email,
         description: `${topic.customer_exception} updated by ${context.email}`,
-        topic: topic.customer_exception,
-        exception_date: form.exception_date.format('YYYY-MM-DD')
+        topic: topic.customer_exception
       }
     })
     onHide()
@@ -219,55 +205,27 @@ const CustomerExceptionDate = (props) => {
   ]
 
   return (
-    <div>
-      {!visible.datePicker ? (
-        <label>
-          {exceptionDate ? moment(exceptionDate).format(dateFormat) : '-'}{' '}
-          <EditAccess edit_access={edit_access} onEdit={() => onShow('datePicker')} />
-        </label>)
-        : (
-          <span>
-            <Modal
-              title='Customer Confirmation'
-              visible={visible}
-              onCancel={onHide}
-              style={{ top: 20 }}
-              width={700}
-              footer={null}
-            >
-              <Form layout='vertical' onFinish={onSubmit}>
-                <Form.Item label='Exception Date' name='exception_date'>
-                  <DatePicker
-                    showToday={false}
-                    placeholder='Exception Date'
-                    defaultValue={exceptionDate ? moment(exceptionDate, dateFormat) : null}
-                    format={dateFormat}
-                    size='middle'
-                  />
-                </Form.Item>
-                <p>Below trips will change to confirm status</p>
-                <Table
-                  columns={columns}
-                  dataSource={trips}
-                  rowKey={(record) => record.id}
-                  size='small'
-                  rowSelection={{ ...rowSelection }}
-                  scroll={{ x: 620, y: 250 }}
-                  pagination={false}
-                  className='withAction'
-                />
-                <br />
-                <Row justify='end'>
-                  <Form.Item>
-                    <Button type='primary' key='submit' htmlType='submit'>Ok</Button>
-                  </Form.Item>
-                </Row>
-              </Form>
-
-            </Modal>
-          </span>)}
-    </div>
+    <Modal
+      title='Customer Confirmation'
+      visible={visible}
+      onCancel={onHide}
+      onOk={onSubmit}
+      style={{ top: 20 }}
+      width={700}
+    >
+     { loading ? <Loading /> : (
+      <Table
+        columns={columns}
+        dataSource={trips}
+        rowKey={(record) => record.id}
+        size='small'
+        rowSelection={{ ...rowSelection }}
+        scroll={{ x: 620, y: 250 }}
+        pagination={false}
+        className='withAction'
+      />)}
+    </Modal>
   )
 }
 
-export default CustomerExceptionDate
+export default AssignToConfirm

@@ -35,7 +35,6 @@ query customers_po($id:Int!){
     id
     cardcode
     name
-    exception_date
     managed
     customer_advance_percentage{
       id
