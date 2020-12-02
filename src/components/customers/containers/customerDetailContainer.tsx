@@ -38,6 +38,7 @@ import AssignToConfirm from '../assignToConfirm'
 import { useSubscription } from '@apollo/client'
 import { CUSTOMER_DETAIL_SUBSCRIPTION } from './query/cutomerDetailSubscription'
 import Loading from '../../common/loading'
+import AdvancePending from '../../trips/advancePending'
 
 const { TabPane } = Tabs
 
@@ -94,6 +95,7 @@ const CustomerDetailContainer = (props) => {
   const invoiced_count = get(customer_info, 'invoiced.aggregate.count', 0)
   const recieved_count = get(customer_info, 'recieved.aggregate.count', 0)
   const incoming_count = get(customer_info, 'incoming.aggregate.count', 0)
+  const advance_pending_count = get(customer_info, 'advancePending.aggregate.count', 0)
 
   return (
     loading ? <Loading /> : (
@@ -189,36 +191,42 @@ const CustomerDetailContainer = (props) => {
                       </Row>
                     </TabPane>
                     <TabPane
-                      tab={<TitleWithCount name='On-going' value={ongoing_count} />}
+                      tab={<TitleWithCount name='Advance Pending' value={advance_pending_count}/>}
                       key='2'
+                    >
+                      <AdvancePending cardcode={cardcode}/>
+                    </TabPane>
+                    <TabPane
+                      tab={<TitleWithCount name='Invoiced' value={invoiced_count} />}
+                      key='3'
+                    >
+                      <CustomerTrips cardcode={cardcode} status_names={invoiced} />
+                    </TabPane>
+                    <TabPane
+                      tab={<TitleWithCount name='On-going' value={ongoing_count} />}
+                      key='4'
                     >
                       <CustomerTrips cardcode={cardcode} status_names={ongoing} />
                     </TabPane>
                     <TabPane
                       tab={<TitleWithCount name='Delivered' value={delivered_count} />}
-                      key='3'
+                      key='5'
                     >
                       <CustomerTrips cardcode={cardcode} status_names={delivered} delivered />
                     </TabPane>
                     <TabPane
-                      tab={<TitleWithCount name='Invoiced' value={invoiced_count} />}
-                      key='4'
-                    >
-                      <CustomerTrips cardcode={cardcode} status_names={invoiced} />
-                    </TabPane>
-                    <TabPane
                       tab={<TitleWithCount name='Recieved' value={recieved_count} />}
-                      key='5'
+                      key='6'
                     >
                       <CustomerClosedTrips cardcode={cardcode} />
                     </TabPane>
                     <TabPane
                       tab={<TitleWithCount name='Incoming' value={incoming_count} />}
-                      key='6'
+                      key='7'
                     >
                       <IncomingPayments cardcode={cardcode} id={customer_info && customer_info.id} />
                     </TabPane>
-                    <TabPane tab='Users' key='7'>
+                    <TabPane tab='Users' key='8'>
                       <Row justify='end' className='m5'>
                         {customer_access ? (
                           <Button type='primary' onClick={() => onShow('addUser')}>
@@ -227,7 +235,7 @@ const CustomerDetailContainer = (props) => {
                       </Row>
                       <Users cardcode={cardcode} customer_id={customer_info && customer_info.id} edit_access={customer_edit_role} />
                     </TabPane>
-                    <TabPane tab='Branch' key='8'>
+                    <TabPane tab='Branch' key='9'>
                       <Row justify='end' className='m5'>
                         {customer_access ? (
                           <Button
@@ -239,17 +247,17 @@ const CustomerDetailContainer = (props) => {
                       </Row>
                       <Branch cardcode={cardcode} edit_access={customer_edit_role} customer_id={customer_info && customer_info.id} />
                     </TabPane>
-                    <TabPane tab='FR8 Branch' key='9'>
+                    <TabPane tab='FR8 Branch' key='10'>
                       <Fr8Branch cardcode={cardcode} id={customer_info && customer_info.id} />
                     </TabPane>
-                    <TabPane tab='Details' key='10'>
+                    <TabPane tab='Details' key='11'>
                       <Row className='p10'>
                         <Col xs={24} sm={24} md={24}>
                           <CustomerDetails customer_info={customer_info} loading={loading} />
                         </Col>
                       </Row>
                     </TabPane>
-                    <TabPane tab='Comment' key='11'>
+                    <TabPane tab='Comment' key='12'>
                       <div className='p10'>
                         <CustomerComment customer_id={customer_info.id} loading={loading} detailPage />
                       </div>
