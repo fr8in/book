@@ -171,7 +171,7 @@ const PartnerDetailContainer = (props) => {
                               tabBarExtraContent={
                                 <span>
                                   {Key === '5' && partner_access && (
-                                    <Link href='/partners/add-fastag'>
+                                      <Link href='/partners/AddFastag/[id]' as={`/partners/AddFastag/${cardcode}`}>
                                       <Button
                                         type='primary'
                                         size='small'

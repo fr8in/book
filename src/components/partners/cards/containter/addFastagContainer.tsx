@@ -3,6 +3,8 @@ import { gql, useQuery, useMutation, useLazyQuery } from '@apollo/client'
 import { useState, useContext } from 'react'
 import get from 'lodash/get'
 import userContext from '../../../../lib/userContaxt'
+import { LeftOutlined } from '@ant-design/icons'
+import Link from 'next/link'
 
 const PARTNER_SEARCH = gql`
 query par_search($search:String!){
@@ -30,7 +32,8 @@ mutation add_tag($truckId:Int!,$createdBy:String!,$tagId:String!,$partnerId:Int!
     description
   }
 }`
-const AddFastagContainer = () => {
+const AddFastagContainer = (props) => {
+  const {cardcode} = props
   const initial = { search: '', partner_id: null }
   const [obj, setObj] = useState(initial)
   const [truck_id, setTruck_id] = useState('')
@@ -162,7 +165,9 @@ const AddFastagContainer = () => {
             </Form.Item>
             <Form.Item className='text-right'>
               <Space>
-                <Button htmlType='button'>Cancel</Button>
+                <Link href='/partners/[id]' as={`/partners/${cardcode}`}>
+                  <Button icon={<LeftOutlined />}>Back</Button>
+                </Link>
                 <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
               </Space>
             </Form.Item>
