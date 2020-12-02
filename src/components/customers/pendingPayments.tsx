@@ -6,7 +6,7 @@ import { InfoCircleOutlined } from '@ant-design/icons'
 const PendingPayments = (props) => {
   const { customer_info } = props
   const customer_exception = get(customer_info, 'customer_exception', [])
-
+  const receivable_ratio = get(customer_exception, 'receipts_and_receivables_ratio', null)
   return (
     <>
       <Row>
@@ -56,9 +56,7 @@ const PendingPayments = (props) => {
           />
           <LabelWithData
             label='Receivable Ratio'
-            data={
-              get(customer_exception, 'receipts_and_receivables_ratio', null)
-            }
+            data={receivable_ratio ? receivable_ratio.toFixed(2) : null}
             mdSpan={4}
             smSpan={8}
             xsSpan={12}
@@ -74,13 +72,12 @@ const PendingPayments = (props) => {
           />
         </Col>
       </Row>
-     <br />
-        <h3> <InfoCircleOutlined /> Criteria for Payment Block </h3> 
-              <p>a) Advance pending for more than 5 days<br />
-             b) Final Payment Pending For More than 30 Days Payments received in last 30 days.<br />
-             No Payment block for managed customers.</p>
+      <br />
+      <h3> <InfoCircleOutlined /> Criteria for Payment Block </h3>
+      <p>{'a) Advance Pending (> 5D) = 0'}<br />
+        {'b) Receipts (<30 D) > Invoiced (>30 D)'}<br />
+        {'No Payment block for managed customers.'}</p>
     </>
-
   )
 }
  
