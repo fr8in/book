@@ -95,6 +95,7 @@ const CustomerDetailContainer = (props) => {
   const invoiced_count = get(customer_info, 'invoiced.aggregate.count', 0)
   const recieved_count = get(customer_info, 'recieved.aggregate.count', 0)
   const incoming_count = get(customer_info, 'incoming.aggregate.count', 0)
+  const advance_pending_count = get(customer_info, 'advancePending.aggregate.count', 0)
 
   return (
     loading ? <Loading /> : (
@@ -190,7 +191,7 @@ const CustomerDetailContainer = (props) => {
                       </Row>
                     </TabPane>
                     <TabPane
-                      tab={<TitleWithCount name='Advance Pending' />}
+                      tab={<TitleWithCount name='Advance Pending' value={advance_pending_count}/>}
                       key='2'
                     >
                       <AdvancePending cardcode={cardcode}/>
