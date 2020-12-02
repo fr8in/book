@@ -224,18 +224,14 @@ const Trips = (props) => {
                   {
                    confirm_access && assign_status === 'Assigned'
                       ? <>
-                        {is_execption ?
-                          <Tooltip title={`Customer Exception`}>
-                            <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' danger block />
-                          </Tooltip>
-                          : <Popconfirm
+                       <Popconfirm
                             title='Are you sure you want to change this status to confirmed?'
                             okText='Yes'
                             cancelText='No'
                             onConfirm={() => onSubmit(record.id)}
                           >
                             <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' />
-                          </Popconfirm>}
+                          </Popconfirm>
                       </>
                       : null
                   }

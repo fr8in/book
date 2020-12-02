@@ -1,13 +1,11 @@
 import userContext from '../../../lib/userContaxt'
-import { useState, useContext, useEffect } from 'react'
+import { useState, useContext } from 'react'
 import { Row, Col, Card, message } from 'antd'
 import Link from 'next/link'
 import { gql, useQuery, useMutation } from '@apollo/client'
 
 import get from 'lodash/get'
 import { useRouter } from 'next/router'
-import u from '../../../lib/util'
-import isEmpty from 'lodash/isEmpty'
 import AddTruck from '../addTruck'
 
 const ADD_TRUCK_QUERY = gql`
@@ -40,9 +38,6 @@ const AddTruckContainer = (props) => {
   const router = useRouter()
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
-  const { role } = u
-  const edit_access = [role.admin, role.partner_manager, role.onboarding]
-  const access = u.is_roles(edit_access,context)
 
   const onCityChange = (city_id) => {
     setCity_id(city_id)
@@ -52,11 +47,6 @@ const AddTruckContainer = (props) => {
     setDriver_id(driver_id)
   }
 
-  useEffect(() => {
-    if (!access) {
-      router.push('/')
-    }
-  })
 
   const { loading, error, data } = useQuery(
     ADD_TRUCK_QUERY,

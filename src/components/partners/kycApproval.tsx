@@ -298,9 +298,9 @@ const KycApproval = (props) => {
                         truck_type={truck_type}
                       />
                     )}
-                     {visible.showModal && <NewTruck visible={visible.showModal} partner_info={partnerDetail} disableAddTruck={disableAddTruck} onHide={onHide} />}
                     </>
                   ):null}
+                   {visible.showModal && <NewTruck visible={visible.showModal} partner_info={partnerDetail} disableAddTruck={disableAddTruck} onHide={onHide} />}
               </Card>
             </Col>
             <Col xs={24} sm={12}>
