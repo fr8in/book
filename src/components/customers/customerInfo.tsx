@@ -1,4 +1,4 @@
-import { Row, Tag } from 'antd'
+import { Row, Avatar } from 'antd'
 import LabelAndData from '../common/labelAndData'
 import SystemMamul from '../customers/systemMamul'
 // import mockData from '../../../mock/customer/customerDetail'
@@ -40,7 +40,7 @@ const CustomerInfo = (props) => {
         />
         <LabelAndData
           label='Exception'
-          data={ <Tag color={customer_exception ? '#dc3545' : '#28a745'}>{customer_exception ? 'Yes' : 'No'}</Tag>}
+          data={<Avatar shape='square' size='small' style={{ backgroundColor: customer_exception ? '#dc3545' : '#28a745' }} />}
           mdSpan={4}
           smSpan={8}
           xsSpan={12}
