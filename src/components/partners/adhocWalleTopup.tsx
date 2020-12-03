@@ -8,7 +8,7 @@ import Loading from '../common/loading'
 
 const GET_TOKEN = gql`
 query get_token ($partner_id: Int!,$cardcode:String!){
-  token(partner_id: $partner_id, process:"WALLET_TOP_UP_ADHOC"),
+  token(ref_id: $partner_id, process:"WALLET_TOP_UP_ADHOC"),
   partner_sap_accounting(cardcode: $cardcode) {
     billed
     cleared
