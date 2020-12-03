@@ -69,6 +69,7 @@ subscription dashboard_trips(
       truck_no
       truck_type {
         name
+        code
       }
     }
   }

@@ -38,7 +38,7 @@ query advancePending(
     truck {
       truck_no
       truck_type{
-        name
+        code
       }
     }
     partner {
@@ -116,7 +116,7 @@ const AdvancePending = (props) => {
       title: 'ID',
       dataIndex: 'id',
       sorter: (a, b) => (a.id > b.id ? 1 : -1),
-      width: '6%',
+      width: '7%',
       render: (text, record) => (
         <LinkComp
           type='trips'
@@ -128,7 +128,7 @@ const AdvancePending = (props) => {
     {
       title: 'O.Date',
       dataIndex: 'created_at',
-      width: '8%',
+      width: '9%',
       render: (text, record) => text ? moment(text).format('DD-MMM-YY') : '-'
     },
     {
@@ -136,8 +136,8 @@ const AdvancePending = (props) => {
       width: '16%',
       render: (text, record) => {
         const truck_no = get(record, 'truck.truck_no', null)
-        const truck_type_name = get(record, 'truck.truck_type.name', null)
-        const truck_type = truck_type_name ? truck_type_name.slice(0, 9) : null
+        const truck_type_code = get(record, 'truck.truck_type.code', null)
+        const truck_type = truck_type_code ? truck_type_code.slice(0, 9) : null
         return (
           <LinkComp
             type='trucks'
@@ -159,7 +159,7 @@ const AdvancePending = (props) => {
     },
     {
       title: 'Partner',
-      width: '10%',
+      width: '12%',
       render: (text, record) => {
         const partner = get(record, 'partner.name', null)
         const cardcode = get(record, 'partner.cardcode', null)
@@ -185,7 +185,7 @@ const AdvancePending = (props) => {
     },
     {
       title: 'Source',
-      width: '10%',
+      width: '12%',
       render: (text, record) => get(record, 'source.name', '-'),
       filterDropdown: (
         <Input
@@ -200,7 +200,7 @@ const AdvancePending = (props) => {
     },
     {
       title: 'Destination',
-      width: '10%',
+      width: '12%',
       render: (text, record) => get(record, 'destination.name', '-'),
       filterDropdown: (
         <Input
@@ -215,30 +215,14 @@ const AdvancePending = (props) => {
     },
     {
       title: 'Status',
-      width: '8%',
+      width: '10%',
       render: (text, record) => <Truncate data={get(record, 'trip_status.name', '-')} length={15} />
     },
     {
       title: 'Receivable',
-      width: '8%',
+      width: '10%',
       sorter: (a, b) => (a.receivable > b.receivable ? 1 : -1),
       render: (record) => get(record, 'trip_receivables_aggregate.aggregate.sum.amount', 0)
-    },
-    {
-      title: 'Receipts',
-      width: '7%',
-      sorter: (a, b) => (a.receipts > b.receipts ? 1 : -1),
-      render: (record) => get(record, 'trip_receipts_aggregate.aggregate.sum.amount', 0)
-    },
-    {
-      title: 'Balance',
-      sorter: (a, b) => (a.balance > b.balance ? 1 : -1),
-      width: '7%',
-      render: (record) => {
-        const receivable = get(record, 'trip_receivables_aggregate.aggregate.sum.amount', 0)
-        const receipts = get(record, 'trip_receipts_aggregate.aggregate.sum.amount', 0)
-        return (receivable - receipts)
-      }
     },
     {
       title: 'Aging',
@@ -246,7 +230,7 @@ const AdvancePending = (props) => {
       dataIndex:'advance_tat',
       sorter: (a, b) => (a.advance_tat-b.advance_tat),
       defaultSortOrder: 'descend',
-      width: '7%'
+      width: '9%'
     }
   ]
   return (

@@ -138,8 +138,8 @@ const Trips = (props) => {
       title: 'Truck',
       render: (text, record) => {
         const truck_no = get(record, 'truck.truck_no', null)
-        const truck_type_name = get(record, 'truck.truck_type.name', null)
-        const truck_type = truck_type_name ? truck_type_name.slice(0, 9) : null
+        const truck_type_code = get(record, 'truck.truck_type.code', null)
+        const truck_type = truck_type_code ? truck_type_code.slice(0, 9) : null
         return (
           <LinkComp
             type='trucks'
@@ -149,7 +149,7 @@ const Trips = (props) => {
           />
         )
       },
-      width: '15%'
+      width: '13%'
     },
     {
       title: 'Source',
@@ -158,7 +158,7 @@ const Trips = (props) => {
         return <Truncate data={source} length={8} />
       },
       sorter: (a, b) => (a.source.name > b.source.name ? 1 : -1),
-      width: '8%'
+      width: '9%'
     },
     {
       title: 'Destination',
@@ -167,7 +167,7 @@ const Trips = (props) => {
         return <Truncate data={destination} length={8} />
       },
       sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
-      width: '8%'
+      width: '9%'
     },
     {
       title: 'TAT',
