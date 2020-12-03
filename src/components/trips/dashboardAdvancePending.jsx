@@ -1,6 +1,6 @@
-import { Table, Input, Tooltip, Button, Popconfirm } from 'antd'
-import { gql, useQuery } from '@apollo/client'
-import { SearchOutlined,CommentOutlined,CheckOutlined } from '@ant-design/icons'
+import { Table, Input, Tooltip, Button } from 'antd'
+import { gql, useSubscription } from '@apollo/client'
+import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
 import get from 'lodash/get'
 import moment from 'moment'
 import Truncate from '../common/truncate'
@@ -11,16 +11,25 @@ import TripFeedBack from './tripFeedBack'
 import { useState } from 'react'
 
 const DASHBOARD_ADVANCE_PENDING_QUERY = gql`
-query customerAdvancePending($date: timestamp,$partner_name:String,$customer_name:String,$truck_no:String,$source_name:String,$destination_name:String) {
+subscription customerAdvancePending(
+    $regions: [Int!], 
+    $branches: [Int!], 
+    $cities: [Int!], 
+    $truck_type: [Int!], 
+    $managers: [Int!]
+    $date: timestamp,
+    $customer_name:String
+    ) {
     trip(where: {
       source_out: {_gt: $date},
       trip_status: {name: {_nin: ["Cancelled"]}},
-      trip_accounting: {receipt: {_is_null: true}}
-      partner:{name:{_ilike:$partner_name}}
-      customer:{name:{_ilike:$customer_name}}
-      truck:{truck_no:{_ilike:$truck_no}}
-      source:{name:{_ilike:$source_name}}
-      destination:{name:{_ilike:$destination_name}}
+      trip_accounting: {receipt: {_is_null: true}},
+      customer:{name:{_ilike:$customer_name}},
+      branch:{region_id:{_in:$regions}},
+      branch_id:{_in:$branches},
+      source_connected_city_id:{_in:$cities},
+      truck_type_id:{_in:$truck_type},
+      branch_employee_id:{_in: $managers}
     }) {
       id
       advance_tat
@@ -68,63 +77,46 @@ query customerAdvancePending($date: timestamp,$partner_name:String,$customer_nam
     }
   }  
 `
-const AdvancePending = () => {
-   
-    const date = new Date(new Date().getFullYear(), 0, 1);
-    const startDate= moment(date).format('YYYY-MM-DD')
-   const initial ={
-    commentData: [],
-    commentVisible: false,
-   }
-   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
-    const initialFilter = {
-        partner_name: null,
-        customer_name: null,
-        truck_no: null,
-        source_name: null,
-        destination_name: null
-    }
-     const [filter, setFilter] = useState(initialFilter)
+const AdvancePending = (props) => {
+    const { filters } = props
 
-    const { loading, error, data } = useQuery(
+    const date = new Date(new Date().getFullYear(), 0, 1);
+    const startDate = moment(date).format('YYYY-MM-DD')
+    const initial = {
+        commentData: [],
+        commentVisible: false,
+    }
+    const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
+    const initialFilter = {
+        customer_name: null
+    }
+    const [customerName, setCustomerName] = useState(initialFilter)
+
+    const { loading, error, data } = useSubscription(
         DASHBOARD_ADVANCE_PENDING_QUERY,
         {
             variables: {
-               date: startDate, 
-               partner_name: filter.partner_name ? `%${filter.partner_name}%` : null,
-               customer_name:filter.customer_name ? `%${filter.customer_name}%` : null,
-               truck_no: filter.truck_no ? `%${filter.truck_no}%` : null,
-               source_name: filter.source_name ? `%${filter.source_name}%` : null,
-               destination_name: filter.destination_name ? `%${filter.destination_name}%` : null
+                date: startDate,
+                customer_name: customerName.customer_name ? `%${customerName.customer_name}%` : null,
+                regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
+                branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
+                cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
+                truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
+                managers: (filters.managers && filters.managers.length > 0) ? filters.managers : null
             }
         }
     )
     console.log('Advance pending error', error)
-    console.log('Advance pending data', data)
+
     let _data = []
     if (!loading) {
         _data = data
     }
     const trips = get(_data, 'trip', null)
-    console.log('trips', trips)
 
-    const onTruckNoSearch = (e) => {
-        setFilter({ ...filter, truck_no: e.target.value })
-    }
-    const onPartnerNameSearch = (e) => {
-        setFilter({ ...filter, partner_name: e.target.value })
-    }
     const onCustomerNameSearch = (e) => {
-        setFilter({ ...filter, customer_name: e.target.value })
+        setCustomerName({...customerName, customer_name:e.target.value } )
     }
-    const onSourceNameSearch = (e) => {
-        setFilter({ ...filter, source_name: e.target.value })
-    }
-    const onDestinationNameSearch = (e) => {
-        setFilter({ ...filter, destination_name: e.target.value })
-    }
-
-    const receivable =get(trips, 'trip_receivables_aggregate.aggregate.sum.amount', 0)
 
     const advancePending = [
         {
@@ -144,7 +136,8 @@ const AdvancePending = () => {
             title: 'O.Date',
             dataIndex: 'created_at',
             width: '7%',
-            render: (text, record) => text ? moment(text).format('DD-MMM-YY') : '-'
+            render: (text, record) => text ? moment(text).format('DD-MMM-YY') : '-',
+            sorter: (a, b) => (a.created_at > b.created_at ? 1 : -1),
         },
         {
             title: 'Truck No',
@@ -160,20 +153,11 @@ const AdvancePending = () => {
                     />
                 )
             },
-            filterDropdown: (
-                <Input
-                    placeholder='Search'
-                    value={filter.truck_no}
-                    onChange={onTruckNoSearch}
-                />
-            ),
-            filterIcon: (filtered) => (
-                <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-            )
         },
         {
             title: 'Partner',
             width: '10%',
+            sorter: (a, b) => (a.partner.name > b.partner.name ? 1 : -1),
             render: (text, record) => {
                 const partner = get(record, 'partner.name', null)
                 const cardcode = get(record, 'partner.cardcode', null)
@@ -185,17 +169,7 @@ const AdvancePending = () => {
                         length={10}
                     />
                 )
-            },
-            filterDropdown: (
-                <Input
-                    placeholder='Search'
-                    value={filter.partner_name}
-                    onChange={onPartnerNameSearch}
-                />
-            ),
-            filterIcon: (filtered) => (
-                <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-            )
+            }
         },
         {
             title: 'Customer',
@@ -215,7 +189,7 @@ const AdvancePending = () => {
             filterDropdown: (
                 <Input
                     placeholder='Search'
-                    value={filter.customer_name}
+                    value={customerName.customer_name}
                     onChange={onCustomerNameSearch}
                 />
             ),
@@ -227,31 +201,13 @@ const AdvancePending = () => {
             title: 'Source',
             width: '9%',
             render: (text, record) => get(record, 'source.name', '-'),
-            filterDropdown: (
-                <Input
-                    placeholder='Search'
-                    value={filter.source_name}
-                    onChange={onSourceNameSearch}
-                />
-            ),
-            filterIcon: (filtered) => (
-                <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-            )
+            sorter: (a, b) => (a.source.name > b.source.name ? 1 : -1),
         },
         {
             title: 'Destination',
             width: '9%',
             render: (text, record) => get(record, 'destination.name', '-'),
-            filterDropdown: (
-                <Input
-                    placeholder='Search'
-                    value={filter.destination_name}
-                    onChange={onDestinationNameSearch}
-                />
-            ),
-            filterIcon: (filtered) => (
-                <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-            )
+            sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
         },
         {
             title: 'Status',
@@ -261,7 +217,7 @@ const AdvancePending = () => {
         {
             title: 'Receivable',
             width: '6%',
-            sorter: (a, b) => (a.trip_receivables_aggregate.aggregate.sum.amount-b.trip_receivables_aggregate.aggregate.sum.amount),
+            sorter: (a, b) => (a.trip_receivables_aggregate.aggregate.sum.amount - b.trip_receivables_aggregate.aggregate.sum.amount),
             render: (record) => get(record, 'trip_receivables_aggregate.aggregate.sum.amount', 0)
         },
         {
@@ -269,7 +225,7 @@ const AdvancePending = () => {
             key: 'advance_tat',
             dataIndex: 'advance_tat',
             sorter: (a, b) => (a.advance_tat - b.advance_tat),
-          //  defaultSortOrder: 'descend',
+            defaultSortOrder: 'descend',
             width: '5%'
         },
         {
@@ -282,38 +238,38 @@ const AdvancePending = () => {
         {
             title: 'Action',
             render: (text, record) => {
-              return (
-                <span>
-                  <Tooltip title={get(record, 'partner.partner_users[0].mobile', null)}>
-                    <Phone number={get(record, 'partner.partner_users[0].mobile', null)} icon />
-                  </Tooltip>
-                  <Tooltip title='Comment'>
-                    <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)}/>
-                  </Tooltip>
-                </span>
-              )
+                return (
+                    <span>
+                        <Tooltip title={get(record, 'partner.partner_users[0].mobile', null)}>
+                            <Phone number={get(record, 'partner.partner_users[0].mobile', null)} icon />
+                        </Tooltip>
+                        <Tooltip title='Comment'>
+                            <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
+                        </Tooltip>
+                    </span>
+                )
             },
         },
 
     ]
     return (
         <>
-        <Table
-            columns={advancePending}
-            dataSource={trips}
-            rowKey={(record) => record.id}
-            size='small'
-            scroll={{ x: 1256 }}
-            pagination={false}
-            loading={loading}
-        />
-        {object.commentVisible &&
-        <TripFeedBack
-          visible={object.commentVisible}
-          tripid={object.commentData}
-          onHide={handleHide}
-        />}
-            </>
+            <Table
+                columns={advancePending}
+                dataSource={trips}
+                rowKey={(record) => record.id}
+                size='small'
+                scroll={{ x: 1256 }}
+                pagination={false}
+                loading={loading}
+            />
+            {object.commentVisible &&
+                <TripFeedBack
+                    visible={object.commentVisible}
+                    tripid={object.commentData}
+                    onHide={handleHide}
+                />}
+        </>
     )
 }
 export default AdvancePending
