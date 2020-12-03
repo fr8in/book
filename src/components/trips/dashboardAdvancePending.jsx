@@ -200,19 +200,19 @@ const AdvancePending = (props) => {
         {
             title: 'Source',
             width: '9%',
-            render: (text, record) => get(record, 'source.name', '-'),
+            render: (text, record) => <Truncate data={get(record, 'source.name', '-')} length={10} />,
             sorter: (a, b) => (a.source.name > b.source.name ? 1 : -1),
         },
         {
             title: 'Destination',
             width: '9%',
-            render: (text, record) => get(record, 'destination.name', '-'),
+            render: (text, record) => <Truncate data={get(record, 'destination.name', '-')} length={10} />,
             sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
         },
         {
             title: 'Status',
             width: '8%',
-            render: (text, record) => <Truncate data={get(record, 'trip_status.name', '-')} length={15} />
+            render: (text, record) => <Truncate data={get(record, 'trip_status.name', '-')} length={10} />
         },
         {
             title: 'Receivable',
