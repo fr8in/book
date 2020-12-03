@@ -16,6 +16,7 @@ import Revenue from '../../reports/revenue'
 import Progress from '../../reports/progress'
 import moment from 'moment'
 import WeeklyBranchTarget from '../../partners/weeklyBranchTarget'
+import AdvancePending from '../../trips/dashboardAdvancePending'
 const { TabPane } = Tabs
 
 const DashboardContainer = (props) => {
@@ -151,6 +152,9 @@ const onDndChange = (e) =>{
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Hold' value={hold_count} />} key='10'>
                   <TripsContainer filters={filters} trip_status='Intransit halting' />
+                </TabPane>
+                <TabPane tab={<TitleWithCount name='ADV.Pending' />} key='11'>
+                  <AdvancePending   />
                 </TabPane>
               </Tabs>
             </Card>
