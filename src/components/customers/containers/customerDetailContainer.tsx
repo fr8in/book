@@ -32,6 +32,7 @@ import userContext from '../../../lib/userContaxt'
 import { useContext } from 'react'
 import CustomerComment from '../customerComment'
 import isEmpty from 'lodash/isEmpty'
+import TransferHistory from '../transferToBankHistory'
 
 // Apollo Client
 import { useSubscription } from '@apollo/client'
@@ -239,6 +240,9 @@ const CustomerDetailContainer = (props) => {
                       <div className='p10'>
                         <CustomerComment customer_id={customer_info.id} loading={loading} detailPage />
                       </div>
+                    </TabPane>
+                    <TabPane tab='Bank Transfer' key='11' >
+                         <TransferHistory cardcode={cardcode} loading={loading}/>
                     </TabPane>
                   </Tabs>
                 </Card>
