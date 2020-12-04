@@ -174,6 +174,7 @@ const AdvancePending = (props) => {
         {
             title: 'Customer',
             width: '10%',
+            sorter: (a, b) => (a.customer.name > b.customer.name ? 1 : -1),
             render: (text, record) => {
                 const customer = get(record, 'customer.name', null)
                 const cardcode = get(record, 'customer.cardcode', null)
