@@ -8,7 +8,7 @@ import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import LinkComp from '../common/link'
 import Truncate from '../common/truncate'
 import Phone from '../common/phone'
-
+import PartnerLink from '../common/PartnerLink'
 const WaitingForLoad = (props) => {
   const { trucks, loading, onTruckNoSearch, truckNo } = props
   const initial = {
