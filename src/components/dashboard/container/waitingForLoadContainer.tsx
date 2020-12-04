@@ -70,7 +70,7 @@ const WaitingForLoadContainer = (props) => {
     cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
     truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
     truck_no: truckNo.truckno ? `%${truckNo.truckno}%` : null,
-    dnd: dndCheck === true ? null : true
+    dnd: dndCheck === true ? false : true
   }
   const { loading, data, error } = useSubscription(DASHBOARD_TRUCK_QUERY, { variables })
   

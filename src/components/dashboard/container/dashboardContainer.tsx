@@ -16,6 +16,8 @@ import Revenue from '../../reports/revenue'
 import Progress from '../../reports/progress'
 import moment from 'moment'
 import WeeklyBranchTarget from '../../partners/weeklyBranchTarget'
+import AdvancePending from '../../trips/dashboardAdvancePending'
+
 const { TabPane } = Tabs
 
 const DashboardContainer = (props) => {
@@ -23,9 +25,11 @@ const DashboardContainer = (props) => {
   const initial = { excessLoad: false,orders:false,Staticticsdata:false }
   const { visible, onShow, onHide } = useShowHide(initial)
   const [dndCheck,setDndCheck] = useState(false)
+  const date = new Date(new Date().getFullYear(), 0, 1);
 
   const variables = {
     now: moment().format('YYYY-MM-DD'),
+    date:moment(date).format('YYYY-MM-DD'),
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
     branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
     cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
@@ -45,10 +49,13 @@ const DashboardContainer = (props) => {
   let hold_count = 0
   let truck_count = 0
   let truck_current_count = 0
+  let adv_pending_count = 0
 
   if (!loading) {
     const newData = { data }
 
+    const adv_pending_aggrigate = _.chain(newData).flatMap('adv_pending').flatMap('aggregate').value()
+    adv_pending_count = _.sumBy(adv_pending_aggrigate, 'count')
     const unloading_aggrigate = _.chain(newData).flatMap('unloading').flatMap('aggregate').value()
     unloading_count = _.sumBy(unloading_aggrigate, 'count')
 
@@ -151,6 +158,9 @@ const onDndChange = (e) =>{
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Hold' value={hold_count} />} key='10'>
                   <TripsContainer filters={filters} trip_status='Intransit halting' />
+                </TabPane>
+                <TabPane tab={<TitleWithCount name='ADV.Pending' value={adv_pending_count} />} key='11'>
+                  <AdvancePending   filters={filters}/>
                 </TabPane>
               </Tabs>
             </Card>

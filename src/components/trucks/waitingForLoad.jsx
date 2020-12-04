@@ -108,7 +108,8 @@ const WaitingForLoad = (props) => {
       title: 'TAT',
       dataIndex: 'tat',
       width: '6%',
-      sorter: (a, b) => (parseInt(a.tat) > parseInt(b.tat) ? 1 : -1)
+      sorter: (a, b) => (parseInt(a.tat)-parseInt(b.tat)),
+      defaultSortOrder: 'ascend'
     },
     {
       title: 'Comment',

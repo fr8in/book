@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 const DASHBOAD_QUERY = gql`
-query dashboard_trips($now: timestamp,$regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $managers: [Int!]) {
+query dashboard_trips($now: timestamp,$regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $managers: [Int!],$date: timestamp) {
   unloading: trip_aggregate(where: {trip_status: {name: {_eq: "Reported at destination"}}, branch: {region_id: {_in: $regions}}, branch_id: {_in: $branches}, source_connected_city_id: {_in: $cities}, truck_type_id: {_in: $truck_type}, branch_employee_id: {_in: $managers}}) {
     aggregate {
       count
@@ -43,6 +43,11 @@ query dashboard_trips($now: timestamp,$regions: [Int!], $branches: [Int!], $citi
     }
   }
   hold: trip_aggregate(where: {trip_status: {name: {_eq: "Intransit halting"}}, branch: {region_id: {_in: $regions}}, branch_id: {_in: $branches}, source_connected_city_id: {_in: $cities}, truck_type_id: {_in: $truck_type}, branch_employee_id: {_in: $managers}}) {
+    aggregate {
+      count
+    }
+  }
+  adv_pending: trip_aggregate(where: {source_out: {_gt: $date}, trip_status: {name: {_nin: ["Cancelled"]}}, trip_accounting: {receipt: {_is_null: true}}, branch: {region_id: {_in: $regions}}, branch_id: {_in: $branches}, source_connected_city_id: {_in: $cities}, truck_type_id: {_in: $truck_type}, branch_employee_id: {_in: $managers}}) {
     aggregate {
       count
     }
