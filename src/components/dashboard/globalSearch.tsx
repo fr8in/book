@@ -106,7 +106,7 @@ const GlobalSearch = (props) => {
               </Panel>) : null}
 
             {!isEmpty(lead) ? (
-              <Panel header='Partner Lead' key='5'>
+              <Panel header='Lead' key='5'>
                 {lead.map((result, i) => <Result key={i} {...result} type='partners/create-partner' />)}
               </Panel>) : null}
 
