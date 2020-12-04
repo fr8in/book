@@ -160,7 +160,6 @@ const CreateLead = (props) => {
               <Input 
                placeholder='Phone'
                type='number'
-               min={1}
                maxLength={10}
                onInput={u.handleLengthCheck} />
             </Form.Item>
