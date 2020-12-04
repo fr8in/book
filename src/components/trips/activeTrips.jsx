@@ -11,7 +11,7 @@ import { gql, useMutation } from '@apollo/client'
 import u from '../../lib/util'
 import { useContext } from 'react'
 import userContext from '../../lib/userContaxt'
-
+import PartnerLink from '../common/PartnerLink'
 
 const ASSIGN_TO_CONFIRM_STATUS_MUTATION = gql`
 mutation update_trip_status($id: Int , $trip_status_id : Int) {
@@ -109,13 +109,15 @@ const Trips = (props) => {
     {
       title: 'Partner',
       render: (text, record) => {
+        const id = get(record, 'partner.id', null)
         const cardcode = get(record, 'partner.cardcode', null)
         const name = get(record, 'partner.name', null)
         return (
-          <LinkComp
+          <PartnerLink
+            id={id}
             type='partners'
             data={name}
-            id={cardcode}
+            cardcode={cardcode}
             length={10}
             blank
           />
