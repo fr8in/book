@@ -32,10 +32,10 @@ const WaitingForLoad = (props) => {
     {
       title: 'Truck No',
       dataIndex: 'truck_no',
-      width: '15%',
+      width: '13%',
       sorter: (a, b) => (a.truck_no > b.truck_no ? 1 : -1),
       render: (text, record) => {
-        const truck_type = record.truck_type && record.truck_type.name
+        const truck_type = record.truck_type && record.truck_type.code
         return (
           <LinkComp
             type='trucks'
@@ -116,7 +116,7 @@ const WaitingForLoad = (props) => {
       render: (text, record) => {
         const comment = record.last_comment && record.last_comment.description
         return (
-          <Truncate data={comment} length={30} />
+          <Truncate data={comment} length={45} />
         )
       },
       width: '27%'

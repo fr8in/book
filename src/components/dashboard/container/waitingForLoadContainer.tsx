@@ -25,6 +25,7 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
             truck_type {
               id
               name
+              code
             }
             partner {
               id

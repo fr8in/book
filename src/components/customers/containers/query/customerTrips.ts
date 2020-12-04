@@ -19,7 +19,7 @@ query customer_trip_list($cardcode: String, $where:trip_bool_exp) {
       truck {
         truck_no
         truck_type {
-          name
+          code
         }
       }
       source {

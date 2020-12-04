@@ -23,6 +23,7 @@ subscription customer_closed_trip_list($cardcode: String,$where: trip_bool_exp,$
         truck_no
         truck_type {
           name
+          code
         }
       }
       source {
@@ -135,7 +136,7 @@ const CustomerClosedTrips = (props) => {
       width: '16%',
       render: (text, record) => {
         const truck_no = get(record, 'truck.truck_no', null)
-        const truck_type_name = get(record, 'truck.truck_type.name', null)
+        const truck_type_name = get(record, 'truck.truck_type.code', null)
         const truck_type = truck_type_name ? truck_type_name.slice(0, 9) : null
         return (
           <LinkComp

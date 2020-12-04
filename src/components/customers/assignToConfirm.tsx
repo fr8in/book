@@ -34,6 +34,7 @@ subscription trip($customer_id: Int) {
       truck_no
       truck_type {
         name
+        code
       }
     }
   }
@@ -92,7 +93,6 @@ const AssignToConfirm = (props) => {
     const trip_ids = trips.map(trip => trip.id)
     setSelectedRowKeys(trip_ids)
     setSelectedTrip(trip_ids)
-    console.log('trip_ids', trip_ids)
   }, [loading])
 
 
@@ -161,7 +161,7 @@ const AssignToConfirm = (props) => {
       width: '25%',
       render: (text, record) => {
         const truck_no = get(record, 'truck.truck_no', null)
-        const truck_type_name = get(record, 'truck.truck_type.name', null)
+        const truck_type_name = get(record, 'truck.truck_type.code', null)
         const truck_type = truck_type_name ? truck_type_name.slice(0, 9) : null
         return (
           <LinkComp
