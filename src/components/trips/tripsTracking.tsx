@@ -7,7 +7,7 @@ import TripFeedBack from '../trips/tripFeedBack'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import PodReceiptAndDispatch from '../trips/podReceiptAndDispatch'
 import get from 'lodash/get'
-
+import PartnerLink from '../common/PartnerLink'
 const TripsTracking = (props) => {
   const initial = {
     commentData: [],
@@ -177,7 +177,7 @@ const TripsTracking = (props) => {
       title: 'Partner',
       render: (text, record) => {
         return (
-          <LinkComp type='partners' data={get(record, 'partner.name', null)} id={get(record, 'partner.cardcode', null)} length={12} blank />
+          <PartnerLink type='partners' data={get(record, 'partner.name', null)} id={get(record, 'partner.id', null)} cardcode={get(record, 'partner.cardcode', null)} length={12} />
         )
       },
       filterDropdown: (
@@ -287,8 +287,8 @@ const TripsTracking = (props) => {
             <span> {comment.slice(0, 12) + '...'}</span>
           </Tooltip>
         ) : (
-          comment
-        )
+            comment
+          )
       }
     },
     {

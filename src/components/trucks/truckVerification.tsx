@@ -65,8 +65,8 @@ const TruckVerification = (props) => {
 
   const { role } = u
   const context = useContext(userContext)
-  const customerAdvancePercentageEdit = [role.admin, role.partner_manager,role.onboarding]
-  const truckActivationRejectAccess =  u.is_roles(customerAdvancePercentageEdit,context)
+  const customerAdvancePercentageEdit = [role.admin, role.partner_manager, role.onboarding]
+  const truckActivationRejectAccess = u.is_roles(customerAdvancePercentageEdit, context)
 
   const variables = {
     truck_statusName: filter.truck_statusName

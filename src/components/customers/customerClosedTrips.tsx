@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Table, Pagination,Input } from 'antd'
+import { Table, Pagination, Input } from 'antd'
 import { gql, useSubscription } from '@apollo/client'
 import { SearchOutlined } from '@ant-design/icons'
 import get from 'lodash/get'
@@ -7,7 +7,7 @@ import moment from 'moment'
 import Truncate from '../common/truncate'
 import LinkComp from '../common/link'
 import u from '../../lib/util'
-
+import PartnerLink from '../common/PartnerLink'
 const CLOSED_TRIPS = gql`
 subscription customer_closed_trip_list($cardcode: String,$where: trip_bool_exp,$limit: Int!, $offset:Int!) {
   customer(where: {cardcode: {_eq: $cardcode}}) {
@@ -33,6 +33,7 @@ subscription customer_closed_trip_list($cardcode: String,$where: trip_bool_exp,$
         name
       }
       partner {
+        id
         cardcode
         name
       }
@@ -66,11 +67,11 @@ const CustomerClosedTrips = (props) => {
     limit: filter.limit,
     offset: filter.offset,
     where: {
-        trip_status:{name:{_in:recieved}},
-        partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
-        source: { name: { _ilike: filter.sourcename ? `%${filter.sourcename}%` : null } },
-        destination: { name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } },
-        truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } }
+      trip_status: { name: { _in: recieved } },
+      partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
+      source: { name: { _ilike: filter.sourcename ? `%${filter.sourcename}%` : null } },
+      destination: { name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } },
+      truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } }
     }
   }
 
@@ -95,19 +96,19 @@ const CustomerClosedTrips = (props) => {
   }
 
   const onTruckNoSearch = (e) => {
-    setFilter({ ...filter, truckno:e.target.value, offset: 0})
+    setFilter({ ...filter, truckno: e.target.value, offset: 0 })
     setCurrentPage(1)
   }
   const onPartnerNameSearch = (e) => {
-    setFilter({ ...filter,partnername:e.target.value,offset: 0  })
+    setFilter({ ...filter, partnername: e.target.value, offset: 0 })
     setCurrentPage(1)
   }
   const onSourceNameSearch = (e) => {
-    setFilter({ ...filter,sourcename:e.target.value, offset: 0})
+    setFilter({ ...filter, sourcename: e.target.value, offset: 0 })
     setCurrentPage(1)
   }
   const onDestinationNameSearch = (e) => {
-    setFilter({ ...filter, destinationname:e.target.value, offset: 0})
+    setFilter({ ...filter, destinationname: e.target.value, offset: 0 })
     setCurrentPage(1)
   }
 
@@ -160,13 +161,15 @@ const CustomerClosedTrips = (props) => {
       title: 'Partner',
       width: '10%',
       render: (text, record) => {
+        const id = get(record, 'partner.id', null)
         const partner = get(record, 'partner.name', null)
         const cardcode = get(record, 'partner.cardcode', null)
         return (
-          <LinkComp
+          <PartnerLink
             type='partners'
             data={partner}
-            id={cardcode}
+            id={id}
+            cardcode={cardcode}
             length={10}
           />)
       },
@@ -203,7 +206,7 @@ const CustomerClosedTrips = (props) => {
       filterDropdown: (
         <Input
           placeholder='Search'
-           value={filter.destinationname}
+          value={filter.destinationname}
           onChange={onDestinationNameSearch}
         />
       ),
