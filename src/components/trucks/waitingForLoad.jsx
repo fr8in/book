@@ -60,16 +60,19 @@ const WaitingForLoad = (props) => {
       width: '14%',
       sorter: (a, b) => (a.partner > b.partner ? 1 : -1),
       render: (text, record) => {
+        const id = record.partner && record.partner.id
         const partner = record.partner && record.partner.name
+        const cardcode = record.partner && record.partner.cardcode
         const membership_id = record.partner && record.partner.partner_memberships && record.partner.partner_memberships.membership_type_id
         return (
           <span>
             <Badge dot style={{ backgroundColor: (membership_id === 1 ? '#FFD700' : '#C0C0C0') }} />
-            <LinkComp
+            <PartnerLink
+              id={id}
               type='partners'
               data={partner}
-              id={record.partner && record.partner.cardcode}
-              length={18}
+              cardcode={cardcode}
+              length={10}
             />
           </span>
         )

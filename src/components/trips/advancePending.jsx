@@ -6,7 +6,7 @@ import moment from 'moment'
 import Truncate from '../common/truncate'
 import LinkComp from '../common/link'
 import { useState } from 'react'
-
+import PartnerLink from '../common/PartnerLink'
 const ADVANCE_PENDING_QUERY = gql`
 query advancePending(
   $cardcode: String,
@@ -42,6 +42,8 @@ query advancePending(
       }
     }
     partner {
+      id
+      cardcode
       name
     }
     source {
@@ -161,13 +163,15 @@ const AdvancePending = (props) => {
       title: 'Partner',
       width: '10%',
       render: (text, record) => {
+        const id = get(record, 'partner.id', null)
         const partner = get(record, 'partner.name', null)
         const cardcode = get(record, 'partner.cardcode', null)
         return (
-          <LinkComp
+          <PartnerLink
             type='partners'
             data={partner}
-            id={cardcode}
+            id={id}
+            cardcode={cardcode}
             length={10}
           />
         )
@@ -242,9 +246,9 @@ const AdvancePending = (props) => {
     },
     {
       title: 'Aging',
-      key:'advance_tat',
-      dataIndex:'advance_tat',
-      sorter: (a, b) => (a.advance_tat-b.advance_tat),
+      key: 'advance_tat',
+      dataIndex: 'advance_tat',
+      sorter: (a, b) => (a.advance_tat - b.advance_tat),
       defaultSortOrder: 'descend',
       width: '7%'
     }

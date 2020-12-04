@@ -5,6 +5,7 @@ import { SearchOutlined } from '@ant-design/icons'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
 import Truncate from '../common/truncate'
+import PartnerLink from '../common/PartnerLink'
 
 const Trips = (props) => {
   const {
@@ -117,10 +118,11 @@ const Trips = (props) => {
     {
       title: 'Partner',
       render: (text, record) => {
+        const id = get(record, 'partner.id', null)
         const cardcode = get(record, 'partner.cardcode', null)
         const name = get(record, 'partner.name', null)
         return (
-          <LinkComp type='partners' data={name} id={cardcode} length={12} blank />
+          <PartnerLink type='partners' data={name} id={id} cardcode={cardcode} length={12} blank />
         )
       },
       filterDropdown: (

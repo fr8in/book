@@ -7,7 +7,7 @@ import get from 'lodash/get'
 import moment from 'moment'
 import Truncate from '../common/truncate'
 import LinkComp from '../common/link'
-
+import PartnerLink from '../common/PartnerLink'
 const CustomerTrips = (props) => {
   const { cardcode, status_names, delivered } = props
 
@@ -148,13 +148,15 @@ const CustomerTrips = (props) => {
       title: 'Partner',
       width: '10%',
       render: (text, record) => {
+        const id = get(record, 'partner.id', null)
         const partner = get(record, 'partner.name', null)
         const cardcode = get(record, 'partner.cardcode', null)
         return (
-          <LinkComp
+          <PartnerLink
             type='partners'
             data={partner}
-            id={cardcode}
+            id={id}
+            cardcode={cardcode}
             length={10}
           />
         )
@@ -202,18 +204,18 @@ const CustomerTrips = (props) => {
     },
     !delivered
       ? {
-          title: 'Status',
-          width: '11%',
-          render: (text, record) => <Truncate data={get(record, 'trip_status.name', '-')} length={15} />
-        }
+        title: 'Status',
+        width: '11%',
+        render: (text, record) => <Truncate data={get(record, 'trip_status.name', '-')} length={15} />
+      }
       : {},
     delivered
       ? {
-          title: 'Pod Verified at',
-          width: '11%',
-          dataIndex: 'pod_verified_at',
-          render: (text, record) => text ? moment(text).format('DD-MMM-YY') : '-'
-        }
+        title: 'Pod Verified at',
+        width: '11%',
+        dataIndex: 'pod_verified_at',
+        render: (text, record) => text ? moment(text).format('DD-MMM-YY') : '-'
+      }
       : {},
     {
       title: 'Receivable',

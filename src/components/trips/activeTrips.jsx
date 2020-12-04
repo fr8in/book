@@ -33,7 +33,7 @@ const Trips = (props) => {
 
   const { role } = u
   const context = useContext(userContext)
-  const ad_am = [role.admin,role.accounts_manager]
+  const ad_am = [role.admin, role.accounts_manager]
   const confirm_access = u.is_roles(ad_am, context)
   const [assign_to_confirm] = useMutation(
     ASSIGN_TO_CONFIRM_STATUS_MUTATION, {
@@ -119,7 +119,6 @@ const Trips = (props) => {
             data={name}
             cardcode={cardcode}
             length={10}
-            blank
           />
         )
       },
@@ -222,22 +221,22 @@ const Trips = (props) => {
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
             </Tooltip>
-             <>
-                  {
-                   confirm_access && assign_status === 'Assigned'
-                      ? <>
-                       <Popconfirm
-                            title='Are you sure you want to change this status to confirmed?'
-                            okText='Yes'
-                            cancelText='No'
-                            onConfirm={() => onSubmit(record.id)}
-                          >
-                            <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' />
-                          </Popconfirm>
-                      </>
-                      : null
-                  }
-                </> 
+            <>
+              {
+                confirm_access && assign_status === 'Assigned'
+                  ? <>
+                    <Popconfirm
+                      title='Are you sure you want to change this status to confirmed?'
+                      okText='Yes'
+                      cancelText='No'
+                      onConfirm={() => onSubmit(record.id)}
+                    >
+                      <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' />
+                    </Popconfirm>
+                  </>
+                  : null
+              }
+            </>
           </span>
         )
       },

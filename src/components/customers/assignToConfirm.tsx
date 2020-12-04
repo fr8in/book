@@ -12,12 +12,14 @@ import Phone from '../common/phone'
 import Truncate from '../common/truncate'
 import { useState, useEffect } from 'react'
 import Loading from '../common/loading'
+import PartnerLink from '../common/PartnerLink'
 
 const CUSTOMER_SUBCRIPTION = gql`
 subscription trip($customer_id: Int) {
   trip(where: {customer_id: {_eq: $customer_id}, trip_status: {name: {_eq: "Assigned"}}}) {
     id
     partner {
+      id
       name
       cardcode
     }
@@ -146,12 +148,12 @@ const AssignToConfirm = (props) => {
         const cardcode = get(record, 'partner.cardcode', null)
         const name = get(record, 'partner.name', null)
         return (
-          <LinkComp
+          <PartnerLink
             type='partners'
             data={name}
-            id={cardcode}
+            cardcode={cardcode}
+            id={id}
             length={7}
-            blank
           />)
       }
     },
@@ -213,17 +215,17 @@ const AssignToConfirm = (props) => {
       style={{ top: 20 }}
       width={700}
     >
-     { loading ? <Loading /> : (
-      <Table
-        columns={columns}
-        dataSource={trips}
-        rowKey={(record) => record.id}
-        size='small'
-        rowSelection={{ ...rowSelection }}
-        scroll={{ x: 620, y: 250 }}
-        pagination={false}
-        className='withAction'
-      />)}
+      { loading ? <Loading /> : (
+        <Table
+          columns={columns}
+          dataSource={trips}
+          rowKey={(record) => record.id}
+          size='small'
+          rowSelection={{ ...rowSelection }}
+          scroll={{ x: 620, y: 250 }}
+          pagination={false}
+          className='withAction'
+        />)}
     </Modal>
   )
 }
