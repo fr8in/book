@@ -1,4 +1,4 @@
-import { Table, Input, Tooltip, Button, Space,Modal } from 'antd'
+import { Table, Input, Tooltip, Button, Space, Modal } from 'antd'
 import {
   SearchOutlined,
   CommentOutlined,
@@ -8,10 +8,10 @@ import {
 import { useState, useEffect, useContext } from 'react'
 import Truncate from '../common/truncate'
 import Link from 'next/link'
-import useShowHideWithRecord from  '../../hooks/useShowHideWithRecord'
+import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from '../customers/customerComment'
 import Approve from '../customers/transfertobankAccept'
-import { gql,useQuery, useSubscription } from '@apollo/client'
+import { gql, useQuery, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import LinkComp from '../common/link'
@@ -22,21 +22,29 @@ import isEmpty from 'lodash/isEmpty'
 
 const TRANSFER_SUBSCRIPTION = gql`
 subscription customerWalletOutgoing{
-    customer_wallet_outgoing(where:{status:{_eq:"PENDING"}}){
-        id
-        card_code
-        amount
-        created_by
-        created_on
-        payment_status
-      }
-    }`
+  customer_wallet_outgoing(where:{status:{_eq:"PENDING"}}){
+      id
+      card_code
+      load_id
+      amount
+      created_by
+      created_on
+      payment_status
+customers{
+  id
+  name
+  last_comment{
+    description
+  }
+}
+    }
+  }`
 
 const TransfertoBank = () => {
   const { role } = u
   const access = [role.admin, role.accounts_manager]
-  const approve_roles = [role.admin,role.accounts_manager]
-  const reject_roles = [role.admin,role.accounts_manager]
+  const approve_roles = [role.admin, role.accounts_manager]
+  const reject_roles = [role.admin, role.accounts_manager]
   const initial = {
     commentData: [],
     commentVisible: false,
@@ -46,8 +54,8 @@ const TransfertoBank = () => {
   }
 
   const context = useContext(userContext)
-  const approval_access =  u.is_roles(approve_roles,context)
-  const rejected_access =  u.is_roles(reject_roles,context)
+  const approval_access = u.is_roles(approve_roles, context)
+  const rejected_access = u.is_roles(reject_roles, context)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const [filter, setFilter] = useState(initial)
 
@@ -61,49 +69,45 @@ const TransfertoBank = () => {
     _transfertobankdata = data
   }
 
-  const transferdata = get (_transfertobankdata,'customer_wallet_outgoing' ,null)
-console.log('a',data)
-console.log('b',_transfertobankdata)
-console.log('c',transferdata)
-//   const pending_list = get(_data, 'trip_credit_debit', null)
-
-//   useEffect(() => {
-//     setFilter({ ...filter, pending: pending_list })
-//   }, [pending_list])
-
-//   const onSearch = (e) => {
-//     setFilter({ ...filter, searchText: e.target.value })
-//     const searchText = e.target.value
-//     console.log('searchText', filter)
-//     if (searchText.length >= 3) {
-//       const regex = new RegExp(searchText, 'gi')
-//       const removeNull = filter.pending.filter(record => record.responsibility != null)
-//       const newData = removeNull.filter(record => record.responsibility.name.match(regex))
-//       const result = newData || filter.pending
-//       setFilter({ ...filter, pending: result })
-//     } else {
-//       setFilter({ ...filter, pending: pending_list })
-//     }
-//   }
+  const transferdata = get(_transfertobankdata, 'customer_wallet_outgoing', null)
+  console.log('transferdata',transferdata)
+ 
+  const customer_id = get (_transfertobankdata,'customer_wallet_outgoing.customers[0].id',null)
+  console.log('customer_id',customer_id)
 
   const ApprovalPending = [
     {
       title: 'Cardcode',
       dataIndex: 'card_code',
       key: 'card_code',
+      width: '10%',
+      render: (text, record) => {
+        const cardcode = get(record, 'card_code', null)
+        return (
+          <LinkComp type='customers' data={cardcode} id={cardcode} length={12} blank />
+        )
+      }
+    },
+    {
+      title: 'customer Name',
+      // dataIndex: 'customer',
+      // key: 'customer',
       width: '20%',
-    //   render: (text, record) =>
-    //     <Link href='/trips/[id]' as={`/trips/${record.trip_id} `}>
-    //       <a>{text}</a>
-    //     </Link>
+      render: (text, record) => record.customers[0].name
+    },
+    {
+      title: 'Trip Id',
+      dataIndex: 'load_id',
+      key:'load_id',
+      width: '10%'
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
-      width: '20%'
+      width: '10%'
     },
-    
+
     {
       title: 'Created By',
       dataIndex: 'created_by',
@@ -111,22 +115,7 @@ console.log('c',transferdata)
       width: '20%',
       render: (text, record) => <Truncate data={text} length={18} />
     },
-    // {
-    //   title: 'customer Name',
-    //   dataIndex: 'customer',
-    //   key: 'customer',
-    //   width: '12%',
-    //   render: (text, record) => {
-    //     return (
-    //       <LinkComp
-    //         type='partners'
-    //         data={get(record, 'trip.partner.cardcode', null) + '-' + get(record, 'trip.partner.name', null)}
-    //         id={get(record, 'trip.partner.cardcode', null)}
-    //         length={14}
-    //       />
-    //     )
-    //   }
-    // },
+    
     {
       title: 'Req.On',
       dataIndex: 'created_on',
@@ -149,13 +138,13 @@ console.log('c',transferdata)
       width: '20%',
       render: (text, record) => (
         <Space>
-           <Tooltip title='Comment'>
+          <Tooltip title='Comment'>
             <Button
               type='link'
               icon={<CommentOutlined />}
               onClick={() => handleShow('commentVisible', null, 'commentData', record.id)}
             />
-          </Tooltip> 
+          </Tooltip>
           <Tooltip title='Accept'>
             {approval_access ? (
               <Button
@@ -197,28 +186,28 @@ console.log('c',transferdata)
         className='withAction'
         loading={loading}
       />
-       {object.commentVisible && (
-            <Modal
-            title='Comments'
-            visible={object.commentVisible}
-            onCancel={handleHide}
-            bodyStyle={{ padding: 10 }}
-            footer={null}
-          >
-        <Comment
-          customer_id={object.commentData}
-          onHide={handleHide}
-        />
+      {object.commentVisible && (
+        <Modal
+          title='Comments'
+          visible={object.commentVisible}
+          onCancel={handleHide}
+          bodyStyle={{ padding: 10 }}
+          footer={null}
+        >
+          <Comment
+            customer_id={object.commentData}
+            onHide={handleHide}
+          />
         </Modal>
-      )} 
-       {object.approveVisible && (
+      )}
+      {object.approveVisible && (
         <Approve
           visible={object.approveVisible}
           onHide={handleHide}
           item_id={object.approveData}
           title={object.title}
         />
-      )} 
+      )}
     </>
   )
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Table} from 'antd'
+import { Table,Checkbox,Input,Pagination} from 'antd'
+import { SearchOutlined } from '@ant-design/icons'
 import Truncate from '../common/truncate'
 import Link from 'next/link'
 import { gql, useQuery, useSubscription } from '@apollo/client'
@@ -13,6 +14,7 @@ subscription customerTransfertoBank_history($cardcode:String) {
   customer_wallet_outgoing(where:{card_code:{_eq:$cardcode}status:{_in:["APPROVED","REJECTED"]}}){
     id
     card_code
+    load_id
     amount
     created_by
     created_on
@@ -23,26 +25,37 @@ subscription customerTransfertoBank_history($cardcode:String) {
   }
 }`
 
+
 const ApprovedAndRejected = (props) => {
  const {cardcode} =props
  console.log('cardcode',cardcode)
-  const [currentPage, setCurrentPage] = useState(1)
+
+
+const [filter, setFilter] = useState()
+const [currentPage, setCurrentPage] = useState(1)
+
+
+
+console.log('filter', filter)
 
   const { loading, error, data } = useSubscription(
     APPROVED_REJECTED_SUBSCRIPTION,{
     variables:{
-        cardcode:cardcode
+      cardcode:cardcode
     }
 }
   )
   console.log('approvedRejected error', error)
 
+  
 
   let _data = {}
   if (!loading) {
     _data = data
   }
   const approvedAndRejected = get(_data,'customer_wallet_outgoing', null)
+  
+  
 console.log('aa',data)
 console.log('bb',approvedAndRejected)
   const ApprovalPending = [
@@ -50,19 +63,25 @@ console.log('bb',approvedAndRejected)
       title: 'Cardcode',
       dataIndex: 'card_code',
       key: 'card_code',
-      width: '15%'
+      width: '10%',
+    },
+    {
+      title: 'Trip Id',
+      dataIndex: 'load_id',
+      key:'load_id',
+      width: '10%',
     },
     {
       title: 'Amount ₹',
       dataIndex: 'amount',
-      width: '10%'
+      width: '10%',
     },
     {
       title: 'Request By ',
       dataIndex: 'created_by',
       key: 'created_by',
-      width: '15%',
-      render: (text, record) => <Truncate data={text} length={20} />
+      width: '10%',
+      render: (text, record) => <Truncate data={text} length={20} />,
     },
     {
       title: 'Request On',
@@ -78,7 +97,7 @@ console.log('bb',approvedAndRejected)
       title: 'Payment Status',
       dataIndex: 'status',
       key: 'status',
-      width: '15%',
+      width: '10%',
       render: (text, record) => <Truncate data={text} length={18} />
     },
     {
@@ -86,8 +105,7 @@ console.log('bb',approvedAndRejected)
       dataIndex: 'approved_by',
       key: 'approved_by',
       render: (text, record) => <Truncate data={text} length={20} />,
-      width: '15%'
-      
+      width: '10%',
     },
     {
       title: 'Closed On',

@@ -100,7 +100,10 @@ const Transfer = (props) => {
   const bank_detail = get(_data, 'bank_detail', null)
 
   const onSubmit = (form) => {
-    if (amount > 0) {
+    if ( amount > 5000 ){
+      setDisableButton(false)
+      message.error('Transaction Amount is Greater Than ₹5000')
+    } else if (amount > 0) {
       setDisableButton(true)
       customer_mamul_transfer({
         variables: {
