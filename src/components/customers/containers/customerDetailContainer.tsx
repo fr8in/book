@@ -122,14 +122,6 @@ const CustomerDetailContainer = (props) => {
                 }
                 extra={
                   <Space>
-                    {/* <div className='text-center'>
-                      <Button
-                        icon={<MailOutlined />}
-                        shape='circle'
-                        onClick={() => onShow('showModal')}
-                      />
-                      <p className='tinyAction'>Statement</p>
-                    </div> */}
                     {transferAccess
                       ? (
                         <Space>
