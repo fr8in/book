@@ -5,7 +5,8 @@ import {
   FileDoneOutlined,
   WalletOutlined,
   PlusOutlined,
-  CodeOutlined
+  CodeOutlined,
+  MailOutlined
 } from '@ant-design/icons'
 import useShowHide from '../../../hooks/useShowHide'
 import AccStmtMail from '../stmtMail'
@@ -39,6 +40,7 @@ import { useSubscription } from '@apollo/client'
 import { CUSTOMER_DETAIL_SUBSCRIPTION } from './query/cutomerDetailSubscription'
 import Loading from '../../common/loading'
 import AdvancePending from '../../trips/advancePending'
+import ReportEmail from '../reportEmail'
 
 const { TabPane } = Tabs
 
@@ -55,7 +57,8 @@ const CustomerDetailContainer = (props) => {
     rebate: false,
     wallet: false,
     addUser: false,
-    addBranch: false
+    addBranch: false,
+    reportMail: false,
   }
   const { visible, onShow, onHide } = useShowHide(initial)
   const { role } = u
@@ -119,14 +122,6 @@ const CustomerDetailContainer = (props) => {
                 }
                 extra={
                   <Space>
-                    {/* <div className='text-center'>
-                      <Button
-                        icon={<MailOutlined />}
-                        shape='circle'
-                        onClick={() => onShow('showModal')}
-                      />
-                      <p className='tinyAction'>Statement</p>
-                    </div> */}
                     {transferAccess
                       ? (
                         <Space>
@@ -146,6 +141,10 @@ const CustomerDetailContainer = (props) => {
                             />
                             <p className='tinyAction'>Transfer</p>
                           </div>
+                          <div className='text-center'>
+                      <Button icon={<MailOutlined />} shape='circle' onClick={() => onShow('reportMail')} />
+                      <p className='tinyAction'>Email</p>
+                    </div>
                           <div className='text-center'>
                             <Button
                               icon={<FileDoneOutlined />}
@@ -304,6 +303,7 @@ const CustomerDetailContainer = (props) => {
               {visible.showModal && (
                 <AccStmtMail visible={visible.showModal} onHide={onHide} />
               )}
+              {visible.reportMail && <ReportEmail visible={visible.reportMail} onHide={onHide} cardcode={cardcode} />}
             </Row>
           </Card>
         </Col>
