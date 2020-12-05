@@ -55,7 +55,7 @@ const Payables = (props) => {
   const pending_payable = get(trip_pay, 'trip_accounting.pending_payable')
   const pending_payable_total = onHold + pending_payable
 
-  const arr = [{ id: 1, name: 'On-Hold', value: onHold },
+  const pendingPayables = [{ id: 1, name: 'On-Hold', value: onHold },
   { id: 2, name: 'Cleared', value: pending_payable }]
 
   const payablesColumn = [
@@ -127,7 +127,7 @@ const Payables = (props) => {
             </Col>
           </Row>
           <Table
-            dataSource={arr}
+            dataSource={pendingPayables}
             columns={PendingpayablesColumn}
             pagination={false}
             size='small'
