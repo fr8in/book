@@ -29,7 +29,6 @@ const DashboardContainer = (props) => {
 
   const variables = {
     now: moment(date).format('YYYY-MM-DD'),
-    date:moment(date).format('YYYY-MM-DD'),
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
     branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
     cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
