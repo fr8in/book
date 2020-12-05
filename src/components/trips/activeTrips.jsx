@@ -165,12 +165,12 @@ const Trips = (props) => {
       title: 'Destination',
       render: (text, record) => {
         const destination = get(record, 'destination.name', null)
-        return <Truncate data={destination} length={8} />
+        return <Truncate data={destination} length={10} />
       },
       sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
       width: '9%'
     },
-    {
+    !props.intransit ? {
       title: 'TAT',
       render: (text, record) => {
         const status = get(record, 'trip_status.name', null)
@@ -182,12 +182,13 @@ const Trips = (props) => {
       },
       defaultSortOrder: 'descend',
       width: '4%'
-    },
+    } : {},
     props.intransit ? {
-      title: 'Delay',
+      title: 'TAT',
       dataIndex: 'delay',
       width: '5%',
-      sorter: (a, b) => (a.delay > b.delay ? 1 : -1)
+      sorter: (a, b) => (a.delay > b.delay ? 1 : -1),
+      defaultSortOrder: 'descend'
     } : {},
     props.intransit ? {
       title: 'ETA',
