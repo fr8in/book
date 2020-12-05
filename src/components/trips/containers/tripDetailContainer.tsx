@@ -24,6 +24,8 @@ import Loading from '../../common/loading'
 import u from '../../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 import userContext from '../../../lib/userContaxt'
+import Incentive from '../scratchCardInsentive'
+import IncentiveTable from '../scratchCardIncentivetable'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
@@ -187,6 +189,12 @@ const TripDetailContainer = (props) => {
                         <Panel header='Credit/Debit Note' key='1'>
                           <CreditNote trip_id={trip_id} trip_info={trip_info} />
                           <CreditNoteTable trip_id={trip_id} trip_info={trip_info} setCreditNoteRefetch={setCreditNoteRefetch} />
+                        </Panel>
+                      </Collapse>
+                      <Collapse accordion className='small mt10'>
+                        <Panel header='Incentive' key='1'>
+                          <Incentive trip_id={trip_id} trip_info={trip_info} />
+                          <IncentiveTable trip_id={trip_id} trip_info={trip_info}  />
                         </Panel>
                       </Collapse>
                     </TabPane>
