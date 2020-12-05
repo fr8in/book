@@ -8,6 +8,7 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import moment from 'moment'
 import u from '../../lib/util'
+import LinkComp from '../common/link'
 
 const APPROVED_REJECTED_SUBSCRIPTION = gql`
 subscription customerTransfertoBank_history($cardcode:String) {
@@ -22,6 +23,15 @@ subscription customerTransfertoBank_history($cardcode:String) {
     approved_by
     approved_on
     status
+    account_no
+    account_holder_name
+    customers{
+      id
+      name
+      last_comment{
+        description
+      }
+    }
   }
 }`
 
@@ -60,21 +70,37 @@ console.log('aa',data)
 console.log('bb',approvedAndRejected)
   const ApprovalPending = [
     {
-      title: 'Cardcode',
-      dataIndex: 'card_code',
-      key: 'card_code',
-      width: '10%',
+      title: 'Customer Name',
+      width: '15%',
+      render: (text, record) => {
+        const cardcode = get(record, 'card_code', null)
+        const name = get(record, 'customers[0].name', null)
+        return (
+          <LinkComp type='customers' data={name} id={cardcode} length={20} blank />
+        )
+      }
     },
     {
       title: 'Trip Id',
       dataIndex: 'load_id',
       key:'load_id',
-      width: '10%',
+      width: '7%',
     },
     {
       title: 'Amount ₹',
       dataIndex: 'amount',
+      width: '7%',
+    },
+    {
+      title: 'Beneficiary Name',
+      dataIndex: 'account_holder_name',
       width: '10%',
+      render: (text, record) => <Truncate data={text} length={10} />,
+    },
+    {
+      title: 'Beneficiary Acc.No',
+      dataIndex: 'account_no',
+      width: '13%',
     },
     {
       title: 'Request By ',

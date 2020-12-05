@@ -23,13 +23,16 @@ import isEmpty from 'lodash/isEmpty'
 const TRANSFER_SUBSCRIPTION = gql`
 subscription customerWalletOutgoing{
   customer_wallet_outgoing(where:{status:{_eq:"PENDING"}}){
-      id
-      card_code
-      load_id
-      amount
-      created_by
-      created_on
-      payment_status
+    id
+    card_code
+    load_id
+    amount
+    created_by
+    created_on
+    payment_status
+    account_no
+    account_holder_name
+    ifsc_code
 customers{
   id
   name
@@ -77,23 +80,15 @@ const TransfertoBank = () => {
 
   const ApprovalPending = [
     {
-      title: 'Cardcode',
-      dataIndex: 'card_code',
-      key: 'card_code',
-      width: '10%',
+      title: 'Customer Name',
+      width: '20%',
       render: (text, record) => {
         const cardcode = get(record, 'card_code', null)
+        const name = get(record, 'customers[0].name', null)
         return (
-          <LinkComp type='customers' data={cardcode} id={cardcode} length={12} blank />
+          <LinkComp type='customers' data={name} id={cardcode} length={30} blank />
         )
       }
-    },
-    {
-      title: 'customer Name',
-      // dataIndex: 'customer',
-      // key: 'customer',
-      width: '20%',
-      render: (text, record) => record.customers[0].name
     },
     {
       title: 'Trip Id',
@@ -166,7 +161,7 @@ const TransfertoBank = () => {
                 danger
                 icon={<CloseOutlined />}
                 onClick={() =>
-                  handleShow('approveVisible', 'Rejected', 'approveData', record.id)}
+                  handleShow('approveVisible', 'Rejected', 'approveData', record)}
               />) : null}
           </Tooltip>
         </Space>

@@ -1,16 +1,16 @@
-import { Modal, Form, Input, message, Button } from 'antd'
+import { Modal, Form, Input, message, Button,Row,Col,Radio } from 'antd'
 import { useState, useContext } from 'react'
 import { gql, useMutation,useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 import Loading from '../common/loading'
 
-// const GET_TOKEN = gql`
-// query get_token (
-//   $customer_id: Int!
-// ){
-//   token(ref_id:$customer_id,process:"MAMUL_TRANSFER")
-// }`
+const GET_TOKEN = gql`
+query get_token (
+  $customer_id: Int!
+){
+  token(ref_id:$customer_id,process:"MAMUL_TRANSFER")
+}`
 
 const REJECT_BANK_TRANSFER_MUTATION = gql`
 mutation reject_customer_mamul_transfer ($id:Int,$approved_by:String,$approved_on:timestamp) {
@@ -37,12 +37,12 @@ const Approve = (props) => {
   const customer_id  = get (item_id,'customers[0].id',null)
   console.log('id',customer_id)
 
-  // const { loading, data, error } = useQuery(GET_TOKEN, { variables: { customer_id }, fetchPolicy: 'network-only' })
+  const { loading, data, error } = useQuery(GET_TOKEN, { variables: { customer_id }, fetchPolicy: 'network-only' })
 
-  // if (error) {
-  //   message.error(error.toString())
-  //   onHide()
-  // }
+  if (error) {
+    message.error(error.toString())
+    onHide()
+  }
 
   const [rejectTransfer] = useMutation(
     REJECT_BANK_TRANSFER_MUTATION, {
@@ -74,8 +74,8 @@ const Approve = (props) => {
       setDisableButton(true)
       transferApproval({
         variables: {
-          // token: data.token,
-          // customer_id,
+          token: data.token,
+          customer_id,
           id: item_id.id,
           approved_by: context.email,
           approved_on: new Date().toISOString(),
@@ -87,7 +87,7 @@ const Approve = (props) => {
       setDisableButton(true)
       rejectTransfer({
         variables: {
-          id: item_id,
+          id: item_id.id,
           approved_by: context.email,
           approved_on: new Date().toISOString()
         }
@@ -102,16 +102,100 @@ const Approve = (props) => {
       onCancel={onHide}
       footer={null}
     >
-      <Form layout='vertical' onFinish={onSubmit} >
-        <Form.Item label='Remarks' name='remarks' extra={`Amount: ₹${item_id.amount}`} >
+      <Form layout='vertical'  onFinish={onSubmit}>
+        <Row gutter={10}>
+          <Col xs={12}>
+            <Form.Item
+              label='Account Name'
+              name='account_name'
+              initialValue={item_id.account_holder_name}
+              rules={[{ required: true, message: 'Account name required!' }]}
+            >
+              <Input
+                placeholder='Account Name'
+                disabled
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={12}>
+            <Form.Item
+              label='Account Number'
+              name='account_number'
+              initialValue={item_id.account_no}
+              rules={[{ required: true, message: 'Account number required!' }]}
+            >
+              <Input
+                placeholder='Select Account Number'
+                disabled
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={10}>
+          <Col xs={8}>
+            <Form.Item
+              label='IFSC Code'
+              name='ifsc'
+              initialValue={item_id.ifsc_code}
+              rules={[{ required: true, message: 'IFSC required!' }]}
+              // extra={get(bank_detail, 'bank', null)}
+            >
+              <Input
+                placeholder='IFSC Code'
+                disabled
+                // onBlur={validateIFSC}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={8}>
+            <Form.Item
+              label='Amount'
+              name='amount'
+              initialValue={item_id.amount}
+              rules={[{ required: true, message: 'Amount required!' }]}
+            >
+              <Input
+                placeholder='Amount'
+                disabled
+                type='number'
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={8}>
+            <Form.Item
+              label='Trip Id'
+              name='trip_id'
+              initialValue={item_id.load_id}
+              rules={[{ required: true, message: 'Trip id required!' }]}
+            >
+              <Input
+                type='number'
+                placeholder='Trip id'
+                disabled
+              />
+            </Form.Item>
+          </Col>
+        </Row>  
+        <Row>
+          {/* <Col flex='auto' className='text-left'>
+            <Form.Item name='mamul_include' >
+              <Radio.Group>
+                <Radio value='INCLUDE' disabled>Include Mamul</Radio>
+                <Radio value='NOT_INCLUDE' disabled>Include Special Mamul(System Mamul won't be reduced)</Radio>
+              </Radio.Group>
+            </Form.Item>
+          </Col> */}
+         
+          <Form.Item label='Remarks' name='remarks' >
           <Input placeholder='Remarks' />
-        </Form.Item>
-        <Form.Item className='text-right'>
-          <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>Submit</Button>
-        </Form.Item>
+        </Form.Item >
+        </Row>
+          <Form.Item className='text-right'>
+            <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>Submit</Button>
+         </Form.Item>
       </Form>
-      {/* {(loading || mutationLoading) &&
-        <Loading fixed />} */}
+       {(loading || mutationLoading) &&
+        <Loading fixed />} 
     </Modal>
   )
 }
