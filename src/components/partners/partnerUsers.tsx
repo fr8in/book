@@ -1,5 +1,5 @@
+import { Radio, Button, Table, Modal, Form, Row, Col, Input, message, Popconfirm } from 'antd'
 
-import { Modal, Button, Row, Input, Col, Table, Popconfirm, Form, message } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 import { useSubscription, useMutation, gql } from '@apollo/client'
 import { useState, useContext } from 'react'
@@ -18,7 +18,6 @@ subscription partner_user($cardcode: String){
     }
   }
 }`
-
 const INSERT_PARTNER_USERS_MUTATION = gql`
 mutation upsert_partner_mobile($mobile: String!, $partner_id: Int!, $is_primary: Boolean!, $updated_by: String!) {
   upsert_partner_mobile(mobile_no: $mobile, partner_id: $partner_id, is_primary: $is_primary, updated_by: $updated_by) {
@@ -42,14 +41,25 @@ mutation partner_user_delete($id:Int!, $description: String, $topic: String, $cr
     }
   }
 }`
-
-const PartnerUsers = (props) => {
+const UPDATE_IS_ADMIN_USER = gql`
+mutation partner_user($partner_id:Int,$mobile_id:Int){
+  update:update_partner_user(where:{partner_id:{_eq:$partner_id},is_admin:{_eq:true}},_set:{is_admin:false}){
+    returning{
+      id
+    }
+  }
+  insert:update_partner_user(where:{partner_id:{_eq:$partner_id},id:{_eq:$mobile_id}},_set:{is_admin:true}){
+    returning {
+      id
+    }
+  }
+}
+`
+const PartnerUser = (props) => {
   const { visible, partner, onHide, title } = props
   const context = useContext(userContext)
-
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
-
   const { loading, error, data } = useSubscription(
     PARTNER_USERS_SUBSCRIPTION,
     {
@@ -75,7 +85,6 @@ const PartnerUsers = (props) => {
       }
     }
   )
-
   const [deletePartnerUser] = useMutation(
     DELETE_PARTNER_USER_MUTATION,
     {
@@ -83,8 +92,16 @@ const PartnerUsers = (props) => {
       onCompleted () { message.success('Updated!!') }
     }
   )
-
-  console.log('PartnerUsers error', error)
+  const [is_admin_update] = useMutation(
+    UPDATE_IS_ADMIN_USER,
+    {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() {
+        message.success('Updated!!')
+        onHide()
+      }
+    }
+  )
   let _data = {}
   if (!loading) {
     _data = data
@@ -114,13 +131,29 @@ const PartnerUsers = (props) => {
       }
     })
   }
+  const onIsAdminChange = ( mobile_id) => {
+    is_admin_update({
+      variables: {
+        partner_id: partner.id,
+        mobile_id: mobile_id
+      }
+    })
+  }
 
-  const partnerUserColumn = [
+  const partnerUser = [
     {
-      title: 'Mobile No',
-      dataIndex: 'mobile',
-      key: 'mobile',
-      render:(text,record) =>  <Phone number={record.mobile} />
+      title: 'Mobile',
+      render: (text, record) => {
+
+        return (
+          <Radio
+            checked={record.is_admin}
+            onChange={() => onIsAdminChange(record.id)}
+          >
+            <Phone number={record.mobile} />
+          </Radio>
+        )
+      }
     },
     {
       title: 'Action',
@@ -151,14 +184,6 @@ const PartnerUsers = (props) => {
         </Button>
       ]}
     >
-      <Table
-        columns={partnerUserColumn}
-        dataSource={partner_users}
-        className='withAction'
-        rowKey={record => record.id}
-        size='small'
-        pagination={false}
-      />
       <Form form={form} onFinish={onAddUser}>
         <Row className='mt10' gutter={10}>
           <Col flex='auto'>
@@ -171,8 +196,15 @@ const PartnerUsers = (props) => {
           </Col>
         </Row>
       </Form>
+      <Table
+        columns={partnerUser}
+        dataSource={partner_users}
+        size='small'
+        pagination={false}
+        scroll={{ x: 420 }}
+        rowKey={(record) => record.id}
+      />
     </Modal>
   )
 }
-
-export default PartnerUsers
+export default PartnerUser
