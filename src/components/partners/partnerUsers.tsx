@@ -1,5 +1,4 @@
 import { Radio, Button, Table, Modal, Form, Row, Col, Input, message, Popconfirm } from 'antd'
-
 import { DeleteOutlined } from '@ant-design/icons'
 import { useSubscription, useMutation, gql } from '@apollo/client'
 import { useState, useContext } from 'react'
@@ -41,6 +40,7 @@ mutation partner_user_delete($id:Int!, $description: String, $topic: String, $cr
     }
   }
 }`
+
 const UPDATE_IS_ADMIN_USER = gql`
 mutation partner_user($partner_id:Int,$mobile_id:Int){
   update:update_partner_user(where:{partner_id:{_eq:$partner_id},is_admin:{_eq:true}},_set:{is_admin:false}){
@@ -55,11 +55,12 @@ mutation partner_user($partner_id:Int,$mobile_id:Int){
   }
 }
 `
-const PartnerUser = (props) => {
+const PartnerUsers = (props) => {
   const { visible, partner, onHide, title } = props
   const context = useContext(userContext)
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
+
   const { loading, error, data } = useSubscription(
     PARTNER_USERS_SUBSCRIPTION,
     {
@@ -67,14 +68,21 @@ const PartnerUser = (props) => {
     }
   )
 
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const partner_users = get(_data, 'partner[0].partner_users', [])
+
+
   const [insertPartnerUser] = useMutation(
     INSERT_PARTNER_USERS_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         setDisableButton(false)
         message.error(error.toString())
       },
-      onCompleted (data) {
+      onCompleted(data) {
         setDisableButton(false)
         const status = get(data, 'upsert_partner_mobile.status', null)
         const description = get(data, 'upsert_partner_mobile.description', null)
@@ -88,8 +96,8 @@ const PartnerUser = (props) => {
   const [deletePartnerUser] = useMutation(
     DELETE_PARTNER_USER_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
   const [is_admin_update] = useMutation(
@@ -102,11 +110,6 @@ const PartnerUser = (props) => {
       }
     }
   )
-  let _data = {}
-  if (!loading) {
-    _data = data
-  }
-  const partner_users = get(_data, 'partner[0].partner_users', [])
 
   const onAddUser = (form) => {
     setDisableButton(true)
@@ -131,7 +134,7 @@ const PartnerUser = (props) => {
       }
     })
   }
-  const onIsAdminChange = ( mobile_id) => {
+  const onIsAdminChange = (mobile_id) => {
     is_admin_update({
       variables: {
         partner_id: partner.id,
@@ -207,4 +210,4 @@ const PartnerUser = (props) => {
     </Modal>
   )
 }
-export default PartnerUser
+export default PartnerUsers
