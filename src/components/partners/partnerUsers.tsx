@@ -5,6 +5,7 @@ import { useState, useContext } from 'react'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
 import Phone from '../common/phone'
+import u from '../../lib/util'
 
 const PARTNER_USERS_SUBSCRIPTION = gql`
 subscription partner_user($cardcode: String){
@@ -191,7 +192,12 @@ const PartnerUsers = (props) => {
         <Row className='mt10' gutter={10}>
           <Col flex='auto'>
             <Form.Item name='mobile' initialValue=''>
-              <Input type='number' placeholder='Enter Mobile Number' />
+              <Input 
+                 type='number' 
+                 placeholder='Enter Mobile Number' 
+                 min={0}
+                 maxLength={10}
+                 onInput={u.handleLengthCheck}/>
             </Form.Item>
           </Col>
           <Col flex='90px'>
