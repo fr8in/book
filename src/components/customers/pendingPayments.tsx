@@ -3,13 +3,11 @@ import { Row, Col, Alert } from 'antd'
 import LabelWithData from '../common/labelWithData'
 import get from 'lodash/get'
 import { InfoCircleOutlined } from '@ant-design/icons'
-import u from '../../lib/util'
 
 const PendingPayments = (props) => {
   const { customer_info } = props
   const customer_exception = get(customer_info, 'customer_exception', [])
   const receivable_ratio = get(customer_exception, 'receipts_and_receivables_ratio', null)
-  const advancePending = get(customer_exception, 'total_advance_pending_amount', null)
   
   return (
     <>
@@ -17,7 +15,9 @@ const PendingPayments = (props) => {
         <Col xs={24} sm={12} md={7}>
           <LabelWithData
             label='Advance Pending'
-            data={u.convertToNumber(advancePending)}
+            data={
+              get(customer_exception, 'total_advance_pending_amount', null)
+            }
             mdSpan={4}
             smSpan={8}
             xsSpan={12}
