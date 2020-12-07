@@ -19,7 +19,7 @@ import DestinationOutDate from './tripDestinationOut'
 import ViewFile from '../common/viewFile'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
-import { gql, useMutation, useLazyQuery } from '@apollo/client'
+import { gql, useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import u from '../../lib/util'
 
 import userContext from '../../lib/userContaxt'
@@ -37,6 +37,10 @@ query loading_memo_pdf($id:Int!){
   trip(where:{id:{_eq:$id}}) {
     loading_memo
   }
+}`
+
+const GET_TOKEN = gql`query getToken($ref_id: Int!, $process: String!) {
+  token(ref_id: $ref_id, process: $process)
 }`
 
 const REMOVE_SIN_MUTATION = gql`
@@ -80,8 +84,8 @@ mutation remove_destination_out($destination_out:timestamp,$id:Int!,$updated_by:
 }`
 
 const PROCESS_ADVANCE_MUTATION = gql`
-mutation partner_advance ($tripId: Int!, $createdBy: String!, $customer_confirmation: Boolean!) {
-  partner_advance(trip_id: $tripId, created_by: $createdBy, customer_confirmation: $customer_confirmation) {
+mutation partner_advance ($tripId: Int!, $createdBy: String!, $customer_confirmation: Boolean!,$token:String!) {
+  partner_advance(trip_id: $tripId, created_by: $createdBy, customer_confirmation: $customer_confirmation,token:$token) {
     description
     status
   }
@@ -95,11 +99,18 @@ const TripTime = (props) => {
   const context = useContext(userContext)
   const { role } = u
   const po_delete_access = [role.admin, role.rm]
-  const access = (trip_info.loaded === 'No') || u.is_roles(po_delete_access,context) 
+  const access = (trip_info.loaded === 'No') || u.is_roles(po_delete_access, context)
   const [form] = Form.useForm()
 
   const [getWord, { loading, data, error, called }] = useLazyQuery(GET_WORD)
   const [getPdf, { loading: pdfloading, data: pdfdata, error: pdferror, called: pdfcalled }] = useLazyQuery(GET_PDF)
+  const { data: tokenData, loading: tokenQueryLoading, refetch } = useQuery(GET_TOKEN, {
+    fetchPolicy: "network-only",
+    variables: {
+      ref_id: trip_info.id,
+      process: "ADVANCE"
+    }
+  })
 
   console.log('tripTime error', error)
   console.log('tripTime error', pdferror)
@@ -112,6 +123,12 @@ const TripTime = (props) => {
   let _pdfdata = {}
   if (!pdfloading) {
     _pdfdata = pdfdata
+  }
+
+  console.log("tokenQueryLoading", tokenQueryLoading)
+  let token = null
+  if (!tokenQueryLoading) {
+    token = tokenData.token
   }
 
   let word_url = get(_data, 'trip[0].loading_memo', [])
@@ -144,11 +161,11 @@ const TripTime = (props) => {
   const [removeSin] = useMutation(
     REMOVE_SIN_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         setDisableBtn(false)
         message.error(error.toString())
       },
-      onCompleted () {
+      onCompleted() {
         setDisableBtn(false)
         message.success('Updated!!')
         form.resetFields()
@@ -158,11 +175,11 @@ const TripTime = (props) => {
   const [removeSout] = useMutation(
     REMOVE_SOUT_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         setDisableBtn(false)
         message.error(error.toString())
       },
-      onCompleted () {
+      onCompleted() {
         setDisableBtn(false)
         message.success('Updated!!')
         form.resetFields()
@@ -173,11 +190,11 @@ const TripTime = (props) => {
   const [removeDin] = useMutation(
     REMOVE_DIN_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         setDisableBtn(false)
         message.error(error.toString())
       },
-      onCompleted () {
+      onCompleted() {
         setDisableBtn(false)
         message.success('Updated!!')
         form.resetFields()
@@ -187,11 +204,11 @@ const TripTime = (props) => {
   const [removeDout] = useMutation(
     REMOVE_DOUT_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         setDisableBtn(false)
         message.error(error.toString())
       },
-      onCompleted () {
+      onCompleted() {
         setDisableBtn(false)
         message.success('Updated!!')
         form.resetFields()
@@ -202,11 +219,11 @@ const TripTime = (props) => {
   const [processAdvance] = useMutation(
     PROCESS_ADVANCE_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         message.error(error.toString())
         setDisableBtn(false)
       },
-      onCompleted (data) {
+      onCompleted(data) {
         setDisableBtn(false)
         const status = get(data, 'partner_advance.status', null)
         const description = get(data, 'partner_advance.description', null)
@@ -215,6 +232,9 @@ const TripTime = (props) => {
         } else {
           message.error(description)
         }
+        setTimeout(() => {
+          refetch()
+        }, 5000)
       }
     }
   )
@@ -265,7 +285,8 @@ const TripTime = (props) => {
       variables: {
         tripId: trip_info.id,
         createdBy: context.email,
-        customer_confirmation: customerConfirm || false
+        customer_confirmation: customerConfirm || false,
+        token: token
       }
     })
   }
@@ -352,7 +373,7 @@ const TripTime = (props) => {
             <Col xs={24}>
               <Space>
                 {po_delete &&
-                  <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')} disabled= {(trip_info.loaded === 'Yes') ? !access:null|| lock}>PO</Button>}
+                  <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')} disabled={(trip_info.loaded === 'Yes') ? !access : null || lock}>PO</Button>}
                 {process_advance &&
                   <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>}
                 {remove_sin &&
