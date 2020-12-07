@@ -21,8 +21,8 @@ mutation reject_customer_mamul_transfer ($id:Int,$approved_by:String,$approved_o
   `
 
 const APPROVAL_BANK_TRANSFER_MUTATION = gql`
-mutation approvecustomermamultransfer ($approved_by:String!,$id:Int!,$approved_amount:Int!,$status:String,$token:String!,$process:String!){
-  approve_customer_mamul_transfer(approved_by:$approved_by,id:$id,approved_amount:$approved_amount,status:$status,token:$token,process:$process ){
+mutation approvecustomermamultransfer ($approved_by:String!,$id:Int!,$approved_amount:Int!,$token:String!,$process:String!){
+  approve_customer_mamul_transfer(approved_by:$approved_by,id:$id,approved_amount:$approved_amount,token:$token,process:$process ){
     description
     status
   }
@@ -70,6 +70,7 @@ const Approve = (props) => {
         } else {
           message.error(description)
           setDisableButton(false)
+          onHide()
         }
       }
     })
@@ -80,12 +81,9 @@ const Approve = (props) => {
       transferApproval({
         variables: {
           token: data.token,
-          customer_id,
           id: item_id.id,
           approved_by: context.email,
-          approved_on: new Date().toISOString(),
           approved_amount: item_id.amount,
-          status:"APPROVED",
           process:"MAMUL_TRANSFER"
         }
       })
