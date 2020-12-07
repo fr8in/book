@@ -66,7 +66,7 @@ const CreateAdditionalAdvance = (props) => {
     fetchPolicy: "network-only",
     variables: {
       ref_id: trip_info.id,
-      process: radioValue === 'WALLET' ? "ADDITIONAL_ADVANCE_WALLET_TRACK" : "ADDITIONAL_ADVANCE_BANK_TRACK"
+      process: "ADDITIONAL_ADVANCE"
     }
   })
 
