@@ -61,6 +61,8 @@ const PartnerDetailContainer = (props) => {
   const top_up_access = u.is_roles(_top_up_role, context)
   const _wallet_role = [role.admin]
   const wallet_activate_role = u.is_roles(_wallet_role, context)
+  const year = new Date().getFullYear()
+  const month = new Date().getMonth() + 1
 
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,
@@ -71,7 +73,9 @@ const PartnerDetailContainer = (props) => {
         ongoing: on_going,
         pod: pod,
         invoiced: invoiced,
-        paid: paid  
+        paid: paid,
+        year: year,
+        month: month 
       }
     }
   )

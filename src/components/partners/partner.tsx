@@ -12,7 +12,7 @@ const PartnerInfo = (props) => {
   const usersInitial = { partner: [], title: '', visible: false }
   const { object, handleHide, handleShow } = useShowHidewithRecord(usersInitial)
 
-  const membership = get(partner, 'partner_memberships[0].membership_type.id', null)
+  const partner_membership = get(partner, 'partner_membership_targets[0]', null)
   const number = get(partner, 'partner_users[0].mobile', null)
   const partner_id = get(partner, 'id', null)
   const partnerKycStatus = get(partner, 'partner_status.id', null)
@@ -21,15 +21,7 @@ const PartnerInfo = (props) => {
   return (
     <>
       <Space align='center'>
-       <Phone  number={number} icon={true}/>
-        <Tooltip title={u.membership(membership)}>
-          <CrownFilled
-            style={{
-              color: u.membership_color(membership),
-              fontSize: '18px'
-            }}
-          />
-        </Tooltip>
+        <Phone number={number} icon={true} />
         <Tooltip title={partnerStatusName}>
           <CheckCircleOutlined
             style={{
@@ -52,6 +44,9 @@ const PartnerInfo = (props) => {
           icon={<UserOutlined />}
           onClick={() => handleShow('visible', partner.name, 'partner', partner)}
         />
+        <h4>{`A:${u.convertToLakhs(get(partner_membership, 'actual.gmv'))}
+              G:${u.convertToLakhs(get(partner_membership, 'gold', 0))}
+              P:${u.convertToLakhs(get(partner_membership, 'platinum', 0))}`}</h4>
       </Space>
 
       {object.visible &&
