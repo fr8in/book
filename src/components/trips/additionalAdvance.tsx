@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import { Table } from 'antd'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import moment from 'moment'
 
-const ADDITIONAL_ADVANCE_QUERY = gql`query additional_advance($trip_id: Int_comparison_exp!) {
+const ADDITIONAL_ADVANCE_QUERY = gql`subscription additional_advance($trip_id: Int_comparison_exp!) {
   advance_additional_advance(where: {trip_id: $trip_id}) {
     id
     trip_id
@@ -20,11 +20,9 @@ const ADDITIONAL_ADVANCE_QUERY = gql`query additional_advance($trip_id: Int_comp
 
 const AdditionalAdvance = (props) => {
   const { loaded, ad_trip_id, advanceRefetch, setAdvanceRefetch } = props
-  const { loading, error, data, refetch } = useQuery(
+  const { loading, error, data } = useSubscription(
     ADDITIONAL_ADVANCE_QUERY, {
-    variables: { trip_id: { _eq: ad_trip_id } },
-    fetchPolicy: 'cache-and-network',
-    notifyOnNetworkStatusChange: true
+    variables: { trip_id: { _eq: ad_trip_id } }
   })
 
   console.log('Additional advance error', error, data)
@@ -36,7 +34,6 @@ const AdditionalAdvance = (props) => {
 
   useEffect(() => {
     if (advanceRefetch) {
-      refetch()
       setAdvanceRefetch(false)
     }
   }, [advanceRefetch])
