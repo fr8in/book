@@ -200,7 +200,7 @@ const PartnerDetailContainer = (props) => {
                                 <Document partnerInfo={partner_info} />
                               </TabPane>
                               <TabPane tab='Fuel Detail' key='4'>
-                                <PartnerFuelDetail partner_id={partner_info.id} />
+                                <PartnerFuelDetail partner_Info={partner_info} />
                               </TabPane>
                               <TabPane tab='FasTag' key='5'>
                                 <FasTags partner_id={partner_info.id} />
