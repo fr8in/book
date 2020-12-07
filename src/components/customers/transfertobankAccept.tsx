@@ -60,10 +60,17 @@ const Approve = (props) => {
         setDisableButton(false)
         message.error(error.toString())
       },
-      onCompleted () {
-        setDisableButton(false)
-        message.success('Updated!!')
-        onHide()
+      onCompleted (data) {
+        const status = get(data, 'approve_customer_mamul_transfer.status', null)
+        const description = get(data, 'approve_customer_mamul_transfer.description', null)
+        if (status === 'OK') {
+          setDisableButton(false)
+          message.success(description || 'Approved!')
+          onHide()
+        } else {
+          message.error(description)
+          setDisableButton(false)
+        }
       }
     })
 
@@ -168,10 +175,9 @@ const Approve = (props) => {
             </Form.Item>
           </Col>
         </Row>  
-          { title === 'Reject' &&
           <Form.Item label='Remarks' name='remarks' >
           <Input placeholder='Remarks' />
-        </Form.Item >}
+        </Form.Item >
           <Form.Item className='text-right'>
             <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>Submit</Button>
          </Form.Item>

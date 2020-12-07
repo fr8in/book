@@ -125,7 +125,7 @@ const Transfer = (props) => {
       setDisableButton(false)
       message.error('Transaction Amount is Greater Than ₹5000')
     } else if( count !== 1){
-      message.error('Customer Not Match with this Trip')
+      message.error('Trip not releated to customer')
     }
     else if (amount > 1) {
       setDisableButton(true)
