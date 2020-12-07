@@ -48,6 +48,16 @@ query ifsc_validation($ifsc: String!){
   }
 }`
 
+ const trip_count = gql`query trip_aggregate($trip_id: Int, $customer_id: Int) {
+  trip_aggregate(where: {id: {_eq: $trip_id}, destination_in: {_is_null: false}, customer: {id: {_eq: $customer_id}}}) {
+    aggregate {
+      count
+    }
+  }
+}`
+
+
+
 const Transfer = (props) => {
   const { visible, onHide, cardcode, customer_id, walletcode, wallet_balance } = props
 
@@ -71,6 +81,8 @@ const Transfer = (props) => {
     }
   )
 
+  const [gettripDetail, { loading: trip_loading, data: trip_data, error: trip_error }] = useLazyQuery(trip_count)
+
   const [customer_mamul_transfer] = useMutation(
     CUSTOMER_MAMUL_TRANSFER,
     {
@@ -81,8 +93,7 @@ const Transfer = (props) => {
       onCompleted (data) {
         setDisableButton(false)
         message.success('Processed!')
-        onHide()
-        
+        onHide() 
       }
     }
   )
@@ -91,19 +102,32 @@ const Transfer = (props) => {
     getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc') } })
   }
 
+  const validateTrip = () => {
+    gettripDetail ({variables:{trip_id:form.getFieldValue('trip_id'),customer_id:customer_id}})
+  }
 
+ 
   let _data = {}
   if (!loading) {
     _data = data
   }
 
+  let _trip_data = {}
+  if (!trip_loading) {
+    _trip_data = trip_data
+  }
   const bank_detail = get(_data, 'bank_detail', null)
 
+  const count = get (_trip_data,'trip_aggregate.aggregate.count',null)
+ 
   const onSubmit = (form) => {
     if ( amount > 5000 ){
       setDisableButton(false)
       message.error('Transaction Amount is Greater Than ₹5000')
-    } else if (amount > 0) {
+    } else if( count !== 1){
+      message.error('Customer Not Match with this Trip')
+    }
+    else if (amount > 1) {
       setDisableButton(true)
       customer_mamul_transfer({
         variables: {
@@ -251,6 +275,7 @@ const Transfer = (props) => {
                 type='number'
                 placeholder='Trip id'
                 disabled={false}
+                onChange={validateTrip}
               />
             </Form.Item>
           </Col>

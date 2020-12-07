@@ -9,8 +9,8 @@ import { useState, useEffect, useContext } from 'react'
 import Truncate from '../common/truncate'
 import Link from 'next/link'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
-import Comment from '../customers/customerComment'
-import Approve from '../customers/transfertobankAccept'
+import Comment from './customerComment'
+import Approve from './transfertobankAccept'
 import { gql, useQuery, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
@@ -119,15 +119,9 @@ const TransfertoBank = () => {
       width: '20%',
       render: (text, record) => {
         return text ? moment(text).format('DD-MMM-YY') : null
-      }
+      },
+      defaultSortOrder: 'descend'
     },
-    // {
-    //   title: 'Comment',
-    //   dataIndex: 'last_comment',
-    //   key: 'last_comment',
-    //   width: '11%',
-    //   render: (text, record) => <Truncate data={get(record, 'trip.last_comment.description', null)} length={15} />
-    // },
     {
       title: 'Action',
       width: '20%',
@@ -149,7 +143,7 @@ const TransfertoBank = () => {
                 className='btn-success'
                 icon={<CheckOutlined />}
                 onClick={() =>
-                  handleShow('approveVisible', 'Approved', 'approveData', record)}
+                  handleShow('approveVisible', 'Approve', 'approveData', record)}
               />) : null}
           </Tooltip>
           <Tooltip title='Decline'>
@@ -161,7 +155,7 @@ const TransfertoBank = () => {
                 danger
                 icon={<CloseOutlined />}
                 onClick={() =>
-                  handleShow('approveVisible', 'Rejected', 'approveData', record)}
+                  handleShow('approveVisible', 'Reject', 'approveData', record)}
               />) : null}
           </Tooltip>
         </Space>

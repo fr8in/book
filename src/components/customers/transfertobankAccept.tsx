@@ -21,8 +21,8 @@ mutation reject_customer_mamul_transfer ($id:Int,$approved_by:String,$approved_o
   `
 
 const APPROVAL_BANK_TRANSFER_MUTATION = gql`
-mutation approvecustomermamultransfer ($approved_by:String!,$id:Int!,$approved_amount:Int!,$status:String){
-  approve_customer_mamul_transfer(approved_by:$approved_by,id:$id,approved_amount:$approved_amount,status:$status){
+mutation approvecustomermamultransfer ($approved_by:String!,$id:Int!,$approved_amount:Int!,$status:String,$token:String!,$process:String!){
+  approve_customer_mamul_transfer(approved_by:$approved_by,id:$id,approved_amount:$approved_amount,status:$status,token:$token,process:$process ){
     description
     status
   }
@@ -30,13 +30,11 @@ mutation approvecustomermamultransfer ($approved_by:String!,$id:Int!,$approved_a
 
 const Approve = (props) => {
   const { visible, onHide, item_id, title } = props
-  console.log('ite,',item_id)
+ 
   const context = useContext(userContext)
   const [disableButton, setDisableButton] = useState(false)
-
   const customer_id  = get (item_id,'customers[0].id',null)
-  console.log('id',customer_id)
-
+  
   const { loading, data, error } = useQuery(GET_TOKEN, { variables: { customer_id }, fetchPolicy: 'network-only' })
 
   if (error) {
@@ -70,7 +68,7 @@ const Approve = (props) => {
     })
 
   const onSubmit = (form) => {
-     if (title === 'Approved') {
+     if (title === 'Approve') {
       setDisableButton(true)
       transferApproval({
         variables: {
@@ -80,7 +78,8 @@ const Approve = (props) => {
           approved_by: context.email,
           approved_on: new Date().toISOString(),
           approved_amount: item_id.amount,
-          status:"APPROVED"
+          status:"APPROVED",
+          process:"MAMUL_TRANSFER"
         }
       })
     } else {
@@ -112,7 +111,6 @@ const Approve = (props) => {
               rules={[{ required: true, message: 'Account name required!' }]}
             >
               <Input
-                placeholder='Account Name'
                 disabled
               />
             </Form.Item>
@@ -125,7 +123,6 @@ const Approve = (props) => {
               rules={[{ required: true, message: 'Account number required!' }]}
             >
               <Input
-                placeholder='Select Account Number'
                 disabled
               />
             </Form.Item>
@@ -138,12 +135,9 @@ const Approve = (props) => {
               name='ifsc'
               initialValue={item_id.ifsc_code}
               rules={[{ required: true, message: 'IFSC required!' }]}
-              // extra={get(bank_detail, 'bank', null)}
             >
               <Input
-                placeholder='IFSC Code'
                 disabled
-                // onBlur={validateIFSC}
               />
             </Form.Item>
           </Col>
@@ -155,7 +149,6 @@ const Approve = (props) => {
               rules={[{ required: true, message: 'Amount required!' }]}
             >
               <Input
-                placeholder='Amount'
                 disabled
                 type='number'
               />
@@ -170,26 +163,15 @@ const Approve = (props) => {
             >
               <Input
                 type='number'
-                placeholder='Trip id'
                 disabled
               />
             </Form.Item>
           </Col>
         </Row>  
-        <Row>
-          {/* <Col flex='auto' className='text-left'>
-            <Form.Item name='mamul_include' >
-              <Radio.Group>
-                <Radio value='INCLUDE' disabled>Include Mamul</Radio>
-                <Radio value='NOT_INCLUDE' disabled>Include Special Mamul(System Mamul won't be reduced)</Radio>
-              </Radio.Group>
-            </Form.Item>
-          </Col> */}
-         
+          { title === 'Reject' &&
           <Form.Item label='Remarks' name='remarks' >
           <Input placeholder='Remarks' />
-        </Form.Item >
-        </Row>
+        </Form.Item >}
           <Form.Item className='text-right'>
             <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>Submit</Button>
          </Form.Item>

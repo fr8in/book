@@ -24,6 +24,6 @@
     "src/components/partners/payables/iciciBankOutgoing.jsx",
     "src/components/branches/customerBranchEmployee.jsx", 
     "src/components/trips/onholdTrips.jsx", 
-    "src/components/trips/partnerTrips.jsx" 
+    "src/components/trips/partnerTrips.jsx", "src/components/customers/transferToBank.jsx" 
   ]
 }
