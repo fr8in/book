@@ -106,7 +106,7 @@ const PartnerFuelDetail = (props) => {
   const partner = get(_data, 'partner', [])
   const _partner = partner[0] ? partner[0] : { name: 'ID does not exist' }
   const fuel_card = get(_partner, 'fuel_card')
-console.log('fuel_card',fuel_card)
+
   return (
     <>{
       fuel_card ?
