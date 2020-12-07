@@ -2,7 +2,6 @@ import { Space, Button, Tooltip } from 'antd'
 import { CheckCircleOutlined, CrownFilled, UserOutlined } from '@ant-design/icons'
 import PartnerUsers from '../../components/partners/partnerUsers'
 import PartnerName from './partnerName'
-import PartnerUser from './partnerUserNumber'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import get from 'lodash/get'
 import u from '../../lib/util'
@@ -46,7 +45,7 @@ const PartnerInfo = (props) => {
           loading={loading}
         />
         <h4>{partner.cardcode}</h4>
-        <h4><PartnerUser mobile={number} loading={loading} id={partner_id} /></h4>
+        <h4>{number}</h4>
         <Button
           shape='circle'
           size='small'
