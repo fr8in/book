@@ -69,7 +69,11 @@ subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [Stri
       id
       name
     }
-    partner_users(limit: 1, where: {is_admin: {_eq: true}}) {
+    trucks(limit:1){
+      id
+      truck_no
+    }
+     partner_users(limit: 1, where: {is_admin: {_eq: true}}) {
       id
       mobile
     }
