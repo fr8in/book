@@ -3,9 +3,9 @@ import { Table, Tooltip, Input, Pagination, Checkbox, Button } from 'antd'
 import LinkComp from '../common/link'
 import moment from 'moment'
 import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
-import TripFeedBack from '../trips/tripFeedBack'
+import TripFeedBack from './tripFeedBack'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
-import PodReceiptAndDispatch from '../trips/podReceiptAndDispatch'
+import PodReceiptAndDispatch from './podReceiptAndDispatch'
 import get from 'lodash/get'
 import PartnerLink from '../common/PartnerLink'
 const TripsTracking = (props) => {
@@ -275,7 +275,8 @@ const TripsTracking = (props) => {
         console.log(trip_status.name)
         return status ? (tat(a) > tat(b) ? 1 : -1) : null
       },
-      width: '8%'
+      width: '8%',
+      defaultSortOrder:'descend'
     },
     {
       title: 'Comment',

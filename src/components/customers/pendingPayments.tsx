@@ -8,6 +8,7 @@ const PendingPayments = (props) => {
   const { customer_info } = props
   const customer_exception = get(customer_info, 'customer_exception', [])
   const receivable_ratio = get(customer_exception, 'receipts_and_receivables_ratio', null)
+  
   return (
     <>
       <Row>

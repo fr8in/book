@@ -126,8 +126,12 @@
   },
 
   shrinkText:(text,length) =>{
-
     return text && text.length > length? text.slice(0, length) + '...': text
+  },
+
+  convertToNumber:(value) =>{
+    const number = value ? value * 100000 :0
+    return number
   }
 }
 
