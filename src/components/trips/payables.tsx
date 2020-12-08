@@ -118,7 +118,7 @@ const Payables = (props) => {
         rowKey={record => record.id}
       />
       {
-        invoiced_at && pending_payable ?
+       (invoiced_at && pending_payable) != null ?
         <>
           <Row className='payableHead' gutter={6}>
             <Col xs={12}><b>Pending Payables</b></Col>
