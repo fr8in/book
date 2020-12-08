@@ -135,10 +135,10 @@ console.log("totalAmount,",totalAmount)
     if ( amount > 5000 ){
       setDisableButton(false)
       message.error('Transaction Amount is Greater Than ₹5000')
-    } else if (totalAmount > 5000){ message.error('Not Eligible For Transaction')}
-    else if( count !== 1){
+    } else if( count !== 1){
       message.error('Trip not releated to customer')
     }
+    else if (totalAmount > 5000){ message.error('Not Eligible For Transaction')}
     else if (amount > 1) {
       setDisableButton(true)
       customer_mamul_transfer({
