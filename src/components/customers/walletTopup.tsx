@@ -37,7 +37,7 @@ mutation customer_topup(
 }`
 
 const WalletTopup = (props) => {
-  const { visible, onHide, customer_id } = props
+  const { visible, onHide, customer_id, customer_incoming_refetch } = props
   const [search, setSearch] = useState(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
@@ -55,14 +55,17 @@ const WalletTopup = (props) => {
   const [customer_topup] = useMutation(
     CUSTOMER_TOPUP_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted (data) {
+      onError(error) { message.error(error.toString()) },
+      onCompleted(data) {
         const status = get(data, 'customer_topup.status', null)
         const description = get(data, 'customer_topup.description', null)
         if (status === 'OK') {
           message.success(description || 'Processed!')
           refetch()
           onHide()
+          if (customer_incoming_refetch) {
+            customer_incoming_refetch()
+          }
         } else (message.error(description))
       }
     }
@@ -113,7 +116,7 @@ const WalletTopup = (props) => {
       key: 'date',
       sorter: (a, b) => (a.date > b.date ? 1 : -1),
       width: '12%',
-      render:(text, record)=> text ? moment(parseInt(text)).format('DD-MMM-YY') : '-'
+      render: (text, record) => text ? moment(parseInt(text)).format('DD-MMM-YY') : '-'
     },
     {
       title: 'Payment Details',

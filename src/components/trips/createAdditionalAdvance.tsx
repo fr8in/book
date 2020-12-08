@@ -1,15 +1,26 @@
 import { useState, useContext } from 'react'
 import { Row, Col, Radio, Form, Input, Button, message, Popconfirm } from 'antd'
-import { gql, useMutation, useLazyQuery } from '@apollo/client'
+import { gql, useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 import u from '../../lib/util'
-import isEmpty from 'lodash/isEmpty'
 import sumBy from 'lodash/sumBy'
 
-const CREATE_ADDITIONAL_ADVANCE = gql`
-mutation create_additional_advance($input: AdditionalAdvanceInput) {
-  additional_advance(input: $input) {
+const GET_TOKEN = gql`query getToken($ref_id: Int!, $process: String!) {
+  token(ref_id: $ref_id, process: $process)
+}`
+
+const CREATE_ADDITIONAL_ADVANCE_WALLET = gql`
+mutation create_additional_advance($input: AdditionalAdvanceWalletInput) {
+  additional_advance_wallet(input: $input) {
+    status
+    description
+  }
+}`
+
+const CREATE_ADDITIONAL_ADVANCE_BANK = gql`
+mutation create_additional_advance($input: AdditionalAdvanceBankInput) {
+  additional_advance_bank(input: $input) {
     status
     description
   }
@@ -25,15 +36,15 @@ query ifsc_validation($ifsc: String!){
 }`
 
 const CreateAdditionalAdvance = (props) => {
-  const { trip_info, setAdvanceRefetch,lock } = props
+  const { trip_info, setAdvanceRefetch, lock } = props
 
   const [radioValue, setRadioValue] = useState('WALLET')
   const [disableBtn, setDisableBtn] = useState(false)
   const [form] = Form.useForm()
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.admin, role.rm, role.accounts_manager,role.bm]
-  const access = u.is_roles(edit_access,context)
+  const edit_access = [role.admin, role.rm, role.accounts_manager, role.bm]
+  const access = u.is_roles(edit_access, context)
   const partner_advance_percentage = trip_info.partner_price * 90 / 100
   const amount = parseInt(form.getFieldValue('amount'))
   const payments = (sumBy(trip_info.trip_payments, 'amount') + (amount ? amount : 0))
@@ -41,15 +52,23 @@ const CreateAdditionalAdvance = (props) => {
   const [getBankDetail, { loading, data, error }] = useLazyQuery(
     IFSC_VALIDATION,
     {
-      onError (error) {
+      onError(error) {
         message.error(`Invalid IFSC: ${error}`)
         form.resetFields(['ifsc'])
       },
-      onCompleted (data) {
+      onCompleted(data) {
         message.success(`Bank name: ${get(bank_detail, 'bank', '')}!!`)
       }
     }
   )
+
+  const { data: tokenData, loading: tokenLoading, refetch } = useQuery(GET_TOKEN, {
+    fetchPolicy: "network-only",
+    variables: {
+      ref_id: trip_info.id,
+      process: "ADDITIONAL_ADVANCE"
+    }
+  })
 
   const onRadioChange = (e) => {
     setRadioValue(e.target.value)
@@ -68,60 +87,86 @@ const CreateAdditionalAdvance = (props) => {
     _data = data
   }
 
+  let token = {}
+  if (!tokenLoading) {
+    token = tokenData ? tokenData.token : null
+  }
+
   const bank_detail = get(_data, 'bank_detail', null)
 
-  const [createAdditionalAdvance] = useMutation(
-    CREATE_ADDITIONAL_ADVANCE,
+  const [createAdditionalAdvanceWallet] = useMutation(
+    CREATE_ADDITIONAL_ADVANCE_WALLET,
     {
-      onError (error) { message.error(error.toString()); setDisableBtn(false) },
-      onCompleted (data) {
-        const status = get(data, 'additional_advance.status', null)
-        const description = get(data, 'additional_advance.description', null)
+      onError(error) { message.error(error.toString()); setDisableBtn(false) },
+      onCompleted(data) {
+        const status = get(data, 'additional_advance_wallet.status', null)
+        const description = get(data, 'additional_advance_wallet.description', null)
         if (status === 'OK') {
           setDisableBtn(false)
           setAdvanceRefetch(true)
           form.resetFields()
           message.success(description || 'Processed!')
         } else { (message.error(description)); setDisableBtn(false) }
+        setTimeout(() => {
+          refetch()
+        }, 5000)
+      }
+    }
+  )
+
+  const [createAdditionalAdvanceBank] = useMutation(
+    CREATE_ADDITIONAL_ADVANCE_BANK,
+    {
+      onError(error) { message.error(error.toString()); setDisableBtn(false) },
+      onCompleted(data) {
+        const status = get(data, 'additional_advance_bank.status', null)
+        const description = get(data, 'additional_advance_bank.description', null)
+        if (status === 'OK') {
+          setDisableBtn(false)
+          setAdvanceRefetch(true)
+          form.resetFields()
+          message.success(description || 'Processed!')
+        } else { (message.error(description)); setDisableBtn(false) }
+        setTimeout(() => {
+          refetch()
+        }, 5000)
       }
     }
   )
 
   const onSubmit = (form) => {
     setDisableBtn(true)
-    if(lock === true){
+    if (lock === true) {
       message.error('previous Transaction Pending')
       setDisableBtn(false)
     } else if (radioValue === 'WALLET') {
-      createAdditionalAdvance({
+      createAdditionalAdvanceWallet({
         variables: {
           input: {
             trip_id: trip_info.id,
-            truck_id: trip_info && trip_info.truck && trip_info.truck.id,
-            amount: parseFloat(form.amount),
-            wallet_code: trip_info && trip_info.partner && trip_info.partner.walletcode,
-            payment_mode: radioValue,
-            comment: form.comment,
-            created_by: context.email
-          }
-        }
-      })
-    } else {
-      createAdditionalAdvance({
-        variables: {
-          input: {
-            trip_id: trip_info.id,
-            truck_id: trip_info && trip_info.truck && trip_info.truck.id,
             amount: parseFloat(form.amount),
             wallet_code: trip_info && trip_info.partner && trip_info.partner.walletcode,
             payment_mode: radioValue,
             comment: form.comment,
             created_by: context.email,
-            bank_detail: {
-              account_name: form.account_name,
-              account_number: form.account_number,
-              ifsc_code: form.ifsc
-            }
+            token: token
+          }
+        }
+      })
+    } else {
+      createAdditionalAdvanceBank({
+        variables: {
+          input: {
+            trip_id: trip_info.id,
+            amount: parseFloat(form.amount),
+            wallet_code: trip_info && trip_info.partner && trip_info.partner.walletcode,
+            payment_mode: radioValue,
+            comment: form.comment,
+            created_by: context.email,
+            account_name: form.account_name,
+            account_number: form.account_number,
+            ifsc_code: form.ifsc,
+            token: token
           }
         }
       })
@@ -134,7 +179,7 @@ const CreateAdditionalAdvance = (props) => {
       message: 'Confirm acccount number required!'
     },
     ({ getFieldValue }) => ({
-      validator (rule, value) {
+      validator(rule, value) {
         if (!value || getFieldValue('account_number') === value) {
           return Promise.resolve()
         }
@@ -221,11 +266,11 @@ const CreateAdditionalAdvance = (props) => {
                     onConfirm={onConfirm}
                   >
                     <Form.Item label='save' className='hideLabel'>
-                    <Button type='primary' disabled={disable_adv_btn || (radioValue === 'BANK' && !form.getFieldValue('ifsc'))} loading={disableBtn} htmlType='submit'>Pay Now</Button>
+                      <Button type='primary' disabled={disable_adv_btn || (radioValue === 'BANK' && !form.getFieldValue('ifsc'))} loading={disableBtn || !token} htmlType='submit'>Pay Now</Button>
                     </Form.Item>
                   </Popconfirm> :
                   <Form.Item label='save' className='hideLabel'>
-                     <Button type='primary' disabled={disable_adv_btn || (radioValue === 'BANK' && !form.getFieldValue('ifsc'))} loading={disableBtn} htmlType='submit'>Pay Now</Button>
+                    <Button type='primary' disabled={disable_adv_btn || (radioValue === 'BANK' && !form.getFieldValue('ifsc'))} loading={disableBtn || !token} htmlType='submit'>Pay Now</Button>
                   </Form.Item>
               }
             </Col>

@@ -19,7 +19,7 @@ import DestinationOutDate from './tripDestinationOut'
 import ViewFile from '../common/viewFile'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
-import {gql, useMutation, useLazyQuery} from '@apollo/client'
+import { gql, useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import u from '../../lib/util'
 
 import userContext from '../../lib/userContaxt'
@@ -37,6 +37,10 @@ query loading_memo_pdf($id:Int!){
   trip(where:{id:{_eq:$id}}) {
     loading_memo
   }
+}`
+
+const GET_TOKEN = gql`query getToken($ref_id: Int!, $process: String!) {
+  token(ref_id: $ref_id, process: $process)
 }`
 
 const REMOVE_SIN_MUTATION = gql`
@@ -92,26 +96,33 @@ mutation remove_destination_out($destination_out:timestamp,$id:Int!,$updated_by:
 }`
 
 const PROCESS_ADVANCE_MUTATION = gql`
-mutation partner_advance ($tripId: Int!, $createdBy: String!, $customer_confirmation: Boolean!) {
-  partner_advance(trip_id: $tripId, created_by: $createdBy, customer_confirmation: $customer_confirmation) {
+mutation partner_advance ($tripId: Int!, $createdBy: String!, $customer_confirmation: Boolean!,$token:String!) {
+  partner_advance(trip_id: $tripId, created_by: $createdBy, customer_confirmation: $customer_confirmation,token:$token) {
     description
     status
   }
 }`
 
 const TripTime = (props) => {
-    const {trip_info, customerConfirm, lr_files} = props
-    const initial = {checkbox: false, mail: false, deletePO: false, godownReceipt: false, wh_detail: false}
-    const {visible, onShow, onHide} = useShowHide(initial)
-    const [disableBtn, setDisableBtn] = useState(false)
-    const context = useContext(userContext)
-    const {role} = u
-    const po_delete_access = [role.admin, role.rm]
-    const access = (trip_info.loaded === 'No') || u.is_roles(po_delete_access, context)
-    const [form] = Form.useForm()
+  const { trip_info, customerConfirm, lr_files } = props
+  const initial = { checkbox: false, mail: false, deletePO: false, godownReceipt: false, wh_detail: false }
+  const { visible, onShow, onHide } = useShowHide(initial)
+  const [disableBtn, setDisableBtn] = useState(false)
+  const context = useContext(userContext)
+  const { role } = u
+  const po_delete_access = [role.admin, role.rm]
+  const access = (trip_info.loaded === 'No') || u.is_roles(po_delete_access, context)
+  const [form] = Form.useForm()
 
-    const [getWord, {loading, data, error, called}] = useLazyQuery(GET_WORD)
-    const [getPdf, {loading: pdfloading, data: pdfdata, error: pdferror, called: pdfcalled}] = useLazyQuery(GET_PDF)
+  const [getWord, { loading, data, error, called }] = useLazyQuery(GET_WORD)
+  const [getPdf, { loading: pdfloading, data: pdfdata, error: pdferror, called: pdfcalled }] = useLazyQuery(GET_PDF)
+  const { data: tokenData, loading: tokenQueryLoading, refetch } = useQuery(GET_TOKEN, {
+    fetchPolicy: "network-only",
+    variables: {
+      ref_id: trip_info.id,
+      process: "ADVANCE"
+    }
+  })
 
     console.log('tripTime error', error)
     console.log('tripTime error', pdferror)
@@ -126,6 +137,14 @@ const TripTime = (props) => {
         _pdfdata = pdfdata
     }
 
+  console.log("tokenQueryLoading", tokenQueryLoading)
+  let token = null
+  if (!tokenQueryLoading) {
+    token = tokenData.token
+  }
+
+  let word_url = get(_data, 'trip[0].loading_memo', [])
+  let pdf_url = get(_pdfdata, 'trip[0].loading_memo', [])
     const [loadingmemo] = useMutation(
      LOADING_MEMO_MUTATION,
      {
@@ -207,87 +226,98 @@ const TripTime = (props) => {
         }
     )
 
-    const [processAdvance] = useMutation(
-        PROCESS_ADVANCE_MUTATION,
-        {
-            onError(error) {
-                message.error(error.toString())
-                setDisableBtn(false)
-            },
-            onCompleted(data) {
-                setDisableBtn(false)
-                const status = get(data, 'partner_advance.status', null)
-                const description = get(data, 'partner_advance.description', null)
-                if (status === 'OK') {
-                    message.success(description || 'Advance Processed!')
-                } else {
-                    message.error(description)
-                }
-            }
-        }
-    )
 
+
+  
     const onClickPdf = () => {
         loadingmemo({
             variables: {id: trip_info.id}
         })
     }
 
+
+  const [processAdvance] = useMutation(
+    PROCESS_ADVANCE_MUTATION,
+    {
+      onError(error) {
+        message.error(error.toString())
+        setDisableBtn(false)
+      },
+      onCompleted(data) {
+        setDisableBtn(false)
+        const status = get(data, 'partner_advance.status', null)
+        const description = get(data, 'partner_advance.description', null)
+        if (status === 'OK') {
+          message.success(description || 'Advance Processed!')
+        } else {
+          message.error(description)
+        }
+        setTimeout(() => {
+          refetch()
+        }, 5000)
+      }
+    }
+  )
+
+  const onSinRemove = () => {
+    setDisableBtn(true)
+    removeSin({
+        variables: {
+            id: trip_info.id,
+            source_in: null,
+            updated_by: context.email
+        }
+    })
+}
+const onSoutRemove = () => {
+    setDisableBtn(true)
+    removeSout({
+        variables: {
+            id: trip_info.id,
+            source_out: null,
+            updated_by: context.email
+        }
+    })
+}
+const onDinRemove = () => {
+    setDisableBtn(true)
+    removeDin({
+        variables: {
+            id: trip_info.id,
+            destination_in: null,
+            updated_by: context.email
+        }
+    })
+}
+const onDoutRemove = () => {
+    setDisableBtn(true)
+    removeDout({
+        variables: {
+            id: trip_info.id,
+            destination_out: null,
+            updated_by: context.email
+        }
+    })
+}
+  
+  const onProcessAdvance = () => {
+    setDisableBtn(true)
+    processAdvance({
+      variables: {
+        tripId: trip_info.id,
+        createdBy: context.email,
+        customer_confirmation: customerConfirm || false,
+        token: token
+      }
+    })
+  }
     const onClickWord = () => {
         loadingmemoword({
             variables: {id: trip_info.id}
         })
     }
-    const onSinRemove = () => {
-        setDisableBtn(true)
-        removeSin({
-            variables: {
-                id: trip_info.id,
-                source_in: null,
-                updated_by: context.email
-            }
-        })
-    }
-    const onSoutRemove = () => {
-        setDisableBtn(true)
-        removeSout({
-            variables: {
-                id: trip_info.id,
-                source_out: null,
-                updated_by: context.email
-            }
-        })
-    }
-    const onDinRemove = () => {
-        setDisableBtn(true)
-        removeDin({
-            variables: {
-                id: trip_info.id,
-                destination_in: null,
-                updated_by: context.email
-            }
-        })
-    }
-    const onDoutRemove = () => {
-        setDisableBtn(true)
-        removeDout({
-            variables: {
-                id: trip_info.id,
-                destination_out: null,
-                updated_by: context.email
-            }
-        })
-    }
-    const onProcessAdvance = () => {
-        setDisableBtn(true)
-        processAdvance({
-            variables: {
-                tripId: trip_info.id,
-                createdBy: context.email,
-                customer_confirmation: customerConfirm || false
-            }
-        })
-    }
+   
+    
 
     const trip_status_name = get(trip_info, 'trip_status.name', null)
     const po_delete = (trip_status_name === 'Assigned' || trip_status_name === 'Confirmed' || trip_status_name === 'Reported at source') && !trip_info.source_out
