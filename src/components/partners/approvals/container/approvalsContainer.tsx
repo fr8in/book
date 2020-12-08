@@ -1,7 +1,5 @@
 import Pending from '../pending'
-import Incentive from '../Incentive'
 import Approved from '../approvedAndRejected'
-import IncentiveHistory from '../incentiveHistory'
 import { Tabs, Card } from 'antd'
 
 const TabPane = Tabs.TabPane
@@ -15,12 +13,6 @@ const Approvals = () => {
         </TabPane>
         <TabPane tab='Approved/Rejected' key='2'>
           <Approved />
-        </TabPane>
-        <TabPane tab='Incentive' key='3'>
-          <Incentive />
-        </TabPane>
-        <TabPane tab='History' key='4'>
-          <IncentiveHistory />
         </TabPane>
       </Tabs>
     </Card>

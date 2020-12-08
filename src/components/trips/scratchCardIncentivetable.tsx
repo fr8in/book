@@ -3,7 +3,7 @@ import { Table, Tooltip, Button, Space } from 'antd'
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import get from 'lodash/get'
-import Approve from '../partners/approvals/accept'
+import IncentiveApprove from '../partners/approvals/incentiveApprove'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import { gql, useSubscription } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
@@ -11,30 +11,68 @@ import u from '../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 
 
+const SCRATCH_CARD_INCENTIVE_TABLE_SUBSCRIPTION = gql`
+subscription incentives($id:Int){
+  trip(where: {id: {_eq: $id}}) {
+    id
+ incentives{
+  id
+  amount
+  comment
+  track_incentive_status{
+    status
+  }
+  incentive_config{
+    type
+  }
+}
+  }
+}
+`
+
+
 
 const ScratchCardIncentiveTable = (props) => {
- 
+ const {trip_id} = props
 
   const initial = {
     approveData: [],
     approveVisible: false
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+
+
+  const { loading, error, data } = useSubscription(
+    SCRATCH_CARD_INCENTIVE_TABLE_SUBSCRIPTION,
+    {
+      variables: {
+        id: trip_id
+      }
+    }
+  )
+  console.log('CreditNoteTable error', error)
+
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+
+  const scratch_card_incentive = get(_data, 'trip[0].incentives', null)
+
   
 
   const columns = [
     {
-      title: 'Issue Type',
-      width:  '17%' 
+      title: 'Type',
+      width:  '17%' ,
+      render: (text, record) => {
+        return (
+         get(record, 'incentive_config.type', null)
+        )}
     },
     {
-      title: 'Claim ₹',
+      title: 'Amount ₹',
       dataIndex: 'amount',
-      width:  '11%' 
-    },
-    {
-      title: 'Approved ₹',
-      dataIndex: 'approved_amount',
       width: '16%'
     },
     {
@@ -45,6 +83,10 @@ const ScratchCardIncentiveTable = (props) => {
     {
       title: 'Status',
       width:  '14%',
+      render: (text, record) => {
+        return (
+         get(record, 'track_incentive_status.status', null)
+        )}
     },
   
        {
@@ -57,7 +99,6 @@ const ScratchCardIncentiveTable = (props) => {
                 size='small'
                 shape='circle'
                 className='btn-success'
-                //disabled={!(invoiced && !received && !closed) || lock}
                 icon={<CheckOutlined />}
                 onClick={() => handleShow('approveVisible', 'Approved', 'approveData', record)}
               />
@@ -75,7 +116,7 @@ const ScratchCardIncentiveTable = (props) => {
   return (
     <div className='cardFix'>
       <Table
-        //dataSource={credit_debit_list}
+        dataSource={scratch_card_incentive}
         columns={columns}
         pagination={false}
         size='small'
@@ -84,11 +125,12 @@ const ScratchCardIncentiveTable = (props) => {
       />
 
       {object.approveVisible && (
-        <Approve
+        <IncentiveApprove
           visible={object.approveVisible}
           onHide={handleHide}
           item_id={object.approveData}
           title={object.title}
+          trip_id={trip_id}
           //setCreditNoteRefetch={setCreditNoteRefetch}
         />
       )}
