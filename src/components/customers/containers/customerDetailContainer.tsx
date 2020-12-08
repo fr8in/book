@@ -60,7 +60,7 @@ const CustomerDetailContainer = (props) => {
   const customerNameEdit = [role.admin, role.accounts_manager, role.accounts]
   const BlacklistEdit = [role.admin, role.accounts_manager, role.accounts,role.bm,role.rm,role.partner_manager,role.partner_support,role.onboarding]
   const context = useContext(userContext)
-  const ad_am = [role.admin, role.accounts_manager,role.accounts]
+  const ad_am = [role.admin, role.accounts_manager]
   const customer_edit_role = [role.admin, role.accounts_manager, role.accounts, role.billing, role.billing_manager]
   const transferAccess = u.is_roles(ad_am,context)
   const customer_access = u.is_roles(customer_edit_role,context)
