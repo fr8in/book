@@ -60,7 +60,7 @@ const CustomerDetailContainer = (props) => {
   const customerNameEdit = [role.admin, role.accounts_manager, role.accounts]
   const BlacklistEdit = [role.admin, role.accounts_manager, role.accounts,role.bm,role.rm,role.partner_manager,role.partner_support,role.onboarding]
   const context = useContext(userContext)
-  const ad_am = [role.admin, role.accounts_manager,role.accounts]
+  const ad_am = [role.admin, role.accounts_manager]
   const customer_edit_role = [role.admin, role.accounts_manager, role.accounts, role.billing, role.billing_manager]
   const transferAccess = u.is_roles(ad_am,context)
   const customer_access = u.is_roles(customer_edit_role,context)
@@ -124,9 +124,8 @@ const CustomerDetailContainer = (props) => {
                       />
                       <p className='tinyAction'>Statement</p>
                     </div> */}
-                    {transferAccess
-                      ? (
                         <Space>
+                          { transferAccess ?
                           <div className='text-center'>
                             <Button
                               icon={<BankFilled />}
@@ -134,7 +133,9 @@ const CustomerDetailContainer = (props) => {
                               onClick={() => onShow('transfer')}
                             />
                             <p className='tinyAction'>Transfer</p>
-                          </div>
+                          </div> :null }
+                          {customerNameEdit
+                      ? (
                           <div className='text-center'>
                             <Button
                               icon={<FileDoneOutlined />}
@@ -143,9 +144,9 @@ const CustomerDetailContainer = (props) => {
                             />
                             <p className='tinyAction'>Excess</p>
                           </div>
-                        </Space>)
+                       )
                       : null}
-
+                       </Space>
                     {customer_access ? (
                       <div className='text-center'>
                         <Button
