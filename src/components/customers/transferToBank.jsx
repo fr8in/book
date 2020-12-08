@@ -130,7 +130,7 @@ const TransfertoBank = () => {
       width: '10%',
       render: (text, record) => (
         <Space>
-          <Tooltip title='Accept'>
+          <Tooltip title='Approve'>
             {approval_access ? (
               <Button
                 type='primary'
@@ -142,7 +142,7 @@ const TransfertoBank = () => {
                   handleShow('approveVisible', 'Approve', 'approveData', record)}
               />) : null}
           </Tooltip>
-          <Tooltip title='Decline'>
+          <Tooltip title='Reject'>
             {rejected_access ? (
               <Button
                 type='primary'

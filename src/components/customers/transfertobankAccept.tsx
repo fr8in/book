@@ -50,7 +50,7 @@ const Approve = (props) => {
       },
       onCompleted () {
         setDisableButton(false)
-        message.success('Updated!!')
+        message.success('Bank Transfer Rejected')
         onHide()
       }
     })
