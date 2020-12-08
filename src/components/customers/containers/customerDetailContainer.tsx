@@ -124,9 +124,8 @@ const CustomerDetailContainer = (props) => {
                       />
                       <p className='tinyAction'>Statement</p>
                     </div> */}
-                    {transferAccess
-                      ? (
                         <Space>
+                          { transferAccess ?
                           <div className='text-center'>
                             <Button
                               icon={<BankFilled />}
@@ -134,7 +133,9 @@ const CustomerDetailContainer = (props) => {
                               onClick={() => onShow('transfer')}
                             />
                             <p className='tinyAction'>Transfer</p>
-                          </div>
+                          </div> :null }
+                          {customerNameEdit
+                      ? (
                           <div className='text-center'>
                             <Button
                               icon={<FileDoneOutlined />}
@@ -143,9 +144,9 @@ const CustomerDetailContainer = (props) => {
                             />
                             <p className='tinyAction'>Excess</p>
                           </div>
-                        </Space>)
+                       )
                       : null}
-
+                       </Space>
                     {customer_access ? (
                       <div className='text-center'>
                         <Button
