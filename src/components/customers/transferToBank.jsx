@@ -1,28 +1,23 @@
-import { Table, Input, Tooltip, Button, Space, Modal } from 'antd'
+import { Table,  Tooltip, Button, Space, Modal } from 'antd'
 import {
-  SearchOutlined,
-  CommentOutlined,
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
-import { useState, useEffect, useContext } from 'react'
+import { useState,  useContext } from 'react'
 import Truncate from '../common/truncate'
-import Link from 'next/link'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from './customerComment'
 import Approve from './transfertobankAccept'
-import { gql, useQuery, useSubscription } from '@apollo/client'
+import { gql,  useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import LinkComp from '../common/link'
 import u from '../../lib/util'
 import userContext from '../../lib/userContaxt'
 
-import isEmpty from 'lodash/isEmpty'
-
 const TRANSFER_SUBSCRIPTION = gql`
-subscription customerWalletOutgoing{
-  customer_wallet_outgoing(where:{status:{_eq:"PENDING"}}){
+subscription customerWalletOutgoing {
+  customer_wallet_outgoing(where: {status: {_eq: "PENDING"}}) {
     id
     card_code
     load_id
@@ -33,15 +28,17 @@ subscription customerWalletOutgoing{
     account_no
     account_holder_name
     ifsc_code
-customers{
-  id
-  name
-  last_comment{
-    description
+    is_mamul_charges_included
+    customers {
+      id
+      name
+      last_comment {
+        description
+      }
+    }
   }
 }
-    }
-  }`
+`
 
 const TransfertoBank = () => {
   const { role } = u
@@ -73,11 +70,8 @@ const TransfertoBank = () => {
   }
 
   const transferdata = get(_transfertobankdata, 'customer_wallet_outgoing', null)
-  console.log('transferdata',transferdata)
- 
   const customer_id = get (_transfertobankdata,'customer_wallet_outgoing.customers[0].id',null)
-  console.log('customer_id',customer_id)
-
+  
   const ApprovalPending = [
     {
       title: 'Customer Name',
@@ -100,14 +94,14 @@ const TransfertoBank = () => {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
-      width: '20%'
+      width: '10%'
     },
 
     {
       title: 'Created By',
       dataIndex: 'created_by',
       key: 'created_by',
-      width: '20%',
+      width: '15%',
       render: (text, record) => <Truncate data={text} length={18} />
     },
     
@@ -121,6 +115,15 @@ const TransfertoBank = () => {
         return text ? moment(text).format('DD-MMM-YY') : null
       },
       defaultSortOrder: 'descend'
+    },
+    {
+      title: 'Mamul',
+      dataIndex: 'is_mamul_charges_included',
+      key: 'is_mamul_charges_included',
+      width: '15%',
+      render: (text, record) => {
+        return record.is_mamul_charges_included === true ? 'Mamul Charge' : 'Special Mamul' 
+      }
     },
     {
       title: 'Action',

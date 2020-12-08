@@ -241,7 +241,7 @@ const CustomerDetailContainer = (props) => {
                         <CustomerComment customer_id={customer_info.id} loading={loading} detailPage />
                       </div>
                     </TabPane>
-                    <TabPane tab='Bank Transfer' key='13' >
+                    <TabPane tab='Mamul Transfer' key='13' >
                          <TransferHistory cardcode={cardcode} loading={loading}/>
                     </TabPane>
                   </Tabs>

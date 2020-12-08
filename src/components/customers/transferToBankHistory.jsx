@@ -1,13 +1,9 @@
 import React, { useState } from 'react'
-import { Table,Checkbox,Input,Pagination} from 'antd'
-import { SearchOutlined } from '@ant-design/icons'
+import { Table,Tooltip} from 'antd'
 import Truncate from '../common/truncate'
-import Link from 'next/link'
-import { gql, useQuery, useSubscription } from '@apollo/client'
+import { gql,  useSubscription } from '@apollo/client'
 import get from 'lodash/get'
-import isEmpty from 'lodash/isEmpty'
 import moment from 'moment'
-import u from '../../lib/util'
 import LinkComp from '../common/link'
 
 const APPROVED_REJECTED_SUBSCRIPTION = gql`
@@ -25,6 +21,7 @@ subscription customerTransfertoBank_history($cardcode:String) {
     status
     account_no
     account_holder_name
+    is_mamul_charges_included
     customers{
       id
       name
@@ -38,15 +35,6 @@ subscription customerTransfertoBank_history($cardcode:String) {
 
 const ApprovedAndRejected = (props) => {
  const {cardcode} =props
- console.log('cardcode',cardcode)
-
-
-const [filter, setFilter] = useState()
-const [currentPage, setCurrentPage] = useState(1)
-
-
-
-console.log('filter', filter)
 
   const { loading, error, data } = useSubscription(
     APPROVED_REJECTED_SUBSCRIPTION,{
@@ -55,19 +43,13 @@ console.log('filter', filter)
     }
 }
   )
-  console.log('approvedRejected error', error)
-
-  
-
+ 
   let _data = {}
   if (!loading) {
     _data = data
   }
   const approvedAndRejected = get(_data,'customer_wallet_outgoing', null)
   
-  
-console.log('aa',data)
-console.log('bb',approvedAndRejected)
   const ApprovalPending = [
     {
       title: 'Customer Name',
@@ -92,33 +74,58 @@ console.log('bb',approvedAndRejected)
       width: '7%',
     },
     {
-      title: 'Beneficiary Name',
+      title: (
+        <Tooltip title='Beneficiary Name'>
+          <span>B.Name</span>
+        </Tooltip>
+      ),
       dataIndex: 'account_holder_name',
-      width: '10%',
+      width: '8%',
       render: (text, record) => <Truncate data={text} length={10} />,
     },
     {
-      title: 'Beneficiary Acc.No',
+      title: (
+        <Tooltip title='Beneficiary Acc.No'>
+          <span>B.Account NO</span>
+        </Tooltip>
+      ),
       dataIndex: 'account_no',
-      width: '13%',
+      width: '10%',
     },
     {
-      title: 'Request By ',
+      title: (
+        <Tooltip title='Request By'>
+          <span>Req.by</span>
+        </Tooltip>
+      ),
       dataIndex: 'created_by',
       key: 'created_by',
-      width: '10%',
+      width: '7%',
       render: (text, record) => <Truncate data={text} length={20} />,
     },
     {
-      title: 'Request On',
+      title: (
+        <Tooltip title='Request On'>
+          <span>Req.On</span>
+        </Tooltip>
+      ),
       dataIndex: 'created_on',
       key: 'created_on',
-      width: '10%',
+      width: '7%',
       sorter: (a, b) => (a.created_on > b.created_on ? 1 : -1),
       defaultSortOrder: 'descend',
       render: (text, record) => {
         return text ? moment(text).format('DD-MMM-YY') : null
       }
+    },
+    {
+      title: 'Mamul',
+      dataIndex: 'is_mamul_charges_included',
+      key: 'is_mamul_charges_included',
+      width: '10%',
+      render: (text, record) => 
+        <Truncate data={record.is_mamul_charges_included === true ? 'Mamul Charge' : 'Special Mamul '}  length={14}/>
+      
     },
     {
       title: 'Payment Status',
@@ -135,10 +142,14 @@ console.log('bb',approvedAndRejected)
       width: '10%',
     },
     {
-      title: 'Closed On',
+      title: (
+        <Tooltip title='Closed On'>
+          <span>C.On</span>
+        </Tooltip>
+      ),
       dataIndex: 'approved_on',
       key: 'approved_on',
-      width: '10%',
+      width: '12%',
       sorter: (a, b) => (a.created_at > b.created_at ? 1 : -1),
       defaultSortOrder: 'descend',
       render: (text, record) => {

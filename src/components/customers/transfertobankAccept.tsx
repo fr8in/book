@@ -1,4 +1,4 @@
-import { Modal, Form, Input, message, Button,Row,Col,Radio } from 'antd'
+import { Modal, Form, Input, message, Button,Row,Col } from 'antd'
 import { useState, useContext } from 'react'
 import { gql, useMutation,useQuery } from '@apollo/client'
 import get from 'lodash/get'
@@ -173,11 +173,8 @@ const Approve = (props) => {
             </Form.Item>
           </Col>
         </Row>  
-          <Form.Item label='Remarks' name='remarks' >
-          <Input placeholder='Remarks' />
-        </Form.Item >
           <Form.Item className='text-right'>
-            <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>Submit</Button>
+  <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>{title === 'Approve'? 'Approve': 'Reject'}</Button>
          </Form.Item>
       </Form>
        {(loading || mutationLoading) &&
