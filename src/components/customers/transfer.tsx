@@ -5,6 +5,7 @@ import { gql, useMutation, useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 
+
 const CUSTOMER_MAMUL_TRANSFER = gql`
 mutation customer_mamul_transfer(
   $cardcode: String!,
@@ -54,7 +55,15 @@ query ifsc_validation($ifsc: String!){
       count
     }
   }
-}`
+  customer_wallet_outgoing_aggregate(where: {status: {_eq: "APPROVED"}, load_id: {_eq: $trip_id}}) {
+    aggregate {
+      sum {
+        amount
+      }
+    }
+  }
+}
+`
 
 
 
@@ -119,12 +128,15 @@ const Transfer = (props) => {
   const bank_detail = get(_data, 'bank_detail', null)
 
   const count = get (_trip_data,'trip_aggregate.aggregate.count',null)
- 
+  const totalAmountapproved = get(_trip_data,'customer_wallet_outgoing_aggregate.aggregate.sum.amount',null)
+ const totalAmount = totalAmountapproved+amount
+console.log("totalAmount,",totalAmount)
   const onSubmit = (form) => {
     if ( amount > 5000 ){
       setDisableButton(false)
       message.error('Transaction Amount is Greater Than ₹5000')
-    } else if( count !== 1){
+    } else if (totalAmount > 5000){ message.error('Not Eligible For Transaction')}
+    else if( count !== 1){
       message.error('Trip not releated to customer')
     }
     else if (amount > 1) {

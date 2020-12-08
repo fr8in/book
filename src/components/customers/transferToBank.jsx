@@ -81,12 +81,12 @@ const TransfertoBank = () => {
   const ApprovalPending = [
     {
       title: 'Customer Name',
-      width: '20%',
+      width: '25%',
       render: (text, record) => {
         const cardcode = get(record, 'card_code', null)
         const name = get(record, 'customers[0].name', null)
         return (
-          <LinkComp type='customers' data={name} id={cardcode} length={30} blank />
+          <LinkComp type='customers' data={name} id={cardcode} length={38} blank />
         )
       }
     },
@@ -94,13 +94,13 @@ const TransfertoBank = () => {
       title: 'Trip Id',
       dataIndex: 'load_id',
       key:'load_id',
-      width: '10%'
+      width: '15%'
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
-      width: '10%'
+      width: '20%'
     },
 
     {
@@ -116,7 +116,7 @@ const TransfertoBank = () => {
       dataIndex: 'created_on',
       key: 'created_on',
       sorter: (a, b) => (a.created_on > b.created_on ? 1 : -1),
-      width: '20%',
+      width: '10%',
       render: (text, record) => {
         return text ? moment(text).format('DD-MMM-YY') : null
       },
@@ -124,16 +124,9 @@ const TransfertoBank = () => {
     },
     {
       title: 'Action',
-      width: '20%',
+      width: '10%',
       render: (text, record) => (
         <Space>
-          <Tooltip title='Comment'>
-            <Button
-              type='link'
-              icon={<CommentOutlined />}
-              onClick={() => handleShow('commentVisible', null, 'commentData', record.id)}
-            />
-          </Tooltip>
           <Tooltip title='Accept'>
             {approval_access ? (
               <Button

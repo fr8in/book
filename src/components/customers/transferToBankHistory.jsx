@@ -115,6 +115,7 @@ console.log('bb',approvedAndRejected)
       key: 'created_on',
       width: '10%',
       sorter: (a, b) => (a.created_on > b.created_on ? 1 : -1),
+      defaultSortOrder: 'descend',
       render: (text, record) => {
         return text ? moment(text).format('DD-MMM-YY') : null
       }
@@ -139,6 +140,7 @@ console.log('bb',approvedAndRejected)
       key: 'approved_on',
       width: '10%',
       sorter: (a, b) => (a.created_at > b.created_at ? 1 : -1),
+      defaultSortOrder: 'descend',
       render: (text, record) => {
         return text ? moment(text).format('DD-MMM-YY') : null
       }
