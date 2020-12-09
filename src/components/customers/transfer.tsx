@@ -97,7 +97,12 @@ const Transfer = (props) => {
     {
       onError (error) {
         setDisableButton(false)
-        message.error(error.toString())
+        const status = get(data, 'customer_mamul_transfer.status', null)
+        const description = get(data, 'customer_mamul_transfer.description', null)
+       if (status === 'OK') {
+          message.success(description || 'Processed!')
+          onHide()
+        } else (message.error(description))
       },
       onCompleted (data) {
         setDisableButton(false)
