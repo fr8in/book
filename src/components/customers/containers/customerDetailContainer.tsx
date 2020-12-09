@@ -34,6 +34,8 @@ import userContext from '../../../lib/userContaxt'
 import { useContext } from 'react'
 import CustomerComment from '../customerComment'
 import isEmpty from 'lodash/isEmpty'
+import TransferToBankHistory from '../transferToBankHistory'
+
 import AssignToConfirm from '../assignToConfirm'
 // Apollo Client
 import { useSubscription } from '@apollo/client'
@@ -122,9 +124,8 @@ const CustomerDetailContainer = (props) => {
                 }
                 extra={
                   <Space>
-                    {transferAccess
-                      ? (
-                        <Space>
+                        
+                          { transferAccess ? (
                           <div className='text-center'>
                           <Button
                             icon={<CodeOutlined />}
@@ -132,7 +133,8 @@ const CustomerDetailContainer = (props) => {
                             onClick={() => onShow('confirm')}
                           />
                           <p className='tinyAction'>Confirm</p>
-                        </div> 
+                        </div> ) : null}
+                        { customerNameEdit ? (
                           <div className='text-center'>
                             <Button
                               icon={<BankFilled />}
@@ -140,11 +142,13 @@ const CustomerDetailContainer = (props) => {
                               onClick={() => onShow('transfer')}
                             />
                             <p className='tinyAction'>Transfer</p>
-                          </div>
+                        </div> ): null}
+                        { transferAccess ? (
+                          <>
                           <div className='text-center'>
                       <Button icon={<MailOutlined />} shape='circle' onClick={() => onShow('reportMail')} />
                       <p className='tinyAction'>Email</p>
-                    </div>
+                    </div> 
                           <div className='text-center'>
                             <Button
                               icon={<FileDoneOutlined />}
@@ -153,9 +157,9 @@ const CustomerDetailContainer = (props) => {
                             />
                             <p className='tinyAction'>Excess</p>
                           </div>
-                        </Space>)
-                      : null}
-
+                          </>
+                       ) : null}
+                       
                     {customer_access ? (
                       <div className='text-center'>
                         <Button
@@ -260,6 +264,9 @@ const CustomerDetailContainer = (props) => {
                       <div className='p10'>
                         <CustomerComment customer_id={customer_info.id} loading={loading} detailPage />
                       </div>
+                    </TabPane>
+                    <TabPane tab='Mamul Transfer' key='13' >
+                         <TransferToBankHistory cardcode={cardcode} loading={loading}/>
                     </TabPane>
                   </Tabs>
                 </Card>
