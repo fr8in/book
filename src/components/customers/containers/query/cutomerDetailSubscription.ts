@@ -23,6 +23,11 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         count
       }
     }
+    advancePending: trips_aggregate(where: {trip_accounting: {receipt: {_is_null: true}}, source_out: {_is_null: false}, trip_status: {name: {_neq: "Cancelled"}}}) {
+      aggregate {
+        count
+      }
+    }
     incoming:customer_incoming_aggregate{
       aggregate{
         count
@@ -34,13 +39,15 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
     name
     mobile
     approved_by_id
-    exception_date
     gst
     managed
     pan
+    is_exception
     customer_exception{
     invoice_pending
     advance_pending_amount
+    total_advance_pending_amount
+    receipts_and_receivables_ratio
     total_outstanding
     is_exception
      final_payment_received_in_the_last_30_days

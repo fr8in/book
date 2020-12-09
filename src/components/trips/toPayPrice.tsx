@@ -75,7 +75,7 @@ const ToPayPrice = (props) => {
     return (
         loading ? <Loading /> : (
             <>
-                <Form.Item name='trip_rate_type' wrapperCol={{ sm: 24 }} className='mobile-100percent hide-label'>
+                  <Form.Item name='trip_rate_type' initialValue={price.rate_type} wrapperCol={{ sm: 24 }} className='mobile-100percent hide-label'>
                     <Radio.Group size='small' onChange={onRadioChange}>
                         <Radio value='Rate/Trip'>Rate/Trip</Radio>
                         <Radio value='Rate/Ton'>Rate/Ton</Radio>

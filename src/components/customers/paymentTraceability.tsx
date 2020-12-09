@@ -29,7 +29,7 @@ const PaymentTraceability = (props) => {
   const { selectedRowKeys, selectOnchange, customer_id, amount, setAmount, form, walletcode, wallet_balance } = props
   const { visible, onShow, onHide } = useShowHide('')
 
-  const { loading, data, error } = useQuery(
+  const { loading, data, error, refetch } = useQuery(
     INCOMING_PAYMENT,
     {
       variables: { walletcode: walletcode },
@@ -131,7 +131,7 @@ const PaymentTraceability = (props) => {
         loading={loading}
       />
       {visible.wallet && (
-        <WalletTopup visible={visible.wallet} onHide={onHide} customer_id={customer_id} />
+        <WalletTopup visible={visible.wallet} onHide={onHide} customer_id={customer_id} customer_incoming_refetch={refetch} />
       )}
     </Card>
   )

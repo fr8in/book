@@ -1,4 +1,4 @@
-import { Table,Input } from 'antd'
+import { Table, Input } from 'antd'
 import { useState } from 'react'
 import CUSTOMER_TRIPS from './containers/query/customerTrips'
 import { useSubscription } from '@apollo/client'
@@ -7,7 +7,7 @@ import get from 'lodash/get'
 import moment from 'moment'
 import Truncate from '../common/truncate'
 import LinkComp from '../common/link'
-
+import PartnerLink from '../common/PartnerLink'
 const CustomerTrips = (props) => {
   const { cardcode, status_names, delivered } = props
 
@@ -15,7 +15,7 @@ const CustomerTrips = (props) => {
     partnername: null,
     sourcename: null,
     destinationname: null,
-    truckno: null,
+    truckno: null
   }
 
   const [filter, setFilter] = useState(initialFilter)
@@ -23,11 +23,11 @@ const CustomerTrips = (props) => {
   const variables = {
     cardcode: cardcode,
     where: {
-          trip_status:{name:{_in:status_names}},
-          partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
-          source: { name: { _ilike: filter.sourcename ? `%${filter.sourcename}%` : null } },
-          destination: { name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } },
-          truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } }
+      trip_status: { name: { _in: status_names } },
+      partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
+      source: { name: { _ilike: filter.sourcename ? `%${filter.sourcename}%` : null } },
+      destination: { name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } },
+      truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } }
     }
   }
 
@@ -45,30 +45,57 @@ const CustomerTrips = (props) => {
   const trips = get(_data, 'customer[0].trips', [])
 
   const onTruckNoSearch = (e) => {
-    setFilter({ ...filter, truckno:e.target.value})
+    setFilter({ ...filter, truckno: e.target.value })
   }
   const onPartnerNameSearch = (e) => {
-    setFilter({ ...filter,partnername:e.target.value})
+    setFilter({ ...filter, partnername: e.target.value })
   }
   const onSourceNameSearch = (e) => {
-    setFilter({ ...filter,sourcename:e.target.value})
+    setFilter({ ...filter, sourcename: e.target.value })
   }
   const onDestinationNameSearch = (e) => {
-    setFilter({ ...filter, destinationname:e.target.value})
+    setFilter({ ...filter, destinationname: e.target.value })
   }
 
-  const tat = {
-    'Assigned': (record) => parseInt(record.confirmed_tat,10),
-    'Confirmed': (record) => parseInt(record.confirmed_tat,10),
-    'Reported at source': (record) => parseInt(record.loading_tat,10),
-    'Intransit': (record) => parseInt(record.intransit_tat,10),
-    'Intransit halting': (record) => parseInt(record.intransit_tat,10),
-    'Reported at destination': (record) => parseInt(record.unloading_tat,10),
-    'Delivered':(record) => parseInt(record.delivered_tat,10),
-    'Invoiced':(record) => parseInt(record.invoiced_tat,10),
-    'Paid':(record) => parseInt(record.paid_tat,10),
-    'Recieved':(record) => parseInt(record.received_tat,10),
-    'Closed':(record) => parseInt(record.closed_tat,10)
+  const tat = (record) => {
+    const status = get(record, 'trip_status.name', null)
+    let tat = null
+    switch (status) {
+      case 'Assigned':
+        tat = record.confirmed_tat
+        break
+      case 'Confirmed':
+        tat = record.confirmed_tat
+        break
+      case 'Reported at source':
+        tat = record.loading_tat
+        break
+      case 'Intransit':
+        tat = record.intransit_tat
+        break
+      case 'Intransit halting':
+        tat = record.intransit_tat
+        break
+      case 'Reported at destination':
+        tat = record.unloading_tat
+        break
+      case 'Delivered':
+        tat = record.delivered_tat
+        break
+      case 'Invoiced':
+        tat = record.invoiced_tat
+        break
+      case 'Paid':
+        tat = record.paid_tat
+        break
+      case 'Recieved':
+        tat = record.received_tat
+        break
+      case 'Closed':
+        tat = record.closed_tat
+        break
+    }
+    return parseInt(tat, 10)
   }
 
   const finalPaymentsPending = [
@@ -93,17 +120,18 @@ const CustomerTrips = (props) => {
     },
     {
       title: 'Truck No',
-      width: '16%',
+      width: '13%',
       render: (text, record) => {
         const truck_no = get(record, 'truck.truck_no', null)
-        const truck_type_name = get(record, 'truck.truck_type.name', null)
+        const truck_type_name = get(record, 'truck.truck_type.code', null)
         const truck_type = truck_type_name ? truck_type_name.slice(0, 9) : null
         return (
           <LinkComp
             type='trucks'
             data={`${truck_no} - ${truck_type}`}
             id={truck_no}
-          />)
+          />
+        )
       },
       filterDropdown: (
         <Input
@@ -120,15 +148,18 @@ const CustomerTrips = (props) => {
       title: 'Partner',
       width: '10%',
       render: (text, record) => {
+        const id = get(record, 'partner.id', null)
         const partner = get(record, 'partner.name', null)
         const cardcode = get(record, 'partner.cardcode', null)
         return (
-          <LinkComp
+          <PartnerLink
             type='partners'
             data={partner}
-            id={cardcode}
+            id={id}
+            cardcode={cardcode}
             length={10}
-          />)
+          />
+        )
       },
       filterDropdown: (
         <Input
@@ -163,7 +194,7 @@ const CustomerTrips = (props) => {
       filterDropdown: (
         <Input
           placeholder='Search'
-           value={filter.destinationname}
+          value={filter.destinationname}
           onChange={onDestinationNameSearch}
         />
       ),
@@ -171,33 +202,37 @@ const CustomerTrips = (props) => {
         <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
       )
     },
-    !delivered ? {
-      title: 'Status',
-      width: '11%',
-      render: (text, record) => <Truncate data={get(record, 'trip_status.name', '-')} length={15} />
-    } : {},
-    delivered ? {
-      title: 'Pod Verified at',
-      width: '11%',
-      dataIndex: 'pod_verified_at',
-      render:  (text, record) => text ? moment(text).format('DD-MMM-YY') : '-' 
-    } : {},
+    !delivered
+      ? {
+        title: 'Status',
+        width: '11%',
+        render: (text, record) => <Truncate data={get(record, 'trip_status.name', '-')} length={15} />
+      }
+      : {},
+    delivered
+      ? {
+        title: 'Pod Verified at',
+        width: '11%',
+        dataIndex: 'pod_verified_at',
+        render: (text, record) => text ? moment(text).format('DD-MMM-YY') : '-'
+      }
+      : {},
     {
       title: 'Receivable',
-      width: '8%',
+      width: '9%',
       sorter: (a, b) => (a.receivable > b.receivable ? 1 : -1),
       render: (record) => get(record, 'trip_receivables_aggregate.aggregate.sum.amount', 0)
     },
     {
       title: 'Receipts',
-      width: '7%',
+      width: '8%',
       sorter: (a, b) => (a.receipts > b.receipts ? 1 : -1),
       render: (record) => get(record, 'trip_receipts_aggregate.aggregate.sum.amount', 0)
     },
     {
       title: 'Balance',
       sorter: (a, b) => (a.balance > b.balance ? 1 : -1),
-      width: '7%',
+      width: '8%',
       render: (record) => {
         const receivable = get(record, 'trip_receivables_aggregate.aggregate.sum.amount', 0)
         const receipts = get(record, 'trip_receipts_aggregate.aggregate.sum.amount', 0)
@@ -206,14 +241,10 @@ const CustomerTrips = (props) => {
     },
     {
       title: 'Aging',
-      render: (text, record) => {
-        const status = get(record, 'trip_status.name', null)
-
-        return tat[status](record)
-      },
+      render: (text, record) => tat(record),
       sorter: (a, b) => {
         const status = get(a, 'trip_status.name', null)
-        return tat[status](a) > tat[status](b) ? 1 : -1
+        return status ? (tat(a) > tat(b) ? 1 : -1) : null
       },
       width: '7%'
     }

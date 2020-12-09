@@ -47,6 +47,11 @@ query dashboard_trips($now: timestamp,$regions: [Int!], $branches: [Int!], $citi
       count
     }
   }
+  adv_pending: trip_aggregate(where: {source_out: {_gt: $now}, trip_status: {name: {_nin: ["Cancelled"]}}, trip_accounting: {receipt: {_is_null: true}}, branch: {region_id: {_in: $regions}}, branch_id: {_in: $branches}, source_connected_city_id: {_in: $cities}, truck_type_id: {_in: $truck_type}, branch_employee_id: {_in: $managers}}) {
+    aggregate {
+      count
+    }
+  }
   trucks_total: truck_aggregate(where: {
     _and: [
         {truck_status: {name: {_eq: "Waiting for Load"}}}, 

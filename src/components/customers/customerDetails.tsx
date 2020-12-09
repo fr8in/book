@@ -22,7 +22,7 @@ const CustomerDetails = (props) => {
   )
   return (
     <Row gutter={8}>
-      <Col xs={24} sm={24} md={12}>
+      <Col xs={24} sm={12} md={7}>
         <LabelWithData
           label='PAN'
           data={
@@ -39,15 +39,15 @@ const CustomerDetails = (props) => {
                   />
                 </Space>
               ) : (
-                <FileUploadOnly
-                  size='small'
-                  id={customer_info.id}
-                  type='customer'
-                  folder={u.folder.customer_pan}
-                  file_type={u.fileType.customer_pan}
-                  file_list={pan_files}
-                />
-              )}
+                  <FileUploadOnly
+                    size='small'
+                    id={customer_info.id}
+                    type='customer'
+                    folder={u.folder.customer_pan}
+                    file_type={u.fileType.customer_pan}
+                    file_list={pan_files}
+                  />
+                )}
             </span>
           }
           labelSpan={10}
@@ -59,11 +59,9 @@ const CustomerDetails = (props) => {
           labelSpan={10}
           dataSpan={14}
         />
-        <LabelWithData label='Virtual Account' data={customer_info.virtual_account} labelSpan={10} dataSpan={14} />
-        <LabelWithData label='Status' data={cus_status} labelSpan={10} dataSpan={14} />
       </Col>
-      <Col xs={24} sm={24} md={12}>
-        <LabelWithData
+      <Col xs={24} sm={12} md={7}>
+      <LabelWithData
           label='LR'
           data={
             <span>
@@ -79,21 +77,20 @@ const CustomerDetails = (props) => {
                   />
                 </Space>
               ) : (
-                <FileUploadOnly
-                  size='small'
-                  id={customer_info.id}
-                  type='customer'
-                  folder={u.folder.customer_lr}
-                  file_type={u.fileType.lr}
-                  file_list={lr_files}
-                />
-              )}
+                  <FileUploadOnly
+                    size='small'
+                    id={customer_info.id}
+                    type='customer'
+                    folder={u.folder.customer_lr}
+                    file_type={u.fileType.lr}
+                    file_list={lr_files}
+                  />
+                )}
             </span>
           }
           labelSpan={10}
           dataSpan={14}
         />
-        <LabelWithData label='Mobile No' data={<Phone number={customer_info.mobile} />} labelSpan={10} dataSpan={14} />
         <LabelWithData
           label='OnBoarded By'
           data={
@@ -108,6 +105,13 @@ const CustomerDetails = (props) => {
           labelSpan={10}
           dataSpan={14}
         />
+      </Col>
+      <Col xs={24} sm={12} md={7}>
+        <LabelWithData label='Status' data={cus_status} labelSpan={10} dataSpan={14} />
+        <LabelWithData label='Mobile No' data={<Phone number={customer_info.mobile} />} labelSpan={10} dataSpan={14} />
+      </Col>
+      <Col xs={24} sm={12} md={7}>
+        <LabelWithData label='Virtual Account' data={customer_info.virtual_account} labelSpan={10} dataSpan={14} />
         {/* <LabelWithData label='Receivable Days' data={mockData.receivableDays} labelSpan={10} dataSpan={14} /> */}
       </Col>
     </Row>

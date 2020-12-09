@@ -3,13 +3,12 @@ import { Table, Tooltip, Input, Pagination, Checkbox, Button } from 'antd'
 import LinkComp from '../common/link'
 import moment from 'moment'
 import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
-import TripFeedBack from '../trips/tripFeedBack'
+import TripFeedBack from './tripFeedBack'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
-import PodReceiptAndDispatch from '../trips/podReceiptAndDispatch'
+import PodReceiptAndDispatch from './podReceiptAndDispatch'
 import get from 'lodash/get'
-
+import PartnerLink from '../common/PartnerLink'
 const TripsTracking = (props) => {
- 
   const initial = {
     commentData: [],
     commentVisible: false
@@ -33,7 +32,7 @@ const TripsTracking = (props) => {
     visible_dispatch,
     onHide,
     verified,
-    setCountFilter,countFilter,invoiced_countFilter,invoiced_setCountFilter,delivered
+    setCountFilter, countFilter, invoiced_countFilter, invoiced_setCountFilter, delivered
   } = props
 
   const [currentPage, setCurrentPage] = useState(1)
@@ -45,8 +44,8 @@ const TripsTracking = (props) => {
     const trip_list = selectedRows && selectedRows.length > 0 ? selectedRows.map(row => row.id) : []
     setSelectedRowKeys(selectedRowKeys)
     setSelectedTrips(trip_list)
-    delivered ? setCountFilter({ ...countFilter,pod_receipt_count: selectedRows.length }) :
-    invoiced_setCountFilter({ ...invoiced_countFilter,pod_dispatch_count: selectedRows.length })
+    delivered ? setCountFilter({ ...countFilter, pod_receipt_count: selectedRows.length })
+      : invoiced_setCountFilter({ ...invoiced_countFilter, pod_dispatch_count: selectedRows.length })
   }
   const onRemoveTag = (removed) => {
     const trip_list = selectedTrips.filter(t_id => t_id !== removed)
@@ -99,31 +98,29 @@ const TripsTracking = (props) => {
     return { value: data.name, label: data.name }
   })
 
-  const tat=(record) => {
-
+  const tat = (record) => {
     const status = get(record, 'trip_status.name', null)
     const pod_verified = get(record, 'pod_verified_at', null)
     const pod_dispatched = get(record, 'pod_dispatched_at', null)
     let tat = null
-    switch(status)
-    {
-    case 'Delivered':
-      tat = pod_verified?record.pod_verified_tat:record.delivered_tat
-      break
-    case 'Invoiced':
-      tat = pod_dispatched?record.pod_dispatched_tat:record.invoiced_tat
-      break
-    case 'Paid':
-    tat = record.paid_tat
-    break
-    case 'Recieved':
-    tat = record.received_tat
-    break
-    case 'Closed':
-    tat = record.closed_tat
-    break
+    switch (status) {
+      case 'Delivered':
+        tat = pod_verified ? record.pod_verified_tat : record.delivered_tat
+        break
+      case 'Invoiced':
+        tat = pod_dispatched ? record.pod_dispatched_tat : record.invoiced_tat
+        break
+      case 'Paid':
+        tat = record.paid_tat
+        break
+      case 'Recieved':
+        tat = record.received_tat
+        break
+      case 'Closed':
+        tat = record.closed_tat
+        break
     }
-    return parseInt(tat,10)
+    return parseInt(tat, 10)
   }
   const columns = [
     {
@@ -180,7 +177,7 @@ const TripsTracking = (props) => {
       title: 'Partner',
       render: (text, record) => {
         return (
-          <LinkComp type='partners' data={get(record, 'partner.name', null)} id={get(record, 'partner.cardcode', null)} length={12} blank />
+          <PartnerLink type='partners' data={get(record, 'partner.name', null)} id={get(record, 'partner.id', null)} cardcode={get(record, 'partner.cardcode', null)} length={12} />
         )
       },
       filterDropdown: (
@@ -275,10 +272,11 @@ const TripsTracking = (props) => {
       render: (text, record) => tat(record),
       sorter: (a, b) => {
         const status = get(a, 'trip_status.name', null)
-        console.log(trip_status.name);
+        console.log(trip_status.name)
         return status ? (tat(a) > tat(b) ? 1 : -1) : null
       },
-      width: '8%'
+      width: '8%',
+      defaultSortOrder:'descend'
     },
     {
       title: 'Comment',
@@ -290,8 +288,8 @@ const TripsTracking = (props) => {
             <span> {comment.slice(0, 12) + '...'}</span>
           </Tooltip>
         ) : (
-          comment
-        )
+            comment
+          )
       }
     },
     {
@@ -301,7 +299,8 @@ const TripsTracking = (props) => {
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
             </Tooltip>
-          </span>)
+          </span>
+        )
       },
       width: '4%'
     }

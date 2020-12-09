@@ -8,9 +8,9 @@ import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import LinkComp from '../common/link'
 import Truncate from '../common/truncate'
 import Phone from '../common/phone'
-
+import PartnerLink from '../common/PartnerLink'
 const WaitingForLoad = (props) => {
-  const { trucks, loading, onTruckNoSearch, vars } = props
+  const { trucks, loading, onTruckNoSearch, truckNo } = props
   const initial = {
     usersData: [],
     usersVisible: false,
@@ -32,10 +32,10 @@ const WaitingForLoad = (props) => {
     {
       title: 'Truck No',
       dataIndex: 'truck_no',
-      width: '15%',
+      width: '13%',
       sorter: (a, b) => (a.truck_no > b.truck_no ? 1 : -1),
       render: (text, record) => {
-        const truck_type = record.truck_type && record.truck_type.name
+        const truck_type = record.truck_type && record.truck_type.code
         return (
           <LinkComp
             type='trucks'
@@ -48,9 +48,7 @@ const WaitingForLoad = (props) => {
         <div>
           <Input
             placeholder='Search Truck'
-            id='truck'
-            name='truck'
-            value={vars && vars.truck_no}
+            value={truckNo.truck_no}
             onChange={handleTruckNo}
           />
         </div>
@@ -62,16 +60,19 @@ const WaitingForLoad = (props) => {
       width: '14%',
       sorter: (a, b) => (a.partner > b.partner ? 1 : -1),
       render: (text, record) => {
+        const id = record.partner && record.partner.id
         const partner = record.partner && record.partner.name
+        const cardcode = record.partner && record.partner.cardcode
         const membership_id = record.partner && record.partner.partner_memberships && record.partner.partner_memberships.membership_type_id
         return (
           <span>
             <Badge dot style={{ backgroundColor: (membership_id === 1 ? '#FFD700' : '#C0C0C0') }} />
-            <LinkComp
+            <PartnerLink
+              id={id}
               type='partners'
               data={partner}
-              id={record.partner && record.partner.cardcode}
-              length={18}
+              cardcode={cardcode}
+              length={10}
             />
           </span>
         )
@@ -110,14 +111,15 @@ const WaitingForLoad = (props) => {
       title: 'TAT',
       dataIndex: 'tat',
       width: '6%',
-      sorter: (a, b) => (parseInt(a.tat) > parseInt(b.tat) ? 1 : -1)
+      sorter: (a, b) => (parseInt(a.tat)-parseInt(b.tat)),
+      defaultSortOrder: 'descend'
     },
     {
       title: 'Comment',
       render: (text, record) => {
         const comment = record.last_comment && record.last_comment.description
         return (
-          <Truncate data={comment} length={30} />
+          <Truncate data={comment} length={45} />
         )
       },
       width: '27%'
@@ -128,7 +130,7 @@ const WaitingForLoad = (props) => {
         return (
           <span>
             <Tooltip title={record.driver && record.driver.mobile}>
-              <Phone  number={record.driver && record.driver.mobile} icon={true}/>
+              <Phone number={record.driver && record.driver.mobile} icon />
             </Tooltip>
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />

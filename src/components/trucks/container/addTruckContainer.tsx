@@ -1,13 +1,11 @@
 import userContext from '../../../lib/userContaxt'
-import { useState, useContext, useEffect } from 'react'
+import { useState, useContext } from 'react'
 import { Row, Col, Card, message } from 'antd'
 import Link from 'next/link'
 import { gql, useQuery, useMutation } from '@apollo/client'
 
 import get from 'lodash/get'
 import { useRouter } from 'next/router'
-import u from '../../../lib/util'
-import isEmpty from 'lodash/isEmpty'
 import AddTruck from '../addTruck'
 
 const ADD_TRUCK_QUERY = gql`
@@ -24,8 +22,8 @@ query add_truck ( $cardcode: String!){
 }`
 
 const INSERT_ADD_TRUCK_MUTATION = gql`
-mutation add_truck($truck_no:String,  $partner_id: Int!, $breadth:float8,$length:float8,$height:float8,$city_id:Int,$truck_type_id:Int, $driver_id: Int,$created_by:String ,$insurance_expiry_at:timestamp) {
-  insert_truck(objects: {truck_no: $truck_no,breadth: $breadth, height: $height, length: $length,created_by:$created_by, partner_id: $partner_id,  truck_type_id: $truck_type_id, city_id: $city_id, driver_id: $driver_id,insurance_expiry_at:$insurance_expiry_at, truck_status_id: 5}) {
+mutation add_truck($truck_no:String,  $partner_id: Int!,$city_id:Int,$truck_type_id:Int, $driver_id: Int,$created_by:String ,$insurance_expiry_at:timestamp) {
+  insert_truck(objects: {truck_no: $truck_no,created_by:$created_by, partner_id: $partner_id,  truck_type_id: $truck_type_id, city_id: $city_id, driver_id: $driver_id,insurance_expiry_at:$insurance_expiry_at, truck_status_id: 6}) {
     returning {
       id
       truck_no
@@ -40,9 +38,6 @@ const AddTruckContainer = (props) => {
   const router = useRouter()
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
-  const { role } = u
-  const edit_access = [role.admin, role.partner_manager, role.onboarding]
-  const access = u.is_roles(edit_access,context)
 
   const onCityChange = (city_id) => {
     setCity_id(city_id)
@@ -52,11 +47,6 @@ const AddTruckContainer = (props) => {
     setDriver_id(driver_id)
   }
 
-  useEffect(() => {
-    if (!access) {
-      router.push('/')
-    }
-  })
 
   const { loading, error, data } = useQuery(
     ADD_TRUCK_QUERY,
@@ -107,9 +97,6 @@ const AddTruckContainer = (props) => {
       variables: {
         partner_id: partner_info.id,
         city_id: parseInt(city_id, 10),
-        length: parseFloat(form.length),
-        breadth: parseFloat(form.breadth),
-        height: parseFloat(form.height),
         truck_no: (form.truck_no),
         created_by: context.email,
         truck_type_id: parseInt(form.truck_type, 10),

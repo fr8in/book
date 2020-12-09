@@ -119,6 +119,19 @@
   is_roles: (allowed_roles, context) => {
     const result = context.roles.some(role => allowed_roles.includes(role))
     return result
+  },
+  convertToLakhs:(value) =>{
+     const lakh_value =  value ? (value / 100000).toFixed(2) : 0
+     return lakh_value
+  },
+
+  shrinkText:(text,length) =>{
+    return text && text.length > length? text.slice(0, length) + '...': text
+  },
+
+  convertToNumber:(value) =>{
+    const number = value ? value * 100000 :0
+    return number
   }
 }
 

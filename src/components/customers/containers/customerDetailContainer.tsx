@@ -5,6 +5,8 @@ import {
   FileDoneOutlined,
   WalletOutlined,
   PlusOutlined,
+  CodeOutlined,
+  MailOutlined
 } from '@ant-design/icons'
 import useShowHide from '../../../hooks/useShowHide'
 import AccStmtMail from '../stmtMail'
@@ -17,7 +19,7 @@ import Transfer from '../transfer'
 import Rebate from '../rebate'
 import WalletTopup from '../walletTopup'
 import WalletBalance from '../walletBalance'
- import PendingPayments from '../pendingPayments'
+import PendingPayments from '../pendingPayments'
 import CustomerTrips from '../customerTrips'
 import CustomerClosedTrips from '../customerClosedTrips'
 import IncomingPayments from '../incomingPayments'
@@ -34,10 +36,13 @@ import CustomerComment from '../customerComment'
 import isEmpty from 'lodash/isEmpty'
 import TransferHistory from '../transferToBankHistory'
 
+import AssignToConfirm from '../assignToConfirm'
 // Apollo Client
 import { useSubscription } from '@apollo/client'
 import { CUSTOMER_DETAIL_SUBSCRIPTION } from './query/cutomerDetailSubscription'
 import Loading from '../../common/loading'
+import AdvancePending from '../../trips/advancePending'
+import ReportEmail from '../reportEmail'
 
 const { TabPane } = Tabs
 
@@ -49,21 +54,23 @@ const recieved = ['Recieved', 'Closed']
 const CustomerDetailContainer = (props) => {
   const { cardcode } = props
   const initial = {
+    confirm: false,
     transfer: false,
     rebate: false,
     wallet: false,
     addUser: false,
-    addBranch: false
+    addBranch: false,
+    reportMail: false,
   }
   const { visible, onShow, onHide } = useShowHide(initial)
   const { role } = u
   const customerNameEdit = [role.admin, role.accounts_manager, role.accounts]
-  const BlacklistEdit = [role.admin, role.accounts_manager, role.accounts,role.bm,role.rm,role.partner_manager,role.partner_support,role.onboarding]
+ const BlacklistEdit = [role.admin, role.accounts_manager, role.accounts, role.bm, role.rm, role.partner_manager, role.partner_support, role.onboarding]
   const context = useContext(userContext)
   const ad_am = [role.admin, role.accounts_manager]
   const customer_edit_role = [role.admin, role.accounts_manager, role.accounts, role.billing, role.billing_manager]
-  const transferAccess = u.is_roles(ad_am,context)
-  const customer_access = u.is_roles(customer_edit_role,context)
+  const transferAccess = u.is_roles(ad_am, context)
+  const customer_access = u.is_roles(customer_edit_role, context)
 
   const variables = {
     cardcode: cardcode,
@@ -93,6 +100,7 @@ const CustomerDetailContainer = (props) => {
   const invoiced_count = get(customer_info, 'invoiced.aggregate.count', 0)
   const recieved_count = get(customer_info, 'recieved.aggregate.count', 0)
   const incoming_count = get(customer_info, 'incoming.aggregate.count', 0)
+  const advance_pending_count = get(customer_info, 'advancePending.aggregate.count', 0)
 
   return (
     loading ? <Loading /> : (
@@ -125,7 +133,16 @@ const CustomerDetailContainer = (props) => {
                       <p className='tinyAction'>Statement</p>
                     </div> */}
                         <Space>
-                          { transferAccess ?
+                          { transferAccess ? (
+                          <div className='text-center'>
+                          <Button
+                            icon={<CodeOutlined />}
+                            shape='circle'
+                            onClick={() => onShow('confirm')}
+                          />
+                          <p className='tinyAction'>Confirm</p>
+                        </div> ) : null}
+                        { customerNameEdit ? (
                           <div className='text-center'>
                             <Button
                               icon={<BankFilled />}
@@ -133,9 +150,14 @@ const CustomerDetailContainer = (props) => {
                               onClick={() => onShow('transfer')}
                             />
                             <p className='tinyAction'>Transfer</p>
-                          </div> :null }
+                        </div> ) : null}
                           {customerNameEdit
                       ? (
+                          <div className='text-center'>
+                      <Button icon={<MailOutlined />} shape='circle' onClick={() => onShow('reportMail')} />
+                      <p className='tinyAction'>Email</p>
+                    </div> ): null}
+                    { customerNameEdit ? (
                           <div className='text-center'>
                             <Button
                               icon={<FileDoneOutlined />}
@@ -159,7 +181,7 @@ const CustomerDetailContainer = (props) => {
                       : null}
                     <WalletBalance wallet_balance={get(customer_info, 'customer_accounting.wallet_balance', 0)} cardcode={cardcode} />
                     <Blacklist
-                     customer_info={customer_info}
+                      customer_info={customer_info}
                       statusId={get(customer_info, 'status.id', null)}
                       edit_access={BlacklistEdit}
                     />
@@ -173,17 +195,18 @@ const CustomerDetailContainer = (props) => {
               <Col xs={24}>
                 <Card size='small' className='card-body-0 border-top-blue'>
                   <Tabs defaultActiveKey='1'>
-                    <TabPane
-                      tab={<TitleWithCount name='On-going' value={ongoing_count} />}
-                      key='1'
-                    >
-                      <CustomerTrips cardcode={cardcode} status_names={ongoing} />
+                    <TabPane tab='Payments' key='1'>
+                      <Row className='p10'>
+                        <Col xs={24} sm={24} md={24}>
+                          <PendingPayments customer_info={customer_info} />
+                        </Col>
+                      </Row>
                     </TabPane>
                     <TabPane
-                      tab={<TitleWithCount name='Delivered' value={delivered_count} />}
+                      tab={<TitleWithCount name='Advance Pending' value={advance_pending_count}/>}
                       key='2'
                     >
-                      <CustomerTrips cardcode={cardcode} status_names={delivered} delivered />
+                      <AdvancePending cardcode={cardcode}/>
                     </TabPane>
                     <TabPane
                       tab={<TitleWithCount name='Invoiced' value={invoiced_count} />}
@@ -192,18 +215,30 @@ const CustomerDetailContainer = (props) => {
                       <CustomerTrips cardcode={cardcode} status_names={invoiced} />
                     </TabPane>
                     <TabPane
-                      tab={<TitleWithCount name='Recieved' value={recieved_count} />}
+                      tab={<TitleWithCount name='On-going' value={ongoing_count} />}
                       key='4'
+                    >
+                      <CustomerTrips cardcode={cardcode} status_names={ongoing} />
+                    </TabPane>
+                    <TabPane
+                      tab={<TitleWithCount name='Delivered' value={delivered_count} />}
+                      key='5'
+                    >
+                      <CustomerTrips cardcode={cardcode} status_names={delivered} delivered />
+                    </TabPane>
+                    <TabPane
+                      tab={<TitleWithCount name='Recieved' value={recieved_count} />}
+                      key='6'
                     >
                       <CustomerClosedTrips cardcode={cardcode} />
                     </TabPane>
                     <TabPane
                       tab={<TitleWithCount name='Incoming' value={incoming_count} />}
-                      key='5'
+                      key='7'
                     >
                       <IncomingPayments cardcode={cardcode} id={customer_info && customer_info.id} />
                     </TabPane>
-                    <TabPane tab='Users' key='6'>
+                    <TabPane tab='Users' key='8'>
                       <Row justify='end' className='m5'>
                         {customer_access ? (
                           <Button type='primary' onClick={() => onShow('addUser')}>
@@ -212,7 +247,7 @@ const CustomerDetailContainer = (props) => {
                       </Row>
                       <Users cardcode={cardcode} customer_id={customer_info && customer_info.id} edit_access={customer_edit_role} />
                     </TabPane>
-                    <TabPane tab='Branch' key='7'>
+                    <TabPane tab='Branch' key='9'>
                       <Row justify='end' className='m5'>
                         {customer_access ? (
                           <Button
@@ -224,20 +259,17 @@ const CustomerDetailContainer = (props) => {
                       </Row>
                       <Branch cardcode={cardcode} edit_access={customer_edit_role} customer_id={customer_info && customer_info.id} />
                     </TabPane>
-                    <TabPane tab='FR8 Branch' key='8'>
+                    <TabPane tab='FR8 Branch' key='10'>
                       <Fr8Branch cardcode={cardcode} id={customer_info && customer_info.id} />
                     </TabPane>
-                    <TabPane tab='Details' key='9'>
+                    <TabPane tab='Details' key='11'>
                       <Row className='p10'>
-                        <Col xs={24} sm={24} md={12}>
+                        <Col xs={24} sm={24} md={24}>
                           <CustomerDetails customer_info={customer_info} loading={loading} />
-                        </Col>
-                        <Col xs={24} sm={24} md={12}>
-                          <PendingPayments customer_info={customer_info} />
                         </Col>
                       </Row>
                     </TabPane>
-                    <TabPane tab='Comment' key='10'>
+                    <TabPane tab='Comment' key='12'>
                       <div className='p10'>
                         <CustomerComment customer_id={customer_info.id} loading={loading} detailPage />
                       </div>
@@ -253,6 +285,13 @@ const CustomerDetailContainer = (props) => {
               )}
               {visible.addBranch && (
                 <CustomerBranch visible={visible.addBranch} onHide={onHide} customer_id={customer_info && customer_info.id} />
+              )}
+              {visible.confirm && (
+                <AssignToConfirm
+                  visible={visible.confirm}
+                  id={customer_info.id}
+                  onHide={onHide}
+                />
               )}
               {visible.transfer && (
                 <Transfer
@@ -280,6 +319,7 @@ const CustomerDetailContainer = (props) => {
               {visible.showModal && (
                 <AccStmtMail visible={visible.showModal} onHide={onHide} />
               )}
+              {visible.reportMail && <ReportEmail visible={visible.reportMail} onHide={onHide} cardcode={cardcode} />}
             </Row>
           </Card>
         </Col>

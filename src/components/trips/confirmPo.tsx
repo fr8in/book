@@ -32,7 +32,6 @@ query po_query($id: Int!, $cus_id: Int!){
     id
     cardcode
     name
-    exception_date
     managed
     customer_advance_percentage{
       id
@@ -248,7 +247,21 @@ const ConfirmPo = (props) => {
 
   const onIsToPayChange = (e) => {
     setIsToPay(e.target.checked)
-    form.resetFields()
+    form.resetFields(isToPay ?
+      ['trip_rate_type',
+        'price_per_ton', 'ton',
+        'customer_price',
+        'partner_price_total',
+        'customer_to_partner_total',
+        'to_pay_cash', 'to_pay_balance']
+      :
+      ['trip_rate_type',
+        'price_per_ton', 'ton',
+        'customer_price',
+        'partner_price', 'p_total',
+        'cash', 'to_pay', 'total',
+        'bank', 'balance', 'fp_total',
+        'wallet', 'fp_balance'])
   }
   const partner_name = get(po_data, 'partner.name', '-')
   const trip_id = get(record, 'id', null)

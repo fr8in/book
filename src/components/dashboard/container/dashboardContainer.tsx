@@ -1,4 +1,5 @@
-import { Row, Col, Card, Tabs,Space, Button} from 'antd'
+import { Row, Col, Card, Tabs,Space, Button,Checkbox} from 'antd'
+import { useState } from 'react'
 import TripsContainer from './dashboardTripsContainer'
 import TripsByDestination from '../../trips/tripsByDestination'
 import { CarOutlined,DashboardOutlined,InsertRowAboveOutlined } from '@ant-design/icons'
@@ -15,15 +16,19 @@ import Revenue from '../../reports/revenue'
 import Progress from '../../reports/progress'
 import moment from 'moment'
 import WeeklyBranchTarget from '../../partners/weeklyBranchTarget'
+import AdvancePending from '../../trips/dashboardAdvancePending'
+
 const { TabPane } = Tabs
 
 const DashboardContainer = (props) => {
   const { filters } = props
   const initial = { excessLoad: false,orders:false,Staticticsdata:false }
   const { visible, onShow, onHide } = useShowHide(initial)
+  const [dndCheck,setDndCheck] = useState(false)
+  const date = new Date(new Date().getFullYear(), 0, 1);
 
   const variables = {
-    now: moment().format('YYYY-MM-DD'),
+    now: moment(date).format('YYYY-MM-DD'),
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
     branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
     cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
@@ -31,7 +36,6 @@ const DashboardContainer = (props) => {
     managers: (filters.managers && filters.managers.length > 0) ? filters.managers : null
   }
   const { loading, data, error } = useQuery(DASHBOAD_QUERY, { variables })
-
 
   let unloading_count = 0
   let assigned_count = 0
@@ -44,10 +48,13 @@ const DashboardContainer = (props) => {
   let hold_count = 0
   let truck_count = 0
   let truck_current_count = 0
+  let adv_pending_count = 0
 
   if (!loading) {
     const newData = { data }
 
+    const adv_pending_aggrigate = _.chain(newData).flatMap('adv_pending').flatMap('aggregate').value()
+    adv_pending_count = _.sumBy(adv_pending_aggrigate, 'count')
     const unloading_aggrigate = _.chain(newData).flatMap('unloading').flatMap('aggregate').value()
     unloading_count = _.sumBy(unloading_aggrigate, 'count')
 
@@ -84,6 +91,10 @@ const DashboardContainer = (props) => {
 
   const truck_tab_disable = !!((filters.branches && filters.branches.length === 0) || filters.branches === null)
 
+const onDndChange = (e) =>{
+  setDndCheck(e.target.checked)
+}
+
   return (
     <Row>
       <Col xs={24}>
@@ -110,6 +121,7 @@ const DashboardContainer = (props) => {
                 defaultActiveKey='2'
                 tabBarExtraContent={
                     <Space>
+                  <Checkbox defaultChecked={dndCheck} onChange={onDndChange} >DND</Checkbox>
                   <Button size='small' type='primary' shape='circle' icon={<DashboardOutlined />} onClick={() => onShow('Staticticsdata')} /> 
                   <Button size='small' type='primary' shape='circle' icon={<InsertRowAboveOutlined />} onClick={() => onShow('orders')}  /> 
                   <Button size='small' type='primary' shape='circle' icon={<CarOutlined />} onClick={() => onShow('excessLoad')} />
@@ -120,7 +132,7 @@ const DashboardContainer = (props) => {
                   <TripsContainer filters={filters} trip_status='Reported at destination' />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='WF.Load' value={truck_current_count + '/' + truck_count} />} key='2'>
-                {truck_tab_disable ? <Row justify='center'> Use Filter to get Data </Row>: <WaitingForLoadContainer filters={filters} />}
+                {truck_tab_disable ? <Row justify='center'> Use Filter to get Data </Row>: <WaitingForLoadContainer filters={filters} dndCheck={dndCheck}/>}
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Assigned' value={assigned_count} />} key='3'>
                   <TripsContainer filters={filters} trip_status='Assigned' />
@@ -145,6 +157,9 @@ const DashboardContainer = (props) => {
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Hold' value={hold_count} />} key='10'>
                   <TripsContainer filters={filters} trip_status='Intransit halting' />
+                </TabPane>
+                <TabPane tab={<TitleWithCount name='ADV.Pending' value={adv_pending_count} />} key='11'>
+                  <AdvancePending   filters={filters}/>
                 </TabPane>
               </Tabs>
             </Card>
