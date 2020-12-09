@@ -42,7 +42,7 @@ const AdditionalAdvance = (props) => {
     variables: { trip_id: { _eq: ad_trip_id } }
   })
 
-  console.log('Additional advance error', error, data, excessLoading, excessData)
+  console.log('Additional advance error', error, data, excessLoading,excessError, excessData)
 
   var _data = {}
   if (!loading) {
