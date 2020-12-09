@@ -42,7 +42,7 @@ const AdditionalAdvance = (props) => {
     variables: { trip_id: { _eq: ad_trip_id } }
   })
 
-  console.log('Additional advance error', error, data, excessLoading, excessData)
+  console.log('Additional advance error', error, data, excessLoading,excessError, excessData)
 
   var _data = {}
   if (!loading) {
@@ -61,7 +61,7 @@ const AdditionalAdvance = (props) => {
   const additionalAdvance = get(_data, 'advance_additional_advance', [])
   const excessAdvance = get(_excessData, 'advance_excess_advance', [])
   const list = [...additionalAdvance, ...excessAdvance]
-
+  
   const columns = [
     {
       title: 'Type',
@@ -98,7 +98,7 @@ const AdditionalAdvance = (props) => {
   ]
   return (
     <div className='additonalAdv'>
-      {!isEmpty(additionalAdvance) ? (
+      {!isEmpty(additionalAdvance) || !isEmpty(excessAdvance)? (
         <Table
           columns={columns}
           dataSource={list}
