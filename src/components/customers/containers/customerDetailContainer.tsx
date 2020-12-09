@@ -65,13 +65,13 @@ const CustomerDetailContainer = (props) => {
   const { visible, onShow, onHide } = useShowHide(initial)
   const { role } = u
   const customerNameEdit = [role.admin, role.accounts_manager, role.accounts]
- const BlacklistEdit = [role.admin, role.accounts_manager, role.accounts, role.bm, role.rm, role.partner_manager, role.partner_support, role.onboarding]
+  const BlacklistEdit = [role.admin, role.accounts_manager, role.accounts, role.bm, role.rm, role.partner_manager, role.partner_support, role.onboarding]
   const context = useContext(userContext)
   const ad_am = [role.admin, role.accounts_manager]
   const customer_edit_role = [role.admin, role.accounts_manager, role.accounts, role.billing, role.billing_manager]
   const transferAccess = u.is_roles(ad_am, context)
   const customer_access = u.is_roles(customer_edit_role, context)
-
+  const createtransfer = u.is_roles(customerNameEdit, context)
   const variables = {
     cardcode: cardcode,
     ongoing: ongoing,
@@ -124,42 +124,41 @@ const CustomerDetailContainer = (props) => {
                 }
                 extra={
                   <Space>
-                        
-                          { transferAccess ? (
-                          <div className='text-center'>
+                    {transferAccess ? (
+                      <div className='text-center'>
+                        <Button
+                          icon={<CodeOutlined />}
+                          shape='circle'
+                          onClick={() => onShow('confirm')}
+                        />
+                        <p className='tinyAction'>Confirm</p>
+                      </div>) : null}
+                    {createtransfer ? (
+                      <div className='text-center'>
+                        <Button
+                          icon={<BankFilled />}
+                          shape='circle'
+                          onClick={() => onShow('transfer')}
+                        />
+                        <p className='tinyAction'>Transfer</p>
+                      </div>) : null}
+                    {transferAccess ? (
+                      <>
+                        <div className='text-center'>
+                          <Button icon={<MailOutlined />} shape='circle' onClick={() => onShow('reportMail')} />
+                          <p className='tinyAction'>Email</p>
+                        </div>
+                        <div className='text-center'>
                           <Button
-                            icon={<CodeOutlined />}
+                            icon={<FileDoneOutlined />}
                             shape='circle'
-                            onClick={() => onShow('confirm')}
+                            onClick={() => onShow('rebate')}
                           />
-                          <p className='tinyAction'>Confirm</p>
-                        </div> ) : null}
-                        { customerNameEdit ? (
-                          <div className='text-center'>
-                            <Button
-                              icon={<BankFilled />}
-                              shape='circle'
-                              onClick={() => onShow('transfer')}
-                            />
-                            <p className='tinyAction'>Transfer</p>
-                        </div> ): null}
-                        { transferAccess ? (
-                          <>
-                          <div className='text-center'>
-                      <Button icon={<MailOutlined />} shape='circle' onClick={() => onShow('reportMail')} />
-                      <p className='tinyAction'>Email</p>
-                    </div> 
-                          <div className='text-center'>
-                            <Button
-                              icon={<FileDoneOutlined />}
-                              shape='circle'
-                              onClick={() => onShow('rebate')}
-                            />
-                            <p className='tinyAction'>Excess</p>
-                          </div>
-                          </>
-                       ) : null}
-                       
+                          <p className='tinyAction'>Excess</p>
+                        </div>
+                      </>
+                    ) : null}
+
                     {customer_access ? (
                       <div className='text-center'>
                         <Button
@@ -194,10 +193,10 @@ const CustomerDetailContainer = (props) => {
                       </Row>
                     </TabPane>
                     <TabPane
-                      tab={<TitleWithCount name='Advance Pending' value={advance_pending_count}/>}
+                      tab={<TitleWithCount name='Advance Pending' value={advance_pending_count} />}
                       key='2'
                     >
-                      <AdvancePending cardcode={cardcode}/>
+                      <AdvancePending cardcode={cardcode} />
                     </TabPane>
                     <TabPane
                       tab={<TitleWithCount name='Invoiced' value={invoiced_count} />}
@@ -266,7 +265,7 @@ const CustomerDetailContainer = (props) => {
                       </div>
                     </TabPane>
                     <TabPane tab='Mamul Transfer' key='13' >
-                         <TransferToBankHistory cardcode={cardcode} loading={loading}/>
+                      <TransferToBankHistory cardcode={cardcode} loading={loading} status={["APPROVED","REJECTED","PENDING"]} />
                     </TabPane>
                   </Tabs>
                 </Card>
