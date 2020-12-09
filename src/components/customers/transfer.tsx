@@ -132,14 +132,13 @@ const Transfer = (props) => {
  const totalAmount = totalAmountapproved+amount
 console.log("totalAmount,",totalAmount)
   const onSubmit = (form) => {
-    if ( amount > 5000 ){
-      setDisableButton(false)
-      message.error('Transaction Amount is Greater Than ₹5000 for this Trip')
-    } else if( count !== 1){
+    if( !count ){
       message.error('Trip not releated to customer')
     }
-    else if (totalAmount > 5000){ message.error('Not Eligible For Transaction')}
-    else if (amount > 1) {
+    else if (totalAmount > 5000 || amount < 1 ){ 
+      message.error('Transaction Amount Should be Greater than ₹1 Or Lesser Than ₹5000 for this Trip ')
+    }
+    else {
       setDisableButton(true)
       customer_mamul_transfer({
         variables: {
@@ -157,7 +156,7 @@ console.log("totalAmount,",totalAmount)
           status:"PENDING"
         }
       })
-    } else { message.error('Enter the valid amount') }
+    } 
   }
 
   const selectOnchange = (selectedRowKeys, selectedRows) => {

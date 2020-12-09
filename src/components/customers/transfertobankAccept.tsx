@@ -28,7 +28,7 @@ mutation approvecustomermamultransfer ($approved_by:String!,$id:Int!,$approved_a
   }
 }`
 
-const Approve = (props) => {
+const TransferToBankAccept = (props) => {
   const { visible, onHide, item_id, title } = props
  
   const context = useContext(userContext)
@@ -183,4 +183,4 @@ const Approve = (props) => {
   )
 }
 
-export default Approve
+export default TransferToBankAccept

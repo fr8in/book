@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Table,Tooltip} from 'antd'
 import Truncate from '../common/truncate'
 import { gql,  useSubscription } from '@apollo/client'
@@ -6,9 +6,9 @@ import get from 'lodash/get'
 import moment from 'moment'
 import LinkComp from '../common/link'
 
-const APPROVED_REJECTED_SUBSCRIPTION = gql`
-subscription customerTransfertoBank_history($cardcode:String) {
-  customer_wallet_outgoing(where:{card_code:{_eq:$cardcode}status:{_in:["APPROVED","REJECTED"]}}){
+const TRANSFER_TO_BANK_HISTORY = gql`
+subscription customerTransfertoBank_history($cardcode:String,$status:[String!]) {
+  customer_wallet_outgoing(where:{card_code:{_eq:$cardcode}status:{_in:$status}}){
     id
     card_code
     load_id
@@ -33,13 +33,14 @@ subscription customerTransfertoBank_history($cardcode:String) {
 }`
 
 
-const ApprovedAndRejected = (props) => {
+const TransferToBankHistory = (props) => {
  const {cardcode} =props
-
+const status = ["APPROVED","REJECTED"]
   const { loading, error, data } = useSubscription(
-    APPROVED_REJECTED_SUBSCRIPTION,{
+    TRANSFER_TO_BANK_HISTORY,{
     variables:{
-      cardcode:cardcode
+      cardcode:cardcode,
+      status:status
     }
 }
   )
@@ -50,7 +51,7 @@ const ApprovedAndRejected = (props) => {
   }
   const approvedAndRejected = get(_data,'customer_wallet_outgoing', null)
   
-  const ApprovalPending = [
+  const ApproveandRejectHistory = [
     {
       title: 'Customer Name',
       width: '15%',
@@ -161,7 +162,7 @@ const ApprovedAndRejected = (props) => {
   return (
     <>
       <Table
-        columns={ApprovalPending}
+        columns={ApproveandRejectHistory}
         dataSource={approvedAndRejected}
         rowKey={(record) => record.id}
         loading={loading}
@@ -173,4 +174,4 @@ const ApprovedAndRejected = (props) => {
   )
 }
 
-export default ApprovedAndRejected
+export default TransferToBankHistory

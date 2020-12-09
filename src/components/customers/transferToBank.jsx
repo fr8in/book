@@ -1,13 +1,12 @@
-import { Table,  Tooltip, Button, Space, Modal } from 'antd'
+import { Table,  Tooltip, Button, Space } from 'antd'
 import {
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
-import { useState,  useContext } from 'react'
+import { useContext } from 'react'
 import Truncate from '../common/truncate'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
-import Comment from './customerComment'
-import Approve from './transfertobankAccept'
+import TransferToBankAccept from './transfertobankAccept'
 import { gql,  useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
@@ -42,23 +41,19 @@ subscription customerWalletOutgoing {
 
 const TransfertoBank = () => {
   const { role } = u
-  const access = [role.admin, role.accounts_manager]
+  const context = useContext(userContext)
   const approve_roles = [role.admin, role.accounts_manager]
+  const approval_access = u.is_roles(approve_roles, context)
   const reject_roles = [role.admin, role.accounts_manager]
+  const rejected_access = u.is_roles(reject_roles, context)
   const initial = {
-    commentData: [],
-    commentVisible: false,
     approveData: [],
     approveVisible: false,
     title: null
   }
 
-  const context = useContext(userContext)
-  const approval_access = u.is_roles(approve_roles, context)
-  const rejected_access = u.is_roles(reject_roles, context)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
-  const [filter, setFilter] = useState(initial)
-
+  
   const { loading, error, data } = useSubscription(
     TRANSFER_SUBSCRIPTION)
 
@@ -171,22 +166,8 @@ const TransfertoBank = () => {
         className='withAction'
         loading={loading}
       />
-      {object.commentVisible && (
-        <Modal
-          title='Comments'
-          visible={object.commentVisible}
-          onCancel={handleHide}
-          bodyStyle={{ padding: 10 }}
-          footer={null}
-        >
-          <Comment
-            customer_id={object.commentData}
-            onHide={handleHide}
-          />
-        </Modal>
-      )}
       {object.approveVisible && (
-        <Approve
+        <TransferToBankAccept
           visible={object.approveVisible}
           onHide={handleHide}
           item_id={object.approveData}
