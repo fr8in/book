@@ -134,7 +134,7 @@ console.log("totalAmount,",totalAmount)
   const onSubmit = (form) => {
     if ( amount > 5000 ){
       setDisableButton(false)
-      message.error('Transaction Amount is Greater Than ₹5000')
+      message.error('Transaction Amount is Greater Than ₹5000 for this Trip')
     } else if( count !== 1){
       message.error('Trip not releated to customer')
     }
