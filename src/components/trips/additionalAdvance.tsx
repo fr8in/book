@@ -3,7 +3,6 @@ import { Table } from 'antd'
 import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
-import moment from 'moment'
 
 const ADDITIONAL_ADVANCE_QUERY = gql`subscription additional_advance($trip_id: Int_comparison_exp!) {
   advance_additional_advance(where: {trip_id: $trip_id}) {
@@ -18,6 +17,19 @@ const ADDITIONAL_ADVANCE_QUERY = gql`subscription additional_advance($trip_id: I
   }
 }`
 
+const EXCESS_ADVANCE_QUERY = gql`subscription excess_advance($trip_id: Int_comparison_exp!) {
+  advance_excess_advance(where: {status: {_eq: "COMPLETED"}, trip_id: $trip_id}) {
+    id
+    trip_id
+    amount:eligible_advance
+    comment
+    created_at
+    created_by
+    status
+  }
+}
+`
+
 const AdditionalAdvance = (props) => {
   const { loaded, ad_trip_id, advanceRefetch, setAdvanceRefetch } = props
   const { loading, error, data } = useSubscription(
@@ -25,13 +37,21 @@ const AdditionalAdvance = (props) => {
     variables: { trip_id: { _eq: ad_trip_id } }
   })
 
-  console.log('Additional advance error', error, data)
+  const { loading: excessLoading, error: excessError, data: excessData } = useSubscription(
+    EXCESS_ADVANCE_QUERY, {
+    variables: { trip_id: { _eq: ad_trip_id } }
+  })
+
+  console.log('Additional advance error', error, data, excessLoading,excessError, excessData)
 
   var _data = {}
   if (!loading) {
     _data = data
   }
-
+  let _excessData = {}
+  if (!excessLoading) {
+    _excessData = excessData
+  }
   useEffect(() => {
     if (advanceRefetch) {
       setAdvanceRefetch(false)
@@ -39,12 +59,15 @@ const AdditionalAdvance = (props) => {
   }, [advanceRefetch])
 
   const additionalAdvance = get(_data, 'advance_additional_advance', [])
-
+  const excessAdvance = get(_excessData, 'advance_excess_advance', [])
+  const list = [...additionalAdvance, ...excessAdvance]
+  
   const columns = [
     {
       title: 'Type',
       dataIndex: 'payment_mode',
-      width: '8%'
+      width: '8%',
+      render:(text)=>text ? text : "WALLET"
     },
     {
       title: 'Amount',
@@ -75,10 +98,10 @@ const AdditionalAdvance = (props) => {
   ]
   return (
     <div className='additonalAdv'>
-      {!isEmpty(additionalAdvance) ? (
+      {!isEmpty(additionalAdvance) || !isEmpty(excessAdvance)? (
         <Table
           columns={columns}
-          dataSource={additionalAdvance}
+          dataSource={list}
           rowKey={record => record.id}
           size='small'
           scroll={{ x: 960 }}

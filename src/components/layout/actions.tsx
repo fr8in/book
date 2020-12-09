@@ -61,7 +61,7 @@ query gloabl_filter($now: timestamp, $regions:[Int!], $branches:[Int!], $cities:
           }
           trucks_current: trucks_aggregate(where: {
             _and: [
-                {available_at: {_gte: $now}},
+                {available_at: {_lte: $now}},
                 {truck_status: {name: {_eq: "Waiting for Load"}}}, 
                 {partner:{partner_status:{name:{_eq:"Active"}}}}
               ],

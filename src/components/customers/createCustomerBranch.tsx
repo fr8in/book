@@ -15,7 +15,7 @@ const CUSTOMER_BRANCH_QUERY = gql`
   }
 `
 const INSERT_CUSTOMER_BRANCH_MUTATION = gql`
-mutation customer_branch_insert($description: String, $topic: String, $customer_id: Int, $created_by: String,$address: String, $id: Int!, $branch_name: String, $mobile: String, $name: String, $pincode: Int, $state_id: Int,$state:String, $city_id: Int,$city:String) {
+mutation customer_branch_insert($description: String, $topic: String, $customer_id: Int, $created_by: String,$address: String, $id: Int!, $branch_name: String, $mobile: String, $name: String, $pincode: String, $state_id: Int,$state:String, $city_id: Int,$city:String) {
   insert_customer_comment(objects: {description: $description, customer_id: $customer_id, topic: $topic, created_by: $created_by}) {
     returning {
       description
@@ -30,7 +30,7 @@ mutation customer_branch_insert($description: String, $topic: String, $customer_
 }
 `
 const UPDATE_CUSTOMER_BRANCH_MUTATION = gql`
-mutation customer_branch_update($description: String, $topic: String, $customer_id: Int, $created_by: String,$address: String, $id: Int!, $branch_name: String, $mobile: String, $name: String, $pincode: Int, $state_id: Int,$state:String, $city_id: Int,$city:String) {
+mutation customer_branch_update($description: String, $topic: String, $customer_id: Int, $created_by: String,$address: String, $id: Int!, $branch_name: String, $mobile: String, $name: String, $pincode: String, $state_id: Int,$state:String, $city_id: Int,$city:String) {
   insert_customer_comment(objects: {description: $description, customer_id: $customer_id, topic: $topic, created_by: $created_by}) {
     returning {
       description
