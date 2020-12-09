@@ -34,8 +34,8 @@ subscription customerTransfertoBank_history($cardcode:String,$status:[String!]) 
 
 
 const TransferToBankHistory = (props) => {
- const {cardcode} =props
-const status = ["APPROVED","REJECTED"]
+ const {cardcode,status} =props
+
   const { loading, error, data } = useSubscription(
     TRANSFER_TO_BANK_HISTORY,{
     variables:{

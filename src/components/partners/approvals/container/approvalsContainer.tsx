@@ -20,7 +20,7 @@ const Approvals = () => {
           <TransferToBank />
         </TabPane>
         <TabPane tab='History' key='4'>
-         <TransferToBankHistory />
+         <TransferToBankHistory status={["APPROVED","REJECTED"]}/>
         </TabPane>
       </Tabs>
     </Card>

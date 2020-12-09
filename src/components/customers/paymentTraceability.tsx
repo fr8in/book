@@ -6,6 +6,7 @@ import get from 'lodash/get'
 import WalletTopup from './walletTopup'
 import useShowHide from '../../hooks/useShowHide'
 import _ from 'lodash'
+import u from '../../lib/util'
 
 const INCOMING_PAYMENT = gql`
 query customer_incoming($walletcode: String!) {
@@ -49,9 +50,15 @@ const PaymentTraceability = (props) => {
 
   const onAmountChange = (e, balance) => {
     const value = parseFloat(e.target.value) || null
+    console.log('e',e.target.value)
     if (value > balance) {
       message.error(`Don't enter more than ₹${balance}`)
-    } else {
+    } else if (value < 0 ) 
+    { message.error(`Enter the valid amount`) 
+  } else if (u.floatcheck(value)) {
+      { message.error(`Don't enter Decimal ${value}`) }
+    }
+    else {
       setAmount(value)
       if (form) {
         form.setFieldsValue({ amount: value })

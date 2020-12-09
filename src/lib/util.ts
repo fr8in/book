@@ -132,7 +132,10 @@
   convertToNumber:(value) =>{
     const number = value ? value * 100000 :0
     return number
-  }
+  },
+  floatcheck:(value) => { 
+    return (value % 1 !== 0); 
+} 
 }
 
 export default util
