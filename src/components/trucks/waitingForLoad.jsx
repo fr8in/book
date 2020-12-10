@@ -147,10 +147,7 @@ const WaitingForLoad = (props) => {
               <Phone number={get(record, 'driver.mobile',null)} icon />
             </Tooltip>
             <Tooltip title='Comment'>
-            waiting for load
-
-
-<Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
+              <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
             </Tooltip>
             {/* <Tooltip title='click to copy message'>
               <Button type='link' icon={<WhatsAppOutlined />} />
