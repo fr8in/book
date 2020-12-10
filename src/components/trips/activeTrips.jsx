@@ -216,8 +216,8 @@ const Trips = (props) => {
 
         return (
           <span>
-            <Tooltip title={get(record, 'partner.partner_users[0].mobile', 0)}>
-              <a><Phone number={get(record, 'partner.partner_users[0].mobile', 0)} icon /></a>
+            <Tooltip title={get(record, 'partner.partner_users[0].mobile', null)}>
+              <a><Phone number={get(record, 'partner.partner_users[0].mobile', null)} icon /></a>
             </Tooltip>
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
