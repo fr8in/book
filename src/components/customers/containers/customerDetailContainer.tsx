@@ -142,10 +142,11 @@ const CustomerDetailContainer = (props) => {
                         />
                         <p className='tinyAction'>Transfer</p>
                       </div>) : null}
-                        <div className='text-center'>
-                          <Button icon={<MailOutlined />} shape='circle' onClick={() => onShow('reportMail')} />
-                          <p className='tinyAction'>Email</p>
-                        </div>
+                      <div className='text-center'>
+                        <Button icon={<MailOutlined />} shape='circle' onClick={() => onShow('reportMail')} />
+                        <p className='tinyAction'>Email</p>
+                      </div>
+                      {transferAccess ? (
                         <div className='text-center'>
                           <Button
                             icon={<FileDoneOutlined />}
@@ -154,6 +155,8 @@ const CustomerDetailContainer = (props) => {
                           />
                           <p className='tinyAction'>Excess</p>
                         </div>
+                      ) : null}
+
                     {customer_access ? (
                       <div className='text-center'>
                         <Button
