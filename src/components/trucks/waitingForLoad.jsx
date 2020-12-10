@@ -8,6 +8,7 @@ import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import LinkComp from '../common/link'
 import Truncate from '../common/truncate'
 import Phone from '../common/phone'
+import get from 'lodash/get'
 import PartnerLink from '../common/PartnerLink'
 const WaitingForLoad = (props) => {
   const { trucks, loading, onTruckNoSearch, truckNo } = props
@@ -32,10 +33,10 @@ const WaitingForLoad = (props) => {
     {
       title: 'Truck No',
       dataIndex: 'truck_no',
-      width: '13%',
+      width: '14%',
       sorter: (a, b) => (a.truck_no > b.truck_no ? 1 : -1),
       render: (text, record) => {
-        const truck_type = record.truck_type && record.truck_type.code
+        const truck_type = get(record,'truck_type.code',null)
         return (
           <LinkComp
             type='trucks'
@@ -60,10 +61,11 @@ const WaitingForLoad = (props) => {
       width: '14%',
       sorter: (a, b) => (a.partner > b.partner ? 1 : -1),
       render: (text, record) => {
-        const id = record.partner && record.partner.id
-        const partner = record.partner && record.partner.name
-        const cardcode = record.partner && record.partner.cardcode
-        const membership_id = record.partner && record.partner.partner_memberships && record.partner.partner_memberships.membership_type_id
+        const id = get(record,'partner.id',null)
+        const partner = get(record,'partner.name',null)
+        const cardcode = get(record,'partner.cardcode',null)
+        const membership_id = get(record,'partner.partner_memberships.membership_type_id',null)
+       
         return (
           <span>
             <Badge dot style={{ backgroundColor: (membership_id === 1 ? '#FFD700' : '#C0C0C0') }} />
@@ -82,11 +84,22 @@ const WaitingForLoad = (props) => {
       title: 'Partner No',
       width: '10%',
       render: (text, record) => {
-        const mobile = record.partner && record.partner.partner_users && record.partner.partner_users.length > 0 ? record.partner.partner_users[0].mobile : null
-        const partner = record.partner && record.partner.name
+        const mobile = get(record,'partner.partner_users[0].mobile',null)
+        const partner = get(record,'partner.name',null)
         return (
           <span className='link' onClick={() => handleShow('usersVisible', partner, 'usersData', record.partner)}>{mobile}</span>
         )
+      }
+    },
+    {
+      title: 'Driver No',
+      width: '10%',
+      render: (text, record) => {
+        const mobile = get(record, 'driver.mobile')
+        return (
+          <Phone number={mobile} />
+        )
+
       }
     },
     {
@@ -94,12 +107,13 @@ const WaitingForLoad = (props) => {
       width: '12%',
       sorter: (a, b) => (a.city > b.city ? 1 : -1),
       render: (text, record) => {
-        const city = record.city && record.city.name
+        const city = get(record,'city.name',null)
         return city
       }
     },
     {
       title: '',
+      width:'2',
       render: (text, record) => (
         <EditTwoTone
           onClick={() =>
@@ -111,26 +125,26 @@ const WaitingForLoad = (props) => {
       title: 'TAT',
       dataIndex: 'tat',
       width: '6%',
-      sorter: (a, b) => (parseInt(a.tat)-parseInt(b.tat)),
+      sorter: (a, b) => (parseInt(a.tat) - parseInt(b.tat)),
       defaultSortOrder: 'descend'
     },
     {
       title: 'Comment',
       render: (text, record) => {
-        const comment = record.last_comment && record.last_comment.description
+        const comment = get(record,'last_comment.description',null)
         return (
           <Truncate data={comment} length={45} />
         )
       },
-      width: '27%'
+      width: '20%'
     },
     {
       title: 'Action',
       render: (text, record) => {
         return (
           <span>
-            <Tooltip title={record.driver && record.driver.mobile}>
-              <Phone number={record.driver && record.driver.mobile} icon />
+            <Tooltip title={get(record, 'driver.mobile',null)}>
+              <Phone number={get(record, 'driver.mobile',null)} icon />
             </Tooltip>
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
@@ -194,3 +208,4 @@ const WaitingForLoad = (props) => {
 }
 
 export default WaitingForLoad
+
