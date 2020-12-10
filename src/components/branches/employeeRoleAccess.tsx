@@ -30,6 +30,15 @@ mutation delete_employee_role($id:Int){
     }
   }
 `
+const DELETE_FIREBASE_USER_MUTATION = gql`
+mutation delete_user($email:String!){
+    delete_firebase_user(where:{email:$email}){
+        returning{
+            id
+        }
+    }
+}
+`
 const EmployeeRoleAccess = (props) => {
 
     const { visible, onHide, employee_data, title, edit_access_delete } = props
@@ -51,6 +60,7 @@ const EmployeeRoleAccess = (props) => {
             onError(error) { message.error(error.toString()) },
             onCompleted() {
                 message.success('Added!!')
+                onFirebaseDeleteUser()
                 onHide()
             }
         }
@@ -62,6 +72,18 @@ const EmployeeRoleAccess = (props) => {
             onError(error) { message.error(error.toString()) },
             onCompleted() {
                 message.success('Added!!')
+                onFirebaseDeleteUser()
+                onHide()
+            }
+        }
+    )
+    const [firebase_delete_user] = useMutation(
+        DELETE_FIREBASE_USER_MUTATION,
+        {
+            onError(error) { message.error(error.toString()) },
+            onCompleted() {
+                message.success('Added!!')
+                firebase_delete_user()
                 onHide()
             }
         }
@@ -91,6 +113,13 @@ const EmployeeRoleAccess = (props) => {
         delete_employee_role({
             variables: {
                 id:record.id
+            }
+        })
+    }
+    const onFirebaseDeleteUser = () => {
+        firebase_delete_user({
+            variables: {
+                email:employee_data.email
             }
         })
     }

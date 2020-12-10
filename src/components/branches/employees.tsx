@@ -79,10 +79,10 @@ const Employees = (props) => {
                 </Tag>
               ))
               : null}
-            {/* <EditAccess
+            <EditAccess
               edit_access={employee_role}
               onEdit={() => handleShow('employeeRoleVisible', record.name, 'employeeRoleData', record)}
-            /> */}
+            />
           </div>
         )
       }
@@ -99,7 +99,7 @@ const Employees = (props) => {
         pagination={false}
         loading={loading}
       />
-      {/* {object.employeeRoleVisible && (
+      {object.employeeRoleVisible && (
         <EmployeeRoleAccess
           visible={object.employeeRoleVisible}
           onHide={handleHide}
@@ -107,7 +107,7 @@ const Employees = (props) => {
           title={object.title}
         //edit_access_delete={employee_member_delete}
         />
-      )} */}
+      )}
     </>
   )
 }
