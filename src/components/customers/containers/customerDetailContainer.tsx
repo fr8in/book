@@ -68,11 +68,9 @@ const CustomerDetailContainer = (props) => {
   const BlacklistEdit = [role.admin, role.accounts_manager, role.accounts, role.bm, role.rm, role.partner_manager, role.partner_support, role.onboarding]
   const context = useContext(userContext)
   const ad_am = [role.admin, role.accounts_manager]
-  const Email = [role.admin, role.accounts_manager, role.bm]
   const customer_edit_role = [role.admin, role.accounts_manager, role.accounts, role.billing, role.billing_manager]
   const transferAccess = u.is_roles(ad_am, context)
   const customer_access = u.is_roles(customer_edit_role, context)
-  const Email_access = u.is_roles(Email, context)
   const createtransfer = u.is_roles(customerNameEdit, context)
   const variables = {
     cardcode: cardcode,
@@ -144,7 +142,7 @@ const CustomerDetailContainer = (props) => {
                         />
                         <p className='tinyAction'>Transfer</p>
                       </div>) : null}
-                    {Email_access ? (
+                    {
                       <>
                         <div className='text-center'>
                           <Button icon={<MailOutlined />} shape='circle' onClick={() => onShow('reportMail')} />
@@ -159,7 +157,7 @@ const CustomerDetailContainer = (props) => {
                           <p className='tinyAction'>Excess</p>
                         </div>
                       </>
-                    ) : null}
+                   }
 
                     {customer_access ? (
                       <div className='text-center'>
