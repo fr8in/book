@@ -132,7 +132,7 @@ const CreditNoteTable = (props) => {
                 className='btn-success'
                 disabled={!(invoiced && !received && !closed) || lock}
                 icon={<CheckOutlined />}
-                onClick={() => handleShow('approveVisible', 'Approved', 'approveData', record)}
+                onClick={() => handleShow('approveVisible', 'Approve', 'approveData', record)}
               />
               <Button
                 type='primary'
@@ -140,7 +140,7 @@ const CreditNoteTable = (props) => {
                 shape='circle'
                 danger
                 icon={<CloseOutlined />}
-                onClick={() => handleShow('approveVisible', 'Rejected', 'approveData', record.id)}
+                onClick={() => handleShow('approveVisible', 'Reject', 'approveData', record.id)}
               />
             </Space>)
             : <div />)

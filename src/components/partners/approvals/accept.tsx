@@ -103,7 +103,7 @@ const Approve = (props) => {
       footer={null}
     >
       <Form layout='vertical' onFinish={onSubmit}>
-        {title === 'Approved' && (
+        {title === 'Approve' && (
           <Form.Item label='Amount' name='amount' rules={[{ required: true }]} extra={`Claim Amount: ${item_id.amount}`}>
             <Input placeholder='Approved amount' type='number' min={1} />
           </Form.Item>
