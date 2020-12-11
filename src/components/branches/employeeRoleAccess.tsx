@@ -4,6 +4,7 @@ import { useState, useContext } from 'react'
 import get from 'lodash/get'
 import { DeleteTwoTone } from '@ant-design/icons'
 import userContext from '../../lib/userContaxt'
+
 const ALL_ROLE_QUERY = gql`
 query all_roles {
     role{
@@ -81,9 +82,9 @@ const EmployeeRoleAccess = (props) => {
         {
             onError(error) { message.error(error.toString()) },
             onCompleted() {
-                if(employee_data.email === context.email){
+                if (employee_data.email === context.email) {
                     location.reload()
-                }           
+                }
                 onHide()
             }
         }
@@ -91,7 +92,6 @@ const EmployeeRoleAccess = (props) => {
     if (loading) return null
 
     const roles = get(data, 'role', null)
-
 
     const role_list = roles.map((role) => {
         return { value: role.id, label: role.name }
@@ -112,14 +112,14 @@ const EmployeeRoleAccess = (props) => {
     const onDeleteEmployeeRole = (record) => {
         delete_employee_role({
             variables: {
-                id:record.id
+                id: record.id
             }
         })
     }
     const onFirebaseDeleteUser = () => {
         firebase_delete_user({
             variables: {
-                email:employee_data.email
+                email: employee_data.email
             }
         })
     }
@@ -135,12 +135,11 @@ const EmployeeRoleAccess = (props) => {
             title: 'Action',
             width: '40%',
             render: (record) => {
-        
                 return (
                     <Button
                         type="link"
                         icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
-                     onClick={() => onDeleteEmployeeRole(record)} 
+                        onClick={() => onDeleteEmployeeRole(record)}
                     />)
             }
         },
@@ -184,13 +183,8 @@ const EmployeeRoleAccess = (props) => {
                 pagination={false}
                 scroll={{ x: 360 }}
                 rowKey={(record) => record.id}
-
             />
-
-
         </Modal>
-
-
     )
 }
 export default EmployeeRoleAccess
