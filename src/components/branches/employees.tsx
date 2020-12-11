@@ -1,5 +1,5 @@
 import { Table, Tag } from 'antd'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import EmployeeNumber from './employeeNumber'
 import EditAccess from '../common/editAccess'
@@ -8,7 +8,7 @@ import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import EmployeeRoleAccess from '../branches/employeeRoleAccess'
 
 const EMPLOYEE_QUERY = gql`
-query branch_employee {
+subscription branch_employee {
   employee(where: {active: {_eq: 1}}) {
     id
     name
@@ -36,12 +36,7 @@ const Employees = (props) => {
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
 
-  const { loading, error, data } = useQuery(
-    EMPLOYEE_QUERY, {
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
-    }
-  )
+  const { loading, error, data } = useSubscription( EMPLOYEE_QUERY )
 
 
   let _data = {}
