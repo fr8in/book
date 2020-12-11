@@ -11,6 +11,7 @@ subscription incentive_type {
   incentive_config(where:{auto_creation:{_eq:false}}){
     id
     type
+    type_id
   }
 }
 `
@@ -34,14 +35,19 @@ console.log('idddddddddd',trip_id)
   const [createIncentive] = useMutation(
     SCRATCH_CARD_INCENTIVE_MUTATION,
     {
-      onError (error) {
-        setDisableButton(false)
-        message.error(error.toString())
-      },
-      onCompleted (data) {
-        setDisableButton(false)
+      onError(error) { 
+        setDisableButton(true)
+        message.error(error.toString()) },
+      onCompleted(data) {
+        const status = get(data, 'create_incentive.status', null)
+        const description = get(data, 'create_incentive.description', null)
+        if (status === 'OK') {
+          setDisableButton(false)
         message.success("Created")
         form.resetFields()
+        } else {
+          message.error(description)
+          setDisableButton(true)}
       }
     }
   )
@@ -57,7 +63,7 @@ console.log('idddddddddd',trip_id)
   }
 
   const type_list = !isEmpty(issue_type) ? issue_type.map((data) => {
-    return { value: data.id, label: data.type }
+    return { value: data.type_id, label: data.type }
   }) : []
 
  
@@ -67,8 +73,8 @@ console.log('idddddddddd',trip_id)
       createIncentive({
         variables: {
         type_id:form.type_id,
-          trip_id: parseInt(trip_id),
-          created_by: context.email
+        trip_id: parseInt(trip_id),
+        created_by: context.email
         }
       })
     }

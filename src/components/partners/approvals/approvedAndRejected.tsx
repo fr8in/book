@@ -35,6 +35,10 @@ subscription trip_credit_debit_approval($offset: Int, $limit: Int, $credit_debit
     incentives(where: $incentive_where) {
       id
       amount
+      trip_id
+      amount
+      approved_by
+      comment
       created_at
       created_by
       incentive_config {
@@ -139,6 +143,7 @@ const ApprovedAndRejected = () => {
       datas.credit_debits.map((credit_debit) => {
         if (credit_debit) {
           credit_debit_incentive_data.push({
+            "id": credit_debit.id,
             "trip_id": credit_debit.trip_id,
             "comment": credit_debit.comment,
             "type": credit_debit.type,
@@ -157,6 +162,7 @@ const ApprovedAndRejected = () => {
       datas.incentives.map((incentive) => {
         if (incentive) {
           credit_debit_incentive_data.push({
+            "id":incentive.id,
             "trip_id": incentive.trip_id,
             "comment": incentive.comment,
             "type":type,
@@ -284,7 +290,7 @@ const ApprovedAndRejected = () => {
       dataIndex: 'approved_amount',
       key: 'approved',
       width: '8%',
-      render: (text, record) => get(record, 'approved_amount', null)
+      render: (text, record) => get(record, 'approved_amount', record.amount)
     },
     {
       title: 'Reason',
@@ -329,7 +335,7 @@ const ApprovedAndRejected = () => {
       dataIndex: 'approved_by',
       key: 'approved_by',
       width: '12%',
-      render: (text, record) => <Truncate data={get(record, 'approved_by', null)} length={18} />
+      render: (text, record) =>get(record, 'approved_by', record.approved_by)
     },
     {
       title: 'Remarks',

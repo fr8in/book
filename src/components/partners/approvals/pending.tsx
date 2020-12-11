@@ -307,7 +307,7 @@ const Pending = () => {
               onClick={() => handleShow('commentVisible', null, 'commentData', record.trip_id)}
             />
           </Tooltip>
-          <Tooltip title='Accept'>
+          <Tooltip title='Approve'>
             {approval_access ? (
               <Button
                 type='primary'
@@ -322,7 +322,7 @@ const Pending = () => {
                 } />) : null
             }
           </Tooltip>
-          <Tooltip title='Decline'>
+          <Tooltip title='Reject'>
             {rejected_access ? (
               <Button
                 type='primary'
@@ -359,7 +359,7 @@ const Pending = () => {
         />
       )}
 
-      { type === type ? (
+      { type ? (
         <>
           {object.approveVisible && (
             <IncentiveApprove
@@ -367,6 +367,7 @@ const Pending = () => {
               onHide={handleHide}
               item_id={object.approveData}
               title={object.title}
+              trip_id={object.approveData.trip_id}
             />
           )}  </>) :
         <>

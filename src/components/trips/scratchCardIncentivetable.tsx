@@ -15,7 +15,7 @@ const SCRATCH_CARD_INCENTIVE_TABLE_SUBSCRIPTION = gql`
 subscription incentives($id: Int) {
   trip(where: {id: {_eq: $id}}) {
     id
-    incentives(where:{track_incentive_status:{status:{_eq:"PENDING"}},incentive_config:{auto_creation:{_eq:false}}}) {
+    incentives(where:{incentive_config:{auto_creation:{_eq:false}}}) {
       id
       amount
       comment
@@ -32,7 +32,7 @@ subscription incentives($id: Int) {
 
 const ScratchCardIncentiveTable = (props) => {
   const { trip_id,setIncentiveRefetch } = props
-
+console.log('trip_id---',trip_id)
   const initial = {
     approveData: [],
     approveVisible: false
@@ -90,6 +90,7 @@ const ScratchCardIncentiveTable = (props) => {
       title: 'Action',
       width: '12%',
       render: (text, record) => (
+        get(record, 'track_incentive_status.status', null) === 'PENDING' ? (
         <Space>
           <Button
             type='primary'
@@ -108,6 +109,7 @@ const ScratchCardIncentiveTable = (props) => {
             onClick={() => handleShow('approveVisible', 'Rejected', 'approveData', record)}
           />
         </Space>)
+            : <div />)
     }
   ]
   return (

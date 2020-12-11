@@ -88,7 +88,7 @@ const Approve = (props) => {
       setDisableButton(true)
       rejectCredit({
         variables: {
-          id: item_id,
+          id: item_id.id,
           remarks: form.remarks
         }
       })

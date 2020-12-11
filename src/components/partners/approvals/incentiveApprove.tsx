@@ -37,7 +37,7 @@ const IncentiveApprove = (props) => {
   const [disableButton, setDisableButton] = useState(false)
   console.log('item_id',item_id)
   console.log('trip_id',trip_id)
-  const { loading, data, error } = useQuery(GET_TOKEN, { variables: { trip_id:item_id.trip_id }, fetchPolicy: 'network-only' })
+  const { loading, data, error } = useQuery(GET_TOKEN, { variables: { trip_id:parseInt(trip_id) }, fetchPolicy: 'network-only' })
 
   if (error) {
     message.error(error.toString())
@@ -49,6 +49,7 @@ const IncentiveApprove = (props) => {
       onError (error) {
         setDisableButton(false)
         message.error(error.toString())
+        onHide()
       },
       onCompleted () {
         setDisableButton(false)
@@ -58,21 +59,24 @@ const IncentiveApprove = (props) => {
     })
 
   const [incentiveApproval] = useMutation(
-    INCENTIVE_APPROVAL_MUTATION, {
-      onError (error) {
+    INCENTIVE_APPROVAL_MUTATION, 
+    {
+      onError(error) { 
         setDisableButton(false)
         message.error(error.toString())
-      },
-      onCompleted (data) {
-        const status = get(data, 'approve_credit.success', null)
-        if (status) {
-          message.success(get(data, 'approve_credit.message', 'Approved!!'))
+      onHide() },
+      onCompleted(data) {
+        const status = get(data, 'create_incentive.status', 'Approved!!')
+        const description = get(data, 'create_incentive.description', null)
+        if (status === 'OK') {
+          setDisableButton(false)
           setIncentiveRefetch(true)
-          setDisableButton(false)
           onHide()
-        } else {
-          setDisableButton(false)
-          message.error(get(data, 'approve_credit.message', 'Error Occured!!'))
+        message.success("Approved!!")
+        } else{
+         message.error(description)
+         setDisableButton(false)
+         onHide()
         }
       }
     })
@@ -82,7 +86,7 @@ const IncentiveApprove = (props) => {
       setDisableButton(true)
       incentiveApproval({
         variables: {
-          // token: data.token,
+          token: data.token,
           id:item_id.id,
           approved_by:context.email
         }
