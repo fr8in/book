@@ -29,6 +29,7 @@ const CustomerDetails = (props) => {
             <span>
               {customer_info.pan }
               &nbsp;
+              &nbsp;
               {pan_files && pan_files.length > 0 ? (
                 <Space>
                   <ViewFile
