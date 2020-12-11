@@ -42,7 +42,7 @@ const TripDetailContainer = (props) => {
   const [trip_onHold, setTrip_onHold] = useState(null)
   const [advanceRefetch, setAdvanceRefetch] = useState(false)
   const [creditNoteRefetch, setCreditNoteRefetch] = useState(false)
-
+  const [incentiveRefetch,setIncentiveRefetch] = useState(false)
   const { loading, error, data } = useSubscription(
     TRIP_DETAIL_SUBSCRIPTION,
     {
@@ -194,7 +194,7 @@ const TripDetailContainer = (props) => {
                       <Collapse accordion className='small mt10'>
                         <Panel header='Incentive' key='1'>
                           <Incentive trip_id={trip_id} trip_info={trip_info} />
-                          <IncentiveTable trip_id={trip_id} trip_info={trip_info}  />
+                          <IncentiveTable trip_id={trip_id} trip_info={trip_info} setIncentiveRefetch={setIncentiveRefetch}  />
                         </Panel>
                       </Collapse>
                     </TabPane>

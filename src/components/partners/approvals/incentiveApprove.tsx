@@ -32,7 +32,7 @@ mutation approve_incentive($id:Int!,$approved_by:String!){
 `
 
 const IncentiveApprove = (props) => {
-  const { visible, onHide, item_id, title, setCreditNoteRefetch ,trip_id} = props
+  const { visible, onHide, item_id, title, setIncentiveRefetch ,trip_id} = props
   const context = useContext(userContext)
   const [disableButton, setDisableButton] = useState(false)
   console.log('item_id',item_id)
@@ -67,7 +67,7 @@ const IncentiveApprove = (props) => {
         const status = get(data, 'approve_credit.success', null)
         if (status) {
           message.success(get(data, 'approve_credit.message', 'Approved!!'))
-          setCreditNoteRefetch(true)
+          setIncentiveRefetch(true)
           setDisableButton(false)
           onHide()
         } else {

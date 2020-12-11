@@ -31,7 +31,7 @@ subscription incentives($id: Int) {
 `
 
 const ScratchCardIncentiveTable = (props) => {
-  const { trip_id } = props
+  const { trip_id,setIncentiveRefetch } = props
 
   const initial = {
     approveData: [],
@@ -128,7 +128,7 @@ const ScratchCardIncentiveTable = (props) => {
           item_id={object.approveData}
           title={object.title}
           trip_id={trip_id}
-        //setCreditNoteRefetch={setCreditNoteRefetch}
+          setIncentiveRefetch={setIncentiveRefetch}
         />
       )}
     </div>

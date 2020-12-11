@@ -61,7 +61,7 @@ const CREDIT_DEBIT_TYPE_QUERY = gql`query credit_debit_agg_type($credit_debit_wh
     active
     name
   }
-  incentive_config {
+  incentive_config (where:{auto_creation:{_eq:false}}){
     type
   }
 }
