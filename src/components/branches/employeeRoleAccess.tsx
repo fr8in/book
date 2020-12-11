@@ -3,7 +3,7 @@ import { gql, useMutation, useQuery } from '@apollo/client'
 import { useState, useContext } from 'react'
 import get from 'lodash/get'
 import { DeleteTwoTone } from '@ant-design/icons'
-
+import userContext from '../../lib/userContaxt'
 const ALL_ROLE_QUERY = gql`
 query all_roles {
     role{
@@ -42,7 +42,7 @@ const EmployeeRoleAccess = (props) => {
 
     const { visible, onHide, employee_data, title } = props
     const [role_id, setRole_id] = useState(null)
-
+    const context = useContext(userContext)
 
     const { loading, data, error } = useQuery(
         ALL_ROLE_QUERY,
@@ -81,6 +81,9 @@ const EmployeeRoleAccess = (props) => {
         {
             onError(error) { message.error(error.toString()) },
             onCompleted() {
+                if(employee_data.email === context.email){
+                    location.reload()
+                }           
                 onHide()
             }
         }
