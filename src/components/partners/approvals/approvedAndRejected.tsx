@@ -169,7 +169,8 @@ const ApprovedAndRejected = () => {
             "amount": incentive.amount,
             "created_at": incentive.created_at,
             "issue_type": incentive.incentive_config.type,
-            "created_by": incentive.created_by
+            "created_by": incentive.created_by,
+            "approved_by":incentive.approved_by
           })
         }
       })
@@ -335,7 +336,7 @@ const ApprovedAndRejected = () => {
       dataIndex: 'approved_by',
       key: 'approved_by',
       width: '12%',
-      render: (text, record) =>get(record, 'approved_by', record.approved_by)
+      render: (text, record) =><Truncate data={get(record, 'approved_by', null)} length={18} />
     },
     {
       title: 'Remarks',

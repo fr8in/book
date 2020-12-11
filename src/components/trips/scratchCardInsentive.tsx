@@ -47,7 +47,8 @@ console.log('idddddddddd',trip_id)
         form.resetFields()
         } else {
           message.error(description)
-          setDisableButton(true)}
+          form.resetFields()
+          setDisableButton(false)}
       }
     }
   )

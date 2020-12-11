@@ -13,8 +13,8 @@ query get_token($trip_id: Int!) {
 `
 
 const REJECT_INCENTIVE_MUTATION = gql`
-mutation delete_incentive($id: Int!, $comment: String!) {
-  update_incentive(where: {id: {_eq: $id}}, _set: {track_status_id: 3, comment: $comment}) {
+mutation delete_incentive($id: Int!, $comment: String!,$approved_by:String) {
+  update_incentive(where: {id: {_eq: $id}}, _set: {track_status_id: 3, comment: $comment,approved_by:$approved_by}) {
     returning {
       id
     }
@@ -66,8 +66,8 @@ const IncentiveApprove = (props) => {
         message.error(error.toString())
       onHide() },
       onCompleted(data) {
-        const status = get(data, 'create_incentive.status', 'Approved!!')
-        const description = get(data, 'create_incentive.description', null)
+        const status = get(data, 'approve_incentive.status', null)
+        const description = get(data, 'approve_incentive.description', null)
         if (status === 'OK') {
           setDisableButton(false)
           setIncentiveRefetch(true)
@@ -96,7 +96,8 @@ const IncentiveApprove = (props) => {
       rejectIncentive({
         variables: {
           id: item_id.id,
-          comment: form.comment
+          comment: form.comment,
+          approved_by:context.email
         }
       })
     }
