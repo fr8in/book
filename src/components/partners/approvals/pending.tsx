@@ -60,7 +60,7 @@ subscription trip_credit_debit($status: [String!], $incentive_status: [String!])
         name
       }
     }
-    incentives(where: {track_incentive_status: {status: {_in: $incentive_status}}}) {
+    incentives(where: {track_incentive_status: {status: {_in: $incentive_status}}incentive_config:{auto_creation:{_eq:false}}}) {
       id
       trip_id
       amount

@@ -15,7 +15,7 @@ const SCRATCH_CARD_INCENTIVE_TABLE_SUBSCRIPTION = gql`
 subscription incentives($id: Int) {
   trip(where: {id: {_eq: $id}}) {
     id
-    incentives {
+    incentives(where:{track_incentive_status:{status:{_eq:"PENDING"}},incentive_config:{auto_creation:{_eq:false}}}) {
       id
       amount
       comment

@@ -8,7 +8,7 @@ import get from 'lodash/get'
 
 const SCRATCH_CARD_INCENTIVE_SUBSCRIPTION = gql`
 subscription incentive_type {
-  incentive_config{
+  incentive_config(where:{auto_creation:{_eq:false}}){
     id
     type
   }
@@ -27,17 +27,10 @@ const Incentive = (props) => {
 
   const {trip_id} = props
   const context = useContext(userContext)
-
+  const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
 console.log('idddddddddd',trip_id)
-  // const issue_type_list = [
-  //   {
-  //     value: '1',
-  //     label: 'Referral '
-  //   }
-  // ]
-
-
+ 
   const [createIncentive] = useMutation(
     SCRATCH_CARD_INCENTIVE_MUTATION,
     {
@@ -48,6 +41,7 @@ console.log('idddddddddd',trip_id)
       onCompleted (data) {
         setDisableButton(false)
         message.success("Created")
+        form.resetFields()
       }
     }
   )
@@ -95,7 +89,7 @@ console.log('idddddddddd',trip_id)
           <Col flex='auto'>
             <Form.Item label='Comment' name='comment' rules={[{ required: true }]}>
               <Input
-                placeholder='textarea'
+                placeholder='Enter the Comment'
               />
             </Form.Item>
           </Col>

@@ -98,10 +98,10 @@ const ApprovedAndRejected = () => {
 
   const incentive_where = {
     trip_id: filter.trip_id && filter.trip_id.length > 0 ? { _in: filter.trip_id } : { _in: null },
-    incentive_config: filter.type && filter.type.length > 0 ? { type: { _in: filter.type } } : { type: { _in: null } },
     created_by: filter.created_by ? { _ilike: `%${filter.created_by}%` } : { _ilike: null },
     track_incentive_status: { status: { _in: ['APPROVED', 'REJECTED'] } },
-    // type: filter.type && filter.type.length > 0 ? { _in: filter.type } : { _in: null }
+    incentive_config:{auto_creation:{_eq:false}}
+   
   }
 
   const approvalQueryVars = {
