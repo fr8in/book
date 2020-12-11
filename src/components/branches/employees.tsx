@@ -27,7 +27,7 @@ subscription branch_employee {
 const Employees = (props) => {
 
   const { role } = u
-  const employee_role = [role.user]
+  const employee_role = [role.admin]
   const initial = {
     employeeRoleVisible: false,
     title: null,
@@ -101,7 +101,6 @@ const Employees = (props) => {
           onHide={handleHide}
           employee_data={object.employeeRoleData}
           title={object.title}
-        //edit_access_delete={employee_member_delete}
         />
       )}
     </>

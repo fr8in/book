@@ -40,7 +40,7 @@ mutation delete_user($email:String!){
 `
 const EmployeeRoleAccess = (props) => {
 
-    const { visible, onHide, employee_data, title, edit_access_delete } = props
+    const { visible, onHide, employee_data, title } = props
     const [role_id, setRole_id] = useState(null)
 
 
