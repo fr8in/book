@@ -122,13 +122,12 @@ const IncentiveApprove = (props) => {
          </>
         )}
         { title === 'Reject' && (
-          <>
         <Form.Item label='Remarks' name='comment' rules={[{ required: true }]}>
           <Input placeholder='Remarks' />
-        </Form.Item>
+        </Form.Item> )}
         <Form.Item className='text-right'>
           <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>Submit</Button>
-        </Form.Item>  </> )}
+        </Form.Item> 
       </Form> 
        {(loading || mutationLoading) &&
         <Loading fixed />} 
