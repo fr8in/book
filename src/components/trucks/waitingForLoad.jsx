@@ -1,5 +1,5 @@
 import { Table, Tooltip, Badge, Button, Input } from 'antd'
-import { CommentOutlined, RocketFilled, SearchOutlined, EditTwoTone } from '@ant-design/icons'
+import { CommentOutlined, RocketFilled, SearchOutlined, EditTwoTone, WhatsAppOutlined } from '@ant-design/icons'
 import CreatePo from '../trips/createPo'
 import PartnerUsers from '../partners/partnerUsers'
 import TruckComment from './truckComment'
@@ -10,6 +10,9 @@ import Truncate from '../common/truncate'
 import Phone from '../common/phone'
 import get from 'lodash/get'
 import PartnerLink from '../common/PartnerLink'
+import CopyToClipboard from "react-copy-to-clipboard";
+import { useState } from 'react'
+
 const WaitingForLoad = (props) => {
   const { trucks, loading, onTruckNoSearch, truckNo } = props
   const initial = {
@@ -21,13 +24,29 @@ const WaitingForLoad = (props) => {
     poVisible: false,
     editVisible: false,
     editData: [],
-    title: ''
+    title: '',
+    value: '',
+    copied: false,
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
-
+  const [copy, setCopy] = useState(initial)
   const handleTruckNo = (e) => {
     onTruckNoSearch(e.target.value)
   }
+
+  const getMessage = (record) => {
+    let message = `Partner: ${record.partner.name} \n`;
+    message += `Truck No: ${record.truck_no} - ${record.truck_no} \n`;
+    message += `Current City: ${record.city.name} \n `;
+    message += `Driver Number: ${record.driver.mobile ? record.driver.mobile : '-'} \n`;
+    message += `Last Comment: ${record.last_comment && record.last_comment.description ? record.last_comment && record.last_comment.description : '-'}`;
+
+    return message;
+};
+
+const onCopy = () => {
+ setCopy({copied:true})
+};
 
   const columns = [
     {
@@ -149,9 +168,11 @@ const WaitingForLoad = (props) => {
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
             </Tooltip>
-            {/* <Tooltip title='click to copy message'>
+            <CopyToClipboard text={getMessage(record)} onCopy={onCopy}>
+            <Tooltip title='click to copy message'>
               <Button type='link' icon={<WhatsAppOutlined />} />
-            </Tooltip> */}
+            </Tooltip>
+            </CopyToClipboard>
             <Tooltip title='Quick PO'>
               <Button type='link' icon={<RocketFilled />} onClick={() => handleShow('poVisible', record, 'truckId', record.id)} />
             </Tooltip>
