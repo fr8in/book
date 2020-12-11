@@ -70,7 +70,7 @@ const EmployeeRoleAccess = (props) => {
         {
             onError(error) { message.error(error.toString()) },
             onCompleted() {
-                message.success('Added!!')
+                message.success('Deleted!!')
                 onFirebaseDeleteUser()
                 onHide()
             }
