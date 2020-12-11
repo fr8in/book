@@ -32,11 +32,10 @@ mutation delete_employee_role($id:Int){
 `
 const DELETE_FIREBASE_USER_MUTATION = gql`
 mutation delete_user($email:String!){
-    delete_firebase_user(where:{email:$email}){
-        returning{
-            id
-        }
-    }
+    delete_firebase_user(email:$email){
+        status
+        description
+      }
 }
 `
 const EmployeeRoleAccess = (props) => {
@@ -82,8 +81,6 @@ const EmployeeRoleAccess = (props) => {
         {
             onError(error) { message.error(error.toString()) },
             onCompleted() {
-                message.success('Added!!')
-                firebase_delete_user()
                 onHide()
             }
         }

@@ -13,6 +13,7 @@ query branch_employee {
     id
     name
     mobileno
+    email
     employee_roles {
       id
       role {
