@@ -317,7 +317,7 @@ const Pending = () => {
                 icon={<CheckOutlined />}
                 onClick={(e) => {
                   console.log('approval', e)
-                  handleShow('approveVisible', 'Approved', 'approveData', record)
+                  handleShow('approveVisible', 'Approve', 'approveData', record)
                 }
                 } />) : null
             }
@@ -331,7 +331,7 @@ const Pending = () => {
                 danger
                 icon={<CloseOutlined />}
                 onClick={() =>
-                  handleShow('approveVisible', 'Rejected', 'approveData', record)}
+                  handleShow('approveVisible', 'Reject', 'approveData', record)}
               />) : null}
           </Tooltip>
         </Space>
@@ -359,7 +359,7 @@ const Pending = () => {
         />
       )}
 
-      { type ? (
+      { object.approveData && object.approveData.type==="I" ? (
         <>
           {object.approveVisible && (
             <IncentiveApprove

@@ -111,7 +111,7 @@ const IncentiveApprove = (props) => {
       footer={null}
     >
       <Form layout='vertical' onFinish={onSubmit}>
-        {title === 'Approved' && (
+        {title === 'Approve' && (
           <>
           <Form.Item label='Amount' name='amount' initialValue={item_id.amount} >
             <Input placeholder='Approved amount' type='number' min={1} disabled={true}/>
@@ -121,13 +121,15 @@ const IncentiveApprove = (props) => {
          </Form.Item>
          </>
         )}
+        { title === 'Reject' && (
+          <>
         <Form.Item label='Remarks' name='comment' rules={[{ required: true }]}>
           <Input placeholder='Remarks' />
         </Form.Item>
         <Form.Item className='text-right'>
           <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>Submit</Button>
-        </Form.Item>
-      </Form>
+        </Form.Item>  </> )}
+      </Form> 
        {(loading || mutationLoading) &&
         <Loading fixed />} 
     </Modal>

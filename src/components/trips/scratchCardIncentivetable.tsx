@@ -98,7 +98,7 @@ console.log('trip_id---',trip_id)
             shape='circle'
             className='btn-success'
             icon={<CheckOutlined />}
-            onClick={() => handleShow('approveVisible', 'Approved', 'approveData', record)}
+            onClick={() => handleShow('approveVisible', 'Approve', 'approveData', record)}
           />
           <Button
             type='primary'
@@ -106,7 +106,7 @@ console.log('trip_id---',trip_id)
             shape='circle'
             danger
             icon={<CloseOutlined />}
-            onClick={() => handleShow('approveVisible', 'Rejected', 'approveData', record)}
+            onClick={() => handleShow('approveVisible', 'Reject', 'approveData', record)}
           />
         </Space>)
             : <div />)
