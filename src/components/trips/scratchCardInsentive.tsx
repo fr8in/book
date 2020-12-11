@@ -16,10 +16,10 @@ subscription incentive_type {
 `
 
 const SCRATCH_CARD_INCENTIVE_MUTATION = gql`
-mutation($trip_id:Int!,$type_id:Int!,$created_by:String!,$comment:String!){
-  create_incentive(trip_id:$trip_id,type_id:$type_id,comment:$comment,created_by:$created_by){
-    description
+mutation create_incentive($trip_id:Int!,$type_id:Int!,$created_by:String!) {
+  create_incentive(trip_id:$trip_id, type_id: $type_id, created_by:$created_by) {
     status
+    description
   }
 }`
 
@@ -29,13 +29,13 @@ const Incentive = (props) => {
   const context = useContext(userContext)
 
   const [disableButton, setDisableButton] = useState(false)
-
-  const issue_type_list = [
-    {
-      value: '1',
-      label: 'Referral '
-    }
-  ]
+console.log('idddddddddd',trip_id)
+  // const issue_type_list = [
+  //   {
+  //     value: '1',
+  //     label: 'Referral '
+  //   }
+  // ]
 
 
   const [createIncentive] = useMutation(
@@ -57,8 +57,6 @@ const Incentive = (props) => {
   )
   console.log('creditDebitIsuueType error', error)
 
-  console.log('data',data)
-
   var issue_type = []
   if (!loading) {
     issue_type = data  && data.incentive_config
@@ -75,7 +73,6 @@ const Incentive = (props) => {
       createIncentive({
         variables: {
         type_id:form.type_id,
-          comment: form.comment,
           trip_id: parseInt(trip_id),
           created_by: context.email
         }
@@ -107,6 +104,7 @@ const Incentive = (props) => {
               <Button
                 type='primary'
                 htmlType='submit'
+                loading={disableButton}
               >
                 Submit
               </Button>

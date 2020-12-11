@@ -1,23 +1,30 @@
 import { Modal, Form, Input, message, Button } from 'antd'
 import { useState, useContext } from 'react'
-import { gql, useMutation } from '@apollo/client'
+import { gql, useMutation,useQuery } from '@apollo/client'
 import get from 'lodash/get'
+import Loading from '../../common/loading'
 
 import userContext from '../../../lib/userContaxt'
 
+const GET_TOKEN = gql`
+query get_token($trip_id: Int!) {
+  token(ref_id: $trip_id, process: "INCENTIVE_TRACK")
+}
+`
+
 const REJECT_INCENTIVE_MUTATION = gql`
-mutation delete_incentive($id: Int!,$comment:String!) {
-  update_incentive(where: {id: {_eq: $id}}, _set: {status_id: 5, comment: $comment}) {
+mutation delete_incentive($id: Int!, $comment: String!) {
+  update_incentive(where: {id: {_eq: $id}}, _set: {track_status_id: 3, comment: $comment}) {
     returning {
       id
     }
   }
 }
-  `
+`
 
 const INCENTIVE_APPROVAL_MUTATION = gql`
-mutation approve_incentive($id:Int!,$approved_by:String!,$trip_id:Int!){
-  approve_incentive(id:$id,approved_by:$approved_by,trip_id:$trip_id){
+mutation approve_incentive($id:Int!,$approved_by:String!){
+  approve_incentive(id:$id,approved_by:$approved_by){
     description
     status
   }
@@ -28,10 +35,16 @@ const IncentiveApprove = (props) => {
   const { visible, onHide, item_id, title, setCreditNoteRefetch ,trip_id} = props
   const context = useContext(userContext)
   const [disableButton, setDisableButton] = useState(false)
-
   console.log('item_id',item_id)
+  console.log('trip_id',trip_id)
+  const { loading, data, error } = useQuery(GET_TOKEN, { variables: { trip_id:item_id.trip_id }, fetchPolicy: 'network-only' })
 
-  const [rejectIncentive] = useMutation(
+  if (error) {
+    message.error(error.toString())
+    onHide()
+  }
+
+  const [rejectIncentive,{ loading: mutationLoading }] = useMutation(
     REJECT_INCENTIVE_MUTATION, {
       onError (error) {
         setDisableButton(false)
@@ -39,7 +52,7 @@ const IncentiveApprove = (props) => {
       },
       onCompleted () {
         setDisableButton(false)
-        message.success('Updated!!')
+        message.success('Rejected!!')
         onHide()
       }
     })
@@ -69,16 +82,16 @@ const IncentiveApprove = (props) => {
       setDisableButton(true)
       incentiveApproval({
         variables: {
-          id:item_id,
-          approved_by:context.email,
-          trip_id:trip_id
+          // token: data.token,
+          id:item_id.id,
+          approved_by:context.email
         }
       })
     } else {
       setDisableButton(true)
       rejectIncentive({
         variables: {
-          id: item_id,
+          id: item_id.id,
           comment: form.comment
         }
       })
@@ -110,6 +123,8 @@ const IncentiveApprove = (props) => {
           <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>Submit</Button>
         </Form.Item>
       </Form>
+       {(loading || mutationLoading) &&
+        <Loading fixed />} 
     </Modal>
   )
 }

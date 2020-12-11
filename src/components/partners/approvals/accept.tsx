@@ -35,6 +35,7 @@ mutation approve_credit(
 
 const Approve = (props) => {
   const { visible, onHide, item_id, title, setCreditNoteRefetch } = props
+  console.log('item_id ----',item_id)
   const context = useContext(userContext)
   const [disableButton, setDisableButton] = useState(false)
 

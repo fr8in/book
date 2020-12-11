@@ -12,7 +12,7 @@ import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
 import Comment from '../../trips/tripFeedBack'
 import Approve from './accept'
 import IncentiveApprove from './incentiveApprove'
-import { gql, useSubscription } from '@apollo/client'
+import { gql, useSubscription, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import PartnerOnBoardedBy from '../partnerOnboardedByName'
@@ -23,8 +23,8 @@ import userContext from '../../../lib/userContaxt'
 import isEmpty from 'lodash/isEmpty'
 
 const PENDING_SUBSCRIPTION = gql`
-subscription trip_credit_debit($status: String, $incentive_status: String) {
-  trip(where: {_or: [{credit_debits: {credit_debit_status: {name: {_eq: $status}}}}, {incentives: {track_incentive_status: {status: {_eq: $incentive_status}}}}]}) {
+subscription trip_credit_debit($status: [String!], $incentive_status: [String!]) {
+  trip(where: {_or: [{credit_debits: {id: {_is_null: false}}}, {incentives: {id:{_is_null:false}}}]}) {
     id
     last_comment {
       id
@@ -39,7 +39,7 @@ subscription trip_credit_debit($status: String, $incentive_status: String) {
       cardcode
       name
     }
-    credit_debits {
+    credit_debits(where: {credit_debit_status: {name: {_in: $status}}}) {
       id
       trip_id
       type
@@ -60,7 +60,7 @@ subscription trip_credit_debit($status: String, $incentive_status: String) {
         name
       }
     }
-    incentives(where: {track_incentive_status: {status: {_eq: $incentive_status}}}) {
+    incentives(where: {track_incentive_status: {status: {_in: $incentive_status}}}) {
       id
       trip_id
       amount
@@ -80,9 +80,12 @@ subscription trip_credit_debit($status: String, $incentive_status: String) {
 
 const Pending = () => {
   const { role } = u
-  const access = [role.admin, role.rm,role.partner_support]
-  const approve_roles = [role.admin, role.rm,role.partner_manager,role.partner_support]
-  const reject_roles = [role.admin, role.rm,role.partner_manager,role.partner_support]
+  const context = useContext(userContext)
+  const access = [role.admin, role.rm, role.partner_support]
+  const approve_roles = [role.admin, role.rm, role.partner_manager, role.partner_support]
+  const approval_access = u.is_roles(approve_roles, context)
+  const reject_roles = [role.admin, role.rm, role.partner_manager, role.partner_support]
+  const rejected_access = u.is_roles(reject_roles, context)
   const initial = {
     commentData: [],
     commentVisible: false,
@@ -94,9 +97,6 @@ const Pending = () => {
     pending: []
   }
 
-  const context = useContext(userContext)
-  const approval_access =  u.is_roles(approve_roles,context)
-  const rejected_access =  u.is_roles(reject_roles,context)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const [filter, setFilter] = useState(initial)
 
@@ -107,69 +107,59 @@ const Pending = () => {
     {
       variables: {
         status: 'PENDING',
-        incentive_status:'PENDING'
+        incentive_status: 'PENDING'
       }
     }
   )
   console.log('pending error', error)
-
-  console.log('data')
 
   let _data = {}
   let neww = [];
   if (!loading) {
     _data = data
 
-    data.trip.map((datas)=> {
-      datas.credit_debits.map((credit_debit)=> {
-        if(credit_debit) {
-         neww.push({
-             "trip_id":credit_debit.trip_id,
-             "comment":credit_debit.comment,
-             "type":credit_debit.type,
-             "amount":credit_debit.amount,
-             "region":datas.branch.region.name,
-             "partner_name":datas.partner.name,
-             "partner_code":datas.partner.cardcode,
-             "created_at": credit_debit.created_at,
-             "responsibility":credit_debit.responsibility  ? credit_debit.responsibility.name : '',
-              "last_comment":datas.last_comment.description,
-              "issue_type":credit_debit.credit_debit_type.name,
-              "created_by":credit_debit.created_by
-         })
+    data.trip.map((datas) => {
+      datas.credit_debits.map((credit_debit) => {
+        if (credit_debit) {
+          neww.push({
+            "trip_id": credit_debit.trip_id,
+            "comment": credit_debit.comment,
+            "type": credit_debit.type,
+            "amount": credit_debit.amount,
+            "region": datas.branch.region.name,
+            "partner_name": datas.partner.name,
+            "partner_code": datas.partner.cardcode,
+            "created_at": credit_debit.created_at,
+            "responsibility": credit_debit.responsibility ? credit_debit.responsibility.name : '',
+            "last_comment": datas.last_comment.description,
+            "issue_type": credit_debit.credit_debit_type.name,
+            "created_by": credit_debit.created_by
+          })
         }
-     })
-    
-     datas.incentives.map((incentive)=> {
-         if(incentive) {
-             neww.push({
-                 "trip_id":incentive.trip_id,
-                 "comment":incentive.comment,
-                 "type":type,
-                 "amount":incentive.amount,
-                 "region":datas.branch.region.name,
-                 "partner_name":datas.partner.name,
-             "partner_code":datas.partner.cardcode,
-             "created_at": incentive.created_at,
-             "last_comment":datas.last_comment.description,
-             "issue_type":incentive.incentive_config.type,
-             "created_by":incentive.created_by
-             })
-         }
-     })
- })
- console.log("neww",neww)
-  
- 
+      })
+
+      datas.incentives.map((incentive) => {
+        if (incentive) {
+          neww.push({
+            "id":incentive.id,
+            "trip_id": incentive.trip_id,
+            "comment": incentive.comment,
+            "type": type,
+            "amount": incentive.amount,
+            "region": datas.branch.region.name,
+            "partner_name": datas.partner.name,
+            "partner_code": datas.partner.cardcode,
+            "created_at": incentive.created_at,
+            "last_comment": datas.last_comment.description,
+            "issue_type": incentive.incentive_config.type,
+            "created_by": incentive.created_by,
+            "incentive_config": incentive.incentive_config
+          })
+        }
+      })
+    })
+    console.log("neww", neww)
   }
-
-  console.log('_data',_data)
-
-  const pending_list = get(_data, 'trip', null)
-
-console.log('pending_list',pending_list)
-
-  
 
   // useEffect(() => {
   //   setFilter({ ...filter, pending: neww })
@@ -278,7 +268,7 @@ console.log('pending_list',pending_list)
       render: (text, record) =>
         <PartnerOnBoardedBy
           onboardedBy={get(record, 'responsibility', '-')}
-         // onboardedById={get(record, 'credit_debits.onboarded_by.id', null)}
+          // onboardedById={get(record, 'credit_debits.onboarded_by.id', null)}
           credit_debit_id={record.id}
           edit_access={access}
         />,
@@ -325,11 +315,12 @@ console.log('pending_list',pending_list)
                 size='small'
                 className='btn-success'
                 icon={<CheckOutlined />}
-                onClick={(e) =>{
-                  console.log('approval',e)
-                  handleShow('approveVisible', 'Approved', 'approveData', record)}
-                  }  />) : null
-                 }
+                onClick={(e) => {
+                  console.log('approval', e)
+                  handleShow('approveVisible', 'Approved', 'approveData', record)
+                }
+                } />) : null
+            }
           </Tooltip>
           <Tooltip title='Decline'>
             {rejected_access ? (
@@ -340,7 +331,7 @@ console.log('pending_list',pending_list)
                 danger
                 icon={<CloseOutlined />}
                 onClick={() =>
-                  handleShow('approveVisible', 'Rejected', 'approveData', record.id)}
+                  handleShow('approveVisible', 'Rejected', 'approveData', record)}
               />) : null}
           </Tooltip>
         </Space>
@@ -367,26 +358,26 @@ console.log('pending_list',pending_list)
           onHide={handleHide}
         />
       )}
-      
-       { type ? (
-         <>
-      {object.approveVisible && (
-        <IncentiveApprove
-          visible={object.approveVisible}
-          onHide={handleHide}
-          item_id={object.approveData}
-          title={object.title}
-        />
-      )}  </> ) :
-      <>
-      {object.approveVisible && (
-        <Approve
-          visible={object.approveVisible}
-          onHide={handleHide}
-          item_id={object.approveData}
-          title={object.title}
-        />
-      )} </> }
+
+      { type === type ? (
+        <>
+          {object.approveVisible && (
+            <IncentiveApprove
+              visible={object.approveVisible}
+              onHide={handleHide}
+              item_id={object.approveData}
+              title={object.title}
+            />
+          )}  </>) :
+        <>
+          {object.approveVisible && (
+            <Approve
+              visible={object.approveVisible}
+              onHide={handleHide}
+              item_id={object.approveData}
+              title={object.title}
+            />
+          )} </>}
     </>
   )
 }

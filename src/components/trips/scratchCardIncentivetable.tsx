@@ -12,28 +12,26 @@ import isEmpty from 'lodash/isEmpty'
 
 
 const SCRATCH_CARD_INCENTIVE_TABLE_SUBSCRIPTION = gql`
-subscription incentives($id:Int){
+subscription incentives($id: Int) {
   trip(where: {id: {_eq: $id}}) {
     id
- incentives{
-  id
-  amount
-  comment
-  track_incentive_status{
-    status
-  }
-  incentive_config{
-    type
-  }
-}
+    incentives {
+      id
+      amount
+      comment
+      track_incentive_status {
+        status
+      }
+      incentive_config {
+        type
+      }
+    }
   }
 }
 `
 
-
-
 const ScratchCardIncentiveTable = (props) => {
- const {trip_id} = props
+  const { trip_id } = props
 
   const initial = {
     approveData: [],
@@ -59,16 +57,15 @@ const ScratchCardIncentiveTable = (props) => {
 
   const scratch_card_incentive = get(_data, 'trip[0].incentives', null)
 
-  
-
   const columns = [
     {
       title: 'Type',
-      width:  '17%' ,
+      width: '17%',
       render: (text, record) => {
         return (
-         get(record, 'incentive_config.type', null)
-        )}
+          get(record, 'incentive_config.type', null)
+        )
+      }
     },
     {
       title: 'Amount ₹',
@@ -78,40 +75,40 @@ const ScratchCardIncentiveTable = (props) => {
     {
       title: 'Reason',
       dataIndex: 'comment',
-      width: '27%' 
-    }, 
+      width: '27%'
+    },
     {
       title: 'Status',
-      width:  '14%',
+      width: '14%',
       render: (text, record) => {
         return (
-         get(record, 'track_incentive_status.status', null)
-        )}
-    },
-  
-       {
-        title: 'Action',
-        width: '12%',
-        render: (text, record) => (
-            <Space>
-              <Button
-                type='primary'
-                size='small'
-                shape='circle'
-                className='btn-success'
-                icon={<CheckOutlined />}
-                onClick={() => handleShow('approveVisible', 'Approved', 'approveData', record)}
-              />
-              <Button
-                type='primary'
-                size='small'
-                shape='circle'
-                danger
-                icon={<CloseOutlined />}
-                onClick={() => handleShow('approveVisible', 'Rejected', 'approveData', record.id)}
-              />
-            </Space>)
+          get(record, 'track_incentive_status.status', null)
+        )
       }
+    },
+    {
+      title: 'Action',
+      width: '12%',
+      render: (text, record) => (
+        <Space>
+          <Button
+            type='primary'
+            size='small'
+            shape='circle'
+            className='btn-success'
+            icon={<CheckOutlined />}
+            onClick={() => handleShow('approveVisible', 'Approved', 'approveData', record)}
+          />
+          <Button
+            type='primary'
+            size='small'
+            shape='circle'
+            danger
+            icon={<CloseOutlined />}
+            onClick={() => handleShow('approveVisible', 'Rejected', 'approveData', record)}
+          />
+        </Space>)
+    }
   ]
   return (
     <div className='cardFix'>
@@ -131,7 +128,7 @@ const ScratchCardIncentiveTable = (props) => {
           item_id={object.approveData}
           title={object.title}
           trip_id={trip_id}
-          //setCreditNoteRefetch={setCreditNoteRefetch}
+        //setCreditNoteRefetch={setCreditNoteRefetch}
         />
       )}
     </div>
