@@ -123,7 +123,7 @@ const Payables = (props) => {
           <Row className='payableHead' gutter={6}>
             <Col xs={12}><b>Pending Payables</b></Col>
             <Col xs={12} className='text-right'>
-              <b>{pending_payable_total}</b>
+              <b>{pending_payable_total.toFixed(2)}</b>
             </Col>
           </Row>
           <Table
