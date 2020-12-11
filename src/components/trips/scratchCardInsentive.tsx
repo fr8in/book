@@ -17,12 +17,13 @@ subscription incentive_type {
 `
 
 const SCRATCH_CARD_INCENTIVE_MUTATION = gql`
-mutation create_incentive($trip_id:Int!,$type_id:Int!,$created_by:String!) {
-  create_incentive(trip_id:$trip_id, type_id: $type_id, created_by:$created_by) {
+mutation create_incentive($trip_id: Int!, $type_id: Int!, $created_by: String!,$comment:String) {
+  create_incentive(trip_id: $trip_id, type_id: $type_id, created_by: $created_by, comment: $comment) {
     status
     description
   }
-}`
+}
+`
 
 const Incentive = (props) => {
 
@@ -75,7 +76,8 @@ console.log('idddddddddd',trip_id)
         variables: {
         type_id:form.type_id,
         trip_id: parseInt(trip_id),
-        created_by: context.email
+        created_by: context.email,
+        comment:form.comment
         }
       })
     }

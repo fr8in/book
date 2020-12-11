@@ -8,13 +8,13 @@ import userContext from '../../../lib/userContaxt'
 
 const GET_TOKEN = gql`
 query get_token($trip_id: Int!) {
-  token(ref_id: $trip_id, process: "INCENTIVE_TRACK")
+  token(ref_id: $trip_id, process:"INCENTIVE_TRACK")
 }
 `
 
 const REJECT_INCENTIVE_MUTATION = gql`
-mutation delete_incentive($id: Int!, $comment: String!,$approved_by:String) {
-  update_incentive(where: {id: {_eq: $id}}, _set: {track_status_id: 3, comment: $comment,approved_by:$approved_by}) {
+mutation delete_incentive($id: Int!, $approved_by:String) {
+  update_incentive(where: {id: {_eq: $id}}, _set: {track_status_id: 3,approved_by:$approved_by}) {
     returning {
       id
     }
@@ -23,8 +23,8 @@ mutation delete_incentive($id: Int!, $comment: String!,$approved_by:String) {
 `
 
 const INCENTIVE_APPROVAL_MUTATION = gql`
-mutation approve_incentive($id:Int!,$approved_by:String!){
-  approve_incentive(id:$id,approved_by:$approved_by){
+mutation approve_incentive($id: Int!, $approved_by: String!,$process:String!,$token:String!) {
+  approve_incentive(id: $id, approved_by: $approved_by, process: $process, token:$token ) {
     description
     status
   }
@@ -82,11 +82,12 @@ const IncentiveApprove = (props) => {
     })
 
   const onSubmit = (form) => {
-     if (title === 'Approved') {
+     if (title === 'Approve') {
       setDisableButton(true)
       incentiveApproval({
         variables: {
           token: data.token,
+          process: "INCENTIVE_TRACK",
           id:item_id.id,
           approved_by:context.email
         }
@@ -111,22 +112,14 @@ const IncentiveApprove = (props) => {
       footer={null}
     >
       <Form layout='vertical' onFinish={onSubmit}>
-        {title === 'Approve' && (
-          <>
           <Form.Item label='Amount' name='amount' initialValue={item_id.amount} >
             <Input placeholder='Approved amount' type='number' min={1} disabled={true}/>
           </Form.Item>
            <Form.Item label='Incentive Type' name='type'  initialValue={item_id.incentive_config.type}>
            <Input placeholder='Type'   disabled={true}/>
          </Form.Item>
-         </>
-        )}
-        { title === 'Reject' && (
-        <Form.Item label='Remarks' name='comment' rules={[{ required: true }]}>
-          <Input placeholder='Remarks' />
-        </Form.Item> )}
         <Form.Item className='text-right'>
-          <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>Submit</Button>
+  <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>{title === 'Approve' ? 'Approve':'Reject'}</Button>
         </Form.Item> 
       </Form> 
        {(loading || mutationLoading) &&
