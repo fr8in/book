@@ -23,8 +23,8 @@ import userContext from '../../../lib/userContaxt'
 import isEmpty from 'lodash/isEmpty'
 
 const PENDING_SUBSCRIPTION = gql`
-subscription trip_credit_debit($status: [String!], $incentive_status: [String!]) {
-  trip(where: {_or: [{credit_debits: {id: {_is_null: false}}}, {incentives: {id:{_is_null:false}}}]}) {
+subscription trip_credit_debit($status: [String!], $incentive_status_id: Int!, $incentive_source: String!) {
+  trip(where: {_or: [{credit_debits: {id: {_is_null: false}}}, {incentives: {id: {_is_null: false}}}]}) {
     id
     last_comment {
       id
@@ -60,7 +60,7 @@ subscription trip_credit_debit($status: [String!], $incentive_status: [String!])
         name
       }
     }
-    incentives(where: {track_incentive_status: {status: {_in: $incentive_status}}incentive_config:{auto_creation:{_eq:false}}}) {
+    incentives(where: {source: {_eq: $incentive_source}, status_id: {_eq: $incentive_status_id}, incentive_config: {auto_creation: {_eq: false}}}) {
       id
       trip_id
       amount
@@ -70,12 +70,13 @@ subscription trip_credit_debit($status: [String!], $incentive_status: [String!])
       incentive_config {
         type
       }
-      track_incentive_status {
+      incentive_status {
         status
       }
     }
   }
 }
+
   `
 
 const Pending = () => {
@@ -100,14 +101,14 @@ const Pending = () => {
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const [filter, setFilter] = useState(initial)
 
-  const type = 'I'
 
   const { loading, error, data } = useSubscription(
     PENDING_SUBSCRIPTION,
     {
       variables: {
         status: 'PENDING',
-        incentive_status: 'PENDING'
+        incentive_status: 'PENDING',
+
       }
     }
   )

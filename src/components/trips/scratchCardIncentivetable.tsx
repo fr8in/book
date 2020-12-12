@@ -19,7 +19,7 @@ subscription incentives($id: Int) {
       id
       amount
       comment
-      track_incentive_status {
+      incentive_status {
         status
       }
       incentive_config {
@@ -82,7 +82,7 @@ console.log('trip_id---',trip_id)
       width: '14%',
       render: (text, record) => {
         return (
-          get(record, 'track_incentive_status.status', null)
+          get(record, 'incentive_status.status', null)
         )
       }
     },
@@ -90,7 +90,7 @@ console.log('trip_id---',trip_id)
       title: 'Action',
       width: '12%',
       render: (text, record) => (
-        get(record, 'track_incentive_status.status', null) === 'PENDING' ? (
+        get(record, 'incentive_status.status', null) === 'PENDING' ? (
         <Space>
           <Button
             type='primary'
