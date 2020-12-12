@@ -23,7 +23,7 @@ import userContext from '../../../lib/userContaxt'
 import isEmpty from 'lodash/isEmpty'
 
 const PENDING_SUBSCRIPTION = gql`
-query trip_credit_debit($status: [String!], $incentive_status: String!, $incentive_source: String!) {
+subscription trip_credit_debit($status: [String!], $incentive_status: String!, $incentive_source: String!) {
   trip(where: {_or: [{credit_debits: {id: {_is_null: false}}}, {incentives: {id: {_is_null: false}}}]}) {
     id
     last_comment {
@@ -146,7 +146,7 @@ const Pending = () => {
             "id":incentive.id,
             "trip_id": incentive.trip_id,
             "comment": incentive.comment,
-            "type": type,
+            "type": 'I',
             "amount": incentive.amount,
             "region": datas.branch.region.name,
             "partner_name": datas.partner.name,
