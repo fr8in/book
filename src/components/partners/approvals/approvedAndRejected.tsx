@@ -8,9 +8,10 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import moment from 'moment'
 import u from '../../../lib/util'
+import { isNil } from 'lodash'
 
 const APPROVED_REJECTED_SUBSCRIPTION = gql`
-subscription trip_credit_debit_approval($offset: Int, $limit: Int, $credit_debit_where: trip_credit_debit_bool_exp, $incentive_where: incentive_bool_exp) {
+query trip_credit_debit_approval($offset: Int, $limit: Int, $credit_debit_where: trip_credit_debit_bool_exp, $incentive_where: incentive_bool_exp) {
   trip(order_by: {id: desc}, offset: $offset, limit: $limit, where: {_or: [{credit_debits: {id: {_is_null: false}}}, {incentives: {id: {_is_null: false}}}]}) {
     id
     credit_debits(where: $credit_debit_where) {
@@ -84,7 +85,7 @@ const ApprovedAndRejected = () => {
     offset: 0,
     limit: u.limit,
     trip_id: null,
-    type:null,
+    type: null,
     issue_type: [],
     created_by: null
   }
@@ -99,13 +100,19 @@ const ApprovedAndRejected = () => {
     created_by: filter.created_by ? { _ilike: `%${filter.created_by}%` } : { _ilike: null },
     credit_debit_status: { name: { _in: ['APPROVED', 'REJECTED'] } }
   }
+  let incentive_status_filter = []
+  let incentive_type_list = null
+  if (isNil(filter.type) || filter.type.length === 0 || filter.type.includes('I')) {
+    incentive_status_filter = ['PAID', 'REJECTED']
+    incentive_type_list = filter.issue_type && filter.issue_type.length > 0 ? filter.issue_type : null
+  }
 
   const incentive_where = {
     trip_id: filter.trip_id && filter.trip_id.length > 0 ? { _in: filter.trip_id } : { _in: null },
     created_by: filter.created_by ? { _ilike: `%${filter.created_by}%` } : { _ilike: null },
-    source: {_eq: "TRACK"},
-    incentive_status: { status: { _in: ['PAID', 'REJECTED'] } },
-    incentive_config:{auto_creation: {_eq: false}},_and:{incentive_config: {type: filter.issue_type && filter.issue_type.length > 0 ? { _in: filter.issue_type } : { _in: null }}},
+    source: { _eq: "TRACK" },
+    incentive_status: { status: { _in: incentive_status_filter } },
+    incentive_config: { auto_creation: { _eq: false } }, _and: { incentive_config: { type: { _in: incentive_type_list } } },
   }
 
   const approvalQueryVars = {
@@ -114,7 +121,6 @@ const ApprovedAndRejected = () => {
     credit_debit_where: credit_debit_where,
     incentive_where: incentive_where
   }
-  console.log('filter', filter)
 
   const { loading, error, data } = useSubscription(
     APPROVED_REJECTED_SUBSCRIPTION,
@@ -122,9 +128,7 @@ const ApprovedAndRejected = () => {
       variables: approvalQueryVars
     }
   )
-  console.log('approvedRejected error', error)
 
-  
   const { data: f_data, loading: filter_loading } = useQuery(
     CREDIT_DEBIT_TYPE_QUERY,
     {
@@ -138,7 +142,7 @@ const ApprovedAndRejected = () => {
   let credit_debit_incentive_data = [];
   if (!loading) {
     _data = data
-   
+
     data.trip.map((datas) => {
       datas.credit_debits.map((credit_debit) => {
         if (credit_debit) {
@@ -162,15 +166,15 @@ const ApprovedAndRejected = () => {
       datas.incentives.map((incentive) => {
         if (incentive) {
           credit_debit_incentive_data.push({
-            "id":incentive.id,
+            "id": incentive.id,
             "trip_id": incentive.trip_id,
             "comment": incentive.comment,
-            "type":type,
+            "type": type,
             "amount": incentive.amount,
             "created_at": incentive.created_at,
             "issue_type": incentive.incentive_config.type,
             "created_by": incentive.created_by,
-            "approved_by":incentive.approved_by
+            "approved_by": incentive.approved_by
           })
         }
       })
@@ -191,9 +195,9 @@ const ApprovedAndRejected = () => {
   const incentive_config = incentive_type.map((data) => {
     return { value: data.type, label: data.type }
   })
-  
+
   const filter_list = incentive_config.concat(issueTypeList)
- 
+
   const record_count = get(filter_data, 'trip_credit_debit_aggregate.aggregate.count', 0)
 
   const creditDebitList = creditDebitType.map((data) => {
@@ -336,7 +340,7 @@ const ApprovedAndRejected = () => {
       dataIndex: 'approved_by',
       key: 'approved_by',
       width: '12%',
-      render: (text, record) =><Truncate data={get(record, 'approved_by', null)} length={18} />
+      render: (text, record) => <Truncate data={get(record, 'approved_by', null)} length={18} />
     },
     {
       title: 'Remarks',
