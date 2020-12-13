@@ -103,10 +103,9 @@ const ApprovedAndRejected = () => {
   const incentive_where = {
     trip_id: filter.trip_id && filter.trip_id.length > 0 ? { _in: filter.trip_id } : { _in: null },
     created_by: filter.created_by ? { _ilike: `%${filter.created_by}%` } : { _ilike: null },
-    "source": {"_eq": "TRACK"},
+    source: {_eq: "TRACK"},
     incentive_status: { status: { _in: ['PAID', 'REJECTED'] } },
-    incentive_config:{auto_creation:{_eq:false}}
-   
+    incentive_config:{auto_creation: {_eq: false}},_and:{incentive_config: {type: filter.issue_type && filter.issue_type.length > 0 ? { _in: filter.issue_type } : { _in: null }}},
   }
 
   const approvalQueryVars = {
@@ -183,7 +182,7 @@ const ApprovedAndRejected = () => {
   if (!filter_loading) {
     filter_data = f_data
   }
-  
+
   const credit_debit_type = get(filter_data, 'credit_debit_type', [])
   const issueTypeList = credit_debit_type.map((data) => {
     return { value: data.name, label: data.name }

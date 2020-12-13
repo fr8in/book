@@ -14,7 +14,7 @@ query get_token($trip_id: Int!) {
 
 const REJECT_INCENTIVE_MUTATION = gql`
 mutation delete_incentive($id: Int!, $approved_by:String) {
-  update_incentive(where: {id: {_eq: $id}}, _set: {track_status_id: 3,approved_by:$approved_by}) {
+  update_incentive(where: {id: {_eq: $id}}, _set: {status_id:3,approved_by:$approved_by}) {
     returning {
       id
     }
