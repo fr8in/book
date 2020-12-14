@@ -30,6 +30,11 @@ subscription trip_credit_debit_approval(
     created_at
     created_by
     comment
+    trip {
+      partner {
+        name
+      }
+    }
     credit_debit_status {
       id
       name
@@ -38,7 +43,8 @@ subscription trip_credit_debit_approval(
       name
     }
   }
-}`
+}
+`
 
 const CREDIT_DEBIT_TYPE_QUERY = gql`
 query credit_debit_agg_type($where: trip_credit_debit_bool_exp!){
@@ -67,7 +73,8 @@ const ApprovedAndRejected = () => {
     trip_id: null,
     type: null,
     issue_type: [],
-    created_by: null
+    created_by: null,
+    partner_name: null
   }
 
   const [filter, setFilter] = useState(initial)
@@ -78,6 +85,7 @@ const ApprovedAndRejected = () => {
     type: filter.type && filter.type.length > 0 ? { _in: filter.type } : { _in: null },
     credit_debit_type: filter.issue_type && filter.issue_type.length > 0 ? { name: { _in: filter.issue_type } } : { name: { _in: null } },
     created_by: filter.created_by ? { _ilike: `%${filter.created_by}%` } : { _ilike: null },
+    trip: {partner: {name: {_ilike:filter.partner_name ?  `%${filter.partner_name}%`  :  null }}},
     credit_debit_status: { name: { _in: ['APPROVED', 'REJECTED'] } }
   }
   const approvalQueryVars = {
@@ -151,6 +159,10 @@ const ApprovedAndRejected = () => {
     setCurrentPage(1)
     setFilter({ ...filter, created_by: e.target.value })
   }
+  const onPartnerSearch = (e) => {
+    setCurrentPage(1)
+    setFilter({ ...filter, partner_name: e.target.value })
+  }
 
   const ApprovalPending = [
     {
@@ -179,7 +191,7 @@ const ApprovedAndRejected = () => {
       dataIndex: 'type',
       key: 'type',
       filters: creditDebitType,
-      width: '7%',
+      width: '5%',
       onFilter: (value, record) => record && record.type.indexOf(value) === 0,
       filterDropdown: (
         <Checkbox.Group
@@ -208,26 +220,46 @@ const ApprovedAndRejected = () => {
     {
       title: 'Claim ₹',
       dataIndex: 'amount',
-      width: '8%'
+      width: '7%'
     },
     {
       title: 'Approved ₹',
       dataIndex: 'approved_amount',
       key: 'approved',
-      width: '8%'
+      width: '7%'
+    },
+    {
+      title: 'Partner',
+      key: 'partner',
+      width: '12%',
+      render: (text, record) => get(record, 'trip.partner.name',null),
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search'
+            id='partner_name'
+            name='partner_name'
+            value={filter.partner_name}
+            onChange={onPartnerSearch}
+          />
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     {
       title: 'Reason',
       dataIndex: 'comment',
       key: 'comment',
-      width: '13%',
+      width: '9%',
       render: (text, record) => <Truncate data={text} length={18} />
     },
     {
       title: 'Request By',
       dataIndex: 'created_by',
       key: 'created_by',
-      width: '13%',
+      width: '12%',
       render: (text, record) => <Truncate data={text} length={18} />,
       filterDropdown: (
         <div>
@@ -265,7 +297,7 @@ const ApprovedAndRejected = () => {
       title: 'Remarks',
       dataIndex: 'approval_comment',
       key: 'approval_comment',
-      width: '13%',
+      width: '10%',
       render: (text, record) => <Truncate data={text} length={12} />
     }
   ]
