@@ -5,67 +5,88 @@ import {
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
-import { useState, useEffect, useContext } from 'react'
+import { useState,  useContext } from 'react'
 import Truncate from '../../common/truncate'
 import Link from 'next/link'
 import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
 import Comment from '../../trips/tripFeedBack'
 import Approve from './accept'
-import { gql, useSubscription } from '@apollo/client'
+import IncentiveApprove from './incentiveApprove'
+import { gql, useSubscription, } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import PartnerOnBoardedBy from '../partnerOnboardedByName'
 import LinkComp from '../../common/link'
 import u from '../../../lib/util'
-
 import userContext from '../../../lib/userContaxt'
 import isEmpty from 'lodash/isEmpty'
 
 const PENDING_SUBSCRIPTION = gql`
-subscription trip_credit_debit($status: [String!]) {
-  trip_credit_debit(where: {credit_debit_status: {name: {_in: $status}}}, order_by: {created_at: desc}) {
+subscription trip_credit_debit($status: [String!], $incentive_status: String!, $incentive_source: String!) {
+  trip(where: {_or: [{credit_debits: {id: {_is_null: false}}}, {incentives: {id: {_is_null: false}}}]}) {
     id
-    trip_id
-    type
-    amount
-    comment
-    created_at
-    created_by
-    is_created_by_partner
-    credit_debit_status {
+    last_comment {
       id
-      name
+      description
     }
-    trip {
-      last_comment {
-        id
-        description
-      }
-      branch {
-        region {
-          name
-        }
-      }
-      partner {
-        cardcode
+    branch {
+      region {
         name
       }
     }
-    responsibility {
-      id
+    partner {
+      cardcode
       name
     }
-    credit_debit_type {
-      name
+    credit_debits(where: {credit_debit_status: {name: {_in: $status}}}) {
+      id
+      trip_id
+      type
+      amount
+      comment
+      created_at
+      created_by
+      is_created_by_partner
+      credit_debit_status {
+        id
+        name
+      }
+      responsibility {
+        id
+        name
+      }
+      credit_debit_type {
+        name
+      }
+    }
+    incentives(where: {source: {_eq: $incentive_source}, incentive_status: {status: {_eq: $incentive_status}}, incentive_config: {auto_creation: {_eq: false}}}) {
+      id
+      trip_id
+      amount
+      comment
+      created_at
+      created_by
+      incentive_config {
+        type
+      }
+      incentive_status {
+        status
+      }
     }
   }
-}`
+}
+
+  `
 
 const Pending = () => {
   const { role } = u
-  const access = [role.admin, role.rm,role.partner_support]
-  const approve_roles = [role.admin, role.rm,role.partner_manager,role.partner_support]
-  const reject_roles = [role.admin, role.rm,role.partner_manager,role.partner_support]
+  const context = useContext(userContext)
+  const access = [role.admin, role.rm, role.partner_support]
+  const approve_roles = [role.admin, role.rm, role.partner_manager, role.partner_support]
+  const approval_access = u.is_roles(approve_roles, context)
+  const reject_roles = [role.admin, role.rm, role.partner_manager, role.partner_support]
+  const rejected_access = u.is_roles(reject_roles, context)
+
   const initial = {
     commentData: [],
     commentVisible: false,
@@ -77,32 +98,67 @@ const Pending = () => {
     pending: []
   }
 
-  const context = useContext(userContext)
-  const approval_access =  u.is_roles(approve_roles,context)
-  const rejected_access =  u.is_roles(reject_roles,context)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const [filter, setFilter] = useState(initial)
+
 
   const { loading, error, data } = useSubscription(
     PENDING_SUBSCRIPTION,
     {
       variables: {
-        status: ['PENDING']
+        status: ['PENDING'],
+        incentive_status: 'PENDING',
+        incentive_source: 'TRACK'
+
       }
     }
   )
   console.log('pending error', error)
 
   let _data = {}
+  let pending_list = [];
   if (!loading) {
     _data = data
-  }
+const trip = get(data,'trip', null)
 
-  const pending_list = get(_data, 'trip_credit_debit', null)
+!isEmpty(trip) ? trip.map((trip_data) => {
+  !isEmpty(trip_data) ?  trip_data.credit_debits.map((credit_debit) => {
+        pending_list.push({
+            "id": credit_debit.id,
+            "trip_id": credit_debit.trip_id,
+            "comment": credit_debit.comment,
+            "type": credit_debit.type,
+            "amount": credit_debit.amount,
+            "region": trip_data.branch.region.name,
+            "partner_name": trip_data.partner.name,
+            "partner_code": trip_data.partner.cardcode,
+            "created_at": credit_debit.created_at,
+            "responsibility": credit_debit.responsibility ? credit_debit.responsibility.name : '',
+            "last_comment": trip_data.last_comment.description,
+            "issue_type": credit_debit.credit_debit_type.name,
+            "created_by": credit_debit.created_by
+          })
+      }) : []
 
-  useEffect(() => {
-    setFilter({ ...filter, pending: pending_list })
-  }, [pending_list])
+      !isEmpty(trip_data) ?  trip_data.incentives.map((incentive) => {
+          pending_list.push({
+            "id": incentive.id,
+            "trip_id": incentive.trip_id,
+            "comment": incentive.comment,
+            "type": 'I',
+            "amount": incentive.amount,
+            "region": trip_data.branch.region.name,
+            "partner_name": trip_data.partner.name,
+            "partner_code": trip_data.partner.cardcode,
+            "created_at": incentive.created_at,
+            "last_comment": trip_data.last_comment.description,
+            "issue_type": incentive.incentive_config.type,
+            "created_by": incentive.created_by,
+            "incentive_config": incentive.incentive_config
+          }) 
+      }) : []
+    }) 
+  : null}
 
   const onSearch = (e) => {
     setFilter({ ...filter, searchText: e.target.value })
@@ -134,20 +190,22 @@ const Pending = () => {
       title: 'Type',
       dataIndex: 'type',
       key: 'type',
-      width: '4%'
+      width: '4%',
+      render: (text, record) => get(record, 'type', null)
     },
     {
       title: 'Issue Type',
       dataIndex: 'issueType',
       key: 'issueType',
       width: '8%',
-      render: (text, record) => <Truncate data={get(record, 'credit_debit_type.name', null)} length={10} />
+      render: (text, record) => <Truncate data={get(record, 'issue_type', null)} length={10} />
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
-      width: '6%'
+      width: '6%',
+      render: (text, record) => get(record, 'amount', null)
     },
     {
       title: 'Reason',
@@ -161,7 +219,7 @@ const Pending = () => {
       dataIndex: 'region',
       key: 'region',
       width: '6%',
-      render: (text, record) => get(record, 'trip.branch.region.name', null)
+      render: (text, record) => get(record, 'region', null)
 
     },
     {
@@ -180,8 +238,8 @@ const Pending = () => {
         return (
           <LinkComp
             type='partners'
-            data={get(record, 'trip.partner.cardcode', null) + '-' + get(record, 'trip.partner.name', null)}
-            id={get(record, 'trip.partner.cardcode', null)}
+            data={get(record, 'partner_code', null) + '-' + get(record, 'partner_name', null)}
+            id={get(record, 'partner_code', null)}
             length={14}
           />
         )
@@ -194,7 +252,7 @@ const Pending = () => {
       sorter: (a, b) => (a.created_at > b.created_at ? 1 : -1),
       width: '7%',
       render: (text, record) => {
-        return text ? moment(text).format('DD-MMM-YY') : null
+        return get(record, 'created_at', null) ? moment(get(record, 'created_at', null)).format('DD-MMM-YY') : null
       }
     },
     {
@@ -204,8 +262,7 @@ const Pending = () => {
       width: '10%',
       render: (text, record) =>
         <PartnerOnBoardedBy
-          onboardedBy={get(record, 'responsibility.name', '-')}
-          onboardedById={get(record, 'onboarded_by.id', null)}
+          onboardedBy={get(record, 'responsibility', '-')}
           credit_debit_id={record.id}
           edit_access={access}
         />,
@@ -230,21 +287,26 @@ const Pending = () => {
       dataIndex: 'last_comment',
       key: 'last_comment',
       width: '11%',
-      render: (text, record) => <Truncate data={get(record, 'trip.last_comment.description', null)} length={15} />
+      render: (text, record) => (
+        record.type === 'I' ? <></> :
+          <Truncate data={get(record, 'last_comment', null)} length={15} />
+      )
     },
     {
       title: 'Action',
       width: '8%',
       render: (text, record) => (
         <Space>
-          <Tooltip title='Comment'>
-            <Button
-              type='link'
-              icon={<CommentOutlined />}
-              onClick={() => handleShow('commentVisible', null, 'commentData', record.trip_id)}
-            />
-          </Tooltip>
-          <Tooltip title='Accept'>
+          {
+            record.type === 'I' ? <Space>&emsp; &emsp; </Space> :
+              <Tooltip title='Comment'>
+                <Button
+                  type='link'
+                  icon={<CommentOutlined />}
+                  onClick={() => handleShow('commentVisible', null, 'commentData', record.trip_id)}
+                />
+              </Tooltip>}
+          <Tooltip title='Approve'>
             {approval_access ? (
               <Button
                 type='primary'
@@ -252,11 +314,13 @@ const Pending = () => {
                 size='small'
                 className='btn-success'
                 icon={<CheckOutlined />}
-                onClick={() =>
-                  handleShow('approveVisible', 'Approved', 'approveData', record)}
-              />) : null}
+                onClick={(e) => {
+                  handleShow('approveVisible', 'Approve', 'approveData', record)
+                }
+                } />) : null
+            }
           </Tooltip>
-          <Tooltip title='Decline'>
+          <Tooltip title='Reject'>
             {rejected_access ? (
               <Button
                 type='primary'
@@ -265,8 +329,9 @@ const Pending = () => {
                 danger
                 icon={<CloseOutlined />}
                 onClick={() =>
-                  handleShow('approveVisible', 'Rejected', 'approveData', record.id)}
-              />) : null}
+                  handleShow('approveVisible', 'Reject', 'approveData', record)}
+              />) : null
+            }
           </Tooltip>
         </Space>
       )
@@ -277,7 +342,7 @@ const Pending = () => {
     <>
       <Table
         columns={ApprovalPending}
-        dataSource={filter.pending}
+        dataSource={pending_list}
         rowKey={(record) => record.id}
         size='small'
         scroll={{ x: 1256 }}
@@ -285,6 +350,7 @@ const Pending = () => {
         className='withAction'
         loading={loading}
       />
+
       {object.commentVisible && (
         <Comment
           visible={object.commentVisible}
@@ -292,14 +358,25 @@ const Pending = () => {
           onHide={handleHide}
         />
       )}
-      {object.approveVisible && (
-        <Approve
-          visible={object.approveVisible}
-          onHide={handleHide}
-          item_id={object.approveData}
-          title={object.title}
-        />
-      )}
+
+      { object.approveData && object.approveData.type === "I" ? (
+       object.approveVisible && (
+            <IncentiveApprove
+              visible={object.approveVisible}
+              onHide={handleHide}
+              item_id={object.approveData}
+              title={object.title}
+              trip_id={object.approveData.trip_id}
+            />
+          )) :
+       object.approveVisible && (
+            <Approve
+              visible={object.approveVisible}
+              onHide={handleHide}
+              item_id={object.approveData}
+              title={object.title}
+            />
+          )}
     </>
   )
 }

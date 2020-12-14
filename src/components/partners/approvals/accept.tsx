@@ -73,7 +73,7 @@ const Approve = (props) => {
   const onSubmit = (form) => {
     if (form.amount && (item_id.amount < parseFloat(form.amount))) {
       message.error('Approval amount should be less than or equal to claim amount')
-    } else if (title === 'Approved') {
+    } else if (title === 'Approve') {
       setDisableButton(true)
       creditApproval({
         variables: {
@@ -87,7 +87,7 @@ const Approve = (props) => {
       setDisableButton(true)
       rejectCredit({
         variables: {
-          id: item_id,
+          id: item_id.id,
           remarks: form.remarks
         }
       })
@@ -102,7 +102,7 @@ const Approve = (props) => {
       footer={null}
     >
       <Form layout='vertical' onFinish={onSubmit}>
-        {title === 'Approved' && (
+        {title === 'Approve' && (
           <Form.Item label='Amount' name='amount' rules={[{ required: true }]} extra={`Claim Amount: ${item_id.amount}`}>
             <Input placeholder='Approved amount' type='number' min={1} />
           </Form.Item>
