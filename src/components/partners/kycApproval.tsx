@@ -37,6 +37,9 @@ query trucks_type_status{
     id
     name
   }
+  config(where:{key:{_eq:"financial_year"}}){
+    value
+  }
 } 
 `
 
@@ -64,6 +67,7 @@ subscription partner_kyc($id:Int){
       folder
       file_path
       created_at
+      financial_year
     }
     trucks{
       id
@@ -140,6 +144,10 @@ const KycApproval = (props) => {
   }
  
   const truck_type = get(truck_data, 'truck_type', [])
+  const tds_current_ = get(truck_data, 'config[0].value.current', null)
+  const tds_previous_ = get(truck_data, 'config[0].value.previous', null)
+
+  console.log('tds_current_',tds_previous_)
 
   const { data, error, loading } = useSubscription(
     PARTNERS_SUBSCRIPTION, {
@@ -164,10 +172,15 @@ const KycApproval = (props) => {
   const cardcode = get(partnerDetail, 'cardcode', null)
   const trucks = get(partnerDetail, 'trucks', [])
   const files = get(partnerDetail, 'partner_files', [])
-
+ 
   const pan_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.partner_pan)
   const tds_files = files.filter(file => file.type === u.fileType.tds)
+  const tds_current = files.filter(file => file.financial_year === tds_current_)
+  const tds_previous = files.filter(file => file.financial_year === tds_previous_)
   const cheaque_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.check_leaf)
+
+  console.log('tds',tds_previous)
+
   const { role } = u
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
   const access = u.is_roles(edit_access, context)
@@ -335,7 +348,7 @@ const KycApproval = (props) => {
                                   file_list={pan_files}
                                 />
                               </Space>
-                            ) : (
+                            ) :  ( 
                               <FileUploadOnly
                                 size='small'
                                 id={partner_id}
@@ -393,7 +406,7 @@ const KycApproval = (props) => {
                       <Col xs={12} sm={4} className='text-right'>
                         <Space>
                           <span>
-                            {!isEmpty(tds_files) ? (
+                            {!isEmpty(tds_files) && tds_previous ? (
                               <Space>
                                 <ViewFile
                                   size='small'
@@ -411,7 +424,8 @@ const KycApproval = (props) => {
                                   file_list={tds_files}
                                 />
                               </Space>
-                            ) : (
+                            ) :  (
+                              tds_previous_ ?
                               <FileUploadOnly
                                 size='small'
                                 id={partner_id}
@@ -419,8 +433,9 @@ const KycApproval = (props) => {
                                 folder={u.folder.approvals}
                                 file_type={u.fileType.tds}
                                 file_list={tds_files}
+                                financial_year={tds_previous_}
                               />
-                            )}
+                           : null )}
                           </span>
                         </Space>
                       </Col>
@@ -431,7 +446,7 @@ const KycApproval = (props) => {
                       <Col xs={12} sm={4} className='text-right'>
                         <Space>
                           <span>
-                            {!isEmpty(tds_files) ? (
+                            {!isEmpty(tds_files) && tds_current ? (
                               <Space>
                                 <ViewFile
                                   size='small'
@@ -449,7 +464,8 @@ const KycApproval = (props) => {
                                   file_list={tds_files}
                                 />
                               </Space>
-                            ) : (
+                            ) :  (
+                              tds_current_ ?
                               <FileUploadOnly
                                 size='small'
                                 id={partner_id}
@@ -457,9 +473,9 @@ const KycApproval = (props) => {
                                 folder={u.folder.approvals}
                                 file_type={u.fileType.tds}
                                 file_list={tds_files}
-                                financial_year={1920}
+                                financial_year={tds_current_}
                               />
-                            )}
+                          : null  )}
                           </span>
                         </Space>
                       </Col>
