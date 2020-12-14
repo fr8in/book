@@ -16,7 +16,7 @@ const EmployeeCode = (props) => {
   const { id, code } = props
 
   const { role } = u
-  const employee_code = [role.admin,role.hr]
+  const employee_code = [role.hr]
 
   const [updateEmployeeCode] = useMutation(
     UPDATE_EMPLOYEE_CODE_MUTATION,
