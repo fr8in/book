@@ -1,56 +1,73 @@
 import { useEffect } from 'react'
 import { Table } from 'antd'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
-import moment from 'moment'
 
-const ADDITIONAL_ADVANCE_QUERY = gql`
-query additional_advance($trip_id: Int_comparison_exp!) {
-  trip(where: {id: $trip_id}) {
-    additional_advance {
-      id
-      trip_id
-      amount
-      comment
-      created_by
-      created_on
-      payment_mode
-      status
-    }
+const ADDITIONAL_ADVANCE_QUERY = gql`subscription additional_advance($trip_id: Int_comparison_exp!) {
+  advance_additional_advance(where: {trip_id: $trip_id}) {
+    id
+    trip_id
+    amount
+    comment
+    created_at
+    created_by
+    payment_mode
+    status
   }
 }`
 
+const EXCESS_ADVANCE_QUERY = gql`subscription excess_advance($trip_id: Int_comparison_exp!) {
+  advance_excess_advance(where: {status: {_eq: "COMPLETED"}, trip_id: $trip_id}) {
+    id
+    trip_id
+    amount:eligible_advance
+    comment
+    created_at
+    created_by
+    status
+  }
+}
+`
+
 const AdditionalAdvance = (props) => {
   const { loaded, ad_trip_id, advanceRefetch, setAdvanceRefetch } = props
-  const { loading, error, data, refetch } = useQuery(
+  const { loading, error, data } = useSubscription(
     ADDITIONAL_ADVANCE_QUERY, {
-      variables: { trip_id: { _eq: ad_trip_id } },
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
-    })
+    variables: { trip_id: { _eq: ad_trip_id } }
+  })
 
-  console.log('Additional advance error', error)
+  const { loading: excessLoading, error: excessError, data: excessData } = useSubscription(
+    EXCESS_ADVANCE_QUERY, {
+    variables: { trip_id: { _eq: ad_trip_id } }
+  })
+
+  console.log('Additional advance error', error, data, excessLoading,excessError, excessData)
 
   var _data = {}
   if (!loading) {
     _data = data
   }
-
+  let _excessData = {}
+  if (!excessLoading) {
+    _excessData = excessData
+  }
   useEffect(() => {
     if (advanceRefetch) {
-      refetch()
       setAdvanceRefetch(false)
     }
   }, [advanceRefetch])
 
-  const additionalAdvance = get(_data, 'trip[0].additional_advance', [])
-
+  const additionalAdvance = get(_data, 'advance_additional_advance', [])
+  const excessAdvance = get(_excessData, 'advance_excess_advance', [])
+  const list = [...additionalAdvance, ...excessAdvance]
+  
   const columns = [
     {
       title: 'Type',
       dataIndex: 'payment_mode',
-      width: '8%'
+      width: '8%',
+      render:(text)=>text ? text : "WALLET"
     },
     {
       title: 'Amount',
@@ -60,7 +77,7 @@ const AdditionalAdvance = (props) => {
     {
       title: 'Reason',
       dataIndex: 'comment',
-      width: '34%'
+      width: '24%'
     },
     {
       title: 'Status',
@@ -74,17 +91,17 @@ const AdditionalAdvance = (props) => {
     },
     {
       title: 'Created On',
-      dataIndex: 'created_on',
-      render: (text, record) => (text ? moment(parseInt(text, 10)).format('DD-MMM-YY') : '-'),
+      dataIndex: 'created_at',
+      //render: (text, record) => (text ? text).format('DD-MMM-YY') : '-'),
       width: '14%'
     }
   ]
   return (
     <div className='additonalAdv'>
-      {!isEmpty(additionalAdvance) ? (
+      {!isEmpty(additionalAdvance) || !isEmpty(excessAdvance)? (
         <Table
           columns={columns}
-          dataSource={additionalAdvance}
+          dataSource={list}
           rowKey={record => record.id}
           size='small'
           scroll={{ x: 960 }}

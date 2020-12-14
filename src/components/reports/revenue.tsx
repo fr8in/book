@@ -65,7 +65,7 @@ const Revenue = (props) => {
             <iframe
               width='100%'
               height='100%'
-              src='https://app.powerbi.com/view?r=eyJrIjoiZTE4NjQ0MmMtMDE4NC00MzNiLWJlYTktMzg3MGY3ZjIzZTM2IiwidCI6IjE5ZWE5NTViLTE1MzYtNGM3Ni04NDIwLTUxZmJjNGM5YzM5NyIsImMiOjEwfQ=='
+              src='https://app.powerbi.com/view?r=eyJrIjoiMTkwY2Q4NjUtMGEyYS00NWYwLWEyMTktNjRlNTgwOTNlZWM4IiwidCI6Ijc2NzA4ZDI4LWNhNzYtNDBhNS05OWU4LWY5MzZlODZhN2MwYyIsImMiOjEwfQ=='
             />
           </div>
         </Modal>}

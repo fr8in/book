@@ -35,12 +35,14 @@ subscription dashboard_trips(
       cardcode
       name
       is_exception
-      exception_date
     }
     partner {
       id
       cardcode
       name
+      partner_users(where: {is_admin: {_eq: true}}) {
+        mobile
+      }
     }
     source {
       id
@@ -70,6 +72,7 @@ subscription dashboard_trips(
       truck_no
       truck_type {
         name
+        code
       }
     }
   }

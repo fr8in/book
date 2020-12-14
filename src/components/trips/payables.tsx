@@ -8,11 +8,16 @@ import sumBy from 'lodash/sumBy'
 const TRIP_PAYABLES = gql`
 subscription trip_payables($id: Int!) {
   trip(where: {id: {_eq: $id}}) {
-    trip_payables {
+    trip_payables(where: {type_id: {_neq: 15}}) {
       id
       name
       amount
       created_at
+    }
+    trip_accounting{
+      invoiced_at
+      onhold
+      pending_payable
     }
     trip_payments {
       id
@@ -45,6 +50,13 @@ const Payables = (props) => {
 
   const payables = sumBy(trip_pay.trip_payables, 'amount').toFixed(2)
   const payments = sumBy(trip_pay.trip_payments, 'amount').toFixed(2)
+  const invoiced_at = get(trip_pay, 'trip_accounting.invoiced_at')
+  const onHold = get(trip_pay, 'trip_accounting.onhold')
+  const pending_payable = get(trip_pay, 'trip_accounting.pending_payable')
+  const pending_payable_total = onHold + pending_payable
+
+  const pendingPayables = [{ id: 1, name: 'On-Hold', value: onHold },
+  { id: 2, name: 'Cleared', value: pending_payable }]
 
   const payablesColumn = [
     {
@@ -56,6 +68,17 @@ const Payables = (props) => {
       dataIndex: 'amount',
       className: 'text-right',
       render: (text, record) => text.toFixed(2)
+    }
+  ]
+  const PendingpayablesColumn = [
+    {
+      title: 'Charges',
+      dataIndex: 'name'
+    },
+    {
+      title: <div className='text-right'>Amount</div>,
+      dataIndex: 'value',
+      className: 'text-right'
     }
   ]
   const paymentColumn = [
@@ -94,6 +117,25 @@ const Payables = (props) => {
         size='small'
         rowKey={record => record.id}
       />
+      {
+       (invoiced_at && pending_payable) != null ?
+        <>
+          <Row className='payableHead' gutter={6}>
+            <Col xs={12}><b>Pending Payables</b></Col>
+            <Col xs={12} className='text-right'>
+              <b>{pending_payable_total.toFixed(2)}</b>
+            </Col>
+          </Row>
+          <Table
+            dataSource={pendingPayables}
+            columns={PendingpayablesColumn}
+            pagination={false}
+            size='small'
+            rowKey={record => record.id}
+          />
+        </> : null
+      }
+
       <Row className='payableHead' gutter={6}>
         <Col xs={12}><b>Payments</b></Col>
         <Col xs={12} className='text-right'>

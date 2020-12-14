@@ -1,4 +1,4 @@
-import { Table, Pagination, Radio, Input,DatePicker } from 'antd'
+import { Table, Pagination, Radio, Input, DatePicker } from 'antd'
 import { useState } from 'react'
 import { EditTwoTone, SearchOutlined } from '@ant-design/icons'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
@@ -8,7 +8,7 @@ import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
 import InsuranceExpiry from './insuranceExpiryDateEdit'
-
+import PartnerLink from '../common/PartnerLink'
 const Trucks = (props) => {
   const initial = {
     usersData: [],
@@ -47,8 +47,6 @@ const Trucks = (props) => {
   const handleInsuranceFilter = (e) => {
     onInsuranceFilter(e.target.value)
   }
-
-
 
   const handleName = (e) => {
     onNameSearch(e.target.value)
@@ -122,8 +120,8 @@ const Trucks = (props) => {
                 Assign
               </a>
             ) : (
-              'NA'
-            )}
+                  'NA'
+                )}
           </span>
         )
       }
@@ -132,10 +130,11 @@ const Trucks = (props) => {
       title: 'Partner',
       width: '14%',
       render: (text, record) => {
+        const id = get(record, 'partner.id', null)
         const cardcode = get(record, 'partner.cardcode', null)
         const name = get(record, 'partner.name', null)
         return (
-          <LinkComp type='partners' data={name} id={cardcode} length={20} />
+          <PartnerLink type='partners' data={name} cardcode={cardcode} id={id} length={20} />
         )
       },
 
@@ -182,7 +181,7 @@ const Trucks = (props) => {
           className='filter-drop-down'
         />
       )
-      
+
     },
     {
       title: 'Ins Expiry Date',
@@ -190,11 +189,11 @@ const Trucks = (props) => {
       render: (text, record) => <InsuranceExpiry record={record} />,
       filterDropdown: (
         <Radio.Group
-          options={[{ value: 'All', label: 'All'},{ value: '15', label: '<15'},{ value: '30', label: '<30'}]}
+          options={[{ value: 'All', label: 'All' }, { value: '15', label: '<15' }, { value: '30', label: '<30' }]}
           defaultValue='All'
           onChange={handleInsuranceFilter}
           className='filter-drop-down'
-          
+
         />
       )
     },

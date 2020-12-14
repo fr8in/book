@@ -4,7 +4,7 @@ import _ from 'lodash'
 import { useState } from 'react'
 
 const DASHBOARD_TRUCK_QUERY = gql`
-subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $truck_no: String,$dnd:Boolean) {
+subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $truck_no: String, $dnd: Boolean) {
   region(where: {id: {_in: $regions}}) {
     id
     branches(where: {id: {_in: $branches}}) {
@@ -22,9 +22,16 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
           } ) {
             id
             truck_no
+            trips(order_by: {created_at: desc}, limit: 1) {
+              created_at
+              driver {
+                mobile
+              }
+            }
             truck_type {
               id
               name
+              code
             }
             partner {
               id
@@ -49,7 +56,7 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
               mobile
             }
             tat
-            last_comment{
+            last_comment {
               description
             }
           }
@@ -70,7 +77,7 @@ const WaitingForLoadContainer = (props) => {
     cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
     truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
     truck_no: truckNo.truckno ? `%${truckNo.truckno}%` : null,
-    dnd: dndCheck === true ? null : true
+    dnd: dndCheck === true ? false : true
   }
   const { loading, data, error } = useSubscription(DASHBOARD_TRUCK_QUERY, { variables })
   

@@ -19,7 +19,7 @@ import DestinationOutDate from './tripDestinationOut'
 import ViewFile from '../common/viewFile'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
-import { gql, useMutation, useLazyQuery } from '@apollo/client'
+import { gql, useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import u from '../../lib/util'
 
 import userContext from '../../lib/userContaxt'
@@ -39,6 +39,10 @@ query loading_memo_pdf($id:Int!){
   }
 }`
 
+const GET_TOKEN = gql`query getToken($ref_id: Int!, $process: String!) {
+  token(ref_id: $ref_id, process: $process)
+}`
+
 const REMOVE_SIN_MUTATION = gql`
 mutation remove_souce_in($source_in:timestamp,$id:Int!,$updated_by: String!) {
   update_trip(_set: {source_in: $source_in,updated_by:$updated_by}, where: {id: {_eq: $id}}) {
@@ -48,6 +52,30 @@ mutation remove_souce_in($source_in:timestamp,$id:Int!,$updated_by: String!) {
     }
   }
 }`
+
+const LOADING_MEMO_MUTATION = gql`
+mutation loading_memo_pdf($id:Int!){
+    loading_memo(trip_id: $id)
+  }
+`
+
+const PARTNER_LOADING_MEMO_MUTATION = gql`
+mutation partner_loading_memo_pdf($id:Int!){
+    partner_loading_memo(trip_id: $id)
+  }
+`
+
+const LOADING_MEMO_WORD_MUTATION = gql`
+mutation loading_memo($id:Int!){
+      loading_memo(trip_id: $id,word:true)
+  }
+`
+
+const PARTNER_LOADING_MEMO_WORD_MUTATION = gql`
+mutation partner_loading_memo($id:Int!){
+      partner_loading_memo(trip_id: $id,word:true)
+  }
+`;
 
 const REMOVE_SOUT_MUTATION = gql`
 mutation remove_souce_out($source_out:timestamp,$id:Int!,$updated_by: String!) {
@@ -80,8 +108,8 @@ mutation remove_destination_out($destination_out:timestamp,$id:Int!,$updated_by:
 }`
 
 const PROCESS_ADVANCE_MUTATION = gql`
-mutation partner_advance ($tripId: Int!, $createdBy: String!, $customer_confirmation: Boolean!) {
-  partner_advance(trip_id: $tripId, created_by: $createdBy, customer_confirmation: $customer_confirmation) {
+mutation partner_advance ($tripId: Int!, $createdBy: String!, $customer_confirmation: Boolean!,$token:String!) {
+  partner_advance(trip_id: $tripId, created_by: $createdBy, customer_confirmation: $customer_confirmation,token:$token) {
     description
     status
   }
@@ -95,11 +123,18 @@ const TripTime = (props) => {
   const context = useContext(userContext)
   const { role } = u
   const po_delete_access = [role.admin, role.rm]
-  const access = (trip_info.loaded === 'No') || u.is_roles(po_delete_access,context) 
+  const access = (trip_info.loaded === 'No') || u.is_roles(po_delete_access, context)
   const [form] = Form.useForm()
 
   const [getWord, { loading, data, error, called }] = useLazyQuery(GET_WORD)
   const [getPdf, { loading: pdfloading, data: pdfdata, error: pdferror, called: pdfcalled }] = useLazyQuery(GET_PDF)
+  const { data: tokenData, loading: tokenQueryLoading, refetch } = useQuery(GET_TOKEN, {
+    fetchPolicy: "network-only",
+    variables: {
+      ref_id: trip_info.id,
+      process: "ADVANCE"
+    }
+  })
 
   console.log('tripTime error', error)
   console.log('tripTime error', pdferror)
@@ -114,41 +149,69 @@ const TripTime = (props) => {
     _pdfdata = pdfdata
   }
 
+  console.log("tokenQueryLoading", tokenQueryLoading)
+  let token = null
+  if (!tokenQueryLoading) {
+    token = get(tokenData, 'token', null)
+  }
+
   let word_url = get(_data, 'trip[0].loading_memo', [])
   let pdf_url = get(_pdfdata, 'trip[0].loading_memo', [])
-
-  const onWordClick = () => {
-    getWord({
-      variables: { id: trip_info.id }
-    })
-    setTimeout(() => {
-      if (called && word_url) {
-        window.open(word_url)
-        word_url = null
+  const [loadingmemo] = useMutation(
+    LOADING_MEMO_MUTATION,
+    {
+      onError(error) {
+        message.error(error.toString())
+      },
+      onCompleted(data) {
+        window.open(data.loading_memo)
       }
-    }, 2000)
-  }
+    }
+  )
 
-  const onPdfClick = () => {
-    getPdf({
-      variables: { id: trip_info.id }
-    })
-    setTimeout(() => {
-      if (pdfcalled && pdf_url) {
-        window.open(pdf_url)
-        pdf_url = null
+  const [partnerloadingmemo] = useMutation(
+    PARTNER_LOADING_MEMO_MUTATION,
+    {
+      onError(error) {
+        message.error(error.toString())
+      },
+      onCompleted(data) {
+        window.open(data.partner_loading_memo)
       }
-    }, 2000)
-  }
+    }
+  )
 
+  const [loadingmemoword] = useMutation(
+    LOADING_MEMO_WORD_MUTATION,
+    {
+      onError(error) {
+        message.error(error.toString())
+      },
+      onCompleted(data) {
+        window.open(data.loading_memo)
+      }
+    }
+  )
+
+  const [partnerloadingmemoword] = useMutation(
+    PARTNER_LOADING_MEMO_WORD_MUTATION,
+    {
+      onError(error) {
+        message.error(error.toString())
+      },
+      onCompleted(data) {
+        window.open(data.partner_loading_memo)
+      }
+    }
+  )
   const [removeSin] = useMutation(
     REMOVE_SIN_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         setDisableBtn(false)
         message.error(error.toString())
       },
-      onCompleted () {
+      onCompleted() {
         setDisableBtn(false)
         message.success('Updated!!')
         form.resetFields()
@@ -158,11 +221,11 @@ const TripTime = (props) => {
   const [removeSout] = useMutation(
     REMOVE_SOUT_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         setDisableBtn(false)
         message.error(error.toString())
       },
-      onCompleted () {
+      onCompleted() {
         setDisableBtn(false)
         message.success('Updated!!')
         form.resetFields()
@@ -173,11 +236,11 @@ const TripTime = (props) => {
   const [removeDin] = useMutation(
     REMOVE_DIN_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         setDisableBtn(false)
         message.error(error.toString())
       },
-      onCompleted () {
+      onCompleted() {
         setDisableBtn(false)
         message.success('Updated!!')
         form.resetFields()
@@ -187,11 +250,11 @@ const TripTime = (props) => {
   const [removeDout] = useMutation(
     REMOVE_DOUT_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         setDisableBtn(false)
         message.error(error.toString())
       },
-      onCompleted () {
+      onCompleted() {
         setDisableBtn(false)
         message.success('Updated!!')
         form.resetFields()
@@ -199,14 +262,29 @@ const TripTime = (props) => {
     }
   )
 
+
+
+
+  const onClickPdf = () => {
+    loadingmemo({
+      variables: { id: trip_info.id }
+    })
+  }
+  const onClickPartnerPdf = () => {
+    partnerloadingmemo({
+      variables: { id: trip_info.id }
+    })
+  }
+
+
   const [processAdvance] = useMutation(
     PROCESS_ADVANCE_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         message.error(error.toString())
         setDisableBtn(false)
       },
-      onCompleted (data) {
+      onCompleted(data) {
         setDisableBtn(false)
         const status = get(data, 'partner_advance.status', null)
         const description = get(data, 'partner_advance.description', null)
@@ -215,6 +293,9 @@ const TripTime = (props) => {
         } else {
           message.error(description)
         }
+        setTimeout(() => {
+          refetch()
+        }, 5000)
       }
     }
   )
@@ -259,16 +340,31 @@ const TripTime = (props) => {
       }
     })
   }
+
   const onProcessAdvance = () => {
     setDisableBtn(true)
     processAdvance({
       variables: {
         tripId: trip_info.id,
         createdBy: context.email,
-        customer_confirmation: customerConfirm || false
+        customer_confirmation: customerConfirm || false,
+        token: token
       }
     })
   }
+  const onClickWord = () => {
+    loadingmemoword({
+      variables: { id: trip_info.id }
+    })
+  }
+
+  const onClickPartnerWord = () => {
+    partnerloadingmemoword({
+      variables: { id: trip_info.id }
+    })
+  }
+
+
 
   const trip_status_name = get(trip_info, 'trip_status.name', null)
   const po_delete = (trip_status_name === 'Assigned' || trip_status_name === 'Confirmed' || trip_status_name === 'Reported at source') && !trip_info.source_out
@@ -293,31 +389,48 @@ const TripTime = (props) => {
         <Col xs={24}>
           <Form layout='vertical' form={form}>
             <Row gutter={10}>
-              <Col xs={8}>
+              <Col xs={24} sm={8}>
                 <SourceInDate source_in={trip_info.source_in} id={trip_info.id} lock={lock} />
               </Col>
-              <Col xs={8}>
+              <Col xs={24} sm={8}>
                 <SourceOutDate source_out={trip_info.source_out} id={trip_info.id} lock={lock} />
               </Col>
-              <Col xs={8}>
+              <Col xs={24} sm={8}>
                 <Driver trip_info={trip_info} initialValue={driver_number} disable={after_deliverd || lock} />
               </Col>
             </Row>
             <Row gutter={10}>
-              <Col xs={8}>
+              <Col xs={24} sm={8}>
                 <DestinationInDate destination_in={trip_info.destination_in} id={trip_info.id} advance_processed={advance_processed} lock={lock} />
               </Col>
-              <Col xs={8}>
+              <Col xs={24} sm={8}>
                 <DestinationOutDate destination_out={trip_info.destination_out} id={trip_info.id} lock={lock} />
               </Col>
-              <Col xs={8}>
-                <Form.Item label='Loading Memo'>
+              <Col xs={24} sm={8}>
+                <Row>
+                <Col xs={12}>
+                <Form.Item label='Fr8 - Memo'>
                   <Space>
-                    <Button type='primary' loading={pdfloading} shape='circle' icon={<FilePdfOutlined />} onClick={onPdfClick} />
-                    <Button type='primary' loading={loading} shape='circle' icon={<FileWordOutlined />} onClick={onWordClick} />
+                    <Button type='primary' loading={pdfloading} shape='circle'
+                      icon={<FilePdfOutlined />} onClick={onClickPdf} />
+                    <Button type='primary' loading={loading} shape='circle'
+                      icon={<FileWordOutlined />} onClick={onClickWord} />
+                  </Space>
+                </Form.Item>
+                </Col>
+                <Col xs={12}>
+                <Form.Item label='Partner - Memo'>
+                  <Space>
+                    <Button type='primary' loading={pdfloading} shape='circle'
+                      icon={<FilePdfOutlined />} onClick={onClickPartnerPdf} />
+                    <Button type='primary' loading={loading} shape='circle'
+                      icon={<FileWordOutlined />} onClick={onClickPartnerWord} />
                   </Space>
                 </Form.Item>
               </Col>
+                  </Row>
+                </Col>
+              
             </Row>
           </Form>
           <Row className='mb5'>
@@ -327,7 +440,7 @@ const TripTime = (props) => {
                 disabled={wh_update || get(trip_info, 'unloaded_private_godown', false) || lock}
                 onClick={get(trip_info, 'unloaded_private_godown', false) ? () => { } : () => onShow('godownReceipt')}
               >Unloaded at private godown
-              </Checkbox>
+                            </Checkbox>
             </Col>
             <Col xs={4} className='text-right'>
               {get(trip_info, 'unloaded_private_godown', false) &&
@@ -352,7 +465,7 @@ const TripTime = (props) => {
             <Col xs={24}>
               <Space>
                 {po_delete &&
-                  <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')} disabled= {(trip_info.loaded === 'Yes') ? !access:null|| lock}>PO</Button>}
+                  <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')} disabled={(trip_info.loaded === 'Yes') ? !access : null || lock}>PO</Button>}
                 {process_advance &&
                   <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>}
                 {remove_sin &&
