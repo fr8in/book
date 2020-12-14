@@ -91,10 +91,8 @@ const ScratchCardIncentiveTable = (props) => {
       title: 'Action',
       width: '12%',
       render: (text, record) => (
-        get(record, 'incentive_status.status', null) === 'PENDING' ? (
+        get(record, 'incentive_status.status', null) === 'PENDING' && incentive_access ? (
         <Space>
-         { incentive_access ? (
-           <>
           <Button
             type='primary'
             size='small'
@@ -111,8 +109,6 @@ const ScratchCardIncentiveTable = (props) => {
             icon={<CloseOutlined />}
             onClick={() => handleShow('approveVisible', 'Reject', 'approveData', record)}
           />
-          </>
-         ):null}
         </Space>)
             : <div />)
     }
