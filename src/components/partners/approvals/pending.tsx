@@ -19,7 +19,7 @@ import PartnerOnBoardedBy from '../partnerOnboardedByName'
 import LinkComp from '../../common/link'
 import u from '../../../lib/util'
 import userContext from '../../../lib/userContaxt'
-
+import isEmpty from 'lodash/isEmpty'
 
 const PENDING_SUBSCRIPTION = gql`
 subscription trip_credit_debit($status: [String!], $incentive_status: String!, $incentive_source: String!) {
@@ -116,53 +116,49 @@ const Pending = () => {
   console.log('pending error', error)
 
   let _data = {}
-  let neww = [];
+  let pending_list = [];
   if (!loading) {
     _data = data
+const trip = get(data,'trip', null)
 
-    data.trip.map((datas) => {
-      datas.credit_debits.map((credit_debit) => {
-        if (credit_debit) {
-          neww.push({
+!isEmpty(trip) ? trip.map((trip_data) => {
+  !isEmpty(trip_data) ?  trip_data.credit_debits.map((credit_debit) => {
+        pending_list.push({
             "id": credit_debit.id,
             "trip_id": credit_debit.trip_id,
             "comment": credit_debit.comment,
             "type": credit_debit.type,
             "amount": credit_debit.amount,
-            "region": datas.branch.region.name,
-            "partner_name": datas.partner.name,
-            "partner_code": datas.partner.cardcode,
+            "region": trip_data.branch.region.name,
+            "partner_name": trip_data.partner.name,
+            "partner_code": trip_data.partner.cardcode,
             "created_at": credit_debit.created_at,
             "responsibility": credit_debit.responsibility ? credit_debit.responsibility.name : '',
-            "last_comment": datas.last_comment.description,
+            "last_comment": trip_data.last_comment.description,
             "issue_type": credit_debit.credit_debit_type.name,
             "created_by": credit_debit.created_by
           })
-        }
-      })
+      }) : []
 
-      datas.incentives.map((incentive) => {
-        if (incentive) {
-          neww.push({
+      !isEmpty(trip_data) ?  trip_data.incentives.map((incentive) => {
+          pending_list.push({
             "id": incentive.id,
             "trip_id": incentive.trip_id,
             "comment": incentive.comment,
             "type": 'I',
             "amount": incentive.amount,
-            "region": datas.branch.region.name,
-            "partner_name": datas.partner.name,
-            "partner_code": datas.partner.cardcode,
+            "region": trip_data.branch.region.name,
+            "partner_name": trip_data.partner.name,
+            "partner_code": trip_data.partner.cardcode,
             "created_at": incentive.created_at,
-            "last_comment": datas.last_comment.description,
+            "last_comment": trip_data.last_comment.description,
             "issue_type": incentive.incentive_config.type,
             "created_by": incentive.created_by,
             "incentive_config": incentive.incentive_config
-          })
-        }
-      })
-    })
-    console.log("neww", neww)
-  }
+          }) 
+      }) : []
+    }) 
+  : null}
 
   const onSearch = (e) => {
     setFilter({ ...filter, searchText: e.target.value })
@@ -175,7 +171,7 @@ const Pending = () => {
       const result = newData || filter.pending
       setFilter({ ...filter, pending: result })
     } else {
-      setFilter({ ...filter, pending: neww })
+      setFilter({ ...filter, pending: pending_list })
     }
   }
 
@@ -216,7 +212,7 @@ const Pending = () => {
       dataIndex: 'comment',
       key: 'comment',
       width: '11%',
-      render: (text, record) => <Truncate data={get(record, 'comment', null)} length={13} />
+      render: (text, record) => <Truncate data={text} length={13} />
     },
     {
       title: 'Region',
@@ -231,7 +227,7 @@ const Pending = () => {
       dataIndex: 'created_by',
       key: 'created_by',
       width: '11%',
-      render: (text, record) => <Truncate data={get(record, 'created_by', null)} length={15} />
+      render: (text, record) => <Truncate data={text} length={15} />
     },
     {
       title: 'Partner Name',
@@ -319,7 +315,6 @@ const Pending = () => {
                 className='btn-success'
                 icon={<CheckOutlined />}
                 onClick={(e) => {
-                  console.log('approval', e)
                   handleShow('approveVisible', 'Approve', 'approveData', record)
                 }
                 } />) : null
@@ -347,7 +342,7 @@ const Pending = () => {
     <>
       <Table
         columns={ApprovalPending}
-        dataSource={neww}
+        dataSource={pending_list}
         rowKey={(record) => record.id}
         size='small'
         scroll={{ x: 1256 }}
@@ -365,8 +360,7 @@ const Pending = () => {
       )}
 
       { object.approveData && object.approveData.type === "I" ? (
-        <>
-          {object.approveVisible && (
+       object.approveVisible && (
             <IncentiveApprove
               visible={object.approveVisible}
               onHide={handleHide}
@@ -374,16 +368,15 @@ const Pending = () => {
               title={object.title}
               trip_id={object.approveData.trip_id}
             />
-          )}  </>) :
-        <>
-          {object.approveVisible && (
+          )) :
+       object.approveVisible && (
             <Approve
               visible={object.approveVisible}
               onHide={handleHide}
               item_id={object.approveData}
               title={object.title}
             />
-          )} </>}
+          )}
     </>
   )
 }

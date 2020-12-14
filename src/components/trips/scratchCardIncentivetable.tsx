@@ -56,7 +56,7 @@ const ScratchCardIncentiveTable = (props) => {
     _data = data
   }
 
-  const scratch_card_incentive = get(_data, 'trip[0].incentives', null)
+  const scratch_card_incentive = get(_data, 'trip[0].incentives', [])
 
   const columns = [
     {

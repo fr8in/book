@@ -142,10 +142,10 @@ const ApprovedAndRejected = () => {
   let credit_debit_incentive_data = [];
   if (!loading) {
     _data = data
+    const trip = get(data,'trip', null)
 
-    data.trip.map((datas) => {
-      datas.credit_debits.map((credit_debit) => {
-        if (credit_debit) {
+    !isEmpty(trip) ? trip.map((trip_data) => {
+      !isEmpty(trip_data) ? trip_data.credit_debits.map((credit_debit) => {
           credit_debit_incentive_data.push({
             "id": credit_debit.id,
             "trip_id": credit_debit.trip_id,
@@ -160,11 +160,9 @@ const ApprovedAndRejected = () => {
             "approval_comment": credit_debit.approval_comment,
             "approved_by": credit_debit.approved_by
           })
-        }
-      })
+      }):[]
 
-      datas.incentives.map((incentive) => {
-        if (incentive) {
+      !isEmpty(trip_data) ?  trip_data.incentives.map((incentive) => {
           credit_debit_incentive_data.push({
             "id": incentive.id,
             "trip_id": incentive.trip_id,
@@ -176,10 +174,9 @@ const ApprovedAndRejected = () => {
             "created_by": incentive.created_by,
             "approved_by": incentive.approved_by
           })
-        }
-      })
+      }) :[]
     })
-    console.log("credit_debit_incentive_data", credit_debit_incentive_data)
+   : null
   }
 
   let filter_data = {}
@@ -188,15 +185,15 @@ const ApprovedAndRejected = () => {
   }
 
   const credit_debit_type = get(filter_data, 'credit_debit_type', [])
-  const issueTypeList = credit_debit_type.map((data) => {
+  const issueTypeList =   credit_debit_type.map((data) => {
     return { value: data.name, label: data.name }
   })
   const incentive_type = get(filter_data, 'incentive_config', [])
-  const incentive_config = incentive_type.map((data) => {
+  const incentive_config =  incentive_type.map((data) => {
     return { value: data.type, label: data.type }
-  })
+  }) 
 
-  const filter_list = incentive_config.concat(issueTypeList)
+   const filter_list = incentive_config.concat(issueTypeList)
 
   const record_count = get(filter_data, 'trip_credit_debit_aggregate.aggregate.count', 0)
 

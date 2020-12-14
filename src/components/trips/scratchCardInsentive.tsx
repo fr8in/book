@@ -62,16 +62,15 @@ const Incentive = (props) => {
   )
   console.log('creditDebitIsuueType error', error)
 
-  var issue_type = []
+  var _data = []
   if (!loading) {
-    issue_type = data  && data.incentive_config
+    _data = data  
   }
 
+  const issue_type = get(_data,'incentive_config', [])
   const type_list = !isEmpty(issue_type) ? issue_type.map((data) => {
     return { value: data.type_id, label: data.type }
   }) : []
-
- 
 
   const create_credit_debit = (form) => {
       setDisableButton(true)
@@ -86,7 +85,6 @@ const Incentive = (props) => {
     }
 
   return (
-    <>
       <Form layout='vertical' onFinish={create_credit_debit}>
         <Row gutter={10}>
             <Form.Item label='Incentive Type' name='type_id' rules={[{ required: true }]}>
@@ -121,7 +119,6 @@ const Incentive = (props) => {
           </Col>
         </Row>
       </Form>
-    </>
   )
 }
 
