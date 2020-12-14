@@ -1,4 +1,4 @@
-import { Table, Tooltip, Badge, Button, Input } from 'antd'
+import { Table, Tooltip, Badge, Button, Input, message } from 'antd'
 import { CommentOutlined, RocketFilled, SearchOutlined, EditTwoTone, WhatsAppOutlined } from '@ant-design/icons'
 import CreatePo from '../trips/createPo'
 import PartnerUsers from '../partners/partnerUsers'
@@ -46,6 +46,7 @@ const WaitingForLoad = (props) => {
 
 const onCopy = () => {
  setCopy({copied:true})
+ message.success('Copied!!')
 };
 
   const columns = [
