@@ -387,8 +387,8 @@ const KycApproval = (props) => {
                         </Space>
                       </Col>
                     </List.Item>
-                    <List.Item key={2}>
-                      <Col xs={24} sm={8}>TDS</Col>
+                    <List.Item key={3}>
+                      <Col xs={24} sm={8}>TDS 19-20</Col>
                       <Col xs={12} sm={12}>{partnerDetail && partnerDetail.tds}</Col>
                       <Col xs={12} sm={4} className='text-right'>
                         <Space>
@@ -419,6 +419,45 @@ const KycApproval = (props) => {
                                 folder={u.folder.approvals}
                                 file_type={u.fileType.tds}
                                 file_list={tds_files}
+                              />
+                            )}
+                          </span>
+                        </Space>
+                      </Col>
+                    </List.Item>
+                    <List.Item key={4}>
+                      <Col xs={24} sm={8}>TDS 20-21</Col>
+                      <Col xs={12} sm={12}>{partnerDetail && partnerDetail.tds}</Col>
+                      <Col xs={12} sm={4} className='text-right'>
+                        <Space>
+                          <span>
+                            {!isEmpty(tds_files) ? (
+                              <Space>
+                                <ViewFile
+                                  size='small'
+                                  id={partner_id}
+                                  type='partner'
+                                  file_type={u.fileType.tds}
+                                  folder={u.folder.approvals}
+                                  file_list={tds_files}
+                                />
+                                <DeleteFile
+                                  size='small'
+                                  id={partner_id}
+                                  type='partner'
+                                  file_type={u.fileType.tds}
+                                  file_list={tds_files}
+                                />
+                              </Space>
+                            ) : (
+                              <FileUploadOnly
+                                size='small'
+                                id={partner_id}
+                                type='partner'
+                                folder={u.folder.approvals}
+                                file_type={u.fileType.tds}
+                                file_list={tds_files}
+                                financial_year={1920}
                               />
                             )}
                           </span>
