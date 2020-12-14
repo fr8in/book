@@ -58,7 +58,7 @@ const Employees = (props) => {
       dataIndex: 'employee_code',
       width: '20%',
       render: (text,record) =>{
-         return <EmployeeCode id={record.id} label={text} />
+         return <EmployeeCode id={record.id} code={text} />
       }
     },
     {

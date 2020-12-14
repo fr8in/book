@@ -13,7 +13,7 @@ mutation update_employee_code($id:Int,$employee_code:String){
   }
 `
 const EmployeeCode = (props) => {
-  const { id, label } = props
+  const { id, code } = props
 
   const { role } = u
   const employee_code = [role.admin,role.hr]
@@ -38,7 +38,7 @@ const EmployeeCode = (props) => {
 
   return (
     <EditableCell
-      label={label}
+      label={code}
       onSubmit={onSubmit}
       edit_access={employee_code}
     />
