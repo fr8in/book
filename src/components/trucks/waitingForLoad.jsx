@@ -35,11 +35,11 @@ const WaitingForLoad = (props) => {
   }
 
   const getMessage = (record) => {
-    let message = `Partner: ${record.partner.name} \n`;
-    message += `Truck No: ${record.truck_no} - ${record.truck_no} \n`;
-    message += `Current City: ${record.city.name} \n `;
-    message += `Driver Number: ${record.driver.mobile ? record.driver.mobile : '-'} \n`;
-    message += `Last Comment: ${record.last_comment && record.last_comment.description ? record.last_comment && record.last_comment.description : '-'}`;
+    let message = `Partner: ${get(record, 'partner.name')} \n`;
+    message += `Truck No: ${record.truck_no} - ${get(record, 'truck_type.code')} \n`;
+    message += `Current City: ${get(record, 'city.name')} \n `;
+    message += `Driver Number: ${get(record, 'trips[0].driver.mobile') ? get(record, 'trips[0].driver.mobile') : '-'} \n`;
+    message += `Last Comment: ${get(record, 'last_comment.description') ? get(record, 'last_comment.description') : '-'}`;
 
     return message;
 };
@@ -114,9 +114,8 @@ const onCopy = () => {
       title: 'Driver No',
       width: '10%',
       render: (text, record) => {
-        const trip = get(record, 'trips')
-        const driverNo = get(record, 'driver.mobile',null)
-        const mobile = trip.length > 0 && trip.driver != null ? trip.driver.mobile : driverNo 
+        const trip = get(record, 'trips[0]')
+        const mobile = get(trip, 'driver.mobile') 
         return (
           <Phone number={mobile} />
         )
