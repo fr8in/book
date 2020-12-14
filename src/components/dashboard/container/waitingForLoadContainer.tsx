@@ -4,7 +4,7 @@ import _ from 'lodash'
 import { useState } from 'react'
 
 const DASHBOARD_TRUCK_QUERY = gql`
-subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $truck_no: String,$dnd:Boolean) {
+subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $truck_no: String, $dnd: Boolean) {
   region(where: {id: {_in: $regions}}) {
     id
     branches(where: {id: {_in: $branches}}) {
@@ -22,6 +22,12 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
           } ) {
             id
             truck_no
+            trips(order_by: {created_at: desc}, limit: 1) {
+              created_at
+              driver {
+                mobile
+              }
+            }
             truck_type {
               id
               name
@@ -50,7 +56,7 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
               mobile
             }
             tat
-            last_comment{
+            last_comment {
               description
             }
           }
