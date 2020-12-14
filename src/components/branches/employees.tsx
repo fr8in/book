@@ -6,6 +6,7 @@ import EditAccess from '../common/editAccess'
 import u from '../../lib/util'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import EmployeeRoleAccess from '../branches/employeeRoleAccess'
+import EmployeeCode from './employeeCode'
 
 const EMPLOYEE_QUERY = gql`
 subscription branch_employee {
@@ -14,6 +15,7 @@ subscription branch_employee {
     name
     mobileno
     email
+    employee_code
     employee_roles {
       id
       role {
@@ -52,6 +54,14 @@ const Employees = (props) => {
       width: '20%'
     },
     {
+      title: 'Employee Code',
+      dataIndex: 'employee_code',
+      width: '20%',
+      render: (text,record) =>{
+         return <EmployeeCode id={record.id} label={text} />
+      }
+    },
+    {
       title: 'Mobile Number',
       dataIndex: 'mobileno',
       width: '20%',
@@ -62,7 +72,7 @@ const Employees = (props) => {
     {
       title: 'Roles',
       dataIndex: 'role',
-      width: '60%',
+      width: '40%',
       render: (text, record) => {
         const roles = get(record, 'employee_roles', '-')
         return (
