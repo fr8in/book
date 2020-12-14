@@ -5,7 +5,7 @@ import get from 'lodash/get'
 import Loading from '../../common/loading'
 import u from '../../../lib/util'
 import userContext from '../../../lib/userContaxt'
-
+import moment from 'moment'
 const GET_TOKEN = gql`
 query get_token($trip_id: Int!) {
   token(ref_id: $trip_id, process:"INCENTIVE_TRACK")
@@ -13,8 +13,8 @@ query get_token($trip_id: Int!) {
 `
 
 const REJECT_INCENTIVE_MUTATION = gql`
-mutation delete_incentive($id: Int!, $approved_by:String) {
-  update_incentive(where: {id: {_eq: $id}}, _set: {status_id:3,approved_by:$approved_by}) {
+mutation delete_incentive($id: Int!, $approved_by:String,$approved_at:timestamp) {
+  update_incentive(where: {id: {_eq: $id}}, _set: {status_id:3,approved_by:$approved_by,approved_at:$approved_at,is_scratched:true}) {
     returning {
       id
     }
@@ -100,7 +100,8 @@ const IncentiveApprove = (props) => {
         variables: {
           id: item_id.id,
           comment: form.comment,
-          approved_by: context.email
+          approved_by: context.email,
+          approved_at: moment().format('YYYY-MM-DDThh:mm')
         }
       })
     }

@@ -110,7 +110,7 @@ const Incentive = (props) => {
                 htmlType='submit'
                 loading={disableButton}
                 disabled={
-                  (!invoiced && received && closed || lock) 
+                  ( !invoiced || received || closed || lock) 
                 }
               >
                 Submit
