@@ -11,7 +11,7 @@ import u from '../../../lib/util'
 import { isNil } from 'lodash'
 
 const APPROVED_REJECTED_SUBSCRIPTION = gql`
-query trip_credit_debit_approval($offset: Int, $limit: Int, $credit_debit_where: trip_credit_debit_bool_exp, $incentive_where: incentive_bool_exp) {
+subscription trip_credit_debit_approval($offset: Int, $limit: Int, $credit_debit_where: trip_credit_debit_bool_exp, $incentive_where: incentive_bool_exp) {
   trip(order_by: {id: desc}, offset: $offset, limit: $limit, where: {_or: [{credit_debits: {id: {_is_null: false}}}, {incentives: {id: {_is_null: false}}}]}) {
     id
     credit_debits(where: $credit_debit_where) {
