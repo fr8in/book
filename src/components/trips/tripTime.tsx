@@ -140,7 +140,7 @@ const TripTime = (props) => {
   console.log("tokenQueryLoading", tokenQueryLoading)
   let token = null
   if (!tokenQueryLoading) {
-    token = tokenData.token
+    token = get(tokenData,'token',null)
   }
 
   let word_url = get(_data, 'trip[0].loading_memo', [])
