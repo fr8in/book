@@ -75,7 +75,7 @@ const PARTNER_LOADING_MEMO_WORD_MUTATION = gql`
 mutation partner_loading_memo($id:Int!){
       partner_loading_memo(trip_id: $id,word:true)
   }
-`
+`;
 
 const REMOVE_SOUT_MUTATION = gql`
 mutation remove_souce_out($source_out:timestamp,$id:Int!,$updated_by: String!) {
