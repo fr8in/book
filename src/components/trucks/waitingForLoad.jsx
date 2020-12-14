@@ -97,7 +97,7 @@ const WaitingForLoad = (props) => {
       render: (text, record) => {
         const trip = get(record, 'trips')
         const driverNo = get(record, 'driver.mobile',null)
-        const mobile = trip.length > 0 ? trip[0].driver.mobile : driverNo 
+        const mobile = trip.length > 0 && trip.driver != null ? trip.driver.mobile : driverNo 
         return (
           <Phone number={mobile} />
         )
