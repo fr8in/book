@@ -1,8 +1,7 @@
 import { useState, useContext } from 'react'
-import { Row, Col, Radio, Input, Select, Form, Button, message } from 'antd'
+import { Row, Col, Input, Select, Form, Button, message } from 'antd'
 import { gql, useSubscription, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
-import u from '../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
 
@@ -27,12 +26,16 @@ mutation create_incentive($trip_id: Int!, $type_id: Int!, $created_by: String!,$
 
 const Incentive = (props) => {
 
-  const {trip_id} = props
+  const {trip_id,trip_info} = props
   const context = useContext(userContext)
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
-console.log('idddddddddd',trip_id)
- 
+
+  const invoiced = get(trip_info, 'invoiced_at', null)
+  const received = get(trip_info, 'received_at', null)
+  const closed = get(trip_info, 'closed_at', null)
+  const lock = get(trip_info, 'transaction_lock', null)
+
   const [createIncentive] = useMutation(
     SCRATCH_CARD_INCENTIVE_MUTATION,
     {
@@ -108,6 +111,9 @@ console.log('idddddddddd',trip_id)
                 type='primary'
                 htmlType='submit'
                 loading={disableButton}
+                disabled={
+                  (!invoiced && received && closed || lock) 
+                }
               >
                 Submit
               </Button>

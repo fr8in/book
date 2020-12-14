@@ -1,15 +1,12 @@
 import { useContext } from 'react'
-import { Table, Tooltip, Button, Space } from 'antd'
+import { Table, Button, Space } from 'antd'
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
-import moment from 'moment'
 import get from 'lodash/get'
 import IncentiveApprove from '../partners/approvals/incentiveApprove'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import { gql, useSubscription } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import u from '../../lib/util'
-import isEmpty from 'lodash/isEmpty'
-
 
 const SCRATCH_CARD_INCENTIVE_TABLE_SUBSCRIPTION = gql`
 subscription incentives($id: Int) {
@@ -32,7 +29,11 @@ subscription incentives($id: Int) {
 
 const ScratchCardIncentiveTable = (props) => {
   const { trip_id,setIncentiveRefetch } = props
-console.log('trip_id---',trip_id)
+  const { role } = u
+  const context = useContext(userContext)
+  const incentive_approval_access = [role.admin]
+  const incentive_access = u.is_roles(incentive_approval_access, context)
+
   const initial = {
     approveData: [],
     approveVisible: false
@@ -92,6 +93,8 @@ console.log('trip_id---',trip_id)
       render: (text, record) => (
         get(record, 'incentive_status.status', null) === 'PENDING' ? (
         <Space>
+         { incentive_access ? (
+           <>
           <Button
             type='primary'
             size='small'
@@ -108,6 +111,8 @@ console.log('trip_id---',trip_id)
             icon={<CloseOutlined />}
             onClick={() => handleShow('approveVisible', 'Reject', 'approveData', record)}
           />
+          </>
+         ):null}
         </Space>)
             : <div />)
     }

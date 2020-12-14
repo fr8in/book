@@ -35,7 +35,6 @@ mutation approve_credit(
 
 const Approve = (props) => {
   const { visible, onHide, item_id, title, setCreditNoteRefetch } = props
-  console.log('item_id ----',item_id)
   const context = useContext(userContext)
   const [disableButton, setDisableButton] = useState(false)
 
@@ -74,7 +73,7 @@ const Approve = (props) => {
   const onSubmit = (form) => {
     if (form.amount && (item_id.amount < parseFloat(form.amount))) {
       message.error('Approval amount should be less than or equal to claim amount')
-    } else if (title === 'Approved') {
+    } else if (title === 'Approve') {
       setDisableButton(true)
       creditApproval({
         variables: {

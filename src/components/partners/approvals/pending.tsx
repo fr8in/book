@@ -5,22 +5,21 @@ import {
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
-import { useState, useEffect, useContext } from 'react'
+import { useState,  useContext } from 'react'
 import Truncate from '../../common/truncate'
 import Link from 'next/link'
 import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
 import Comment from '../../trips/tripFeedBack'
 import Approve from './accept'
 import IncentiveApprove from './incentiveApprove'
-import { gql, useSubscription, useQuery } from '@apollo/client'
+import { gql, useSubscription, } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import PartnerOnBoardedBy from '../partnerOnboardedByName'
 import LinkComp from '../../common/link'
 import u from '../../../lib/util'
-
 import userContext from '../../../lib/userContaxt'
-import isEmpty from 'lodash/isEmpty'
+
 
 const PENDING_SUBSCRIPTION = gql`
 subscription trip_credit_debit($status: [String!], $incentive_status: String!, $incentive_source: String!) {
@@ -87,6 +86,7 @@ const Pending = () => {
   const approval_access = u.is_roles(approve_roles, context)
   const reject_roles = [role.admin, role.rm, role.partner_manager, role.partner_support]
   const rejected_access = u.is_roles(reject_roles, context)
+
   const initial = {
     commentData: [],
     commentVisible: false,
@@ -108,7 +108,7 @@ const Pending = () => {
       variables: {
         status: ['PENDING'],
         incentive_status: 'PENDING',
-        incentive_source:'TRACK'
+        incentive_source: 'TRACK'
 
       }
     }
@@ -124,6 +124,7 @@ const Pending = () => {
       datas.credit_debits.map((credit_debit) => {
         if (credit_debit) {
           neww.push({
+            "id": credit_debit.id,
             "trip_id": credit_debit.trip_id,
             "comment": credit_debit.comment,
             "type": credit_debit.type,
@@ -143,7 +144,7 @@ const Pending = () => {
       datas.incentives.map((incentive) => {
         if (incentive) {
           neww.push({
-            "id":incentive.id,
+            "id": incentive.id,
             "trip_id": incentive.trip_id,
             "comment": incentive.comment,
             "type": 'I',
@@ -162,10 +163,6 @@ const Pending = () => {
     })
     console.log("neww", neww)
   }
-
-  // useEffect(() => {
-  //   setFilter({ ...filter, pending: neww })
-  // }, [neww])
 
   const onSearch = (e) => {
     setFilter({ ...filter, searchText: e.target.value })
@@ -270,7 +267,6 @@ const Pending = () => {
       render: (text, record) =>
         <PartnerOnBoardedBy
           onboardedBy={get(record, 'responsibility', '-')}
-          // onboardedById={get(record, 'credit_debits.onboarded_by.id', null)}
           credit_debit_id={record.id}
           edit_access={access}
         />,
@@ -295,20 +291,25 @@ const Pending = () => {
       dataIndex: 'last_comment',
       key: 'last_comment',
       width: '11%',
-      render: (text, record) => <Truncate data={get(record, 'last_comment', null)} length={15} />
+      render: (text, record) => (
+        record.type === 'I' ? <></> :
+          <Truncate data={get(record, 'last_comment', null)} length={15} />
+      )
     },
     {
       title: 'Action',
       width: '8%',
       render: (text, record) => (
         <Space>
-          <Tooltip title='Comment'>
-            <Button
-              type='link'
-              icon={<CommentOutlined />}
-              onClick={() => handleShow('commentVisible', null, 'commentData', record.trip_id)}
-            />
-          </Tooltip>
+          {
+            record.type === 'I' ? <Space>&emsp; &emsp; </Space> :
+              <Tooltip title='Comment'>
+                <Button
+                  type='link'
+                  icon={<CommentOutlined />}
+                  onClick={() => handleShow('commentVisible', null, 'commentData', record.trip_id)}
+                />
+              </Tooltip>}
           <Tooltip title='Approve'>
             {approval_access ? (
               <Button
@@ -334,7 +335,8 @@ const Pending = () => {
                 icon={<CloseOutlined />}
                 onClick={() =>
                   handleShow('approveVisible', 'Reject', 'approveData', record)}
-              />) : null}
+              />) : null
+            }
           </Tooltip>
         </Space>
       )
@@ -353,6 +355,7 @@ const Pending = () => {
         className='withAction'
         loading={loading}
       />
+
       {object.commentVisible && (
         <Comment
           visible={object.commentVisible}
@@ -361,7 +364,7 @@ const Pending = () => {
         />
       )}
 
-      { object.approveData && object.approveData.type==="I" ? (
+      { object.approveData && object.approveData.type === "I" ? (
         <>
           {object.approveVisible && (
             <IncentiveApprove

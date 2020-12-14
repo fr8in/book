@@ -13,6 +13,7 @@ import isEmpty from 'lodash/isEmpty'
 const CREDIT_NOTE_TABLE_SUBSCRIPTION = gql`
 subscription credit_debits($id:Int){
   trip(where: {id: {_eq: $id}}) {
+    id
     credit_debits {
       id
       type
@@ -66,7 +67,7 @@ const CreditNoteTable = (props) => {
   if (!loading) {
     _data = data
   }
-
+console.log(';;;;;;',data)
   const credit_debit_list = get(_data, 'trip[0].credit_debits', null)
 
   const columns = [
@@ -140,7 +141,7 @@ const CreditNoteTable = (props) => {
                 shape='circle'
                 danger
                 icon={<CloseOutlined />}
-                onClick={() => handleShow('approveVisible', 'Reject', 'approveData', record.id)}
+                onClick={() => handleShow('approveVisible', 'Reject', 'approveData', record)}
               />
             </Space>)
             : <div />)
