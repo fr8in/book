@@ -1,5 +1,5 @@
 import { Table, Tag } from 'antd'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import EmployeeNumber from './employeeNumber'
 import EditAccess from '../common/editAccess'
@@ -8,11 +8,12 @@ import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import EmployeeRoleAccess from '../branches/employeeRoleAccess'
 
 const EMPLOYEE_QUERY = gql`
-query branch_employee {
+subscription branch_employee {
   employee(where: {active: {_eq: 1}}) {
     id
     name
     mobileno
+    email
     employee_roles {
       id
       role {
@@ -26,7 +27,7 @@ query branch_employee {
 const Employees = (props) => {
 
   const { role } = u
-  const employee_role = [role.user]
+  const employee_role = [role.admin]
   const initial = {
     employeeRoleVisible: false,
     title: null,
@@ -35,12 +36,7 @@ const Employees = (props) => {
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
 
-  const { loading, error, data } = useQuery(
-    EMPLOYEE_QUERY, {
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
-    }
-  )
+  const { loading, error, data } = useSubscription( EMPLOYEE_QUERY )
 
 
   let _data = {}
@@ -79,10 +75,10 @@ const Employees = (props) => {
                 </Tag>
               ))
               : null}
-            {/* <EditAccess
+            <EditAccess
               edit_access={employee_role}
               onEdit={() => handleShow('employeeRoleVisible', record.name, 'employeeRoleData', record)}
-            /> */}
+            />
           </div>
         )
       }
@@ -99,15 +95,14 @@ const Employees = (props) => {
         pagination={false}
         loading={loading}
       />
-      {/* {object.employeeRoleVisible && (
+      {object.employeeRoleVisible && (
         <EmployeeRoleAccess
           visible={object.employeeRoleVisible}
           onHide={handleHide}
           employee_data={object.employeeRoleData}
           title={object.title}
-        //edit_access_delete={employee_member_delete}
         />
-      )} */}
+      )}
     </>
   )
 }

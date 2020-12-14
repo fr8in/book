@@ -3,6 +3,7 @@ import { gql, useMutation, useQuery } from '@apollo/client'
 import { useState, useContext } from 'react'
 import get from 'lodash/get'
 import { DeleteTwoTone } from '@ant-design/icons'
+import userContext from '../../lib/userContaxt'
 
 const ALL_ROLE_QUERY = gql`
 query all_roles {
@@ -30,11 +31,19 @@ mutation delete_employee_role($id:Int){
     }
   }
 `
+const DELETE_FIREBASE_USER_MUTATION = gql`
+mutation delete_user($email:String!){
+    delete_firebase_user(email:$email){
+        status
+        description
+      }
+}
+`
 const EmployeeRoleAccess = (props) => {
 
-    const { visible, onHide, employee_data, title, edit_access_delete } = props
+    const { visible, onHide, employee_data, title } = props
     const [role_id, setRole_id] = useState(null)
-
+    const context = useContext(userContext)
 
     const { loading, data, error } = useQuery(
         ALL_ROLE_QUERY,
@@ -51,6 +60,7 @@ const EmployeeRoleAccess = (props) => {
             onError(error) { message.error(error.toString()) },
             onCompleted() {
                 message.success('Added!!')
+                onFirebaseDeleteUser()
                 onHide()
             }
         }
@@ -61,7 +71,20 @@ const EmployeeRoleAccess = (props) => {
         {
             onError(error) { message.error(error.toString()) },
             onCompleted() {
-                message.success('Added!!')
+                message.success('Deleted!!')
+                onFirebaseDeleteUser()
+                onHide()
+            }
+        }
+    )
+    const [firebase_delete_user] = useMutation(
+        DELETE_FIREBASE_USER_MUTATION,
+        {
+            onError(error) { message.error(error.toString()) },
+            onCompleted() {
+                if (employee_data.email === context.email) {
+                    location.reload()
+                }
                 onHide()
             }
         }
@@ -69,7 +92,6 @@ const EmployeeRoleAccess = (props) => {
     if (loading) return null
 
     const roles = get(data, 'role', null)
-
 
     const role_list = roles.map((role) => {
         return { value: role.id, label: role.name }
@@ -90,7 +112,14 @@ const EmployeeRoleAccess = (props) => {
     const onDeleteEmployeeRole = (record) => {
         delete_employee_role({
             variables: {
-                id:record.id
+                id: record.id
+            }
+        })
+    }
+    const onFirebaseDeleteUser = () => {
+        firebase_delete_user({
+            variables: {
+                email: employee_data.email
             }
         })
     }
@@ -106,12 +135,11 @@ const EmployeeRoleAccess = (props) => {
             title: 'Action',
             width: '40%',
             render: (record) => {
-        
                 return (
                     <Button
                         type="link"
                         icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
-                     onClick={() => onDeleteEmployeeRole(record)} 
+                        onClick={() => onDeleteEmployeeRole(record)}
                     />)
             }
         },
@@ -155,13 +183,8 @@ const EmployeeRoleAccess = (props) => {
                 pagination={false}
                 scroll={{ x: 360 }}
                 rowKey={(record) => record.id}
-
             />
-
-
         </Modal>
-
-
     )
 }
 export default EmployeeRoleAccess
