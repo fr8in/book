@@ -45,7 +45,7 @@ const IncentiveApprove = (props) => {
     onHide()
   }
 
-  const [rejectIncentive, { loading: mutationLoading }] = useMutation(
+  const [rejectIncentive] = useMutation(
     REJECT_INCENTIVE_MUTATION, {
     onError(error) {
       setDisableButton(false)
@@ -59,7 +59,7 @@ const IncentiveApprove = (props) => {
     }
   })
 
-  const [incentiveApproval] = useMutation(
+  const [incentiveApproval,{ loading: mutationLoading }] = useMutation(
     INCENTIVE_APPROVAL_MUTATION,
     {
       onError(error) {
