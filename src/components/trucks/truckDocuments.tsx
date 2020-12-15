@@ -1,12 +1,38 @@
 
 import { Row, Col, Form } from 'antd'
 import FileUpload from '../common/fileUpload'
+import TdsFileUpload from '../common/tdsFileUpload'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
+import { gql,useQuery} from '@apollo/client'
 import u from '../../lib/util'
+
+const CONFIG_QUERY = gql`
+query config{
+  config(where:{key:{_eq:"financial_year"}}){
+    value
+  }
+} 
+`
 
 const truckDocuments = (props) => {
   const { truck_id, truck_info, partner_id } = props
+
+  const { loading, error, data } = useQuery(CONFIG_QUERY, {
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  })
+
+  console.log('Partner Documents error',error)
+
+  let config_data = {}
+  if (!loading) {
+    config_data = data
+  }
+ 
+  const tds_current_ = get(config_data, 'config[0].value.current', null)
+  const tds_previous_ = get(config_data, 'config[0].value.previous', null)
+
 
   const files = get(truck_info, 'partner.partner_files', [])
   const truck_files = get(truck_info, 'truck_files', [])
@@ -55,8 +81,17 @@ const truckDocuments = (props) => {
     })
   })
 
-  const tds_files = !isEmpty(files) ? files.filter(file => file.type === u.fileType.tds) : null
-  const tds_file_list = !isEmpty(tds_files) && tds_files.map((file, i) => {
+ 
+  const getTDSDocument = (type, financial_year) => files && files.length > 0 ? files.filter(data => data.type === type && data.financial_year === financial_year) : []
+  const tds_file_list_previous = !isEmpty(getTDSDocument( u.fileType.tds,tds_previous_)) && getTDSDocument( u.fileType.tds,tds_previous_).map((file, i) => {
+    return ({
+      uid: `${file.type}-${i}`,
+      name: file.file_path,
+      status: 'done'
+    })
+  })
+
+  const tds_file_list_current = !isEmpty(getTDSDocument( u.fileType.tds,tds_current_)) && getTDSDocument( u.fileType.tds,tds_current_).map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
       name: file.file_path,
@@ -86,7 +121,7 @@ const truckDocuments = (props) => {
     <div>
       <Form layout='vertical'>
         <Row gutter={[10, 10]}>
-          <Col xs={24} sm={6}>
+          <Col xs={24} sm={4}>
             <Form.Item
               label='PAN'
               name='PAN'
@@ -102,7 +137,7 @@ const truckDocuments = (props) => {
             </Form.Item>
           </Col>
 
-          <Col xs={24} sm={6}>
+          <Col xs={24} sm={5}>
             <Form.Item
               label='Cheque/PassBook'
               name='CL'
@@ -117,22 +152,42 @@ const truckDocuments = (props) => {
             </Form.Item>
           </Col>
 
-          <Col xs={24} sm={6}>
+          <Col xs={24} sm={5}>
             <Form.Item
-              label='TDS'
+              label='TDS 19-20'
               name='TDS'
             >
-              <FileUpload
+              
+              <TdsFileUpload
                 id={partner_id}
                 type='partner'
                 folder={u.folder.approvals}
                 file_type={u.fileType.tds}
-                file_list={tds_file_list}
+                file_list={tds_file_list_previous}
+                financial_year={tds_previous_}
               />
             </Form.Item>
           </Col>
 
-          <Col xs={24} sm={6}>
+
+          <Col xs={24} sm={5}>
+            <Form.Item
+              label='TDS 20-21'
+              name='TDS'
+            >
+              <TdsFileUpload
+                id={partner_id}
+                type='partner'
+                folder={u.folder.approvals}
+                file_type={u.fileType.tds}
+                file_list={tds_file_list_current}
+                financial_year={tds_current_}
+              />
+            </Form.Item>
+          </Col>
+
+
+          <Col xs={24} sm={5}>
             <Form.Item label='EMI' name='EMI'>
               <FileUpload
                 id={truck_id}
