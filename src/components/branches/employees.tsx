@@ -73,7 +73,7 @@ const Employees = () => {
     _data = data
   }
   const employees = get(_data, 'employee', [])
-console.log('employees',employees)
+
   const column = [
     {
       title: 'Name',
