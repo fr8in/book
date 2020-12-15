@@ -1,5 +1,5 @@
-import { Table, Tooltip, Badge, Button, Input } from 'antd'
-import { CommentOutlined, RocketFilled, SearchOutlined, EditTwoTone } from '@ant-design/icons'
+import { Table, Tooltip, Badge, Button, Input, message } from 'antd'
+import { CommentOutlined, RocketFilled, SearchOutlined, EditTwoTone, WhatsAppOutlined } from '@ant-design/icons'
 import CreatePo from '../trips/createPo'
 import PartnerUsers from '../partners/partnerUsers'
 import TruckComment from './truckComment'
@@ -10,6 +10,9 @@ import Truncate from '../common/truncate'
 import Phone from '../common/phone'
 import get from 'lodash/get'
 import PartnerLink from '../common/PartnerLink'
+import CopyToClipboard from "react-copy-to-clipboard";
+import { useState } from 'react'
+
 const WaitingForLoad = (props) => {
   const { trucks, loading, onTruckNoSearch, truckNo } = props
   const initial = {
@@ -21,13 +24,30 @@ const WaitingForLoad = (props) => {
     poVisible: false,
     editVisible: false,
     editData: [],
-    title: ''
+    title: '',
+    value: '',
+    copied: false,
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
-
+  const [copy, setCopy] = useState(initial)
   const handleTruckNo = (e) => {
     onTruckNoSearch(e.target.value)
   }
+
+  const getMessage = (record) => {
+    let message = `Partner: ${get(record, 'partner.name')} \n`;
+    message += `Truck No: ${record.truck_no} - ${get(record, 'truck_type.code')} \n`;
+    message += `Current City: ${get(record, 'city.name')} \n`;
+    message += `Driver Number: ${get(record, 'trips[0].driver.mobile') ? get(record, 'trips[0].driver.mobile') : '-'} \n`;
+    message += `Last Comment: ${get(record, 'last_comment.description') ? get(record, 'last_comment.description') : '-'}`;
+
+    return message;
+};
+
+const onCopy = () => {
+ setCopy({copied:true})
+ message.success('Copied!!')
+};
 
   const columns = [
     {
@@ -95,11 +115,11 @@ const WaitingForLoad = (props) => {
       title: 'Driver No',
       width: '10%',
       render: (text, record) => {
-        const mobile = get(record, 'driver.mobile')
+        const trip = get(record, 'trips[0]')
+        const mobile = get(trip, 'driver.mobile') 
         return (
           <Phone number={mobile} />
         )
-
       }
     },
     {
@@ -125,7 +145,7 @@ const WaitingForLoad = (props) => {
       title: 'TAT',
       dataIndex: 'tat',
       width: '6%',
-      sorter: (a, b) => (parseInt(a.tat) - parseInt(b.tat)),
+      sorter: (a, b) => (a.tat - b.tat),
       defaultSortOrder: 'descend'
     },
     {
@@ -149,9 +169,11 @@ const WaitingForLoad = (props) => {
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
             </Tooltip>
-            {/* <Tooltip title='click to copy message'>
+            <CopyToClipboard text={getMessage(record)} onCopy={onCopy}>
+            <Tooltip title='click to copy message'>
               <Button type='link' icon={<WhatsAppOutlined />} />
-            </Tooltip> */}
+            </Tooltip>
+            </CopyToClipboard>
             <Tooltip title='Quick PO'>
               <Button type='link' icon={<RocketFilled />} onClick={() => handleShow('poVisible', record, 'truckId', record.id)} />
             </Tooltip>

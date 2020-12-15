@@ -86,7 +86,7 @@ const Trips = (props) => {
             />)
       },
       sorter: (a, b) => a.id - b.id,
-      width: '7%'
+      width: '6%'
     },
     {
       title: 'Customer',
@@ -133,7 +133,17 @@ const Trips = (props) => {
           mobile ? <Phone number={mobile} /> : null
         )
       },
-      width: props.intransit ? '8%' : '11%'
+      width: props.intransit ? '8%' : '9%'
+    },
+    {
+      title: 'Partner No',
+      render: (text, record) => {
+        const mobile = get(record, 'partner.partner_users[0].mobile', null)
+        return (
+          mobile ? <Phone number={mobile} /> : null
+        )
+      },
+      width: props.intransit ? '8%' : '9%'
     },
     {
       title: 'Truck',
@@ -150,25 +160,25 @@ const Trips = (props) => {
           />
         )
       },
-      width: '13%'
+      width: '12%'
     },
     {
       title: 'Source',
       render: (text, record) => {
         const source = get(record, 'source.name', null)
-        return <Truncate data={source} length={8} />
+        return <Truncate data={source} length={7} />
       },
       sorter: (a, b) => (a.source.name > b.source.name ? 1 : -1),
-      width: '9%'
+      width: '8%'
     },
     {
       title: 'Destination',
       render: (text, record) => {
         const destination = get(record, 'destination.name', null)
-        return <Truncate data={destination} length={10} />
+        return <Truncate data={destination} length={7} />
       },
       sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
-      width: '9%'
+      width: '8%'
     },
     !props.intransit ? {
       title: 'TAT',
@@ -215,10 +225,8 @@ const Trips = (props) => {
         const assign_status = get(record, 'trip_status.name', null)
 
         return (
-          <span>
-            <Tooltip title={get(record, 'partner.partner_users[0].mobile', null)}>
+          <span> 
               <a><Phone number={get(record, 'partner.partner_users[0].mobile', null)} icon /></a>
-            </Tooltip>
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
             </Tooltip>
