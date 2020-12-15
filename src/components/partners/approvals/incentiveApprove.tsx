@@ -38,7 +38,12 @@ const IncentiveApprove = (props) => {
   const incentive_approval_access = [role.admin]
   const incentive_access = u.is_roles(incentive_approval_access, context)
   const [disableButton, setDisableButton] = useState(false)
-  const { loading, data, error } = useQuery(GET_TOKEN, { variables: { trip_id: parseInt(trip_id) }, fetchPolicy: 'network-only' })
+  const { loading, data, error } = useQuery(
+    GET_TOKEN, { 
+      variables: { trip_id: parseInt(trip_id) }, 
+      fetchPolicy: 'network-only',
+      skip: title === 'Reject'
+    })
 
   if (error) {
     message.error(error.toString())
