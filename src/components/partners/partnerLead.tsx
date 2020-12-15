@@ -162,7 +162,7 @@ const PartnerLead = (props) => {
   const { role } = u
   const cityEdit = [role.admin, role.partner_manager, role.billing,role.onboarding]
   const ownerEdit = [role.admin, role.partner_manager, role.billing,role.onboarding]
-  const rejectEdit = [role.admin, role.partner_manager, role.billing,role.onboarding]
+  const rejectEdit = [role.admin, role.partner_manager, role.billing,role.onboarding,role.sourcing]
   const priorityEdit = [role.admin, role.partner_manager, role.billing,role.onboarding]
   const referredByEdit = [role.admin, role.partner_manager,role.onboarding]
   const priorityEditAccess = u.is_roles(priorityEdit,context)
