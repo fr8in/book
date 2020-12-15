@@ -126,7 +126,7 @@ const IncentiveApprove = (props) => {
             <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>{title === 'Approve' ? 'Approve' : 'Reject'}</Button>
           </Form.Item>) : null}
       </Form>
-      {(loading || mutationLoading) &&
+      {(loading || mutationLoading) && title === 'Approve' &&
         <Loading fixed />}
     </Modal>
   )
