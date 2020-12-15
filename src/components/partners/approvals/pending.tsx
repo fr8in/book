@@ -12,7 +12,7 @@ import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
 import Comment from '../../trips/tripFeedBack'
 import Approve from './accept'
 import IncentiveApprove from './incentiveApprove'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import PartnerOnBoardedBy from '../partnerOnboardedByName'
@@ -22,7 +22,7 @@ import userContext from '../../../lib/userContaxt'
 import isEmpty from 'lodash/isEmpty'
 
 const PENDING_SUBSCRIPTION = gql`
-query trip_credit_debit($status: [String!], $incentive_status: String!, $incentive_source: String!) {
+subscription trip_credit_debit($status: [String!], $incentive_status: String!, $incentive_source: String!) {
   trip(where: {_or: [{credit_debits: {id: {_is_null: false}, credit_debit_status: {name: {_in: $status}}}}, {incentives: {id: {_is_null: false}, source: {_eq: $incentive_source}, incentive_status: {status: {_eq: $incentive_status}}, incentive_config: {auto_creation: {_eq: false}}}}]}) {
     id
     last_comment {
@@ -101,7 +101,7 @@ const Pending = () => {
   const [filter, setFilter] = useState(initial)
 
 
-  const { loading, error, data } = useQuery(
+  const { loading, error, data } = useSubscription(
     PENDING_SUBSCRIPTION,
     {
       variables: {
