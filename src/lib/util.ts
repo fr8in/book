@@ -33,7 +33,8 @@
     billing: 'Billing',
     bm:'BM',
     hr:'HR',
-    user: 'user'
+    user: 'user',
+    sourcing: 'Sourcing'
   },
   topic: {
     partner_name:'Partner Name',
