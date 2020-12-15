@@ -12,7 +12,7 @@ import moment from 'moment'
 
 const EMPLOYEE_QUERY = gql`
 subscription branch_employee {
-  employee(where: {active: {_eq: 1}}) {
+  employee(where: {active: {_eq: 1},deleted_at:{_is_null:true}}) {
     id
     name
     mobileno
@@ -55,7 +55,7 @@ const Employees = () => {
     {
       onError (error) { message.error(error.toString()) },
       onCompleted () {
-        message.success('Updated!!')
+        message.success('Deleted!!')
       }
     }
   )
