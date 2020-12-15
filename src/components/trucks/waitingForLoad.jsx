@@ -145,7 +145,7 @@ const onCopy = () => {
       title: 'TAT',
       dataIndex: 'tat',
       width: '6%',
-      sorter: (a, b) => (parseInt(a.tat) - parseInt(b.tat)),
+      sorter: (a, b) => (a.tat - b.tat),
       defaultSortOrder: 'descend'
     },
     {
