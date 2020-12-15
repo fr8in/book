@@ -1,5 +1,5 @@
-import { Table, Tag } from 'antd'
-import { gql, useSubscription } from '@apollo/client'
+import { Table, Tag, Button, message } from 'antd'
+import { gql, useSubscription, useMutation } from '@apollo/client'
 import get from 'lodash/get'
 import EmployeeNumber from './employeeNumber'
 import EditAccess from '../common/editAccess'
@@ -7,6 +7,8 @@ import u from '../../lib/util'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import EmployeeRoleAccess from '../branches/employeeRoleAccess'
 import EmployeeCode from './employeeCode'
+import { DeleteTwoTone } from '@ant-design/icons'
+import moment from 'moment'
 
 const EMPLOYEE_QUERY = gql`
 subscription branch_employee {
@@ -25,8 +27,16 @@ subscription branch_employee {
   }
 }
 `
-
-const Employees = (props) => {
+const DELETE_EMPLOYEE_MUTATION = gql`
+mutation delete_employee($id: Int, $date: timestamp) {
+  update_employee(where: {id: {_eq: $id}}, _set: {deleted_at: $date}) {
+    returning {
+      id
+    }
+  }
+}
+`
+const Employees = () => {
 
   const { role } = u
   const employee_role = [role.admin]
@@ -37,16 +47,33 @@ const Employees = (props) => {
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
-
+  const date =moment(new Date().toISOString()).format('DD-MMM-YY')
   const { loading, error, data } = useSubscription( EMPLOYEE_QUERY )
 
+  const [deleteEmployee] = useMutation(
+    DELETE_EMPLOYEE_MUTATION,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted () {
+        message.success('Updated!!')
+      }
+    }
+  )
+  const onSubmit = (record) => {
+    deleteEmployee({
+      variables: {
+        id: record.id,
+        date: date
+      }
+    })
+  }
 
   let _data = {}
   if (!loading) {
     _data = data
   }
   const employees = get(_data, 'employee', [])
-
+console.log('employees',employees)
   const column = [
     {
       title: 'Name',
@@ -56,7 +83,7 @@ const Employees = (props) => {
     {
       title: 'Employee Code',
       dataIndex: 'employee_code',
-      width: '20%',
+      width: '16%',
       render: (text,record) =>{
          return <EmployeeCode id={record.id} code={text} />
       }
@@ -68,6 +95,18 @@ const Employees = (props) => {
       render: (text, record) => {
         return <EmployeeNumber id={record.id} label={text} />
       }
+    },
+    {
+      title: '',
+      width: '4%',
+      render: (record) => {
+        return (
+            <Button
+                type="link"
+                icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
+                onClick={() => onSubmit(record)}
+            />)
+    }
     },
     {
       title: 'Roles',
