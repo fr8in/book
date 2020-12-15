@@ -16,6 +16,7 @@ import {
 import LinkComp from '../common/link'
 import useShowHide from '../../hooks/useShowHide'
 import FileUploadOnly from '../common/fileUploadOnly'
+import TdsFileUploadOnly from '../common/tdsFileUploadOnly'
 import { CheckOutlined,CarOutlined} from '@ant-design/icons'
 import ViewFile from '../common/viewFile'
 import DeleteFile from '../common/deleteFile'
@@ -174,12 +175,8 @@ const KycApproval = (props) => {
   const files = get(partnerDetail, 'partner_files', [])
  
   const pan_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.partner_pan)
-  const tds_files = files.filter(file => file.type === u.fileType.tds)
-  const tds_current = files.filter(file => file.financial_year === tds_current_)
-  const tds_previous = files.filter(file => file.financial_year === tds_previous_)
   const cheaque_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.check_leaf)
-
-  console.log('tds',tds_previous)
+  const getTDSDocument = (type, financial_year) => files && files.length > 0 ? files.filter(data => data.type === type && data.financial_year === financial_year) : []
 
   const { role } = u
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
@@ -406,7 +403,7 @@ const KycApproval = (props) => {
                       <Col xs={12} sm={4} className='text-right'>
                         <Space>
                           <span>
-                            {!isEmpty(tds_files) && tds_previous ? (
+                            {!isEmpty(getTDSDocument(u.fileType.tds,tds_previous_))  ? (
                               <Space>
                                 <ViewFile
                                   size='small'
@@ -414,28 +411,27 @@ const KycApproval = (props) => {
                                   type='partner'
                                   file_type={u.fileType.tds}
                                   folder={u.folder.approvals}
-                                  file_list={tds_files}
+                                  file_list={getTDSDocument(u.fileType.tds,tds_previous_)}
                                 />
                                 <DeleteFile
                                   size='small'
                                   id={partner_id}
                                   type='partner'
                                   file_type={u.fileType.tds}
-                                  file_list={tds_files}
+                                  file_list={getTDSDocument(u.fileType.tds,tds_previous_)}
                                 />
                               </Space>
                             ) :  (
-                              tds_previous_ ?
-                              <FileUploadOnly
+                              <TdsFileUploadOnly
                                 size='small'
                                 id={partner_id}
                                 type='partner'
                                 folder={u.folder.approvals}
                                 file_type={u.fileType.tds}
-                                file_list={tds_files}
-                                financial_year={tds_previous_}
+                                file_list={getTDSDocument(u.fileType.tds,tds_previous_)}
+                               financial_year={tds_previous_}
                               />
-                           : null )}
+                            )}
                           </span>
                         </Space>
                       </Col>
@@ -446,7 +442,7 @@ const KycApproval = (props) => {
                       <Col xs={12} sm={4} className='text-right'>
                         <Space>
                           <span>
-                            {!isEmpty(tds_files) && tds_current ? (
+                            {!isEmpty(getTDSDocument(u.fileType.tds,tds_current_)) ? (
                               <Space>
                                 <ViewFile
                                   size='small'
@@ -454,28 +450,28 @@ const KycApproval = (props) => {
                                   type='partner'
                                   file_type={u.fileType.tds}
                                   folder={u.folder.approvals}
-                                  file_list={tds_files}
+                                  file_list={getTDSDocument(u.fileType.tds,tds_current_)}
                                 />
                                 <DeleteFile
                                   size='small'
                                   id={partner_id}
                                   type='partner'
                                   file_type={u.fileType.tds}
-                                  file_list={tds_files}
+                                  file_list={getTDSDocument(u.fileType.tds,tds_current_)}
                                 />
                               </Space>
                             ) :  (
-                              tds_current_ ?
-                              <FileUploadOnly
+                              
+                              <TdsFileUploadOnly
                                 size='small'
                                 id={partner_id}
                                 type='partner'
                                 folder={u.folder.approvals}
                                 file_type={u.fileType.tds}
-                                file_list={tds_files}
+                                file_list={getTDSDocument(u.fileType.tds,tds_current_)}
                                 financial_year={tds_current_}
                               />
-                          : null  )}
+                            )}
                           </span>
                         </Space>
                       </Col>

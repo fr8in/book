@@ -1,12 +1,22 @@
 import { useContext } from 'react'
 import { Row, Col, Space, Form, List, message, Button } from 'antd'
 import FileUploadOnly from '../common/fileUploadOnly'
+import TdsFileUploadOnly from '../common/tdsFileUploadOnly'
 import ViewFile from '../common/viewFile'
 import DeleteFile from '../common/deleteFile'
 import u from '../../lib/util'
-import { gql, useMutation } from '@apollo/client'
+import { gql, useMutation ,useQuery} from '@apollo/client'
 import userContext from '../../lib/userContaxt'
+import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
+
+const CONFIG_QUERY = gql`
+query config{
+  config(where:{key:{_eq:"financial_year"}}){
+    value
+  }
+} 
+`
 
 const REVERIFICATION_APPROVAL_MUTATION = gql`
 mutation($id:Int){
@@ -29,11 +39,28 @@ const PartnerDocument = (props) => {
 
   const pan_files = files.filter(file => file.type === u.fileType.partner_pan)
   const cheaque_files = files.filter(file => file.type === u.fileType.check_leaf)
-  const tds_files = files.filter(file => file.type === u.fileType.tds)
+  const getTDSDocument = (type, financial_year) => files && files.length > 0 ? files.filter(data => data.type === type && data.financial_year === financial_year) : []
   const agreement_files = files.filter(file => file.type === u.fileType.agreement)
   const cs_files = files.filter(file => file.type === u.fileType.cibil)
 
   const Reverification = partnerInfo.partner_status.name === 'Reverification' 
+
+  const { loading, error, data } = useQuery(CONFIG_QUERY, {
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  })
+
+  console.log('Partner Documents error',error)
+
+  let config_data = {}
+  if (!loading) {
+    config_data = data
+  }
+ 
+  const tds_current_ = get(config_data, 'config[0].value.current', null)
+  const tds_previous_ = get(config_data, 'config[0].value.previous', null)
+
+  console.log('tds_current_',getTDSDocument(u.fileType.tds,2021))
   
   const [reverification_approval] = useMutation(
     REVERIFICATION_APPROVAL_MUTATION,
@@ -136,46 +163,84 @@ const PartnerDocument = (props) => {
               </Space>
             </Col>
           </List.Item>
-          <List.Item key={2}>
-            <Col xs={24} sm={8}>TDS</Col>
-            <Col xs={12} sm={4} className='text-right'>
-              <Space>
-                <span>
-                  {tds_files && tds_files.length > 0 ? (
-                    <Space>
-                      <ViewFile
-                        size='small'
-                        id={partnerInfo.id}
-                        type='partner'
-                        file_type={u.fileType.tds}
-                        folder={u.folder.approvals}
-                        file_list={tds_files}
-                      />
-                      <DeleteFile
-                        size='small'
-                        id={partnerInfo.id}
-                        type='partner'
-                        file_type={u.fileType.tds}
-                        file_list={tds_files}
-                        disable={!access}
-                      />
-                    </Space>
-                  ) : (
-                      <FileUploadOnly
-                        size='small'
-                        id={partnerInfo.id}
-                        type='partner'
-                        folder={u.folder.approvals}
-                        file_type={u.fileType.tds}
-                        file_list={tds_files}
-                        disable={!access}
-                      />
-                    )}
-                </span>
-              </Space>
-            </Col>
-          </List.Item>
-          <List.Item key={2}>
+          <List.Item key={3}>
+                      <Col xs={24} sm={8}>TDS 19-20</Col>
+                      <Col xs={12} sm={4} className='text-right'>
+                        <Space>
+                          <span>
+                            {!isEmpty(getTDSDocument(u.fileType.tds,tds_previous_))  ? (
+                              <Space>
+                                <ViewFile
+                                  size='small'
+                                  id={partnerInfo.id}
+                                  type='partner'
+                                  file_type={u.fileType.tds}
+                                  folder={u.folder.approvals}
+                                  file_list={getTDSDocument(u.fileType.tds,tds_previous_)}
+                                />
+                                <DeleteFile
+                                  size='small'
+                                  id={partnerInfo.id}
+                                  type='partner'
+                                  file_type={u.fileType.tds}
+                                  file_list={getTDSDocument(u.fileType.tds,tds_previous_)}
+                                />
+                              </Space>
+                            ) :  (
+                              <TdsFileUploadOnly
+                                size='small'
+                                id={partnerInfo.id}
+                                type='partner'
+                                folder={u.folder.approvals}
+                                file_type={u.fileType.tds}
+                                file_list={getTDSDocument(u.fileType.tds,tds_previous_)}
+                                financial_year={tds_previous_}
+                              />
+                            )}
+                          </span>
+                        </Space>
+                      </Col>
+                    </List.Item>
+                    <List.Item key={4}>
+                      <Col xs={24} sm={8}>TDS 20-21</Col>
+                      <Col xs={12} sm={4} className='text-right'>
+                        <Space>
+                          <span>
+                            {!isEmpty(getTDSDocument(u.fileType.tds,tds_current_)) ? (
+                              <Space>
+                                <ViewFile
+                                  size='small'
+                                  id={partnerInfo.id}
+                                  type='partner'
+                                  file_type={u.fileType.tds}
+                                  folder={u.folder.approvals}
+                                  file_list={getTDSDocument(u.fileType.tds,tds_current_)}
+                                />
+                                <DeleteFile
+                                  size='small'
+                                  id={partnerInfo.id}
+                                  type='partner'
+                                  file_type={u.fileType.tds}
+                                  file_list={getTDSDocument(u.fileType.tds,tds_current_)}
+                                />
+                              </Space>
+                            ) :  (
+                              
+                              <TdsFileUploadOnly
+                                size='small'
+                                id={partnerInfo.id}
+                                type='partner'
+                                folder={u.folder.approvals}
+                                file_type={u.fileType.tds}
+                                file_list={getTDSDocument(u.fileType.tds,tds_current_)}
+                                financial_year={tds_current_}
+                              />
+                            )}
+                          </span>
+                        </Space>
+                      </Col>
+                    </List.Item>
+          <List.Item key={5}>
             <Col xs={24} sm={8}>Agreement</Col>
             <Col xs={12} sm={4} className='text-right'>
               <Space>
@@ -214,7 +279,7 @@ const PartnerDocument = (props) => {
               </Space>
             </Col>
           </List.Item>
-          <List.Item key={4}>
+          <List.Item key={6}>
             <Col xs={24} sm={20}>
               <Row>
                 <Col xs={10}>Cibil Score</Col>
