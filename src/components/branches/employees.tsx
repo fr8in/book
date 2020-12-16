@@ -1,19 +1,25 @@
-import { Table, Tag } from 'antd'
-import { gql, useSubscription } from '@apollo/client'
+import { Table, Tag, Button, message } from 'antd'
+import { gql, useSubscription, useMutation } from '@apollo/client'
 import get from 'lodash/get'
 import EmployeeNumber from './employeeNumber'
 import EditAccess from '../common/editAccess'
 import u from '../../lib/util'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import EmployeeRoleAccess from '../branches/employeeRoleAccess'
+import EmployeeCode from './employeeCode'
+import { DeleteTwoTone,CloseOutlined } from '@ant-design/icons'
+import moment from 'moment'
+import { useContext } from 'react'
+import userContext from '../../lib/userContaxt'
 
 const EMPLOYEE_QUERY = gql`
 subscription branch_employee {
-  employee(where: {active: {_eq: 1}}) {
+  employee(where: {active: {_eq: 1},deleted_at:{_is_null:true}}) {
     id
     name
     mobileno
     email
+    employee_code
     employee_roles {
       id
       role {
@@ -23,11 +29,22 @@ subscription branch_employee {
   }
 }
 `
-
-const Employees = (props) => {
+const DELETE_EMPLOYEE_MUTATION = gql`
+mutation delete_employee($id: Int, $deleted_at: timestamp) {
+  update_employee(where: {id: {_eq: $id}}, _set: {deleted_at: $deleted_at}) {
+    returning {
+      id
+    }
+  }
+}
+`
+const Employees = () => {
 
   const { role } = u
-  const employee_role = [role.admin]
+  const context = useContext(userContext)
+  const employee_delete = u.is_roles([u.role.admin], context)
+  const employee_role = role.admin
+
   const initial = {
     employeeRoleVisible: false,
     title: null,
@@ -35,26 +52,59 @@ const Employees = (props) => {
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
+  const date = moment(new Date().toISOString()).format('DD-MMM-YY')
 
-  const { loading, error, data } = useSubscription( EMPLOYEE_QUERY )
+  const { loading, error, data } = useSubscription(EMPLOYEE_QUERY)
 
+  const [deleteEmployee] = useMutation(
+    DELETE_EMPLOYEE_MUTATION,
+    {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() {
+        message.success('Deleted!!')
+      }
+    }
+  )
+  const onSubmit = (record) => {
+    deleteEmployee({
+      variables: {
+        id: record.id,
+        deleted_at: date
+      }
+    })
+  }
 
   let _data = {}
   if (!loading) {
     _data = data
   }
   const employees = get(_data, 'employee', [])
-
+  const Delete= <Button
+                  type='primary'
+                  size='small'
+                  shape='circle'
+                  danger
+                  icon={<CloseOutlined />}
+                />
+   
   const column = [
     {
       title: 'Name',
       dataIndex: 'name',
-      width: '20%'
+      width: '15%'
+    },
+    {
+      title: 'Employee Code',
+      dataIndex: 'employee_code',
+      width: '10%',
+      render: (text, record) => {
+        return <EmployeeCode id={record.id} code={text} />
+      }
     },
     {
       title: 'Mobile Number',
       dataIndex: 'mobileno',
-      width: '20%',
+      width: '15%',
       render: (text, record) => {
         return <EmployeeNumber id={record.id} label={text} />
       }
@@ -62,7 +112,7 @@ const Employees = (props) => {
     {
       title: 'Roles',
       dataIndex: 'role',
-      width: '60%',
+      width: '56%',
       render: (text, record) => {
         const roles = get(record, 'employee_roles', '-')
         return (
@@ -82,7 +132,21 @@ const Employees = (props) => {
           </div>
         )
       }
-    }
+    },
+    employee_delete?
+    {
+      title: Delete,
+      width: '4%',
+      render: (record) => {
+        return (
+          <Button
+            type="link"
+            icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
+            onClick={() => onSubmit(record)}
+          />
+        )
+      }
+    } : {},
   ]
   return (
     <>
