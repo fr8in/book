@@ -30,8 +30,8 @@ subscription branch_employee {
 }
 `
 const DELETE_EMPLOYEE_MUTATION = gql`
-mutation delete_employee($id: Int, $date: timestamp) {
-  update_employee(where: {id: {_eq: $id}}, _set: {deleted_at: $date}) {
+mutation delete_employee($id: Int, $deleted_at: timestamp) {
+  update_employee(where: {id: {_eq: $id}}, _set: {deleted_at: $deleted_at}) {
     returning {
       id
     }
@@ -69,7 +69,7 @@ const Employees = () => {
     deleteEmployee({
       variables: {
         id: record.id,
-        date: date
+        deleted_at: date
       }
     })
   }
@@ -139,7 +139,6 @@ const Employees = () => {
       width: '4%',
       render: (record) => {
         return (
-          employee_delete &&
           <Button
             type="link"
             icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
