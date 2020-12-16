@@ -18,6 +18,14 @@ subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [Stri
         gmv
       }
     }
+    partner_transaction_fees(where: {month: {_eq: $month}, year: {_eq: $year}}) {
+      id
+      year
+      month
+      partner_code
+      transaction_fee
+      cash_back_amount
+    }
     partner_active{
      amount
     }
