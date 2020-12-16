@@ -7,7 +7,7 @@ import u from '../../lib/util'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import EmployeeRoleAccess from '../branches/employeeRoleAccess'
 import EmployeeCode from './employeeCode'
-import { DeleteTwoTone } from '@ant-design/icons'
+import { DeleteTwoTone,CloseOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import { useContext } from 'react'
 import userContext from '../../lib/userContaxt'
@@ -53,7 +53,7 @@ const Employees = () => {
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
   const date = moment(new Date().toISOString()).format('DD-MMM-YY')
-  
+
   const { loading, error, data } = useSubscription(EMPLOYEE_QUERY)
 
   const [deleteEmployee] = useMutation(
@@ -79,17 +79,24 @@ const Employees = () => {
     _data = data
   }
   const employees = get(_data, 'employee', [])
-
+  const Delete= <Button
+                  type='primary'
+                  size='small'
+                  shape='circle'
+                  danger
+                  icon={<CloseOutlined />}
+                />
+   
   const column = [
     {
       title: 'Name',
       dataIndex: 'name',
-      width: '20%'
+      width: '15%'
     },
     {
       title: 'Employee Code',
       dataIndex: 'employee_code',
-      width: '16%',
+      width: '10%',
       render: (text, record) => {
         return <EmployeeCode id={record.id} code={text} />
       }
@@ -97,29 +104,15 @@ const Employees = () => {
     {
       title: 'Mobile Number',
       dataIndex: 'mobileno',
-      width: '20%',
+      width: '15%',
       render: (text, record) => {
         return <EmployeeNumber id={record.id} label={text} />
       }
     },
     {
-      title: '',
-      width: '4%',
-      render: (record) => {
-        return (
-          employee_delete &&
-          <Button
-            type="link"
-            icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
-            onClick={() => onSubmit(record)}
-          />
-        )
-      }
-    },
-    {
       title: 'Roles',
       dataIndex: 'role',
-      width: '40%',
+      width: '56%',
       render: (text, record) => {
         const roles = get(record, 'employee_roles', '-')
         return (
@@ -139,7 +132,21 @@ const Employees = () => {
           </div>
         )
       }
-    }
+    },
+    {
+      title: Delete,
+      width: '4%',
+      render: (record) => {
+        return (
+          employee_delete &&
+          <Button
+            type="link"
+            icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
+            onClick={() => onSubmit(record)}
+          />
+        )
+      }
+    },
   ]
   return (
     <>
