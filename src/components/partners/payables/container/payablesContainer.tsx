@@ -1,11 +1,13 @@
 
 import ICICIBankOutgoing from '../iciciBankOutgoing'
 import React, { useState } from 'react'
-import { Tabs, Space, Card, Button, DatePicker, message } from 'antd'
+import { Tabs, Space, Card, Button, DatePicker, message, Input, InputNumber } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
-import moment from 'moment'
+
 import isEmpty from 'lodash/isEmpty'
+import RelianceCashBack from '../RelianceCashBack';
+import util from '../../../../lib/util'
 
 const { RangePicker } = DatePicker
 
@@ -17,6 +19,16 @@ mutation icici_statement($start_date:String!,$end_date:String!) {
 const TabPane = Tabs.TabPane
 const PayablesContainer = () => {
   const [dates, setDates] = useState([])
+  const [tabIndex, setTabIndex] = useState('2')
+  const [receivedCashBack, setReceivedCashBack] = useState<number>(0)
+  const [month, setMonth] = useState(null)
+  const [year, setYear] = useState(null)
+
+  const handleMonthChange = (date, dateString) => {
+    const splittedDate = dateString.split("-")
+    setYear(parseInt(splittedDate[0]))
+    setMonth(parseInt(splittedDate[1]))
+  }
 
   const disabledDate = (current) => {
     if (!dates || dates.length === 0) {
@@ -24,14 +36,14 @@ const PayablesContainer = () => {
     }
     const tooLate = dates[0] && current.diff(dates[0], 'days') > 30
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30
-    return ( (tooEarly || tooLate))
+    return ((tooEarly || tooLate))
   }
-  
+
   const [icici_statement] = useMutation(
     DATE_SELECT_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted (data) {
+      onError(error) { message.error(error.toString()) },
+      onCompleted(data) {
         const url = data && data.icici_statement
         window.open(url, 'icici_statement')
         message.success('Updated!!')
@@ -50,31 +62,50 @@ const PayablesContainer = () => {
       message.error('Select Start date and End date!')
     }
   }
+  const isValidCashBack = () => util.isNumber(receivedCashBack) && receivedCashBack <= 0
+  const cashBackOnChange = (value) => setReceivedCashBack(parseFloat(value))
+
+  const getTabBarContent = () => {
+    if (tabIndex === '2') {
+      return 
+          <DatePicker onChange={handleMonthChange} picker="month" />        
+    }
+    else {
+      return <Space>
+        <RangePicker
+          size='small'
+          format='DD-MM-YYYY'
+          disabledDate={(current) => disabledDate(current)}
+          onCalendarChange={(value) => {
+            setDates(value)
+          }}
+        />
+        <Button size='small'>
+          <DownloadOutlined onClick={() => onConfirm()} />
+        </Button>
+      </Space>
+    }
+
+  }
+
 
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
       <Tabs
-        tabBarExtraContent={
-          <Space>
-            <RangePicker
-              size='small'
-              format='DD-MM-YYYY'
-              disabledDate={(current) => disabledDate(current)}
-              onCalendarChange={(value) => {
-                setDates(value)
-              }}
-            />
-            <Button size='small'>
-              <DownloadOutlined onClick={() => onConfirm()} />
-            </Button>
-          </Space>
-        }
+        tabBarExtraContent={getTabBarContent()}
+        defaultActiveKey={tabIndex}
+        onChange={(e) => setTabIndex(e)}
       >
-        <TabPane tab='ICIC Bank Outgoing'>
+        <TabPane tab='ICICI Bank Outgoing' key={'0'}>
           <ICICIBankOutgoing />
         </TabPane>
+
+        <TabPane tab='Reliance' key={'2'}>
+          <RelianceCashBack month={month} year={year}/>
+        </TabPane>
+
       </Tabs>
-    </Card>
+    </Card >
   )
 }
 

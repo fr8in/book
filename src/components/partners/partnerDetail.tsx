@@ -17,7 +17,7 @@ const PartnerDetail = (props) => {
   const { partnerDetail, loading } = props
   const { role } = u
   const initial = {
-    addressVisible: false,
+  addressVisible: false,
     bankVisible: false
   }
   const { visible, onHide, onShow } = useShowHide(initial)
