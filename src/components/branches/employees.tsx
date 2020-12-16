@@ -9,6 +9,8 @@ import EmployeeRoleAccess from '../branches/employeeRoleAccess'
 import EmployeeCode from './employeeCode'
 import { DeleteTwoTone } from '@ant-design/icons'
 import moment from 'moment'
+import { useContext } from 'react'
+import userContext from '../../lib/userContaxt'
 
 const EMPLOYEE_QUERY = gql`
 subscription branch_employee {
@@ -39,7 +41,10 @@ mutation delete_employee($id: Int, $date: timestamp) {
 const Employees = () => {
 
   const { role } = u
-  const employee_role = [role.admin]
+  const context = useContext(userContext)
+  const employee_delete = u.is_roles([u.role.admin], context)
+  const employee_role = role.admin
+
   const initial = {
     employeeRoleVisible: false,
     title: null,
@@ -47,14 +52,15 @@ const Employees = () => {
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
-  const date =moment(new Date().toISOString()).format('DD-MMM-YY')
-  const { loading, error, data } = useSubscription( EMPLOYEE_QUERY )
+  const date = moment(new Date().toISOString()).format('DD-MMM-YY')
+  
+  const { loading, error, data } = useSubscription(EMPLOYEE_QUERY)
 
   const [deleteEmployee] = useMutation(
     DELETE_EMPLOYEE_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() {
         message.success('Deleted!!')
       }
     }
@@ -84,8 +90,8 @@ const Employees = () => {
       title: 'Employee Code',
       dataIndex: 'employee_code',
       width: '16%',
-      render: (text,record) =>{
-         return <EmployeeCode id={record.id} code={text} />
+      render: (text, record) => {
+        return <EmployeeCode id={record.id} code={text} />
       }
     },
     {
@@ -101,12 +107,14 @@ const Employees = () => {
       width: '4%',
       render: (record) => {
         return (
-            <Button
-                type="link"
-                icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
-                onClick={() => onSubmit(record)}
-            />)
-    }
+          employee_delete &&
+          <Button
+            type="link"
+            icon={<DeleteTwoTone twoToneColor='#eb2f96' />}
+            onClick={() => onSubmit(record)}
+          />
+        )
+      }
     },
     {
       title: 'Roles',
