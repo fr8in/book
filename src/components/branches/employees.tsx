@@ -133,6 +133,7 @@ const Employees = () => {
         )
       }
     },
+    employee_delete?
     {
       title: Delete,
       width: '4%',
@@ -146,7 +147,7 @@ const Employees = () => {
           />
         )
       }
-    },
+    } : {},
   ]
   return (
     <>
