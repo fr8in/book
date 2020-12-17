@@ -1,20 +1,147 @@
 
-import { Table, Card, InputNumber, Row, Col, Space, Button } from 'antd';
+import { Table, Card, Input, InputNumber, Descriptions, Row, Col, Space, Button } from 'antd';
 import LabelWithData from '../../common/labelWithData';
-import LabelAndData from '../../common/labelAndData';
+
 import React, { useState } from 'react';
+import isNil from 'lodash/isNil'
+import util from '../../../lib/util'
+
+
 
 
 const RelianceCashBack = (props) => {
     const [process, setProcess] = useState(false)
-    const [partnerCashBack, setpartnerCashBack] = useState<number>(0)
+
+    const [totalConsumption, setTotalConsumption] = useState<number>(178000)
+
+
+    const [receivedCashBack, setReceivedCashBack] = useState<number>(0)
+
+    const [blacklistedPartnerConsumption, setblacklistedPartnerConsumption] = useState<number>(0)
+
+
+    const [receivedCashBackPercentage, setReceivedCashBackPercentage] = useState<number>(0)
+    const [partnerCashBackPercentage, setpartnerCashBackPercentage] = useState<number>(0)
+    const [partnerCashBackAmount, setpartnerCashBackAmount] = useState<number>(0)
+
+    const [blacklistpartnerCashBackPercentage, setblackpartnerCashBackPercentage] = useState<number>(0)
+    const [blacklistpartnerCashBackAmount, setblackpartnerCashBackAmount] = useState<number>(0)
+
+    const [fr8CashBackAmount, setfr8CashBackAmount] = useState<number>(0)
+    const [fr8CashBackPercentage, setfr8CashBackPercentage] = useState<number>(0)
+
+    const isValidCashBack = () => isValidAmount(receivedCashBack) && isValidAmount(partnerCashBackPercentage)
+
+    const isValidAmount = (amount) => util.isNumber(amount) && amount > 0
+
+    const partnerCashBackOnChange = (value) => {
+
+        setpartnerCashBackPercentage(parseFloat(value));
+        let fr8CashBackPercentage = receivedCashBackPercentage - partnerCashBackPercentage
+
+        setfr8CashBackPercentage(parseFloat(fr8CashBackPercentage.toFixed(2)));
+        setfr8CashBackAmount(util.calculateAmountByPercentage(fr8CashBackPercentage, totalConsumption))
+        
+        let partnerCashBackAmount =  util.calculateAmountByPercentage(partnerCashBackPercentage, totalConsumption)
+        setpartnerCashBackAmount(partnerCashBackAmount)
+        
+        let blacklistedCashbackPercent=  util.calculatePercentage(partnerCashBackAmount, 20).toFixed(2)
+        setblackpartnerCashBackPercentage(parseFloat(blacklistedCashbackPercent))
+        setblackpartnerCashBackAmount(util.calculateAmountByPercentage(blacklistedCashbackPercent, totalConsumption))
+    
+    }
+    const receivedCashBackOnChange = (value) => {
+        setReceivedCashBack(parseFloat(value));
+        setReceivedCashBackPercentage(util.calculatePercentage(value, totalConsumption))
+
+    }
+
+    const cashBackdataSource = [
+        {
+            heading: 'Consumption',
+            partner: '150000',
+            blacklisted: '38000',
+            fr8: totalConsumption
+        },
+        {
+            heading: 'Cashback',
+            partner: partnerCashBackAmount,
+            blacklisted: blacklistpartnerCashBackAmount,
+            fr8: fr8CashBackAmount
+        },
+        {
+            heading: `Cashback Percentage - ${receivedCashBackPercentage}%`,
+            blacklisted: `${blacklistpartnerCashBackPercentage}%`,
+            fr8: `${fr8CashBackPercentage}%`
+        },
+
+    ];
+
+
 
     console.log("props in reliance", props)
-    let { proceed } = props
+    let { period } = props
+
+    const cashBackcolumns = [
+        {
+            title: '',
+            dataIndex: 'heading',
+            render: (text, record) => {
+                if (text === 'Cashback') {
+                    return <div className='tableRowHeading' > {text}
+                        <InputNumber
+                            type='number'
+                            placeholder='Received Cashback Amount'
+                            min={0}
+                            step={0.01}
+                            onChange={(value) => receivedCashBackOnChange(value)}
+                            style={{ width: 220, margin: "0 10px" }}
+                        />
+                    </div>
+                }
+                return <div className='tableRowHeading' > {text}</div>
+            },
+            width: '35%'
+
+        },
+        {
+            title: 'Partner',
+            dataIndex: 'partner',
+            render: (text, record) => {
+                console.log('record -in partner ', record.heading)
+
+                if (record.heading.includes('Cashback Percentage')) {
+                    return <InputNumber
+                        type='number'
+                        placeholder='Partner Cashback %'
+                        min={0}
+                        step={0.01}
+                        onChange={(value) => partnerCashBackOnChange(value)}
+                        style={{ width: 160, margin: "0 10px" }}
+                    />
+                }
+                return text
+            },
+            width: '5%'
+
+        },
+        {
+            title: 'Blacklisted',
+            dataIndex: 'blacklisted',
+            width: '5%'
+
+        },
+        {
+            title: 'FR8',
+            dataIndex: 'fr8',
+            width: '5%'
+        }
+    ];
+
 
     const dataSource = [
         {
-            name: 'Selvam Tkr',
+            name: 'Ross Geller',
             code: 'ST002638',
             consumption: 35000,
             cashback_amount: 23,
@@ -22,19 +149,43 @@ const RelianceCashBack = (props) => {
             balance: 12,
         },
         {
-            name: 'Salem Raja',
-            code: 'ST002579',
-            consumption: 25000,
+            name: 'Chandler Bing',
+            code: 'ST002638',
+            consumption: 35000,
             cashback_amount: 23,
-            cleared: -12,
-            balance: 9,
+            cleared: 45,
+            balance: 12,
         },
+        {
+            name: 'Joey Tribiani',
+            code: 'ST002638',
+            consumption: 35000,
+            cashback_amount: 23,
+            cleared: -45,
+            balance: -12,
+        },
+        {
+            name: 'Monica Geller',
+            code: 'ST002638',
+            consumption: 35000,
+            cashback_amount: 23,
+            cleared: 45,
+            balance: 12,
+        },
+        {
+            name: 'Phoebe Buffay',
+            code: 'ST002638',
+            consumption: 35000,
+            cashback_amount: 23,
+            cleared: 45,
+            balance: 12,
+        }
     ];
 
     const columns = [
         {
             title: 'Partner Name',
-            dataIndex: 'code',
+            dataIndex: 'name',
 
         },
         {
@@ -51,10 +202,6 @@ const RelianceCashBack = (props) => {
             dataIndex: 'cashback_amount'
         },
         {
-            title: 'Cleared',
-            dataIndex: 'cleared'
-        },
-        {
             title: 'Balance',
             dataIndex: 'balance'
 
@@ -62,92 +209,46 @@ const RelianceCashBack = (props) => {
 
     ];
 
-    const cashBackOnChange = (value) => setpartnerCashBack(value)
 
     return (
-        proceed === false ? <>
-           <h4 align='center'>Reliance Fuel CashBack</h4>
+        isNil(period) ? <>
+            <h4 align='center'>Reliance Fuel CashBack</h4>
         </> :
             <div>
-                <Row>
-                    <Col span={12}>
-                        <LabelWithData
-                            label='Total Consumption'
-                            data={<span>{60000}</span>}
-                            labelSpan={8}
-                        />
-                        <LabelWithData
-                            label='Received CashBack Amount'
-                            data={<span>{'1021'}</span>}
-                            labelSpan={8}
-                        />
-                        <LabelWithData
-                            label='Received CashBack Percentage'
-                            data={<span>{'1.45%'}</span>}
-                            labelSpan={8}
-                        />
-                        <LabelWithData
-                            label='Partner CashBack'
-                            margin_bottom
-                            data={
-                                <InputNumber style={{ width: 70 }}
-                                    type='number'
-                                    defaultValue={0}
-                                    min={0.01}
-                                    step={0.01}
-                                    size={'small'}
-                                    onChange={(value)=>cashBackOnChange(value)  }
-                                />
-                            }
-                            labelSpan={8}
-                        />
+                <div>
+                    <Table
 
-                        <LabelWithData
-                            label=''
-                            margin_bottom
-                            data={
-                                <Button type="primary" onClick={() => setProcess(true)} >Process</Button>
-                            }
-                            labelSpan={8}
-                        />
+                        columns={cashBackcolumns}
+                        dataSource={cashBackdataSource}
+                        size='small'
+                        scroll={{ x: 500 }}
+                        bordered
+                        pagination={false}
 
-                    </Col>
+                    //rowKey={(record) => record.code}
+                    />
+                    <div>
 
-                    <Col span={12}>
-                        <Row>
-                            <Col span={12}>
-                                <h5>Partner</h5>
-                                <LabelWithData
-                                    label='CashBack Amount'
-                                    data={<span>{60}</span>}
-                                    labelSpan={12}
-                                />
-                                <LabelWithData
-                                    label='CashBack Percentage'
-                                    data={<span>{partnerCashBack}</span>}
-                                    labelSpan={12}
-                                />
-
-                            </Col>
-                            <Col span={12}>
-                                <h5>FR8</h5>
-                                <LabelWithData
-                                    label='CashBack Amount'
-                                    data={<span>{30}</span>}
-                                    labelSpan={12}
-                                />
-                                <LabelWithData
-                                    label='CashBack Percentage'
-                                    data={<span>{(1.45 - partnerCashBack).toFixed(2)}</span>}
-                                    labelSpan={12}
-                                />
+                        <Row gutter={10} className='item'>
+                            <Col flex='1800px' className='text-right'>
+                                <Space>
+                                    <LabelWithData
+                                        label=''
+                                        margin_bottom
+                                        data={
+                                            <Button type="primary" disabled={!isValidCashBack()} onClick={() => setProcess(true)} >Next</Button>
+                                        }
+                                        labelSpan={18}
+                                    />
+                                </Space>
                             </Col>
                         </Row>
-                    </Col>
-                </Row>
+
+                    </div>
+                </div>
                 <div>
                     {process && <div> <Table
-                        rowClassName={(record, index) => record.cleared > 0 ? 'tr1' : 'tr2'}
+                        rowClassName={(record, index) => record.cleared > 0 ? 'cashbackRow' : 'cashbackRowNegativeWallet'}
                         columns={columns}
                         dataSource={dataSource}
                         size='small'
@@ -155,15 +256,15 @@ const RelianceCashBack = (props) => {
                         pagination={false}
                         rowKey={(record) => record.code}
                     />
-                    <br/>
-                        <Row gutter={10} className='item'> 
+                        <br />
+                        <Row gutter={10} className='item'>
                             <Col flex='1800px' className='text-right'>
                                 <Space>
                                     <LabelWithData
                                         label=''
                                         margin_bottom
                                         data={
-                                            <Button type="primary" onClick={() => setProcess(true)} >Transfer to wallet</Button>
+                                            <Button type="primary" onClick={() => setProcess(true)} >Process</Button>
                                         }
                                         labelSpan={12}
                                     />

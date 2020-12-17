@@ -1,7 +1,7 @@
 
 import ICICIBankOutgoing from '../iciciBankOutgoing'
 import React, { useState } from 'react'
-import { Tabs, Space, Card, Button, DatePicker, message, Input, InputNumber } from 'antd';
+import { Tabs, Space, Card, Button, DatePicker, message  } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 
@@ -67,8 +67,7 @@ const PayablesContainer = () => {
 
   const getTabBarContent = () => {
     if (tabIndex === '2') {
-      return 
-          <DatePicker onChange={handleMonthChange} picker="month" />        
+      return <DatePicker onChange={handleMonthChange} picker="month" />        
     }
     else {
       return <Space>
@@ -101,7 +100,7 @@ const PayablesContainer = () => {
         </TabPane>
 
         <TabPane tab='Reliance' key={'2'}>
-          <RelianceCashBack month={month} year={year}/>
+          <RelianceCashBack period={month,year} />
         </TabPane>
 
       </Tabs>

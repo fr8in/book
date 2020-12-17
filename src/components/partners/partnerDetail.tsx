@@ -1,4 +1,4 @@
-import { Row, Col, Space, Tooltip } from 'antd'
+import { Row, Col, Space, Tooltip} from 'antd'
 import LabelWithData from '../common/labelWithData'
 import AdvancePercentage from './partnerAdvancePercentage'
 import EditAddress from './partnerAddress'
