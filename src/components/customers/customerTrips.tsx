@@ -83,10 +83,10 @@ const CustomerTrips = (props) => {
         tat = record.delivered_tat
         break
       case 'Invoiced':
-        tat = record.invoiced_tat
+        tat = record.received_tat
         break
       case 'Paid':
-        tat = record.paid_tat
+        tat = record.received_tat
         break
       case 'Recieved':
         tat = record.received_tat
