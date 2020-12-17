@@ -9,7 +9,7 @@ import Truncate from '../common/truncate'
 import LinkComp from '../common/link'
 import PartnerLink from '../common/PartnerLink'
 const CustomerTrips = (props) => {
-  const { cardcode, status_names, delivered } = props
+  const { cardcode, status_names, delivered ,tat_name} = props
 
   const initialFilter = {
     partnername: null,
@@ -59,6 +59,7 @@ const CustomerTrips = (props) => {
 
   const tat = (record) => {
     const status = get(record, 'trip_status.name', null)
+    record[tat]
     let tat = null
     switch (status) {
       case 'Assigned':
@@ -86,7 +87,7 @@ const CustomerTrips = (props) => {
         tat = record.invoiced_tat
         break
       case 'Paid':
-        tat = record.paid_tat
+        tat = record.received_tat
         break
       case 'Recieved':
         tat = record.received_tat
