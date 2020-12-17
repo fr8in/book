@@ -9,7 +9,7 @@ import Truncate from '../common/truncate'
 import LinkComp from '../common/link'
 import PartnerLink from '../common/PartnerLink'
 const CustomerTrips = (props) => {
-  const { cardcode, status_names, delivered ,tat_name} = props
+  const { cardcode, status_names, delivered } = props
 
   const initialFilter = {
     partnername: null,
