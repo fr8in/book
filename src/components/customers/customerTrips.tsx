@@ -59,7 +59,6 @@ const CustomerTrips = (props) => {
 
   const tat = (record) => {
     const status = get(record, 'trip_status.name', null)
-    record[tat]
     let tat = null
     switch (status) {
       case 'Assigned':
@@ -84,7 +83,7 @@ const CustomerTrips = (props) => {
         tat = record.delivered_tat
         break
       case 'Invoiced':
-        tat = record.invoiced_tat
+        tat = record.received_tat
         break
       case 'Paid':
         tat = record.received_tat
