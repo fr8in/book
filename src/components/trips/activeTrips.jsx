@@ -33,7 +33,7 @@ const Trips = (props) => {
 
   const { role } = u
   const context = useContext(userContext)
-  const ad_am = [role.admin, role.accounts_manager]
+  const ad_am = [role.admin, role.accounts_manager, role.accounts]
   const confirm_access = u.is_roles(ad_am, context)
   const [assign_to_confirm] = useMutation(
     ASSIGN_TO_CONFIRM_STATUS_MUTATION, {
