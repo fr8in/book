@@ -246,7 +246,8 @@ const CustomerTrips = (props) => {
         const status = get(a, 'trip_status.name', null)
         return status ? (tat(a) > tat(b) ? 1 : -1) : null
       },
-      width: '7%'
+      width: '7%',
+      defaultSortOrder: 'descend'
     }
   ]
 
