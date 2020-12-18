@@ -13,7 +13,6 @@ const PartnerInfo = (props) => {
   const { object, handleHide, handleShow } = useShowHidewithRecord(usersInitial)
 
   const partner_membership = get(partner, 'partner_membership_targets[0]', null)
-  const partner_transaction_fee = get(partner, 'partner_transaction_fees[0]', null)
   const number = get(partner, 'partner_users[0].mobile', null)
   const partner_id = get(partner, 'id', null)
   const partnerKycStatus = get(partner, 'partner_status.id', null)
@@ -48,8 +47,8 @@ const PartnerInfo = (props) => {
         <h4>{`A:${u.convertToLakhs(get(partner_membership, 'actual.gmv'))}
               G:${u.convertToLakhs(get(partner_membership, 'gold', 0))}
               P:${u.convertToLakhs(get(partner_membership, 'platinum', 0))}
-              T:${get(partner_transaction_fee, 'transaction_fee', 0)}
-              C:${get(partner_transaction_fee, 'cash_back_amount', 0)}
+              T:${get(partner_membership, 'transaction_fee', 0)}
+              C:${get(partner_membership, 'cash_back_amount', 0)}
               `}
         </h4>
       </Space>

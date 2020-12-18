@@ -11,17 +11,11 @@ query partner_membership($id: Int, $year: Int, $month: Int) {
       gold
       platinum
       month
+      transaction_fee
+      cash_back_amount
       actual {
         gmv
       }
-    }
-    partner_transaction_fees(where: {month: {_eq: $month}, year: {_eq: $year}}) {
-      id
-      year
-      month
-      partner_code
-      transaction_fee
-      cash_back_amount
     }
   }
 }
@@ -43,7 +37,6 @@ const PartnerLink = (props) => {
   else return null
 
   const membership_target = get(target_data, 'partner[0].partner_membership_targets[0]', null)
-  const transaction_fee = get(target_data, 'partner[0].partner_transaction_fees[0]', null)
 
   const onChange = (visible) => {
     setPartnerMembership(visible)
@@ -64,8 +57,8 @@ const PartnerLink = (props) => {
           `A:${u.convertToLakhs(get(membership_target, 'actual.gmv'))}
                   G:${u.convertToLakhs(get(membership_target, 'gold', 0))}
                   P:${u.convertToLakhs(get(membership_target, 'platinum', 0))}
-                  T:${get(transaction_fee, 'transaction_fee', 0)}
-                  C:${get(transaction_fee, 'cash_back_amount', 0)}
+                  T:${get(membership_target, 'transaction_fee', 0)}
+                  C:${get(membership_target, 'cash_back_amount', 0)}
                   `}
       >
         <a target='_blank' href={`/${type}/${cardcode}`}>{u.shrinkText(data, length)}</a>

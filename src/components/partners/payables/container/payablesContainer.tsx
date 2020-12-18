@@ -7,6 +7,7 @@ import { gql, useMutation } from '@apollo/client'
 import moment from 'moment'
 import isEmpty from 'lodash/isEmpty'
 import CashBack from '../cashBack'
+import CashBackButton from '../cashBackButton'
 
 const { RangePicker } = DatePicker
 
@@ -86,12 +87,11 @@ const PayablesContainer = () => {
               </Button></> :
               <>
                 <DatePicker
-                 // disabledDate={(date) => handleCashBackDate(date)}
+                  // disabledDate={(date) => handleCashBackDate(date)}
                   //defaultValue={previousMonth}
                   onChange={handleMonthChange} picker="month" />
-                <Button type="primary">
-                  Create
-                </Button>
+                <CashBackButton month={month}
+                  year={year} />
               </>
             }
           </Space>
@@ -102,7 +102,7 @@ const PayablesContainer = () => {
         <TabPane tab='ICIC Bank Outgoing' key={'0'}>
           <ICICIBankOutgoing />
         </TabPane>
-        <TabPane tab='Transaction Fee CashBack' key={'1'}>
+        <TabPane tab='Transaction Fee' key={'1'}>
           <CashBack
             month={month}
             year={year}
