@@ -19,7 +19,7 @@ mutation icici_statement($start_date:String!,$end_date:String!) {
 const TabPane = Tabs.TabPane
 const PayablesContainer = () => {
   const [dates, setDates] = useState([])
-  const [tabIndex, setTabIndex] = useState("1")
+  const [tabIndex, setTabIndex] = useState("0")
   const [month, setMonth] = useState(null)
   const [year, setYear] = useState(null)
 

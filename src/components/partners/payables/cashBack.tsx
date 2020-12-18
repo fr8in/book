@@ -17,6 +17,7 @@ const CASH_BACK_QUERY = gql`subscription partner_membership($year: Int, $month: 
         transaction_fee
         cash_back_amount
         cash_back_percent
+        cash_back_status
       }
       partner_accounting {
         cleared
@@ -94,7 +95,15 @@ const cashBack = (props) => {
             key: 'cashBackAmount',
             width: '8%',
             render: (text, record) => get(record, 'partner_membership_targets[0].cash_back_amount')
+        },
+        {
+            title: 'CashBack Status',
+            dataIndex: 'cash_back_status',
+            key: 'cash_back_status',
+            width: '8%',
+            render: (text, record) => get(record, 'partner_membership_targets[0].cash_back_status')
         }
+
     ]
 
 

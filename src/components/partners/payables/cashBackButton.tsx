@@ -20,6 +20,7 @@ const cashBackButton = (props) => {
     const [buttonLoading, setButtonLoading] = useState(false)
 
     const { data: tokenData, loading: tokenLoading, refetch } = useQuery(TOKEN, {
+        skip: !props.year || !props.month,
         variables: {
             ref_id: props.year + props.month,
             process: "TRANSACTION_FEE_CASHBACK"
@@ -27,7 +28,7 @@ const cashBackButton = (props) => {
     })
 
     let token = null
-    if (!tokenLoading) {
+    if (!tokenLoading && tokenData) {
         token = tokenData.token
     }
 
@@ -64,7 +65,8 @@ const cashBackButton = (props) => {
     }
 
     return (
-        props.year && props.month && <Button loading={buttonLoading} type="primary" onClick={processCashBack}>Process</Button>
+        props.year && props.month ?
+            <Button loading={buttonLoading} type="primary" onClick={processCashBack}>Process</Button> : <div />
     )
 }
 
