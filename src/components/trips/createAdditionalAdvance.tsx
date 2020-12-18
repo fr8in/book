@@ -195,10 +195,17 @@ const CreateAdditionalAdvance = (props) => {
   const disable_adv_btn = (trip_status >= 12 || loadedNo === 'No' || !access)
   return (
     <Row>
+      <Row className='payableHead' gutter={6}>
+        <Col xs={24}><b>Additional Advance</b></Col>
+        <Col xs={12} className='text-right'>
+         
+        </Col>
+      </Row>
       <Col xs={24}>
-        <Form layout='vertical' form={form} onFinish={onSubmit}>
+        <Form layout="horizontal" form={form} onFinish={onSubmit}>
           <Row className='mb10'>
             <Col xs={24}>
+              
               <Radio.Group
                 onChange={onRadioChange}
                 value={radioValue}
@@ -206,6 +213,7 @@ const CreateAdditionalAdvance = (props) => {
                 <Radio value='WALLET'>Wallet</Radio>
                 <Radio value='BANK'>Any Account</Radio>
               </Radio.Group>
+             
             </Col>
           </Row>
           {radioValue === 'BANK'
