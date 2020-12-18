@@ -144,8 +144,8 @@ const util = {
     }
     return false
   },
-  calculatePercentage: (value,totalValue) => (value*100)/totalValue,
-  calculateAmountByPercentage: (percentage,totalValue) => (percentage*totalValue)/100
+  calculatePercentage: (value,totalValue) =>  parseFloat(((value*100)/totalValue).toFixed(2)),
+  calculateAmountByPercentage:  (percentage,totalValue) =>   parseFloat(((percentage*totalValue)/100).toFixed(2))
 
 }
 

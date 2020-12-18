@@ -62,12 +62,10 @@ const PayablesContainer = () => {
       message.error('Select Start date and End date!')
     }
   }
-  const isValidCashBack = () => util.isNumber(receivedCashBack) && receivedCashBack <= 0
-  const cashBackOnChange = (value) => setReceivedCashBack(parseFloat(value))
-
+  
   const getTabBarContent = () => {
     if (tabIndex === '2') {
-      return <DatePicker onChange={handleMonthChange} picker="month" />        
+      return <DatePicker onChange={handleMonthChange} picker="month" />
     }
     else {
       return <Space>
@@ -100,7 +98,7 @@ const PayablesContainer = () => {
         </TabPane>
 
         <TabPane tab='Reliance' key={'2'}>
-          <RelianceCashBack period={month,year} />
+          <RelianceCashBack month={month} year={year} postindDate = {2} />
         </TabPane>
 
       </Tabs>
