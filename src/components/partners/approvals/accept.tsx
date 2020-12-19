@@ -1,9 +1,17 @@
 import { Modal, Form, Input, message, Button } from 'antd'
 import { useState, useContext } from 'react'
-import { gql, useMutation } from '@apollo/client'
+import { gql, useMutation, useQuery} from '@apollo/client'
 import get from 'lodash/get'
 
 import userContext from '../../../lib/userContaxt'
+import Loading from '../../common/loading'
+
+const GET_TOKEN = gql`
+query get_token (
+  $trip_id: Int!
+){
+  token(ref_id: $trip_id, process: "CREDIT_NOTE_APPROVAL")
+}`
 
 const REJECT_CREDIT_MUTATION = gql`
 mutation reject_credit($id:Int!,$remarks:String){
@@ -34,9 +42,22 @@ mutation approve_credit(
 }`
 
 const Approve = (props) => {
-  const { visible, onHide, item_id, title, setCreditNoteRefetch } = props
+  const { visible, onHide, item_id,trip_id, title, setCreditNoteRefetch } = props
+  console.log('trip_id',trip_id)
+  console.log('item_id',item_id)
   const context = useContext(userContext)
   const [disableButton, setDisableButton] = useState(false)
+  const { loading, data, error } = useQuery(GET_TOKEN, 
+    { 
+      variables: {trip_id: parseInt(trip_id) }, 
+      fetchPolicy: 'network-only' ,
+      skip: title === 'Reject'})
+
+  if (error) {
+    message.error(error.toString())
+    onHide()
+  }
+
 
   const [rejectCredit] = useMutation(
     REJECT_CREDIT_MUTATION, {
@@ -50,7 +71,7 @@ const Approve = (props) => {
         onHide()
       }
     })
-  const [creditApproval] = useMutation(
+  const [creditApproval,{ loading: mutationLoading }] = useMutation(
     CREDIT_APPROVAL_MUTATION, {
       onError (error) {
         setDisableButton(false)
@@ -80,7 +101,9 @@ const Approve = (props) => {
           id: item_id.id,
           approved_by: context.email,
           approved_amount: parseFloat(form.amount),
-          approval_comment: form.remarks
+          approval_comment: form.remarks,
+          token: data.token,
+          trip_id,
         }
       })
     } else {
@@ -114,6 +137,8 @@ const Approve = (props) => {
           <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>Submit</Button>
         </Form.Item>
       </Form>
+      {(loading || mutationLoading) &&
+        <Loading fixed />}
     </Modal>
   )
 }

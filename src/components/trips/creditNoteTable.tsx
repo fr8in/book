@@ -37,7 +37,7 @@ subscription credit_debits($id:Int){
 
 const CreditNoteTable = (props) => {
   const { trip_id, trip_info, setCreditNoteRefetch } = props
-
+console.log('.....',trip_id)
   const context = useContext(userContext)
   const { role } = u
   const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing,role.partner_manager,role.partner_support]
@@ -164,6 +164,7 @@ const CreditNoteTable = (props) => {
           onHide={handleHide}
           item_id={object.approveData}
           title={object.title}
+          trip_id={trip_id} 
           setCreditNoteRefetch={setCreditNoteRefetch}
         />
       )}

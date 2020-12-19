@@ -1,10 +1,18 @@
 import { useState, useContext } from 'react'
 import { Row, Col, Radio, Input, Select, Form, Button, message } from 'antd'
-import { gql, useSubscription, useMutation } from '@apollo/client'
+import { gql, useSubscription, useMutation,useQuery } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import u from '../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
+import Loading from '../common/loading'
+
+const GET_TOKEN = gql`
+query get_token (
+  $trip_id: Int!
+){
+  token(ref_id: $trip_id, process: "DEBIT_NOTE_APPROVAL")
+}`
 
 const CREDIT_DEBIT_ISSUE_TYPE_SUBSCRIPTION = gql`
 subscription credit_debit_issue_type {
@@ -70,6 +78,17 @@ const CreditNote = (props) => {
   const closed = get(trip_info, 'closed_at', null)
   const lock = get(trip_info, 'transaction_lock', null)
 
+  const { loading:token_loading, data:token_data , error:token_error } = useQuery(GET_TOKEN, 
+    { 
+      variables: {trip_id: parseInt(trip_id) }, 
+      fetchPolicy: 'network-only' ,
+      skip: radioType === 'Credit Note'})
+
+  if (token_error) {
+    message.error(token_error.toString())
+    setRadioType('Credit Note')
+  }
+
   const { loading, error, data } = useSubscription(
     CREDIT_DEBIT_ISSUE_TYPE_SUBSCRIPTION
   )
@@ -95,7 +114,7 @@ const CreditNote = (props) => {
       }
     }
   )
-  const [upadateDebitNote] = useMutation(
+  const [upadateDebitNote,{ loading: mutationLoading }] = useMutation(
     CREATE_DEBIT_MUTATION,
     {
       onError (error) {
@@ -145,7 +164,8 @@ const CreditNote = (props) => {
           amount: parseFloat(form.amount),
           comment: form.comment,
           trip_id: parseInt(trip_id),
-          created_by: context.email
+          created_by: context.email,
+          token: token_data.token
         }
       })
     } else { return null }
@@ -208,6 +228,8 @@ const CreditNote = (props) => {
           </Col>
         </Row>
       </Form>
+      {(token_loading || mutationLoading) &&
+        <Loading fixed />}
     </>
   )
 }
