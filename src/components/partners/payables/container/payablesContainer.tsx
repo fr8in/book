@@ -1,6 +1,6 @@
 
 import ICICIBankOutgoing from '../iciciBankOutgoing'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Tabs, Space, Card, Button, DatePicker, message } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
@@ -8,6 +8,8 @@ import moment from 'moment'
 import isEmpty from 'lodash/isEmpty'
 import CashBack from '../cashBack'
 import CashBackButton from '../cashBackButton'
+import u from '../../../../lib/util'
+import userContext from '../../../../lib/userContaxt'
 
 const { RangePicker } = DatePicker
 
@@ -64,10 +66,16 @@ const PayablesContainer = () => {
   const previousMonth = moment().subtract(1, 'months')
 
   const handleCashBackDate = (date) => {
-    const currentDate = moment(date).subtract(1, 'months')
     return moment().diff(date, 'months') > 1 || moment().diff(date, 'months') < 1
   }
 
+  const context = useContext(userContext)
+  const { role } = u
+
+  const roles = [role.admin]
+  const access = u.is_roles(roles, context)
+
+  console.log("fsdgsdg", access)
 
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
@@ -86,12 +94,11 @@ const PayablesContainer = () => {
                 <DownloadOutlined onClick={() => onConfirm()} />
               </Button></> :
               <>
-                <DatePicker
-                  // disabledDate={(date) => handleCashBackDate(date)}
-                  //defaultValue={previousMonth}
+                {access && <>  <DatePicker
+                  disabledDate={(date) => handleCashBackDate(date)}
                   onChange={handleMonthChange} picker="month" />
-                <CashBackButton month={month}
-                  year={year} />
+                  <CashBackButton month={month}
+                    year={year} /></>}
               </>
             }
           </Space>
@@ -102,12 +109,12 @@ const PayablesContainer = () => {
         <TabPane tab='ICIC Bank Outgoing' key={'0'}>
           <ICICIBankOutgoing />
         </TabPane>
-        <TabPane tab='Transaction Fee' key={'1'}>
+        {access && <TabPane tab='Transaction Fee' key={'1'}>
           <CashBack
             month={month}
             year={year}
           />
-        </TabPane>
+        </TabPane>}
       </Tabs>
     </Card>
   )

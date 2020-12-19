@@ -73,7 +73,7 @@ const cashBack = (props) => {
             dataIndex: 'cleared',
             key: 'cleared',
             width: '8%',
-            render: (text, record) => get(record, 'partner_accounting.cleared', 0) + get(record, 'partner_accounting.onhold', 0)
+            render: (text, record) => (get(record, 'partner_accounting.cleared', 0) + get(record, 'partner_accounting.onhold', 0)).toFixed(2)
         },
         {
             title: 'Transaction Fee',
