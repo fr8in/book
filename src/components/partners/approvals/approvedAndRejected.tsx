@@ -124,7 +124,6 @@ const ApprovedAndRejected = () => {
     source: { _eq: "TRACK" },
     incentive_status: { status: { _in: incentive_status_filter } },
     incentive_config: { auto_creation: { _eq: false } }, _and: { incentive_config: { type: { _in: incentive_type_list } } },
-    trip: {partner: {name: {_ilike:filter.partner_name ?  `%${filter.partner_name}%`  :  null }}}
   }
 
   const approvalQueryVars = {
