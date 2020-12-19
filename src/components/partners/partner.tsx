@@ -46,7 +46,11 @@ const PartnerInfo = (props) => {
         />
         <h4>{`A:${u.convertToLakhs(get(partner_membership, 'actual.gmv'))}
               G:${u.convertToLakhs(get(partner_membership, 'gold', 0))}
-              P:${u.convertToLakhs(get(partner_membership, 'platinum', 0))}`}</h4>
+              P:${u.convertToLakhs(get(partner_membership, 'platinum', 0))}
+              T:${get(partner_membership, 'transaction_fee', 0)}
+              C:${get(partner_membership, 'cash_back_amount', 0)}
+              `}
+        </h4>
       </Space>
 
       {object.visible &&

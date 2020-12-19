@@ -14,6 +14,8 @@ subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [Stri
       gold
       platinum
       month
+      transaction_fee
+      cash_back_amount
       actual {
         gmv
       }
