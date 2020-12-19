@@ -12,7 +12,7 @@ import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
 import Comment from '../../trips/tripFeedBack'
 import Approve from './accept'
 import IncentiveApprove from './incentiveApprove'
-import { gql, useSubscription, } from '@apollo/client'
+import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import PartnerOnBoardedBy from '../partnerOnboardedByName'
@@ -23,7 +23,7 @@ import isEmpty from 'lodash/isEmpty'
 
 const PENDING_SUBSCRIPTION = gql`
 subscription trip_credit_debit($status: [String!], $incentive_status: String!, $incentive_source: String!) {
-  trip(where: {_or: [{credit_debits: {id: {_is_null: false}}}, {incentives: {id: {_is_null: false}}}]}) {
+  trip(where: {_or: [{credit_debits: {id: {_is_null: false}, credit_debit_status: {name: {_in: $status}}}}, {incentives: {id: {_is_null: false}, source: {_eq: $incentive_source}, incentive_status: {status: {_eq: $incentive_status}}, incentive_config: {auto_creation: {_eq: false}}}}]}) {
     id
     last_comment {
       id
@@ -38,7 +38,7 @@ subscription trip_credit_debit($status: [String!], $incentive_status: String!, $
       cardcode
       name
     }
-    credit_debits(where: {credit_debit_status: {name: {_in: $status}}}) {
+    credit_debits (where:{credit_debit_status: {name: {_in: $status}}}){
       id
       trip_id
       type
@@ -59,13 +59,14 @@ subscription trip_credit_debit($status: [String!], $incentive_status: String!, $
         name
       }
     }
-    incentives(where: {source: {_eq: $incentive_source}, incentive_status: {status: {_eq: $incentive_status}}, incentive_config: {auto_creation: {_eq: false}}}) {
+    incentives(where:{incentive_config:{auto_creation:{_eq:false}}source: {_eq: $incentive_source}, incentive_status: {status: {_eq: $incentive_status}}}) {
       id
       trip_id
       amount
       comment
       created_at
       created_by
+      source
       incentive_config {
         type
       }
@@ -75,7 +76,6 @@ subscription trip_credit_debit($status: [String!], $incentive_status: String!, $
     }
   }
 }
-
   `
 
 const Pending = () => {

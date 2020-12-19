@@ -19,7 +19,7 @@ query advancePending(
     {customer: {cardcode: {_eq: $cardcode}},
       source_out: {_is_null: false},
       trip_status: {name: {_neq: "Cancelled"}},
-      trip_accounting: {receipt: {_is_null: true}},
+      trip_accounting: {receipt_ratio: {_lt: 0.5}},
       partner:{name:{_ilike:$partner_name}},
       truck:{truck_no:{_ilike:$truck_no}},
       source:{name:{_ilike:$source_name}},

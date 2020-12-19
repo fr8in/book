@@ -23,7 +23,7 @@ subscription customerAdvancePending(
     trip(where: {
       source_out: {_gt: $date},
       trip_status: {name: {_nin: ["Cancelled"]}},
-      trip_accounting: {receipt: {_is_null: true}},
+      trip_accounting: {receipt_ratio: {_lt: 0.5}},
       customer:{name:{_ilike:$customer_name}},
       branch:{region_id:{_in:$regions}},
       branch_id:{_in:$branches},

@@ -66,6 +66,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
                type
                file_path
                folder
+               financial_year
          }
           partner_users(limit:1 , where:{is_admin:{_eq:true}}){
             mobile

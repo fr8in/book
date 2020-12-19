@@ -14,6 +14,10 @@ const APPROVED_REJECTED_SUBSCRIPTION = gql`
 subscription trip_credit_debit_approval($offset: Int, $limit: Int, $credit_debit_where: trip_credit_debit_bool_exp, $incentive_where: incentive_bool_exp) {
   trip(order_by: {id: desc}, offset: $offset, limit: $limit, where: {_or: [{credit_debits: {id: {_is_null: false}}}, {incentives: {id: {_is_null: false}}}]}) {
     id
+    partner {
+      cardcode
+      name
+    }
     credit_debits(where: $credit_debit_where) {
       id
       trip_id
@@ -165,7 +169,8 @@ const ApprovedAndRejected = () => {
             "created_by": credit_debit.created_by,
             "approved_amount": credit_debit.approved_amount,
             "approval_comment": credit_debit.approval_comment,
-            "approved_by": credit_debit.approved_by
+            "approved_by": credit_debit.approved_by,
+            "partner_name": trip_data.partner.name,
           })
       }):[]
 
@@ -179,7 +184,8 @@ const ApprovedAndRejected = () => {
             "created_at": incentive.created_at,
             "issue_type": incentive.incentive_config.type,
             "created_by": incentive.created_by,
-            "approved_by": incentive.approved_by
+            "approved_by": incentive.approved_by,
+            "partner_name": trip_data.partner.name,
           })
       }) :[]
     })
@@ -308,7 +314,7 @@ const ApprovedAndRejected = () => {
       title: 'Partner',
       key: 'partner',
       width: '12%',
-      render: (text, record) => get(record, 'trip.partner.name',null),
+      render: (text, record) => get(record, 'partner_name',null), 
       filterDropdown: (
         <div>
           <Input
@@ -374,7 +380,7 @@ const ApprovedAndRejected = () => {
       dataIndex: 'approval_comment',
       key: 'approval_comment',
       width: '10%',
-      render: (text, record) => <Truncate data={text} length={12} />
+      render: (text, record) => <Truncate data={get(record, 'approval_comment', null)} length={12} />
     }
   ]
 

@@ -89,35 +89,35 @@ const Incentive = (props) => {
   }
 
   return (
-    <Form layout='vertical' onFinish={create_credit_debit}>
-      <Row gutter={10}>
-        <Form.Item label='Incentive Type' name='type_id' rules={[{ required: true }]}>
-          <Select
-            id='incentiveType'
-            placeholder='Select Incentive Type'
-            options={type_list}
-          />
-        </Form.Item>
-      </Row>
-      <Row gutter={10}>
-        <Col flex='auto'>
-          <Form.Item label='Comment' name='comment' rules={[{ required: true }]}>
-            <Input
-              placeholder='Enter the Comment'
-            />
-          </Form.Item>
-        </Col>
-        <Col flex='90px'>
-          <Form.Item label='save' className='hideLabel'>
-            <Button
-              type='primary'
-              htmlType='submit'
-              loading={disableButton}
-              disabled={
-                (!invoiced && received && closed || lock)
-              }
-            >
-              Submit
+      <Form layout='vertical' onFinish={create_credit_debit}>
+        <Row gutter={10}>
+            <Form.Item label='Incentive Type' name='type_id' rules={[{ required: true }]}>
+              <Select
+                id='incentiveType'
+                placeholder='Select Incentive Type'
+                options={type_list}
+              />
+            </Form.Item>
+        </Row>
+        <Row gutter={10}>
+          <Col flex='auto'>
+            <Form.Item label='Comment' name='comment' rules={[{ required: true }]}>
+              <Input
+                placeholder='Enter the Comment'
+              />
+            </Form.Item>
+          </Col>
+          <Col flex='90px'>
+            <Form.Item label='save' className='hideLabel'>
+              <Button
+                type='primary'
+                htmlType='submit'
+                loading={disableButton}
+                disabled={
+                  ( !invoiced || received || closed || lock) 
+                }
+              >
+                Submit
               </Button>
           </Form.Item>
         </Col>

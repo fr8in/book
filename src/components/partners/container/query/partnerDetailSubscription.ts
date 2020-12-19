@@ -85,6 +85,7 @@ subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [Stri
       folder
       file_path
       created_at
+      financial_year
     }
     onboarded_by {
       id

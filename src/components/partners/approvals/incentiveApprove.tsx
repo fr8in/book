@@ -5,7 +5,7 @@ import get from 'lodash/get'
 import Loading from '../../common/loading'
 import u from '../../../lib/util'
 import userContext from '../../../lib/userContaxt'
-
+import moment from 'moment'
 const GET_TOKEN = gql`
 query get_token($trip_id: Int!) {
   token(ref_id: $trip_id, process:"INCENTIVE_TRACK")
@@ -13,8 +13,8 @@ query get_token($trip_id: Int!) {
 `
 
 const REJECT_INCENTIVE_MUTATION = gql`
-mutation delete_incentive($id: Int!, $approved_by:String) {
-  update_incentive(where: {id: {_eq: $id}}, _set: {status_id:3,approved_by:$approved_by}) {
+mutation delete_incentive($id: Int!, $approved_by:String,$approved_at:timestamp) {
+  update_incentive(where: {id: {_eq: $id}}, _set: {status_id:3,approved_by:$approved_by,approved_at:$approved_at,is_scratched:true}) {
     returning {
       id
     }
@@ -38,14 +38,19 @@ const IncentiveApprove = (props) => {
   const incentive_approval_access = [role.admin]
   const incentive_access = u.is_roles(incentive_approval_access, context)
   const [disableButton, setDisableButton] = useState(false)
-  const { loading, data, error } = useQuery(GET_TOKEN, { variables: { trip_id: parseInt(trip_id) }, fetchPolicy: 'network-only' })
+  const { loading, data, error } = useQuery(
+    GET_TOKEN, { 
+      variables: { trip_id: parseInt(trip_id) }, 
+      fetchPolicy: 'network-only',
+      skip: title === 'Reject'
+    })
 
   if (error) {
     message.error(error.toString())
     onHide()
   }
 
-  const [rejectIncentive, { loading: mutationLoading }] = useMutation(
+  const [rejectIncentive] = useMutation(
     REJECT_INCENTIVE_MUTATION, {
     onError(error) {
       setDisableButton(false)
@@ -59,7 +64,7 @@ const IncentiveApprove = (props) => {
     }
   })
 
-  const [incentiveApproval] = useMutation(
+  const [incentiveApproval,{ loading: mutationLoading }] = useMutation(
     INCENTIVE_APPROVAL_MUTATION,
     {
       onError(error) {
@@ -100,7 +105,8 @@ const IncentiveApprove = (props) => {
         variables: {
           id: item_id.id,
           comment: form.comment,
-          approved_by: context.email
+          approved_by: context.email,
+          approved_at: moment().format('YYYY-MM-DDThh:mm')
         }
       })
     }
@@ -125,7 +131,7 @@ const IncentiveApprove = (props) => {
             <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>{title === 'Approve' ? 'Approve' : 'Reject'}</Button>
           </Form.Item>) : null}
       </Form>
-      {(loading || mutationLoading) &&
+      {(loading || mutationLoading) && title === 'Approve' &&
         <Loading fixed />}
     </Modal>
   )
