@@ -102,7 +102,8 @@ const Approve = (props) => {
           approved_by: context.email,
           approved_amount: parseFloat(form.amount),
           approval_comment: form.remarks,
-          token: data.token
+          token: data.token,
+          process: "CREDIT_NOTE_APPROVAL"
         }
       })
     } else {

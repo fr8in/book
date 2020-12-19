@@ -165,7 +165,8 @@ const CreditNote = (props) => {
           comment: form.comment,
           trip_id: parseInt(trip_id),
           created_by: context.email,
-          token: token_data.token
+          token: token_data.token,
+          process: "DEBIT_NOTE_APPROVAL"
         }
       })
     } else { return null }
