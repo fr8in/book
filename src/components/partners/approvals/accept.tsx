@@ -102,8 +102,7 @@ const Approve = (props) => {
           approved_by: context.email,
           approved_amount: parseFloat(form.amount),
           approval_comment: form.remarks,
-          token: data.token,
-          trip_id,
+          token: data.token
         }
       })
     } else {
