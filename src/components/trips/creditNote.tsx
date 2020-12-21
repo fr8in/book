@@ -50,6 +50,8 @@ mutation create_debit_track(
   $credit_debit_type_id: Int!
   $comment: String!
   $amount: Float!
+  $token:String!
+  $process:String!
   ) {
   create_debit_track(
     trip_id: $trip_id
@@ -57,9 +59,11 @@ mutation create_debit_track(
     credit_debit_type_id: $credit_debit_type_id
     comment: $comment
     amount: $amount
+    token:$token
+    process:$process
   ) {
-    success
-    message
+    status
+    description
   }
 }`
 
@@ -103,8 +107,8 @@ const CreditNote = (props) => {
       },
       onCompleted (data) {
         setDisableButton(false)
-        const status = get(data, 'create_credit_track.success', null)
-        const msg = get(data, 'create_credit_track.message', 'Created!')
+        const status = get(data, 'create_credit_track.status', null)
+        const msg = get(data, 'create_credit_track.description', 'Created!')
         if (status) {
           message.success(msg)
           form.resetFields()

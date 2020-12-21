@@ -29,15 +29,19 @@ mutation approve_credit(
   $approved_by: String!
   $approved_amount: Float!
   $approval_comment: String!
+  $token:String!
+  $process:String!
   ){
   approve_credit(
     id: $id
     approved_by: $approved_by
     approved_amount: $approved_amount
     approval_comment: $approval_comment
+    token:$token,
+    process:$process
   ){
-    success
-    message
+    status
+    description
   }
 }`
 
@@ -78,15 +82,15 @@ const Approve = (props) => {
         message.error(error.toString())
       },
       onCompleted (data) {
-        const status = get(data, 'approve_credit.success', null)
+        const status = get(data, 'approve_credit.status', null)
         if (status) {
-          message.success(get(data, 'approve_credit.message', 'Approved!!'))
+          message.success(get(data, 'approve_credit.description', 'Approved!!'))
           setCreditNoteRefetch(true)
           setDisableButton(false)
           onHide()
         } else {
           setDisableButton(false)
-          message.error(get(data, 'approve_credit.message', 'Error Occured!!'))
+          message.error(get(data, 'approve_credit.description', 'Error Occured!!'))
         }
       }
     })
