@@ -117,7 +117,21 @@ const Payables = (props) => {
         size='small'
         rowKey={record => record.id}
       />
-      {
+      <Row className='payableHead' gutter={6}>
+        <Col xs={12}><b>Payments</b></Col>
+        <Col xs={12} className='text-right'>
+          <b>{payments}</b>
+        </Col>
+      </Row>
+      <Table
+        columns={paymentColumn}
+        dataSource={trip_pay.trip_payments}
+        scroll={{ x: '300' }}
+        pagination={false}
+        size='small'
+        rowKey={record => record.id}
+      />
+       {
        (invoiced_at && pending_payable) != null ?
         <>
           <Row className='payableHead' gutter={6}>
@@ -135,21 +149,6 @@ const Payables = (props) => {
           />
         </> : null
       }
-
-      <Row className='payableHead' gutter={6}>
-        <Col xs={12}><b>Payments</b></Col>
-        <Col xs={12} className='text-right'>
-          <b>{payments}</b>
-        </Col>
-      </Row>
-      <Table
-        columns={paymentColumn}
-        dataSource={trip_pay.trip_payments}
-        scroll={{ x: '300' }}
-        pagination={false}
-        size='small'
-        rowKey={record => record.id}
-      />
     </>
   )
 }
