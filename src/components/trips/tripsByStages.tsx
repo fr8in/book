@@ -49,12 +49,9 @@ const TripsByStages = (props) => {
         const cardcode = get(record, 'customer.cardcode','-')
         const name = get(record, 'customer.name', '-')
         return  (
-          <Link href='/customers/[id]' as={`/customers/${cardcode} `}>
-            {name && name.length > 17
-              ? <Tooltip title={name}><a>{name.slice(0, 17) + '...'}</a></Tooltip>
-              : <a>{name}</a>}
-          </Link>) }
-    } : null,
+          <LinkComp  type='Customer' data={name} id={cardcode} length={17}/>
+          ) }
+    } : {},
     partnerPage ? {
       title: 'Truck',
       width: '25%',
