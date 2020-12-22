@@ -85,7 +85,7 @@ const Approve = (props) => {
         const status = get(data, 'approve_credit.status', null)
         const description = get(data, 'approve_credit.description', null)
         if (status === 'OK') {
-          message.success(description)
+          message.success(description || 'Credit Note Approved')
           setCreditNoteRefetch(true)
           setDisableButton(false)
           onHide()
