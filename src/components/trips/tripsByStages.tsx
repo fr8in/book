@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { Table, Pagination } from 'antd'
+import { Table, Pagination,Tooltip } from 'antd'
 import moment from 'moment'
 import LinkComp from '../common/link'
 import get from 'lodash/get'
-import Truncate from '../common/truncate'
+import Link from 'next/link'
+
 const TripsByStages = (props) => {
   const {
     trips,
@@ -45,8 +46,14 @@ const TripsByStages = (props) => {
       dataIndex: 'customer',
       width: '15%',
       render: (text, record) => {
-        const customerName = get(record, 'customer.name', '-')
-        return <Truncate data={customerName} length={17} /> }
+        const cardcode = get(record, 'customer.cardcode','-')
+        const name = get(record, 'customer.name', '-')
+        return  (
+          <Link href='/customers/[id]' as={`/customers/${cardcode} `}>
+            {name && name.length > 17
+              ? <Tooltip title={name}><a>{name.slice(0, 17) + '...'}</a></Tooltip>
+              : <a>{name}</a>}
+          </Link>) }
     } : null,
     partnerPage ? {
       title: 'Truck',
