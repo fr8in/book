@@ -131,7 +131,7 @@ const CreditNote = (props) => {
         form.resetFields()
         const status = get(data, 'create_debit_track.status', null)
         const msg = get(data, 'create_debit_track.description', null)
-        if (status) {
+        if (status ==='OK') {
           message.success(msg || 'Created!')
           form.resetFields()
         } else {
