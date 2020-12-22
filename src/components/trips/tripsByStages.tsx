@@ -46,11 +46,15 @@ const TripsByStages = (props) => {
       dataIndex: 'customer',
       width: '15%',
       render: (text, record) => {
-        const cardcode = get(record, 'customer.cardcode','-')
-        const name = get(record, 'customer.name', '-')
-        return  (
-          <LinkComp  type='Customer' data={name} id={cardcode} length={17}/>
-          ) }
+        const cardcode = get(record, 'customer.cardcode',null)
+        const name = get(record, 'customer.name', null)
+       return (
+          <Link href='/customers/[id]' as={`/customers/${cardcode} `}>
+            {name && name.length > 17
+              ? <Tooltip title={name}><a>{name.slice(0, 17) + '...'}</a></Tooltip>
+              : <a>{name}</a>}
+          </Link>)
+         }
     } : {},
     partnerPage ? {
       title: 'Truck',
