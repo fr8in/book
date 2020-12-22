@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Button, message } from 'antd'
 import { gql, useQuery, useMutation } from '@apollo/client'
+import userContext from '../../../lib/userContaxt'
+
 
 
 
@@ -9,8 +11,8 @@ const TOKEN = gql`query token($ref_id:Int!,$process:String!){
   }`
 
 
-const PROCESS_CASHBACK = gql`mutation process_cashback($year:Int!,$month:Int!,$token:String!) {
-    process_transaction_fee_cahsback(year:$year, month:$month, token:$token) {
+const PROCESS_CASHBACK = gql`mutation process_cashback($year:Int!,$month:Int!,$token:String!,$created_by:String!) {
+    process_transaction_fee_cashback(year:$year, month:$month, token:$token,created_by:$created_by) {
       status
       description
     }
@@ -32,17 +34,20 @@ const cashBackButton = (props) => {
         token = tokenData.token
     }
 
+    const context = useContext(userContext)
+
+
     const [process] = useMutation(PROCESS_CASHBACK,
         {
             onError(error) { message.error(error.toString()) },
             onCompleted(data) {
                 console.log("data", data)
-                if (data.process_transaction_fee_cahsback.status === "OK") {
-                    message.success(data.process_transaction_fee_cahsback.description)
+                if (data.process_transaction_fee_cashback.status === "OK") {
+                    message.success(data.process_transaction_fee_cashback.description)
                 }
                 else {
-                    message.error(data.process_transaction_fee_cahsback.description ?
-                        data.process_transaction_fee_cahsback.description : "Unexpected Error")
+                    message.error(data.process_transaction_fee_cashback.description ?
+                        data.process_transaction_fee_cashback.description : "Unexpected Error")
                 }
                 setTimeout(() => {
                     refetch()
@@ -59,7 +64,8 @@ const cashBackButton = (props) => {
             variables: {
                 year: props.year,
                 month: props.month,
-                token
+                token,
+                created_by: context.email
             }
         })
     }

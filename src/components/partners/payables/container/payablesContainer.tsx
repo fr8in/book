@@ -75,7 +75,6 @@ const PayablesContainer = () => {
   const roles = [role.admin]
   const access = u.is_roles(roles, context)
 
-  console.log("fsdgsdg", access)
 
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
