@@ -132,7 +132,7 @@ const CreditNote = (props) => {
         const status = get(data, 'create_debit_track.status', null)
         const msg = get(data, 'create_debit_track.description', null)
         if (status ==='OK') {
-          message.success(msg || 'Created!')
+          message.success(msg || 'Approved!')
           form.resetFields()
         } else {
           message.error(msg || 'Error')
