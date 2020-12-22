@@ -3,7 +3,7 @@ import { Table, Pagination } from 'antd'
 import moment from 'moment'
 import LinkComp from '../common/link'
 import get from 'lodash/get'
-
+import Truncate from '../common/truncate'
 const TripsByStages = (props) => {
   const {
     trips,
@@ -40,6 +40,14 @@ const TripsByStages = (props) => {
       width: '13%',
       render: (text, record) => text ? moment(text).format('DD-MMM-YY') : null
     },
+    partnerPage ? {
+      title: 'Customer',
+      dataIndex: 'customer',
+      width: '15%',
+      render: (text, record) => {
+        const customerName = get(record, 'customer.name', '-')
+        return <Truncate data={customerName} length={17} /> }
+    } : null,
     partnerPage ? {
       title: 'Truck',
       width: '25%',
