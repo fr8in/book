@@ -90,7 +90,7 @@ const CreditNote = (props) => {
 
   if (token_error) {
     message.error(token_error.toString())
-    setRadioType('Credit Note')
+    radioType
   }
 
   const { loading, error, data } = useSubscription(
@@ -107,13 +107,14 @@ const CreditNote = (props) => {
       },
       onCompleted (data) {
         setDisableButton(false)
-        const status = get(data, 'create_credit_track.status', null)
-        const msg = get(data, 'create_credit_track.description', 'Created!')
+        const status = get(data, 'create_credit_track.success', null)
+        const msg = get(data, 'create_credit_track.message', 'Created!')
+        form.resetFields()
         if (status) {
           message.success(msg)
           form.resetFields()
         } else {
-          message.error(msg)
+           message.error(msg)
         }
       }
     }
@@ -127,13 +128,14 @@ const CreditNote = (props) => {
       },
       onCompleted (data) {
         setDisableButton(false)
-        const status = get(data, 'create_debit_track.success', null)
-        const msg = get(data, 'create_debit_track.message', 'Created!')
+        form.resetFields()
+        const status = get(data, 'create_debit_track.status', null)
+        const msg = get(data, 'create_debit_track.description', null)
         if (status) {
-          message.success(msg)
+          message.success(msg || 'Created!')
           form.resetFields()
         } else {
-          message.error(msg)
+          message.error(msg || 'Error')
         }
       }
     }

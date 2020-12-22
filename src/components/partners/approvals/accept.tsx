@@ -83,7 +83,7 @@ const Approve = (props) => {
       },
       onCompleted (data) {
         const status = get(data, 'approve_credit.status', null)
-        if (status) {
+        if (status === 'OK') {
           message.success(get(data, 'approve_credit.description', 'Approved!!'))
           setCreditNoteRefetch(true)
           setDisableButton(false)
