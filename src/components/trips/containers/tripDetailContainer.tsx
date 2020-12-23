@@ -155,8 +155,11 @@ const TripDetailContainer = (props) => {
                             />
                           </Panel>
                         </Collapse>}
-                      <Collapse accordion className='small mt10'>
-                        <Panel header='Additional Advance' key='1'>
+                    </TabPane>
+                    <TabPane tab='Payment' key='2'>
+                      <Collapse accordion className='small box-0'>
+                        <Panel header={<span>Partner - Payables</span>} key='1'>
+                          <Payables trip_id={trip_id} />
                           {before_invoice && loaded && 
                             <CreateAdditionalAdvance trip_info={trip_info} setAdvanceRefetch={setAdvanceRefetch} lock={lock} />}
                           <AdditionalAdvance
@@ -165,14 +168,8 @@ const TripDetailContainer = (props) => {
                             advanceRefetch={advanceRefetch}
                             setAdvanceRefetch={setAdvanceRefetch}
                           />
-                        </Panel>
-                      </Collapse>
-                    </TabPane>
-                    <TabPane tab='Payment' key='2'>
-                      <Collapse accordion className='small box-0'>
-                        <Panel header={<span>Partner - Payables</span>} key='1'>
-                          <Payables trip_id={trip_id} />
-                        </Panel>
+                          </Panel>
+                       
                       </Collapse>
                       <Collapse accordion className='small box-0 mt10'>
                         <Panel header={<span>Customer - Receivables</span>} key='1'>
