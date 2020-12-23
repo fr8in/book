@@ -200,10 +200,9 @@ const CreateAdditionalAdvance = (props) => {
       </Row>
     <Row>
       <Col xs={24}>
-        <Form layout="vertical" form={form} onFinish={onSubmit}>
+        <Form layout='vertical' form={form} onFinish={onSubmit}>
           <Row className='mb10'>
             <Col xs={24}>
-              
               <Radio.Group
                 onChange={onRadioChange}
                 value={radioValue}
@@ -211,7 +210,6 @@ const CreateAdditionalAdvance = (props) => {
                 <Radio value='WALLET'>Wallet</Radio>
                 <Radio value='BANK'>Any Account</Radio>
               </Radio.Group>
-             
             </Col>
           </Row>
           {radioValue === 'BANK'
