@@ -164,7 +164,9 @@ const CreditNoteTable = (props) => {
           onHide={handleHide}
           item_id={object.approveData}
           title={object.title}
+          trip_id={trip_id} 
           setCreditNoteRefetch={setCreditNoteRefetch}
+          creditNoteTable
         />
       )}
     </div>
