@@ -194,7 +194,7 @@ const CreateAdditionalAdvance = (props) => {
   const loadedNo = get(trip_info, 'loaded', 'No')
   const disable_adv_btn = (trip_status >= 12 || loadedNo === 'No' || !access)
   return (
-    <div className='p10'>
+    <div className='additonalAdvMsg'>
       <Row className='payableHead' gutter={6}>
         <Col xs={24}><b>Additional Advance</b></Col>
       </Row>
