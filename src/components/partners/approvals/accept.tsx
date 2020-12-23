@@ -47,8 +47,6 @@ mutation approve_credit(
 
 const Approve = (props) => {
   const { visible, onHide, item_id,trip_id, title,creditNoteTable, setCreditNoteRefetch } = props
-  console.log('trip_id',trip_id)
-  console.log('item_id',item_id)
   const context = useContext(userContext)
   const [disableButton, setDisableButton] = useState(false)
   const { loading, data, error } = useQuery(GET_TOKEN, 
