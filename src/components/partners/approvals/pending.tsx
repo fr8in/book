@@ -375,6 +375,7 @@ const trip = get(data,'trip', null)
               onHide={handleHide}
               item_id={object.approveData}
               title={object.title}
+              trip_id={object.approveData.trip_id}
             />
           )}
     </>

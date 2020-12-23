@@ -1,9 +1,17 @@
 import { Modal, Form, Input, message, Button } from 'antd'
 import { useState, useContext } from 'react'
-import { gql, useMutation } from '@apollo/client'
+import { gql, useMutation, useQuery} from '@apollo/client'
 import get from 'lodash/get'
 
 import userContext from '../../../lib/userContaxt'
+import Loading from '../../common/loading'
+
+const GET_TOKEN = gql`
+query get_token (
+  $trip_id: Int!
+){
+  token(ref_id: $trip_id, process: "CREDIT_NOTE_APPROVAL")
+}`
 
 const REJECT_CREDIT_MUTATION = gql`
 mutation reject_credit($id:Int!,$remarks:String){
@@ -21,22 +29,37 @@ mutation approve_credit(
   $approved_by: String!
   $approved_amount: Float!
   $approval_comment: String!
+  $token:String!
+  $process:String!
   ){
   approve_credit(
     id: $id
     approved_by: $approved_by
     approved_amount: $approved_amount
     approval_comment: $approval_comment
+    token:$token,
+    process:$process
   ){
-    success
-    message
+    status
+    description
   }
 }`
 
 const Approve = (props) => {
-  const { visible, onHide, item_id, title, setCreditNoteRefetch } = props
+  const { visible, onHide, item_id,trip_id, title,creditNoteTable, setCreditNoteRefetch } = props
   const context = useContext(userContext)
   const [disableButton, setDisableButton] = useState(false)
+  const { loading, data, error } = useQuery(GET_TOKEN, 
+    { 
+      variables: {trip_id: parseInt(trip_id) }, 
+      fetchPolicy: 'network-only' ,
+      skip: title === 'Reject'})
+
+  if (error) {
+    message.error(error.toString())
+    onHide()
+  }
+
 
   const [rejectCredit] = useMutation(
     REJECT_CREDIT_MUTATION, {
@@ -50,22 +73,23 @@ const Approve = (props) => {
         onHide()
       }
     })
-  const [creditApproval] = useMutation(
+  const [creditApproval,{ loading: mutationLoading }] = useMutation(
     CREDIT_APPROVAL_MUTATION, {
       onError (error) {
         setDisableButton(false)
         message.error(error.toString())
       },
       onCompleted (data) {
-        const status = get(data, 'approve_credit.success', null)
-        if (status) {
-          message.success(get(data, 'approve_credit.message', 'Approved!!'))
-          setCreditNoteRefetch(true)
+        const status = get(data, 'approve_credit.status', null)
+        const description = get(data, 'approve_credit.description', null)
+        if (status === 'OK') {
+          message.success(description || 'Credit Note Approved')
+          creditNoteTable ? setCreditNoteRefetch(true) : null
           setDisableButton(false)
           onHide()
         } else {
           setDisableButton(false)
-          message.error(get(data, 'approve_credit.message', 'Error Occured!!'))
+          message.error(description)
         }
       }
     })
@@ -80,7 +104,9 @@ const Approve = (props) => {
           id: item_id.id,
           approved_by: context.email,
           approved_amount: parseFloat(form.amount),
-          approval_comment: form.remarks
+          approval_comment: form.remarks,
+          token: data.token,
+          process: "CREDIT_NOTE_APPROVAL"
         }
       })
     } else {
@@ -114,6 +140,8 @@ const Approve = (props) => {
           <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>Submit</Button>
         </Form.Item>
       </Form>
+      {(loading || mutationLoading) &&
+        <Loading fixed />}
     </Modal>
   )
 }
