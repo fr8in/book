@@ -166,6 +166,7 @@ console.log('.....',trip_id)
           title={object.title}
           trip_id={trip_id} 
           setCreditNoteRefetch={setCreditNoteRefetch}
+          creditNoteTable
         />
       )}
     </div>

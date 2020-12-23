@@ -46,7 +46,7 @@ mutation approve_credit(
 }`
 
 const Approve = (props) => {
-  const { visible, onHide, item_id,trip_id, title, setCreditNoteRefetch } = props
+  const { visible, onHide, item_id,trip_id, title,creditNoteTable, setCreditNoteRefetch } = props
   console.log('trip_id',trip_id)
   console.log('item_id',item_id)
   const context = useContext(userContext)
@@ -86,7 +86,7 @@ const Approve = (props) => {
         const description = get(data, 'approve_credit.description', null)
         if (status === 'OK') {
           message.success(description || 'Credit Note Approved')
-          setCreditNoteRefetch(true)
+          creditNoteTable ? setCreditNoteRefetch(true) : null
           setDisableButton(false)
           onHide()
         } else {
