@@ -82,7 +82,7 @@ const CreditNote = (props) => {
   const closed = get(trip_info, 'closed_at', null)
   const lock = get(trip_info, 'transaction_lock', null)
 
-  const { loading:token_loading, data:token_data , error:token_error } = useQuery(GET_TOKEN, 
+  const { loading:token_loading, data:token_data , error:token_error,refetch } = useQuery(GET_TOKEN, 
     { 
       variables: {trip_id: parseInt(trip_id) }, 
       fetchPolicy: 'network-only' ,
@@ -137,6 +137,9 @@ const CreditNote = (props) => {
         } else {
           message.error(msg || 'Error')
         }
+        setTimeout(() => {
+          refetch()
+        }, 5000)
       }
     }
   )
