@@ -21,6 +21,10 @@ subscription partner_trip($cardcode: String, $trip_status_value: [String!]) {
       destination {
         name
       }
+      customer{
+        name
+        cardcode
+      }
       source_in
       trip_status {
         name

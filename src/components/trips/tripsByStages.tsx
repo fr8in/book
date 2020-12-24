@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { Table, Pagination } from 'antd'
+import { Table, Pagination,Tooltip } from 'antd'
 import moment from 'moment'
 import LinkComp from '../common/link'
 import get from 'lodash/get'
+import Link from 'next/link'
 
 const TripsByStages = (props) => {
   const {
@@ -40,6 +41,21 @@ const TripsByStages = (props) => {
       width: '13%',
       render: (text, record) => text ? moment(text).format('DD-MMM-YY') : null
     },
+    partnerPage ? {
+      title: 'Customer',
+      dataIndex: 'customer',
+      width: '15%',
+      render: (text, record) => {
+        const cardcode = get(record, 'customer.cardcode',null)
+        const name = get(record, 'customer.name', null)
+       return (
+          <Link href='/customers/[id]' as={`/customers/${cardcode} `}>
+            {name && name.length > 17
+              ? <Tooltip title={name}><a>{name.slice(0, 17) + '...'}</a></Tooltip>
+              : <a>{name}</a>}
+          </Link>)
+         }
+    } : {},
     partnerPage ? {
       title: 'Truck',
       width: '25%',
