@@ -14,8 +14,8 @@ mutation cancel_ap($trip_id: Int!,$updatedBy: String){
   }
 }`
 
-const CANCEL_AR = gql`mutation cancel_ar($trip_id: Int!){
-  cancel_ar(trip_id: $trip_id){
+const CANCEL_AR = gql`mutation cancel_ar($trip_id: Int!,$updatedBy: String){
+  cancel_ar(trip_id: $trip_id,updatedBy: $updatedBy){
     success
     message
   }
@@ -66,7 +66,7 @@ const InvoiceDetail = (props) => {
   const onARCancel = () => {
     setDisableAR(true)
     cancel_ar({
-      variables: { trip_id: parseInt(trip_id) }
+      variables: { trip_id: parseInt(trip_id),updatedBy: context.email }
     })
   }
 
