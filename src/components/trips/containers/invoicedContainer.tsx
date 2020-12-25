@@ -16,6 +16,7 @@ const InvoicedContainer = (props) => {
     customername: null,
     sourcename: null,
     destinationname: null,
+    paymentmanagername: null,
     truckno: null,
     id: null,
     trip_statusName: ['Invoiced', 'Paid', 'Recieved', 'Closed']
@@ -29,7 +30,8 @@ const InvoicedContainer = (props) => {
     customer: { name: { _ilike: filter.customername ? `%${filter.customername}%` : null } },
     source: { name: { _ilike: filter.sourcename ? `%${filter.sourcename}%` : null } },
     destination: { name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } },
-    truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } }
+    truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } },
+    branch_employee: {employee: {name: {_ilike:filter.paymentmanagername ? `%${filter.paymentmanagername}%` : null}}}
   }
 
   const variables = {
@@ -104,6 +106,10 @@ const InvoicedContainer = (props) => {
   const onTripIdSearch = (value) => {
     setFilter({ ...filter, id: value })
   }
+  const onPaymentManagerNameSearch = (value) => {
+    setFilter({ ...filter, paymentmanagername: value })
+    invoiced_setCountFilter({ ...invoiced_countFilter,invoiced_paymentmanagername:value })
+  }
   return (
     <TripsTracking
       trips={trip} loading={loading}
@@ -120,6 +126,8 @@ const InvoicedContainer = (props) => {
       onFilter={onFilter}
       invoiced_setCountFilter={invoiced_setCountFilter}
       invoiced_countFilter={invoiced_countFilter}
+      onPaymentManagerNameSearch={onPaymentManagerNameSearch}
+      invoiced
       {...props}
     />
   )

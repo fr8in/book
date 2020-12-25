@@ -51,6 +51,11 @@ subscription trips_status($offset: Int!, $limit: Int!, $where: trip_bool_exp, $d
     paid_tat
     received_tat
     closed_tat
+    branch_employee{
+      employee{
+        name
+      }
+    }
     last_comment {
       description
       created_at

@@ -8,6 +8,7 @@ import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import PodReceiptAndDispatch from './podReceiptAndDispatch'
 import get from 'lodash/get'
 import PartnerLink from '../common/PartnerLink'
+import Truncate from '../common/truncate'
 const TripsTracking = (props) => {
   const initial = {
     commentData: [],
@@ -22,6 +23,7 @@ const TripsTracking = (props) => {
     filter,
     onPartnerNameSearch,
     onCustomerNameSearch,
+    onPaymentManagerNameSearch,
     trip_status_list,
     onFilter,
     onSourceNameSearch,
@@ -32,6 +34,7 @@ const TripsTracking = (props) => {
     visible_dispatch,
     onHide,
     verified,
+    invoiced,
     setCountFilter, countFilter, invoiced_countFilter, invoiced_setCountFilter, delivered
   } = props
 
@@ -79,6 +82,10 @@ const TripsTracking = (props) => {
   }
   const handleDestinationName = (e) => {
     onDestinationNameSearch(e.target.value)
+    setCurrentPage(1)
+  }
+  const handlePaymentManagerName = (e) => {
+    onPaymentManagerNameSearch(e.target.value)
     setCurrentPage(1)
   }
   const handleTruckNo = (e) => {
@@ -241,7 +248,7 @@ const TripsTracking = (props) => {
             <span>{record.destination.name.slice(0, 8) + '...'}</span>
           </Tooltip>
         ) : record.destination.name
-      },
+      },  
       filterDropdown: (
         <div>
           <Input
@@ -253,6 +260,24 @@ const TripsTracking = (props) => {
       ),
       filterIcon: () => <SearchOutlined style={{ color: filter.destinationname ? '#1890ff' : undefined }} />
     },
+    invoiced ? {
+      title: 'P.Manager',
+      width: '10%',
+      render: (text, record) => {
+        const payment_manager= get(record,'branch_employee.employee.name',null)
+        return <Truncate data={payment_manager} length={15} />
+      },
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search Payment Manager'
+            value={filter.paymentmanagername}
+            onChange={handlePaymentManagerName}
+          />
+        </div>
+      ),
+      filterIcon: () => <SearchOutlined style={{ color: filter.paymentmanagername ? '#1890ff' : undefined }} />
+    } : {},
     {
       title: 'Status',
       render: (text, record) =>
