@@ -69,7 +69,7 @@ const Trips = (props) => {
       title: 'ID',
       dataIndex: 'id',
       width: '7%',
-      render: (text, record) => <LinkComp type='trips' data={text} id={record.id} />,
+      render: (text, record) => <LinkComp type='trips' data={text} id={record.id} blank />,
       filterDropdown: (
         <Input
           placeholder='Search TripId'

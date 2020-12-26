@@ -61,7 +61,7 @@ const PartnerLink = (props) => {
                   C:${get(membership_target, 'cash_back_amount', 0)}
                   `}
       >
-        <a href={`/${type}/${cardcode}`}>{u.shrinkText(data, length)}</a>
+        <a target='_blank' href={`/${type}/${cardcode}`}>{u.shrinkText(data, length)}</a>
       </Tooltip>
 
     </div>

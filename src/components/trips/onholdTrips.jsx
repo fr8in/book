@@ -85,7 +85,7 @@ const OnholdTrips = (props) => {
       dataIndex: 'id',
       sorter: (a, b) => (a.id > b.id ? 1 : -1),
       width: '8%',
-      render: (text, record) => <LinkComp type='trips' data={get(record, 'id', null)} id={get(record, 'id', null)} />
+      render: (text, record) => <LinkComp type='trips' data={get(record, 'id', null)} id={get(record, 'id', null)} blank />
     },
     {
       title: 'Source',

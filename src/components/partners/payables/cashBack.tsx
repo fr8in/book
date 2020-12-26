@@ -59,7 +59,7 @@ const cashBack = (props) => {
             dataIndex: 'name',
             key: 'name',
             width: '8%',
-            render: (text, record) => <LinkComp type='partners' data={text} id={record.cardcode} />
+            render: (text, record) => <LinkComp type='partners' data={text} id={record.cardcode} blank />
         },
         {
             title: 'Wallet',
