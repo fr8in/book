@@ -49,7 +49,7 @@ const Approve = (props) => {
   const { visible, onHide, item_id,trip_id, title,creditNoteTable, setCreditNoteRefetch } = props
   const context = useContext(userContext)
   const [disableButton, setDisableButton] = useState(false)
-  const { loading, data, error } = useQuery(GET_TOKEN, 
+  const { loading, data, error,refetch } = useQuery(GET_TOKEN, 
     { 
       variables: {trip_id: parseInt(trip_id) }, 
       fetchPolicy: 'network-only' ,
@@ -91,6 +91,9 @@ const Approve = (props) => {
           setDisableButton(false)
           message.error(description)
         }
+        setTimeout(() => {
+          refetch()
+        }, 5000)
       }
     })
 
