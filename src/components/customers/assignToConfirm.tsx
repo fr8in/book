@@ -135,7 +135,6 @@ const AssignToConfirm = (props) => {
             type='trips'
             data={text}
             id={record.id}
-            blank
           />
         )
       }
@@ -170,7 +169,6 @@ const AssignToConfirm = (props) => {
             type='trucks'
             data={truck_no + ' - ' + truck_type}
             id={truck_no}
-            blank
             length={16}
           />)
       }
