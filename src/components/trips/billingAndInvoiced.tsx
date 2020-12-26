@@ -178,7 +178,7 @@ const BillingAndInvoiced = (props) => {
 
   const title = (
     <div>
-      Billing & Invoice - <Link href='/customers/[1d]' as={`/customers/${cardcode}`}><a>{get(customer, 'name', null)}</a></Link>
+      Billing & Invoice - <Link href='/customers/[1d]' as={`/customers/${cardcode}`}><a target='_blank'>{get(customer, 'name', null)}</a></Link>
     </div>)
   return (
     <div>
