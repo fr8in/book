@@ -74,6 +74,7 @@ mutation create_invoice(
   $topic: String
   $description: String
   $createdBy: String!
+  $updatedBy: String
   $onHold: Float!
 ){
   create_invoice(
@@ -96,6 +97,7 @@ mutation create_invoice(
     topic: $topic,
     description: $description,
     createdBy: $createdBy
+    updatedBy: $updatedBy
     onHold: $onHold
   ){
     success
@@ -232,6 +234,7 @@ const TripInvoice = (props) => {
         topic: 'Invoiced',
         description: form.comment,
         createdBy: context.email,
+        updatedBy: context.email,
         onHold: floatVal(form.onHold)
       }
     })
