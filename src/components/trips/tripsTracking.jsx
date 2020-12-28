@@ -129,7 +129,7 @@ const TripsTracking = (props) => {
       width: '7%',
       render: (text, record) => {
         return (
-          <LinkComp type='trips' data={text} id={record.id} blank />)
+          <LinkComp type='trips' data={text} id={record.id} />)
       },
       filterDropdown: (
         <div>
