@@ -37,13 +37,13 @@ const Trips = (props) => {
   const confirm_access = u.is_roles(ad_am, context)
   const [assign_to_confirm] = useMutation(
     ASSIGN_TO_CONFIRM_STATUS_MUTATION, {
-    onError(error) {
-      message.error(error.toString())
-    },
-    onCompleted() {
-      message.success('Updated!!')
-    }
-  })
+      onError (error) {
+        message.error(error.toString())
+      },
+      onCompleted () {
+        message.success('Updated!!')
+      }
+    })
   const onSubmit = (id) => {
     assign_to_confirm({
       variables: {
@@ -79,11 +79,11 @@ const Trips = (props) => {
               />
             </span>
             : <LinkComp
-              type='trips'
-              data={text}
-              id={record.id}
-              blank
-            />)
+                type='trips'
+                data={text}
+                id={record.id}
+                blank
+              />)
       },
       sorter: (a, b) => a.id - b.id,
       width: '6%'
@@ -98,7 +98,7 @@ const Trips = (props) => {
             type='customers'
             data={name}
             id={cardcode}
-            length={12}
+            length={10}
             blank
           />
         )
@@ -180,33 +180,39 @@ const Trips = (props) => {
       sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
       width: '8%'
     },
-    !props.intransit ? {
-      title: 'TAT',
-      render: (text, record) => {
-        const status = get(record, 'trip_status.name', null)
-        return tat[status](record)
-      },
-      sorter: (a, b) => {
-        const status = get(a, 'trip_status.name', null)
-        return tat[status](a) > tat[status](b) ? 1 : -1
-      },
-      defaultSortOrder: 'descend',
-      width: '4%'
-    } : {},
-    props.intransit ? {
-      title: 'TAT',
-      dataIndex: 'delay',
-      width: '5%',
-      sorter: (a, b) => (a.delay > b.delay ? 1 : -1),
-      defaultSortOrder: 'descend'
-    } : {},
-    props.intransit ? {
-      title: 'ETA',
-      dataIndex: 'eta',
-      width: '5%',
-      sorter: (a, b) => (a.eta > b.eta ? 1 : -1),
-      render: (text, record) => text ? moment(text).format('DD-MMM') : null
-    } : {},
+    !props.intransit
+      ? {
+          title: 'TAT',
+          render: (text, record) => {
+            const status = get(record, 'trip_status.name', null)
+            return tat[status](record)
+          },
+          sorter: (a, b) => {
+            const status = get(a, 'trip_status.name', null)
+            return tat[status](a) > tat[status](b) ? 1 : -1
+          },
+          defaultSortOrder: 'descend',
+          width: '3%'
+        }
+      : {},
+    props.intransit
+      ? {
+          title: 'TAT',
+          dataIndex: 'delay',
+          width: '5%',
+          sorter: (a, b) => (a.delay > b.delay ? 1 : -1),
+          defaultSortOrder: 'descend'
+        }
+      : {},
+    props.intransit
+      ? {
+          title: 'ETA',
+          dataIndex: 'eta',
+          width: '5%',
+          sorter: (a, b) => (a.eta > b.eta ? 1 : -1),
+          render: (text, record) => text ? moment(text).format('DD-MMM') : null
+        }
+      : {},
     {
       title: 'Comment',
       render: (text, record) => {
@@ -216,7 +222,7 @@ const Trips = (props) => {
             ? <Truncate data={comment} length={20} />
             : <Truncate data={comment} length={26} />)
       },
-      width: props.intransit ? '14%' : '17%'
+      width: '15%'
     },
     {
       title: 'Action',
@@ -225,15 +231,14 @@ const Trips = (props) => {
         const assign_status = get(record, 'trip_status.name', null)
 
         return (
-          <span> 
-              <a><Phone number={get(record, 'partner.partner_users[0].mobile', null)} icon /></a>
+          <span>
+            <a><Phone number={get(record, 'partner.partner_users[0].mobile', null)} icon /></a>
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
             </Tooltip>
-            <>
-              {
+            {
                 confirm_access && assign_status === 'Assigned'
-                  ? <>
+                  ? (
                     <Popconfirm
                       title='Are you sure you want to change this status to confirmed?'
                       okText='Yes'
@@ -241,11 +246,9 @@ const Trips = (props) => {
                       onConfirm={() => onSubmit(record.id)}
                     >
                       <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' />
-                    </Popconfirm>
-                  </>
+                    </Popconfirm>)
                   : null
               }
-            </>
           </span>
         )
       },
