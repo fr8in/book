@@ -135,7 +135,6 @@ const FasTags = (props) => {
             data={record.truck_no}
             id={record.truck_no}
             length={10}
-            blank
           />)
         }
     },
