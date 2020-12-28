@@ -6,7 +6,7 @@ import { DownloadOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 
 import isEmpty from 'lodash/isEmpty'
-import RelianceCashBack from '../RelianceCashBack';
+import RelianceCashBack from '../reliancecashback/RelianceCashBack';
 import util from '../../../../lib/util'
 
 const { RangePicker } = DatePicker
@@ -98,7 +98,7 @@ const PayablesContainer = () => {
         </TabPane>
 
         <TabPane tab='Reliance' key={'2'}>
-          <RelianceCashBack month={month} year={year} postindDate = {2} />
+          <RelianceCashBack month={month} year={year}/>
         </TabPane>
 
       </Tabs>
