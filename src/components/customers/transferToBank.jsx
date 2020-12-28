@@ -75,7 +75,7 @@ const TransfertoBank = () => {
         const cardcode = get(record, 'card_code', null)
         const name = get(record, 'customers[0].name', null)
         return (
-          <LinkComp type='customers' data={name} id={cardcode} length={38} blank />
+          <LinkComp type='customers' data={name} id={cardcode} length={38} />
         )
       }
     },

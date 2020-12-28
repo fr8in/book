@@ -75,15 +75,13 @@ const Trips = (props) => {
                 type='trips'
                 data={text}
                 id={record.id}
-                blank
               />
             </span>
             : <LinkComp
-                type='trips'
-                data={text}
-                id={record.id}
-                blank
-              />)
+              type='trips'
+              data={text}
+              id={record.id}
+            />)
       },
       sorter: (a, b) => a.id - b.id,
       width: '6%'
@@ -99,7 +97,6 @@ const Trips = (props) => {
             data={name}
             id={cardcode}
             length={10}
-            blank
           />
         )
       },
@@ -156,7 +153,6 @@ const Trips = (props) => {
             type='trucks'
             data={truck_no + ' - ' + truck_type}
             id={truck_no}
-            blank
           />
         )
       },
