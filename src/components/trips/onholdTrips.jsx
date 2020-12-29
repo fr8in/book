@@ -10,6 +10,7 @@ query partner_onhold($cardcode: String,$exp:float8_comparison_exp) {
   partner(where: {cardcode: {_eq: $cardcode}}) {
     trips(where: {_and: [{trip_payables: {name: {_eq: "On-Hold"},amount:$exp}}, {deleted_at: {_is_null: true}}]}) {
       id
+      invoiced_tat
       paid_tat
       source {
         id
@@ -135,8 +136,8 @@ const OnholdTrips = (props) => {
     },
     {
       title: 'Aging',
-      dataIndex: 'paid_tat',
-      sorter: (a, b) => (parseInt(a.paid_tat, 10) > parseInt(b.paid_tat) ? 1 : -1),
+      dataIndex: 'invoiced_tat',
+      sorter: (a, b) => (parseInt(a.invoiced_tat, 10) > parseInt(b.invoiced_tat) ? 1 : -1),
       defaultSortOrder: 'descend',
       width: '7%'
     },
