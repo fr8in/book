@@ -128,7 +128,7 @@ const PayablesContainer = () => {
                 <TabPane tab='Reliance' key={'2'}>
                     {isNil(month) || isNil(year) ?
                         <> <h4 align='center'>Reliance Fuel CashBack</h4></> :
-                        <RelianceCashBack month={month} year={year} setMonth={setMonth} setYear={setYear}/>
+                        <RelianceCashBack month={month} year={year} />
                     }
                 </TabPane>
                 }

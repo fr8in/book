@@ -29,35 +29,33 @@ query reliance_cashback${now()}($year: Int!, $month: Int!) {
   `
 
 const RelianceCashBack = (props) => {
-    let { month, year, setMonth, setYear } = props
+    let { month, year} = props
     const [relianceCashbackDetails, setRelianceCashbackDetails] = useState([])
 
     console.log('month - ', month, 'year', year)
+     
 
     const { loading, error, data } = useQuery(
         reliance_cashback, {
         variables: { year, month },
-            fetchPolicy: "network-only",
+        fetchPolicy: "network-only",
         notifyOnNetworkStatusChange: true,
+        onCompleted(data) {
+            setRelianceCashbackDetails(get(data, 'reliance_cashback', []))
+          },
         onError(error) {
+            setRelianceCashbackDetails([])
             message.error(error.message.toString())
         },
     }
     )
-
-    let _data = []
-    if (!loading) {
-        _data = data
-    }
 
     const initial = { visible: false }
 
     const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
 
-    setRelianceCashbackDetails(get(_data, 'reliance_cashback', []))
-
-
+    
     const columns = [
         {
             title: 'Partner Code',
@@ -125,7 +123,7 @@ const RelianceCashBack = (props) => {
                     title={'Reliance CashBack'}
                     month={month}
                     year={year}
-                    setRelianceCashbackDetails = {setRelianceCashbackDetails}
+                    setRelianceCashbackDetails={setRelianceCashbackDetails}
                 />
             )}
         </div>
