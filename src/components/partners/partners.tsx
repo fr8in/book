@@ -82,7 +82,7 @@ const PartnerKyc = (props) => {
       width: '8%',
       render: (text, record) => {
         return (
-          <LinkComp type='partners' data={text} id={record.cardcode} blank/>
+          <LinkComp type='partners' data={text} id={record.cardcode} />
         )
       },
       filterDropdown: (
