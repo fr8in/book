@@ -32,9 +32,6 @@ const RelianceCashBack = (props) => {
     let { month, year} = props
     const [relianceCashbackDetails, setRelianceCashbackDetails] = useState([])
 
-    console.log('month - ', month, 'year', year)
-     
-
     const { loading, error, data } = useQuery(
         reliance_cashback, {
         variables: { year, month },
