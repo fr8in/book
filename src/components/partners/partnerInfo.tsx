@@ -14,7 +14,7 @@ const PartnerInfo = (props) => {
     <Row gutter={8} className='mb10'>
       <LabelAndData
         label='City'
-        data={<label>{get(partnerInfo, 'city.name', null)}</label>}
+        data={<label>{get(partnerInfo, 'partner_connected_city.connected_city.cities[0].name', null)}</label>}
         mdSpan={4}
         smSpan={8}
         xsSpan={12}
@@ -22,7 +22,7 @@ const PartnerInfo = (props) => {
       <LabelAndData
         label='Region'
         data={
-          <label>{get(partnerInfo, 'city.branch.region.name', null)}
+          <label>{get(partnerInfo, 'partner_connected_city.connected_city.cities[0].branch.region.name', null)}
           </label>
         }
         mdSpan={4}

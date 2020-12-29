@@ -3,17 +3,19 @@ import { Row, Button, message } from 'antd'
 import LabelAndData from '../common/labelAndData'
 import { gql, useMutation } from '@apollo/client'
 import get from 'lodash/get'
+import userContext from '../../lib/userContaxt'
+import { useContext } from 'react'
 
 const CANCEL_AP = gql`
-mutation cancel_ap($trip_id: Int!){
-  cancel_ap(trip_id: $trip_id){
+mutation cancel_ap($trip_id: Int!,$updatedBy: String){
+  cancel_ap(trip_id: $trip_id,updatedBy: $updatedBy){
     success
     message
   }
 }`
 
-const CANCEL_AR = gql`mutation cancel_ar($trip_id: Int!){
-  cancel_ar(trip_id: $trip_id){
+const CANCEL_AR = gql`mutation cancel_ar($trip_id: Int!,$updatedBy: String){
+  cancel_ar(trip_id: $trip_id,updatedBy: $updatedBy){
     success
     message
   }
@@ -21,6 +23,7 @@ const CANCEL_AR = gql`mutation cancel_ar($trip_id: Int!){
 
 const InvoiceDetail = (props) => {
   const { ap, ar, trip_id, edit_access, lock } = props
+  const context = useContext(userContext)
   const [disableAR, setDisableAR] = useState(false)
   const [disableAP, setDisableAP] = useState(false)
 
@@ -56,14 +59,14 @@ const InvoiceDetail = (props) => {
   const onAPCancel = () => {
     setDisableAP(true)
     cancel_ap({
-      variables: { trip_id: parseInt(trip_id) }
+      variables: { trip_id: parseInt(trip_id),updatedBy: context.email }
     })
   }
 
   const onARCancel = () => {
     setDisableAR(true)
     cancel_ar({
-      variables: { trip_id: parseInt(trip_id) }
+      variables: { trip_id: parseInt(trip_id),updatedBy: context.email }
     })
   }
 

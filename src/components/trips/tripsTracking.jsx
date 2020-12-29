@@ -129,7 +129,7 @@ const TripsTracking = (props) => {
       width: '7%',
       render: (text, record) => {
         return (
-          <LinkComp type='trips' data={text} id={record.id} blank />)
+          <LinkComp type='trips' data={text} id={record.id} />)
       },
       filterDropdown: (
         <div>
@@ -158,7 +158,7 @@ const TripsTracking = (props) => {
       render: (text, record) => {
         const cardcode = record.customer && record.customer.cardcode
         return (
-          <LinkComp type='customers' data={get(record, 'customer.name', null)} id={cardcode} length={12} blank />
+          <LinkComp type='customers' data={get(record, 'customer.name', null)} id={cardcode} length={12} />
         )
       },
       filterDropdown: (
@@ -196,7 +196,7 @@ const TripsTracking = (props) => {
       title: 'Truck',
       render: (text, record) => {
         return (
-          <LinkComp type='trucks' data={get(record, 'truck.truck_no', null)} id={get(record, 'truck.truck_no', null)} blank />
+          <LinkComp type='trucks' data={get(record, 'truck.truck_no', null)} id={get(record, 'truck.truck_no', null)} />
         )
       },
       filterDropdown: (

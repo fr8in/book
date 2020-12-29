@@ -97,7 +97,7 @@ const AdditionalAdvance = (props) => {
     }
   ]
   return (
-    <div className='additonalAdv'>
+    <>
       {!isEmpty(additionalAdvance) || !isEmpty(excessAdvance)? (
         <Table
           columns={columns}
@@ -107,9 +107,10 @@ const AdditionalAdvance = (props) => {
           scroll={{ x: 960 }}
           pagination={false}
         />)
-        : !(loaded) ? <p>Additional advance available after process advance</p>
-          : <p>Additional advance not processed</p>}
-    </div>
+        : !(loaded) 
+          ?<div className='additonalAdv mb0'><p>Additional advance available after process advance</p></div>
+          : <div className='additonalAdv mb0'><p>Additional advance not processed</p></div>}
+    </>
   )
 }
 

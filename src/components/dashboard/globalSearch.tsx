@@ -124,7 +124,7 @@ const Result = (props) => {
         label={link}
         data={
           <Link href={`/${type}/[id]`} as={`/${type}/${link}`}>
-            <a target='_blank'>{description.length > 24 ? description.slice(0, 24) + '...' : description}</a>
+            <a>{description.length > 24 ? description.slice(0, 24) + '...' : description}</a>
           </Link>
         }
         smSpan={24}

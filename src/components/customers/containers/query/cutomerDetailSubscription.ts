@@ -23,7 +23,7 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
         count
       }
     }
-    advancePending: trips_aggregate(where: {trip_accounting: {receipt: {_is_null: true}}, source_out: {_is_null: false}, trip_status: {name: {_neq: "Cancelled"}}}) {
+    advancePending: trips_aggregate(where: {trip_accounting: {receipt_ratio: {_lt: 0.5}}, source_out: {_is_null: false}, trip_status: {name: {_neq: "Cancelled"}}}) {
       aggregate {
         count
       }
