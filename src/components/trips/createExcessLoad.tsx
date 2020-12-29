@@ -31,7 +31,7 @@ mutation create_excees_load (
   $description:String,
   $topic:String,
   $created_by: String,
-  $origin_id:Int) {
+  $origin_id:Int!) {
 insert_trip(objects: {
   trip_status_id: 1,
   source_id: $source_id, 

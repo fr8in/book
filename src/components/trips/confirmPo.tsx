@@ -78,7 +78,7 @@ mutation confirm_po(
   $cash: Float,
   $to_pay: Float,
   $is_topay: Boolean,
-  $interest_id:Int
+  $interest_id:Int!
   ){
   update_trip(_set:{
     truck_id: $truck_id,

@@ -83,8 +83,8 @@ mutation create_po (
   $driver_id: Int,
   $is_topay: Boolean,
   $customer_user_id: Int,
-  $origin_id:Int,
-  $interest_id:Int) {
+  $origin_id:Int!,
+  $interest_id:Int!) {
 insert_trip(objects: {
   po_date:$po_date
   source_id: $source_id, 
