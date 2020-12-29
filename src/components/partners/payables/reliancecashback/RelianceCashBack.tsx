@@ -1,5 +1,5 @@
 
-import { Table, Modal, Row, Col, Space, Button } from 'antd';
+import { Table, message, Row, Col, Space, Button } from 'antd';
 import LabelWithData from '../../../common/labelWithData';
 
 import React, { useState } from 'react';
@@ -8,9 +8,12 @@ import get from 'lodash/get'
 import Link from 'next/link'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import Process from './process'
+import useShowHideWithRecord from '../../../../hooks/useShowHideWithRecord';
+import now from 'lodash/now'
+
 
 const reliance_cashback = gql`
-query reliance_cashback($year: Int!, $month: Int!) {
+query reliance_cashback${now()}($year: Int!, $month: Int!) {
     reliance_cashback(year: $year, month: $month) {
       partner_id
       walletcode
@@ -26,7 +29,6 @@ query reliance_cashback($year: Int!, $month: Int!) {
   `
 
 const RelianceCashBack = (props) => {
-
     let { month, year } = props
     console.log('month - ', month, 'year', year)
     const [process, setProcess] = useState(false)
@@ -35,7 +37,10 @@ const RelianceCashBack = (props) => {
         reliance_cashback, {
         variables: { year, month },
         fetchPolicy: 'cache-and-network',
-        notifyOnNetworkStatusChange: true
+        notifyOnNetworkStatusChange: true,
+        onError(error) {
+            message.error(error.message.toString())
+          },
     }
     )
 
@@ -43,6 +48,12 @@ const RelianceCashBack = (props) => {
     if (!loading) {
         _data = data
     }
+
+    const initial = { visible: false }
+
+    const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+
+
     const relianceCashback = get(_data, 'reliance_cashback', [])
     console.log('relianceCashback ', relianceCashback)
 
@@ -71,7 +82,8 @@ const RelianceCashBack = (props) => {
         },
         {
             title: 'Balance',
-            dataIndex: 'balance'
+            dataIndex: 'balance',
+            render: (text, record) => text.toFixed(2)
         }
 
     ];
@@ -88,7 +100,7 @@ const RelianceCashBack = (props) => {
                     size='small'
                     scroll={{ x: 1156 }}
                     pagination={false}
-                    rowKey={(record) => record.code}
+                    rowKey={(record) => record.cardcode}
                 />
                     <br />
                     <Row gutter={10} className='item'>
@@ -98,9 +110,10 @@ const RelianceCashBack = (props) => {
                                     label=''
                                     margin_bottom
                                     data={
-                                        <Button type="primary" onClick={() => setProcess(true)} >Process</Button>
+                                        relianceCashback.length > 0 && <Button type="primary"
+                                            onClick={() => handleShow('visible', '', '', {})} >Next</Button>
                                     }
-                                    labelSpan={12}
+                                    labelSpan={1}
                                 />
                             </Space>
                         </Col>
@@ -108,20 +121,21 @@ const RelianceCashBack = (props) => {
                 </div>
                 }
 
-                {process && (
+                {object.visible && (
                     <Process
-                        visible={process}
+                        visible={object.visible}
+                        onHide={handleHide}
                         title={'Reliance CashBack'}
                         month={month}
                         year={year}
                     />
                 )}
-
-
             </div>
 
 
     )
 }
+
+
 
 export default RelianceCashBack
