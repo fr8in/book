@@ -29,18 +29,17 @@ query reliance_cashback${now()}($year: Int!, $month: Int!) {
   `
 
 const RelianceCashBack = (props) => {
-    let { month, year } = props
+    let { month, year, setMonth, setYear } = props
     console.log('month - ', month, 'year', year)
-    const [process, setProcess] = useState(false)
 
-    const { loading, error, data, refetch } = useQuery(
+    const { loading, error, data } = useQuery(
         reliance_cashback, {
         variables: { year, month },
         fetchPolicy: 'cache-and-network',
         notifyOnNetworkStatusChange: true,
         onError(error) {
             message.error(error.message.toString())
-          },
+        },
     }
     )
 
@@ -88,49 +87,47 @@ const RelianceCashBack = (props) => {
 
     ];
     return (
-        isNil(props.month) ? <>
-            <h4 align='center'>Reliance Fuel CashBack</h4>
-        </> :
-
-            <div>
-                {true && <div> <Table
-                    rowClassName={(record, index) => record.balance > 0 ? 'cashbackRow' : 'cashbackRowNegativeWallet'}
-                    columns={columns}
-                    dataSource={relianceCashback}
-                    size='small'
-                    scroll={{ x: 1156 }}
-                    pagination={false}
-                    rowKey={(record) => record.cardcode}
-                />
-                    <br />
-                    <Row gutter={10} className='item'>
-                        <Col flex='1800px' className='text-right'>
-                            <Space>
-                                <LabelWithData
-                                    label=''
-                                    margin_bottom
-                                    data={
-                                        relianceCashback.length > 0 && <Button type="primary"
-                                            onClick={() => handleShow('visible', '', '', {})} >Next</Button>
-                                    }
-                                    labelSpan={1}
-                                />
-                            </Space>
-                        </Col>
-                    </Row>
-                </div>
-                }
-
-                {object.visible && (
-                    <Process
-                        visible={object.visible}
-                        onHide={handleHide}
-                        title={'Reliance CashBack'}
-                        month={month}
-                        year={year}
-                    />
-                )}
+        <div>
+            {true && <div> <Table
+                rowClassName={(record, index) => record.balance > 0 ? 'cashbackRow' : 'cashbackRowNegativeWallet'}
+                columns={columns}
+                dataSource={relianceCashback}
+                size='small'
+                scroll={{ x: 1156 }}
+                pagination={false}
+                rowKey={(record) => record.cardcode}
+            />
+                <br />
+                <Row gutter={10} className='item'>
+                    <Col flex='1800px' className='text-right'>
+                        <Space>
+                            <LabelWithData
+                                label=''
+                                margin_bottom
+                                data={
+                                    relianceCashback.length > 0 && <Button type="primary"
+                                        onClick={() => handleShow('visible', '', '', {})} >Next</Button>
+                                }
+                                labelSpan={1}
+                            />
+                        </Space>
+                    </Col>
+                </Row>
             </div>
+            }
+
+            {object.visible && (
+                <Process
+                    visible={object.visible}
+                    onHide={handleHide}
+                    title={'Reliance CashBack'}
+                    month={month}
+                    year={year}
+                    setMonth={setMonth}
+                    setYear={setYear}
+                />
+            )}
+        </div>
 
 
     )

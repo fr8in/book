@@ -8,6 +8,7 @@ import { gql, useMutation } from '@apollo/client'
 import isEmpty from 'lodash/isEmpty'
 import RelianceCashBack from '../reliancecashback/RelianceCashBack';
 import util from '../../../../lib/util'
+import isNil from 'lodash/isNil';
 
 const { RangePicker } = DatePicker
 
@@ -20,7 +21,6 @@ const TabPane = Tabs.TabPane
 const PayablesContainer = () => {
   const [dates, setDates] = useState([])
   const [tabIndex, setTabIndex] = useState('2')
-  const [receivedCashBack, setReceivedCashBack] = useState<number>(0)
   const [month, setMonth] = useState(null)
   const [year, setYear] = useState(null)
 
@@ -98,7 +98,9 @@ const PayablesContainer = () => {
         </TabPane>
 
         <TabPane tab='Reliance' key={'2'}>
-          <RelianceCashBack month={month} year={year}/>
+        {isNil(month) || isNil(year) ? 
+        <> <h4 align='center'>Reliance Fuel CashBack</h4></> :
+          <RelianceCashBack month={month} year={year} setMonth = {setMonth} setYear = {setYear}/> }
         </TabPane>
 
       </Tabs>

@@ -5,17 +5,22 @@ import get from 'lodash/get'
 import userContext from '../../../../lib/userContaxt'
 import moment from 'moment';
 import Loading from '../../../common/loading'
+import now from 'lodash/now'
 
 const process = 'RELIANCE_FUEL_CASHBACK'
 const currentDate = moment().format('YYYYMMDD')
+const period_status = "Locked"
 
-const GET_TOKEN = gql`
-query get_token (
-  $ref_id: Int!,
-  $process:String!
-){
-  token(ref_id: $ref_id, process:$process )
-}`
+const GET_TOKEN_AND_CLOSING_PERIOD = gql`
+query get_token${now()}($ref_id: Int!, $process: String!, $period_status: String!) {
+  closing_period_status(period_status: $period_status) {
+    period_status
+    posting_from_date
+    posting_to_date
+  }
+  token(ref_id: $ref_id, process: $process)
+}
+`
 
 const process_cashback = gql`
 mutation process_reliance_cashback($year:Int! ,$month:Int!,$created_by:String!,$posting_date:String!, $token:String!, $process:String!) {
@@ -29,57 +34,61 @@ mutation process_reliance_cashback($year:Int! ,$month:Int!,$created_by:String!,$
 
 const Process = (props) => {
 
-  const { visible, title, onHide, month, year } = props
-
+  const { visible, title, onHide, month, year, setMonth, setYear } = props
   const [posting_date, setPosting_date] = useState(currentDate)
 
-  const { loading, data, error } = useQuery(GET_TOKEN, { variables: { ref_id: parseInt(currentDate), process }, fetchPolicy: 'network-only' })
+  const { loading, data, error } = useQuery(GET_TOKEN_AND_CLOSING_PERIOD, { variables: { ref_id: parseInt(currentDate), process, period_status }, fetchPolicy: 'network-only' })
 
   const context = useContext(userContext)
 
-  const [processCashback,{ loading: mutationLoading }] = useMutation(
+  const [processCashback, { loading: mutationLoading }] = useMutation(
     process_cashback, {
     onError(error) {
       message.error(`Error Occured!!`)
       onHide()
     },
     onCompleted(data) {
-      const status = get(data, 'process_reliance_cashback.success', null)
-      if (status) {
-        message.success(get(data, 'process_reliance_cashback.message', 'Processed!!'))
+      const status = get(data, 'process_reliance_cashback.status', null)
+      if (status === 'OK') {
+        message.success(get(data, 'process_reliance_cashback.description', 'Transaction Processed'))
         onHide()
+        setMonth(null)
+        setYear(null)
       } else {
         message.error(`Error Occured!!`)
         onHide()
       }
     }
   })
-
+  const disabledDate = (current) => {
+    let closing_period = get(data, 'closing_period_status.posting_from_date', moment())
+    const start = moment(closing_period, 'YYYY-MM-DD');
+    return current < start || current > moment();
+  }
 
   const onSubmit = () => {
-
-    processCashback({ variables: { month, year, posting_date, created_by: context.email,token:data.token , process  } })
-
+    processCashback({ variables: { month, year, posting_date, created_by: context.email, token: data.token, process } })
   }
   const onChange = (date, dateString) => {
     console.log('dateString', date)
     setPosting_date(date.format('YYYYMMDD'))
   }
 
-  return (
-    <Modal
-      title={title}
-      visible={visible}
-      onCancel={onHide}
-      confirmLoading={loading}
-      okText={'Process'}
-      onOk={() => onSubmit()}
-    >
-      PostingDate : <DatePicker defaultValue={moment()} onChange={onChange} />
-      {(loading || mutationLoading) &&
-        <Loading fixed />}
-    </Modal>
-  )
+  return <Modal
+    title={title}
+    visible={visible}
+    onCancel={onHide}
+    confirmLoading={loading}
+    okText={'Process'}
+    onOk={() => onSubmit()}
+  >
+    PostingDate : <DatePicker defaultValue={moment()} onChange={onChange}
+      disabledDate={(current) => disabledDate(current)}
+
+    />
+    {(loading || mutationLoading) &&
+      <Loading fixed />}
+  </Modal>
 }
 
 export default Process
