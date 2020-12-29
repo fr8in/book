@@ -54,6 +54,7 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
       origin{
         name
       }
+      channel_id
       partner {
         id
         cardcode
