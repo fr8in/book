@@ -77,7 +77,8 @@ mutation confirm_po(
   $bank:Float,
   $cash: Float,
   $to_pay: Float,
-  $is_topay: Boolean
+  $is_topay: Boolean,
+  $interest_id:Int
   ){
   update_trip(_set:{
     truck_id: $truck_id,
@@ -101,7 +102,8 @@ mutation confirm_po(
     bank: $bank,
     to_pay:$to_pay,
     cash:$cash,
-    is_topay: $is_topay
+    is_topay: $is_topay,
+    interest_id:$interest_id
   }, 
   where:{id:{_eq:$trip_id}}){
     returning{
@@ -112,6 +114,7 @@ mutation confirm_po(
 
 const ConfirmPo = (props) => {
   const { visible, onHide, truck_id, record, hideExess } = props
+  
   const [loading_contact_id, setLoading_contact_id] = useState(null)
   const [driver_id, setDriver_id] = useState(null)
 
@@ -165,6 +168,8 @@ const ConfirmPo = (props) => {
   const trip_max_price = get(data, 'config[0].value.trip_max_price', null)
   const system_mamul = get(customer, 'system_mamul', null)
 
+  const origin_name = get(record,'leads[0].channel_id',record && record.origin && record.origin.name)  
+   
   const onSubmit = (form) => {
     const loading_charge = form.charge_inclue.includes('Loading')
     const unloading_charge = form.charge_inclue.includes('Unloading')
@@ -204,7 +209,8 @@ const ConfirmPo = (props) => {
           driver_id: parseInt(driver_id, 10),
           updated_by: context.email,
           customer_user_id: parseInt(loading_contact_id),
-          is_topay: !!isToPay
+          is_topay: !!isToPay,
+          interest_id: origin_name ===4 ? 4 : origin_name === 6 ? 6 : 7
         }
       }) :
       confirm_po_mutation({
@@ -231,7 +237,8 @@ const ConfirmPo = (props) => {
           driver_id: parseInt(driver_id, 10),
           updated_by: context.email,
           customer_user_id: parseInt(loading_contact_id),
-          is_topay: !!isToPay
+          is_topay: !!isToPay,
+          interest_id: origin_name === 4 ? 4 : origin_name === 6 ? 6 : 7
         }
       })
     }
