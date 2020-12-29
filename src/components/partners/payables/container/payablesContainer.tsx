@@ -127,7 +127,7 @@ const PayablesContainer = () => {
                 {fuelCashback_access &&
                 <TabPane tab='Reliance' key={'2'}>
                     {isNil(month) || isNil(year) ?
-                        <> <h4 align='center'>Reliance Fuel CashBack</h4></> :
+                        <> <h4>Reliance Fuel CashBack</h4></> :
                         <RelianceCashBack month={month} year={year} />
                     }
                 </TabPane>
