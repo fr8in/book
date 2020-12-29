@@ -30,12 +30,14 @@ query reliance_cashback${now()}($year: Int!, $month: Int!) {
 
 const RelianceCashBack = (props) => {
     let { month, year, setMonth, setYear } = props
+    const [relianceCashbackDetails, setRelianceCashbackDetails] = useState([])
+
     console.log('month - ', month, 'year', year)
 
     const { loading, error, data } = useQuery(
         reliance_cashback, {
         variables: { year, month },
-        fetchPolicy: 'cache-and-network',
+            fetchPolicy: "network-only",
         notifyOnNetworkStatusChange: true,
         onError(error) {
             message.error(error.message.toString())
@@ -53,8 +55,8 @@ const RelianceCashBack = (props) => {
     const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
 
-    const relianceCashback = get(_data, 'reliance_cashback', [])
-    console.log('relianceCashback ', relianceCashback)
+    setRelianceCashbackDetails(get(_data, 'reliance_cashback', []))
+
 
     const columns = [
         {
@@ -91,7 +93,7 @@ const RelianceCashBack = (props) => {
             {true && <div> <Table
                 rowClassName={(record, index) => record.balance > 0 ? 'cashbackRow' : 'cashbackRowNegativeWallet'}
                 columns={columns}
-                dataSource={relianceCashback}
+                dataSource={relianceCashbackDetails}
                 size='small'
                 scroll={{ x: 1156 }}
                 pagination={false}
@@ -105,7 +107,7 @@ const RelianceCashBack = (props) => {
                                 label=''
                                 margin_bottom
                                 data={
-                                    relianceCashback.length > 0 && <Button type="primary"
+                                    relianceCashbackDetails.length > 0 && <Button type="primary"
                                         onClick={() => handleShow('visible', '', '', {})} >Next</Button>
                                 }
                                 labelSpan={1}
@@ -123,8 +125,7 @@ const RelianceCashBack = (props) => {
                     title={'Reliance CashBack'}
                     month={month}
                     year={year}
-                    setMonth={setMonth}
-                    setYear={setYear}
+                    setRelianceCashbackDetails = {setRelianceCashbackDetails}
                 />
             )}
         </div>

@@ -34,7 +34,7 @@ mutation process_reliance_cashback($year:Int! ,$month:Int!,$created_by:String!,$
 
 const Process = (props) => {
 
-  const { visible, title, onHide, month, year, setMonth, setYear } = props
+  const { visible, title, onHide, month, year, setRelianceCashbackDetails } = props
   const [posting_date, setPosting_date] = useState(currentDate)
 
   const { loading, data, error } = useQuery(GET_TOKEN_AND_CLOSING_PERIOD, { variables: { ref_id: parseInt(currentDate), process, period_status }, fetchPolicy: 'network-only' })
@@ -52,8 +52,7 @@ const Process = (props) => {
       if (status === 'OK') {
         message.success(get(data, 'process_reliance_cashback.description', 'Transaction Processed'))
         onHide()
-        setMonth(null)
-        setYear(null)
+        setRelianceCashbackDetails([])
       } else {
         message.error(`Error Occured!!`)
         onHide()
