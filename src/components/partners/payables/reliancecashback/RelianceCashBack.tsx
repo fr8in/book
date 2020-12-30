@@ -5,7 +5,6 @@ import get from 'lodash/get'
 import Link from 'next/link'
 import { gql, useQuery } from '@apollo/client'
 import Process from './process'
-import useShowHideWithRecord from '../../../../hooks/useShowHideWithRecord'
 import now from 'lodash/now'
 import useShowHide from '../../../../hooks/useShowHide'
 
@@ -27,18 +26,21 @@ query reliance_cashback${now()}($year: Int!, $month: Int!) {
 
 const RelianceCashBack = (props) => {
   const { month, year } = props
-  console.log('month, year', month, year)
+  
   const [relianceCashbackDetails, setRelianceCashbackDetails] = useState([])
   const initial = { processVisible: false }
 
   const { visible, onShow, onHide } = useShowHide(initial)
 
-  const { loading, error, data } = useQuery(
+  const { loading, data } = useQuery(
     reliance_cashback, {
       variables: { year, month },
       fetchPolicy: 'network-only',
       notifyOnNetworkStatusChange: true,
-      skip: !month
+      skip: !month,
+      onError (error) {
+        message.error(error.message.toString())
+      }
     }
   )
 
@@ -46,10 +48,7 @@ const RelianceCashBack = (props) => {
   if (!loading) {
     _data = data
   }
-  if (error) {
-    message.error(error.message.toString())
-  }
-
+ 
   useEffect(() => {
     const reliance_cashback = get(_data, 'reliance_cashback', [])
     setRelianceCashbackDetails(reliance_cashback)
@@ -84,8 +83,8 @@ const RelianceCashBack = (props) => {
       dataIndex: 'balance',
       render: (text, record) => text.toFixed(2)
     }
-
   ]
+  const title = `Reliance Cashback ${year}-${month}`
   return (
     <div>
       <Table
@@ -113,7 +112,7 @@ const RelianceCashBack = (props) => {
         <Process
           visible={visible.processVisible}
           onHide={onHide}
-          title='Reliance CashBack'
+          title={title}
           month={month}
           year={year}
           setRelianceCashbackDetails={setRelianceCashbackDetails}
