@@ -7,7 +7,7 @@ import u from '../../lib/util'
 
 const PARTNERS_LEAD_SUBSCRIPTION = gql`
   query create_partner_lead_channel{
-    channel{
+    channel(where:{id:{_nin:[7,8,9]}}){
       id
       name
     }
