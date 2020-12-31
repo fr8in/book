@@ -101,7 +101,7 @@ const TripsByStages = (props) => {
     },
     truckPage ? {
       title: 'AVG KM/Day',
-      dataIndex: 'avg',
+      dataIndex: 'avg_km_day',
       width: '12%',
       render: (text, record) => (record.avg_km_day || '-')
     } : {}

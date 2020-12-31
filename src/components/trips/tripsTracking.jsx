@@ -8,6 +8,7 @@ import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import PodReceiptAndDispatch from './podReceiptAndDispatch'
 import get from 'lodash/get'
 import PartnerLink from '../common/PartnerLink'
+import Truncate from '../common/truncate'
 const TripsTracking = (props) => {
   const initial = {
     commentData: [],
@@ -22,6 +23,7 @@ const TripsTracking = (props) => {
     filter,
     onPartnerNameSearch,
     onCustomerNameSearch,
+    onPaymentManagerNameSearch,
     trip_status_list,
     onFilter,
     onSourceNameSearch,
@@ -32,6 +34,7 @@ const TripsTracking = (props) => {
     visible_dispatch,
     onHide,
     verified,
+    invoiced,
     setCountFilter, countFilter, invoiced_countFilter, invoiced_setCountFilter, delivered
   } = props
 
@@ -79,6 +82,10 @@ const TripsTracking = (props) => {
   }
   const handleDestinationName = (e) => {
     onDestinationNameSearch(e.target.value)
+    setCurrentPage(1)
+  }
+  const handlePaymentManagerName = (e) => {
+    onPaymentManagerNameSearch(e.target.value)
     setCurrentPage(1)
   }
   const handleTruckNo = (e) => {
@@ -151,7 +158,7 @@ const TripsTracking = (props) => {
         ) : ''
       },
       sorter: (a, b) => (a.created_at > b.created_at ? 1 : -1),
-      width: '8%'
+      width: '10%'
     },
     {
       title: 'Customer',
@@ -173,25 +180,27 @@ const TripsTracking = (props) => {
       filterIcon: () => <SearchOutlined style={{ color: filter.customername ? '#1890ff' : undefined }} />,
       width: '11%'
     },
-    {
-      title: 'Partner',
-      render: (text, record) => {
-        return (
-          <PartnerLink type='partners' data={get(record, 'partner.name', null)} id={get(record, 'partner.id', null)} cardcode={get(record, 'partner.cardcode', null)} length={12} />
-        )
-      },
-      filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search Partner Name'
-            value={filter.partnername}
-            onChange={handlePartnerName}
-          />
-        </div>
-      ),
-      filterIcon: () => <SearchOutlined style={{ color: filter.partnername ? '#1890ff' : undefined }} />,
-      width: '11%'
-    },
+    !invoiced
+      ? {
+          title: 'Partner',
+          render: (text, record) => {
+            return (
+              <PartnerLink type='partners' data={get(record, 'partner.name', null)} id={get(record, 'partner.id', null)} cardcode={get(record, 'partner.cardcode', null)} length={12} />
+            )
+          },
+          filterDropdown: (
+            <div>
+              <Input
+                placeholder='Search Partner Name'
+                value={filter.partnername}
+                onChange={handlePartnerName}
+              />
+            </div>
+          ),
+          filterIcon: () => <SearchOutlined style={{ color: filter.partnername ? '#1890ff' : undefined }} />,
+          width: '11%'
+        }
+      : {},
     {
       title: 'Truck',
       render: (text, record) => {
@@ -253,6 +262,28 @@ const TripsTracking = (props) => {
       ),
       filterIcon: () => <SearchOutlined style={{ color: filter.destinationname ? '#1890ff' : undefined }} />
     },
+    invoiced ? {
+      title: (
+        <Tooltip title='Payment Manager'>
+          <span>P.Manager</span>
+        </Tooltip>
+      ),
+      width: '10%',
+      render: (text, record) => {
+        const payment_manager = get(record, 'branch_employee.employee.name', null)
+        return <Truncate data={payment_manager} length={10} />
+      },
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search Payment Manager'
+            value={filter.paymentmanagername}
+            onChange={handlePaymentManagerName}
+          />
+        </div>
+      ),
+      filterIcon: () => <SearchOutlined style={{ color: filter.paymentmanagername ? '#1890ff' : undefined }} />
+    } : {},
     {
       title: 'Status',
       render: (text, record) =>
@@ -276,7 +307,7 @@ const TripsTracking = (props) => {
         return status ? (tat(a) > tat(b) ? 1 : -1) : null
       },
       width: '8%',
-      defaultSortOrder:'descend'
+      defaultSortOrder: 'descend'
     },
     {
       title: 'Comment',
@@ -288,8 +319,8 @@ const TripsTracking = (props) => {
             <span> {comment.slice(0, 12) + '...'}</span>
           </Tooltip>
         ) : (
-            comment
-          )
+          comment
+        )
       }
     },
     {
