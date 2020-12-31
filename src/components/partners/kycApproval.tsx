@@ -489,13 +489,6 @@ const KycApproval = (props) => {
                       </Col>
                       <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
                     </List.Item>
-                    <List.Item key={6}>
-                      <Form.Item className='mb0' initialValue={get(partnerDetail, 'emi', false)}>
-                        <Checkbox checked={checked} onChange={onChange}>EMI</Checkbox>
-                      </Form.Item>
-                      <Col xs={12} sm={12}>&nbsp;</Col>
-                      <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
-                    </List.Item>
                   </List>
                   <Row justify='end' className='mt10'>
                     <Button key='submit' type='primary' loading={disableButton} disabled={ isEmpty(trucks) || disableAddTruck || !access} htmlType='submit'>
