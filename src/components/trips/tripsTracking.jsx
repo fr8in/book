@@ -179,26 +179,28 @@ const TripsTracking = (props) => {
       ),
       filterIcon: () => <SearchOutlined style={{ color: filter.customername ? '#1890ff' : undefined }} />,
       width: '11%'
-    }, 
-    !invoiced ? {
-      title: 'Partner',
-      render: (_text, record) => {
-        return (
-          <PartnerLink type='partners' data={get(record, 'partner.name', null)} id={get(record, 'partner.id', null)} cardcode={get(record, 'partner.cardcode', null)} length={12} />
-        )
-      },
-      filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search Partner Name'
-            value={filter.partnername}
-            onChange={handlePartnerName}
-          />
-        </div>
-      ),
-      filterIcon: () => <SearchOutlined style={{ color: filter.partnername ? '#1890ff' : undefined }} />,
-      width: '11%'
-    } : {},
+    },
+    !invoiced
+      ? {
+          title: 'Partner',
+          render: (text, record) => {
+            return (
+              <PartnerLink type='partners' data={get(record, 'partner.name', null)} id={get(record, 'partner.id', null)} cardcode={get(record, 'partner.cardcode', null)} length={12} />
+            )
+          },
+          filterDropdown: (
+            <div>
+              <Input
+                placeholder='Search Partner Name'
+                value={filter.partnername}
+                onChange={handlePartnerName}
+              />
+            </div>
+          ),
+          filterIcon: () => <SearchOutlined style={{ color: filter.partnername ? '#1890ff' : undefined }} />,
+          width: '11%'
+        }
+      : {},
     {
       title: 'Truck',
       render: (text, record) => {
@@ -248,7 +250,7 @@ const TripsTracking = (props) => {
             <span>{record.destination.name.slice(0, 8) + '...'}</span>
           </Tooltip>
         ) : record.destination.name
-      },  
+      },
       filterDropdown: (
         <div>
           <Input
@@ -268,7 +270,7 @@ const TripsTracking = (props) => {
       ),
       width: '10%',
       render: (text, record) => {
-        const payment_manager= get(record,'branch_employee.employee.name',null)
+        const payment_manager = get(record, 'branch_employee.employee.name', null)
         return <Truncate data={payment_manager} length={10} />
       },
       filterDropdown: (
@@ -305,7 +307,7 @@ const TripsTracking = (props) => {
         return status ? (tat(a) > tat(b) ? 1 : -1) : null
       },
       width: '8%',
-      defaultSortOrder:'descend'
+      defaultSortOrder: 'descend'
     },
     {
       title: 'Comment',
@@ -317,8 +319,8 @@ const TripsTracking = (props) => {
             <span> {comment.slice(0, 12) + '...'}</span>
           </Tooltip>
         ) : (
-            comment
-          )
+          comment
+        )
       }
     },
     {
