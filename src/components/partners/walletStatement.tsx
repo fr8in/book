@@ -15,7 +15,7 @@ query partner_wallet_statement($cardcode: String) {
       commission
       billed
     }
-    partner_wallet_statement(order_by:{created_at:desc}) {
+    partner_wallet_statement(order_by:{created_at:desc,docnum:desc}) {
       docnum
       cardcode
       created_at

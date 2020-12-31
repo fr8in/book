@@ -50,6 +50,7 @@ const OutGoing = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
+  
   console.log('pendingTransaction error', error)
 
   let _data = []

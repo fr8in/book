@@ -109,14 +109,23 @@ subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [Stri
       id
       name
     }
-    city {
-      name
-      state {
-        name
-      }
-      branch {
-        region {
+    partner_connected_city {
+      connected_city {
+        id
+        is_connected_city
+        cities(where: {is_connected_city: {_eq: true}}) {
+          id
           name
+          state{
+            name
+          }
+          branch {
+            id
+            region {
+              id
+              name
+            }
+          }
         }
       }
     }

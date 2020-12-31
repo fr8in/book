@@ -87,7 +87,7 @@ query partner_lead_aggregate(
     id
     name
   }
-  channel {
+  channel(where:{id:{_nin:[7,8,9]}}){
     id
     name
   }

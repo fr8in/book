@@ -53,6 +53,7 @@ const CreditNoteTable = (props) => {
     approveVisible: false
   }
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+  
   const { loading, error, data } = useSubscription(
     CREDIT_NOTE_TABLE_SUBSCRIPTION,
     {

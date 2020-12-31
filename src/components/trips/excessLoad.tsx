@@ -23,6 +23,9 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
   }) {
     id
     po_date
+    origin{
+      name
+    }
     source {
       id
       name
@@ -48,6 +51,10 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
     leads {
       id
       created_at
+      origin{
+        name
+      }
+      channel_id
       partner {
         id
         cardcode

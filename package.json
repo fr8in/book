@@ -4,7 +4,7 @@
   "description": "Load Backend API",
   "license": "UNLICENSED",
   "scripts": {
-    "local": "next",
+    "local": "yarn && next",
     "build": "next build",
     "start": "next start -p $PORT"
   },
