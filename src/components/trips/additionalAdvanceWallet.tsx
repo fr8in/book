@@ -16,6 +16,9 @@ const CREATE_ADDITIONAL_ADVANCE_WALLET = gql`
     additional_advance_wallet(input: $input) {
       status
       description
+      result {
+          advance_result
+      }
     }
   }
 `
@@ -40,7 +43,8 @@ const AdditionalAdvanceWallet = (props) => {
     })
     let token = {}
     if (!loading) {
-        token = data ? data.token : null
+         token =  get(data, 'token', null)
+      
     }
 
     const onPercentageCheck = () => {
@@ -56,23 +60,27 @@ console.log('token',token,"disableBtn",disableBtn)
                 const description = get(data, 'additional_advance_wallet.description', null)
                 const result = get(data, 'additional_advance_wallet.result.advance_result', null)
                 console.log('result',result)
-                if (status === 'OK') {
+                if (status === 'OK' && result === false ) {
                     setDisableBtn(false)
                     setAdvanceRefetch(true)
                     message.success(description || 'Processed!')
-                } else { (message.error(description)); setDisableBtn(false) }
-                if (result === false) {
-                    onSubmit(form)
-                }
-                else {
+                    setTimeout(() => {
+                        refetch()
+                    }, 5000)
+                } else if (status === 'OK' && result === true){
                     onPercentageCheck()
-                    refetch()
+                   
                 }
+                else { (message.error(description)); setDisableBtn(false) }
+                setTimeout(() => {
+                         refetch()
+                     }, 5000)
             }
         }
     )
     const onSubmit = (form) => {
         setDisableBtn(true)
+        setPercentageCheck(false)
         if (lock === true) {
             message.error('previous Transaction Pending')
             setDisableBtn(false)
@@ -93,23 +101,9 @@ console.log('token',token,"disableBtn",disableBtn)
             })
         }
     }
-    const rules = [
-        {
-            required: true,
-            message: 'Confirm acccount number required!'
-        },
-        ({ getFieldValue }) => ({
-            validator(rule, value) {
-                if (!value || getFieldValue('account_number') === value) {
-                    return Promise.resolve()
-                }
-                return Promise.reject('The account number that you entered do not match!')
-            }
-        })
-    ]
+
     const onHandleOk = () => {
-        onSubmit(form)
-        setPercentageCheck(false)
+       form.submit()
     }
     const onHandleCancel = () => {
         setPercentageCheck(false)
@@ -124,8 +118,8 @@ console.log('token',token,"disableBtn",disableBtn)
                 onOk={onHandleOk}
                 onCancel={onHandleCancel}
             >
-                'Total advance percentage is more than 90%.
-                Do you want to proceed?'
+                Total advance percentage is more than 90%.
+                Do you want to proceed?
          </Modal>
             <Form layout='vertical' form={form} onFinish={onSubmit}>
                 <Row gutter={10}>
