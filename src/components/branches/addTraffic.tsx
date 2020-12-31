@@ -215,6 +215,7 @@ const date =moment(new Date().toISOString()).format('DD-MMM-YY')
       title: 'Phone',
       render: (text, record) => get(record, 'employee.mobileno', null)
     },
+    access?
     {
       title: 'Action',
       render: (record) =>{
@@ -227,11 +228,12 @@ const date =moment(new Date().toISOString()).format('DD-MMM-YY')
           onClick={() => onDelete(record.id)} 
           disabled={record.is_manager || !!count }
           /> : null)}
-    },
+    }: {},
+    access?
     {
       title: BranchTraffic,
       width: '10%'
-    }
+    }:{}
   ]
 
   return (
