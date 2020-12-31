@@ -31,7 +31,7 @@ const InvoicedContainer = (props) => {
     source: { name: { _ilike: filter.sourcename ? `%${filter.sourcename}%` : null } },
     destination: { name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } },
     truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } },
-    branch_employee: {employee: {name: {_ilike:filter.paymentmanagername ? `%${filter.paymentmanagername}%` : null}}}
+    branch_employee: { employee: { name: { _ilike: filter.paymentmanagername ? `%${filter.paymentmanagername}%` : null } } }
   }
 
   const variables = {
