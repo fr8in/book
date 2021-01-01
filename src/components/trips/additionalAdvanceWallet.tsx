@@ -43,14 +43,14 @@ const AdditionalAdvanceWallet = (props) => {
     })
     let token = {}
     if (!loading) {
-         token =  get(data, 'token', null)
-      
+        token = get(data, 'token', null)
+
     }
 
     const onPercentageCheck = () => {
         setPercentageCheck(true)
     }
-console.log('token',token,"disableBtn",disableBtn)
+    console.log('token', token, "disableBtn", disableBtn)
     const [createAdditionalAdvanceWallet] = useMutation(
         CREATE_ADDITIONAL_ADVANCE_WALLET,
         {
@@ -59,22 +59,21 @@ console.log('token',token,"disableBtn",disableBtn)
                 const status = get(data, 'additional_advance_wallet.status', null)
                 const description = get(data, 'additional_advance_wallet.description', null)
                 const result = get(data, 'additional_advance_wallet.result.advance_result', null)
-                console.log('result',result)
-                if (status === 'OK' && result === false ) {
+                console.log('result', result)
+                if (status === 'OK' && result === false) {
                     setDisableBtn(false)
                     setAdvanceRefetch(true)
                     message.success(description || 'Processed!')
+                } else if (status === 'OK' && result === true) {
                     setTimeout(() => {
                         refetch()
-                    }, 5000)
-                } else if (status === 'OK' && result === true){
-                    onPercentageCheck()
-                   
+                        onPercentageCheck()
+                    }, 2000)
                 }
                 else { (message.error(description)); setDisableBtn(false) }
                 setTimeout(() => {
-                         refetch()
-                     }, 5000)
+                    refetch()
+                }, 2000)
             }
         }
     )
@@ -103,10 +102,11 @@ console.log('token',token,"disableBtn",disableBtn)
     }
 
     const onHandleOk = () => {
-       form.submit()
+        form.submit()
     }
     const onHandleCancel = () => {
         setPercentageCheck(false)
+        setDisableBtn(false)
     }
     const trip_status = get(trip_info, 'trip_status.id', null)
     const loadedNo = get(trip_info, 'loaded', 'No')
