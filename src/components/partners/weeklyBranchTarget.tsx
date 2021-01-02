@@ -56,7 +56,7 @@ const WeeklyBranchTarget = (props) => {
         week1: week[0],
         week2: week[1],
         week3: week[2],
-        year1: year[0],
+        year1: (year.length > 1 && week[0] > week[1]) ? year[1] : year[0],
         year2: (year.length > 1 ? year[1] : year[0]),
         year3: (year.length > 1 ? year[1] : year[0])
       }
