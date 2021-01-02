@@ -63,6 +63,7 @@ const AdditionalAdvanceWallet = (props) => {
                 if (status === 'OK' && result === false) {
                     setDisableBtn(false)
                     setAdvanceRefetch(true)
+                    form.resetFields()
                     message.success(description || 'Processed!')
                 } else if (status === 'OK' && result === true) {
                     setTimeout(() => {

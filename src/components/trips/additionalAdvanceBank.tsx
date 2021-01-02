@@ -85,9 +85,11 @@ const AdditionalAdvanceBank = (props) => {
                 const status = get(data, 'additional_advance_bank.status', null)
                 const description = get(data, 'additional_advance_bank.description', null)
                 const result = get(data, 'additional_advance_bank.result.advance_result', null)
+                console.log('result',result)
                 if (status === 'OK' && result === false) {
                     setDisableBtn(false)
                     setAdvanceRefetch(true)
+                    form.resetFields()
                     message.success(description || 'Processed!')
                 } else if (status === 'OK' && result === true) {
                     setTimeout(() => {
