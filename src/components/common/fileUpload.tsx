@@ -129,7 +129,6 @@ const FileUpload = (props) => {
   const { confirm } = Modal;
 
   function showConfirm(file) {
-    console.log('file',file)
     confirm({
       title: `Are you sure want to Delete ${file_type} Document?`,
       icon: <ExclamationCircleOutlined />,
