@@ -178,36 +178,36 @@ const AdditionalAdvanceBank = (props) => {
                         <Col xs={12} sm={8}>
 
                             <Form.Item label='Account Name' name='account_name' rules={[{ required: true }]}>
-                                <Input placeholder='Account Name' />
+                                <Input placeholder='Account Name' disabled={disableBtn}/>
                             </Form.Item>
                         </Col>
                         <Col xs={12} sm={8}>
                             <Form.Item label='Account No' name='account_number' rules={[{ required: true }]}>
-                                <Input placeholder='Account Number' />
+                                <Input placeholder='Account Number' disabled={disableBtn}/>
                             </Form.Item>
                         </Col>
                         <Col xs={12} sm={8}>
                             <Form.Item label='Confirm Account No' rules={rules} dependencies={['account_number']} name='confirm'>
-                                <Input placeholder='Confirm' type='password' />
+                                <Input placeholder='Confirm' type='password' disabled={disableBtn}/>
                             </Form.Item>
                         </Col>
                     </Row>
                     <Row gutter={10}>
                         <Col xs={12} sm={8}>
                             <Form.Item label='IFSC Code' name='ifsc' extra={get(bank_detail, 'bank', null)} rules={[{ required: true, message: 'IFSC required!' }]}>
-                                <Input placeholder='IFSC Code' onBlur={validateIFSC} />
+                                <Input placeholder='IFSC Code' onBlur={validateIFSC} disabled={disableBtn}/>
                             </Form.Item>
                         </Col>
                         <Col xs={12} sm={8} className='reduceMarginTop1'>
                             <Form.Item label='Amount' name='amount' rules={[{ required: true }]}>
-                                <Input placeholder='Amount' />
+                                <Input placeholder='Amount' disabled={disableBtn}/>
                             </Form.Item>
                         </Col>
                     </Row>
                     <Row gutter={10}>
                     <Col xs={16}>
                         <Form.Item label='Comment' name='comment' rules={[{ required: true }]}>
-                            <Input placeholder='Comment' />
+                            <Input placeholder='Comment' disabled={disableBtn}/>
                         </Form.Item>
                     </Col>
                     <Col xs={8}>

@@ -126,14 +126,14 @@ const AdditionalAdvanceWallet = (props) => {
                 <Row gutter={10}>
                     <Col xs={12} sm={8}>
                         <Form.Item label='Amount' name='amount' extra='*Limit PO value' rules={[{ required: true }]}>
-                            <Input placeholder='Amount' />
+                            <Input placeholder='Amount' disabled={disableBtn}/>
                         </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={10}>
                     <Col xs={16}>
                         <Form.Item label='Comment' name='comment' rules={[{ required: true }]}>
-                            <Input placeholder='Comment' />
+                            <Input placeholder='Comment' disabled={disableBtn}/>
                         </Form.Item>
                     </Col>
                     <Col xs={8}>
