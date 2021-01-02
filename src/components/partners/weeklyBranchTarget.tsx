@@ -42,12 +42,9 @@ const WeeklyBranchTarget = (props) => {
   const cw = moment().format('WW yyyy').split(' ') // Current Week
   const lw = moment().subtract(1, 'weeks').format('WW yyyy').split(' ') // Last Week
   const blw = moment().subtract(2, 'weeks').format('WW yyyy').split(' ') // Before Last Week
-  
 
   const week = [parseInt(cw[0], 10), parseInt(lw[0], 10), parseInt(blw[0], 10)]
-  console.log('week',week)
   const year = (cw[1] === blw[1]) ? [parseInt(cw[1], 10)] : [parseInt(cw[1], 10), parseInt(blw[1], 10)]
-  console.log('year',year)
 
   const { loading, data, error } = useSubscription(
     WEEKLY_TARGET_QUERY,
