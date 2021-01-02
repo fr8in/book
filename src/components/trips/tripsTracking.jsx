@@ -270,7 +270,7 @@ const TripsTracking = (props) => {
       ),
       width: '10%',
       render: (text, record) => {
-        const payment_manager = get(record, 'branch_employee.employee.name', null)
+        const payment_manager = get(record, 'customer.payment_manager.name', null)
         return <Truncate data={payment_manager} length={10} />
       },
       filterDropdown: (
