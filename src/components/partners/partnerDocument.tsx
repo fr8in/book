@@ -104,7 +104,7 @@ const PartnerDocument = (props) => {
                         size='small'
                         id={partnerInfo.id}
                         type='partner'
-                        file_type={u.fileType.partner_pan}
+                        file_type='PAN'
                         file_list={pan_files}
                         disable={!access}
                       />
