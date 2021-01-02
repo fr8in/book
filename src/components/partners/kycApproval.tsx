@@ -93,7 +93,6 @@ mutation create_partner_code(
   $onboarded_by_id: Int!,
   $partner_advance_percentage_id: Int!
   $gst:String,
-  $emi: Boolean!,
   $updated_by: String!,
   $approved_by: String! ) {
   create_partner_code(
@@ -104,7 +103,6 @@ mutation create_partner_code(
     onboarded_by_id: $onboarded_by_id, 
     partner_advance_percentage_id: $partner_advance_percentage_id, 
     gst: $gst, 
-    emi: $emi, 
     updated_by: $updated_by,
     approved_by:$approved_by) {
     description
@@ -263,7 +261,6 @@ const KycApproval = (props) => {
           name: name,
           pan_no: partnerDetail.pan,
           gst: form.gst,
-          emi: !!checked,
           updated_by: context.email,
           approved_by:context.email,
           onboarded_by_id: get(partnerDetail, 'onboarded_by.id', null),
@@ -279,7 +276,7 @@ const KycApproval = (props) => {
       {loading ? <Loading />
         : (
           <Row gutter={20}>
-            <Col xs={24} sm={12}>
+            <Col xs={24} sm={24} md={12}>
               <Card
                 size='small'
                 title={isEmpty(trucks) ? 'Add Truck' : 'Trucks Detail'}
@@ -313,7 +310,7 @@ const KycApproval = (props) => {
                    {visible.showModal && <NewTruck visible={visible.showModal} partner_info={partnerDetail} disableAddTruck={disableAddTruck} onHide={onHide} />}
               </Card>
             </Col>
-            <Col xs={24} sm={12}>
+            <Col xs={24} sm={24} md={12}>
               <Card
                 size='small'
                 title='KYC Approval'
@@ -487,13 +484,6 @@ const KycApproval = (props) => {
                           </Col>
                         </Row>
                       </Col>
-                      <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
-                    </List.Item>
-                    <List.Item key={6}>
-                      <Form.Item className='mb0' initialValue={get(partnerDetail, 'emi', false)}>
-                        <Checkbox checked={checked} onChange={onChange}>EMI</Checkbox>
-                      </Form.Item>
-                      <Col xs={12} sm={12}>&nbsp;</Col>
                       <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
                     </List.Item>
                   </List>
