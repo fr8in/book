@@ -59,6 +59,7 @@ const AdditionalAdvanceWallet = (props) => {
                 const status = get(data, 'additional_advance_wallet.status', null)
                 const description = get(data, 'additional_advance_wallet.description', null)
                 const result = get(data, 'additional_advance_wallet.result.advance_result', null)
+           form.resetFields()
                 console.log('result', result)
                 if (status === 'OK' && result === false) {
                     setDisableBtn(false)

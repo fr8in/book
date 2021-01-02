@@ -16,6 +16,9 @@ mutation create_additional_advance($input: AdditionalAdvanceBankInput) {
   additional_advance_bank(input: $input) {
     status
     description
+    result {
+        advance_result
+    }
   }
 }`
 
@@ -82,21 +85,21 @@ const AdditionalAdvanceBank = (props) => {
                 const status = get(data, 'additional_advance_bank.status', null)
                 const description = get(data, 'additional_advance_bank.description', null)
                 const result = get(data, 'additional_advance_wallet.result.advance_result', null)
-                if (status === 'OK') {
+                form.resetFields()
+                if (status === 'OK' && result === false) {
                     setDisableBtn(false)
                     setAdvanceRefetch(true)
-                    form.resetFields()
                     message.success(description || 'Processed!')
-                } else { (message.error(description)); setDisableBtn(false) }
-                if (result === false) {
-                    onSubmit(form)
+                } else if (status === 'OK' && result === true) {
+                    setTimeout(() => {
+                        refetch()
+                        onPercentageCheck()  
+                        }, 2000)
                 }
-                else {
-                    onPercentageCheck()
-                }
+                else { (message.error(description)); setDisableBtn(false) }
                 setTimeout(() => {
                     refetch()
-                }, 5000)
+                }, 2000)
             }
         }
     )
