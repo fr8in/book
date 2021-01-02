@@ -4,7 +4,7 @@ import { gql, useMutation, useQuery, useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 import u from '../../lib/util'
-import sumBy from 'lodash/sumBy'
+import Loading from '../common/loading'
 
 const GET_TOKEN = gql`query getToken($ref_id: Int!, $process: String!) {
     token(ref_id: $ref_id, process: $process)
@@ -178,36 +178,36 @@ const AdditionalAdvanceBank = (props) => {
                         <Col xs={12} sm={8}>
 
                             <Form.Item label='Account Name' name='account_name' rules={[{ required: true }]}>
-                                <Input placeholder='Account Name' disabled={disableBtn}/>
+                                <Input placeholder='Account Name' />
                             </Form.Item>
                         </Col>
                         <Col xs={12} sm={8}>
                             <Form.Item label='Account No' name='account_number' rules={[{ required: true }]}>
-                                <Input placeholder='Account Number' disabled={disableBtn}/>
+                                <Input placeholder='Account Number' />
                             </Form.Item>
                         </Col>
                         <Col xs={12} sm={8}>
                             <Form.Item label='Confirm Account No' rules={rules} dependencies={['account_number']} name='confirm'>
-                                <Input placeholder='Confirm' type='password' disabled={disableBtn}/>
+                                <Input placeholder='Confirm' type='password' />
                             </Form.Item>
                         </Col>
                     </Row>
                     <Row gutter={10}>
                         <Col xs={12} sm={8}>
                             <Form.Item label='IFSC Code' name='ifsc' extra={get(bank_detail, 'bank', null)} rules={[{ required: true, message: 'IFSC required!' }]}>
-                                <Input placeholder='IFSC Code' onBlur={validateIFSC} disabled={disableBtn}/>
+                                <Input placeholder='IFSC Code' onBlur={validateIFSC} />
                             </Form.Item>
                         </Col>
                         <Col xs={12} sm={8} className='reduceMarginTop1'>
                             <Form.Item label='Amount' name='amount' rules={[{ required: true }]}>
-                                <Input placeholder='Amount' disabled={disableBtn}/>
+                                <Input placeholder='Amount' />
                             </Form.Item>
                         </Col>
                     </Row>
                     <Row gutter={10}>
                     <Col xs={16}>
                         <Form.Item label='Comment' name='comment' rules={[{ required: true }]}>
-                            <Input placeholder='Comment' disabled={disableBtn}/>
+                            <Input placeholder='Comment' />
                         </Form.Item>
                     </Col>
                     <Col xs={8}>
@@ -217,6 +217,8 @@ const AdditionalAdvanceBank = (props) => {
                     </Col>
                     </Row>
                 </Form>
+                {(disableBtn || !token) &&
+                  <Loading fixed />}
             </div>
         </>
     )

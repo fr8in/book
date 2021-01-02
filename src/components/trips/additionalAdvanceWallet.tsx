@@ -4,6 +4,7 @@ import { gql, useMutation, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 import u from '../../lib/util'
+import Loading from '../common/loading'
 
 const GET_TOKEN = gql`
  query getToken($ref_id: Int!, $process: String!) {
@@ -126,14 +127,14 @@ const AdditionalAdvanceWallet = (props) => {
                 <Row gutter={10}>
                     <Col xs={12} sm={8}>
                         <Form.Item label='Amount' name='amount' extra='*Limit PO value' rules={[{ required: true }]}>
-                            <Input placeholder='Amount' disabled={disableBtn}/>
+                            <Input placeholder='Amount' />
                         </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={10}>
                     <Col xs={16}>
                         <Form.Item label='Comment' name='comment' rules={[{ required: true }]}>
-                            <Input placeholder='Comment' disabled={disableBtn}/>
+                            <Input placeholder='Comment' />
                         </Form.Item>
                     </Col>
                     <Col xs={8}>
@@ -143,6 +144,8 @@ const AdditionalAdvanceWallet = (props) => {
                     </Col>
                 </Row>
             </Form>
+            {(disableBtn || !token) &&
+                  <Loading fixed />}
         </>
     )
 }
