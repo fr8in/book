@@ -6,7 +6,8 @@ import userContext from '../../lib/userContaxt'
 import u from '../../lib/util'
 import Loading from '../common/loading'
 
-const GET_TOKEN = gql`query getToken($ref_id: Int!, $process: String!) {
+const GET_TOKEN = gql`
+query getToken($ref_id: Int!, $process: String!) {
     token(ref_id: $ref_id, process: $process)
   }
 `
@@ -85,7 +86,6 @@ const AdditionalAdvanceBank = (props) => {
                 const status = get(data, 'additional_advance_bank.status', null)
                 const description = get(data, 'additional_advance_bank.description', null)
                 const result = get(data, 'additional_advance_bank.result.advance_result', null)
-                console.log('result',result)
                 if (status === 'OK' && result === false) {
                     setDisableBtn(false)
                     setAdvanceRefetch(true)

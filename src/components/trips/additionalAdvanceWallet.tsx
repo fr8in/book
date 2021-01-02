@@ -51,7 +51,6 @@ const AdditionalAdvanceWallet = (props) => {
     const onPercentageCheck = () => {
         setPercentageCheck(true)
     }
-    console.log('token', token, "disableBtn", disableBtn)
     const [createAdditionalAdvanceWallet] = useMutation(
         CREATE_ADDITIONAL_ADVANCE_WALLET,
         {
@@ -60,7 +59,6 @@ const AdditionalAdvanceWallet = (props) => {
                 const status = get(data, 'additional_advance_wallet.status', null)
                 const description = get(data, 'additional_advance_wallet.description', null)
                 const result = get(data, 'additional_advance_wallet.result.advance_result', null)
-                console.log('result', result)
                 if (status === 'OK' && result === false) {
                     setDisableBtn(false)
                     setAdvanceRefetch(true)
