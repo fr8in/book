@@ -41,6 +41,10 @@ const PayablesContainer = () => {
     return ((tooEarly || tooLate))
   }
 
+  function disabledMonthForFuelCashBack(current) {
+    return current && current < moment("2020/12/01");
+  }
+
   const [icici_statement] = useMutation(
     DATE_SELECT_MUTATION,
     {
@@ -112,7 +116,11 @@ const PayablesContainer = () => {
                   </Space>}
               </Space>
               )
-            : <DatePicker onChange={handleMonthChange} picker='month' />
+            : <DatePicker 
+            onChange={handleMonthChange} 
+            disabledDate={(current) => disabledMonthForFuelCashBack(current)}
+            picker='month'
+             />
     )
   }
   console.log('object tabIndex', tabIndex)
