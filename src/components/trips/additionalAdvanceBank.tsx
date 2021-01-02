@@ -199,11 +199,18 @@ const AdditionalAdvanceBank = (props) => {
                             </Form.Item>
                         </Col>
                     </Row>
+                    <Row gutter={10}>
+                    <Col xs={16}>
+                        <Form.Item label='Comment' name='comment' rules={[{ required: true }]}>
+                            <Input placeholder='Comment' />
+                        </Form.Item>
+                    </Col>
                     <Col xs={8}>
                         <Form.Item label='save' className='hideLabel'>
                             <Button type='primary' disabled={disable_adv_btn || (radioValue === 'BANK' && !form.getFieldValue('ifsc'))} loading={disableBtn || !token} htmlType='submit'>Pay Now</Button>
                         </Form.Item>
                     </Col>
+                    </Row>
                 </Form>
             </div>
         </>
