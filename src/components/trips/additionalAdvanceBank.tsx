@@ -84,8 +84,7 @@ const AdditionalAdvanceBank = (props) => {
             onCompleted(data) {
                 const status = get(data, 'additional_advance_bank.status', null)
                 const description = get(data, 'additional_advance_bank.description', null)
-                const result = get(data, 'additional_advance_wallet.result.advance_result', null)
-                form.resetFields()
+                const result = get(data, 'additional_advance_bank.result.advance_result', null)
                 if (status === 'OK' && result === false) {
                     setDisableBtn(false)
                     setAdvanceRefetch(true)
@@ -105,6 +104,7 @@ const AdditionalAdvanceBank = (props) => {
     )
     const onSubmit = (form) => {
         setDisableBtn(true)
+        setPercentageCheck(false)
         if (lock === true) {
             message.error('previous Transaction Pending')
             setDisableBtn(false)
@@ -151,21 +151,24 @@ const AdditionalAdvanceBank = (props) => {
 
     console.log('IFSC validation Error', error)
     const onHandleOk = () => {
-        onSubmit(form)
-        setPercentageCheck(false)
+        form.submit()
     }
     const onHandleCancel = () => {
         setPercentageCheck(false)
+        setDisableBtn(false)
     }
-
     const trip_status = get(trip_info, 'trip_status.id', null)
     const loadedNo = get(trip_info, 'loaded', 'No')
     const disable_adv_btn = (trip_status >= 12 || loadedNo === 'No' || !access)
     return (
         <>
-            <Modal title="Basic Modal" visible={percentageCheck} onOk={onHandleOk} onCancel={onHandleCancel}>
-                'Total advance percentage is more than 90%.
-                Do you want to proceed?'
+            <Modal 
+            visible={percentageCheck} 
+            onOk={onHandleOk} 
+            onCancel={onHandleCancel}
+            >
+                Total advance percentage is more than 90%.
+                Do you want to proceed?
       </Modal>
             <div>
                 <Form layout='vertical' form={form} onFinish={onSubmit}>
