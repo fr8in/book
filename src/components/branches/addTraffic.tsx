@@ -190,15 +190,15 @@ const date =moment(new Date().toISOString()).format('DD-MMM-YY')
     })
   }
   const BranchTraffic = (
-    <Row><Space>
+   <Space>
       <Button size='small' type='primary' defaultChecked={addTraffic} icon={<PlusOutlined />} onClick={onTrafficChange} />
       <Button size='small' type='primary' icon={<SwapOutlined />} onClick={onSwapChange} />
     </Space>
-    </Row>
   )
   const Traffic = [
     {
       title: 'BM.Traffic',
+      width: access ?'45%': '60%',
       render: (text, record) => {
         const name = get(record, 'employee.name', null)
         return (
@@ -213,10 +213,13 @@ const date =moment(new Date().toISOString()).format('DD-MMM-YY')
     },
     {
       title: 'Phone',
-      render: (text, record) => get(record, 'employee.mobileno', null)
+      render: (text, record) => get(record, 'employee.mobileno', null),
+      width: access ? '25%': '40%',
     },
+    access?
     {
       title: 'Action',
+      width:'15%',
       render: (record) =>{
         const count = get(record, 'customer_branch_employees_aggregate.aggregate.count' ,0) 
       return(
@@ -227,11 +230,12 @@ const date =moment(new Date().toISOString()).format('DD-MMM-YY')
           onClick={() => onDelete(record.id)} 
           disabled={record.is_manager || !!count }
           /> : null)}
-    },
+    }: {},
+    access?
     {
       title: BranchTraffic,
-      width: '10%'
-    }
+      width: '15%'
+    }:{}
   ]
 
   return (
@@ -240,7 +244,7 @@ const date =moment(new Date().toISOString()).format('DD-MMM-YY')
       title={` ${title} Traffic`}
       onCancel={onHide}
       style={{ top: 2 }}
-      width={750}
+      width={700}
       footer={[]}
     >
       <Form>{

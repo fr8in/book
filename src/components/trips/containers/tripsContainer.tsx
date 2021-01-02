@@ -49,7 +49,8 @@ const TripsContainer = () => {
     invoiced_truckno: null,
     invoiced_customername:null,
     pod_receipt_count:0,
-    pod_dispatch_count: 0
+    pod_dispatch_count: 0,
+    invoiced_paymentmanagername: null
   }
   const [countFilter,setCountFilter] = useState(initialvalue)
   const [tabKey, setTabKey] = useState('1')
@@ -61,7 +62,7 @@ const TripsContainer = () => {
     all_trip: { _and: [{ trip_status: { name: { _in: ['Delivered', 'Invoiced', 'Paid', 'Recieved', 'Closed'] } } }] },
     delivered_trip: { _and: [{ trip_status: { name: { _in: ['Delivered'] } }, pod_verified_at: { _is_null: true } }],customer: { name: { _ilike: countFilter.delivered_customername ? `%${countFilter.delivered_customername}%` : null } }, partner: { name: { _ilike: countFilter.delivered_partnername ? `%${countFilter.delivered_partnername}%` : null } },truck: { truck_no: { _ilike: countFilter.delivered_truckno ? `%${countFilter.delivered_truckno}%` : null } } },
     pod_verified_trip: { _and: [{ trip_status: { name: { _in: ['Delivered'] } }, pod_verified_at: { _is_null: false } }],customer: { name: { _ilike: countFilter.pod_verified_customername ? `%${countFilter.pod_verified_customername}%` : null } }, partner: { name: { _ilike: countFilter.pod_verified_partnername ? `%${countFilter.pod_verified_partnername}%` : null } },truck: { truck_no: { _ilike: countFilter.pod_verified_truckno ? `%${countFilter.pod_verified_truckno}%` : null } }  },
-    invoiced_trip: { _and: [{ trip_status: { name: { _in: ['Invoiced', 'Paid', 'Recieved', 'Closed'] } }, pod_dispatched_at: { _is_null: true } }],customer: { name: { _ilike: countFilter.invoiced_customername ? `%${countFilter.invoiced_customername}%` : null } },partner: { name: { _ilike: countFilter.invoiced_partnername ? `%${countFilter.invoiced_partnername}%` : null } },truck: { truck_no: { _ilike: countFilter.invoiced_truckno ? `%${countFilter.invoiced_truckno}%` : null } }   }
+    invoiced_trip: { _and: [{ trip_status: { name: { _in: ['Invoiced', 'Paid', 'Recieved', 'Closed'] } }, pod_dispatched_at: { _is_null: true } }],customer: { name: { _ilike: countFilter.invoiced_customername ? `%${countFilter.invoiced_customername}%` : null } },partner: { name: { _ilike: countFilter.invoiced_partnername ? `%${countFilter.invoiced_partnername}%` : null } },truck: { truck_no: { _ilike: countFilter.invoiced_truckno ? `%${countFilter.invoiced_truckno}%` : null } }, branch_employee: { employee: { name: { _ilike: countFilter.invoiced_paymentmanagername ? `%${countFilter.invoiced_paymentmanagername}%` : null } } } }
   }
 
   const variables = {
