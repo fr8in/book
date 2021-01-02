@@ -3,6 +3,7 @@ import { DeleteOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import { useContext } from 'react'
+import u from '../../lib/util'
 
 const FILE_DELETE_MUTATION = gql`
 mutation delete_file($name: String, $id: Int, $type: String, $fileType: String,$updated_by:String) {
@@ -40,7 +41,7 @@ const DeleteFile = (props) => {
 
   return (
   <Popconfirm
-    title={`Are you sure want to Delete ${file_type} Document?`}
+    title={`Are you sure want to Delete ${file_type === u.fileType.partner_pan ? 'PAN' : file_type} Document?`}
     okText='Yes'
     cancelText='No'
     onConfirm={() =>remove(file)}
