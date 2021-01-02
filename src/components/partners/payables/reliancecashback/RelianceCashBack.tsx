@@ -68,7 +68,8 @@ const RelianceCashBack = (props) => {
     },
     {
       title: 'Consumption',
-      dataIndex: 'consumption'
+      dataIndex: 'consumption',
+      render: (text, record) => text.toFixed(2)
     },
     {
       title: 'CashBack',
