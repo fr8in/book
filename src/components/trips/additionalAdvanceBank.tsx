@@ -109,7 +109,11 @@ const AdditionalAdvanceBank = (props) => {
         if (lock === true) {
             message.error('previous Transaction Pending')
             setDisableBtn(false)
-        } else {
+        } 
+        else if (!token) {
+            message.error('Secured token not created contact FR8 team')
+         }
+         else {
             createAdditionalAdvanceBank({
                 variables: {
                     input: {

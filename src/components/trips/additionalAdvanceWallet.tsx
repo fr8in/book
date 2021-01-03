@@ -83,7 +83,10 @@ const AdditionalAdvanceWallet = (props) => {
         if (lock === true) {
             message.error('previous Transaction Pending')
             setDisableBtn(false)
-        } else {
+        }else if (!token) {
+           message.error('Secured token not created contact FR8 team')
+        }
+        else {
             createAdditionalAdvanceWallet({
                 variables: {
                     input: {
@@ -118,8 +121,8 @@ const AdditionalAdvanceWallet = (props) => {
                 onOk={onHandleOk}
                 onCancel={onHandleCancel}
             >
-               <p> Total advance percentage is more than 90%.
-                Do you want to proceed? </p>
+               <p>Total advance percentage is more than 90%.
+                Do you want to proceed?</p>
          </Modal>
             <Form layout='vertical' form={form} onFinish={onSubmit}>
                 <Row gutter={10}>
