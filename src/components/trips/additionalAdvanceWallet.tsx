@@ -140,7 +140,7 @@ const AdditionalAdvanceWallet = (props) => {
                     </Col>
                     <Col xs={8}>
                         <Form.Item label='save' className='hideLabel'>
-                            <Button type='primary' disabled={disable_adv_btn || (radioValue === 'BANK' && !form.getFieldValue('ifsc'))} loading={disableBtn || !token} htmlType='submit'>Pay Now</Button>
+                            <Button type='primary' disabled={disable_adv_btn} loading={disableBtn || !token} htmlType='submit'>Pay Now</Button>
                         </Form.Item>
                     </Col>
                 </Row>
