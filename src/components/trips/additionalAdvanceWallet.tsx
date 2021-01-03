@@ -118,8 +118,8 @@ const AdditionalAdvanceWallet = (props) => {
                 onOk={onHandleOk}
                 onCancel={onHandleCancel}
             >
-                Total advance percentage is more than 90%.
-                Do you want to proceed?
+               <p> Total advance percentage is more than 90%.
+                Do you want to proceed? </p>
          </Modal>
             <Form layout='vertical' form={form} onFinish={onSubmit}>
                 <Row gutter={10}>
@@ -142,7 +142,7 @@ const AdditionalAdvanceWallet = (props) => {
                     </Col>
                 </Row>
             </Form>
-            {(disableBtn || !token) &&
+            {disableBtn &&
                   <Loading fixed />}
         </>
     )

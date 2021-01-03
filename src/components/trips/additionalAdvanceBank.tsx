@@ -88,7 +88,6 @@ const AdditionalAdvanceBank = (props) => {
                 const result = get(data, 'additional_advance_bank.result.advance_result', null)
                 if (status === 'OK' && result === false) {
                     setDisableBtn(false)
-                    setAdvanceRefetch(true)
                     form.resetFields()
                     message.success(description || 'Processed!')
                 } else if (status === 'OK' && result === true) {
@@ -169,8 +168,8 @@ const AdditionalAdvanceBank = (props) => {
             onOk={onHandleOk} 
             onCancel={onHandleCancel}
             >
-                Total advance percentage is more than 90%.
-                Do you want to proceed?
+               <p>Total advance percentage is more than 90%.
+                Do you want to proceed?</p>
       </Modal>
             <div>
                 <Form layout='vertical' form={form} onFinish={onSubmit}>
@@ -217,7 +216,7 @@ const AdditionalAdvanceBank = (props) => {
                     </Col>
                     </Row>
                 </Form>
-                {(disableBtn || !token) &&
+                {disableBtn  &&
                   <Loading fixed />}
             </div>
         </>
