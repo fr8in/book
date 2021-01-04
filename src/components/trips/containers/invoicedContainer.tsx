@@ -27,11 +27,10 @@ const InvoicedContainer = (props) => {
     _and: [{ trip_status: { name: { _in: filter.trip_statusName && filter.trip_statusName.length > 0 ? filter.trip_statusName : initialFilter.trip_statusName } }, pod_dispatched_at: { _is_null: true } }],
     id: { _in: filter.id ? filter.id : null },
     partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
-    customer: { name: { _ilike: filter.customername ? `%${filter.customername}%` : null } },
+    customer: { name: { _ilike: filter.customername ? `%${filter.customername}%` : null }, payment_manager: { name: { _ilike: filter.paymentmanagername ? `%${filter.paymentmanagername}%` : null } } },
     source: { name: { _ilike: filter.sourcename ? `%${filter.sourcename}%` : null } },
     destination: { name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } },
-    truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } },
-    branch_employee: { employee: { name: { _ilike: filter.paymentmanagername ? `%${filter.paymentmanagername}%` : null } } }
+    truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } }
   }
 
   const variables = {
