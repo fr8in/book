@@ -92,7 +92,7 @@ const AdditionalAdvanceWallet = (props) => {
                     input: {
                         trip_id: trip_info.id,
                         amount: parseFloat(form.amount),
-                        wallet_code: trip_info && trip_info.partner && trip_info.partner.walletcode,
+                        wallet_code: get(trip_info,'partner.walletcode',null),
                         payment_mode: radioValue,
                         comment: form.comment,
                         created_by: context.email,
@@ -112,8 +112,8 @@ const AdditionalAdvanceWallet = (props) => {
         setDisableBtn(false)
     }
     const trip_status = get(trip_info, 'trip_status.id', null)
-    const loadedNo = get(trip_info, 'loaded', 'No')
-    const disable_adv_btn = (trip_status >= 12 || loadedNo === 'No' || !access)
+    const loaded = get(trip_info, 'loaded', null)
+    const disable_adv_btn = (trip_status >= 12 || loaded === 'No' || !access)
     return (
         <>
             <Modal
