@@ -91,12 +91,13 @@ const AdditionalAdvanceBank = (props) => {
                     form.resetFields()
                     message.success(description || 'Processed!')
                 } else if (status === 'OK' && result === true) {
+                     // getting token after 2s and proceeding additional advance
                     setTimeout(() => {
-                        refetch()
                         onPercentageCheck()  
                         }, 2000)
                 }
                 else { (message.error(description)); setDisableBtn(false) }
+                // refetch the token after every call
                 setTimeout(() => {
                     refetch()
                 }, 2000)
@@ -106,7 +107,7 @@ const AdditionalAdvanceBank = (props) => {
     const onSubmit = (form) => {
         setDisableBtn(true)
         setPercentageCheck(false)
-        if (lock === true) {
+        if (lock) {
             message.error('previous Transaction Pending')
             setDisableBtn(false)
         } 
