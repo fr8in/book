@@ -4,7 +4,7 @@ import AdditionalAdvanceWallet from './additionalAdvanceWallet'
 import AdditionalAdvanceBank from './additionalAdvanceBank'
 
 const CreateAdditionalAdvance = (props) => {
-  const { trip_info, setAdvanceRefetch, lock } = props
+  const { trip_info, lock } = props
 
   const [radioValue, setRadioValue] = useState('WALLET')
   const onRadioChange = (e) => {
@@ -31,8 +31,8 @@ const CreateAdditionalAdvance = (props) => {
               </Col>
             </Row>
             {radioValue === 'WALLET' ?
-              <AdditionalAdvanceWallet trip_info={trip_info} setAdvanceRefetch={setAdvanceRefetch} lock={lock} radioValue = 'WALLET'/>
-              : <AdditionalAdvanceBank trip_info={trip_info} setAdvanceRefetch={setAdvanceRefetch} lock={lock} radioValue = 'BANK'/>
+              <AdditionalAdvanceWallet trip_info={trip_info}  lock={lock} radioValue = 'WALLET'/>
+              : <AdditionalAdvanceBank trip_info={trip_info}  lock={lock} radioValue = 'BANK'/>
             }
           </Col>
         </Row>

@@ -25,7 +25,7 @@ const CREATE_ADDITIONAL_ADVANCE_WALLET = gql`
 `
 
 const AdditionalAdvanceWallet = (props) => {
-    const { trip_info, setAdvanceRefetch, lock, radioValue } = props
+    const { trip_info, lock, radioValue } = props
 
     const [disableBtn, setDisableBtn] = useState(false)
     const [percentageCheck, setPercentageCheck] = useState(false)
@@ -61,7 +61,6 @@ const AdditionalAdvanceWallet = (props) => {
                 const result = get(data, 'additional_advance_wallet.result.advance_result', null)
                 if (status === 'OK' && result === false) {
                     setDisableBtn(false)
-                    setAdvanceRefetch(true)
                     form.resetFields()
                     message.success(description || 'Processed!')
                 } else if (status === 'OK' && result === true) {
