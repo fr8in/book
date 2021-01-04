@@ -68,7 +68,7 @@ const ReportBarChart = (props) => {
 
   return (
     <Card size='small'>
-      <BarChart width={360} height={220} data={partner_order_report} id='monthlyReport'>
+      <BarChart width={360} height={220} data={partner_order_report} margin={{ top: 0  }} id='monthlyReport'>
         <CartesianGrid strokeDasharray='3 3' />
         <XAxis dataKey='month' />
         <YAxis />
