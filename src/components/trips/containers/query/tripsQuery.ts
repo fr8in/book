@@ -23,6 +23,9 @@ subscription trips_status($offset: Int!, $limit: Int!, $where: trip_bool_exp, $d
     customer {
       name
       cardcode
+      payment_manager{
+        name
+      }
     }
     partner {
       id

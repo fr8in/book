@@ -1,8 +1,9 @@
-import { Button, message } from 'antd'
+import { Button, message,Popconfirm } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import { useContext } from 'react'
+import u from '../../lib/util'
 
 const FILE_DELETE_MUTATION = gql`
 mutation delete_file($name: String, $id: Int, $type: String, $fileType: String,$updated_by:String) {
@@ -37,8 +38,16 @@ const DeleteFile = (props) => {
     }
   }
 
+
   return (
-    <Button shape='circle' size={size || 'default'} danger icon={<DeleteOutlined />} onClick={() => remove(file)} disabled={disable} />
+  <Popconfirm
+    title={`Are you sure want to Delete ${file_type === u.fileType.partner_pan ? 'PAN' : file_type} Document?`}
+    okText='Yes'
+    cancelText='No'
+    onConfirm={() =>remove(file)}
+  >
+    <Button shape='circle' size={size || 'default'} danger icon={<DeleteOutlined />} disabled={disable} />
+  </Popconfirm>
   )
 }
 
