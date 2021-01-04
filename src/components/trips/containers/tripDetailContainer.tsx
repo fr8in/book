@@ -161,7 +161,7 @@ const TripDetailContainer = (props) => {
                         <Panel header={<span>Partner - Payables</span>} key='1'>
                           <Payables trip_id={trip_id} />
                           {before_invoice && loaded && 
-                            <CreateAdditionalAdvance trip_info={trip_info} setAdvanceRefetch={setAdvanceRefetch} lock={lock} />}
+                            <CreateAdditionalAdvance trip_info={trip_info} lock={lock} />}
                           <AdditionalAdvance
                             ad_trip_id={trip_info.id}
                             loaded={loaded}
