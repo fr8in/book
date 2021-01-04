@@ -17,7 +17,7 @@ const ICICI_TRANSACTION= gql` query ICICI ($start_date:String!,$end_date:String!
       balance
     }
   }
-}`
+}`exit
 
 const Last48hrsPending = (props) => {
   const {start_date} = props
