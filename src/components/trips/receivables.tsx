@@ -46,16 +46,16 @@ const Receivables = (props) => {
   console.log('Receivables Error', error)
   let _data = {}
   if (!loading) { 
-    data.trip[0].trip_receivables.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
-    data.trip[0].trip_receipts.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
     _data = data
   }
 
   const trip_pay = get(_data, 'trip[0]', [])
-
+  const _receivables = get(trip_pay,'trip_receivables',[])
+  const _receipts = get(trip_pay,'trip_receipts',[])
+  const receivables_sort = _receivables.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
+  const receipts_sort = _receipts.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
   const receivables = sumBy(trip_pay.trip_receivables, 'amount').toFixed(2)
   const receipts = sumBy(trip_pay.trip_receipts, 'amount').toFixed(2)
-
   const all_payables = get(trip_pay, 'trip_payables', [])
   const on_hold = !isEmpty(all_payables) && all_payables.filter(payable => payable.name === 'On-Hold')
 

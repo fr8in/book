@@ -43,13 +43,14 @@ const Payables = (props) => {
 
   let _data = {}
   if (!loading) {
-    data.trip[0].trip_payables.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
-    data.trip[0].trip_payments.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
     _data = data
   }
 
   const trip_pay = get(_data, 'trip[0]', [])
-
+  const _payables = get(trip_pay,'trip_payables',[])
+  const _payments = get(trip_pay,'trip_payments',[])
+  const payable_sort = _payables.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
+  const payment_sort = _payments.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
   const payables = sumBy(trip_pay.trip_payables, 'amount').toFixed(2)
   const payments = sumBy(trip_pay.trip_payments, 'amount').toFixed(2)
   const invoiced_at = get(trip_pay, 'trip_accounting.invoiced_at')
