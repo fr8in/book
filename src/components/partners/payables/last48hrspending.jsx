@@ -1,7 +1,7 @@
 
 import { Table} from 'antd'
 import React from 'react'
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 
 const ICICI_TRANSACTION= gql` query ICICI ($start_date:String!,$end_date:String!){
@@ -22,19 +22,18 @@ const ICICI_TRANSACTION= gql` query ICICI ($start_date:String!,$end_date:String!
 const Last48hrsPending = (props) => {
   const {start_date} = props
 
-  
-
   const fromdate =  start_date[0] ? start_date[0].format('DD-MM-YYYY') : "" 
   const todate = start_date[1] ? start_date[1].format('DD-MM-YYYY'): ""
  
-  const { loading, error, data, refetch } = useQuery(
+  const { loading, error, data} = useQuery(
     ICICI_TRANSACTION, {
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true,
       variables:{
         start_date:fromdate ,
         end_date:todate
-      }
+      },
+      skip : !fromdate || !todate
     }
   )
   
@@ -46,50 +45,67 @@ const Last48hrsPending = (props) => {
   }
 
   const icici_transaction = get(_data, 'icici_transaction.result', [])
- 
+ console.log(icici_transaction)
+
   const columns = [
     {
       title: 'Date',
-      dataIndex: 'date'
+      dataIndex: 'date',
+      sorter: (a, b) => (a.date > b.date ? 1 : -1),
+      defaultSortOrder: 'desc',
+      width: '10%',
     },
     {
       title: 'Amount',
-      dataIndex: 'amount'
+      dataIndex: 'amount',
+      sorter: (a, b) => (a.amount > b.amount ? 1 : -1),
+      width: '10%',
     },
     {
-      title: 'ChequeNo',
-      dataIndex: 'chequeNo'
+      title: 'Type',
+      dataIndex: 'type',
+      sorter: (a, b) => (a.type > b.type ? 1 : -1),
+      width: '10%',
+    },
+    {
+      title: 'Remarks',
+      dataIndex: 'remarks',
+      width: '20%',
+    },
+    {
+      title: 'Balance',
+      dataIndex: 'balance',
+      width: '10%',
+    },
+    {
+      title: 'TransactionId',
+      dataIndex: 'transactionId',
+      width: '15%',
     },
     {
       title: 'TxnDate',
-      dataIndex: 'txnDate'
+      dataIndex: 'txnDate',
+      width: '10%',
     },
     {
-        title: 'Remarks',
-        dataIndex: 'remarks'
-      },
-      {
-        title: 'TransactionId',
-        dataIndex: 'transactionId'
-      },
-      {
-        title: 'Type',
-        dataIndex: 'type'
-      },
-      {
-        title: 'Balance',
-        dataIndex: 'balance'
-      }
+      title: 'ChequeNo',
+      dataIndex: 'chequeNo',
+      width: '15%',
+    }      
+     
   ]
 
   return (
       <Table
+        rowKey={(record => record.transactionId)}
         columns={columns}
         dataSource={icici_transaction}
         size='small'
         scroll={{ x: 1156 }}
         pagination={false}
+        loading={loading}
       />)
 }
 
 export default Last48hrsPending
+
