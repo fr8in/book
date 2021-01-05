@@ -34,7 +34,8 @@ const util = {
     bm: 'BM',
     hr: 'HR',
     user: 'user',
-    sourcing: 'Sourcing'
+    sourcing: 'Sourcing',
+    operations: 'Operations'
   },
   topic: {
     partner_name: 'Partner Name',
