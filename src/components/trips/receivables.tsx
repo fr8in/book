@@ -45,10 +45,10 @@ const Receivables = (props) => {
 
   console.log('Receivables Error', error)
   let _data = {}
-  if (!loading) {
+  if (!loading) { 
+    data.trip[0].trip_receivables.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
+    data.trip[0].trip_receipts.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
     _data = data
-    _data.trip[0].trip_receivables.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
-    _data.trip[0].trip_receipts.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
   }
 
   const trip_pay = get(_data, 'trip[0]', [])
