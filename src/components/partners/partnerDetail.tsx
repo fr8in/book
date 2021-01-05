@@ -73,7 +73,7 @@ const PartnerDetail = (props) => {
         />
         <LabelWithData 
           label='State'
-          data={<span>{get(partnerDetail, 'partner_connected_city.connected_city.cities[0].state.name',null)}</span>}
+          data={<span>{get(partnerDetail, 'partner_gst_state', null)}</span>}
           labelSpan={10}
           dataSpan={14}
         />

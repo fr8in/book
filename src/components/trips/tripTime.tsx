@@ -123,6 +123,8 @@ const TripTime = (props) => {
   const context = useContext(userContext)
   const { role } = u
   const po_delete_access = [role.admin, role.rm]
+  const process_advance_access = [role.admin, role.rm, role.operations]
+  const advance_access = u.is_roles(process_advance_access, context)
   const access = (trip_info.loaded === 'No') || u.is_roles(po_delete_access, context)
   const [form] = Form.useForm()
 
@@ -466,7 +468,7 @@ const TripTime = (props) => {
               <Space>
                 {po_delete &&
                   <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')} disabled={(trip_info.loaded === 'Yes') ? !access : null || lock}>PO</Button>}
-                {process_advance &&
+                {advance_access && process_advance &&
                   <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>}
                 {remove_sin &&
                   <Button danger icon={<CloseCircleOutlined />} onClick={onSinRemove} disabled={lock} loading={disableBtn}>S-In</Button>}
