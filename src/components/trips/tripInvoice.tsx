@@ -53,6 +53,10 @@ mutation calculate_onHold(
     }
     advance_percentage
     commission_percentage
+    delay
+    amount
+    podLateDelay
+    podDelayAmount
   }
 }`
 
@@ -117,7 +121,11 @@ const TripInvoice = (props) => {
     commission: null,
     on_hold: null,
     loading_clac: false,
-    loading_submit: false
+    loading_submit: false,
+    delay: null,
+    amount: null,
+    podLateDelay: null,
+    podDelayAmount: null
   }
   const [calc, setCalc] = useState(initial)
   const [form] = Form.useForm()
@@ -139,8 +147,12 @@ const TripInvoice = (props) => {
         const l_halting = get(data, 'calculate_onHold.partner_halting.source_halting', null)
         const cus_un_halting = get(data, 'calculate_onHold.customer_halting.destination_halting', null)
         const un_halting = get(data, 'calculate_onHold.partner_halting.destination_halting', null)
+        const delay = get(data, 'calculate_onHold.delay', null);
+        const amount = get(data, 'calculate_onHold.amount', null)
+        const podLateDelay = get(data, 'calculate_onHold.podLateDealy', null)
+        const podDelayAmount = get(data, 'calculate_onHold.podDelayAmount')
 
-        setCalc({ ...calc, completed: true, balance, commission, on_hold, loading_clac: false })
+        setCalc({ ...calc, completed: true, balance, commission, on_hold, loading_clac: false, delay, amount, podLateDelay, podDelayAmount })
         form.setFieldsValue({
           onHold: on_hold
         })
@@ -331,6 +343,16 @@ const TripInvoice = (props) => {
             value={calc.commission ? calc.commission.toFixed(2) : 0}
           />
           <InvoiceItem
+            item_label='LateDeliveryCharge'
+            amount
+            value={calc.amount}
+          />
+          <InvoiceItem
+            item_label='PodDelayCharge'
+            amount
+            value={calc.podDelayAmount}
+          />
+          <InvoiceItem
             item_label='On Hold'
             field_name='onHold'
             value={calc.on_hold ? calc.on_hold.toFixed(2) : 0}
@@ -363,30 +385,13 @@ const TripInvoice = (props) => {
               Calculate On-Hold
             </Button>
             {
-              customer_advance_percentage > receipts ?
-                <Popconfirm
-                  title='Customer advance not received / less than 50%.
-                       Do you want to proceed?'
-                  okText='Yes'
-                  cancelText='No'
-                  onConfirm={onConfirm}
-                >
-                  <Button
-                    type='primary'
-                    htmlType='submit'
-                    disabled={!calc.completed}
-                    loading={calc.loading_submit}
-                  >
-                    Submit
-                  </Button>
-                </Popconfirm> :
-                <Button
-                  type='primary'
-                  htmlType='submit'
-                  disabled={!calc.completed}
-                  loading={calc.loading_submit}
-                >
-                  Submit
+              <Button
+                type='primary'
+                htmlType='submit'
+                disabled={!calc.completed}
+                loading={calc.loading_submit}
+              >
+                Submit
                 </Button>}
           </Space>
         </Col>
