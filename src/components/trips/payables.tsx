@@ -43,9 +43,9 @@ const Payables = (props) => {
 
   let _data = {}
   if (!loading) {
+    data.trip[0].trip_payables.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
+    data.trip[0].trip_payments.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
     _data = data
-    _data.trip[0].trip_payables.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
-    _data.trip[0].trip_payments.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
   }
 
   const trip_pay = get(_data, 'trip[0]', [])
