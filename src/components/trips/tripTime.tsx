@@ -471,19 +471,19 @@ const TripTime = (props) => {
               <Space>
                 {po_delete &&
                   <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')} disabled={(trip_info.loaded === 'Yes') ? !access : null || lock}>PO</Button>}
-                {pricePerKm ?
+                {pricePerKm && advance_access && process_advance ?
                   <Popconfirm
                     title='Trip Rate/Km is more than 100. Do you want to process?'
                     okText='Yes'
                     cancelText='No'
                    onConfirm={onProcessAdvance}
                   >
-                   { advance_access && process_advance &&
-                  <Button type='primary' disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>}
+                  <Button type='primary' disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>
                   </Popconfirm>
                   :
-                  advance_access && process_advance &&
+                  advance_access && process_advance ?
                   <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>
+                  : null
                 }
                 {remove_sin &&
                   <Button danger icon={<CloseCircleOutlined />} onClick={onSinRemove} disabled={lock} loading={disableBtn}>S-In</Button>}
