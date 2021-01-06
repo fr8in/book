@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react'
 import { gql, useMutation, useQuery } from '@apollo/client'
-import { Modal, Input, Button, Form, Row, Space, Checkbox,message } from 'antd'
+import { Modal, Input, Button, Form, Row, Space, Checkbox, message } from 'antd'
 import _ from 'lodash'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
@@ -26,16 +26,26 @@ mutation partner_wallet_topup_adhoc($partner_id: Int!, $amount: Float!, $created
   }
 }`
 
+
+
+const ADHOC_PAYMENT_CONFIG = gql`query final_payment_discount {
+  config(where: {key: {_eq: "transaction_fee"}}) {
+    value
+    key
+  }
+}`
+
 const AdhocwalletTopup = (props) => {
-  const { visible, onHide, partner_id,partner_info } = props
-  
-   const { loading, data, error } = useQuery(GET_TOKEN, { variables: { partner_id,cardcode:partner_info.cardcode }, fetchPolicy: 'network-only' })
+  const { visible, onHide, partner_id, partner_info } = props
+
+  const { loading, data, error } = useQuery(GET_TOKEN, { variables: { partner_id, cardcode: partner_info.cardcode }, fetchPolicy: 'network-only' })
+  const { data: config_data } = useQuery(ADHOC_PAYMENT_CONFIG)
 
   if (error) {
     message.error(error.toString())
     onHide()
   }
- 
+
   const [selectedTopUps, setSelectedTopUps] = useState(true)
   const [disbleBtn, setDisbleBtn] = useState(false)
   const [netAmount, setNetAmount] = useState(0)
@@ -47,9 +57,10 @@ const AdhocwalletTopup = (props) => {
   const cleared = get(data, 'partner_sap_accounting.cleared', 0)
   const max_amount = onhold + cleared
   const max_amount_limit = max_amount > 0 ? max_amount : 0
+  const discount_percentage=_.get(config_data,'config[0].value.wallet_adhoc_discount',0)
 
   const handlediscountchange = (e) => {
-    const amount= form.getFieldValue('amount') || 0
+    const amount = form.getFieldValue('amount') || 0
     setSelectedTopUps(e.target.checked)
     calculateDiscount(amount, e.target.checked)
   }
@@ -67,12 +78,12 @@ const AdhocwalletTopup = (props) => {
   const [partner_bank_transfer_track, { loading: mutationLoading }] = useMutation(
     ADHOC_WALLET_TOPUP,
     {
-      onError (error) {
+      onError(error) {
         message.error(error.toString())
         setDisbleBtn(false)
         onHide()
       },
-      onCompleted (data) {
+      onCompleted(data) {
         const status = get(data, 'partner_wallet_topup_adhoc.status', null)
         const description = get(data, 'partner_wallet_topup_adhoc.description', null)
         if (status === 'OK') {
@@ -90,25 +101,25 @@ const AdhocwalletTopup = (props) => {
 
   const onSubmit = (form) => {
     setDisbleBtn(true)
-    if(partner_info.partner_status.name === 'Blacklisted'){
+    if (partner_info.partner_status.name === 'Blacklisted') {
       message.error('Partner Blacklisted')
       setDisbleBtn(false)
-      
-    }else if (partner_info.wallet_block === true){
+
+    } else if (partner_info.wallet_block === true) {
       message.error('Wallet Block')
       setDisbleBtn(false)
-    }else{
-    partner_bank_transfer_track({
-      variables: {
-        token: data.token,
-        partner_id,
-        amount: parseFloat(form.amount),
-        created_by: context.email,
-        comment: form.comment,
-        discountFlag: !!selectedTopUps
-      }
-    })
-  }
+    } else {
+      partner_bank_transfer_track({
+        variables: {
+          token: data.token,
+          partner_id,
+          amount: parseFloat(form.amount),
+          created_by: context.email,
+          comment: form.comment,
+          discountFlag: !!selectedTopUps
+        }
+      })
+    }
   }
 
   return (
@@ -130,7 +141,7 @@ const AdhocwalletTopup = (props) => {
         </Form.Item>
         <Form.Item >
           <Space>
-            <Checkbox defaultChecked={selectedTopUps} onChange={handlediscountchange} >2% Discount</Checkbox>
+            <Checkbox defaultChecked={selectedTopUps} onChange={handlediscountchange} >{discount_percentage}% Discount</Checkbox>
             <b> {discount.toFixed(2)} </b>
             &nbsp;
             <b > Amount : {netAmount.toFixed(2)} </b>
@@ -138,7 +149,7 @@ const AdhocwalletTopup = (props) => {
           <Row justify='end' className='m5'>
             <Space>
               <Button onClick={onHide}>Cancel</Button>
-              <Button type='primary'  htmlType='submit' loading={disbleBtn} >Top Up</Button>
+              <Button type='primary' htmlType='submit' loading={disbleBtn} >Top Up</Button>
             </Space>
           </Row>
         </Form.Item>
