@@ -42,7 +42,7 @@ const PayablesContainer = () => {
   }
 
   function disabledMonthForFuelCashBack(current) {
-    return current && current < moment("2020/12/01") || current > moment();
+    return current && current < moment("2020/11/01") || current > moment();
   }
 
   const [icici_statement] = useMutation(

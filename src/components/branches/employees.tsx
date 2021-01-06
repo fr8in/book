@@ -43,7 +43,7 @@ const Employees = () => {
   const { role } = u
   const context = useContext(userContext)
   const employee_delete = u.is_roles([u.role.admin], context)
-  const employee_role = role.admin
+  const employee_role =[role.admin, role.hr]
 
   const initial = {
     employeeRoleVisible: false,
