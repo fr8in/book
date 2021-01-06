@@ -481,9 +481,9 @@ const TripTime = (props) => {
                   <Button type='primary' disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>
                   </Popconfirm>
                   :
-                  advance_access && process_advance ?
+                  (advance_access && process_advance ?
                   <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>
-                  : null
+                  : null)
                 }
                 {remove_sin &&
                   <Button danger icon={<CloseCircleOutlined />} onClick={onSinRemove} disabled={lock} loading={disableBtn}>S-In</Button>}
