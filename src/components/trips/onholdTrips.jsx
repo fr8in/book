@@ -60,7 +60,7 @@ const OnholdTrips = (props) => {
   const { loading, error, data } = useQuery(ONHOLD_TRIPS_QUERY, {
     variables: {
       cardcode: cardcode,
-      exp: filter.length > 1 ? null : filter[0] === 'Closed' ? { _eq: 0 } : filter[0] === 'Open' ? { _neq: 0 } : null
+      exp: filter.length > 1 ? null : filter[0] === 'Closed' ? { _eq: 0 } : filter[0] === 'Open' ? { _lt: 0 } : null
     },
     fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true
