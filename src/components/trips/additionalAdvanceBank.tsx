@@ -187,12 +187,12 @@ const AdditionalAdvanceBank = (props) => {
                         </Col>
                         <Col xs={12} sm={8}>
                             <Form.Item label='Account No' name='account_number' rules={[{ required: true }]}>
-                                <Input placeholder='Account Number' />
+                                <Input placeholder='Account Number' type='password'/>
                             </Form.Item>
                         </Col>
                         <Col xs={12} sm={8}>
                             <Form.Item label='Confirm Account No' rules={rules} dependencies={['account_number']} name='confirm'>
-                                <Input placeholder='Confirm' type='password' />
+                                <Input placeholder='Confirm' />
                             </Form.Item>
                         </Col>
                     </Row>
