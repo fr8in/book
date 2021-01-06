@@ -20,20 +20,22 @@ const ICICI_TRANSACTION= gql` query ICICI ($start_date:String!,$end_date:String!
 }`
 
 const Last48hrsPending = (props) => {
-  const {start_date} = props
-
-  const fromdate =  start_date[0] ? start_date[0].format('DD-MM-YYYY') : "" 
-  const todate = start_date[1] ? start_date[1].format('DD-MM-YYYY'): ""
- 
+  const {start_date,date} = props
+console.log('Last48',date)
+  console.log('///.....',start_date)
+  const fromdate =  !start_date[0] ? date[0].format('DD-MM-YYYY') : start_date[0].format('DD-MM-YYYY')
+  console.log('fromdate',fromdate)
+  const todate = !start_date[1] ? date[1].format('DD-MM-YYYY'): start_date[1].format('DD-MM-YYYY')
+ console.log('todate', todate)
   const { loading, error, data} = useQuery(
     ICICI_TRANSACTION, {
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true,
+     skip : !fromdate || !todate,
       variables:{
         start_date:fromdate ,
         end_date:todate
-      },
-      skip : !fromdate || !todate
+      }
     }
   )
   

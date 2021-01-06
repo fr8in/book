@@ -1,6 +1,6 @@
 import ICICIBankOutgoing from '../iciciBankOutgoing'
 import React, { useContext, useState } from 'react'
-import { Button, Card, DatePicker, message, Space, Tabs, Form} from 'antd'
+import { Button, Card, DatePicker, message, Space, Tabs, Form } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 import moment from 'moment'
@@ -42,6 +42,7 @@ const PayablesContainer = () => {
     {
       onError(error) {
         message.error(error.toString())
+        setDisableBtn(disableBtn)
       },
       onCompleted(data) {
         setDisableBtn(initial)
@@ -66,32 +67,39 @@ const PayablesContainer = () => {
   const fuelCashback_access = u.is_roles(fuelCashback_roles, context)
 
   const date = (day === 6) ? [moment(today, "DD-MM-YYYY").subtract(1, "days"), moment(today, "DD/MM/YYYY").add(2, "days")]
-    : (day === 0) ? [moment(today, "DD-MM-YYYY").subtract(2, "days"), moment(today, "DD/MM/YYYY").add(1, "days")]
-      : (day === 5) ? [moment(today, "DD/MM/YYYY"), moment(today, "DD/MM/YYYY").add(3, "days")]
-        : (day === 1) ? [moment(today, "DD/MM/YYYY"), moment(today, "DD/MM/YYYY").subtract(2, "days")] :
-          [moment(today, "DD/MM/YYYY"), moment(today, "DD/MM/YYYY")]
+    : (day === 5) ? [moment(today, "DD/MM/YYYY"), moment(today, "DD/MM/YYYY").add(3, "days")]
+      : (day === 4) ? [moment(today, "DD/MM/YYYY").subtract(2, "days"), moment(today, "DD/MM/YYYY")]
+        : (day === 3) ? [moment(today, "DD/MM/YYYY").subtract(2, "days"), moment(today, "DD/MM/YYYY")]
+          : (day === 2) ? [moment(today, "DD/MM/YYYY").subtract(2, "days"), moment(today, "DD/MM/YYYY")]
+            : (day === 1) ? [moment(today, "DD/MM/YYYY"), moment(today, "DD/MM/YYYY").subtract(2, "days")]
+              : (day === 0) ? [moment(today, "DD-MM-YYYY").subtract(2, "days"), moment(today, "DD/MM/YYYY").add(1, "days")]
+                : [moment(today, "DD/MM/YYYY"), moment(today, "DD/MM/YYYY")]
 
+  console.log('date', date, typeof date)
 
-
-  const [start_date, setStartDate] = useState(date)
-console.log('start_date',start_date)
+  const [start_date, setStartDate] = useState([])
+  console.log('start_date', start_date)
   const disabledendDate = (current) => {
     if (!start_date) {
       return false
     }
     const tooLate = start_date[0] && current.diff(start_date[0], 'days') > 30
     const tooEarly = start_date[1] && start_date[1].diff(current, 'days') > 30
-    return ((tooEarly || tooLate))
+    return ((tooLate || tooEarly))
 
   }
 
+  const fromdate = !start_date[0] ? date[0].format('DD-MM-YYYY') : start_date[0].format('DD-MM-YYYY')
+  console.log('........fromdate', fromdate)
+  const todate = !start_date[1] ? date[1].format('DD-MM-YYYY') : start_date[1].format('DD-MM-YYYY')
+  console.log('..........todate', todate)
   const onConfirm = () => {
     setDisableBtn({ ...disableBtn, loading: true })
     if (!isEmpty(start_date)) {
       icici_statement({
         variables: {
-          start_date: start_date[0].format('DD-MM-YYYY'),
-          end_date: start_date[1].format('DD-MM-YYYY')
+          start_date: fromdate,
+          end_date: todate
         }
       })
     } else {
@@ -99,12 +107,6 @@ console.log('start_date',start_date)
     }
   }
 
-  const handleRange = (value) =>{
-    if(value ) { 
-      setStartDate([undefined,undefined])
-    }
-
-  }
 
   const TabBarContent = () => {
     return (
@@ -114,19 +116,17 @@ console.log('start_date',start_date)
             <RangePicker
               size='small'
               format='DD-MM-YYYY'
-              defaultValue={date}
-              value={start_date}
+              defaultValue={[date[0], date[1]]}
+              value={[start_date[0], start_date[1]]}
               disabledDate={(current) => disabledendDate(current)}
-              onCalendarChange={(moment) =>
-                setStartDate(moment)}
-              //   onOpenChange = { (value) =>  handleRange(value) }
-              //  allowEmpty ={[false,true]}
+              onCalendarChange={(value) =>
+                setStartDate(value)}
             />
             <Button size='small' loading={disableBtn.loading} >
               <DownloadOutlined onClick={() => onConfirm()} />
             </Button>
           </Space>
-         )
+        )
         : (tabIndex === '2')
           ? (
             <Space>
@@ -160,7 +160,7 @@ console.log('start_date',start_date)
           <ICICIBankOutgoing />
         </TabPane>
         <TabPane tab='Statement' key='1'>
-          <Last48hrsPending start_date={start_date} />
+          <Last48hrsPending start_date={start_date} date={date} />
         </TabPane>
         {access &&
           <TabPane tab='Transaction Fee' key='2'>
