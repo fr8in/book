@@ -126,10 +126,10 @@ const TripTime = (props) => {
   const process_advance_access = [role.admin, role.rm, role.operations]
   const advance_access = u.is_roles(process_advance_access, context)
   const access = (trip_info.loaded === 'No') || u.is_roles(po_delete_access, context)
-  const partnerPrice = get(trip_info, 'partner_price', null)
+  const customerPrice = get(trip_info, 'customer_price', null)
   const km = get(trip_info, 'km', null)
-  const partnerPricePerKm = (partnerPrice / km)
-  const pricePerKm = partnerPricePerKm > 100
+  const customerPricePerKm = (customerPrice / km)
+  const pricePerKm = customerPricePerKm > 100
   const [form] = Form.useForm()
   const [getWord, { loading, data, error, called }] = useLazyQuery(GET_WORD)
   const [getPdf, { loading: pdfloading, data: pdfdata, error: pdferror, called: pdfcalled }] = useLazyQuery(GET_PDF)
