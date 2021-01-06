@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react'
-import { Row, Col, Card, Form, Space, Button, Checkbox, message, Modal } from 'antd'
+import { Row, Col, Card, Form, Space, Button, Checkbox, message, Modal, Popconfirm } from 'antd'
 import {
   FilePdfOutlined,
   FileWordOutlined,
@@ -126,8 +126,11 @@ const TripTime = (props) => {
   const process_advance_access = [role.admin, role.rm, role.operations]
   const advance_access = u.is_roles(process_advance_access, context)
   const access = (trip_info.loaded === 'No') || u.is_roles(po_delete_access, context)
+  const partnerPrice = get(trip_info, 'partner_price', null)
+  const km = get(trip_info, 'km', null)
+  const partnerPricePerKm = (partnerPrice / km)
+  const pricePerKm = partnerPricePerKm > 100
   const [form] = Form.useForm()
-
   const [getWord, { loading, data, error, called }] = useLazyQuery(GET_WORD)
   const [getPdf, { loading: pdfloading, data: pdfdata, error: pdferror, called: pdfcalled }] = useLazyQuery(GET_PDF)
   const { data: tokenData, loading: tokenQueryLoading, refetch } = useQuery(GET_TOKEN, {
@@ -410,29 +413,29 @@ const TripTime = (props) => {
               </Col>
               <Col xs={24} sm={8}>
                 <Row>
-                <Col xs={12}>
-                <Form.Item label='Fr8 - Memo'>
-                  <Space>
-                    <Button type='primary' loading={pdfloading} shape='circle'
-                      icon={<FilePdfOutlined />} onClick={onClickPdf} />
-                    <Button type='primary' loading={loading} shape='circle'
-                      icon={<FileWordOutlined />} onClick={onClickWord} />
-                  </Space>
-                </Form.Item>
-                </Col>
-                <Col xs={12}>
-                <Form.Item label='Partner - Memo'>
-                  <Space>
-                    <Button type='primary' loading={pdfloading} shape='circle'
-                      icon={<FilePdfOutlined />} onClick={onClickPartnerPdf} />
-                    <Button type='primary' loading={loading} shape='circle'
-                      icon={<FileWordOutlined />} onClick={onClickPartnerWord} />
-                  </Space>
-                </Form.Item>
+                  <Col xs={12}>
+                    <Form.Item label='Fr8 - Memo'>
+                      <Space>
+                        <Button type='primary' loading={pdfloading} shape='circle'
+                          icon={<FilePdfOutlined />} onClick={onClickPdf} />
+                        <Button type='primary' loading={loading} shape='circle'
+                          icon={<FileWordOutlined />} onClick={onClickWord} />
+                      </Space>
+                    </Form.Item>
+                  </Col>
+                  <Col xs={12}>
+                    <Form.Item label='Partner - Memo'>
+                      <Space>
+                        <Button type='primary' loading={pdfloading} shape='circle'
+                          icon={<FilePdfOutlined />} onClick={onClickPartnerPdf} />
+                        <Button type='primary' loading={loading} shape='circle'
+                          icon={<FileWordOutlined />} onClick={onClickPartnerWord} />
+                      </Space>
+                    </Form.Item>
+                  </Col>
+                </Row>
               </Col>
-                  </Row>
-                </Col>
-              
+
             </Row>
           </Form>
           <Row className='mb5'>
@@ -468,8 +471,20 @@ const TripTime = (props) => {
               <Space>
                 {po_delete &&
                   <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')} disabled={(trip_info.loaded === 'Yes') ? !access : null || lock}>PO</Button>}
-                {advance_access && process_advance &&
-                  <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>}
+                {pricePerKm ?
+                  <Popconfirm
+                    title='Trip Rate/Km is more than 100. Do you want to process?'
+                    okText='Yes'
+                    cancelText='No'
+                   onConfirm={onProcessAdvance}
+                  >
+                   { advance_access && process_advance &&
+                  <Button type='primary' disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>}
+                  </Popconfirm>
+                  :
+                  advance_access && process_advance &&
+                  <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>
+                }
                 {remove_sin &&
                   <Button danger icon={<CloseCircleOutlined />} onClick={onSinRemove} disabled={lock} loading={disableBtn}>S-In</Button>}
                 {remove_sout &&
