@@ -50,12 +50,12 @@ const Receivables = (props) => {
   }
 
   const trip_pay = get(_data, 'trip[0]', [])
-  const _receivables = get(trip_pay,'trip_receivables',[])
-  const _receipts = get(trip_pay,'trip_receipts',[])
-  const receivables_sort = _receivables.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
-  const receipts_sort = _receipts.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
-  const receivables = sumBy(trip_pay.trip_receivables, 'amount').toFixed(2)
-  const receipts = sumBy(trip_pay.trip_receipts, 'amount').toFixed(2)
+  const receivables = get(trip_pay,'trip_receivables',[])
+  const receipts = get(trip_pay,'trip_receipts',[])
+  const receivables_sort = !isEmpty(receivables) ? receivables.sort((a,b)=> (a.amount > b.amount) ? -1 : 1) : []
+  const receipts_sort = !isEmpty(receipts) ? receipts.sort((a,b)=> (a.amount > b.amount) ? -1 : 1) : []
+  const receivables_sum = sumBy(trip_pay.trip_receivables, 'amount').toFixed(2)
+  const receipts_sum = sumBy(trip_pay.trip_receipts, 'amount').toFixed(2)
   const all_payables = get(trip_pay, 'trip_payables', [])
   const on_hold = !isEmpty(all_payables) && all_payables.filter(payable => payable.name === 'On-Hold')
 
@@ -109,11 +109,11 @@ const Receivables = (props) => {
       <Row className='payableHead' gutter={6}>
         <Col xs={12}><b>Receivables</b></Col>
         <Col xs={12} className='text-right'>
-          <b>{receivables}</b>
+          <b>{receivables_sum}</b>
         </Col>
       </Row>
       <Table
-        dataSource={trip_pay.trip_receivables}
+        dataSource={receivables_sort}
         columns={customerChargeColumns}
         pagination={false}
         size='small'
@@ -122,13 +122,13 @@ const Receivables = (props) => {
       <Row className='payableHead' gutter={6}>
         <Col xs={12}><b>Receipts</b></Col>
         <Col xs={12} className='text-right'>
-          <b>{receipts}</b>
+          <b>{receipts_sum}</b>
         </Col>
       </Row>
       <Table
         columns={advanceColumn}
         scroll={{ x: '450' }}
-        dataSource={trip_pay.trip_receipts}
+        dataSource={receipts_sort}
         pagination={false}
         size='small'
         rowKey={record => record.id}
