@@ -164,7 +164,7 @@ const CreatePartner = (props) => {
                   rules={[{ required: true, message: 'Account No is required field!' }]}
                   initialValue={get(partner_info, 'display_account_number', null)}
                 >
-                  <Input placeholder='Account Number' />
+                  <Input.Password placeholder='Account Number' />
                 </Form.Item>
               </Col>
               <Col xs={24} sm={8}>
@@ -175,7 +175,7 @@ const CreatePartner = (props) => {
                   rules={rules}
                   initialValue={get(partner_info, 'display_account_number', null)}
                 >
-                  <Input.Password placeholder='Confirm Account No' />
+                  <Input placeholder='Confirm Account No' />
                 </Form.Item>
               </Col>
             </Row>

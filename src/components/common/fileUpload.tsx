@@ -37,7 +37,6 @@ const FileUpload = (props) => {
   const context = useContext(userContext)
   const previewInitial = { visible: false, image: '', title: '', ext: '' }
   const [preview, setPreview] = useState(previewInitial)
-  const [tempFile,setTempFile] = useState(null)
 
   const [s3FileUpload] = useMutation(
     FILE_UPLOAD_MUTATION,
@@ -79,7 +78,9 @@ const FileUpload = (props) => {
     FILE_DELETE_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Deleted!!') }
+      onCompleted () { 
+        message.success('Deleted!!') 
+    }
     }
   )
 
@@ -136,9 +137,7 @@ const FileUpload = (props) => {
       okType: 'danger',
       cancelText: 'No',
       onOk: () => {
-        console.log('OK');
-        setTempFile(file)
-         remove(tempFile)
+         remove(file)
       },
       onCancel: () => {
         console.log('Cancel');
