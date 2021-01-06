@@ -4,6 +4,7 @@ import moment from 'moment'
 import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import sumBy from 'lodash/sumBy'
+import isEmpty from 'lodash/isEmpty'
 
 const TRIP_PAYABLES = gql`
 subscription trip_payables($id: Int!) {
@@ -44,14 +45,15 @@ const Payables = (props) => {
   let _data = {}
   if (!loading) {
     _data = data
-    _data.trip[0].trip_payables.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
-    _data.trip[0].trip_payments.sort((a,b)=> (a.amount > b.amount) ? -1 : 1)
   }
 
   const trip_pay = get(_data, 'trip[0]', [])
-
-  const payables = sumBy(trip_pay.trip_payables, 'amount').toFixed(2)
-  const payments = sumBy(trip_pay.trip_payments, 'amount').toFixed(2)
+  const payables = get(trip_pay,'trip_payables',[])
+  const payments = get(trip_pay,'trip_payments',[])
+  const payable_sort =!isEmpty(payables) ? payables.sort((a,b)=> (a.amount > b.amount) ? -1 : 1) : []
+  const payment_sort = !isEmpty(payments) ? payments.sort((a,b)=> (a.amount > b.amount) ? -1 : 1) : []
+  const payables_sum = sumBy(trip_pay.trip_payables, 'amount').toFixed(2)
+  const payments_sum = sumBy(trip_pay.trip_payments, 'amount').toFixed(2)
   const invoiced_at = get(trip_pay, 'trip_accounting.invoiced_at')
   const onHold = get(trip_pay, 'trip_accounting.onhold')
   const pending_payable = get(trip_pay, 'trip_accounting.pending_payable')
@@ -109,11 +111,11 @@ const Payables = (props) => {
       <Row className='payableHead' gutter={6}>
         <Col xs={12}><b>Payables</b></Col>
         <Col xs={12} className='text-right'>
-          <b>{payables}</b>
+          <b>{payables_sum}</b>
         </Col>
       </Row>
       <Table
-        dataSource={trip_pay.trip_payables}
+        dataSource={payable_sort}
         columns={payablesColumn}
         pagination={false}
         size='small'
@@ -122,12 +124,12 @@ const Payables = (props) => {
       <Row className='payableHead' gutter={6}>
         <Col xs={12}><b>Payments</b></Col>
         <Col xs={12} className='text-right'>
-          <b>{payments}</b>
+          <b>{payments_sum}</b>
         </Col>
       </Row>
       <Table
         columns={paymentColumn}
-        dataSource={trip_pay.trip_payments}
+        dataSource={payment_sort}
         scroll={{ x: '300' }}
         pagination={false}
         size='small'
