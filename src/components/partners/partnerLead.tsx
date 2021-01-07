@@ -253,7 +253,7 @@ const PartnerLead = (props) => {
   if (!loading) {
     lead_data = data
   }
-  console.log('lead_data',lead_data)
+  
   const partners = get(lead_data, 'partner', [])
   const referredByName = get(partners, 'referred_by.name', null)
 
