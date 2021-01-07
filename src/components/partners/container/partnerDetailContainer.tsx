@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useState, useContext } from 'react'
 import { Row, Col, Card, Tabs, Button, Space, Tooltip } from 'antd'
-import { CarOutlined, WalletOutlined, FileTextOutlined, MailOutlined,BookOutlined ,PlusCircleOutlined, BankOutlined } from '@ant-design/icons'
+import { CarOutlined, WalletOutlined, FileTextOutlined, MailOutlined, BookOutlined, PlusCircleOutlined, BankOutlined } from '@ant-design/icons'
 import DetailPageHeader from '../../common/detailPageHeader'
 import HeaderInfo from '../partner'
 import WalletStatus from '../walletStatus'
@@ -75,7 +75,7 @@ const PartnerDetailContainer = (props) => {
         invoiced: invoiced,
         paid: paid,
         year: year,
-        month: month 
+        month: month
       }
     }
   )
@@ -97,8 +97,8 @@ const PartnerDetailContainer = (props) => {
 
   const partner_status = get(partner_info, 'partner_status.name', null)
   const after_onboard = partner_status === 'Active' || partner_status === 'De-activate' || partner_status === 'Blacklisted'
-  const adhocWalleTopup_validation = wallet_activate_role 
- 
+  const adhocWalleTopup_validation = wallet_activate_role
+
   return (
     loading ? <Loading /> : (
       <Row>
@@ -112,11 +112,11 @@ const PartnerDetailContainer = (props) => {
                 extra={
                   <Space>
                     {admin &&
-                    <div className='text-center'>
-                      <Tooltip title='Wallet to Bank'>
-                        <Button icon={<BankOutlined />} shape='circle' onClick={() => onShow('walletToBank')} />
-                      </Tooltip>
-                      <p className='tinyAction'>Bank</p>
+                      <div className='text-center'>
+                        <Tooltip title='Wallet to Bank'>
+                          <Button icon={<BankOutlined />} shape='circle' onClick={() => onShow('walletToBank')} />
+                        </Tooltip>
+                        <p className='tinyAction'>Bank</p>
                       </div>}
                     <div className='text-center'>
                       <Button icon={<MailOutlined />} shape='circle' onClick={() => onShow('reportMail')} />
@@ -125,22 +125,22 @@ const PartnerDetailContainer = (props) => {
                     <div className='text-center'>
                       <Button icon={<FileTextOutlined />} shape='circle' onClick={() => onShow('statement')} />
                       <p className='tinyAction'>Statement</p>
-                      </div>
+                    </div>
                     {partner_info.partner_status === 'Blacklisted' ? wallet_activate_role : top_up_access &&
-                       <div className='text-center'>
+                      <div className='text-center'>
                         <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('topUp')} />
                         <p className='tinyAction'>Topup</p>
                       </div>}
-                     { adhocWalleTopup_validation &&
-                     <div className='text-center'>
-                      <Tooltip title='Adhoc Wallet Topup'>
-                        <Button shape='circle' icon={<BookOutlined />} onClick={() => onShow('adhoctopUp')}/>
-                      </Tooltip>
-                       <p className='tinyAction'>Adhoc</p>
-                       </div>} 
+                    {adhocWalleTopup_validation &&
+                      <div className='text-center'>
+                        <Tooltip title='Adhoc Wallet Topup'>
+                          <Button shape='circle' icon={<BookOutlined />} onClick={() => onShow('adhoctopUp')} />
+                        </Tooltip>
+                        <p className='tinyAction'>Adhoc</p>
+                      </div>}
                     <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${cardcode}`}>
                       <Tooltip title='Add Truck'>
-                        <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />}  />
+                        <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />} />
                       </Tooltip>
                     </Link>
                     <WalletStatus id={partner_info.id} status={partner_info.wallet_block} />
@@ -175,7 +175,7 @@ const PartnerDetailContainer = (props) => {
                               tabBarExtraContent={
                                 <span>
                                   {Key === '5' && partner_access && (
-                                      <Link href='/partners/AddFastag/[id]' as={`/partners/AddFastag/${cardcode}`}>
+                                    <Link href='/partners/AddFastag/[id]' as={`/partners/AddFastag/${cardcode}`}>
                                       <Button
                                         type='primary'
                                         size='small'
@@ -194,7 +194,9 @@ const PartnerDetailContainer = (props) => {
                                 <AvailableBalance partner_summary={partner_info} />
                               </TabPane>
                               <TabPane tab='Order Report' key='2'>
-                                <Barchart partner_id={partner_info.id}/>
+                                <div className='scrollFix'>
+                                  <Barchart partner_id={partner_info.id} />
+                                </div>
                               </TabPane>
                               <TabPane tab='Documents' key='3'>
                                 <Document partnerInfo={partner_info} />
