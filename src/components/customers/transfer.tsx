@@ -227,7 +227,7 @@ console.log("totalAmount,",totalAmount)
               name='account_number'
               rules={[{ required: true, message: 'Account number required!' }]}
             >
-              <Input
+              <Input.Password
                 placeholder='Select Account Number'
                 disabled={false}
               />
@@ -240,7 +240,7 @@ console.log("totalAmount,",totalAmount)
               rules={rules}
               name='confirm'
             >
-              <Input.Password
+              <Input
                 placeholder='Confirm Account Number'
                 disabled={false}
               />
