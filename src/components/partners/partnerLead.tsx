@@ -310,33 +310,33 @@ const PartnerLead = (props) => {
     {
       title: 'Name',
       dataIndex: 'name',
-      width: '9%',
+      width: '8%',
       render: (text, record) => {
+        <Truncate data={text} length={9} />
         const id = get(record, 'id', null)
-return(
-  <Link href='/partners/create-partner/[id]' as={`/partners/create-partner/${id} `}>
-     {text}
-  </Link>
-)}
+        return (
+          <LinkComp type='partners/create-partner' data={text} id={id} length={8} />
+        )
+      }
     },
     {
       title: 'Referred By',
-      width: '10%',
+      width: '9%',
       render: (text, record) => {
         const name = get(record, 'referred_by.name', null)
         const cardcode = get(record, 'referred_by.cardcode', null)
         return (
           <div>
-            <span> <LinkComp type='partners' data={name} id={cardcode} length={10} />&nbsp;</span>
+            <span> <LinkComp type='partners' data={name} id={cardcode} length={5} />&nbsp;</span>
             <EditAccess edit_access={referredByEdit} onEdit={() => handleShow('referredByVisible', null, 'referredByData', record.id)} />
           </div>
         )
       }
-      },
+    },
     {
       title: 'Phone',
       dataIndex: 'number',
-      width: '9%',
+      width: '8%',
       render: (text, record) => {
         return <Phone number={record.partner_users[0] && record.partner_users[0].mobile} />
       },
@@ -388,7 +388,7 @@ return(
     {
       title: 'Owner',
       dataIndex: 'owner',
-      width: '10%',
+      width: '16%',
       render: (text, record) => {
         const owner = record.onboarded_by && record.onboarded_by.email
         return (
@@ -416,7 +416,7 @@ return(
     {
       title: 'Channel',
       dataIndex: 'source',
-      width: '9%',
+      width: '8%',
       filterDropdown: (
         <Checkbox.Group
           options={channels}
@@ -431,7 +431,7 @@ return(
     },
     {
       title: 'Status',
-      width: '9%',
+      width: '8%',
       filterDropdown: (
         <Checkbox.Group
           options={partners_status}
@@ -447,10 +447,10 @@ return(
     {
       title: 'Last Comment',
       dataIndex: 'comment',
-      width: '13%',
+      width: '12%',
       render: (text, record) => {
         const comment = record.last_comment && record.last_comment.description
-        return <Truncate data={comment} length={20} />
+        return <Truncate data={comment} length={15} />
       },
       filterDropdown: (
         <Checkbox.Group
@@ -465,20 +465,20 @@ return(
     {
       title: 'Created At',
       dataIndex: 'date',
-      width: '8%',
+      width: '9%',
       render: (text, record) => record.created_at ? moment(record.created_at).format('DD-MMM-YY') : '-',
       sorter: (a, b) => (a.created_at > b.created_at ? 1 : -1)
     },
     {
       title: 'Priority',
       dataIndex: 'lead_priority',
-      width: '6%',
+      width: '5%',
       render: (text, record) => priorityEditAccess ? <Switch onChange={(checked) => onChange(checked, record.id)} checked={text} /> : null
     },
     {
       title: 'Action',
       dataIndex: 'action',
-      width: '8%',
+      width: '7%',
       render: (text, record) => (
         <span className='actions'>
           <Tooltip title='Comment'>
