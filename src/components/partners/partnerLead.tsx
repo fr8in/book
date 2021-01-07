@@ -450,7 +450,7 @@ const PartnerLead = (props) => {
       width: '12%',
       render: (text, record) => {
         const comment = record.last_comment && record.last_comment.description
-        return <Truncate data={comment} length={15} />
+        return <Truncate data={comment} length={17} />
       },
       filterDropdown: (
         <Checkbox.Group
