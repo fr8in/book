@@ -46,6 +46,12 @@ const PayablesContainer = () => {
     setMonth(parseInt(splittedDate[1]))
   }
 
+  
+
+  function disabledMonthForFuelCashBack(current) {
+    return current && current < moment("2020/11/01") || current > moment();
+  }
+
   const [icici_statement] = useMutation(
     DATE_SELECT_MUTATION,
     {
@@ -148,7 +154,7 @@ const onCalendarChange = (value) =>{
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
       <Tabs
-        tabBarExtraContent={<TabBarContent />}
+        tabBarExtraContent={TabBarContent()}
         defaultActiveKey={tabIndex}
         onChange={(e) => setTabIndex(e)}
       >

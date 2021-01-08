@@ -54,7 +54,7 @@ const TransferToBankHistory = (props) => {
   const ApproveandRejectHistory = [
     {
       title: 'Customer Name',
-      width: '15%',
+      width: '16%',
       render: (text, record) => {
         const cardcode = get(record, 'card_code', null)
         const name = get(record, 'customers[0].name', null)
@@ -81,8 +81,8 @@ const TransferToBankHistory = (props) => {
         </Tooltip>
       ),
       dataIndex: 'account_holder_name',
-      width: '8%',
-      render: (text, record) => <Truncate data={text} length={10} />,
+      width: '7%',
+      render: (text, record) => <Truncate data={text} length={7} />,
     },
     {
       title: (
@@ -101,8 +101,8 @@ const TransferToBankHistory = (props) => {
       ),
       dataIndex: 'created_by',
       key: 'created_by',
-      width: '7%',
-      render: (text, record) => <Truncate data={text} length={20} />,
+      width: '6%',
+      render: (text, record) => <Truncate data={text} length={15} />,
     },
     {
       title: (
@@ -112,7 +112,7 @@ const TransferToBankHistory = (props) => {
       ),
       dataIndex: 'created_on',
       key: 'created_on',
-      width: '7%',
+      width: '8%',
       sorter: (a, b) => (a.created_on > b.created_on ? 1 : -1),
       defaultSortOrder: 'descend',
       render: (text, record) => {

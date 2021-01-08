@@ -1,11 +1,10 @@
 
-import { Table, message, Row, Col, Button } from 'antd'
+import { Table, message, Row, Col, Button, Tooltip } from 'antd'
 import React, { useState, useEffect } from 'react'
 import get from 'lodash/get'
 import Link from 'next/link'
 import { gql, useQuery } from '@apollo/client'
 import Process from './process'
-import useShowHideWithRecord from '../../../../hooks/useShowHideWithRecord'
 import now from 'lodash/now'
 import useShowHide from '../../../../hooks/useShowHide'
 
@@ -20,6 +19,7 @@ query reliance_cashback${now()}($year: Int!, $month: Int!) {
       amount
       status
       cardcode
+      name
       balance
     }
   }
@@ -27,27 +27,27 @@ query reliance_cashback${now()}($year: Int!, $month: Int!) {
 
 const RelianceCashBack = (props) => {
   const { month, year } = props
-  console.log('month, year', month, year)
+
   const [relianceCashbackDetails, setRelianceCashbackDetails] = useState([])
   const initial = { processVisible: false }
 
   const { visible, onShow, onHide } = useShowHide(initial)
 
-  const { loading, error, data } = useQuery(
+  const { loading, data } = useQuery(
     reliance_cashback, {
-      variables: { year, month },
-      fetchPolicy: 'network-only',
-      notifyOnNetworkStatusChange: true,
-      skip: !month
+    variables: { year, month },
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
+    skip: !month,
+    onError(error) {
+      message.error(error.message.toString())
     }
+  }
   )
 
   let _data = {}
   if (!loading) {
     _data = data
-  }
-  if (error) {
-    message.error(error.message.toString())
   }
 
   useEffect(() => {
@@ -59,33 +59,44 @@ const RelianceCashBack = (props) => {
     {
       title: 'Partner Code',
       dataIndex: 'cardcode',
+      width: '8%'
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      width: '20%',
       render: (text, record) => {
-        return (
-          <Link href='/partners/[id]' as={`/partners/${text}`}>
-            {text}
-          </Link>
-        )
+        return (<Link href='/partners/[id]' as={`/partners/${record.cardcode} `}>
+          {text && text.length > 50
+            ? <Tooltip title={text}><a>{text.slice(0, 50) + '...'}</a></Tooltip>
+            : <a>{text}</a>}
+        </Link>)
       }
     },
     {
       title: 'Consumption',
-      dataIndex: 'consumption'
+      dataIndex: 'consumption',
+      width: '15%',
+      render: (text, record) => text.toFixed(2)
     },
     {
       title: 'CashBack',
+      width: '10%',
       dataIndex: 'amount'
     },
     {
       title: 'Percentage',
+      width: '10%',
       dataIndex: 'percentage'
     },
     {
       title: 'Balance',
       dataIndex: 'balance',
+      width: '10%',
       render: (text, record) => text.toFixed(2)
     }
-
   ]
+  const title = `Reliance Cashback ${year}-${month}`
   return (
     <div>
       <Table
@@ -113,7 +124,7 @@ const RelianceCashBack = (props) => {
         <Process
           visible={visible.processVisible}
           onHide={onHide}
-          title='Reliance CashBack'
+          title={title}
           month={month}
           year={year}
           setRelianceCashbackDetails={setRelianceCashbackDetails}

@@ -66,7 +66,7 @@ const AdditionalAdvance = (props) => {
     {
       title: 'Type',
       dataIndex: 'payment_mode',
-      width: '8%',
+      width: '10%',
       render:(text)=>text ? text : "WALLET"
     },
     {
@@ -77,23 +77,23 @@ const AdditionalAdvance = (props) => {
     {
       title: 'Reason',
       dataIndex: 'comment',
-      width: '24%'
+      width: '20%'
     },
     {
       title: 'Status',
       dataIndex: 'status',
-      width: '12%'
+      width: '14%'
     },
     {
       title: 'Created By',
       dataIndex: 'created_by',
-      width: '22%'
+      width: '20%'
     },
     {
       title: 'Created On',
       dataIndex: 'created_at',
       //render: (text, record) => (text ? text).format('DD-MMM-YY') : '-'),
-      width: '14%'
+      width: '26%'
     }
   ]
   return (
@@ -104,7 +104,7 @@ const AdditionalAdvance = (props) => {
           dataSource={list}
           rowKey={record => record.id}
           size='small'
-          scroll={{ x: 960 }}
+          scroll={{ x: 660 }}
           pagination={false}
         />)
         : !(loaded) 

@@ -78,7 +78,7 @@ const onCopy = () => {
     },
     {
       title: 'Partner',
-      width: '14%',
+      width: '10%',
       sorter: (a, b) => (a.partner > b.partner ? 1 : -1),
       render: (text, record) => {
         const id = get(record,'partner.id',null)
@@ -133,7 +133,7 @@ const onCopy = () => {
     },
     {
       title: '',
-      width:'2',
+      width: '1',
       render: (text, record) => (
         <EditTwoTone
           onClick={() =>
@@ -144,7 +144,7 @@ const onCopy = () => {
     {
       title: 'TAT',
       dataIndex: 'tat',
-      width: '6%',
+      width: '5%',
       sorter: (a, b) => (a.tat - b.tat),
       defaultSortOrder: 'descend'
     },
@@ -153,10 +153,10 @@ const onCopy = () => {
       render: (text, record) => {
         const comment = get(record,'last_comment.description',null)
         return (
-          <Truncate data={comment} length={45} />
+          <Truncate data={comment} length={30} />
         )
       },
-      width: '20%'
+      width: '18%'
     },
     {
       title: 'Action',

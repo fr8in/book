@@ -43,7 +43,7 @@ const Employees = () => {
   const { role } = u
   const context = useContext(userContext)
   const employee_delete = u.is_roles([u.role.admin], context)
-  const employee_role = role.admin
+  const employee_role =[role.admin, role.hr]
 
   const initial = {
     employeeRoleVisible: false,
@@ -94,6 +94,11 @@ const Employees = () => {
       width: '15%'
     },
     {
+      title:'Email',
+      dataIndex: 'email',
+      width: '15%'
+    },
+    {
       title: 'Employee Code',
       dataIndex: 'employee_code',
       width: '10%',
@@ -112,7 +117,7 @@ const Employees = () => {
     {
       title: 'Roles',
       dataIndex: 'role',
-      width: '56%',
+      width: '41%',
       render: (text, record) => {
         const roles = get(record, 'employee_roles', '-')
         return (
