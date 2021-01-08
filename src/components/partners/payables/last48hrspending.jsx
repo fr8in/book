@@ -3,6 +3,7 @@ import { Table} from 'antd'
 import React from 'react'
 import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
+import Truncate from '../../common/truncate'
 
 const ICICI_TRANSACTION= gql` query ICICI ($start_date:String!,$end_date:String!){
   icici_transaction(start_date:$start_date,end_date:$end_date){
@@ -21,12 +22,10 @@ const ICICI_TRANSACTION= gql` query ICICI ($start_date:String!,$end_date:String!
 
 const Last48hrsPending = (props) => {
   const {start_date,date} = props
-console.log('Last48',date)
-  console.log('///.....',start_date)
-  const fromdate =  !start_date[0] ? date[0].format('DD-MM-YYYY') : start_date[0].format('DD-MM-YYYY')
-  console.log('fromdate',fromdate)
-  const todate = !start_date[1] ? date[1].format('DD-MM-YYYY'): start_date[1].format('DD-MM-YYYY')
- console.log('todate', todate)
+
+const fromdate =  !start_date[0] ? date[0].format('DD-MM-YYYY') : start_date[0].format('DD-MM-YYYY')
+const todate = !start_date[1] ? date[1].format('DD-MM-YYYY'): start_date[1].format('DD-MM-YYYY')
+
   const { loading, error, data} = useQuery(
     ICICI_TRANSACTION, {
       fetchPolicy: 'cache-and-network',
@@ -71,7 +70,10 @@ console.log('Last48',date)
     },
     {
       title: 'Remarks',
-      dataIndex: 'remarks',
+      render: (text, record) => {
+        const remarks = get(record, 'remarks', null)
+        return <Truncate data={remarks} length={15} />
+      },
       width: '20%',
     },
     {
