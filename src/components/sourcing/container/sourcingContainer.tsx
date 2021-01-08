@@ -35,7 +35,6 @@ const SourcingContainer = () => {
 
   const [filter, setFilter] = useState(auth_user)
   const [mainTabKey, setMainTabKey] = useState('1')
-  const [subTabKey, setSubTabKey] = useState('1')
   const initial = { createLead: false, employeeList: false, filterList: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
@@ -61,9 +60,6 @@ const SourcingContainer = () => {
   }
   const mainTabChange = (key) => {
     setMainTabKey(key)
-  }
-  const subTabChange = (key) => {
-    setSubTabKey(key)
   }
 
   return (

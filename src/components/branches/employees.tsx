@@ -94,6 +94,11 @@ const Employees = () => {
       width: '15%'
     },
     {
+      title:'Email',
+      dataIndex: 'email',
+      width: '15%'
+    },
+    {
       title: 'Employee Code',
       dataIndex: 'employee_code',
       width: '10%',
@@ -112,7 +117,7 @@ const Employees = () => {
     {
       title: 'Roles',
       dataIndex: 'role',
-      width: '56%',
+      width: '41%',
       render: (text, record) => {
         const roles = get(record, 'employee_roles', '-')
         return (
