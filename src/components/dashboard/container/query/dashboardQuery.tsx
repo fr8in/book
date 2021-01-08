@@ -47,7 +47,7 @@ query dashboard_trips($now: timestamp,$regions: [Int!], $branches: [Int!], $citi
       count
     }
   }
-  adv_pending: trip_aggregate(where: {source_out: {_gt: $yearStart}, trip_status: {name: {_nin: ["Cancelled"]}}, trip_accounting: {receipt_ratio: {_lt: 0.5}}, branch: {region_id: {_in: $regions}}, branch_id: {_in: $branches}, source_connected_city_id: {_in: $cities}, truck_type_id: {_in: $truck_type}, branch_employee_id: {_in: $managers}}) {
+  adv_pending: trip_aggregate(where: {trip_status: {name: {_nin: ["Cancelled"]}}, trip_accounting: {receipt_ratio: {_lt: 0.5}}, branch: {region_id: {_in: $regions}}, branch_id: {_in: $branches}, source_connected_city_id: {_in: $cities}, truck_type_id: {_in: $truck_type}, branch_employee_id: {_in: $managers}}) {
     aggregate {
       count
     }
