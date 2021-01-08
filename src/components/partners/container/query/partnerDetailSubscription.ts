@@ -67,7 +67,6 @@ subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [Stri
     emi
     dnd
     cibil
-    final_payment_date
     bank {
       id
       name
