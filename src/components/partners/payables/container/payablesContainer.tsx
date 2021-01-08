@@ -98,7 +98,7 @@ const PayablesContainer = () => {
 
  
 let days = date[1].diff(date[0], 'days');
-console.log('days',days)
+
 const onCalendarChange = (value) =>{
   if(days > 30){ 
     message.error('Please Select between 30 days')
