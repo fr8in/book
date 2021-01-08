@@ -59,7 +59,7 @@ const RelianceCashBack = (props) => {
     {
       title: 'Partner Code',
       dataIndex: 'cardcode',
-      width: '5%'
+      width: '8%'
     },
     {
       title: 'Name',
