@@ -1,4 +1,4 @@
-import { Modal, Row, Col, Button, message, Input, Table } from 'antd'
+import { Modal, Row, Col, Button, message, Input, Table, Checkbox } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import { useState, useContext } from 'react'
@@ -8,13 +8,14 @@ import userContext from '../../lib/userContaxt'
 import moment from 'moment'
 
 const CUSTOMER_INCOMING_PAYMENTS = gql`
-query  bank_incoming($search:String){
-  bank_incoming(search:$search) {
+query  bank_incoming($search:String,$bank:[String]){
+  bank_incoming(search:$search,bank:$bank) {
     transno
     amount
     date
     details
     originno
+    bank
   }
 }`
 
@@ -43,11 +44,12 @@ const WalletTopup = (props) => {
   const [selectedRow, setSelectedRow] = useState([])
   const [disableButton, setDisableButton] = useState(true)
   const context = useContext(userContext)
+  const [bankFilter, setBankFilter] = useState([])
 
   const { loading, data, error, refetch } = useQuery(
     CUSTOMER_INCOMING_PAYMENTS,
     {
-      variables: { search: search || null },
+      variables: { search: search || null, bank: bankFilter },
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
@@ -71,14 +73,13 @@ const WalletTopup = (props) => {
     }
   )
 
-
-
   let _data = {}
   if (!loading) {
     _data = data
   }
 
   const bank_incoming = get(_data, 'bank_incoming', [])
+
   const count = bank_incoming ? bank_incoming.length : 0
   const total = bank_incoming ? sumBy(bank_incoming, 'amount').toFixed(2) : 0
 
@@ -108,7 +109,7 @@ const WalletTopup = (props) => {
       title: 'Reference No',
       dataIndex: 'transno',
       sorter: (a, b) => (a.transno > b.transno ? 1 : -1),
-      width: '15%'
+      width: '16%'
     },
     {
       title: 'Date',
@@ -121,16 +122,30 @@ const WalletTopup = (props) => {
     {
       title: 'Payment Details',
       dataIndex: 'details',
-      width: '57%'
+      width: '50%'
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
       sorter: (a, b) => (a.amount > b.amount ? 1 : -1),
-      width: '16%'
+      width: '14%'
+    },
+    {
+      title: 'Bank',
+      dataIndex: 'bank',
+      key: 'bank',
+      width: '8%',
+      filterDropdown: (
+        <Checkbox.Group
+          options={['ICICI', 'HDFC']}
+          onChange={(checked) => setBankFilter(checked)}
+          className='filter-drop-down'
+        />
+      )
     }
   ]
+
 
   const footerData = (
     <Row>

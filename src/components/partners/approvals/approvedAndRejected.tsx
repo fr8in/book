@@ -187,7 +187,6 @@ const ApprovedAndRejected = () => {
       key: 'type',
       filters: creditDebitType,
       width: '7%',
-      onFilter: (value, record) => record && record.type.indexOf(value) === 0,
       filterDropdown: (
         <Checkbox.Group
           options={creditDebitList}
