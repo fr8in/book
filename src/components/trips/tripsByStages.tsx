@@ -64,14 +64,13 @@ const TripsByStages = (props) => {
         const truck_no = get(record, 'truck.truck_no', null)
         const truck_type = get(record, 'truck.truck_type.name', null)
         return (
-          <>
           <LinkComp
             type='trucks'
             data={truck_no + ' - ' + truck_type}
             id={truck_no}
             length={32}
           />
-          </>)
+          )
       }
     } : {},
     {
