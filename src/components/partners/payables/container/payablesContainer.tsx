@@ -36,9 +36,14 @@ const PayablesContainer = () => {
 
   const fuelCashback_roles = [role.admin, role.accounts_manager, role.accounts]
   const fuelCashback_access = u.is_roles(fuelCashback_roles, context)
-  
+
   let today = new Date()
   let day = today.getDay()
+
+  // let today = "12-01-2001"
+  // let day = 2
+
+  console.log("day", day)
 
   const handleMonthChange = (date, dateString) => {
     const splittedDate = dateString.split('-')
@@ -46,7 +51,7 @@ const PayablesContainer = () => {
     setMonth(parseInt(splittedDate[1]))
   }
 
-  
+
 
   function disabledMonthForFuelCashBack(current) {
     return current && current < moment("2020/11/01") || current > moment();
@@ -72,22 +77,25 @@ const PayablesContainer = () => {
   const handleCashBackDate = (date) => {
     return moment().diff(date, 'months') > 1 || moment().diff(date, 'months') < 1
   }
- 
 
-  const _day = (day === 6) ? [moment(today, "DD-MM-YYYY").subtract(1, "days"), moment(today, "DD/MM/YYYY").add(2, "days")]
-    : (day === 5) ? [moment(today, "DD/MM/YYYY"), moment(today, "DD/MM/YYYY").add(3, "days")]
-      : (day === 4) ? [moment(today, "DD/MM/YYYY").subtract(2, "days"), moment(today, "DD/MM/YYYY")]
-        : (day === 3) ? [moment(today, "DD/MM/YYYY").subtract(2, "days"), moment(today, "DD/MM/YYYY")]
-          : (day === 2) ? [moment(today, "DD/MM/YYYY").subtract(2, "days"), moment(today, "DD/MM/YYYY")]
-            : (day === 1) ? [moment(today, "DD/MM/YYYY"), moment(today, "DD/MM/YYYY").subtract(2, "days")]
-              : (day === 0) ? [moment(today, "DD-MM-YYYY").subtract(2, "days"), moment(today, "DD/MM/YYYY").add(1, "days")]
-                : [moment(today, "DD/MM/YYYY"), moment(today, "DD/MM/YYYY")]
 
-  
-  const [date, setDate] = useState([_day[0],_day[1]])
-  const fromdate = !date[0] ? _day[0].format('DD-MM-YYYY') : date[0].format('DD-MM-YYYY')
-  const todate = !date[1] ? _day[1].format('DD-MM-YYYY') : date[1].format('DD-MM-YYYY')
- 
+  let saturday = 6;
+  let friday = 5
+  let sunday = 0;
+  let monday = 1
+  let current_date = [moment(today, "DD-MM-YYYY"), moment(today, "DD/MM/YYYY")]
+
+  const _day = (day === saturday) ? [current_date[0].subtract(1, "days"), current_date[1].add(2, "days")]
+    : (day === friday) ? [current_date[0], current_date[1].add(3, "days")]
+      : (day === sunday) ? [current_date[0].subtract(2, "days"), current_date[1].add(1, "days")]
+        : (day === monday) ? [current_date[0], current_date[1].subtract(2, "days")]
+          : [current_date[0].subtract(2, "days"), current_date[1]]
+
+  const [date, setDate] = useState([_day[0], _day[1]])
+  console.log('date',date)
+  const fromdate = isNil(date) ||   !date[0] ? _day[0].format('DD-MM-YYYY') : date[0].format('DD-MM-YYYY')
+  const todate =isNil(date)|| !date[1] ? _day[1].format('DD-MM-YYYY') : date[1].format('DD-MM-YYYY')
+
   const onConfirm = () => {
     setDisableBtn({ ...disableBtn, loading: true })
     if (!isEmpty(date)) {
@@ -102,15 +110,15 @@ const PayablesContainer = () => {
     }
   }
 
- 
-let days = date[1].diff(date[0], 'days');
 
-const onCalendarChange = (value) =>{
-  if(days > 30){ 
-    message.error('Please Select between 30 days')
-  }
-  else setDate(value)
-}
+  let days =  isNil(date) ? isNil(date) : date[1].diff(date[0], 'days') ;
+console.log('days',days)
+  // const onCalendarChange = (value) => {
+  //   if (days > 30) {
+  //     message.error('Please Select between 30 days')
+  //   }
+  //   else setDate(value)
+  // }
 
   const TabBarContent = () => {
     return (
@@ -120,9 +128,9 @@ const onCalendarChange = (value) =>{
             <RangePicker
               size='small'
               format='DD-MM-YYYY'
-              defaultValue={[_day[0],_day[1]]}
-              value={[date[0], date[1]]}
-              onCalendarChange={onCalendarChange }
+              defaultValue={[_day[0], _day[1]]}
+              // value={[date[0], date[1]]}
+              onCalendarChange={(value) => setDate(value)}
             />
             <Button size='small' loading={disableBtn.loading} >
               <DownloadOutlined onClick={() => onConfirm()} />
@@ -146,7 +154,8 @@ const onCalendarChange = (value) =>{
             </Space>
           )
           : (tabIndex === '3') ?
-            <DatePicker onChange={handleMonthChange} picker='month' />
+            <DatePicker onChange={handleMonthChange} picker='month'
+              disabledDate={(current) => disabledMonthForFuelCashBack(current)} />
             : null
     )
   }

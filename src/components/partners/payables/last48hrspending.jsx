@@ -4,7 +4,7 @@ import React from 'react'
 import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import Truncate from '../../common/truncate'
-
+import isNil from 'lodash/isNil'
 const ICICI_TRANSACTION= gql` query ICICI ($start_date:String!,$end_date:String!){
   icici_transaction(start_date:$start_date,end_date:$end_date){
     result{
@@ -23,8 +23,8 @@ const ICICI_TRANSACTION= gql` query ICICI ($start_date:String!,$end_date:String!
 const Last48hrsPending = (props) => {
   const {start_date,date} = props
 
-const fromdate =  !start_date[0] ? date[0].format('DD-MM-YYYY') : start_date[0].format('DD-MM-YYYY')
-const todate = !start_date[1] ? date[1].format('DD-MM-YYYY'): start_date[1].format('DD-MM-YYYY')
+const fromdate = isNil(start_date) || start_date.length<0 || !start_date[0] ? date[0].format('DD-MM-YYYY') : start_date[0].format('DD-MM-YYYY')
+const todate = isNil(start_date) || start_date.length<0 ||!start_date[1] ? date[1].format('DD-MM-YYYY'): start_date[1].format('DD-MM-YYYY')
 
   const { loading, error, data} = useQuery(
     ICICI_TRANSACTION, {
