@@ -93,4 +93,4 @@ const createApolloClient = (initialState, ctx) => {
   })
 }
 
-export default { changeSubscriptionToken, createApolloClient}
+export  { changeSubscriptionToken, createApolloClient}
