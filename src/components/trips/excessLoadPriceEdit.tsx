@@ -25,7 +25,6 @@ const UPDATE_TRIP_PRICE_MUTATION = gql `mutation trip($tripId:Int!,$price:Float!
       )
     
       const handleChange = (value) => {
-          console.log("value",value)
         updateTripPrice({
           variables: {
             tripId: id,

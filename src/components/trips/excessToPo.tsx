@@ -35,7 +35,6 @@ const ExcessToPo = (props) => {
   const initial = { search: null, partner_id: null, po_visible: false, truck_id: null }
   const [obj, setObj] = useState(initial)
 
-  //const [form] = Form.useForm()
 
   const { loading, error, data } = useQuery(
     PARTNER_SEARCH_QUERY,
@@ -81,7 +80,6 @@ const ExcessToPo = (props) => {
 
   const onPartnerSelect = (value, partner) => {
     setObj({ ...obj, partner_id: partner.key, po_visible: (obj.truck_id && partner.key) })
-    //form.resetFields(['truck'])
   }
 
   const onTruckSelect = (truck, partner) => {

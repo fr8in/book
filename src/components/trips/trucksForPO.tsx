@@ -82,7 +82,6 @@ const TrucksForPO = (props) => {
     truck = selectd_truck && selectd_truck.length > 0 && selectd_truck[0] 
   }
     onChange(truck, partner)
-    //form.resetFields(['partner'])
   }
   const onTruckSearch = (value) => {
     setObj({ ...obj, search: value })
