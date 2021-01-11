@@ -83,9 +83,6 @@ const WalletTopup = (props) => {
 
   const bank_incoming = get(_data, 'bank_incoming', [])
 
-  const count = bank_incoming ? bank_incoming.length : 0
-  const total = bank_incoming ? sumBy(bank_incoming, 'amount').toFixed(2) : 0
-
   useEffect(() => {
     const totalCount = bank_incoming ? bank_incoming.length : 0
     const totalSum = bank_incoming ? sumBy(bank_incoming, 'amount').toFixed(2) : 0
