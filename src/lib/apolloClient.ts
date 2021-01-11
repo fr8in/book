@@ -6,6 +6,7 @@ import { refreshToken } from './auth'
 import { onError } from '@apollo/client/link/error'
 import u from '../lib/util'
 // import WebSocket from 'ws';
+import get from 'lodash/get';
 
 const { application_error } = u
 
@@ -33,10 +34,12 @@ const wsLink = isBrowser ? new WebSocketLink({
 }) : null
 
 const changeSubscriptionToken = token => {
-  if (wsLink.subscriptionClient.connectionParams.authToken === token) {
-  wsLink.subscriptionClient.connectionParams.authToken = token
-  wsLink.subscriptionClient.close()
-  wsLink.subscriptionClient.connect()
+  let authToken=get(wsLink, 'subscriptionClient.connectionParams.authToken', null)
+  let subscriptionClient = get(wsLink, 'subscriptionClient', null)
+  if (authToken === token) {
+  authToken = token
+  subscriptionClient.close()
+  subscriptionClient.connect()
 }
 }
 
