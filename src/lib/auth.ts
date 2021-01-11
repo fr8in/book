@@ -5,7 +5,7 @@ import Router from 'next/router'
 import { message } from 'antd'
 import jwt from 'jsonwebtoken'
 import moment from 'moment'
-
+import  {changeSubscriptionToken}  from './apolloClient'
 
 if (!firebase.apps.length) {
   firebase.initializeApp({
@@ -83,7 +83,8 @@ const signOut = async () => {
   }
 }
 
-const refreshToken = () => {
+const refreshToken = (reload) => {
+  try{
   const token = localStorage.getItem('token')
   if(token){
   const decodedToken = jwt.decode(token)
@@ -96,10 +97,19 @@ const refreshToken = () => {
     firebase.auth().onAuthStateChanged(async user => {
       if (user) {
         const token = await user.getIdToken(true)
+        changeSubscriptionToken(token)
         localStorage.setItem('token', token)
       }
     })
+    if(reload){
+      window.location.reload()
+    }
   }
+ }
+}
+catch(error){
+  localStorage.clear()
+  Router.push('/login')
 }
 }
 
