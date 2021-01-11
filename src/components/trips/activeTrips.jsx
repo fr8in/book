@@ -156,7 +156,7 @@ const Trips = (props) => {
           />
         )
       },
-      width: '12%'
+      width: '13%'
     },
     {
       title: 'Source',
@@ -204,7 +204,7 @@ const Trips = (props) => {
       ? {
           title: 'ETA',
           dataIndex: 'eta',
-          width: '5%',
+          width: '6%',
           sorter: (a, b) => (a.eta > b.eta ? 1 : -1),
           render: (text, record) => text ? moment(text).format('DD-MMM') : null
         }
@@ -215,10 +215,10 @@ const Trips = (props) => {
         const comment = get(record, 'last_comment.description', null)
         return (
           props.intransit
-            ? <Truncate data={comment} length={20} />
-            : <Truncate data={comment} length={26} />)
+            ? <Truncate data={comment} length={9} />
+            : <Truncate data={comment} length={15} />)
       },
-      width: '15%'
+      width: '12%'
     },
     {
       title: 'Action',

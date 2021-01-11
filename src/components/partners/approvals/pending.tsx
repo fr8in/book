@@ -188,8 +188,8 @@ const Pending = () => {
       title: 'Reason',
       dataIndex: 'comment',
       key: 'comment',
-      width: '11%',
-      render: (text, record) => <Truncate data={text} length={13} />
+      width: '9%',
+      render: (text, record) => <Truncate data={text} length={11} />
     },
     {
       title: 'Region',
@@ -255,7 +255,7 @@ const Pending = () => {
       title: 'Responsibility',
       dataIndex: 'responsibility',
       key: 'responsibility',
-      width: '10%',
+      width: '11%',
       render: (text, record) =>
         <PartnerOnBoardedBy
           onboardedBy={get(record, 'responsibility.name', '-')}
@@ -287,7 +287,7 @@ const Pending = () => {
     },
     {
       title: 'Action',
-      width: '8%',
+      width: '9%',
       render: (text, record) => (
         <Space>
           <Tooltip title='Comment'>
