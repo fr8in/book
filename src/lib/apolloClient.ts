@@ -20,7 +20,6 @@ const wsLink = isBrowser ? new WebSocketLink({
     connectionParams: async () => {
       await refreshToken(false)
       const token = await localStorage.getItem('token')
-      console.log('web',token)
       if (token) {
         return {
           headers: {
@@ -74,14 +73,10 @@ const link = isBrowser ? split(
 ) : concatedHttpLink
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
-  console.log('graphQLErrors', graphQLErrors)
-    console.log('networkError', networkError)
     const networkErrorMessage = networkError && networkError.message ? networkError.message : null
     const graphqlErrorMessage = graphQLErrors && graphQLErrors.length > 0 && graphQLErrors[0].message ? graphQLErrors[0].message : null
-    console.log(networkErrorMessage, graphqlErrorMessage)
       if ((networkError && networkErrorMessage.includes(application_error.JWT_TOKEN_EXPIRE_ERROR)) || 
       (graphQLErrors && graphqlErrorMessage.includes(application_error.JWT_TOKEN_EXPIRE_ERROR))) {
-        console.log('jwterror in')
         refreshToken(false)
       }
 })
