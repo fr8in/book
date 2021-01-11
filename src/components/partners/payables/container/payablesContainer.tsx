@@ -40,12 +40,7 @@ const PayablesContainer = () => {
   let today = new Date()
   let day = today.getDay()
 
-  // let today = "12-01-2001"
-  // let day = 2
-
-  console.log("day", day)
-
-  const handleMonthChange = (date, dateString) => {
+   const handleMonthChange = (date, dateString) => {
     const splittedDate = dateString.split('-')
     setYear(parseInt(splittedDate[0]))
     setMonth(parseInt(splittedDate[1]))
@@ -92,7 +87,6 @@ const PayablesContainer = () => {
           : [current_date[0].subtract(2, "days"), current_date[1]]
 
   const [date, setDate] = useState([_day[0], _day[1]])
-  console.log('date',date)
   const fromdate = isNil(date) ||   !date[0] ? _day[0].format('DD-MM-YYYY') : date[0].format('DD-MM-YYYY')
   const todate =isNil(date)|| !date[1] ? _day[1].format('DD-MM-YYYY') : date[1].format('DD-MM-YYYY')
 
@@ -110,16 +104,6 @@ const PayablesContainer = () => {
     }
   }
 
-
-  let days =  isNil(date) ? isNil(date) : date[1].diff(date[0], 'days') ;
-console.log('days',days)
-  // const onCalendarChange = (value) => {
-  //   if (days > 30) {
-  //     message.error('Please Select between 30 days')
-  //   }
-  //   else setDate(value)
-  // }
-
   const TabBarContent = () => {
     return (
       (tabIndex === '1') ?
@@ -129,7 +113,6 @@ console.log('days',days)
               size='small'
               format='DD-MM-YYYY'
               defaultValue={[_day[0], _day[1]]}
-              // value={[date[0], date[1]]}
               onCalendarChange={(value) => setDate(value)}
             />
             <Button size='small' loading={disableBtn.loading} >

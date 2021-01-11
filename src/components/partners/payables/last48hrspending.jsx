@@ -46,8 +46,7 @@ const todate = isNil(start_date) || start_date.length<0 ||!start_date[1] ? date[
   }
 
   const icici_transaction = get(_data, 'icici_transaction.result', [])
- console.log(icici_transaction)
-
+ 
   const columns = [
     {
       title: 'Date',
