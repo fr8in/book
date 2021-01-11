@@ -76,6 +76,7 @@ const todate = isNil(start_date) || start_date.length<0 ||!start_date[1] ? date[
     {
       title: 'TxnDate',
       dataIndex: 'txnDate',
+      sorter: (a, b) => (a.txnDate > b.txnDate ? 1 : -1),
       width: '15%',
     },  
     {
