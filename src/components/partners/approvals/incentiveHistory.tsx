@@ -63,7 +63,7 @@ const IncentiveHistory = () => {
   const where = {
      trip_id: filter.trip_id && filter.trip_id.length > 0 ? { _in: filter.trip_id } : { _in: null },
      created_by: filter.created_by ? { _ilike: `%${filter.created_by}%` } : { _ilike: null },
-     incentive_status: { status: { _in: ['APPROVED', 'REJECTED'] } },
+     incentive_status: { status: { _in: ['PAID', 'REJECTED'] } },
      trip: { partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } } },
      incentive_config: {auto_creation: {_eq: false}}
   }
