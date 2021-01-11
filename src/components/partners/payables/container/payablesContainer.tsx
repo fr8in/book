@@ -91,8 +91,8 @@ const PayablesContainer = () => {
   const todate =isNil(date)|| !date[1] ? _day[1].format('DD-MM-YYYY') : date[1].format('DD-MM-YYYY')
 
   const onConfirm = () => {
-    setDisableBtn({ ...disableBtn, loading: true })
     if (!isEmpty(date)) {
+      setDisableBtn({ ...disableBtn, loading: true })
       icici_statement({
         variables: {
           start_date: fromdate,
@@ -116,7 +116,7 @@ const PayablesContainer = () => {
               onCalendarChange={(value) => setDate(value)}
             />
             <Button size='small' loading={disableBtn.loading} >
-              <DownloadOutlined onClick={() => onConfirm()} />
+              <DownloadOutlined onClick={onConfirm} />
             </Button>
           </Space>
         )
