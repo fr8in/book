@@ -43,7 +43,7 @@ mutation partner_user_delete($id:Int!, $description: String, $topic: String, $cr
 }`
 
 const UPDATE_IS_ADMIN_USER = gql`
-mutation partner_user($partner_id:Int,$mobile_id:Int){
+mutation partner_user($partner_id:Int,$mobile_id:Int,$topic:String,$description:String,$created_by:String){
   update:update_partner_user(where:{partner_id:{_eq:$partner_id},is_admin:{_eq:true}},_set:{is_admin:false}){
     returning{
       id
@@ -52,6 +52,12 @@ mutation partner_user($partner_id:Int,$mobile_id:Int){
   insert:update_partner_user(where:{partner_id:{_eq:$partner_id},id:{_eq:$mobile_id}},_set:{is_admin:true}){
     returning {
       id
+    }
+  }
+  insert_comment: insert_partner_comment(objects: {description: $description, partner_id: $partner_id, topic: $topic, created_by:$created_by}) {
+    returning {
+      description
+      partner_id
     }
   }
 }
@@ -135,11 +141,14 @@ const PartnerUsers = (props) => {
       }
     })
   }
-  const onIsAdminChange = (mobile_id) => {
+  const onIsAdminChange = (mobile_id,record) => {
     is_admin_update({
       variables: {
         partner_id: partner.id,
-        mobile_id: mobile_id
+        mobile_id: mobile_id,
+        description: `${record.mobile} is Admin!`,
+        topic: 'Primary Number Changed',
+        created_by: context.email
       }
     })
   }
@@ -152,7 +161,7 @@ const PartnerUsers = (props) => {
         return (
           <Radio
             checked={record.is_admin}
-            onChange={() => onIsAdminChange(record.id)}
+            onChange={() => onIsAdminChange(record.id,record)}
           >
             <Phone number={record.mobile} />
           </Radio>

@@ -80,11 +80,11 @@ const PayablesContainer = () => {
   let monday = 1
   let current_date = [moment(today, "DD-MM-YYYY"), moment(today, "DD/MM/YYYY")]
 
-  const _day = (day === saturday) ? [current_date[0].subtract(1, "days"), current_date[1].add(2, "days")]
-    : (day === friday) ? [current_date[0], current_date[1].add(3, "days")]
-      : (day === sunday) ? [current_date[0].subtract(2, "days"), current_date[1].add(1, "days")]
-        : (day === monday) ? [current_date[0], current_date[1].subtract(2, "days")]
-          : [current_date[0].subtract(2, "days"), current_date[1]]
+  const _day = (day === saturday) ? [current_date[1].add(2, "days"),current_date[0].subtract(1, "days")]
+    : (day === friday) ? [current_date[1].add(3, "days"),current_date[0]]
+      : (day === sunday) ? [current_date[1].add(1, "days"),current_date[0].subtract(2, "days")]
+        : (day === monday) ? [current_date[1].subtract(2, "days"),current_date[0]]
+          : [current_date[1],current_date[0].subtract(2, "days")]
 
   const [date, setDate] = useState([_day[0], _day[1]])
   const fromdate = isNil(date) ||   !date[0] ? _day[0].format('DD-MM-YYYY') : date[0].format('DD-MM-YYYY')
