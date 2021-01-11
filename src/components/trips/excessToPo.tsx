@@ -108,7 +108,6 @@ const ExcessToPo = (props) => {
               disabled={false}
               onSearch={onPartnerSearch}
               onChange={onPartnerSelect}
-              defaultValue = {partner_list && partner_list.id}
             >
                {partner_list && 
           <Select.Option key={partner_list.id} value={partner_list.name}>{partner_list.name}</Select.Option>
