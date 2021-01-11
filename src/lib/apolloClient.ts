@@ -35,7 +35,6 @@ const wsLink = isBrowser ? new WebSocketLink({
 
 const changeSubscriptionToken = token => {
   if (wsLink.subscriptionClient.connectionParams.authToken === token) {
-    console.log("came inside")
   wsLink.subscriptionClient.connectionParams.authToken = token
   wsLink.subscriptionClient.close()
   wsLink.subscriptionClient.connect()
