@@ -129,11 +129,12 @@ const TripTime = (props) => {
   const customerPrice = get(trip_info, 'customer_price', null)
   const km = get(trip_info, 'km', null)
   const customerPricePerKm = (customerPrice / km)
+  console.log('customerPricePerKm',customerPricePerKm)
   const pricePerKm = customerPricePerKm > 100
   const [form] = Form.useForm()
   const [getWord, { loading, data, error, called }] = useLazyQuery(GET_WORD)
   const [getPdf, { loading: pdfloading, data: pdfdata, error: pdferror, called: pdfcalled }] = useLazyQuery(GET_PDF)
-  const { data: tokenData, loading: tokenQueryLoading, refetch } = useQuery(GET_TOKEN, {
+  const [getToken, { data: tokenData, loading: tokenQueryLoading }] = useLazyQuery(GET_TOKEN, {
     fetchPolicy: "network-only",
     variables: {
       ref_id: trip_info.id,
@@ -298,9 +299,6 @@ const TripTime = (props) => {
         } else {
           message.error(description)
         }
-        setTimeout(() => {
-          refetch()
-        }, 5000)
       }
     }
   )
@@ -476,14 +474,21 @@ const TripTime = (props) => {
                     title='Trip Rate/Km is more than 100. Do you want to process?'
                     okText='Yes'
                     cancelText='No'
-                   onConfirm={onProcessAdvance}
+                    onConfirm={onProcessAdvance}
                   >
-                  <Button type='primary' disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>
+                    <Button type='primary' onClick={()=>getToken()} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>
                   </Popconfirm>
                   :
                   (advance_access && process_advance ?
-                  <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>
-                  : null)
+                    <Popconfirm
+                      title='Are you sure to process advance?'
+                      okText='Yes'
+                      cancelText='No'
+                      onConfirm={onProcessAdvance}
+                    >
+                      <Button type='primary' onClick={()=>getToken()} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>
+                    </Popconfirm>
+                    : null)
                 }
                 {remove_sin &&
                   <Button danger icon={<CloseCircleOutlined />} onClick={onSinRemove} disabled={lock} loading={disableBtn}>S-In</Button>}

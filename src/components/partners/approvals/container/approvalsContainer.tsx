@@ -5,6 +5,7 @@ import TransferToBankHistory from '../../../customers/transferToBankHistory'
 import { Tabs, Card } from 'antd'
 import Incentive from '../incentive'
 import IncentiveHistory from '../incentiveHistory'
+import AdditionalAdvanceBankApproval from '../additionalAdvanceBank';
 
 const TabPane = Tabs.TabPane
 
@@ -29,6 +30,9 @@ const Approvals = () => {
         </TabPane> 
         <TabPane tab='History' key='6'>
           <IncentiveHistory />
+        </TabPane>
+        <TabPane tab='Additional advance bank' key='7'>
+          <AdditionalAdvanceBankApproval />
         </TabPane>
       </Tabs>
     </Card>
