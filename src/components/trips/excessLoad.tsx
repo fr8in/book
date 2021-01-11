@@ -11,7 +11,7 @@ import userContext from '../../lib/userContaxt'
 import { useContext } from 'react'
 import PartnerTrips from './partnerTrips'
 import TripPrceEdit from './excessLoadPriceEdit'
-import isNil from 'lodash/isNil'
+import isEmpty from 'lodash/isEmpty'
 
 
 const EXCESS_LOAD = gql`
@@ -181,7 +181,7 @@ const ExcessLoad = (props) => {
       title: 'S0 Price',
       width: '10%',
       render: (text, record) => {
-        return(<TripPrceEdit id={record.id} price = {isNil(record.customer_price) ? 0 : record.customer_price}  />
+        return(<TripPrceEdit id={record.id} price = {isEmpty(record.customer_price) ? 0 : record.customer_price}  />
         )}
     },
     {
