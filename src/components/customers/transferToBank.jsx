@@ -61,7 +61,7 @@ const TransfertoBank = () => {
    
    const [filter, setFilter] = useState(customer_name)
    
-    const variables = {
+    const where = {
        status: {_eq:"PENDING" },
        customers: {name: {_ilike: filter.customername ? `%${filter.customername}%` : null}}
      
@@ -70,7 +70,7 @@ const TransfertoBank = () => {
   const { loading, error, data } = useSubscription(
     TRANSFER_SUBSCRIPTION,{
       variables:{
-       where:variables
+       where:where
       }
     }
     )

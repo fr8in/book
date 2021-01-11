@@ -44,7 +44,7 @@ const TransferToBankHistory = (props) => {
 
 const [filter, setFilter] = useState(initial)
 
- const variables = {
+ const where = {
     card_code: {_eq:cardcode },
     status: {_in:status },
     customers: {name: {_ilike: filter.customername ? `%${filter.customername}%` : null}}
@@ -54,7 +54,7 @@ const [filter, setFilter] = useState(initial)
   const { loading, error, data } = useSubscription(
     TRANSFER_TO_BANK_HISTORY,{
     variables:{
-     where:variables
+     where:where
     }
 }
   )

@@ -147,7 +147,7 @@ const PartnerUsers = (props) => {
         partner_id: partner.id,
         mobile_id: mobile_id,
         description: `${record.mobile} is Admin!`,
-        topic: 'Admin Number Changed',
+        topic: 'Primary Number Changed',
         created_by: context.email
       }
     })
