@@ -1,5 +1,7 @@
 import React from 'react'
-import { Table,Tooltip} from 'antd'
+import { Table,Tooltip,Input} from 'antd'
+import { useState } from 'react'
+import { SearchOutlined} from '@ant-design/icons'
 import Truncate from '../common/truncate'
 import { gql,  useSubscription } from '@apollo/client'
 import get from 'lodash/get'
@@ -7,8 +9,8 @@ import moment from 'moment'
 import LinkComp from '../common/link'
 
 const TRANSFER_TO_BANK_HISTORY = gql`
-subscription customerTransfertoBank_history($cardcode:String,$status:[String!]) {
-  customer_wallet_outgoing(where:{card_code:{_eq:$cardcode}status:{_in:$status}}){
+subscription customerTransfertoBank_history($where:customer_wallet_outgoing_bool_exp) {
+  customer_wallet_outgoing(where:$where){
     id
     card_code
     load_id
@@ -36,11 +38,23 @@ subscription customerTransfertoBank_history($cardcode:String,$status:[String!]) 
 const TransferToBankHistory = (props) => {
  const {cardcode,status} =props
 
+ const initial = {
+ customername: null
+}
+
+const [filter, setFilter] = useState(initial)
+
+ const variables = {
+    card_code: {_eq:cardcode },
+    status: {_in:status },
+    customers: {name: {_ilike: filter.customername ? `%${filter.customername}%` : null}}
+  
+}
+
   const { loading, error, data } = useSubscription(
     TRANSFER_TO_BANK_HISTORY,{
     variables:{
-      cardcode:cardcode,
-      status:status
+     where:variables
     }
 }
   )
@@ -50,6 +64,10 @@ const TransferToBankHistory = (props) => {
     _data = data
   }
   const approvedAndRejected = get(_data,'customer_wallet_outgoing', null)
+
+  const onCustomerSearch = (e) => {
+    setFilter({ ...filter, customername: e.target.value })
+  }
   
   const ApproveandRejectHistory = [
     {
@@ -61,7 +79,18 @@ const TransferToBankHistory = (props) => {
         return (
           <LinkComp type='customers' data={name} id={cardcode} length={20} />
         )
-      }
+      },
+      filterDropdown: (
+        <Input
+          placeholder='Search'
+          id='customer_name'
+          value={filter.customername}
+          onChange={onCustomerSearch}
+        />
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     {
       title: 'Trip Id',

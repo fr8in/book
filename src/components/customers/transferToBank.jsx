@@ -1,9 +1,10 @@
-import { Table,  Tooltip, Button, Space } from 'antd'
+import { Table,  Tooltip, Button, Space, Input} from 'antd'
 import {
   CheckOutlined,
-  CloseOutlined
+  CloseOutlined,
+  SearchOutlined
 } from '@ant-design/icons'
-import { useContext } from 'react'
+import { useContext,useState } from 'react'
 import Truncate from '../common/truncate'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import TransferToBankAccept from './transfertobankAccept'
@@ -15,8 +16,8 @@ import u from '../../lib/util'
 import userContext from '../../lib/userContaxt'
 
 const TRANSFER_SUBSCRIPTION = gql`
-subscription customerWalletOutgoing {
-  customer_wallet_outgoing(where: {status: {_eq: "PENDING"}}) {
+subscription customerWalletOutgoing ($where:customer_wallet_outgoing_bool_exp){
+  customer_wallet_outgoing(where:$where) {
     id
     card_code
     load_id
@@ -53,11 +54,26 @@ const TransfertoBank = () => {
   }
 
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+
+  const customer_name = {
+    customername: null
+   }
+   
+   const [filter, setFilter] = useState(customer_name)
+   
+    const variables = {
+       status: {_eq:"PENDING" },
+       customers: {name: {_ilike: filter.customername ? `%${filter.customername}%` : null}}
+     
+   }
   
   const { loading, error, data } = useSubscription(
-    TRANSFER_SUBSCRIPTION)
-
-  console.log('pending error', error)
+    TRANSFER_SUBSCRIPTION,{
+      variables:{
+       where:variables
+      }
+    }
+    )
 
   let _transfertobankdata = {}
   if (!loading) {
@@ -67,6 +83,10 @@ const TransfertoBank = () => {
   const transferdata = get(_transfertobankdata, 'customer_wallet_outgoing', null)
   const customer_id = get (_transfertobankdata,'customer_wallet_outgoing.customers[0].id',null)
   
+  const onCustomerSearch = (e) => {
+    setFilter({ ...filter, customername: e.target.value })
+  }
+
   const ApprovalPending = [
     {
       title: 'Customer Name',
@@ -77,7 +97,18 @@ const TransfertoBank = () => {
         return (
           <LinkComp type='customers' data={name} id={cardcode} length={38} />
         )
-      }
+      },
+      filterDropdown: (
+        <Input
+          placeholder='Search'
+          id='customer_name'
+          value={filter.customername}
+          onChange={onCustomerSearch}
+        />
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     {
       title: 'Trip Id',

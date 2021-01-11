@@ -201,20 +201,6 @@ const Incentive = () => {
             render: (text, record) => <Truncate data={text} length={15} />
         },
         {
-            title: 'Partner Name',
-            width: '12%',
-            render: (text, record) => {
-                return (
-                    <LinkComp
-                        type='partners'
-                        data={get(record, 'trip.partner.name', null) + '-' + get(record, 'trip.partner.cardcode', null)}
-                        id={get(record, 'trip.partner.cardcode', null)}
-                        length={20}
-                    />
-                )
-            }
-        },
-        {
             title: 'Req.On',
             dataIndex: 'created_at',
             key: 'created_at',

@@ -38,8 +38,6 @@ const todate = isNil(start_date) || start_date.length<0 ||!start_date[1] ? date[
     }
   )
   
-  console.log('pendingTransaction error', error)
-
   let _data = []
   if (!loading) {
     _data = data
@@ -71,31 +69,25 @@ const todate = isNil(start_date) || start_date.length<0 ||!start_date[1] ? date[
       title: 'Remarks',
       render: (text, record) => {
         const remarks = get(record, 'remarks', null)
-        return <Truncate data={remarks} length={15} />
+        return <Truncate data={remarks} length={30} />
       },
       width: '20%',
     },
     {
-      title: 'Balance',
-      dataIndex: 'balance',
-      width: '10%',
-    },
+      title: 'TxnDate',
+      dataIndex: 'txnDate',
+      width: '15%',
+    },  
     {
       title: 'TransactionId',
       dataIndex: 'transactionId',
       width: '15%',
     },
     {
-      title: 'TxnDate',
-      dataIndex: 'txnDate',
+      title: 'Balance',
+      dataIndex: 'balance',
       width: '10%',
-    },
-    {
-      title: 'ChequeNo',
-      dataIndex: 'chequeNo',
-      width: '15%',
-    }      
-     
+    }     
   ]
 
   return (
