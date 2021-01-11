@@ -9,13 +9,7 @@ import u from '../lib/util'
 
 const { application_error } = u
 
-const changeSubscriptionToken = token => {
-  if (wsLink.subscriptionClient.connectionParams.authToken === token) {
-  wsLink.subscriptionClient.connectionParams.authToken = token
-  wsLink.subscriptionClient.close()
-  wsLink.subscriptionClient.connect()
-}
-}
+
 
 const isBrowser = typeof window !== 'undefined'
 const wsLink = isBrowser ? new WebSocketLink({
@@ -24,7 +18,7 @@ const wsLink = isBrowser ? new WebSocketLink({
     lazy: true,
     reconnect: true,
     connectionParams: async () => {
-      await refreshToken()
+      await refreshToken(false)
       const token = await localStorage.getItem('token')
       console.log('web',token)
       if (token) {
@@ -38,13 +32,23 @@ const wsLink = isBrowser ? new WebSocketLink({
   }
   // webSocketImpl: WebSocket
 }) : null
+
+const changeSubscriptionToken = token => {
+  if (wsLink.subscriptionClient.connectionParams.authToken === token) {
+    console.log("came inside")
+  wsLink.subscriptionClient.connectionParams.authToken = token
+  wsLink.subscriptionClient.close()
+  wsLink.subscriptionClient.connect()
+}
+}
+
 const httpLink = new HttpLink({
   uri: process.env.NEXT_PUBLIC_HTTP_CORE,
   credentials: 'same-origin' // Additional fetch() options like `credentials` or `headers`
 })
 const authLink = setContext( async(_, { headers }) => {
   // get the authentication token from local storage if it exists
-  await refreshToken()
+  await refreshToken(false)
   const token = localStorage.getItem('token')
   // return the headers to the context so httpLink can read them
   if(token){
@@ -79,7 +83,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
       if ((networkError && networkErrorMessage.includes(application_error.JWT_TOKEN_EXPIRE_ERROR)) || 
       (graphQLErrors && graphqlErrorMessage.includes(application_error.JWT_TOKEN_EXPIRE_ERROR))) {
         console.log('jwterror in')
-        refreshToken(true)
+        refreshToken(false)
       }
 })
 
