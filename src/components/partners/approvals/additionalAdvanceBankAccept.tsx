@@ -48,8 +48,7 @@ const AdditionalAdvanceBankAccept = (props) => {
       onCompleted (data) {
         const status = get(data, 'additional_advance_bank.status', null)
         const description = get(data, 'additional_advance_bank.description', null)
-        const result = get(data, 'additional_advance_bank.result.advance_result', null)
-        if (status === 'OK' && result === false) {
+        if (status === 'OK') {
           setDisableButton(false)
           form.resetFields()
           message.success(description || 'Processed!')
