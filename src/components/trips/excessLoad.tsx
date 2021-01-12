@@ -10,6 +10,9 @@ import ExcessToPo from '../trips/excessToPo'
 import userContext from '../../lib/userContaxt'
 import { useContext } from 'react'
 import PartnerTrips from './partnerTrips'
+import TripPrceEdit from './excessLoadPriceEdit'
+import isEmpty from 'lodash/isEmpty'
+
 
 const EXCESS_LOAD = gql`
 subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$trip_status: String, $truck_type:[Int!], $managers: [Int!]) {
@@ -177,7 +180,9 @@ const ExcessLoad = (props) => {
     {
       title: 'S0 Price',
       width: '10%',
-      render: (text, record) => record.customer_price
+      render: (text, record) => {
+        return(<TripPrceEdit id={record.id} price = {isEmpty(record.customer_price) ? 0 : record.customer_price}  />
+        )}
     },
     {
       title: 'Created On',
@@ -212,7 +217,7 @@ const ExcessLoad = (props) => {
     <>
       <Table
         columns={columns}
-        expandedRowKeys={expander}
+expandedRowKeys={expander}
         expandedRowRender={record => <ExcessLoadLead record={record} />}
         dataSource={trips}
         className='withAction'
