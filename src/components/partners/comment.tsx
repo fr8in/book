@@ -86,22 +86,22 @@ const Comment = (props) => {
     detailPage ? {
       title: 'Topic',
       dataIndex: 'topic',
-      width: '15%'
+      width: '20%'
     } : {},
     {
       title: 'Comment',
       dataIndex: 'description',
-      width: detailPage ? '40%' : '45%'
+      width: detailPage ? '48%' : '45%'
     },
     {
       title: 'Created By',
       dataIndex: 'created_by',
-      width: detailPage ? '25%' : '30%'
+      width: detailPage ? '17%' : '30%'
     },
     {
       title: 'Created On',
       dataIndex: 'created_at',
-      width: '25%',
+      width: '15%',
       render: (text, record) => text ? moment(text).format('DD-MMM-YY HH:mm') : null
     }
   ]

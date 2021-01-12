@@ -224,11 +224,8 @@ const TripsTracking = (props) => {
       title: 'Source',
       width: '9%',
       render: (text, record) => {
-        return text > 8 ? (
-          <Tooltip title={record.source.name}>
-            <span>{record.source.name.slice(0, 8) + '...'}</span>
-          </Tooltip>
-        ) : record.source.name
+        const source = get(record, 'source.name', null)
+        return <Truncate data={source} length={10} />
       },
       filterDropdown: (
         <div>
@@ -245,11 +242,8 @@ const TripsTracking = (props) => {
       title: 'Destination',
       width: '10%',
       render: (text, record) => {
-        return text > 8 ? (
-          <Tooltip title={record.destination.name}>
-            <span>{record.destination.name.slice(0, 8) + '...'}</span>
-          </Tooltip>
-        ) : record.destination.name
+        const source = get(record, 'destination.name', null)
+        return <Truncate data={source} length={10} />
       },
       filterDropdown: (
         <div>

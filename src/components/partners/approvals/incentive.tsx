@@ -134,8 +134,8 @@ const Incentive = () => {
 
         {
             title: 'Incentive Type',
-            width: '8%',
-            render: (text, record) => <Truncate data={get(record, 'incentive_config.type', null)} length={16} />
+            width: '9%',
+            render: (text, record) => <Truncate data={get(record, 'incentive_config.type', null)} length={15} />
         },
         {
             title: 'Amount',
@@ -197,7 +197,7 @@ const Incentive = () => {
             title: 'Created By',
             dataIndex: 'created_by',
             key: 'created_by',
-            width: '11%',
+            width: '10%',
             render: (text, record) => <Truncate data={text} length={15} />
         },
         {

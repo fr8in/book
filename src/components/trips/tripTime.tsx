@@ -75,7 +75,7 @@ const PARTNER_LOADING_MEMO_WORD_MUTATION = gql`
 mutation partner_loading_memo($id:Int!){
       partner_loading_memo(trip_id: $id,word:true)
   }
-`;
+`
 
 const REMOVE_SOUT_MUTATION = gql`
 mutation remove_souce_out($source_out:timestamp,$id:Int!,$updated_by: String!) {
@@ -129,15 +129,16 @@ const TripTime = (props) => {
   const customerPrice = get(trip_info, 'customer_price', null)
   const km = get(trip_info, 'km', null)
   const customerPricePerKm = (customerPrice / km)
+  console.log('customerPricePerKm', customerPricePerKm)
   const pricePerKm = customerPricePerKm > 100
   const [form] = Form.useForm()
   const [getWord, { loading, data, error, called }] = useLazyQuery(GET_WORD)
   const [getPdf, { loading: pdfloading, data: pdfdata, error: pdferror, called: pdfcalled }] = useLazyQuery(GET_PDF)
-  const { data: tokenData, loading: tokenQueryLoading, refetch } = useQuery(GET_TOKEN, {
-    fetchPolicy: "network-only",
+  const [getToken, { data: tokenData, loading: tokenQueryLoading }] = useLazyQuery(GET_TOKEN, {
+    fetchPolicy: 'network-only',
     variables: {
       ref_id: trip_info.id,
-      process: "ADVANCE"
+      process: 'ADVANCE'
     }
   })
 
@@ -154,21 +155,21 @@ const TripTime = (props) => {
     _pdfdata = pdfdata
   }
 
-  console.log("tokenQueryLoading", tokenQueryLoading)
+  console.log('tokenQueryLoading', tokenQueryLoading)
   let token = null
   if (!tokenQueryLoading) {
     token = get(tokenData, 'token', null)
   }
 
-  let word_url = get(_data, 'trip[0].loading_memo', [])
-  let pdf_url = get(_pdfdata, 'trip[0].loading_memo', [])
+  const word_url = get(_data, 'trip[0].loading_memo', [])
+  const pdf_url = get(_pdfdata, 'trip[0].loading_memo', [])
   const [loadingmemo] = useMutation(
     LOADING_MEMO_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         message.error(error.toString())
       },
-      onCompleted(data) {
+      onCompleted (data) {
         window.open(data.loading_memo)
       }
     }
@@ -177,10 +178,10 @@ const TripTime = (props) => {
   const [partnerloadingmemo] = useMutation(
     PARTNER_LOADING_MEMO_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         message.error(error.toString())
       },
-      onCompleted(data) {
+      onCompleted (data) {
         window.open(data.partner_loading_memo)
       }
     }
@@ -189,10 +190,10 @@ const TripTime = (props) => {
   const [loadingmemoword] = useMutation(
     LOADING_MEMO_WORD_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         message.error(error.toString())
       },
-      onCompleted(data) {
+      onCompleted (data) {
         window.open(data.loading_memo)
       }
     }
@@ -201,10 +202,10 @@ const TripTime = (props) => {
   const [partnerloadingmemoword] = useMutation(
     PARTNER_LOADING_MEMO_WORD_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         message.error(error.toString())
       },
-      onCompleted(data) {
+      onCompleted (data) {
         window.open(data.partner_loading_memo)
       }
     }
@@ -212,11 +213,11 @@ const TripTime = (props) => {
   const [removeSin] = useMutation(
     REMOVE_SIN_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         setDisableBtn(false)
         message.error(error.toString())
       },
-      onCompleted() {
+      onCompleted () {
         setDisableBtn(false)
         message.success('Updated!!')
         form.resetFields()
@@ -226,11 +227,11 @@ const TripTime = (props) => {
   const [removeSout] = useMutation(
     REMOVE_SOUT_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         setDisableBtn(false)
         message.error(error.toString())
       },
-      onCompleted() {
+      onCompleted () {
         setDisableBtn(false)
         message.success('Updated!!')
         form.resetFields()
@@ -241,11 +242,11 @@ const TripTime = (props) => {
   const [removeDin] = useMutation(
     REMOVE_DIN_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         setDisableBtn(false)
         message.error(error.toString())
       },
-      onCompleted() {
+      onCompleted () {
         setDisableBtn(false)
         message.success('Updated!!')
         form.resetFields()
@@ -255,20 +256,17 @@ const TripTime = (props) => {
   const [removeDout] = useMutation(
     REMOVE_DOUT_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         setDisableBtn(false)
         message.error(error.toString())
       },
-      onCompleted() {
+      onCompleted () {
         setDisableBtn(false)
         message.success('Updated!!')
         form.resetFields()
       }
     }
   )
-
-
-
 
   const onClickPdf = () => {
     loadingmemo({
@@ -281,15 +279,14 @@ const TripTime = (props) => {
     })
   }
 
-
   const [processAdvance] = useMutation(
     PROCESS_ADVANCE_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         message.error(error.toString())
         setDisableBtn(false)
       },
-      onCompleted(data) {
+      onCompleted (data) {
         setDisableBtn(false)
         const status = get(data, 'partner_advance.status', null)
         const description = get(data, 'partner_advance.description', null)
@@ -298,9 +295,6 @@ const TripTime = (props) => {
         } else {
           message.error(description)
         }
-        setTimeout(() => {
-          refetch()
-        }, 5000)
       }
     }
   )
@@ -369,8 +363,6 @@ const TripTime = (props) => {
     })
   }
 
-
-
   const trip_status_name = get(trip_info, 'trip_status.name', null)
   const po_delete = (trip_status_name === 'Assigned' || trip_status_name === 'Confirmed' || trip_status_name === 'Reported at source') && !trip_info.source_out
   const process_advance = trip_info.source_out && (trip_info.loaded !== 'Yes')
@@ -416,20 +408,28 @@ const TripTime = (props) => {
                   <Col xs={12}>
                     <Form.Item label='Fr8 - Memo'>
                       <Space>
-                        <Button type='primary' loading={pdfloading} shape='circle'
-                          icon={<FilePdfOutlined />} onClick={onClickPdf} />
-                        <Button type='primary' loading={loading} shape='circle'
-                          icon={<FileWordOutlined />} onClick={onClickWord} />
+                        <Button
+                          type='primary' loading={pdfloading} shape='circle'
+                          icon={<FilePdfOutlined />} onClick={onClickPdf}
+                        />
+                        <Button
+                          type='primary' loading={loading} shape='circle'
+                          icon={<FileWordOutlined />} onClick={onClickWord}
+                        />
                       </Space>
                     </Form.Item>
                   </Col>
                   <Col xs={12}>
                     <Form.Item label='Partner - Memo'>
                       <Space>
-                        <Button type='primary' loading={pdfloading} shape='circle'
-                          icon={<FilePdfOutlined />} onClick={onClickPartnerPdf} />
-                        <Button type='primary' loading={loading} shape='circle'
-                          icon={<FileWordOutlined />} onClick={onClickPartnerWord} />
+                        <Button
+                          type='primary' loading={pdfloading} shape='circle'
+                          icon={<FilePdfOutlined />} onClick={onClickPartnerPdf}
+                        />
+                        <Button
+                          type='primary' loading={loading} shape='circle'
+                          icon={<FileWordOutlined />} onClick={onClickPartnerWord}
+                        />
                       </Space>
                     </Form.Item>
                   </Col>
@@ -445,7 +445,7 @@ const TripTime = (props) => {
                 disabled={wh_update || get(trip_info, 'unloaded_private_godown', false) || lock}
                 onClick={get(trip_info, 'unloaded_private_godown', false) ? () => { } : () => onShow('godownReceipt')}
               >Unloaded at private godown
-                            </Checkbox>
+              </Checkbox>
             </Col>
             <Col xs={4} className='text-right'>
               {get(trip_info, 'unloaded_private_godown', false) &&
@@ -462,7 +462,8 @@ const TripTime = (props) => {
                       folder={u.folder.wh}
                       file_type={u.fileType.wh}
                       file_list={wh_files}
-                    />) : null}
+                    />)
+                    : null}
                 </Space>}
             </Col>
           </Row>
@@ -471,20 +472,25 @@ const TripTime = (props) => {
               <Space>
                 {po_delete &&
                   <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => onShow('deletePO')} disabled={(trip_info.loaded === 'Yes') ? !access : null || lock}>PO</Button>}
-                {pricePerKm && advance_access && process_advance ?
-                  <Popconfirm
-                    title='Trip Rate/Km is more than 100. Do you want to process?'
-                    okText='Yes'
-                    cancelText='No'
-                   onConfirm={onProcessAdvance}
-                  >
-                  <Button type='primary' disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>
+                {pricePerKm && advance_access && process_advance
+                  ? <Popconfirm
+                      title='Trip Rate/Km is more than 100. Do you want to process?'
+                      okText='Yes'
+                      cancelText='No'
+                      onConfirm={onProcessAdvance}
+                    >
+                    <Button type='primary' onClick={() => getToken()} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>
                   </Popconfirm>
-                  :
-                  (advance_access && process_advance ?
-                  <Button type='primary' onClick={onProcessAdvance} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>
-                  : null)
-                }
+                  : (advance_access && process_advance
+                      ? <Popconfirm
+                          title='Are you sure to process advance?'
+                          okText='Yes'
+                          cancelText='No'
+                          onConfirm={onProcessAdvance}
+                        >
+                        <Button type='primary' onClick={() => getToken()} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>
+                        </Popconfirm>
+                      : null)}
                 {remove_sin &&
                   <Button danger icon={<CloseCircleOutlined />} onClick={onSinRemove} disabled={lock} loading={disableBtn}>S-In</Button>}
                 {remove_sout &&

@@ -4,6 +4,7 @@ import moment from 'moment'
 import LinkComp from '../common/link'
 import get from 'lodash/get'
 import Link from 'next/link'
+import Truncate from '../common/truncate'
 
 const TripsByStages = (props) => {
   const {
@@ -26,7 +27,7 @@ const TripsByStages = (props) => {
     {
       title: 'ID',
       dataIndex: 'id',
-      width: '12%',
+      width: '9%',
       render: (text, record) => (
         <LinkComp
           type='trips'
@@ -38,20 +39,20 @@ const TripsByStages = (props) => {
     {
       title: 'Order date',
       dataIndex: 'created_at',
-      width: '13%',
+      width: '12%',
       render: (text, record) => text ? moment(text).format('DD-MMM-YY') : null
     },
     partnerPage ? {
       title: 'Customer',
       dataIndex: 'customer',
-      width: '15%',
+      width: '19%',
       render: (text, record) => {
         const cardcode = get(record, 'customer.cardcode',null)
         const name = get(record, 'customer.name', null)
        return (
           <Link href='/customers/[id]' as={`/customers/${cardcode} `}>
             {name && name.length > 17
-              ? <Tooltip title={name}><a>{name.slice(0, 17) + '...'}</a></Tooltip>
+              ? <Tooltip title={name}><a>{name.slice(0, 24) + '...'}</a></Tooltip>
               : <a>{name}</a>}
           </Link>)
          }
@@ -67,19 +68,21 @@ const TripsByStages = (props) => {
             type='trucks'
             data={truck_no + ' - ' + truck_type}
             id={truck_no}
-          />)
+            length={32}
+          />
+          )
       }
     } : {},
     {
       title: 'Source',
       dataIndex: 'source',
-      width: '15%',
-      render: (text, record) => get(record, 'source.name', '-')
+      width: '14%',
+      render: (text, record) => <Truncate data={get(record, 'source.name', '-')} length={11} />,
     },
     {
       title: 'Destination',
-      width: '15%',
-      render: (text, record) => get(record, 'destination.name', '-')
+      width: '13%',
+      render: (text, record) => <Truncate data={get(record, 'destination.name', '-')} length={10} />,
     },
     truckPage ? {
       title: 'Km',
@@ -96,8 +99,8 @@ const TripsByStages = (props) => {
     {
       title: 'Status',
       dataIndex: 'status',
-      width: '10%',
-      render: (text, record) => get(record, 'trip_status.name', '-')
+      width: '12%',
+      render: (text, record) => <Truncate data={get(record, 'trip_status.name', '-')} length={9} />,
     },
     truckPage ? {
       title: 'AVG KM/Day',

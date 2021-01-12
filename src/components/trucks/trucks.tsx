@@ -188,7 +188,7 @@ const Trucks = (props) => {
     },
     {
       title: 'Ins Expiry Date',
-      width: '10%',
+      width: '11%',
       render: (text, record) => <InsuranceExpiry record={record} />,
       filterDropdown: (
         <Radio.Group
