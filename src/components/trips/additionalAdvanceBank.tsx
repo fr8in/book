@@ -18,13 +18,13 @@ mutation create_additional_advance_bank ($trip_id: Int!, $comment: String!, $ifs
   }`
 
 const ADVANCE_EXCEPTION = gql`
-  mutation advance_exception($trip_id: Int!, $amount: Int!, $is_exception: Boolean!) {
-    advance_exception(trip_id: $trip_id, amount: $amount, is_exception: $is_exception){
-      status
-      result
-     description
-    }
-  }`
+mutation advance_exception($trip_id: Int!, $amount: Int!, $is_exception: Boolean!,$mode: String!) {
+  advance_exception(trip_id: $trip_id, amount: $amount, is_exception: $is_exception,mode:$mode) {
+    status
+    result
+   description
+  }
+}`
 
 const IFSC_VALIDATION = gql`
 query ifsc_validation($ifsc: String!){
@@ -131,7 +131,8 @@ const AdditionalAdvanceBank = (props) => {
         variables: {
           trip_id: trip_info.id,
           amount: parseFloat(form.amount),
-          is_exception: false
+          is_exception: false,
+          mode:"BANK"
         }
       })
     }
@@ -219,7 +220,7 @@ const AdditionalAdvanceBank = (props) => {
             </Col>
             <Col xs={8}>
               <Form.Item label='save' className='hideLabel'>
-                <Button type='primary' disabled={disable_adv_btn || (radioValue === 'BANK' && !form.getFieldValue('ifsc'))} loading={disableBtn} htmlType='submit'>Pay Now</Button>
+                <Button type='primary' disabled={disable_adv_btn || (radioValue === 'BANK' && !form.getFieldValue('ifsc'))} loading={disableBtn} htmlType='submit'>Create</Button>
               </Form.Item>
             </Col>
           </Row>

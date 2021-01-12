@@ -24,13 +24,13 @@ const CREATE_ADDITIONAL_ADVANCE_WALLET = gql`
   }
 `
 const ADVANCE_EXCEPTION = gql`
-  mutation advance_exception($trip_id: Int!, $amount: Int!, $is_exception: Boolean!) {
-    advance_exception(trip_id: $trip_id, amount: $amount, is_exception: $is_exception) {
-      status
-      result
-     description
-    }
-  }`
+mutation advance_exception($trip_id: Int!, $amount: Int!, $is_exception: Boolean!,$mode: String!) {
+  advance_exception(trip_id: $trip_id, amount: $amount, is_exception: $is_exception,mode:$mode) {
+    status
+    result
+   description
+  }
+}`
 
 const AdditionalAdvanceWallet = (props) => {
   const { trip_info, lock, radioValue } = props
@@ -106,7 +106,8 @@ const AdditionalAdvanceWallet = (props) => {
         variables: {
           trip_id: trip_info.id,
           amount: parseFloat(form.amount),
-          is_exception: false
+          is_exception: false,
+          mode:"WALLET"
         }
       })
   }
