@@ -13,7 +13,7 @@ import AdditionalAdvanceBankAccept from './additionalAdvanceBankAccept'
 import PayablesStatus from '../payables/payablesStatus'
 
 const ADDITIONAL_ADVANCE_BANK_APPROVAL = gql`subscription additional_advance {
-  advance_additional_advance(where: {status: {_eq: "PENDING"}},order_by:{id:desc}) {
+  advance_additional_advance(where: {status: {_eq: "PENDING"},payment_mode:{_eq:"BANK"}},order_by:{id:desc}) {
     id
     trip_id
     account_name
