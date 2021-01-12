@@ -47,6 +47,9 @@ subscription trucks_list(
         id
         name
       }
+      insurance {
+        id
+      }
       partner {
         id
         name
@@ -179,7 +182,7 @@ const TruckContainer = () => {
     <Card size='small' className='card-body-0 border-top-blue'>
       <Row>
         <Col sm={24}>
-          <Tabs defaultActiveKey="1">
+          <Tabs defaultActiveKey="0">
             <Tabs.TabPane tab="Trucks" key="0">
               <Trucks
                 trucks={truck}

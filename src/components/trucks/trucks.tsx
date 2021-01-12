@@ -1,6 +1,6 @@
 import { Table, Pagination, Radio, Input, DatePicker, Button, Tooltip, Space } from 'antd'
 import { useState } from 'react'
-import { EditTwoTone, SearchOutlined, InsuranceTwoTone } from '@ant-design/icons'
+import { EditTwoTone, SearchOutlined, InsuranceTwoTone, CheckCircleTwoTone } from '@ant-design/icons'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
 import PartnerUsers from '../partners/partnerUsers'
 import CreatePo from '../../components/trips/createPo'
@@ -212,12 +212,15 @@ const Trucks = (props) => {
       width: '6%',
       render: (text, record) => (
         <Space className="actions">
-          <Tooltip title="Insurance Lead">
-            <InsuranceTwoTone
-              onClick={() =>
-                handleShow('insuranceVisible', 'Insurance Lead', 'insuranceData', record)}
-            />
-          </Tooltip>
+          {record && record.insurance ?
+            <Tooltip title="Insurance Lead Created">
+              <CheckCircleTwoTone /></Tooltip> :
+            <Tooltip title="Insurance Lead">
+              <InsuranceTwoTone
+                onClick={() =>
+                  handleShow('insuranceVisible', 'Insurance Lead', 'insuranceData', record)}
+              />
+            </Tooltip>}
           <EditTwoTone
             onClick={() =>
               handleShow('editVisible', 'Breakdown', 'editData', record.id)}
