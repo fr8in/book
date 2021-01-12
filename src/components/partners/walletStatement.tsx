@@ -19,6 +19,8 @@ query partner_wallet_statement($cardcode: String) {
       docnum
       cardcode
       created_at
+      transaction_refno
+      transaction_status
       amount
       mode
       trip_id
@@ -84,7 +86,7 @@ const WalletStatement = (props) => {
     <Drawer
       title={`Wallet: ₹${wallet_balance ? wallet_balance.toFixed(2) : 0}`}
       placement='right'
-      closable={false}
+      closable
       onClose={onHide}
       visible={visible}
       width={360}
@@ -106,6 +108,11 @@ const WalletStatement = (props) => {
                             {transactionData.trip_id
                               ? <p>{'#' + transactionData.trip_id}, {get(transactionData, 'trip.source.name', null)} - {get(transactionData, 'trip.destination.name', null)}</p>
                               : <p>{transactionData.route || ''}</p>}
+                              <span className= {transactionData.transaction_status === 'PENDING' ? 'text-warning' : transactionData.transaction_status === 'COMPLETED' ? 'text-success' : 'text-danger'  } >
+                              {transactionData.mode === 'Paid To Bank' 
+                              ? <p>{transactionData.transaction_refno}</p>
+                              : <p>{}</p> }
+                              </span>
                           </Col>
                           <Col span={6} className='text-right'>
                             <span className={transactionData.type === 'Credit' ? 'creditAmount' : 'debitAmount'}>
