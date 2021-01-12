@@ -86,7 +86,7 @@ const PayablesContainer = () => {
         : (day === monday) ? [current_date[1].subtract(2, "days"),current_date[0]]
           : [current_date[1],current_date[0].subtract(2, "days")]
 
-  const [date, setDate] = useState([_day[0], _day[1]])
+  const [date, setDate] = useState([_day[1], _day[0]])
   const fromdate = isNil(date) ||   !date[0] ? _day[0].format('DD-MM-YYYY') : date[0].format('DD-MM-YYYY')
   const todate =isNil(date)|| !date[1] ? _day[1].format('DD-MM-YYYY') : date[1].format('DD-MM-YYYY')
 
