@@ -25,7 +25,11 @@ const CREATE_ADDITIONAL_ADVANCE_WALLET = gql`
 `
 const ADVANCE_EXCEPTION = gql`
   mutation advance_exception($trip_id: Int!, $amount: Int!, $is_exception: Boolean!) {
-    advance_exception(trip_id: $trip_id, amount: $amount, is_exception: $is_exception)
+    advance_exception(trip_id: $trip_id, amount: $amount, is_exception: $is_exception) {
+      status
+      result
+     description
+    }
   }`
 
 const AdditionalAdvanceWallet = (props) => {
@@ -62,12 +66,13 @@ const AdditionalAdvanceWallet = (props) => {
     ADVANCE_EXCEPTION, {
     onError(error) { message.error(error.toString()) },
     onCompleted(data) {
-      const exception = get(data, 'advance_exception', null)
-      if (exception === true) { onPercentageCheck() }
-      else {
-        getToken()
-        setVisible(true)
+      if (data.advance_exception.status === "OK") {
+        const exception = get(data, 'advance_exception.result', null)
+        if (exception === true) { onPercentageCheck() }
+        else { setPercentageCheck(false); getToken()
+          setVisible(true) }
       }
+      else { message.error(data.advance_exception.description); setDisableBtn(false) }
     }
   }
   )

@@ -19,7 +19,11 @@ mutation create_additional_advance_bank ($trip_id: Int!, $comment: String!, $ifs
 
 const ADVANCE_EXCEPTION = gql`
   mutation advance_exception($trip_id: Int!, $amount: Int!, $is_exception: Boolean!) {
-    advance_exception(trip_id: $trip_id, amount: $amount, is_exception: $is_exception)
+    advance_exception(trip_id: $trip_id, amount: $amount, is_exception: $is_exception){
+      status
+      result
+     description
+    }
   }`
 
 const IFSC_VALIDATION = gql`
@@ -50,11 +54,11 @@ const AdditionalAdvanceBank = (props) => {
   const [getBankDetail, { loading, data, error }] = useLazyQuery(
     IFSC_VALIDATION,
     {
-      onError (error) {
+      onError(error) {
         message.error(`Invalid IFSC: ${error}`)
         form.resetFields(['ifsc'])
       },
-      onCompleted (data) {
+      onCompleted(data) {
         message.success(`Bank name: ${get(bank_detail, 'bank', '')}!!`)
       }
     }
@@ -69,8 +73,8 @@ const AdditionalAdvanceBank = (props) => {
   const [createAdditionalAdvanceBank] = useMutation(
     CREATE_ADDITIONAL_ADVANCE_BANK,
     {
-      onError (error) { message.error(error.toString()); setDisableBtn(false) },
-      onCompleted (data) {
+      onError(error) { message.error(error.toString()); setDisableBtn(false) },
+      onCompleted(data) {
         const response = get(data, 'insert_advance_additional_advance.returning', null)
         if (response.length > 0) {
           setDisableBtn(false)
@@ -83,12 +87,16 @@ const AdditionalAdvanceBank = (props) => {
 
   const [advanceException] = useMutation(
     ADVANCE_EXCEPTION, {
-      onError (error) { message.error(error.toString()) },
-      onCompleted (data) {
-        const exception = get(data, 'advance_exception', null)
-        if (exception === true) { setPercentageCheck(true) } else { setPercentageCheck(false); createAdvance() }
+    onError(error) { message.error(error.toString()); setDisableBtn(false) },
+    onCompleted(data) {
+      if (data.advance_exception.status === "OK") {
+        const exception = get(data, 'advance_exception.result', null)
+        if (exception === true) { setPercentageCheck(true) }
+        else { setPercentageCheck(false); createAdvance() }
       }
+      else { message.error(data.advance_exception.description); setDisableBtn(false) }
     }
+  }
   )
 
   const createAdvance = () => {
@@ -134,7 +142,7 @@ const AdditionalAdvanceBank = (props) => {
       message: 'Confirm acccount number required!'
     },
     ({ getFieldValue }) => ({
-      validator (rule, value) {
+      validator(rule, value) {
         if (!value || getFieldValue('account_number') === value) {
           return Promise.resolve()
         }
@@ -168,7 +176,7 @@ const AdditionalAdvanceBank = (props) => {
         onCancel={onHandleCancel}
       >
         <p>Total advance percentage is more than 90%.
-          Do you want to proceed?
+        Do you want to proceed?
         </p>
       </Modal>
       <div>
@@ -182,7 +190,7 @@ const AdditionalAdvanceBank = (props) => {
             </Col>
             <Col xs={12} sm={8}>
               <Form.Item label='Account No' name='account_number' rules={[{ required: true }]}>
-                <Input placeholder='Account Number' type='password'/>
+                <Input placeholder='Account Number' type='password' />
               </Form.Item>
             </Col>
             <Col xs={12} sm={8}>
