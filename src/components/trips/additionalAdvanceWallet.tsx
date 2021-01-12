@@ -118,8 +118,7 @@ const AdditionalAdvanceWallet = (props) => {
           payment_mode: radioValue,
           comment: comment,
           created_by: context.email,
-          token: token,
-          is_exception: !!percentageCheck
+          token: token
         }
       }
     })
