@@ -23,6 +23,10 @@ const CREATE_ADDITIONAL_ADVANCE_WALLET = gql`
     }
   }
 `
+const ADVANCE_EXCEPTION = gql`
+  mutation advance_exception($trip_id: Int!, $amount: Int!, $is_exception: Boolean!) {
+    advance_exception(trip_id: $trip_id, amount: $amount, is_exception: $is_exception)
+  }`
 
 const AdditionalAdvanceWallet = (props) => {
   const { trip_info, lock, radioValue } = props
@@ -51,13 +55,27 @@ const AdditionalAdvanceWallet = (props) => {
     console.log('tttt', token)
   }
   const onPercentageCheck = () => {
+    getToken()
     setPercentageCheck(true)
   }
+  const [advanceException] = useMutation(
+    ADVANCE_EXCEPTION, {
+    onError(error) { message.error(error.toString()) },
+    onCompleted(data) {
+      const exception = get(data, 'advance_exception', null)
+      if (exception === true) { onPercentageCheck() }
+      else {
+        getToken()
+        setVisible(true)
+      }
+    }
+  }
+  )
   const [createAdditionalAdvanceWallet] = useMutation(
     CREATE_ADDITIONAL_ADVANCE_WALLET,
     {
-      onError (error) { message.error(error.toString()); setDisableBtn(false) },
-      onCompleted (data) {
+      onError(error) { message.error(error.toString()); setDisableBtn(false) },
+      onCompleted(data) {
         const status = get(data, 'additional_advance_wallet.status', null)
         const description = get(data, 'additional_advance_wallet.description', null)
         const result = get(data, 'additional_advance_wallet.result.advance_result', null)
@@ -65,11 +83,6 @@ const AdditionalAdvanceWallet = (props) => {
           setDisableBtn(false)
           form.resetFields()
           message.success(description || 'Processed!')
-        } else if (status === 'OK' && result === true) {
-          // getting token after 2s and proceeding additional advance
-          setTimeout(() => {
-            onPercentageCheck()
-          }, 3000)
         } else { (message.error(description)); setDisableBtn(false) }
       }
     }
@@ -84,12 +97,18 @@ const AdditionalAdvanceWallet = (props) => {
       message.error('previous Transaction Pending')
       setDisableBtn(false)
     } else {
-      getToken()
-      setVisible(true)
-    }
+      advanceException({
+        variables: {
+          trip_id: trip_info.id,
+          amount: parseFloat(form.amount),
+          is_exception: false
+        }
+      })
   }
-  const handleToken = () => {
+}
+  const create_additional_advance = () => {
     setVisible(false)
+    setPercentageCheck(false)
     createAdditionalAdvanceWallet({
       variables: {
         input: {
@@ -106,9 +125,6 @@ const AdditionalAdvanceWallet = (props) => {
     })
   }
 
-  const onHandleOk = () => {
-    form.submit()
-  }
   const onHandleCancel = () => {
     setPercentageCheck(false)
     setDisableBtn(false)
@@ -124,19 +140,19 @@ const AdditionalAdvanceWallet = (props) => {
     <>
       <Modal
         visible={percentageCheck}
-        onOk={onHandleOk}
+        onOk={create_additional_advance}
         onCancel={onHandleCancel}
       >
         <p>Total advance percentage is more than 90%.
-          Do you want to proceed?
+        Do you want to proceed?
         </p>
       </Modal>
       <Modal
         visible={visible}
-        onOk={handleToken}
+        onOk={create_additional_advance}
         onCancel={cancelToken}
       >
-        <p>Are you sure to process Additional Advance of ${amount}?</p>
+        <p>Are you sure to process Additional Advance of {amount}?</p>
       </Modal>
       <Form layout='vertical' form={form} onFinish={onSubmit}>
         <Row gutter={10}>
