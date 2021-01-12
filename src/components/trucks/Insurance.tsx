@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { Button, message, Table, Tooltip, Modal } from 'antd'
+import React, { useContext, useState } from 'react'
+import { Button, message, Table, Tooltip, Modal, Radio } from 'antd'
 import { CommentOutlined } from '@ant-design/icons'
 import { gql, useSubscription, useMutation, useQuery } from '@apollo/client'
 import get from 'lodash/get'
@@ -12,8 +12,8 @@ import InsuranceUpdate from './insuranceUpdate'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import InsuranceComment from './insuranceComment'
 
-const INSURANCE_SUBSCRIPTION = gql`subscription insurance_data {
-    insurance {
+const INSURANCE_SUBSCRIPTION = gql`subscription insurance_data($status_id:Int) {
+    insurance(where:{status_id:{_eq:$status_id}}) {
       id
       status {
         id
@@ -61,11 +61,19 @@ const Insurance = () => {
         commentData: []
     }
 
-    const { data, loading, error } = useSubscription(INSURANCE_SUBSCRIPTION)
+
+    const [status, setStatus] = useState(1)
     const { data: status_data, loading: statusLoading } = useQuery(INSURANCE_STATUS)
     const { object, handleShow, handleHide } = useShowHideWithRecord(initial)
     const { role, MAX_INSURANCE_CASHBACK } = u
     const edit_access = [role.admin, role.partner_manager, role.onboarding]
+
+
+    const { data, loading, error } = useSubscription(INSURANCE_SUBSCRIPTION, {
+        variables: {
+            status_id: status
+        }
+    })
 
     const context = useContext(userContext)
     let list = []
@@ -81,7 +89,6 @@ const Insurance = () => {
     const [update_insurance] = useMutation(UPDATE_INSURANCE, {
         onError(error) { message.error(error.toString()) },
         onCompleted(data) {
-            console.log("data", data)
             if (data.update_insurance.affected_rows = 1) {
                 message.success("Updated")
             }
@@ -106,7 +113,9 @@ const Insurance = () => {
         }
     }
 
-
+    const handleStatus = (e) => {
+        setStatus(e.target.value)
+    }
 
     const columns = [
         {
@@ -139,6 +148,14 @@ const Insurance = () => {
             title: 'Status',
             dataIndex: "status",
             width: '10%',
+            filterDropdown: (
+                <Radio.Group
+                    options={statusList}
+                    defaultValue={status}
+                    onChange={handleStatus}
+                    className='filter-drop-down'
+                />
+            ),
             render: (text, record) => <InsuranceUpdate updateInsurance={updateInsurance}
                 record={record}
                 type="status_id"

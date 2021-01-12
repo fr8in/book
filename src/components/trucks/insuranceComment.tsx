@@ -39,7 +39,6 @@ const InsuranceComment = (props) => {
         INSURANCE_COMMENT, { variables: { insurance_id: id } }
     )
 
-    console.log("insurance comment", data, error)
     let comments = []
     if (!loading) {
         comments = get(data, 'insurance[0].comments', [])
