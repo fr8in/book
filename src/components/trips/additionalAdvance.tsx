@@ -134,7 +134,7 @@ const AdditionalAdvance = (props) => {
       width: '20%',
       render: (text, record) => (
         <Space className='actions'>
-          {approval_access && record.status !== "COMPLETED" && record.status !=="REJECTED"
+          {approval_access && record.status === "PENDING"
               ? (
           <Tooltip title='Approve'>
                 <Button
@@ -149,7 +149,7 @@ const AdditionalAdvance = (props) => {
           </Tooltip>
           )
           : null}
-          {rejected_access && record.status !== "COMPLETED" && record.status !=="REJECTED"
+          {rejected_access && record.status === "PENDING"
               ? (
           <Tooltip title='Reject'>
                 <Button
