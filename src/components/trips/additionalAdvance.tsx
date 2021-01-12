@@ -14,7 +14,7 @@ import PayablesStatus from '../partners/payables/payablesStatus'
 import isEmpty from 'lodash/isEmpty'
 
 const ADDITIONAL_ADVANCE_QUERY = gql`subscription additional_advance($trip_id: Int_comparison_exp!) {
-  advance_additional_advance(where: {trip_id: $trip_id}order_by:{id:desc}) {
+  advance_additional_advance(where: {trip_id: $trip_id}, order_by:{id:desc}) {
     id
     trip_id
     account_name
