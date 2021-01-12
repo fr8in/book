@@ -15,9 +15,7 @@ query paymentManager {
 const EmployeeListFilter = (props) => {
     const { visible, onHide, onFilterChange, payment_Manager } = props
 
-    const initial = false
-
-    const [checkAll, setCheckAll] = useState(initial)
+    const [checkAll, setCheckAll] = useState(false)
 
     const { loading, error, data } = useQuery(
         PAYMENTMANAGERLIST,

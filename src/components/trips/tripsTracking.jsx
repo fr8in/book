@@ -9,6 +9,7 @@ import PodReceiptAndDispatch from './podReceiptAndDispatch'
 import get from 'lodash/get'
 import PartnerLink from '../common/PartnerLink'
 import Truncate from '../common/truncate'
+
 const TripsTracking = (props) => {
   const initial = {
     commentData: [],
@@ -23,7 +24,6 @@ const TripsTracking = (props) => {
     filter,
     onPartnerNameSearch,
     onCustomerNameSearch,
-    onPaymentManagerNameSearch,
     trip_status_list,
     onFilter,
     onSourceNameSearch,
@@ -84,10 +84,7 @@ const TripsTracking = (props) => {
     onDestinationNameSearch(e.target.value)
     setCurrentPage(1)
   }
-  const handlePaymentManagerName = (e) => {
-    onPaymentManagerNameSearch(e.target.value)
-    setCurrentPage(1)
-  }
+ 
   const handleTruckNo = (e) => {
     onTruckNoSearch(e.target.value)
     setCurrentPage(1)

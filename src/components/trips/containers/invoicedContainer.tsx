@@ -17,7 +17,6 @@ const InvoicedContainer = (props) => {
     customername: null,
     sourcename: null,
     destinationname: null,
-    paymentmanagername: null,
     truckno: null,
     id: null,
     trip_statusName: ['Invoiced', 'Paid', 'Recieved', 'Closed']
@@ -28,7 +27,7 @@ const InvoicedContainer = (props) => {
     _and: [{ trip_status: { name: { _in: filter.trip_statusName && filter.trip_statusName.length > 0 ? filter.trip_statusName : initialFilter.trip_statusName } }, pod_dispatched_at: { _is_null: true } }],
     id: { _in: filter.id ? filter.id : null },
     partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
-    ...!isEmpty(payment_Manager) ? {customer:{payment_manager:{name : {_in : payment_Manager && payment_Manager.length > 0 ? payment_Manager : initialFilter.paymentmanagername }},name: { _ilike: filter.customername ? `%${filter.customername}%` : null }}} : [],
+    customer:{payment_manager:{name : {_in : !isEmpty(payment_Manager) ? payment_Manager : null }},name: { _ilike: filter.customername ? `%${filter.customername}%` : null }},
     source: { name: { _ilike: filter.sourcename ? `%${filter.sourcename}%` : null } },
     destination: { name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } },
     truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } }
@@ -106,10 +105,7 @@ const InvoicedContainer = (props) => {
   const onTripIdSearch = (value) => {
     setFilter({ ...filter, id: value })
   }
-  const onPaymentManagerNameSearch = (value) => {
-    setFilter({ ...filter, paymentmanagername: value })
-    invoiced_setCountFilter({ ...invoiced_countFilter,invoiced_paymentmanagername:value })
-  }
+  
   return (
     <TripsTracking
       trips={trip} loading={loading}
@@ -126,7 +122,6 @@ const InvoicedContainer = (props) => {
       onFilter={onFilter}
       invoiced_setCountFilter={invoiced_setCountFilter}
       invoiced_countFilter={invoiced_countFilter}
-      onPaymentManagerNameSearch={onPaymentManagerNameSearch}
       invoiced
       {...props}
     />
