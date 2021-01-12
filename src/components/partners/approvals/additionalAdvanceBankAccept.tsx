@@ -1,9 +1,9 @@
-import { Modal, Form, Input,Button, message,Row,Col } from 'antd'
+import { Modal, Form, Input, Button, message, Row, Col } from 'antd'
 import { useState, useContext } from 'react'
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../../lib/userContaxt'
-import moment from 'moment';
+import moment from 'moment'
 
 const GET_TOKEN = gql`
 query getToken($ref_id: Int!, $process: String!) {
@@ -16,7 +16,7 @@ const REJECT_ADDITIONAl_ADVANCE_BANK = gql`mutation reject_additional_advance_ba
     }
   }`
 
-const APPROVE_ADDITIONAL_ADVANCE_BANK= gql`mutation approve_additional_advance($input: AdditionalAdvanceBankInput) {
+const APPROVE_ADDITIONAL_ADVANCE_BANK = gql`mutation approve_additional_advance($input: AdditionalAdvanceBankInput) {
     additional_advance_bank(input: $input) {
       status
       description
@@ -24,89 +24,88 @@ const APPROVE_ADDITIONAL_ADVANCE_BANK= gql`mutation approve_additional_advance($
           advance_result
       }
     }
-  }`  
-  
+  }`
+
 const AdditionalAdvanceBankAccept = (props) => {
-    const { visible, onHide, item_id, title } = props
+  const { visible, onHide, item_id, title } = props
 
-    const context = useContext(userContext)
-    const [form] = Form.useForm()
-    const [disableButton, setDisableButton] = useState(false)
-    const trip_id = get(item_id, 'trip_id', null)
+  const context = useContext(userContext)
+  const [form] = Form.useForm()
+  const [disableButton, setDisableButton] = useState(false)
+  const trip_id = get(item_id, 'trip_id', null)
 
-    const { data } = useQuery(GET_TOKEN, {
-        fetchPolicy: "network-only",
-        variables: {
-            ref_id: trip_id,
-            process: "ADDITIONAL_ADVANCE"
-        }
-    })
-    const [approveTransfer] = useMutation(
-        APPROVE_ADDITIONAL_ADVANCE_BANK,
-        {
-            onError(error) { message.error(error.toString())},
-            onCompleted(data) {
-                const status = get(data, 'additional_advance_bank.status', null)
-                const description = get(data, 'additional_advance_bank.description', null)
-                const result = get(data, 'additional_advance_bank.result.advance_result', null)
-                if (status === 'OK' && result === false) {
-                    setDisableButton(false)
-                    form.resetFields()
-                    message.success(description || 'Processed!')
-                    onHide()
-                }
-                else { (message.error(description)); setDisableButton(false); onHide() }
-            }
-        }
-    )
-
-    const [rejectTransfer] = useMutation(
-        REJECT_ADDITIONAl_ADVANCE_BANK, {
-        onError(error) {
-            setDisableButton(false)
-            message.error(error.toString())
-        },
-        onCompleted() {
-            setDisableButton(false)
-            message.success('Additional Advance to Bank Rejected')
-            onHide()
-        }
-    })
-    const onSubmit = (form) => {
-        if (title === 'Approve') {
-            setDisableButton(true)
-            approveTransfer({
-              variables: {
-                input: {
-                id: item_id.id,
-                updated_by: context.email,
-                token:data.token
-                }
-              }
-            })
-          } else {
-        setDisableButton(true)
-        rejectTransfer({
-            variables: {
-                id: item_id.id,
-                updated_by: context.email,
-                updated_at: moment().format('YYYY-MM-DD')
-
-            }
-        })
+  const { data } = useQuery(GET_TOKEN, {
+    fetchPolicy: 'network-only',
+    variables: {
+      ref_id: trip_id,
+      process: 'ADDITIONAL_ADVANCE'
     }
-}
+  })
+  const [approveTransfer] = useMutation(
+    APPROVE_ADDITIONAL_ADVANCE_BANK,
+    {
+      onError (error) { message.error(error.toString()) },
+      onCompleted (data) {
+        const status = get(data, 'additional_advance_bank.status', null)
+        const description = get(data, 'additional_advance_bank.description', null)
+        const result = get(data, 'additional_advance_bank.result.advance_result', null)
+        if (status === 'OK' && result === false) {
+          setDisableButton(false)
+          form.resetFields()
+          message.success(description || 'Processed!')
+          onHide()
+        } else { (message.error(description)); setDisableButton(false); onHide() }
+      }
+    }
+  )
 
-    return (
-        <Modal
-            title={title}
-            visible={visible}
-            onCancel={onHide}
-            footer={null}
-        >
-            <Form layout='vertical' onFinish={onSubmit} form={form}>
-            <Row gutter={10}>
-          <Col xs={12}>
+  const [rejectTransfer] = useMutation(
+    REJECT_ADDITIONAl_ADVANCE_BANK, {
+      onError (error) {
+        setDisableButton(false)
+        message.error(error.toString())
+      },
+      onCompleted () {
+        setDisableButton(false)
+        message.success('Additional Advance to Bank Rejected')
+        onHide()
+      }
+    })
+  const onSubmit = (form) => {
+    if (title === 'Approve') {
+      setDisableButton(true)
+      approveTransfer({
+        variables: {
+          input: {
+            id: item_id.id,
+            updated_by: context.email,
+            token: data.token
+          }
+        }
+      })
+    } else {
+      setDisableButton(true)
+      rejectTransfer({
+        variables: {
+          id: item_id.id,
+          updated_by: context.email,
+          updated_at: moment().format('YYYY-MM-DD')
+
+        }
+      })
+    }
+  }
+
+  return (
+    <Modal
+      title={title}
+      visible={visible}
+      onCancel={onHide}
+      footer={null}
+    >
+      <Form layout='vertical' onFinish={onSubmit} form={form}>
+        <Row gutter={10}>
+          <Col xs={11}>
             <Form.Item
               label='Account Name'
               name='account_name'
@@ -118,7 +117,7 @@ const AdditionalAdvanceBankAccept = (props) => {
               />
             </Form.Item>
           </Col>
-          <Col xs={12}>
+          <Col xs={11}>
             <Form.Item
               label='Account Number'
               name='account_number'
@@ -132,7 +131,7 @@ const AdditionalAdvanceBankAccept = (props) => {
           </Col>
         </Row>
         <Row gutter={10}>
-          <Col xs={8}>
+          <Col xs={11}>
             <Form.Item
               label='IFSC Code'
               name='ifsc'
@@ -144,7 +143,7 @@ const AdditionalAdvanceBankAccept = (props) => {
               />
             </Form.Item>
           </Col>
-          <Col xs={8}>
+          <Col xs={11}>
             <Form.Item
               label='Amount'
               name='amount'
@@ -157,12 +156,12 @@ const AdditionalAdvanceBankAccept = (props) => {
               />
             </Form.Item>
           </Col>
-          </Row>
-                <Form.Item className='text-right'>
-                    <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>{title === 'Approve' ? 'Approve' : 'Reject'}</Button>
-                </Form.Item>
-            </Form>
-        </Modal>
-    )
+        </Row>
+        <Form.Item className='text-right'>
+          <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>{title === 'Approve' ? 'Approve' : 'Reject'}</Button>
+        </Form.Item>
+      </Form>
+    </Modal>
+  )
 }
 export default AdditionalAdvanceBankAccept

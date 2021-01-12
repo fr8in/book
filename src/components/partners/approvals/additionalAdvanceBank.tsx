@@ -8,16 +8,18 @@ import userContext from '../../../lib/userContaxt'
 import Truncate from '../../common/truncate'
 import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
 import moment from 'moment'
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
-import AdditionalAdvanceBankAccept from './additionalAdvanceBankAccept';
+import { CheckOutlined, CloseOutlined, EyeOutlined } from '@ant-design/icons'
+import AdditionalAdvanceBankAccept from './additionalAdvanceBankAccept'
+import PayablesStatus from '../payables/payablesStatus'
 
 const ADDITIONAL_ADVANCE_BANK_APPROVAL = gql`subscription additional_advance {
-  advance_additional_advance(where: {status:{_eq:"PENDING"}}) {
+  advance_additional_advance(where: {status: {_eq: "PENDING"}},order_by:{id:desc}) {
     id
     trip_id
     account_name
     account_number
     ifsc_code
+    docentry
     amount
     comment
     created_at
@@ -25,7 +27,8 @@ const ADDITIONAL_ADVANCE_BANK_APPROVAL = gql`subscription additional_advance {
     payment_mode
     status
   }
-}`
+}
+`
 
 const AdditionalAdvanceBankApproval = () => {
   const { role } = u
@@ -36,6 +39,8 @@ const AdditionalAdvanceBankApproval = () => {
   const rejected_access = u.is_roles(reject_roles, context)
   const initial = {
     approveData: [],
+    doc_num: null,
+    statusVisible: false,
     approveVisible: false,
     title: null
   }
@@ -44,13 +49,15 @@ const AdditionalAdvanceBankApproval = () => {
   const { loading, data } = useSubscription(
     ADDITIONAL_ADVANCE_BANK_APPROVAL)
 
-  var _data = {}
+  let _data = {}
   if (!loading) {
     _data = data
   }
 
   const additionalAdvance = get(_data, 'advance_additional_advance', [])
-
+  const statusHandle = (record) => {
+    handleShow('statusVisible', null, 'doc_num', parseFloat(record.docentry))
+  }
   const columns = [
     {
       title: 'Trip Id',
@@ -66,7 +73,7 @@ const AdditionalAdvanceBankApproval = () => {
       title: 'Type',
       dataIndex: 'payment_mode',
       width: '10%',
-      render: (text) => text ? text : "WALLET"
+      render: (text) => text || 'WALLET'
     },
     {
       title: 'Amount',
@@ -105,51 +112,66 @@ const AdditionalAdvanceBankApproval = () => {
       render: (text, record) => (
         <Space>
           <Tooltip title='Approve'>
-          {approval_access ? (
-            <Button
-              type='primary'
-              shape='circle'
-              size='small'
-              className='btn-success'
-              icon={<CheckOutlined />}
-              onClick={() =>
-                handleShow('approveVisible', 'Approve', 'approveData', record)}
-            />):null}
+            {approval_access
+              ? (
+                <Button
+                  type='primary'
+                  shape='circle'
+                  size='small'
+                  className='btn-success'
+                  icon={<CheckOutlined />}
+                  onClick={() =>
+                    handleShow('approveVisible', 'Approve', 'approveData', record)}
+                />)
+              : null}
           </Tooltip>
           <Tooltip title='Reject'>
-          {rejected_access ? (
-            <Button
-              type='primary'
-              shape='circle'
-              size='small'
-              danger
-              icon={<CloseOutlined />}
-              onClick={() =>
-                handleShow('approveVisible', 'Reject', 'approveData', record)}
-            />):null}
+            {rejected_access
+              ? (
+                <Button
+                  type='primary'
+                  shape='circle'
+                  size='small'
+                  danger
+                  icon={<CloseOutlined />}
+                  onClick={() =>
+                    handleShow('approveVisible', 'Reject', 'approveData', record)}
+                />)
+              : null}
           </Tooltip>
+          {record.docentry &&
+            <Tooltip title='Status'>
+              <Button size='small' shape='circle' icon={<EyeOutlined />} type='primary' className='btn-success' onClick={() => statusHandle(record)} />
+            </Tooltip>}
         </Space>
       )
     }
   ]
   return (
     <>
-    <Table
-      columns={columns}
-      dataSource={additionalAdvance}
-      rowKey={record => record.id}
-      size='small'
-      scroll={{ x: 660 }}
-      pagination={false}
-    />
-    {object.approveVisible && (
-      <AdditionalAdvanceBankAccept
-        visible={object.approveVisible}
-        onHide={handleHide}
-        item_id={object.approveData}
-        title={object.title}
+      <Table
+        columns={columns}
+        dataSource={additionalAdvance}
+        rowKey={record => record.id}
+        size='small'
+        scroll={{ x: 660 }}
+        pagination={false}
       />
-    )}
+      {object.approveVisible && (
+        <AdditionalAdvanceBankAccept
+          visible={object.approveVisible}
+          onHide={handleHide}
+          item_id={object.approveData}
+          title={object.title}
+        />
+      )}
+      {object.statusVisible && (
+        <PayablesStatus
+          visible={object.statusVisible}
+          onHide={handleHide}
+          doc_num={object.doc_num}
+        />
+      )}
     </>
   )
 }
