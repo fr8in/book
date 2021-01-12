@@ -21,6 +21,10 @@ const INSURANCE_SUBSCRIPTION = gql`subscription insurance_data {
       }
       amount
       cash_back_amount
+      last_comment: comments(order_by: {id: desc}, limit: 1) {
+        id
+        description
+      }
       truck {
         id
         truck_no
@@ -60,6 +64,8 @@ const Insurance = () => {
     const { data, loading, error } = useSubscription(INSURANCE_SUBSCRIPTION)
     const { data: status_data, loading: statusLoading } = useQuery(INSURANCE_STATUS)
     const { object, handleShow, handleHide } = useShowHideWithRecord(initial)
+    const { role, MAX_INSURANCE_CASHBACK } = u
+    const edit_access = [role.admin, role.partner_manager, role.onboarding]
 
     const context = useContext(userContext)
     let list = []
@@ -83,22 +89,24 @@ const Insurance = () => {
     })
 
     const updateInsurance = (value, record, type) => {
-        console.log("calling", value, type)
-        update_insurance({
-            variables: {
-                updated_at: moment().format("YYYY-MM-DD HH:MM:ss"),
-                updated_by: context.email,
-                id: record.id,
-                amount: record.amount,
-                cash_back_amount: record.cash_back_amount,
-                status_id: get(record, 'status.id', null),
-                [type]: value
-            }
-        })
+        if (type === "cash_back_amount" && value > MAX_INSURANCE_CASHBACK)
+            message.info(`Cash back amount cannot be more than ${MAX_INSURANCE_CASHBACK}`)
+        else {
+            update_insurance({
+                variables: {
+                    updated_at: moment().format("YYYY-MM-DD HH:MM:ss"),
+                    updated_by: context.email,
+                    id: record.id,
+                    amount: record.amount,
+                    cash_back_amount: record.cash_back_amount,
+                    status_id: get(record, 'status.id', null),
+                    [type]: value
+                }
+            })
+        }
     }
 
-    const { role } = u
-    const edit_access = [role.admin, role.partner_manager, role.onboarding]
+
 
     const columns = [
         {
@@ -116,7 +124,7 @@ const Insurance = () => {
         {
             title: 'Phone No',
             dataIndex: "contact",
-            width: '20%',
+            width: '10%',
             render: (text, record) => <Phone number={get(record, 'partner.partner_users[0].mobile', null)}
                 text={get(record, 'partner.partner_users[0].mobile', null)}
             />
@@ -124,8 +132,8 @@ const Insurance = () => {
         {
             title: 'Expiry Date',
             dataIndex: "expiry",
-            width: '20%',
-            render: (text, record) => get(record, 'truck.insurance_expiry_at', null)
+            width: '10%',
+            render: (text, record) => moment(get(record, 'truck.insurance_expiry_at', null)).format("YYYY-MM-DD")
         },
         {
             title: 'Status',
@@ -152,12 +160,20 @@ const Insurance = () => {
         {
             title: 'Cash Back Amount',
             dataIndex: "cash_back_amount",
+            width: '10%',
+            render: (text, record) =>
+                get(record, 'status.id') === 2 ?
+                    <InsuranceUpdate updateInsurance={updateInsurance}
+                        record={record}
+                        type="cash_back_amount"
+                        edit_access={edit_access}
+                        text={text ? text : 0} /> : text
+        },
+        {
+            title: "Last Comment",
+            dataIndex: 'lastComment',
             width: '20%',
-            render: (text, record) => <InsuranceUpdate updateInsurance={updateInsurance}
-                record={record}
-                type="cash_back_amount"
-                edit_access={edit_access}
-                text={text ? text : 0} />
+            render: (text, record) => get(record, 'last_comment[0].description', null)
         },
         {
             title: "",
