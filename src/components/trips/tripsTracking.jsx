@@ -266,17 +266,7 @@ const TripsTracking = (props) => {
       render: (text, record) => {
         const payment_manager = get(record, 'customer.payment_manager.name', null)
         return <Truncate data={payment_manager} length={10} />
-      },
-      filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search Payment Manager'
-            value={filter.paymentmanagername}
-            onChange={handlePaymentManagerName}
-          />
-        </div>
-      ),
-      filterIcon: () => <SearchOutlined style={{ color: filter.paymentmanagername ? '#1890ff' : undefined }} />
+      }
     } : {},
     {
       title: 'Status',
