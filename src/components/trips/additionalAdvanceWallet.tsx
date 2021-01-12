@@ -156,7 +156,7 @@ const AdditionalAdvanceWallet = (props) => {
         onOk={create_additional_advance}
         onCancel={cancelToken}
       >
-        <p>Are you sure to process Additional Advance of {amount}?</p>
+        <p>Are you sure to process Additional Advance ?</p>
       </Modal>
       <Form layout='vertical' form={form} onFinish={onSubmit}>
         <Row gutter={10}>
