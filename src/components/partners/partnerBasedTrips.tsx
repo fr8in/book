@@ -128,7 +128,7 @@ const PartnerBasedTrips = (props) => {
         },
         {
             title: 'Truck',
-            width: '16%',
+            width: '18%',
             filterDropdown: (
                 <Checkbox.Group
                     options={partner_trucks}
@@ -164,7 +164,7 @@ const PartnerBasedTrips = (props) => {
         {
             title: 'Km',
             dataIndex: 'km',
-            width: '10%',
+            width: '8%',
             render: (text, record) => (record.km || '-')
         },
         {
