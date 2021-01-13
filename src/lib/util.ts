@@ -79,6 +79,7 @@ const util = {
   },
   maxLength: 6,
   MIN_REBATE_PERCENTAGE: 0.25,
+  MAX_INSURANCE_CASHBACK:10000,
   handleLengthCheck: (e) => {
     if (e.target.value.length > e.target.maxLength) {
       e.target.value = e.target.value.slice(0, e.target.maxLength)

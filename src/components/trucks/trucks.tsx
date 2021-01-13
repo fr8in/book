@@ -1,6 +1,6 @@
-import { Table, Pagination, Radio, Input, DatePicker } from 'antd'
+import { Table, Pagination, Radio, Input, DatePicker, Button, Tooltip, Space } from 'antd'
 import { useState } from 'react'
-import { EditTwoTone, SearchOutlined } from '@ant-design/icons'
+import { EditTwoTone, SearchOutlined, InsuranceTwoTone, CheckCircleTwoTone } from '@ant-design/icons'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
 import PartnerUsers from '../partners/partnerUsers'
 import CreatePo from '../../components/trips/createPo'
@@ -9,6 +9,8 @@ import get from 'lodash/get'
 import LinkComp from '../common/link'
 import InsuranceExpiry from './insuranceExpiryDateEdit'
 import PartnerLink from '../common/PartnerLink'
+import CreateInsurance from './createInsuranceLead'
+
 const Trucks = (props) => {
   const initial = {
     usersData: [],
@@ -17,7 +19,8 @@ const Trucks = (props) => {
     poVisible: false,
     editVisible: false,
     editData: [],
-    title: ''
+    title: '',
+    insuranceVisible: false
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
   const [currentPage, setCurrentPage] = useState(1)
@@ -89,7 +92,7 @@ const Trucks = (props) => {
     },
     {
       title: 'Trip ID',
-      width: '8%',
+      width: '5%',
       render: (text, record) => {
         const id = get(record, 'trips[0].id', null)
         return (
@@ -206,12 +209,23 @@ const Trucks = (props) => {
     },
     {
       title: '',
-      width: '3%',
+      width: '6%',
       render: (text, record) => (
-        <EditTwoTone
-          onClick={() =>
-            handleShow('editVisible', 'Breakdown', 'editData', record.id)}
-        />
+        <Space className="actions">
+          {record && record.insurance ?
+            <Tooltip title="Insurance Lead Created">
+              <CheckCircleTwoTone /></Tooltip> :
+            <Tooltip title="Insurance Lead">
+              <InsuranceTwoTone
+                onClick={() =>
+                  handleShow('insuranceVisible', 'Insurance Lead', 'insuranceData', record)}
+              />
+            </Tooltip>}
+          <EditTwoTone
+            onClick={() =>
+              handleShow('editVisible', 'Breakdown', 'editData', record.id)}
+          />
+        </Space>
       )
     }
   ]
@@ -254,11 +268,19 @@ const Trucks = (props) => {
           title={object.title}
         />
       )}
-
       {object.poVisible && (
         <CreatePo
           visible={object.poVisible}
           truck_id={object.truckId}
+          onHide={handleHide}
+          title={object.title}
+        />
+      )}
+
+      {object.insuranceVisible && (
+        <CreateInsurance
+          visible={object.insuranceVisible}
+          record={object.insuranceData}
           onHide={handleHide}
           title={object.title}
         />
