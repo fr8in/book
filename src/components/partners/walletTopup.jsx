@@ -29,6 +29,14 @@ mutation partner_manual_topup($created_by: String!, $topups: [PartnerTopUp] ) {
   }
 }`
 
+const FINAL_PAYMENT_CONFIG=gql`query final_payment_discount {
+  config(where: {key: {_eq: "transaction_fee"}}) {
+    value
+    key
+  }
+}`
+
+
 const walletTopup = (props) => {
   const { visible, onHide, partner_id } = props
 
@@ -47,6 +55,8 @@ const walletTopup = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
+
+  const {data:config_data}=useQuery(FINAL_PAYMENT_CONFIG)
 
   const [partner_manual_topup] = useMutation(
     MANUAL_TOPUP_MUTATION,
@@ -77,6 +87,7 @@ const walletTopup = (props) => {
   }
 
   const invoiced = _.get(_data, 'partner[0].invoiced', [])
+  const final_payment_discount=_.get(config_data,'config[0].value.final_payment_discount',0)
 
   useEffect(() => {
     const all = invoiced.map(data => {
@@ -186,7 +197,7 @@ const walletTopup = (props) => {
         <Row justify='start' className='m5'>
           <Space>
             <Col>
-              <Checkbox defaultChecked={selectedTopUps} onChange={onChange}>2% Discount</Checkbox>
+              <Checkbox defaultChecked={selectedTopUps} onChange={onChange}>{final_payment_discount}% Discount</Checkbox>
               <b> {discount.toFixed(2)} </b>
             </Col>
           </Space>

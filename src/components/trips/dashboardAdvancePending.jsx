@@ -1,5 +1,5 @@
-import { Table, Input, Tooltip, Button } from 'antd'
-import { gql, useSubscription } from '@apollo/client'
+import { Table, Input, Tooltip, Button,Pagination } from 'antd'
+import { gql, useSubscription,useQuery } from '@apollo/client'
 import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
 import get from 'lodash/get'
 import moment from 'moment'
@@ -9,101 +9,107 @@ import Phone from '../common/phone'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import TripFeedBack from './tripFeedBack'
 import { useState } from 'react'
+import u from '../../lib/util'
 
 const DASHBOARD_ADVANCE_PENDING_QUERY = gql`
-subscription customerAdvancePending(
-    $regions: [Int!], 
-    $branches: [Int!], 
-    $cities: [Int!], 
-    $truck_type: [Int!], 
-    $managers: [Int!]
-    $date: timestamp,
-    $customer_name:String
-    ) {
-    trip(where: {
-      source_out: {_gt: $date},
-      trip_status: {name: {_nin: ["Cancelled"]}},
-      trip_accounting: {receipt: {_is_null: true}},
-      customer:{name:{_ilike:$customer_name}},
-      branch:{region_id:{_in:$regions}},
-      branch_id:{_in:$branches},
-      source_connected_city_id:{_in:$cities},
-      truck_type_id:{_in:$truck_type},
-      branch_employee_id:{_in: $managers}
-    }) {
-      id
-      advance_tat
-      source_out
-      created_at
-      trip_status {
-        name
-      }
-      partner {
-        id
-        name
-        cardcode
-        partner_users(where: {is_admin: {_eq: true}}) {
-            mobile
-          }
-      }
-      source {
-        name
-      }
-      destination {
-        name
-      }
-      customer {
-        id
-        name
-        cardcode
-      }
-      last_comment{
-        description
-        id
-      }
-      trip_receivables_aggregate{
-        aggregate{
-          sum{
-            amount
-          }
-        }
-      }
-      truck {
-        truck_no
-        truck_type {
-          code
-        }
+subscription customerAdvancePending($offset: Int, $limit: Int,
+    $where:trip_bool_exp ) {
+     trip(where:$where,offset:$offset,limit:$limit) {
+       id
+       advance_tat
+       source_out
+       created_at
+       trip_status {
+         name
+       }
+       partner {
+         id
+         name
+         cardcode
+         partner_users(where: {is_admin: {_eq: true}}) {
+             mobile
+           }
+       }
+       source {
+         name
+       }
+       destination {
+         name
+       }
+       customer {
+         id
+         name
+         cardcode
+       }
+       last_comment{
+         description
+         id
+       }
+       trip_receivables_aggregate{
+         aggregate{
+           sum{
+             amount
+           }
+         }
+       }
+       truck {
+         truck_no
+         truck_type {
+           code
+         }
+       }
+     }
+   }`
+
+   const Aggregate_count = gql`
+   query aggreate($where:trip_bool_exp){
+    trip_aggregate(where:$where){
+      aggregate{
+        count
       }
     }
-  }  
-`
+  }`
+
+
 const AdvancePending = (props) => {
     const { filters } = props
 
-    const date = new Date(new Date().getFullYear(), 0, 1);
-    const startDate = moment(date).format('YYYY-MM-DD')
     const initial = {
         commentData: [],
         commentVisible: false,
     }
     const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
+
     const initialFilter = {
+        offset: 0,
+        limit: u.limit,
         customer_name: null
-    }
-    const [customerName, setCustomerName] = useState(initialFilter)
+      }
+      const [filter, setFilter] = useState(initialFilter)
+      const [currentPage, setCurrentPage] = useState(1)
+    
+
+      const where= {
+              trip_status: {name: {_nin: ["Waiting for truck","Assigned","Confirmed","Cancelled","Closed","Recieved"]}},
+              trip_accounting: {receipt_ratio: {_lt: 0.5}},
+              customer: {name: {_ilike: filter.customer_name ? `%${filter.customer_name}%` : null}},
+              branch:{region_id:{_in: (filters.regions && filters.regions.length > 0) ? filters.regions : null}},
+              branch_id:{_in:(filters.branches && filters.branches.length > 0) ? filters.branches : null},
+              source_connected_city_id:{_in:(filters.cities && filters.cities.length > 0) ? filters.cities : null},
+              truck_type_id:{_in:(filters.types && filters.types.length > 0) ? filters.types : null},
+              branch_employee_id:{_in: (filters.managers && filters.managers.length > 0) ? filters.managers : null}
+           }
+
+      const variables = {
+        offset: filter.offset,
+        limit: filter.limit,
+        where: where
+      }
 
     const { loading, error, data } = useSubscription(
         DASHBOARD_ADVANCE_PENDING_QUERY,
         {
-            variables: {
-                date: startDate,
-                customer_name: customerName.customer_name ? `%${customerName.customer_name}%` : null,
-                regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
-                branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
-                cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
-                truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
-                managers: (filters.managers && filters.managers.length > 0) ? filters.managers : null
-            }
+            variables: variables   
         }
     )
     console.log('Advance pending error', error)
@@ -114,8 +120,29 @@ const AdvancePending = (props) => {
     }
     const trips = get(_data, 'trip', null)
 
+    const { loading:advance_loading, error:advance_error, data:advance_data } = useQuery(
+        Aggregate_count ,
+        {
+          variables:{ where : where}
+        }
+      )
+    
+      let _advance_data = {}
+      if (!advance_loading) {
+        _advance_data = advance_data 
+      }
+    
+     const record_count= get(_advance_data,'trip_aggregate.aggregate.count',0)
+    
+
+    const onPageChange = (page, pageSize) => {
+        const newOffset = page * pageSize - filter.limit
+        setCurrentPage(page)
+        setFilter({ ...filter, offset: newOffset })
+      }
+    
     const onCustomerNameSearch = (e) => {
-        setCustomerName({...customerName, customer_name:e.target.value } )
+        setFilter({...filter, customer_name:e.target.value } )
     }
 
     const advancePending = [
@@ -190,7 +217,7 @@ const AdvancePending = (props) => {
             filterDropdown: (
                 <Input
                     placeholder='Search'
-                    value={customerName.customer_name}
+                    value={filter.customer_name}
                     onChange={onCustomerNameSearch}
                 />
             ),
@@ -270,6 +297,17 @@ const AdvancePending = (props) => {
                     tripid={object.commentData}
                     onHide={handleHide}
                 />}
+                {!loading && (
+        <Pagination
+          size='small'
+          current={currentPage}
+          pageSize={filter.limit}
+          showSizeChanger={false}
+          total={record_count}
+          onChange={onPageChange}
+          className='text-right p10'
+        />
+      )}
         </>
     )
 }

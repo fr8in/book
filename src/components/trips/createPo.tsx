@@ -60,58 +60,62 @@ const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
 }`
 //, where:{customer:{status:{name:{_eq:"Active"}}}}
 const CREATE_PO = gql`
-  mutation create_po (
-      $po_date: timestamp,
-      $source_id: Int, 
-      $created_by: String!
-      $destination_id: Int, 
-      $customer_id: Int,
-      $partner_id:Int,
-      $customer_price: Float,
-      $partner_price: Float,
-      $ton: Float,
-      $per_ton:Float,
-      $is_per_ton:Boolean, 
-      $mamul: Float,
-      $including_loading: Boolean,
-      $including_unloading: Boolean,
-      $bank:Float,
-      $cash: Float,
-      $to_pay: Float,
-      $truck_id:Int,
-      $truck_type_id: Int,
-      $driver_id: Int,
-      $is_topay: Boolean,
-      $customer_user_id: Int) {
-    insert_trip(objects: {
-      po_date:$po_date
-      source_id: $source_id, 
-      created_by: $created_by
-      destination_id: $destination_id, 
-      customer_id: $customer_id,
-      partner_id: $partner_id,
-      truck_id: $truck_id,
-      truck_type_id: $truck_type_id,
-      driver_id: $driver_id,
-      customer_user_id: $customer_user_id,
-      customer_price: $customer_price,
-      partner_price: $partner_price,
-      ton: $ton,
-      price_per_ton:$per_ton,
-      is_price_per_ton: $is_per_ton,
-      mamul: $mamul,
-      including_loading: $including_loading,
-      including_unloading: $including_unloading,
-      bank: $bank,
-      to_pay:$to_pay,
-      cash:$cash,
-      is_topay: $is_topay
-    }) {
-      returning {
-        id
-      }
-    }
-  }`
+mutation create_po (
+  $po_date: timestamp,
+  $source_id: Int, 
+  $created_by: String!
+  $destination_id: Int, 
+  $customer_id: Int,
+  $partner_id:Int,
+  $customer_price: Float,
+  $partner_price: Float,
+  $ton: Float,
+  $per_ton:Float,
+  $is_per_ton:Boolean, 
+  $mamul: Float,
+  $including_loading: Boolean,
+  $including_unloading: Boolean,
+  $bank:Float,
+  $cash: Float,
+  $to_pay: Float,
+  $truck_id:Int,
+  $truck_type_id: Int,
+  $driver_id: Int,
+  $is_topay: Boolean,
+  $customer_user_id: Int,
+  $origin_id:Int,
+  $interest_id:Int) {
+insert_trip(objects: {
+  po_date:$po_date
+  source_id: $source_id, 
+  created_by: $created_by
+  destination_id: $destination_id, 
+  customer_id: $customer_id,
+  partner_id: $partner_id,
+  truck_id: $truck_id,
+  truck_type_id: $truck_type_id,
+  driver_id: $driver_id,
+  customer_user_id: $customer_user_id,
+  customer_price: $customer_price,
+  partner_price: $partner_price,
+  ton: $ton,
+  price_per_ton:$per_ton,
+  is_price_per_ton: $is_per_ton,
+  mamul: $mamul,
+  including_loading: $including_loading,
+  including_unloading: $including_unloading,
+  bank: $bank,
+  to_pay:$to_pay,
+  cash:$cash,
+  is_topay: $is_topay,
+  origin_id:$origin_id,
+  interest_id:$interest_id
+}) {
+  returning {
+    id
+  }
+}
+}`
 
 const CreatePo = (props) => {
   const { visible, onHide, truck_id } = props
@@ -230,7 +234,9 @@ const CreatePo = (props) => {
           driver_id: driver_id,
           created_by: context.email,
           customer_user_id: parseInt(loading_contact_id),
-          is_topay: !!isToPay
+          is_topay: !!isToPay,
+          origin_id: 7,
+          interest_id:7
         }
       }) : 
       create_po_mutation({
@@ -256,7 +262,9 @@ const CreatePo = (props) => {
           driver_id: driver_id,
           created_by: context.email,
           customer_user_id: parseInt(loading_contact_id),
-          is_topay: !!isToPay
+          is_topay: !!isToPay,
+          origin_id: 7,
+          interest_id:7
         }
       }) 
     }

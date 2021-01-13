@@ -16,6 +16,7 @@ import {
 import LinkComp from '../common/link'
 import useShowHide from '../../hooks/useShowHide'
 import FileUploadOnly from '../common/fileUploadOnly'
+import TdsFileUploadOnly from '../common/tdsFileUploadOnly'
 import { CheckOutlined,CarOutlined} from '@ant-design/icons'
 import ViewFile from '../common/viewFile'
 import DeleteFile from '../common/deleteFile'
@@ -36,6 +37,9 @@ query trucks_type_status{
   truck_type {
     id
     name
+  }
+  config(where:{key:{_eq:"financial_year"}}){
+    value
   }
 } 
 `
@@ -64,6 +68,7 @@ subscription partner_kyc($id:Int){
       folder
       file_path
       created_at
+      financial_year
     }
     trucks{
       id
@@ -88,7 +93,6 @@ mutation create_partner_code(
   $onboarded_by_id: Int!,
   $partner_advance_percentage_id: Int!
   $gst:String,
-  $emi: Boolean!,
   $updated_by: String!,
   $approved_by: String! ) {
   create_partner_code(
@@ -99,7 +103,6 @@ mutation create_partner_code(
     onboarded_by_id: $onboarded_by_id, 
     partner_advance_percentage_id: $partner_advance_percentage_id, 
     gst: $gst, 
-    emi: $emi, 
     updated_by: $updated_by,
     approved_by:$approved_by) {
     description
@@ -140,6 +143,10 @@ const KycApproval = (props) => {
   }
  
   const truck_type = get(truck_data, 'truck_type', [])
+  const tds_current_ = get(truck_data, 'config[0].value.current', null)
+  const tds_previous_ = get(truck_data, 'config[0].value.previous', null)
+
+  console.log('tds_current_',tds_previous_)
 
   const { data, error, loading } = useSubscription(
     PARTNERS_SUBSCRIPTION, {
@@ -164,10 +171,11 @@ const KycApproval = (props) => {
   const cardcode = get(partnerDetail, 'cardcode', null)
   const trucks = get(partnerDetail, 'trucks', [])
   const files = get(partnerDetail, 'partner_files', [])
-
+ 
   const pan_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.partner_pan)
-  const tds_files = files.filter(file => file.type === u.fileType.tds)
   const cheaque_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.check_leaf)
+  const getTDSDocument = (type, financial_year) => files && files.length > 0 ? files.filter(data => data.type === type && data.financial_year === financial_year) : []
+
   const { role } = u
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
   const access = u.is_roles(edit_access, context)
@@ -253,7 +261,6 @@ const KycApproval = (props) => {
           name: name,
           pan_no: partnerDetail.pan,
           gst: form.gst,
-          emi: !!checked,
           updated_by: context.email,
           approved_by:context.email,
           onboarded_by_id: get(partnerDetail, 'onboarded_by.id', null),
@@ -269,7 +276,7 @@ const KycApproval = (props) => {
       {loading ? <Loading />
         : (
           <Row gutter={20}>
-            <Col xs={24} sm={12}>
+            <Col xs={24} sm={24} md={12}>
               <Card
                 size='small'
                 title={isEmpty(trucks) ? 'Add Truck' : 'Trucks Detail'}
@@ -303,7 +310,7 @@ const KycApproval = (props) => {
                    {visible.showModal && <NewTruck visible={visible.showModal} partner_info={partnerDetail} disableAddTruck={disableAddTruck} onHide={onHide} />}
               </Card>
             </Col>
-            <Col xs={24} sm={12}>
+            <Col xs={24} sm={24} md={12}>
               <Card
                 size='small'
                 title='KYC Approval'
@@ -335,7 +342,7 @@ const KycApproval = (props) => {
                                   file_list={pan_files}
                                 />
                               </Space>
-                            ) : (
+                            ) :  ( 
                               <FileUploadOnly
                                 size='small'
                                 id={partner_id}
@@ -387,13 +394,13 @@ const KycApproval = (props) => {
                         </Space>
                       </Col>
                     </List.Item>
-                    <List.Item key={2}>
-                      <Col xs={24} sm={8}>TDS</Col>
+                    <List.Item key={3}>
+                      <Col xs={24} sm={8}>TDS 19-20</Col>
                       <Col xs={12} sm={12}>{partnerDetail && partnerDetail.tds}</Col>
                       <Col xs={12} sm={4} className='text-right'>
                         <Space>
                           <span>
-                            {!isEmpty(tds_files) ? (
+                            {!isEmpty(getTDSDocument(u.fileType.tds,tds_previous_))  ? (
                               <Space>
                                 <ViewFile
                                   size='small'
@@ -401,24 +408,65 @@ const KycApproval = (props) => {
                                   type='partner'
                                   file_type={u.fileType.tds}
                                   folder={u.folder.approvals}
-                                  file_list={tds_files}
+                                  file_list={getTDSDocument(u.fileType.tds,tds_previous_)}
                                 />
                                 <DeleteFile
                                   size='small'
                                   id={partner_id}
                                   type='partner'
                                   file_type={u.fileType.tds}
-                                  file_list={tds_files}
+                                  file_list={getTDSDocument(u.fileType.tds,tds_previous_)}
                                 />
                               </Space>
-                            ) : (
-                              <FileUploadOnly
+                            ) :  (
+                              <TdsFileUploadOnly
                                 size='small'
                                 id={partner_id}
                                 type='partner'
                                 folder={u.folder.approvals}
                                 file_type={u.fileType.tds}
-                                file_list={tds_files}
+                                file_list={getTDSDocument(u.fileType.tds,tds_previous_)}
+                               financial_year={tds_previous_}
+                              />
+                            )}
+                          </span>
+                        </Space>
+                      </Col>
+                    </List.Item>
+                    <List.Item key={4}>
+                      <Col xs={24} sm={8}>TDS 20-21</Col>
+                      <Col xs={12} sm={12}>{partnerDetail && partnerDetail.tds}</Col>
+                      <Col xs={12} sm={4} className='text-right'>
+                        <Space>
+                          <span>
+                            {!isEmpty(getTDSDocument(u.fileType.tds,tds_current_)) ? (
+                              <Space>
+                                <ViewFile
+                                  size='small'
+                                  id={partner_id}
+                                  type='partner'
+                                  file_type={u.fileType.tds}
+                                  folder={u.folder.approvals}
+                                  file_list={getTDSDocument(u.fileType.tds,tds_current_)}
+                                />
+                                <DeleteFile
+                                  size='small'
+                                  id={partner_id}
+                                  type='partner'
+                                  file_type={u.fileType.tds}
+                                  file_list={getTDSDocument(u.fileType.tds,tds_current_)}
+                                />
+                              </Space>
+                            ) :  (
+                              
+                              <TdsFileUploadOnly
+                                size='small'
+                                id={partner_id}
+                                type='partner'
+                                folder={u.folder.approvals}
+                                file_type={u.fileType.tds}
+                                file_list={getTDSDocument(u.fileType.tds,tds_current_)}
+                                financial_year={tds_current_}
                               />
                             )}
                           </span>
@@ -436,13 +484,6 @@ const KycApproval = (props) => {
                           </Col>
                         </Row>
                       </Col>
-                      <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
-                    </List.Item>
-                    <List.Item key={6}>
-                      <Form.Item className='mb0' initialValue={get(partnerDetail, 'emi', false)}>
-                        <Checkbox checked={checked} onChange={onChange}>EMI</Checkbox>
-                      </Form.Item>
-                      <Col xs={12} sm={12}>&nbsp;</Col>
                       <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
                     </List.Item>
                   </List>

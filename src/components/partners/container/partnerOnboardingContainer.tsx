@@ -17,7 +17,7 @@ query partner($id: Int!) {
     pan
     cibil
     final_payment_date
-    partner_users(where:{is_admin:{_eq:true}}){
+    partner_users {
       name
       email
       mobile

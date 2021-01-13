@@ -8,6 +8,8 @@ import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import PodReceiptAndDispatch from './podReceiptAndDispatch'
 import get from 'lodash/get'
 import PartnerLink from '../common/PartnerLink'
+import Truncate from '../common/truncate'
+
 const TripsTracking = (props) => {
   const initial = {
     commentData: [],
@@ -32,6 +34,7 @@ const TripsTracking = (props) => {
     visible_dispatch,
     onHide,
     verified,
+    invoiced,
     setCountFilter, countFilter, invoiced_countFilter, invoiced_setCountFilter, delivered
   } = props
 
@@ -81,6 +84,7 @@ const TripsTracking = (props) => {
     onDestinationNameSearch(e.target.value)
     setCurrentPage(1)
   }
+ 
   const handleTruckNo = (e) => {
     onTruckNoSearch(e.target.value)
     setCurrentPage(1)
@@ -129,7 +133,7 @@ const TripsTracking = (props) => {
       width: '7%',
       render: (text, record) => {
         return (
-          <LinkComp type='trips' data={text} id={record.id} blank />)
+          <LinkComp type='trips' data={text} id={record.id} />)
       },
       filterDropdown: (
         <div>
@@ -151,14 +155,14 @@ const TripsTracking = (props) => {
         ) : ''
       },
       sorter: (a, b) => (a.created_at > b.created_at ? 1 : -1),
-      width: '8%'
+      width: '10%'
     },
     {
       title: 'Customer',
       render: (text, record) => {
         const cardcode = record.customer && record.customer.cardcode
         return (
-          <LinkComp type='customers' data={get(record, 'customer.name', null)} id={cardcode} length={12} blank />
+          <LinkComp type='customers' data={get(record, 'customer.name', null)} id={cardcode} length={12} />
         )
       },
       filterDropdown: (
@@ -173,30 +177,32 @@ const TripsTracking = (props) => {
       filterIcon: () => <SearchOutlined style={{ color: filter.customername ? '#1890ff' : undefined }} />,
       width: '11%'
     },
-    {
-      title: 'Partner',
-      render: (text, record) => {
-        return (
-          <PartnerLink type='partners' data={get(record, 'partner.name', null)} id={get(record, 'partner.id', null)} cardcode={get(record, 'partner.cardcode', null)} length={12} />
-        )
-      },
-      filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search Partner Name'
-            value={filter.partnername}
-            onChange={handlePartnerName}
-          />
-        </div>
-      ),
-      filterIcon: () => <SearchOutlined style={{ color: filter.partnername ? '#1890ff' : undefined }} />,
-      width: '11%'
-    },
+    !invoiced
+      ? {
+          title: 'Partner',
+          render: (text, record) => {
+            return (
+              <PartnerLink type='partners' data={get(record, 'partner.name', null)} id={get(record, 'partner.id', null)} cardcode={get(record, 'partner.cardcode', null)} length={12} />
+            )
+          },
+          filterDropdown: (
+            <div>
+              <Input
+                placeholder='Search Partner Name'
+                value={filter.partnername}
+                onChange={handlePartnerName}
+              />
+            </div>
+          ),
+          filterIcon: () => <SearchOutlined style={{ color: filter.partnername ? '#1890ff' : undefined }} />,
+          width: '11%'
+        }
+      : {},
     {
       title: 'Truck',
       render: (text, record) => {
         return (
-          <LinkComp type='trucks' data={get(record, 'truck.truck_no', null)} id={get(record, 'truck.truck_no', null)} blank />
+          <LinkComp type='trucks' data={get(record, 'truck.truck_no', null)} id={get(record, 'truck.truck_no', null)} />
         )
       },
       filterDropdown: (
@@ -215,11 +221,8 @@ const TripsTracking = (props) => {
       title: 'Source',
       width: '9%',
       render: (text, record) => {
-        return text > 8 ? (
-          <Tooltip title={record.source.name}>
-            <span>{record.source.name.slice(0, 8) + '...'}</span>
-          </Tooltip>
-        ) : record.source.name
+        const source = get(record, 'source.name', null)
+        return <Truncate data={source} length={10} />
       },
       filterDropdown: (
         <div>
@@ -236,11 +239,8 @@ const TripsTracking = (props) => {
       title: 'Destination',
       width: '10%',
       render: (text, record) => {
-        return text > 8 ? (
-          <Tooltip title={record.destination.name}>
-            <span>{record.destination.name.slice(0, 8) + '...'}</span>
-          </Tooltip>
-        ) : record.destination.name
+        const source = get(record, 'destination.name', null)
+        return <Truncate data={source} length={10} />
       },
       filterDropdown: (
         <div>
@@ -253,6 +253,18 @@ const TripsTracking = (props) => {
       ),
       filterIcon: () => <SearchOutlined style={{ color: filter.destinationname ? '#1890ff' : undefined }} />
     },
+    invoiced ? {
+      title: (
+        <Tooltip title='Payment Manager'>
+          <span>P.Manager</span>
+        </Tooltip>
+      ),
+      width: '10%',
+      render: (text, record) => {
+        const payment_manager = get(record, 'customer.payment_manager.name', null)
+        return <Truncate data={payment_manager} length={10} />
+      }
+    } : {},
     {
       title: 'Status',
       render: (text, record) =>
@@ -276,7 +288,7 @@ const TripsTracking = (props) => {
         return status ? (tat(a) > tat(b) ? 1 : -1) : null
       },
       width: '8%',
-      defaultSortOrder:'descend'
+      defaultSortOrder: 'descend'
     },
     {
       title: 'Comment',
@@ -288,8 +300,8 @@ const TripsTracking = (props) => {
             <span> {comment.slice(0, 12) + '...'}</span>
           </Tooltip>
         ) : (
-            comment
-          )
+          comment
+        )
       }
     },
     {

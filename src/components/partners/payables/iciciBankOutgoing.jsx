@@ -50,6 +50,7 @@ const OutGoing = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
+
   console.log('pendingTransaction error', error)
 
   let _data = []
@@ -112,12 +113,12 @@ const OutGoing = (props) => {
       title: 'Vendor Code',
       dataIndex: 'partner_code',
       key: 'partner_code',
-      width: '8%'
+      width: '9%'
     },
     {
       title: 'Vendor Name',
       sorter: (a, b) => (a.partner_name > b.partner_name ? 1 : -1),
-      width: '10%',
+      width: '12%',
       render: (text, record) => {
         const user = get(record, 'partner_name', '-')
         return (
@@ -139,9 +140,14 @@ const OutGoing = (props) => {
     },
     {
       title: 'Acct Name',
-      dataIndex: 'account_name',
       key: 'account_name',
-      width: '10%'
+      width: '8%',
+      render: (text, record) => {
+        const user = get(record, 'account_name', '-')
+        return (
+          <Truncate data={user} length={8} />
+        )
+      }
     },
 
     {
@@ -158,7 +164,7 @@ const OutGoing = (props) => {
     },
     {
       title: 'Payable Stat',
-      width: '8%',
+      width: '12%',
       render: (text, record) => {
         const user = get(record, 'payable_status', '-')
         return (
@@ -167,8 +173,8 @@ const OutGoing = (props) => {
       }
     },
     {
-      title: 'Ref Number',
-      width: '9%',
+      title: <Tooltip title='Reference Number'>R.No</Tooltip>,
+      width: '6%',
       render: (text, record) => {
         return (
           <Refno id={record.docNum} label={label} />
@@ -179,7 +185,7 @@ const OutGoing = (props) => {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      width: '11%',
+      width: '10%',
       render: (text, record) => {
         return (
           <>

@@ -30,7 +30,8 @@ mutation create_excees_load (
   $truck_type_id:Int,
   $description:String,
   $topic:String,
-  $created_by: String ) {
+  $created_by: String,
+  $origin_id:Int) {
 insert_trip(objects: {
   trip_status_id: 1,
   source_id: $source_id, 
@@ -40,7 +41,8 @@ insert_trip(objects: {
   customer_price: $customer_price,
   ton: $ton,
   price_per_ton:$rate_per_ton,
-  is_price_per_ton: $is_per_ton
+  is_price_per_ton: $is_per_ton,
+  origin_id:$origin_id
   trip_comments:{
     data:{
       description:$description,
@@ -159,7 +161,8 @@ const CreateExcessLoad = (props) => {
           truck_type_id: parseInt(form.truck_type, 10),
           description: form.comment,
           topic: 'Excess Load Created',
-          created_by: context.email
+          created_by: context.email,
+          origin_id: 5
         }
       })
     }

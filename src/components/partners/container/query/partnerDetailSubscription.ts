@@ -3,6 +3,7 @@ import { gql } from '@apollo/client'
 export const PARTNER_DETAIL_SUBSCRIPTION = gql`
 subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [String!], $invoiced: [String!], $paid: [String!],$year:Int,$month:Int) {
   partner(where: {cardcode: {_eq: $cardcode}}) {
+    partner_gst_state
     partner_accounting {
       cleared
       wallet_balance
@@ -14,6 +15,8 @@ subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [Stri
       gold
       platinum
       month
+      transaction_fee
+      cash_back_amount
       actual {
         gmv
       }
@@ -64,7 +67,6 @@ subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [Stri
     emi
     dnd
     cibil
-    final_payment_date
     bank {
       id
       name
@@ -83,6 +85,7 @@ subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [Stri
       folder
       file_path
       created_at
+      financial_year
     }
     onboarded_by {
       id
@@ -106,14 +109,23 @@ subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [Stri
       id
       name
     }
-    city {
-      name
-      state {
-        name
-      }
-      branch {
-        region {
+    partner_connected_city {
+      connected_city {
+        id
+        is_connected_city
+        cities(where: {is_connected_city: {_eq: true}}) {
+          id
           name
+          state{
+            name
+          }
+          branch {
+            id
+            region {
+              id
+              name
+            }
+          }
         }
       }
     }

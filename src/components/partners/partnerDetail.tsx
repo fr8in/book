@@ -1,4 +1,4 @@
-import { Row, Col, Space, Tooltip } from 'antd'
+import { Row, Col, Space, Tooltip} from 'antd'
 import LabelWithData from '../common/labelWithData'
 import AdvancePercentage from './partnerAdvancePercentage'
 import EditAddress from './partnerAddress'
@@ -17,7 +17,7 @@ const PartnerDetail = (props) => {
   const { partnerDetail, loading } = props
   const { role } = u
   const initial = {
-    addressVisible: false,
+  addressVisible: false,
     bankVisible: false
   }
   const { visible, onHide, onShow } = useShowHide(initial)
@@ -71,9 +71,9 @@ const PartnerDetail = (props) => {
           labelSpan={10}
           dataSpan={14}
         />
-        <LabelWithData
+        <LabelWithData 
           label='State'
-          data={<span>{partnerDetail.city && partnerDetail.city.state && partnerDetail.city.state.name}</span>}
+          data={<span>{get(partnerDetail, 'partner_gst_state', null)}</span>}
           labelSpan={10}
           dataSpan={14}
         />

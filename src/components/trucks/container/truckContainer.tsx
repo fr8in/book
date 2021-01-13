@@ -1,4 +1,4 @@
-import { Row, Col, Card } from 'antd'
+import { Row, Col, Card, Tabs } from 'antd'
 import Trucks from '../trucks'
 import { useState } from 'react'
 import u from '../../../lib/util'
@@ -6,6 +6,7 @@ import get from 'lodash/get'
 
 import { gql, useQuery, useSubscription } from '@apollo/client'
 import moment from 'moment'
+import Insurance from '../Insurance'
 
 const TRUCKS_SUBSCRIPTION = gql`
 subscription trucks_list(
@@ -45,6 +46,9 @@ subscription trucks_list(
       truck_status {
         id
         name
+      }
+      insurance {
+        id
       }
       partner {
         id
@@ -97,8 +101,8 @@ const TruckContainer = () => {
     truckno: null,
     offset: 0,
     limit: u.limit,
-    insurance_end:null,
-    insurance_start:null
+    insurance_end: null,
+    insurance_start: null
   }
   const [filter, setFilter] = useState(initialFilter)
 
@@ -108,8 +112,8 @@ const TruckContainer = () => {
     truck_statusId: filter.truck_statusId,
     truckno: filter.truckno ? `%${filter.truckno}%` : null,
     name: filter.name ? `%${filter.name}%` : null,
-    insurance_end:filter.insurance_end,
-    insurance_start:filter.insurance_start
+    insurance_end: filter.insurance_end,
+    insurance_start: filter.insurance_start
   }
   const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
     TRUCKS_SUBSCRIPTION,
@@ -165,9 +169,9 @@ const TruckContainer = () => {
   }
   const insurance_filter =
   {
-    'All':{insurance_start:null, insurance_end:null},
-    '15':{insurance_start:moment().add(-1,'days'),insurance_end:moment().add(15,'days')},
-    '30':{insurance_start:moment().add(-1,'days'),insurance_end:moment().add(30,'days')},
+    'All': { insurance_start: null, insurance_end: null },
+    '15': { insurance_start: moment().add(-1, 'days'), insurance_end: moment().add(15, 'days') },
+    '30': { insurance_start: moment().add(-1, 'days'), insurance_end: moment().add(30, 'days') },
   }
 
   const onInsuranceFilter = (value) => {
@@ -178,21 +182,26 @@ const TruckContainer = () => {
     <Card size='small' className='card-body-0 border-top-blue'>
       <Row>
         <Col sm={24}>
-          <Card size='small' className='card-body-0'>
-            <Trucks
-              trucks={truck}
-              truck_status_list={truck_status_list}
-              status={truck_status}
-              loading={s_loading}
-              filter={filter}
-              onFilter={onFilter}
-              onPageChange={onPageChange}
-              onNameSearch={onNameSearch}
-              onTruckNoSearch={onTruckNoSearch}
-              onInsuranceFilter={onInsuranceFilter}
-              record_count={record_count}
-            />
-          </Card>
+          <Tabs defaultActiveKey="0">
+            <Tabs.TabPane tab="Trucks" key="0">
+              <Trucks
+                trucks={truck}
+                truck_status_list={truck_status_list}
+                status={truck_status}
+                loading={s_loading}
+                filter={filter}
+                onFilter={onFilter}
+                onPageChange={onPageChange}
+                onNameSearch={onNameSearch}
+                onTruckNoSearch={onTruckNoSearch}
+                onInsuranceFilter={onInsuranceFilter}
+                record_count={record_count}
+              />
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="Insurance" key="1">
+              <Insurance />
+            </Tabs.TabPane>
+          </Tabs>
         </Col>
       </Row>
     </Card>

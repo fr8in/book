@@ -19,6 +19,10 @@ query paid_trip($offset: Int, $limit: Int,$trip_status_value:[String!], $cardcod
       id
       order_date
       created_at
+      customer{
+        name
+        cardcode
+      }
       truck{
         truck_no
         truck_type{
