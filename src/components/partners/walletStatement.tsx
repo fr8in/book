@@ -1,7 +1,11 @@
-import { Drawer, Row, Col } from 'antd'
+import { Drawer, Row, Col,Tooltip } from 'antd'
 import { gql, useQuery } from '@apollo/client'
 import Loading from '../common/loading'
 import get from 'lodash/get'
+import {
+  CheckCircleOutlined,
+  CloseOutlined
+} from '@ant-design/icons'
 import isEmpty from 'lodash/isEmpty'
 
 const PARTNER_WALLET_STATEMENT_QUERY = gql`
@@ -24,6 +28,8 @@ query partner_wallet_statement($cardcode: String) {
       trip_id
       comment
       type
+      transaction_refno
+      transaction_status
       route
       trip{
         source{ 
@@ -98,11 +104,21 @@ const WalletStatement = (props) => {
                 <h4>{data.date}</h4>
                 {!isEmpty(transactionDetails)
                   ? transactionDetails.map((transactionData, i) => {
+                    const transactionStatus = get(transactionData,'transaction_status','')
                     return (
                       isEmpty(transactionData.mode) ? '' : (
                         <Row key={i}>
                           <Col span={18}>
                             <p><b>{transactionData.mode} {transactionData.trip_id || ''}</b></p>
+                            <p>{ transactionData.mode === "Paid To Bank" 
+                            ? (transactionData.transaction_refno || <Tooltip title={transactionStatus}>
+                            <CheckCircleOutlined
+                              style={{
+                                color: transactionStatus === "FAILED" ? '#dc3545' : '#FFA500',
+                                fontSize: '18px'
+                              }}
+                            />
+                          </Tooltip>):''}</p>
                             {transactionData.trip_id
                               ? <p>{'#' + transactionData.trip_id}, {get(transactionData, 'trip.source.name', null)} - {get(transactionData, 'trip.destination.name', null)}</p>
                               : <p>{transactionData.route || ''}</p>}
