@@ -7,7 +7,7 @@ import get from 'lodash/get'
 import moment from 'moment'
 import Truncate from '../common/truncate'
 import LinkComp from '../common/link'
-
+import PartnerLink from '../common/PartnerLink'
 const CustomerTrips = (props) => {
   const { cardcode, status_names, delivered } = props
 
@@ -83,10 +83,10 @@ const CustomerTrips = (props) => {
         tat = record.delivered_tat
         break
       case 'Invoiced':
-        tat = record.invoiced_tat
+        tat = record.received_tat
         break
       case 'Paid':
-        tat = record.paid_tat
+        tat = record.received_tat
         break
       case 'Recieved':
         tat = record.received_tat
@@ -120,10 +120,10 @@ const CustomerTrips = (props) => {
     },
     {
       title: 'Truck No',
-      width: '16%',
+      width: '13%',
       render: (text, record) => {
         const truck_no = get(record, 'truck.truck_no', null)
-        const truck_type_name = get(record, 'truck.truck_type.name', null)
+        const truck_type_name = get(record, 'truck.truck_type.code', null)
         const truck_type = truck_type_name ? truck_type_name.slice(0, 9) : null
         return (
           <LinkComp
@@ -148,13 +148,15 @@ const CustomerTrips = (props) => {
       title: 'Partner',
       width: '10%',
       render: (text, record) => {
+        const id = get(record, 'partner.id', null)
         const partner = get(record, 'partner.name', null)
         const cardcode = get(record, 'partner.cardcode', null)
         return (
-          <LinkComp
+          <PartnerLink
             type='partners'
             data={partner}
-            id={cardcode}
+            id={id}
+            cardcode={cardcode}
             length={10}
           />
         )
@@ -202,35 +204,35 @@ const CustomerTrips = (props) => {
     },
     !delivered
       ? {
-          title: 'Status',
-          width: '11%',
-          render: (text, record) => <Truncate data={get(record, 'trip_status.name', '-')} length={15} />
-        }
+        title: 'Status',
+        width: '11%',
+        render: (text, record) => <Truncate data={get(record, 'trip_status.name', '-')} length={15} />
+      }
       : {},
     delivered
       ? {
-          title: 'Pod Verified at',
-          width: '11%',
-          dataIndex: 'pod_verified_at',
-          render: (text, record) => text ? moment(text).format('DD-MMM-YY') : '-'
-        }
+        title: 'Pod Verified at',
+        width: '11%',
+        dataIndex: 'pod_verified_at',
+        render: (text, record) => text ? moment(text).format('DD-MMM-YY') : '-'
+      }
       : {},
     {
       title: 'Receivable',
-      width: '8%',
+      width: '9%',
       sorter: (a, b) => (a.receivable > b.receivable ? 1 : -1),
       render: (record) => get(record, 'trip_receivables_aggregate.aggregate.sum.amount', 0)
     },
     {
       title: 'Receipts',
-      width: '7%',
+      width: '8%',
       sorter: (a, b) => (a.receipts > b.receipts ? 1 : -1),
       render: (record) => get(record, 'trip_receipts_aggregate.aggregate.sum.amount', 0)
     },
     {
       title: 'Balance',
       sorter: (a, b) => (a.balance > b.balance ? 1 : -1),
-      width: '7%',
+      width: '8%',
       render: (record) => {
         const receivable = get(record, 'trip_receivables_aggregate.aggregate.sum.amount', 0)
         const receipts = get(record, 'trip_receipts_aggregate.aggregate.sum.amount', 0)
@@ -244,7 +246,8 @@ const CustomerTrips = (props) => {
         const status = get(a, 'trip_status.name', null)
         return status ? (tat(a) > tat(b) ? 1 : -1) : null
       },
-      width: '7%'
+      width: '7%',
+      defaultSortOrder: 'descend'
     }
   ]
 

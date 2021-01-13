@@ -526,7 +526,21 @@ input[type="number"] {
     }
   }
 }
-
+.scrollFix{
+  width: 100%;
+  overflow: auto;
+}
 .h2color {
   color: @white;
+}
+.cashbackRow > td, .cashbackRow:hover > td {
+  background-color: @white;
+}
+.cashbackRowNegativeWallet > td, .cashbackRowNegativeWallet:hover > td {
+  background-color: @pin2k;
+}
+.ant-table-tbody > tr.ant-table-row.cashbackRowNegativeWallet:hover > td { background-color: @pin2k;}
+.tableRowHeading{
+  background-color: '#fafafa';
+  font-weight:500
 }

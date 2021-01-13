@@ -1,20 +1,22 @@
-import { Modal, Row, Col, Button, message, Input, Table } from 'antd'
+import { Modal, Row, Col, Button, message, Input, Table, Checkbox } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { gql, useQuery, useMutation } from '@apollo/client'
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import sumBy from 'lodash/sumBy'
 import get from 'lodash/get'
+import now from 'lodash/now'
 import userContext from '../../lib/userContaxt'
 import moment from 'moment'
 
 const CUSTOMER_INCOMING_PAYMENTS = gql`
-query  bank_incoming($search:String){
-  bank_incoming(search:$search) {
+query  bank_incoming${now()}($search:String,$bank:[String]){
+  bank_incoming(search:$search,bank:$bank) {
     transno
     amount
     date
     details
     originno
+    bank
   }
 }`
 
@@ -37,17 +39,20 @@ mutation customer_topup(
 }`
 
 const WalletTopup = (props) => {
-  const { visible, onHide, customer_id } = props
+  const { visible, onHide, customer_id, customer_incoming_refetch } = props
   const [search, setSearch] = useState(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRow, setSelectedRow] = useState([])
   const [disableButton, setDisableButton] = useState(true)
   const context = useContext(userContext)
+  const [bankFilter, setBankFilter] = useState([])
+  const [totalSum, setTotalSum] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
 
   const { loading, data, error, refetch } = useQuery(
     CUSTOMER_INCOMING_PAYMENTS,
     {
-      variables: { search: search || null },
+      variables: { search: search || null, bank: bankFilter },
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
@@ -55,20 +60,21 @@ const WalletTopup = (props) => {
   const [customer_topup] = useMutation(
     CUSTOMER_TOPUP_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted (data) {
+      onError(error) { message.error(error.toString()) },
+      onCompleted(data) {
         const status = get(data, 'customer_topup.status', null)
         const description = get(data, 'customer_topup.description', null)
         if (status === 'OK') {
           message.success(description || 'Processed!')
           refetch()
           onHide()
+          if (customer_incoming_refetch) {
+            customer_incoming_refetch()
+          }
         } else (message.error(description))
       }
     }
   )
-
-
 
   let _data = {}
   if (!loading) {
@@ -76,8 +82,15 @@ const WalletTopup = (props) => {
   }
 
   const bank_incoming = get(_data, 'bank_incoming', [])
-  const count = bank_incoming ? bank_incoming.length : 0
-  const total = bank_incoming ? sumBy(bank_incoming, 'amount').toFixed(2) : 0
+
+  useEffect(() => {
+    const totalCount = bank_incoming ? bank_incoming.length : 0
+    const totalSum = bank_incoming ? sumBy(bank_incoming, 'amount').toFixed(2) : 0
+    setTotalSum(totalSum)
+    setTotalCount(totalCount)
+  },
+    [loading]
+  )
 
   const onSubmit = () => {
     customer_topup({
@@ -105,7 +118,7 @@ const WalletTopup = (props) => {
       title: 'Reference No',
       dataIndex: 'transno',
       sorter: (a, b) => (a.transno > b.transno ? 1 : -1),
-      width: '15%'
+      width: '16%'
     },
     {
       title: 'Date',
@@ -113,26 +126,40 @@ const WalletTopup = (props) => {
       key: 'date',
       sorter: (a, b) => (a.date > b.date ? 1 : -1),
       width: '12%',
-      render:(text, record)=> text ? moment(parseInt(text)).format('DD-MMM-YY') : '-'
+      render: (text, record) => text ? moment(parseInt(text)).format('DD-MMM-YY') : '-'
     },
     {
       title: 'Payment Details',
       dataIndex: 'details',
-      width: '57%'
+      width: '50%'
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
       sorter: (a, b) => (a.amount > b.amount ? 1 : -1),
-      width: '16%'
+      width: '14%'
+    },
+    {
+      title: 'Bank',
+      dataIndex: 'bank',
+      key: 'bank',
+      width: '8%',
+      filterDropdown: (
+        <Checkbox.Group
+          options={['ICICI', 'HDFC']}
+          onChange={(checked) => setBankFilter(checked)}
+          className='filter-drop-down'
+        />
+      )
     }
   ]
+
 
   const footerData = (
     <Row>
       <Col flex='auto' className='text-left'>
-        <span>Total Amount: <b>₹{total}</b></span>
+        <span>Total Amount: <b>₹{totalSum}</b></span>
       </Col>
       <Col flex='120px'>
         <Button type='primary' disabled={disableButton} onClick={onSubmit}>Top Up</Button>
@@ -144,7 +171,7 @@ const WalletTopup = (props) => {
       title={
         <div>
           <Row>
-            <Col className='mb5'>Top Up to Wallet - {count}</Col>
+            <Col className='mb5'>Top Up to Wallet - {totalCount}</Col>
           </Row>
           <Row><Input placeholder='Search...' suffix={<SearchOutlined />} onChange={onSearch} /></Row>
         </div>

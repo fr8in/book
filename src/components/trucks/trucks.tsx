@@ -1,6 +1,6 @@
-import { Table, Pagination, Radio, Input,DatePicker } from 'antd'
+import { Table, Pagination, Radio, Input, DatePicker, Button, Tooltip, Space } from 'antd'
 import { useState } from 'react'
-import { EditTwoTone, SearchOutlined } from '@ant-design/icons'
+import { EditTwoTone, SearchOutlined, InsuranceTwoTone, CheckCircleTwoTone } from '@ant-design/icons'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
 import PartnerUsers from '../partners/partnerUsers'
 import CreatePo from '../../components/trips/createPo'
@@ -8,6 +8,8 @@ import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
 import InsuranceExpiry from './insuranceExpiryDateEdit'
+import PartnerLink from '../common/PartnerLink'
+import CreateInsurance from './createInsuranceLead'
 
 const Trucks = (props) => {
   const initial = {
@@ -17,7 +19,8 @@ const Trucks = (props) => {
     poVisible: false,
     editVisible: false,
     editData: [],
-    title: ''
+    title: '',
+    insuranceVisible: false
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
   const [currentPage, setCurrentPage] = useState(1)
@@ -47,8 +50,6 @@ const Trucks = (props) => {
   const handleInsuranceFilter = (e) => {
     onInsuranceFilter(e.target.value)
   }
-
-
 
   const handleName = (e) => {
     onNameSearch(e.target.value)
@@ -91,7 +92,7 @@ const Trucks = (props) => {
     },
     {
       title: 'Trip ID',
-      width: '8%',
+      width: '5%',
       render: (text, record) => {
         const id = get(record, 'trips[0].id', null)
         return (
@@ -122,8 +123,8 @@ const Trucks = (props) => {
                 Assign
               </a>
             ) : (
-              'NA'
-            )}
+                  'NA'
+                )}
           </span>
         )
       }
@@ -132,10 +133,11 @@ const Trucks = (props) => {
       title: 'Partner',
       width: '14%',
       render: (text, record) => {
+        const id = get(record, 'partner.id', null)
         const cardcode = get(record, 'partner.cardcode', null)
         const name = get(record, 'partner.name', null)
         return (
-          <LinkComp type='partners' data={name} id={cardcode} length={20} />
+          <PartnerLink type='partners' data={name} cardcode={cardcode} id={id} length={20} />
         )
       },
 
@@ -182,19 +184,19 @@ const Trucks = (props) => {
           className='filter-drop-down'
         />
       )
-      
+
     },
     {
       title: 'Ins Expiry Date',
-      width: '10%',
+      width: '11%',
       render: (text, record) => <InsuranceExpiry record={record} />,
       filterDropdown: (
         <Radio.Group
-          options={[{ value: 'All', label: 'All'},{ value: '15', label: '<15'},{ value: '30', label: '<30'}]}
+          options={[{ value: 'All', label: 'All' }, { value: '15', label: '<15' }, { value: '30', label: '<30' }]}
           defaultValue='All'
           onChange={handleInsuranceFilter}
           className='filter-drop-down'
-          
+
         />
       )
     },
@@ -207,12 +209,23 @@ const Trucks = (props) => {
     },
     {
       title: '',
-      width: '3%',
+      width: '6%',
       render: (text, record) => (
-        <EditTwoTone
-          onClick={() =>
-            handleShow('editVisible', 'Breakdown', 'editData', record.id)}
-        />
+        <Space className="actions">
+          {record && record.insurance ?
+            <Tooltip title="Insurance Lead Created">
+              <CheckCircleTwoTone /></Tooltip> :
+            <Tooltip title="Insurance Lead">
+              <InsuranceTwoTone
+                onClick={() =>
+                  handleShow('insuranceVisible', 'Insurance Lead', 'insuranceData', record)}
+              />
+            </Tooltip>}
+          <EditTwoTone
+            onClick={() =>
+              handleShow('editVisible', 'Breakdown', 'editData', record.id)}
+          />
+        </Space>
       )
     }
   ]
@@ -255,11 +268,19 @@ const Trucks = (props) => {
           title={object.title}
         />
       )}
-
       {object.poVisible && (
         <CreatePo
           visible={object.poVisible}
           truck_id={object.truckId}
+          onHide={handleHide}
+          title={object.title}
+        />
+      )}
+
+      {object.insuranceVisible && (
+        <CreateInsurance
+          visible={object.insuranceVisible}
+          record={object.insuranceData}
           onHide={handleHide}
           title={object.title}
         />

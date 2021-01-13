@@ -55,7 +55,7 @@ const Progress = (props) => {
             <iframe
               width='100%'
               height='100%'
-              src='https://app.powerbi.com/view?r=eyJrIjoiOTI5ZjhmMjktYTJlMC00ZDRmLTlmZDYtNjY0N2U4OTc5YTEyIiwidCI6IjE5ZWE5NTViLTE1MzYtNGM3Ni04NDIwLTUxZmJjNGM5YzM5NyIsImMiOjEwfQ=='
+              src='https://app.powerbi.com/view?r=eyJrIjoiMDdlNWM4NjAtZjBlYy00MjliLWI4MWEtZDIyNzI4ZWY1MTgwIiwidCI6Ijc2NzA4ZDI4LWNhNzYtNDBhNS05OWU4LWY5MzZlODZhN2MwYyIsImMiOjEwfQ=='
             />
           </div>
         </Modal>}

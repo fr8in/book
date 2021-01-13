@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 const DASHBOAD_QUERY = gql`
-query dashboard_trips($now: timestamp,$regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $managers: [Int!]) {
+query dashboard_trips($now: timestamp,$regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $managers: [Int!],$yearStart:timestamp) {
   unloading: trip_aggregate(where: {trip_status: {name: {_eq: "Reported at destination"}}, branch: {region_id: {_in: $regions}}, branch_id: {_in: $branches}, source_connected_city_id: {_in: $cities}, truck_type_id: {_in: $truck_type}, branch_employee_id: {_in: $managers}}) {
     aggregate {
       count
@@ -47,6 +47,11 @@ query dashboard_trips($now: timestamp,$regions: [Int!], $branches: [Int!], $citi
       count
     }
   }
+  adv_pending: trip_aggregate(where: {trip_status: {name: {_nin: ["Waiting for truck","Assigned","Confirmed","Cancelled","Closed","Recieved"]}}, trip_accounting: {receipt_ratio: {_lt: 0.5}}, branch: {region_id: {_in: $regions}}, branch_id: {_in: $branches}, source_connected_city_id: {_in: $cities}, truck_type_id: {_in: $truck_type}, branch_employee_id: {_in: $managers}}) {
+    aggregate {
+      count
+    }
+  }
   trucks_total: truck_aggregate(where: {
     _and: [
         {truck_status: {name: {_eq: "Waiting for Load"}}}, 
@@ -61,7 +66,7 @@ query dashboard_trips($now: timestamp,$regions: [Int!], $branches: [Int!], $citi
   }
   trucks_current: truck_aggregate(where: {
     _and: [
-        {available_at: {_gte: $now}},
+        {available_at: {_lte: $now}},
         {truck_status: {name: {_eq: "Waiting for Load"}}}, 
         {partner:{partner_status:{name:{_eq:"Active"}}}},
       {city:{connected_city:{branch_id:{_in:$branches}}}}

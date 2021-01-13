@@ -1,4 +1,4 @@
-import { Table, Input, Tooltip, Button, Space } from 'antd'
+import { Table, Input, Tooltip, Button, Space, Checkbox } from 'antd'
 import {
   SearchOutlined,
   CommentOutlined,
@@ -11,19 +11,18 @@ import Link from 'next/link'
 import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
 import Comment from '../../trips/tripFeedBack'
 import Approve from './accept'
-import { gql, useSubscription } from '@apollo/client'
+import { gql, useSubscription, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import PartnerOnBoardedBy from '../partnerOnboardedByName'
 import LinkComp from '../../common/link'
 import u from '../../../lib/util'
-
 import userContext from '../../../lib/userContaxt'
 import isEmpty from 'lodash/isEmpty'
 
 const PENDING_SUBSCRIPTION = gql`
-subscription trip_credit_debit($status: [String!]) {
-  trip_credit_debit(where: {credit_debit_status: {name: {_in: $status}}}, order_by: {created_at: desc}) {
+subscription trip_credit_debit($trip_credit_debit:trip_credit_debit_bool_exp) {
+  trip_credit_debit(where:$trip_credit_debit) {
     id
     trip_id
     type
@@ -61,11 +60,19 @@ subscription trip_credit_debit($status: [String!]) {
   }
 }`
 
+const region_query = gql`
+query region_query{
+  region{
+    id
+    name
+  }
+}`
+
 const Pending = () => {
   const { role } = u
-  const access = [role.admin, role.rm,role.partner_support]
-  const approve_roles = [role.admin, role.rm,role.partner_manager,role.partner_support]
-  const reject_roles = [role.admin, role.rm,role.partner_manager,role.partner_support]
+  const access = [role.admin, role.rm, role.partner_support]
+  const approve_roles = [role.admin, role.rm, role.partner_manager, role.partner_support]
+  const reject_roles = [role.admin, role.rm, role.partner_manager, role.partner_support]
   const initial = {
     commentData: [],
     commentVisible: false,
@@ -74,24 +81,33 @@ const Pending = () => {
     title: null,
     responsibity: null,
     searchText: null,
-    pending: []
+    pending: [],
+    partnername: null,
+    region: []
   }
 
   const context = useContext(userContext)
-  const approval_access =  u.is_roles(approve_roles,context)
-  const rejected_access =  u.is_roles(reject_roles,context)
+  const approval_access = u.is_roles(approve_roles, context)
+  const rejected_access = u.is_roles(reject_roles, context)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const [filter, setFilter] = useState(initial)
+
+  const trip_credit_debit = {
+    credit_debit_status: { name: { _in: ['PENDING'] } },
+    trip: {
+      branch: { region: filter.region && filter.region.length > 0 ? { name: { _in: filter.region } } : { name: { _in: null } } },
+      partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } }
+    }
+  }
 
   const { loading, error, data } = useSubscription(
     PENDING_SUBSCRIPTION,
     {
       variables: {
-        status: ['PENDING']
+        trip_credit_debit: trip_credit_debit
       }
     }
   )
-  console.log('pending error', error)
 
   let _data = {}
   if (!loading) {
@@ -103,6 +119,20 @@ const Pending = () => {
   useEffect(() => {
     setFilter({ ...filter, pending: pending_list })
   }, [pending_list])
+
+  const { loading: region_loading, error: region_error, data: region_data } = useQuery(
+    region_query,
+  )
+
+  let _region = {}
+  if (!region_loading) {
+    _region = region_data
+  }
+
+  const region_list = get(_region, 'region', null)
+  const region_options = !isEmpty(region_list) ? region_list.map((data) => {
+    return { value: data.name, label: data.name }
+  }) : []
 
   const onSearch = (e) => {
     setFilter({ ...filter, searchText: e.target.value })
@@ -118,7 +148,12 @@ const Pending = () => {
       setFilter({ ...filter, pending: pending_list })
     }
   }
-
+  const onPartnerSearch = (e) => {
+    setFilter({ ...filter, partnername: e.target.value })
+  }
+  const onRegionFilter = (checked) => {
+    setFilter({ ...filter, region: checked })
+  }
   const ApprovalPending = [
     {
       title: '#',
@@ -153,16 +188,23 @@ const Pending = () => {
       title: 'Reason',
       dataIndex: 'comment',
       key: 'comment',
-      width: '11%',
-      render: (text, record) => <Truncate data={text} length={13} />
+      width: '9%',
+      render: (text, record) => <Truncate data={text} length={11} />
     },
     {
       title: 'Region',
       dataIndex: 'region',
       key: 'region',
       width: '6%',
-      render: (text, record) => get(record, 'trip.branch.region.name', null)
-
+      render: (text, record) => get(record, 'trip.branch.region.name', null),
+      filterDropdown: (
+        <Checkbox.Group
+          options={region_options}
+          defaultValue={filter.region}
+          onChange={onRegionFilter}
+          className='filter-drop-down'
+        />
+      )
     },
     {
       title: 'Created By',
@@ -180,12 +222,24 @@ const Pending = () => {
         return (
           <LinkComp
             type='partners'
-            data={get(record, 'trip.partner.cardcode', null) + '-' + get(record, 'trip.partner.name', null)}
+            data={get(record, 'trip.partner.name', null) + '-' + get(record, 'trip.partner.cardcode', null)}
             id={get(record, 'trip.partner.cardcode', null)}
             length={14}
           />
         )
-      }
+      },
+      filterDropdown: (
+        <Input
+          placeholder='Search'
+          id='partner_name'
+          name='partner_name'
+          value={filter.partnername}
+          onChange={onPartnerSearch}
+        />
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     {
       title: 'Req.On',
@@ -201,7 +255,7 @@ const Pending = () => {
       title: 'Responsibility',
       dataIndex: 'responsibility',
       key: 'responsibility',
-      width: '10%',
+      width: '11%',
       render: (text, record) =>
         <PartnerOnBoardedBy
           onboardedBy={get(record, 'responsibility.name', '-')}
@@ -223,7 +277,6 @@ const Pending = () => {
       filterIcon: (filtered) => (
         <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
       )
-
     },
     {
       title: 'Comment',
@@ -234,7 +287,7 @@ const Pending = () => {
     },
     {
       title: 'Action',
-      width: '8%',
+      width: '9%',
       render: (text, record) => (
         <Space>
           <Tooltip title='Comment'>
@@ -253,7 +306,7 @@ const Pending = () => {
                 className='btn-success'
                 icon={<CheckOutlined />}
                 onClick={() =>
-                  handleShow('approveVisible', 'Approved', 'approveData', record)}
+                  handleShow('approveVisible', 'Approve', 'approveData', record)}
               />) : null}
           </Tooltip>
           <Tooltip title='Decline'>
@@ -265,7 +318,7 @@ const Pending = () => {
                 danger
                 icon={<CloseOutlined />}
                 onClick={() =>
-                  handleShow('approveVisible', 'Rejected', 'approveData', record.id)}
+                  handleShow('approveVisible', 'Reject', 'approveData', record)}
               />) : null}
           </Tooltip>
         </Space>
@@ -298,6 +351,7 @@ const Pending = () => {
           onHide={handleHide}
           item_id={object.approveData}
           title={object.title}
+          trip_id={object.approveData.trip_id}
         />
       )}
     </>

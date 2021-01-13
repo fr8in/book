@@ -106,7 +106,7 @@ const GlobalSearch = (props) => {
               </Panel>) : null}
 
             {!isEmpty(lead) ? (
-              <Panel header='Partner Lead' key='5'>
+              <Panel header='Lead' key='5'>
                 {lead.map((result, i) => <Result key={i} {...result} type='partners/create-partner' />)}
               </Panel>) : null}
 
@@ -124,7 +124,7 @@ const Result = (props) => {
         label={link}
         data={
           <Link href={`/${type}/[id]`} as={`/${type}/${link}`}>
-            <a target='_blank'>{description.length > 24 ? description.slice(0, 24) + '...' : description}</a>
+            <a>{description.length > 24 ? description.slice(0, 24) + '...' : description}</a>
           </Link>
         }
         smSpan={24}

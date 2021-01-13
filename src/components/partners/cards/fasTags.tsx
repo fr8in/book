@@ -135,7 +135,6 @@ const FasTags = (props) => {
             data={record.truck_no}
             id={record.truck_no}
             length={10}
-            blank
           />)
         }
     },
@@ -147,13 +146,13 @@ const FasTags = (props) => {
     },
     {
       title: 'C.Status',
-      dataIndex: 'cStatus',
+      dataIndex: 'status',
       width: '7%',
       render: (text, record) =>
         <Switch
           size='small'
-          defaultChecked
-          onChange={(checked) => onChange(checked, record)} checked={text}
+          defaultChecked={record.status === 'Activated'}
+          onChange={(checked) => onChange(checked, record)} 
           disabled={!access}
         />
     },

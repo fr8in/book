@@ -6,10 +6,8 @@ import {
   SearchOutlined
 } from '@ant-design/icons'
 import LinkComp from '../common/link'
-import KycReject from '../../components/partners/partnerKycReject'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import Comment from './comment'
-import KycApproval from '../partners/kycApproval'
 import { useState } from 'react'
 import moment from 'moment'
 import Truncate from '../common/truncate'
@@ -84,7 +82,7 @@ const PartnerKyc = (props) => {
       width: '8%',
       render: (text, record) => {
         return (
-          <LinkComp type='partners' data={text} id={record.cardcode} blank />
+          <LinkComp type='partners' data={text} id={record.cardcode} />
         )
       },
       filterDropdown: (
@@ -193,28 +191,6 @@ const PartnerKyc = (props) => {
                 onClick={() => handleShow('commentVisible', null, 'partner_id', record.id)}
               />
             </Tooltip>
-            {(partner_status === 'Registered' || partner_status === 'Verification' || partner_status === 'Rejected') && edit_access &&
-              <>
-                <Link href='/partners/create-partner/[id]' as={`/partners/create-partner/${record.id} `}>
-                  <Button
-                    type='primary'
-                    size='small'
-                    shape='circle'
-                    className='btn-success'
-                    icon={<CheckOutlined />}
-                  />
-                </Link>
-                <Button
-                  type='primary'
-                  size='small'
-                  shape='circle'
-                  danger
-                  disabled={partner_status === 'Rejected'}
-                  icon={<CloseOutlined />}
-                  onClick={() =>
-                    handleShow('rejectVisible', null, 'partner_id', record.id)}
-                />
-              </>}
           </Space>
         )
       }
@@ -243,23 +219,6 @@ const PartnerKyc = (props) => {
         >
           <Comment partner_id={object.partner_id} onHide={handleHide} />
         </Modal>
-      )}
-      {object.rejectVisible && (
-        <Modal
-          title='Reject Partner'
-          visible={object.rejectVisible}
-          onCancel={handleHide}
-          footer={null}
-        >
-          <KycReject partner_id={object.partner_id} onHide={handleHide} />
-        </Modal>
-      )}
-      {object.approvalVisible && (
-        <KycApproval
-          visible={object.approvalVisible}
-          onHide={handleHide}
-          partner_id={object.partner_id}
-        />
       )}
       {!loading &&
         <Pagination

@@ -1,14 +1,25 @@
 import { gql } from '@apollo/client'
 
 export const PARTNER_DETAIL_SUBSCRIPTION = gql`
-subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [String!], $invoiced: [String!], $paid: [String!]) {
+subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [String!], $invoiced: [String!], $paid: [String!],$year:Int,$month:Int) {
   partner(where: {cardcode: {_eq: $cardcode}}) {
+    partner_gst_state
     partner_accounting {
       cleared
       wallet_balance
       onhold
       commission
       billed
+    }
+    partner_membership_targets(where: {year: {_eq: $year}, month: {_eq: $month}}) {
+      gold
+      platinum
+      month
+      transaction_fee
+      cash_back_amount
+      actual {
+        gmv
+      }
     }
     partner_active{
      amount
@@ -56,12 +67,15 @@ subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [Stri
     emi
     dnd
     cibil
-    final_payment_date
     bank {
       id
       name
     }
-    partner_users(limit: 1, where: {is_admin: {_eq: true}}) {
+    trucks(limit:1){
+      id
+      truck_no
+    }
+     partner_users(limit: 1, where: {is_admin: {_eq: true}}) {
       id
       mobile
     }
@@ -71,6 +85,7 @@ subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [Stri
       folder
       file_path
       created_at
+      financial_year
     }
     onboarded_by {
       id
@@ -94,16 +109,26 @@ subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [Stri
       id
       name
     }
-    city {
-      name
-      state {
-        name
-      }
-      branch {
-        region {
+    partner_connected_city {
+      connected_city {
+        id
+        is_connected_city
+        cities(where: {is_connected_city: {_eq: true}}) {
+          id
           name
+          state{
+            name
+          }
+          branch {
+            id
+            region {
+              id
+              name
+            }
+          }
         }
       }
     }
   }
-}`
+}
+`

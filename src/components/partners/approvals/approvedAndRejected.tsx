@@ -9,6 +9,7 @@ import isEmpty from 'lodash/isEmpty'
 import moment from 'moment'
 import u from '../../../lib/util'
 
+
 const APPROVED_REJECTED_SUBSCRIPTION = gql`
 subscription trip_credit_debit_approval(
   $offset: Int, 
@@ -22,6 +23,11 @@ subscription trip_credit_debit_approval(
     where: $where) {
     id
     trip_id
+    trip{
+      partner{
+        name
+      }
+    }
     type
     amount
     approval_comment
@@ -67,7 +73,8 @@ const ApprovedAndRejected = () => {
     trip_id: null,
     type: null,
     issue_type: [],
-    created_by: null
+    created_by: null,
+    partnername: null
   }
 
   const [filter, setFilter] = useState(initial)
@@ -78,14 +85,14 @@ const ApprovedAndRejected = () => {
     type: filter.type && filter.type.length > 0 ? { _in: filter.type } : { _in: null },
     credit_debit_type: filter.issue_type && filter.issue_type.length > 0 ? { name: { _in: filter.issue_type } } : { name: { _in: null } },
     created_by: filter.created_by ? { _ilike: `%${filter.created_by}%` } : { _ilike: null },
-    credit_debit_status: { name: { _in: ['APPROVED', 'REJECTED'] } }
+    credit_debit_status: { name: { _in: ['APPROVED', 'REJECTED'] } },
+    trip: { partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } } },
   }
   const approvalQueryVars = {
     offset: filter.offset,
     limit: filter.limit,
     where: where
   }
-  console.log('filter', filter)
 
   const { loading, error, data } = useSubscription(
     APPROVED_REJECTED_SUBSCRIPTION,
@@ -93,9 +100,8 @@ const ApprovedAndRejected = () => {
       variables: approvalQueryVars
     }
   )
-  console.log('approvedRejected error', error)
 
-  const { data: f_data, loading: filter_loading } = useQuery(
+  const { data: filter_data, loading: filter_loading } = useQuery(
     CREDIT_DEBIT_TYPE_QUERY,
     {
       variables: { where: where },
@@ -110,16 +116,14 @@ const ApprovedAndRejected = () => {
   }
   const approvedAndRejected = get(_data, 'trip_credit_debit', null)
 
-  let filter_data = {}
+  let _filter_data = {}
   if (!filter_loading) {
-    filter_data = f_data
+    _filter_data = filter_data
   }
-  const credit_debit_type = get(filter_data, 'credit_debit_type', [])
+  const credit_debit_type = get(_filter_data, 'credit_debit_type', [])
   const issueTypeList = !isEmpty(credit_debit_type) ? credit_debit_type.map((data) => {
     return { value: data.name, label: data.name }
   }) : []
-
-  console.log('credit_debit_type', credit_debit_type, filter_data)
 
   const record_count = get(filter_data, 'trip_credit_debit_aggregate.aggregate.count', 0)
 
@@ -151,7 +155,10 @@ const ApprovedAndRejected = () => {
     setCurrentPage(1)
     setFilter({ ...filter, created_by: e.target.value })
   }
-
+  const onPartnerSearch = (e) => {
+    setCurrentPage(1)
+    setFilter({ ...filter, partnername: e.target.value })
+  }
   const ApprovalPending = [
     {
       title: '#',
@@ -180,7 +187,6 @@ const ApprovedAndRejected = () => {
       key: 'type',
       filters: creditDebitType,
       width: '7%',
-      onFilter: (value, record) => record && record.type.indexOf(value) === 0,
       filterDropdown: (
         <Checkbox.Group
           options={creditDebitList}
@@ -215,6 +221,26 @@ const ApprovedAndRejected = () => {
       dataIndex: 'approved_amount',
       key: 'approved',
       width: '8%'
+    },
+    {
+      title: 'Partner',
+      key: 'partner',
+      width: '12%',
+      render: (text, record) => <Truncate data={get(record, 'trip.partner.name', null)} length={12} />,
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search'
+            id='partner_name'
+            name='partner_name'
+            value={filter.partnername}
+            onChange={onPartnerSearch}
+          />
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     {
       title: 'Reason',

@@ -49,7 +49,8 @@ const IncomingPayments = (props) => {
       dataIndex: 'wallet_moved_date',
       width: '15%',
       render: (text, render) => text ? moment(text).format('DD-MMM-YY') : '-',
-      sorter: (a, b) => (a.wallet_moved_date > b.wallet_moved_date ? 1 : -1)
+      sorter: (a, b) => (a.wallet_moved_date > b.wallet_moved_date ? 1 : -1),
+      defaultSortOrder: 'descend'
     },
     {
       title: 'Amount',

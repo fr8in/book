@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useState, useContext } from 'react'
 import { Row, Col, Card, Tabs, Button, Space, Tooltip } from 'antd'
-import { CarOutlined, WalletOutlined, FileTextOutlined, MailOutlined,BookOutlined ,PlusCircleOutlined, BankOutlined } from '@ant-design/icons'
+import { CarOutlined, WalletOutlined, FileTextOutlined, MailOutlined, BookOutlined, PlusCircleOutlined, BankOutlined } from '@ant-design/icons'
 import DetailPageHeader from '../../common/detailPageHeader'
 import HeaderInfo from '../partner'
 import WalletStatus from '../walletStatus'
@@ -22,7 +22,7 @@ import WalletTopUp from '../walletTopup'
 import PaidContainer from '../container/paidContainer'
 import useShowHide from '../../../hooks/useShowHide'
 import get from 'lodash/get'
-import { useSubscription } from '@apollo/client'
+import { useSubscription, useQuery } from '@apollo/client'
 import { PARTNER_DETAIL_SUBSCRIPTION } from './query/partnerDetailSubscription'
 import ReportEmail from '../reportEmail'
 import WalletStatement from '../walletStatement'
@@ -32,8 +32,23 @@ import WalletToBank from '../walletToBank'
 import u from '../../../lib/util'
 import userContext from '../../../lib/userContaxt'
 import AdhocWalletTopup from '../adhocWalleTopup'
+import PartnerTrip from '../partnerBasedTrips'
+import isEmpty from 'lodash/isEmpty'
+import { gql } from '@apollo/client'
+
+
 
 const TabPane = Tabs.TabPane
+
+const ALL_TRIP_AGGREGATE_QUERY = gql`
+query all_trips_aggregate($cardcode: String, $truck_no: [String!],$status:[String!]) {
+  trip_aggregate(where: {partner: {cardcode: {_eq: $cardcode}}, truck: {truck_no: {_in: $truck_no}}, trip_status: {name: {_in: $status}}}) {
+    aggregate {
+      count
+    }
+  }
+}
+`
 
 const on_going = ['Confirmed', 'Reported at source', 'Intransit', 'Reported at destination', 'Intransit halting']
 const pod = ['Delivered']
@@ -41,12 +56,16 @@ const invoiced = ['Invoiced', 'Recieved']
 const paid = ['Paid', 'Closed']
 
 const PartnerDetailContainer = (props) => {
-  const [Key, setKey] = useState('1')
 
+  const initialFilter = {
+    status: null,
+    truck_no: null
+  }
+  const [countFilter, setCountFilter] = useState(initialFilter)
+  const [Key, setKey] = useState('1')
   const tabChange = (key) => {
     setKey(key)
   }
-
   const initial = { topUp: false, reportMail: false, statememt: false, walletToBank: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
@@ -61,6 +80,24 @@ const PartnerDetailContainer = (props) => {
   const top_up_access = u.is_roles(_top_up_role, context)
   const _wallet_role = [role.admin]
   const wallet_activate_role = u.is_roles(_wallet_role, context)
+  const year = new Date().getFullYear()
+  const month = new Date().getMonth() + 1
+
+
+  const { loading: count_loading, error: count_error, data: count_data } = useQuery(
+    ALL_TRIP_AGGREGATE_QUERY,
+    {
+      variables: {
+        cardcode: cardcode,
+        status: !isEmpty(countFilter.status) ? countFilter.status : null,
+        truck_no: !isEmpty(countFilter.truck_no) ? countFilter.truck_no : null,
+      }
+    }
+  )
+  let all_trip_count = {}
+  if (!count_loading) {
+    all_trip_count = count_data
+  }
 
   const { loading, error, data } = useSubscription(
     PARTNER_DETAIL_SUBSCRIPTION,
@@ -71,30 +108,33 @@ const PartnerDetailContainer = (props) => {
         ongoing: on_going,
         pod: pod,
         invoiced: invoiced,
-        paid: paid  
+        paid: paid,
+        year: year,
+        month: month
       }
     }
   )
-
   console.log('PartnerDetailContainer Error', error)
 
   let _data = {}
-
   if (!loading) {
     _data = data
   }
 
   const partner_info = get(_data, 'partner[0]', 'ID does not exist')
+  const trip_count = get(all_trip_count, 'trip_aggregate.aggregate.count', 0)
   const truck_count = get(partner_info, 'trucks_aggregate.aggregate.count', 0)
   const ongoing_count = get(partner_info, 'ongoing.aggregate.count', 0)
   const pod_count = get(partner_info, 'pod.aggregate.count', 0)
   const invoiced_count = get(partner_info, 'invoiced.aggregate.count', 0)
   const paid_count = get(partner_info, 'paid.aggregate.count', 0)
-
   const partner_status = get(partner_info, 'partner_status.name', null)
   const after_onboard = partner_status === 'Active' || partner_status === 'De-activate' || partner_status === 'Blacklisted'
-  const adhocWalleTopup_validation = wallet_activate_role 
- 
+  const adhocWalleTopup_validation = wallet_activate_role
+
+  const onCountChange = (value) => {
+    setCountFilter({ ...countFilter, status: value.status, truck_no: value.truck_no })
+  }
   return (
     loading ? <Loading /> : (
       <Row>
@@ -108,11 +148,11 @@ const PartnerDetailContainer = (props) => {
                 extra={
                   <Space>
                     {admin &&
-                    <div className='text-center'>
-                      <Tooltip title='Wallet to Bank'>
-                        <Button icon={<BankOutlined />} shape='circle' onClick={() => onShow('walletToBank')} />
-                      </Tooltip>
-                      <p className='tinyAction'>Bank</p>
+                      <div className='text-center'>
+                        <Tooltip title='Wallet to Bank'>
+                          <Button icon={<BankOutlined />} shape='circle' onClick={() => onShow('walletToBank')} />
+                        </Tooltip>
+                        <p className='tinyAction'>Bank</p>
                       </div>}
                     <div className='text-center'>
                       <Button icon={<MailOutlined />} shape='circle' onClick={() => onShow('reportMail')} />
@@ -121,22 +161,22 @@ const PartnerDetailContainer = (props) => {
                     <div className='text-center'>
                       <Button icon={<FileTextOutlined />} shape='circle' onClick={() => onShow('statement')} />
                       <p className='tinyAction'>Statement</p>
-                      </div>
+                    </div>
                     {partner_info.partner_status === 'Blacklisted' ? wallet_activate_role : top_up_access &&
-                       <div className='text-center'>
+                      <div className='text-center'>
                         <Button shape='circle' icon={<WalletOutlined />} onClick={() => onShow('topUp')} />
                         <p className='tinyAction'>Topup</p>
                       </div>}
-                     { adhocWalleTopup_validation &&
-                     <div className='text-center'>
-                      <Tooltip title='Adhoc Wallet Topup'>
-                        <Button shape='circle' icon={<BookOutlined />} onClick={() => onShow('adhoctopUp')}/>
-                      </Tooltip>
-                       <p className='tinyAction'>Adhoc</p>
-                       </div>} 
+                    {adhocWalleTopup_validation &&
+                      <div className='text-center'>
+                        <Tooltip title='Adhoc Wallet Topup'>
+                          <Button shape='circle' icon={<BookOutlined />} onClick={() => onShow('adhoctopUp')} />
+                        </Tooltip>
+                        <p className='tinyAction'>Adhoc</p>
+                      </div>}
                     <Link href='/trucks/addtruck/[id]' as={`/trucks/addtruck/${cardcode}`}>
                       <Tooltip title='Add Truck'>
-                        <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />} disabled={!partner_access} />
+                        <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />} />
                       </Tooltip>
                     </Link>
                     <WalletStatus id={partner_info.id} status={partner_info.wallet_block} />
@@ -171,7 +211,7 @@ const PartnerDetailContainer = (props) => {
                               tabBarExtraContent={
                                 <span>
                                   {Key === '5' && partner_access && (
-                                    <Link href='/partners/add-fastag'>
+                                    <Link href='/partners/AddFastag/[id]' as={`/partners/AddFastag/${cardcode}`}>
                                       <Button
                                         type='primary'
                                         size='small'
@@ -190,13 +230,15 @@ const PartnerDetailContainer = (props) => {
                                 <AvailableBalance partner_summary={partner_info} />
                               </TabPane>
                               <TabPane tab='Order Report' key='2'>
-                                <Barchart partner_id={partner_info.id}/>
+                                <div className='scrollFix'>
+                                  <Barchart partner_id={partner_info.id} />
+                                </div>
                               </TabPane>
                               <TabPane tab='Documents' key='3'>
                                 <Document partnerInfo={partner_info} />
                               </TabPane>
                               <TabPane tab='Fuel Detail' key='4'>
-                                <PartnerFuelDetail partner_id={partner_info.id} />
+                                <PartnerFuelDetail partner_Info={partner_info} />
                               </TabPane>
                               <TabPane tab='FasTag' key='5'>
                                 <FasTags partner_id={partner_info.id} />
@@ -206,32 +248,27 @@ const PartnerDetailContainer = (props) => {
                         </Col>
                       </Row>
                     </TabPane>
-                    <TabPane
-                      tab={
-                        <TitleWithCount
-                          name='Truck'
-                          value={truck_count}
-                        />
-                      }
-                      key='2'
-                    >
+                    <TabPane tab={<TitleWithCount name='Trucks' value={truck_count} />} key='2' >
                       <PartnerTruck cardcode={cardcode} />
                     </TabPane>
-                    <TabPane tab='Comment' key='3'>
+                    <TabPane tab={<TitleWithCount name='Trips' value={trip_count} />} key='3' >
+                      <PartnerTrip cardcode={cardcode} onCountChange={onCountChange} />
+                    </TabPane>
+                    <TabPane tab='Comment' key='4'>
                       <div className='p10'>
                         <Comment partner_id={partner_info.id} loading={loading} detailPage />
                       </div>
                     </TabPane>
-                    <TabPane tab={<TitleWithCount name='On-going' value={ongoing_count} />} key='4'>
+                    <TabPane tab={<TitleWithCount name='On-going' value={ongoing_count} />} key='5'>
                       <PartnerTripContainer cardcode={cardcode} trip_status={on_going} />
                     </TabPane>
-                    <TabPane tab={<TitleWithCount name='POD' value={pod_count} />} key='5'>
+                    <TabPane tab={<TitleWithCount name='POD' value={pod_count} />} key='6'>
                       <PartnerTripContainer cardcode={cardcode} trip_status={pod} />
                     </TabPane>
-                    <TabPane tab={<TitleWithCount name='Invoiced' value={invoiced_count} />} key='6'>
+                    <TabPane tab={<TitleWithCount name='Invoiced' value={invoiced_count} />} key='7'>
                       <PartnerTripContainer cardcode={cardcode} trip_status={invoiced} />
                     </TabPane>
-                    <TabPane tab={<TitleWithCount name='Paid' value={paid_count} />} key='7'>
+                    <TabPane tab={<TitleWithCount name='Paid' value={paid_count} />} key='8'>
                       <PaidContainer cardcode={cardcode} />
                     </TabPane>
                   </Tabs>
@@ -256,3 +293,4 @@ const PartnerDetailContainer = (props) => {
 }
 
 export default PartnerDetailContainer
+

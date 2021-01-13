@@ -10,7 +10,6 @@ import CreatePartner from '../createPartner'
 const INSERT_PARTNER_MUTATION = gql`
 mutation create_partner(
 
-  $city_id: Int!,
   $name: String!,
   $pan_no: String!,
   $account_holder: String!,
@@ -24,8 +23,6 @@ mutation create_partner(
 ) {
   create_partner_track(
     personal_detail: {
-   
-      city_id: $city_id, 
       name: $name, 
       pan_no: $pan_no
     }, 
@@ -99,8 +96,6 @@ const PartnerOnboardingContainer = () => {
     setDisableButton(true)
     insertPartner({
       variables: {
-        // personal_detail
-        city_id: parseInt(city),
         name: form.name,
         pan_no: form.pan_no,
         // partner_user

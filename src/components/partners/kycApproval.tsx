@@ -10,21 +10,39 @@ import {
   Space,
   Table,
   message,
-  Card
+  Card,
+  Tooltip
 } from 'antd'
 import LinkComp from '../common/link'
+import useShowHide from '../../hooks/useShowHide'
 import FileUploadOnly from '../common/fileUploadOnly'
+import TdsFileUploadOnly from '../common/tdsFileUploadOnly'
+import { CheckOutlined,CarOutlined} from '@ant-design/icons'
 import ViewFile from '../common/viewFile'
 import DeleteFile from '../common/deleteFile'
-import { gql, useMutation, useSubscription } from '@apollo/client'
+import { gql, useMutation, useSubscription ,useQuery} from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
+import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import Loading from '../common/loading'
-import NewTruck from './newTruck'
 import u from '../../lib/util'
+import NewTruck from './newTruck'
+import TruckActivation from '../trucks/truckActivation'
 import { useRouter } from 'next/router'
 
+
+const TRUCKS_QUERY = gql`
+query trucks_type_status{
+  truck_type {
+    id
+    name
+  }
+  config(where:{key:{_eq:"financial_year"}}){
+    value
+  }
+} 
+`
 
 const PARTNERS_SUBSCRIPTION = gql`
 subscription partner_kyc($id:Int){
@@ -50,8 +68,10 @@ subscription partner_kyc($id:Int){
       folder
       file_path
       created_at
+      financial_year
     }
     trucks{
+      id
       truck_no
       truck_type{
         name
@@ -73,8 +93,8 @@ mutation create_partner_code(
   $onboarded_by_id: Int!,
   $partner_advance_percentage_id: Int!
   $gst:String,
-  $emi: Boolean!,
-  $updated_by: String! ) {
+  $updated_by: String!,
+  $approved_by: String! ) {
   create_partner_code(
     cardcode: $cardcode,
     name: $name, 
@@ -83,8 +103,8 @@ mutation create_partner_code(
     onboarded_by_id: $onboarded_by_id, 
     partner_advance_percentage_id: $partner_advance_percentage_id, 
     gst: $gst, 
-    emi: $emi, 
-    updated_by: $updated_by) {
+    updated_by: $updated_by,
+    approved_by:$approved_by) {
     description
     status
   }
@@ -93,16 +113,40 @@ mutation create_partner_code(
 const KycApproval = (props) => {
   const { partner_id, disableAddTruck} = props
 
+  const initial = {
+    truckActivationVisible: false,
+    truckActivationData: [],
+    showModal: false 
+  }
+
   const router = useRouter()
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
+  const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+  const { visible, onShow, onHide } = useShowHide(initial)
 
   const [checked, setChecked] = useState(false)
 
   const onChange = (e) => {
     setChecked(e.target.checked)
   }
+
+  const { loading:query_loading, error:query_error, data:query_data } = useQuery(TRUCKS_QUERY, {
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  })
+
+  let truck_data = {}
+  if (!query_loading) {
+    truck_data = query_data
+  }
+ 
+  const truck_type = get(truck_data, 'truck_type', [])
+  const tds_current_ = get(truck_data, 'config[0].value.current', null)
+  const tds_previous_ = get(truck_data, 'config[0].value.previous', null)
+
+  console.log('tds_current_',tds_previous_)
 
   const { data, error, loading } = useSubscription(
     PARTNERS_SUBSCRIPTION, {
@@ -127,9 +171,11 @@ const KycApproval = (props) => {
   const cardcode = get(partnerDetail, 'cardcode', null)
   const trucks = get(partnerDetail, 'trucks', [])
   const files = get(partnerDetail, 'partner_files', [])
-
+ 
   const pan_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.partner_pan)
   const cheaque_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.check_leaf)
+  const getTDSDocument = (type, financial_year) => files && files.length > 0 ? files.filter(data => data.type === type && data.financial_year === financial_year) : []
+
   const { role } = u
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
   const access = u.is_roles(edit_access, context)
@@ -176,6 +222,22 @@ const KycApproval = (props) => {
     {
       title: 'Status',
       render: (text, record) => get(record, 'truck_status.name', null)
+    },
+    {
+      title: 'Action',
+      render: (text, record) => {
+        return (
+          <Button
+                  type='primary'
+                  size='small'
+                  shape='circle'
+                  className='btn-success'
+                  disabled={!access}
+                  icon={<CheckOutlined />}
+                  onClick={() => handleShow('truckActivationVisible', null, 'truckActivationData', record.id)}
+                />
+        )
+      }
     }
   ]
 
@@ -199,8 +261,8 @@ const KycApproval = (props) => {
           name: name,
           pan_no: partnerDetail.pan,
           gst: form.gst,
-          emi: !!checked,
           updated_by: context.email,
+          approved_by:context.email,
           onboarded_by_id: get(partnerDetail, 'onboarded_by.id', null),
           partner_advance_percentage_id: get(partnerDetail, 'partner_advance_percentage.id', null),
          
@@ -214,14 +276,20 @@ const KycApproval = (props) => {
       {loading ? <Loading />
         : (
           <Row gutter={20}>
-            <Col xs={24} sm={12}>
+            <Col xs={24} sm={24} md={12}>
               <Card
                 size='small'
                 title={isEmpty(trucks) ? 'Add Truck' : 'Trucks Detail'}
+                extra={
+                  <Tooltip title='Add Truck'>
+                    <Button type='primary' className='addtruck' shape='circle' icon={<CarOutlined />}  onClick={() => onShow('showModal')} />
+                  </Tooltip>
+              }
                 className='border-top-blue'
               >
-                {isEmpty(trucks) ? <NewTruck partner_info={partnerDetail} disableAddTruck={disableAddTruck} />
-                  : (
+                {!isEmpty(trucks) ? 
+                   (
+                    <>
                     <Table
                       columns={column}
                       dataSource={trucks}
@@ -229,10 +297,20 @@ const KycApproval = (props) => {
                       pagination={false}
                       rowKey={record => record.truck_no}
                     />
-                  )}
+                    {object.truckActivationVisible && (
+                      <TruckActivation
+                        visible={object.truckActivationVisible}
+                        onHide={handleHide}
+                        truck_id={object.truckActivationData}
+                        truck_type={truck_type}
+                      />
+                    )}
+                    </>
+                  ):null}
+                   {visible.showModal && <NewTruck visible={visible.showModal} partner_info={partnerDetail} disableAddTruck={disableAddTruck} onHide={onHide} />}
               </Card>
             </Col>
-            <Col xs={24} sm={12}>
+            <Col xs={24} sm={24} md={12}>
               <Card
                 size='small'
                 title='KYC Approval'
@@ -264,7 +342,7 @@ const KycApproval = (props) => {
                                   file_list={pan_files}
                                 />
                               </Space>
-                            ) : (
+                            ) :  ( 
                               <FileUploadOnly
                                 size='small'
                                 id={partner_id}
@@ -316,7 +394,85 @@ const KycApproval = (props) => {
                         </Space>
                       </Col>
                     </List.Item>
-      
+                    <List.Item key={3}>
+                      <Col xs={24} sm={8}>TDS 19-20</Col>
+                      <Col xs={12} sm={12}>{partnerDetail && partnerDetail.tds}</Col>
+                      <Col xs={12} sm={4} className='text-right'>
+                        <Space>
+                          <span>
+                            {!isEmpty(getTDSDocument(u.fileType.tds,tds_previous_))  ? (
+                              <Space>
+                                <ViewFile
+                                  size='small'
+                                  id={partner_id}
+                                  type='partner'
+                                  file_type={u.fileType.tds}
+                                  folder={u.folder.approvals}
+                                  file_list={getTDSDocument(u.fileType.tds,tds_previous_)}
+                                />
+                                <DeleteFile
+                                  size='small'
+                                  id={partner_id}
+                                  type='partner'
+                                  file_type={u.fileType.tds}
+                                  file_list={getTDSDocument(u.fileType.tds,tds_previous_)}
+                                />
+                              </Space>
+                            ) :  (
+                              <TdsFileUploadOnly
+                                size='small'
+                                id={partner_id}
+                                type='partner'
+                                folder={u.folder.approvals}
+                                file_type={u.fileType.tds}
+                                file_list={getTDSDocument(u.fileType.tds,tds_previous_)}
+                               financial_year={tds_previous_}
+                              />
+                            )}
+                          </span>
+                        </Space>
+                      </Col>
+                    </List.Item>
+                    <List.Item key={4}>
+                      <Col xs={24} sm={8}>TDS 20-21</Col>
+                      <Col xs={12} sm={12}>{partnerDetail && partnerDetail.tds}</Col>
+                      <Col xs={12} sm={4} className='text-right'>
+                        <Space>
+                          <span>
+                            {!isEmpty(getTDSDocument(u.fileType.tds,tds_current_)) ? (
+                              <Space>
+                                <ViewFile
+                                  size='small'
+                                  id={partner_id}
+                                  type='partner'
+                                  file_type={u.fileType.tds}
+                                  folder={u.folder.approvals}
+                                  file_list={getTDSDocument(u.fileType.tds,tds_current_)}
+                                />
+                                <DeleteFile
+                                  size='small'
+                                  id={partner_id}
+                                  type='partner'
+                                  file_type={u.fileType.tds}
+                                  file_list={getTDSDocument(u.fileType.tds,tds_current_)}
+                                />
+                              </Space>
+                            ) :  (
+                              
+                              <TdsFileUploadOnly
+                                size='small'
+                                id={partner_id}
+                                type='partner'
+                                folder={u.folder.approvals}
+                                file_type={u.fileType.tds}
+                                file_list={getTDSDocument(u.fileType.tds,tds_current_)}
+                                financial_year={tds_current_}
+                              />
+                            )}
+                          </span>
+                        </Space>
+                      </Col>
+                    </List.Item>
                     <List.Item key={5}>
                       <Col xs={24} sm={20}>
                         <Row>
@@ -330,16 +486,9 @@ const KycApproval = (props) => {
                       </Col>
                       <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
                     </List.Item>
-                    <List.Item key={6}>
-                      <Form.Item className='mb0' initialValue={get(partnerDetail, 'emi', false)}>
-                        <Checkbox checked={checked} onChange={onChange}>EMI</Checkbox>
-                      </Form.Item>
-                      <Col xs={12} sm={12}>&nbsp;</Col>
-                      <Col xs={12} sm={4} className='text-right'>&nbsp;</Col>
-                    </List.Item>
                   </List>
                   <Row justify='end' className='mt10'>
-                    <Button key='submit' type='primary' loading={disableButton} disabled={ isEmpty(trucks) || disableAddTruck} htmlType='submit'>
+                    <Button key='submit' type='primary' loading={disableButton} disabled={ isEmpty(trucks) || disableAddTruck || !access} htmlType='submit'>
                       Approve KYC
                     </Button>
                   </Row>

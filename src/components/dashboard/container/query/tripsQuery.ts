@@ -32,7 +32,6 @@ subscription dashboard_trips(
       cardcode
       name
       is_exception
-      exception_date
     }
     partner {
       id
@@ -70,6 +69,7 @@ subscription dashboard_trips(
       truck_no
       truck_type {
         name
+        code
       }
     }
   }

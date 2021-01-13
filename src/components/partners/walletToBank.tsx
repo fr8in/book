@@ -9,7 +9,7 @@ const GET_TOKEN = gql`
 query get_token (
   $partner_id: Int!
 ){
-  token(partner_id: $partner_id, process: "BANK_TRANSFER_TRACK")
+  token(ref_id: $partner_id, process: "BANK_TRANSFER_TRACK")
 }`
 
 const WALLET_TO_BANK = gql`

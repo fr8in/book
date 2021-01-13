@@ -3,6 +3,8 @@ import { Row, Button, Input, message, Col, Modal, Form } from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import u from '../../lib/util'
+import isEmpty from 'lodash/isEmpty'
+import get from 'lodash/get'
 
 const INSERT_TRUCK_REJECT_MUTATION = gql`
 mutation truck_reject($description:String, $topic:String, $truck_status_id:Int,$id:Int!,$updated_by: String!,$truck_id:Int!){
@@ -24,7 +26,13 @@ const TruckReject = (props) => {
   const [form] = Form.useForm()
   const { topic } = u
   const context = useContext(userContext)
- 
+
+  const files = get(truck_info, 'truck_files', [])
+
+  const rc_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.rc)
+  const vaahan_files = !isEmpty(files) && files.filter(file => file.type === u.fileType.vaahan)
+
+  const status_check = truck_info && truck_info.truck_status && truck_info.truck_status.name === 'Deactivated'
 
   const [updateStatus] = useMutation(
     INSERT_TRUCK_REJECT_MUTATION,
@@ -40,9 +48,15 @@ const TruckReject = (props) => {
   )
 
 
-  const onSubmit = (form) => {
+  const onSubmit = (form) => { 
+     if (status_check && isEmpty(rc_files)) {
+      message.error('RC documents are mandatory!')
+    } 
+    else if (status_check && isEmpty(vaahan_files)) {
+      message.error('Vaahan documents are mandatory!')
+    } 
+    else {
     setDisableButton(true)
-    const status_check = truck_info && truck_info.truck_status && truck_info.truck_status.name === 'Deactivated'
     updateStatus({
       variables: {
         truck_status_id: status_check ? 5 : 6,
@@ -53,6 +67,7 @@ const TruckReject = (props) => {
         truck_id: truck_info.id
       }
     })
+  }
   }
 
   return (

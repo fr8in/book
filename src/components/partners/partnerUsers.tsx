@@ -1,11 +1,11 @@
-
-import { Modal, Button, Row, Input, Col, Table, Popconfirm, Form, message } from 'antd'
+import { Radio, Button, Table, Modal, Form, Row, Col, Input, message, Popconfirm } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 import { useSubscription, useMutation, gql } from '@apollo/client'
 import { useState, useContext } from 'react'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
 import Phone from '../common/phone'
+import u from '../../lib/util'
 
 const PARTNER_USERS_SUBSCRIPTION = gql`
 subscription partner_user($cardcode: String){
@@ -18,7 +18,6 @@ subscription partner_user($cardcode: String){
     }
   }
 }`
-
 const INSERT_PARTNER_USERS_MUTATION = gql`
 mutation upsert_partner_mobile($mobile: String!, $partner_id: Int!, $is_primary: Boolean!, $updated_by: String!) {
   upsert_partner_mobile(mobile_no: $mobile, partner_id: $partner_id, is_primary: $is_primary, updated_by: $updated_by) {
@@ -43,10 +42,29 @@ mutation partner_user_delete($id:Int!, $description: String, $topic: String, $cr
   }
 }`
 
+const UPDATE_IS_ADMIN_USER = gql`
+mutation partner_user($partner_id:Int,$mobile_id:Int,$topic:String,$description:String,$created_by:String){
+  update:update_partner_user(where:{partner_id:{_eq:$partner_id},is_admin:{_eq:true}},_set:{is_admin:false}){
+    returning{
+      id
+    }
+  }
+  insert:update_partner_user(where:{partner_id:{_eq:$partner_id},id:{_eq:$mobile_id}},_set:{is_admin:true}){
+    returning {
+      id
+    }
+  }
+  insert_comment: insert_partner_comment(objects: {description: $description, partner_id: $partner_id, topic: $topic, created_by:$created_by}) {
+    returning {
+      description
+      partner_id
+    }
+  }
+}
+`
 const PartnerUsers = (props) => {
   const { visible, partner, onHide, title } = props
   const context = useContext(userContext)
-
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
 
@@ -57,14 +75,21 @@ const PartnerUsers = (props) => {
     }
   )
 
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const partner_users = get(_data, 'partner[0].partner_users', [])
+
+
   const [insertPartnerUser] = useMutation(
     INSERT_PARTNER_USERS_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         setDisableButton(false)
         message.error(error.toString())
       },
-      onCompleted (data) {
+      onCompleted(data) {
         setDisableButton(false)
         const status = get(data, 'upsert_partner_mobile.status', null)
         const description = get(data, 'upsert_partner_mobile.description', null)
@@ -75,21 +100,23 @@ const PartnerUsers = (props) => {
       }
     }
   )
-
   const [deletePartnerUser] = useMutation(
     DELETE_PARTNER_USER_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Updated!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
     }
   )
-
-  console.log('PartnerUsers error', error)
-  let _data = {}
-  if (!loading) {
-    _data = data
-  }
-  const partner_users = get(_data, 'partner[0].partner_users', [])
+  const [is_admin_update] = useMutation(
+    UPDATE_IS_ADMIN_USER,
+    {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() {
+        message.success('Updated!!')
+        onHide()
+      }
+    }
+  )
 
   const onAddUser = (form) => {
     setDisableButton(true)
@@ -114,13 +141,32 @@ const PartnerUsers = (props) => {
       }
     })
   }
+  const onIsAdminChange = (mobile_id,record) => {
+    is_admin_update({
+      variables: {
+        partner_id: partner.id,
+        mobile_id: mobile_id,
+        description: `${record.mobile} is Admin!`,
+        topic: 'Primary Number Changed',
+        created_by: context.email
+      }
+    })
+  }
 
-  const partnerUserColumn = [
+  const partnerUser = [
     {
-      title: 'Mobile No',
-      dataIndex: 'mobile',
-      key: 'mobile',
-      render:(text,record) =>  <Phone number={record.mobile} />
+      title: 'Mobile',
+      render: (text, record) => {
+
+        return (
+          <Radio
+            checked={record.is_admin}
+            onChange={() => onIsAdminChange(record.id,record)}
+          >
+            <Phone number={record.mobile} />
+          </Radio>
+        )
+      }
     },
     {
       title: 'Action',
@@ -151,19 +197,16 @@ const PartnerUsers = (props) => {
         </Button>
       ]}
     >
-      <Table
-        columns={partnerUserColumn}
-        dataSource={partner_users}
-        className='withAction'
-        rowKey={record => record.id}
-        size='small'
-        pagination={false}
-      />
       <Form form={form} onFinish={onAddUser}>
         <Row className='mt10' gutter={10}>
           <Col flex='auto'>
             <Form.Item name='mobile' initialValue=''>
-              <Input type='number' placeholder='Enter Mobile Number' />
+              <Input 
+                 type='number' 
+                 placeholder='Enter Mobile Number' 
+                 min={0}
+                 maxLength={10}
+                 onInput={u.handleLengthCheck}/>
             </Form.Item>
           </Col>
           <Col flex='90px'>
@@ -171,8 +214,15 @@ const PartnerUsers = (props) => {
           </Col>
         </Row>
       </Form>
+      <Table
+        columns={partnerUser}
+        dataSource={partner_users}
+        size='small'
+        pagination={false}
+        scroll={{ x: 420 }}
+        rowKey={(record) => record.id}
+      />
     </Modal>
   )
 }
-
 export default PartnerUsers

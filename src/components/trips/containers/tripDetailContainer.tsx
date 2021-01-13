@@ -24,6 +24,8 @@ import Loading from '../../common/loading'
 import u from '../../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 import userContext from '../../../lib/userContaxt'
+import Incentive from '../scratchCardInsentive'
+import IncentiveTable from '../scratchCardIncentivetable'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
@@ -40,7 +42,7 @@ const TripDetailContainer = (props) => {
   const [trip_onHold, setTrip_onHold] = useState(null)
   const [advanceRefetch, setAdvanceRefetch] = useState(false)
   const [creditNoteRefetch, setCreditNoteRefetch] = useState(false)
-
+  const [incentiveRefetch,setIncentiveRefetch] = useState(false)
   const { loading, error, data } = useSubscription(
     TRIP_DETAIL_SUBSCRIPTION,
     {
@@ -153,24 +155,21 @@ const TripDetailContainer = (props) => {
                             />
                           </Panel>
                         </Collapse>}
-                      <Collapse accordion className='small mt10'>
-                        <Panel header='Additional Advance' key='1'>
+                    </TabPane>
+                    <TabPane tab='Payment' key='2'>
+                      <Collapse accordion className='small box-0'>
+                        <Panel header={<span>Partner - Payables</span>} key='1'>
+                          <Payables trip_id={trip_id} />
                           {before_invoice && loaded && 
-                            <CreateAdditionalAdvance trip_info={trip_info} setAdvanceRefetch={setAdvanceRefetch} lock={lock} />}
+                            <CreateAdditionalAdvance trip_info={trip_info} lock={lock} />}
                           <AdditionalAdvance
                             ad_trip_id={trip_info.id}
                             loaded={loaded}
                             advanceRefetch={advanceRefetch}
                             setAdvanceRefetch={setAdvanceRefetch}
                           />
-                        </Panel>
-                      </Collapse>
-                    </TabPane>
-                    <TabPane tab='Payment' key='2'>
-                      <Collapse accordion className='small box-0'>
-                        <Panel header={<span>Partner - Payables</span>} key='1'>
-                          <Payables trip_id={trip_id} />
-                        </Panel>
+                          </Panel>
+                       
                       </Collapse>
                       <Collapse accordion className='small box-0 mt10'>
                         <Panel header={<span>Customer - Receivables</span>} key='1'>
@@ -187,6 +186,12 @@ const TripDetailContainer = (props) => {
                         <Panel header='Credit/Debit Note' key='1'>
                           <CreditNote trip_id={trip_id} trip_info={trip_info} />
                           <CreditNoteTable trip_id={trip_id} trip_info={trip_info} setCreditNoteRefetch={setCreditNoteRefetch} />
+                        </Panel>
+                      </Collapse>
+                      <Collapse accordion className='small mt10'>
+                        <Panel header='Incentive' key='1'>
+                          <Incentive trip_id={trip_id} trip_info={trip_info} />
+                          <IncentiveTable trip_id={trip_id} trip_info={trip_info} setIncentiveRefetch={setIncentiveRefetch}  />
                         </Panel>
                       </Collapse>
                     </TabPane>

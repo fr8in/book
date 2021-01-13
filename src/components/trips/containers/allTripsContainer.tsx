@@ -31,6 +31,7 @@ query after_delivered_trips_list(
       cardcode
     } 
     partner {
+      id
       name
       cardcode
     }

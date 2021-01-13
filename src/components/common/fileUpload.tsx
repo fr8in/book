@@ -1,11 +1,11 @@
 import { useState ,useContext} from 'react'
 import { Row, Col, Upload, Button, message, Modal } from 'antd'
-import { UploadOutlined } from '@ant-design/icons'
+import { UploadOutlined,ExclamationCircleOutlined } from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 
 const FILE_UPLOAD_MUTATION = gql`
-mutation file_upload($name: String, $type: String, $base64Str: String,$id: Int, $folder: String,$fileType: String,$updated_by:String ) {
+mutation file_upload($name: String, $type: String, $base64Str: String,$id: Int, $folder: String,$fileType: String,$updated_by:String) {
   fileUpload(name: $name, type: $type, base64Str: $base64Str, id: $id, folder: $folder, fileType: $fileType,updated_by:$updated_by) {
     file_path
   }
@@ -78,7 +78,9 @@ const FileUpload = (props) => {
     FILE_DELETE_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Deleted!!') }
+      onCompleted () { 
+        message.success('Deleted!!') 
+    }
     }
   )
 
@@ -125,6 +127,24 @@ const FileUpload = (props) => {
     })
   }
 
+  const { confirm } = Modal;
+
+  function showConfirm(file) {
+    confirm({
+      title: `Are you sure want to Delete ${file_type} Document?`,
+      icon: <ExclamationCircleOutlined />,
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk: () => {
+         remove(file)
+      },
+      onCancel: () => {
+        console.log('Cancel');
+      },
+    });
+  }
+
   return (
     <Row>
       <Col xs={24}>
@@ -132,7 +152,7 @@ const FileUpload = (props) => {
           beforeUpload={onChange}
           fileList={file_list}
           onPreview={(file) => download(file)}
-          onRemove={(file) => remove(file)}
+          onRemove={(file) => showConfirm(file)}
           accept='image/*, application/pdf'
         >
           <Button icon={<UploadOutlined />} disabled={disable}>Select File</Button>

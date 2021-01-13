@@ -118,9 +118,13 @@ const TruckActivation = (props) => {
   }
 
   const onTruckActivationSubmit = (form) => {
-    if (isEmpty(rc_files) && isEmpty(vaahan_files)) {
-      message.error('RC and Vaahan Document Required!')
-    } else {
+    if ( isEmpty(rc_files)) {
+      message.error('RC documents are mandatory!')
+    } 
+    else if ( isEmpty(vaahan_files)) {
+      message.error('Vaahan documents are mandatory!')
+    } 
+    else {
       setDisableButton(true)
       updateTruckActivation({
         variables: {
@@ -171,7 +175,7 @@ const TruckActivation = (props) => {
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={12}>
-                  <Form.Item label='RC'>
+                  <Form.Item label='RC'  name='RC'>
                     <Space>
                       {!isEmpty(rc_files) ? (
                         <Space>
@@ -207,7 +211,8 @@ const TruckActivation = (props) => {
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={12}>
-                  <Form.Item label='Vaahan Screen'>
+                  <Form.Item label='Vaahan Screen'
+                  name='Vaahan Screen'>
                     <Space>
                       {!isEmpty(vaahan_files) ? (
                         <Space>

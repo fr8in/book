@@ -5,10 +5,11 @@ import { gql, useMutation, useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 
+
 const CUSTOMER_MAMUL_TRANSFER = gql`
 mutation customer_mamul_transfer(
-  $customer_id: Int!,
-  $amount: Float!,
+  $cardcode: String!,
+  $amount: float8!,
   $trip_id: Int!,
   $created_by: String!,
   $account_holder_name: String!,
@@ -16,24 +17,28 @@ mutation customer_mamul_transfer(
   $bank_name: String!,
   $ifsc_code:String!,
   $doc_entry: Int!,
-  $is_mamul_charges_included: Boolean!
+  $created_on:timestamp,
+  $is_mamul_charges_included: Boolean!,
+  $status:String
 ){
-  customer_mamul_transfer(
-    customer_id: $customer_id, 
+  insert_customer_wallet_outgoing(objects:{
+    card_code: $cardcode, 
     amount:$amount,
-    trip_id: $trip_id,
+    load_id: $trip_id,
     created_by: $created_by,
     account_holder_name: $account_holder_name,
-    bank_acc_no: $bank_acc_no,
+    account_no: $bank_acc_no,
     bank_name: $bank_name,
     ifsc_code: $ifsc_code,
     doc_entry:$doc_entry,
-    is_mamul_charges_included: $is_mamul_charges_included
-  ){
-    description
-    status
+    created_on:$created_on,
+    is_mamul_charges_included: $is_mamul_charges_included,
+    status:$status
+  }){
+    affected_rows
   }
-}`
+}
+`
 
 const IFSC_VALIDATION = gql`
 query ifsc_validation($ifsc: String!){
@@ -43,6 +48,24 @@ query ifsc_validation($ifsc: String!){
     branch
   }
 }`
+
+ const trip_count = gql`query trip_aggregate($trip_id: Int, $customer_id: Int) {
+  trip_aggregate(where: {id: {_eq: $trip_id}, destination_in: {_is_null: false}, customer: {id: {_eq: $customer_id}}}) {
+    aggregate {
+      count
+    }
+  }
+  customer_wallet_outgoing_aggregate(where: {status: {_eq: "APPROVED"}, load_id: {_eq: $trip_id}}) {
+    aggregate {
+      sum {
+        amount
+      }
+    }
+  }
+}
+`
+
+
 
 const Transfer = (props) => {
   const { visible, onHide, cardcode, customer_id, walletcode, wallet_balance } = props
@@ -67,6 +90,8 @@ const Transfer = (props) => {
     }
   )
 
+  const [gettripDetail, { loading: trip_loading, data: trip_data, error: trip_error }] = useLazyQuery(trip_count)
+
   const [customer_mamul_transfer] = useMutation(
     CUSTOMER_MAMUL_TRANSFER,
     {
@@ -76,12 +101,8 @@ const Transfer = (props) => {
       },
       onCompleted (data) {
         setDisableButton(false)
-        const status = get(data, 'customer_mamul_transfer.status', null)
-        const description = get(data, 'customer_mamul_transfer.description', null)
-        if (status === 'OK') {
-          message.success(description || 'Processed!')
-          onHide()
-        } else (message.error(description))
+        message.success('Processed!')
+        onHide() 
       }
     }
   )
@@ -90,20 +111,38 @@ const Transfer = (props) => {
     getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc') } })
   }
 
+  const validateTrip = () => {
+    gettripDetail ({variables:{trip_id:form.getFieldValue('trip_id'),customer_id:customer_id}})
+  }
 
+ 
   let _data = {}
   if (!loading) {
     _data = data
   }
 
+  let _trip_data = {}
+  if (!trip_loading) {
+    _trip_data = trip_data
+  }
   const bank_detail = get(_data, 'bank_detail', null)
 
+  const count = get (_trip_data,'trip_aggregate.aggregate.count',null)
+  const totalAmountapproved = get(_trip_data,'customer_wallet_outgoing_aggregate.aggregate.sum.amount',null)
+ const totalAmount = totalAmountapproved+amount
+console.log("totalAmount,",totalAmount)
   const onSubmit = (form) => {
-    if (amount > 0) {
+    if( !count ){
+      message.error('Trip not releated to customer')
+    }
+    else if (totalAmount > 5000 || amount < 1 ){ 
+      message.error('Transaction Amount Should be Greater than ₹1 Or Lesser Than ₹5000 for this Trip ')
+    }
+    else {
       setDisableButton(true)
       customer_mamul_transfer({
         variables: {
-          customer_id: customer_id,
+          cardcode: cardcode,
           doc_entry: selectedRow[0].docentry,
           amount: parseFloat(amount),
           trip_id: parseInt(form.trip_id),
@@ -112,10 +151,12 @@ const Transfer = (props) => {
           bank_acc_no: form.account_number,
           bank_name: bank_detail.bank,
           ifsc_code: form.ifsc,
-          is_mamul_charges_included: (form.mamul_include === 'INCLUDE')
+          is_mamul_charges_included: (form.mamul_include === 'INCLUDE'),
+          created_on:new Date().toISOString(),
+          status:"PENDING"
         }
       })
-    } else { message.error('Enter the valid amount') }
+    } 
   }
 
   const selectOnchange = (selectedRowKeys, selectedRows) => {
@@ -186,7 +227,7 @@ const Transfer = (props) => {
               name='account_number'
               rules={[{ required: true, message: 'Account number required!' }]}
             >
-              <Input
+              <Input.Password
                 placeholder='Select Account Number'
                 disabled={false}
               />
@@ -199,7 +240,7 @@ const Transfer = (props) => {
               rules={rules}
               name='confirm'
             >
-              <Input.Password
+              <Input
                 placeholder='Confirm Account Number'
                 disabled={false}
               />
@@ -245,6 +286,7 @@ const Transfer = (props) => {
                 type='number'
                 placeholder='Trip id'
                 disabled={false}
+                onChange={validateTrip}
               />
             </Form.Item>
           </Col>
@@ -259,7 +301,7 @@ const Transfer = (props) => {
             </Form.Item>
           </Col>
           <Col flex='90px'>
-            <Button type='primary' disabled={disableButton} htmlType='submit'>Transfer</Button>
+            <Button type='primary' disabled={disableButton} htmlType='submit'>Create</Button>
           </Col>
         </Row>
       </Form>

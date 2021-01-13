@@ -3,10 +3,11 @@ import { Modal, Button, Input, Row, Col, Form, Select, message } from 'antd'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import CitySelect from '../common/citySelect'
 import userContext from '../../lib/userContaxt'
+import u from '../../lib/util'
 
 const PARTNERS_LEAD_SUBSCRIPTION = gql`
   query create_partner_lead_channel{
-    channel{
+    channel(where:{id:{_nin:[7,8,9]}}){
       id
       name
     }
@@ -42,7 +43,7 @@ const INSERT_PARTNER_LEAD_MUTATION = gql`
         }
         partner_users:
         {data: { 
-          mobile: $mobile,
+          mobile: $mobile,,is_admin:true,
           name: $contact_name}
         },
         partner_status_id: $partner_status_id,
@@ -156,7 +157,11 @@ const CreateLead = (props) => {
               name='mobile'
               rules={[{ required: true }]}
             >
-              <Input placeholder='Phone' />
+              <Input 
+               placeholder='Phone'
+               type='number'
+               maxLength={10}
+               onInput={u.handleLengthCheck} />
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>

@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react'
-import { Modal, Row, Button, Form, Col, Select, Divider, message } from 'antd'
+import { Modal, Row, Button, Form, Col, Select, Divider, message, Checkbox } from 'antd'
 import Link from 'next/link'
 import { gql, useQuery, useLazyQuery, useMutation } from '@apollo/client'
 import PoDetail from './poDetail'
@@ -8,6 +8,7 @@ import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 import LinkComp from '../common/link'
 import Truncate from '../common/truncate'
+import ToPayPrice from '../trips/toPayPrice'
 
 const PO_QUERY = gql`
 query po_query($id: Int!){
@@ -35,7 +36,6 @@ query customers_po($id:Int!){
     id
     cardcode
     name
-    exception_date
     managed
     customer_advance_percentage{
       id
@@ -60,62 +60,69 @@ const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
 }`
 //, where:{customer:{status:{name:{_eq:"Active"}}}}
 const CREATE_PO = gql`
-  mutation create_po (
-      $po_date: timestamp,
-      $source_id: Int, 
-      $created_by: String!
-      $destination_id: Int, 
-      $customer_id: Int,
-      $partner_id:Int,
-      $customer_price: Float,
-      $partner_price: Float,
-      $ton: Float,
-      $per_ton:Float,
-      $is_per_ton:Boolean, 
-      $mamul: Float,
-      $including_loading: Boolean,
-      $including_unloading: Boolean,
-      $bank:Float,
-      $cash: Float,
-      $to_pay: Float,
-      $truck_id:Int,
-      $truck_type_id: Int,
-      $driver_id: Int,
-      $customer_user_id: Int) {
-    insert_trip(objects: {
-      po_date:$po_date
-      source_id: $source_id, 
-      created_by: $created_by
-      destination_id: $destination_id, 
-      customer_id: $customer_id,
-      partner_id: $partner_id,
-      truck_id: $truck_id,
-      truck_type_id: $truck_type_id,
-      driver_id: $driver_id,
-      customer_user_id: $customer_user_id,
-      customer_price: $customer_price,
-      partner_price: $partner_price,
-      ton: $ton,
-      price_per_ton:$per_ton,
-      is_price_per_ton: $is_per_ton,
-      mamul: $mamul,
-      including_loading: $including_loading,
-      including_unloading: $including_unloading,
-      bank: $bank,
-      to_pay:$to_pay,
-      cash:$cash
-    }) {
-      returning {
-        id
-      }
-    }
-  }`
+mutation create_po (
+  $po_date: timestamp,
+  $source_id: Int, 
+  $created_by: String!
+  $destination_id: Int, 
+  $customer_id: Int,
+  $partner_id:Int,
+  $customer_price: Float,
+  $partner_price: Float,
+  $ton: Float,
+  $per_ton:Float,
+  $is_per_ton:Boolean, 
+  $mamul: Float,
+  $including_loading: Boolean,
+  $including_unloading: Boolean,
+  $bank:Float,
+  $cash: Float,
+  $to_pay: Float,
+  $truck_id:Int,
+  $truck_type_id: Int,
+  $driver_id: Int,
+  $is_topay: Boolean,
+  $customer_user_id: Int,
+  $origin_id:Int,
+  $interest_id:Int) {
+insert_trip(objects: {
+  po_date:$po_date
+  source_id: $source_id, 
+  created_by: $created_by
+  destination_id: $destination_id, 
+  customer_id: $customer_id,
+  partner_id: $partner_id,
+  truck_id: $truck_id,
+  truck_type_id: $truck_type_id,
+  driver_id: $driver_id,
+  customer_user_id: $customer_user_id,
+  customer_price: $customer_price,
+  partner_price: $partner_price,
+  ton: $ton,
+  price_per_ton:$per_ton,
+  is_price_per_ton: $is_per_ton,
+  mamul: $mamul,
+  including_loading: $including_loading,
+  including_unloading: $including_unloading,
+  bank: $bank,
+  to_pay:$to_pay,
+  cash:$cash,
+  is_topay: $is_topay,
+  origin_id:$origin_id,
+  interest_id:$interest_id
+}) {
+  returning {
+    id
+  }
+}
+}`
 
 const CreatePo = (props) => {
   const { visible, onHide, truck_id } = props
   const [loading_contact_id, setLoading_contact_id] = useState(null)
   const [driver_id, setDriver_id] = useState(null)
   const [disableBtn, setDisableBtn] = useState(false)
+  const [isToPay, setIsToPay] = useState(false)
 
   const [form] = Form.useForm()
   const initial = { search: '', source_id: null, destination_id: null }
@@ -204,6 +211,34 @@ const CreatePo = (props) => {
       message.error('Mamul Should be greater than system mamul!')
     } else {
       setDisableBtn(true)
+      isToPay ? 
+      create_po_mutation({
+        variables: {
+          po_date: form.po_date.format('YYYY-MM-DD'),
+          source_id: parseInt(obj.source_id, 10),
+          destination_id: parseInt(obj.destination_id, 10),
+          customer_id: customer.id,
+          partner_id: po_data && po_data.partner && po_data.partner.id,
+          customer_price: parseFloat(form.customer_price),
+          partner_price: parseFloat(form.partner_price_total),
+          ton: form.ton ? form.ton : null,
+          per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
+          is_per_ton: !!form.ton,
+          including_loading: loading_charge,
+          including_unloading: unloading_charge,
+          bank:0,
+          cash: parseFloat(form.to_pay_cash),
+          to_pay: parseFloat(form.to_pay_balance),
+          truck_id: po_data && po_data.id,
+          truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
+          driver_id: driver_id,
+          created_by: context.email,
+          customer_user_id: parseInt(loading_contact_id),
+          is_topay: !!isToPay,
+          origin_id: 7,
+          interest_id:7
+        }
+      }) : 
       create_po_mutation({
         variables: {
           po_date: form.po_date.format('YYYY-MM-DD'),
@@ -226,9 +261,12 @@ const CreatePo = (props) => {
           truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
           driver_id: driver_id,
           created_by: context.email,
-          customer_user_id: parseInt(loading_contact_id)
+          customer_user_id: parseInt(loading_contact_id),
+          is_topay: !!isToPay,
+          origin_id: 7,
+          interest_id:7
         }
-      })
+      }) 
     }
   }
 
@@ -249,6 +287,26 @@ const CreatePo = (props) => {
       variables: { id: customer.key }
     })
   }
+
+  const onIsToPayChange = (e) => {
+    setIsToPay(e.target.checked)
+    form.resetFields(isToPay ?
+      ['trip_rate_type',
+        'price_per_ton', 'ton',
+        'customer_price',
+        'partner_price_total',
+        'customer_to_partner_total',
+        'to_pay_cash', 'to_pay_balance']
+      :
+      ['trip_rate_type',
+        'price_per_ton', 'ton',
+        'customer_price',
+        'partner_price', 'p_total',
+        'cash', 'to_pay', 'total',
+        'bank', 'balance', 'fp_total',
+        'wallet', 'fp_balance'])
+  }
+
   const partner_name = get(po_data, 'partner.name', '-')
   const layout = {
     labelCol: { xs: 12 },
@@ -309,13 +367,23 @@ const CreatePo = (props) => {
               />}
           </Col>
           <Col xs={24} sm={10}>
-            {!cus_loading && (customer && customer.id) &&
+          {!cus_loading && (customer && customer.id) &&
+          <>
+         <Checkbox checked={isToPay} onChange={onIsToPayChange}> To Pay </Checkbox> 
+            { isToPay ?
+             <ToPayPrice
+                po_data={po_data && po_data.partner}
+                form={form}
+                customer={customer}
+                loading={cus_loading}
+              />:
               <PoPrice
                 po_data={po_data && po_data.partner}
                 form={form}
                 customer={customer}
                 loading={cus_loading}
               />}
+              </>}
           </Col>
         </Row>
         {!cus_loading && (customer && customer.id) &&

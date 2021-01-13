@@ -8,6 +8,10 @@ import get from 'lodash/get'
 import LinkComp from '../common/link'
 import Phone from '../common/phone'
 import { gql, useMutation } from '@apollo/client'
+import u from '../../lib/util'
+import { useContext } from 'react'
+import userContext from '../../lib/userContaxt'
+import PartnerLink from '../common/PartnerLink'
 
 const ASSIGN_TO_CONFIRM_STATUS_MUTATION = gql`
 mutation update_trip_status($id: Int , $trip_status_id : Int) {
@@ -27,6 +31,10 @@ const Trips = (props) => {
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
 
+  const { role } = u
+  const context = useContext(userContext)
+  const ad_am = [role.admin, role.accounts_manager, role.accounts]
+  const confirm_access = u.is_roles(ad_am, context)
   const [assign_to_confirm] = useMutation(
     ASSIGN_TO_CONFIRM_STATUS_MUTATION, {
       onError (error) {
@@ -67,18 +75,16 @@ const Trips = (props) => {
                 type='trips'
                 data={text}
                 id={record.id}
-                blank
               />
-              </span>
+            </span>
             : <LinkComp
-                type='trips'
-                data={text}
-                id={record.id}
-                blank
-              />)
+              type='trips'
+              data={text}
+              id={record.id}
+            />)
       },
       sorter: (a, b) => a.id - b.id,
-      width: '7%'
+      width: '6%'
     },
     {
       title: 'Customer',
@@ -90,8 +96,7 @@ const Trips = (props) => {
             type='customers'
             data={name}
             id={cardcode}
-            length={12}
-            blank
+            length={10}
           />
         )
       },
@@ -101,15 +106,16 @@ const Trips = (props) => {
     {
       title: 'Partner',
       render: (text, record) => {
+        const id = get(record, 'partner.id', null)
         const cardcode = get(record, 'partner.cardcode', null)
         const name = get(record, 'partner.name', null)
         return (
-          <LinkComp
+          <PartnerLink
+            id={id}
             type='partners'
             data={name}
-            id={cardcode}
+            cardcode={cardcode}
             length={10}
-            blank
           />
         )
       },
@@ -124,30 +130,39 @@ const Trips = (props) => {
           mobile ? <Phone number={mobile} /> : null
         )
       },
-      width: props.intransit ? '8%' : '11%'
+      width: props.intransit ? '8%' : '9%'
+    },
+    {
+      title: 'Partner No',
+      render: (text, record) => {
+        const mobile = get(record, 'partner.partner_users[0].mobile', null)
+        return (
+          mobile ? <Phone number={mobile} /> : null
+        )
+      },
+      width: props.intransit ? '8%' : '9%'
     },
     {
       title: 'Truck',
       render: (text, record) => {
         const truck_no = get(record, 'truck.truck_no', null)
-        const truck_type_name = get(record, 'truck.truck_type.name', null)
-        const truck_type = truck_type_name ? truck_type_name.slice(0, 9) : null
+        const truck_type_code = get(record, 'truck.truck_type.code', null)
+        const truck_type = truck_type_code ? truck_type_code.slice(0, 9) : null
         return (
           <LinkComp
             type='trucks'
             data={truck_no + ' - ' + truck_type}
             id={truck_no}
-            blank
           />
         )
       },
-      width: '15%'
+      width: '13%'
     },
     {
       title: 'Source',
       render: (text, record) => {
         const source = get(record, 'source.name', null)
-        return <Truncate data={source} length={8} />
+        return <Truncate data={source} length={7} />
       },
       sorter: (a, b) => (a.source.name > b.source.name ? 1 : -1),
       width: '8%'
@@ -156,84 +171,80 @@ const Trips = (props) => {
       title: 'Destination',
       render: (text, record) => {
         const destination = get(record, 'destination.name', null)
-        return <Truncate data={destination} length={8} />
+        return <Truncate data={destination} length={7} />
       },
       sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
       width: '8%'
     },
-    {
-      title: 'TAT',
-      render: (text, record) => {
-        const status = get(record, 'trip_status.name', null)
-        return tat[status](record)
-      },
-      sorter: (a, b) => {
-        const status = get(a, 'trip_status.name', null)
-        return tat[status](a) > tat[status](b) ? 1 : -1
-      },
-      defaultSortOrder: 'descend',
-      width: '4%'
-    },
-    props.intransit ? {
-      title: 'Delay',
-      dataIndex: 'delay',
-      width: '5%',
-      sorter: (a, b) => (a.delay > b.delay ? 1 : -1)
-    } : {},
-    props.intransit ? {
-      title: 'ETA',
-      dataIndex: 'eta',
-      width: '5%',
-      sorter: (a, b) => (a.eta > b.eta ? 1 : -1),
-      render: (text, record) => text ? moment(text).format('DD-MMM') : null
-    } : {},
+    !props.intransit
+      ? {
+          title: 'TAT',
+          render: (text, record) => {
+            const status = get(record, 'trip_status.name', null)
+            return tat[status](record)
+          },
+          sorter: (a, b) => {
+            const status = get(a, 'trip_status.name', null)
+            return tat[status](a) > tat[status](b) ? 1 : -1
+          },
+          defaultSortOrder: 'descend',
+          width: '3%'
+        }
+      : {},
+    props.intransit
+      ? {
+          title: 'TAT',
+          dataIndex: 'delay',
+          width: '5%',
+          sorter: (a, b) => (a.delay > b.delay ? 1 : -1),
+          defaultSortOrder: 'descend'
+        }
+      : {},
+    props.intransit
+      ? {
+          title: 'ETA',
+          dataIndex: 'eta',
+          width: '6%',
+          sorter: (a, b) => (a.eta > b.eta ? 1 : -1),
+          render: (text, record) => text ? moment(text).format('DD-MMM') : null
+        }
+      : {},
     {
       title: 'Comment',
       render: (text, record) => {
         const comment = get(record, 'last_comment.description', null)
         return (
           props.intransit
-            ? <Truncate data={comment} length={20} />
-            : <Truncate data={comment} length={26} />)
+            ? <Truncate data={comment} length={9} />
+            : <Truncate data={comment} length={15} />)
       },
-      width: props.intransit ? '14%' : '17%'
+      width: '12%'
     },
     {
       title: 'Action',
       render: (text, record) => {
         const is_execption = get(record, 'customer.is_exception', null)
-        const expection_date = get(record, 'customer.exception_date', null)
         const assign_status = get(record, 'trip_status.name', null)
-        const expection_dates = expection_date ? moment(expection_date).format('YYYY-MM-DD') : null
-        const todayDate = new Date().toISOString().slice(0, 10)
+
         return (
           <span>
-            <Tooltip title={get(record, 'partner.partner_users[0].mobile', null)}>
-              <Phone number={get(record, 'partner.partner_users[0].mobile', null)} icon />
-            </Tooltip>
+            <a><Phone number={get(record, 'partner.partner_users[0].mobile', null)} icon /></a>
             <Tooltip title='Comment'>
               <Button type='link' icon={<CommentOutlined />} onClick={() => handleShow('commentVisible', null, 'commentData', record.id)} />
             </Tooltip>
-            <>
-              {
-                assign_status === 'Assigned'
-                  ? <>
-                    {is_execption && (expection_dates < todayDate || expection_dates === null)
-                      ? <Tooltip title='Customer Exception'>
-                        <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' danger block />
-                        </Tooltip>
-                      : <Popconfirm
-                          title='Are you sure you want to change this status to confirmed?'
-                          okText='Yes'
-                          cancelText='No'
-                          onConfirm={() => onSubmit(record.id)}
-                        >
-                        <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' />
-                      </Popconfirm>}
-                  </>
+            {
+                confirm_access && assign_status === 'Assigned'
+                  ? (
+                    <Popconfirm
+                      title='Are you sure you want to change this status to confirmed?'
+                      okText='Yes'
+                      cancelText='No'
+                      onConfirm={() => onSubmit(record.id)}
+                    >
+                      <Button icon={<CheckOutlined />} type='primary' size='small' shape='circle' />
+                    </Popconfirm>)
                   : null
               }
-            </>
           </span>
         )
       },
