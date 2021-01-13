@@ -42,9 +42,9 @@ const WeeklyBranchTarget = (props) => {
   const cw = moment().format('WW yyyy').split(' ') // Current Week
   const lw = moment().subtract(1, 'weeks').format('WW yyyy').split(' ') // Last Week
   const blw = moment().subtract(2, 'weeks').format('WW yyyy').split(' ') // Before Last Week
-
-  const week = [parseInt(cw[0], 10), parseInt(lw[0], 10), parseInt(blw[0], 10)]
-  const year = (cw[1] === blw[1]) ? [parseInt(cw[1], 10)] : [parseInt(cw[1], 10), parseInt(blw[1], 10)]
+  
+  const week = [parseInt(cw[0], 10), parseInt(lw[0], 10), parseInt(blw[0], 10)]// will get cw,lw,blw
+  const year = [parseInt(cw[1], 10), parseInt(lw[1], 10), parseInt(blw[1], 10)]// will get 3 years of cw , lw and blw 
 
   const { loading, data, error } = useSubscription(
     WEEKLY_TARGET_QUERY,
@@ -53,9 +53,9 @@ const WeeklyBranchTarget = (props) => {
         week1: week[0],
         week2: week[1],
         week3: week[2],
-        year1: (year.length > 1 && week[0] > week[1]) ? year[1] : year[0],
-        year2: (year.length > 1 ? year[1] : year[0]),
-        year3: (year.length > 1 ? year[1] : year[0])
+        year1: year[0],
+        year2: year[1],
+        year3: year[2]
       }
     }
   )

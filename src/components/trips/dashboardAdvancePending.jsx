@@ -90,7 +90,7 @@ const AdvancePending = (props) => {
     
 
       const where= {
-              trip_status: {name: {_nin: ["Cancelled"]}},
+              trip_status: {name: {_nin: ["Waiting for truck","Assigned","Confirmed","Cancelled","Closed","Recieved"]}},
               trip_accounting: {receipt_ratio: {_lt: 0.5}},
               customer: {name: {_ilike: filter.customer_name ? `%${filter.customer_name}%` : null}},
               branch:{region_id:{_in: (filters.regions && filters.regions.length > 0) ? filters.regions : null}},

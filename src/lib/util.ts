@@ -119,6 +119,9 @@ const util = {
     wh: 'warehousereceipt/',
     customer_pan: 'pan/'
   },
+  application_error: {
+    JWT_TOKEN_EXPIRE_ERROR:'Could not verify JWT: JWTExpired'
+  },
   is_roles: (allowed_roles, context) => {
     const result = context.roles.some(role => allowed_roles.includes(role))
     return result
