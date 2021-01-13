@@ -22,7 +22,7 @@ const CustomerInfo = (props) => {
   const { visible, onHide, onShow } = useShowHide(modelInitial)
   const system_mamul = get(customer_info, 'system_mamul', 0)
   const customer_exception = get(customer_info,'is_exception',null)
-  const telegram_group = get(customer_info,'telegram[0].group_link','-')
+  const telegram_group = get(customer_info,'telegram[0].group_link',null)
  
   return (
     <>
@@ -77,9 +77,9 @@ const CustomerInfo = (props) => {
         <LabelAndData
           label='Telegram group'
           data={
-            <Link href={telegram_group}>
-            <a>Click here</a>
-          </Link>
+            telegram_group 
+            ? <Link href={telegram_group}><a>Click here</a></Link>
+            : 'Telegram group not created'
           }
           mdSpan={4}
           smSpan={8}
