@@ -204,7 +204,7 @@ const PartnerBasedTrips = (props) => {
         <Pagination
           size='small'
           current={currentPage}
-          pageSize={filter.limit}
+          pageSize={u.limit}
           showSizeChanger={false}
           total={record_count}
           onChange={onPageChange}
