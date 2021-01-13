@@ -50,7 +50,6 @@ const PartnerBasedTrips = (props) => {
 
   const initialFilter = {
     offset: 0,
-    limit: u.limit,
     status: null,
     truck_no : null
   }
@@ -59,7 +58,7 @@ const PartnerBasedTrips = (props) => {
 
   const variables = {
     offset: filter.offset,
-    limit: filter.limit,
+    limit: u.limit,
     cardcode: cardcode,
     status: !isEmpty(filter.status) ? filter.status : null ,
     truck_no: !isEmpty(filter.truck_no) ? filter.truck_no : null ,
@@ -92,7 +91,7 @@ const PartnerBasedTrips = (props) => {
   })
 
   const onPageChange = (page, pageSize) => {
-    const newOffset = page * pageSize - filter.limit
+    const newOffset = page * pageSize - u.limit
     setCurrentPage(page)
     setFilter({ ...filter, offset: newOffset })
   }
