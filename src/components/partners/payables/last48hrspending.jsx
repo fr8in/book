@@ -69,26 +69,16 @@ const todate = isNil(start_date) || start_date.length<0 ||!start_date[1] ? date[
       title: 'Remarks',
       render: (text, record) => {
         const remarks = get(record, 'remarks', null)
-        return <Truncate data={remarks} length={30} />
+        return <Truncate data={remarks} length={90} />
       },
-      width: '20%',
+      width: '55%',
     },
     {
       title: 'TxnDate',
       dataIndex: 'txnDate',
       sorter: (a, b) => (a.txnDate > b.txnDate ? 1 : -1),
       width: '15%',
-    },  
-    {
-      title: 'TransactionId',
-      dataIndex: 'transactionId',
-      width: '15%',
-    },
-    {
-      title: 'Balance',
-      dataIndex: 'balance',
-      width: '10%',
-    }     
+    }
   ]
 
   return (
