@@ -291,8 +291,8 @@ const ConfirmPo = (props) => {
         <Row gutter={20}>
           <Col xs={24} sm={14}>
             <Row>
-              <Col xs={12}><h4>PO: <Truncate data={partner_name} length={12} /></h4></Col>
-              <Col xs={12} className='text-right'>
+              <Col xs={24}><h4>PO: {partner_name}</h4></Col>
+              <Col xs={24}>
                 <Link href='trucks/[id]' as={`trucks/${po_data.truck_no}`}>
                   <a>{po_data.truck_no}</a>
                 </Link>
