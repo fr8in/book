@@ -8,10 +8,11 @@ import CustomerType from './customerType'
 import CustomerPaymentManager from './customerPaymentManager'
 import get from 'lodash/get'
 import u from '../../lib/util'
+import Link from 'next/link'
 
 const CustomerInfo = (props) => {
   const { customer_info } = props
-
+  
   const { role } = u
   const customerTypeEdit = [role.admin, role.accounts_manager, role.accounts]
   const paymentManagerEdit = [role.admin, role.accounts_manager]
@@ -21,6 +22,8 @@ const CustomerInfo = (props) => {
   const { visible, onHide, onShow } = useShowHide(modelInitial)
   const system_mamul = get(customer_info, 'system_mamul', 0)
   const customer_exception = get(customer_info,'is_exception',null)
+  const telegram_group = get(customer_info,'telegram[0].group_link','-')
+ 
   return (
     <>
       <Row gutter={8}>
@@ -66,6 +69,17 @@ const CustomerInfo = (props) => {
             <label className='link' onClick={system_mamul ? () => onShow('mamulVisible') : () => {}}>
               {system_mamul}
             </label>
+          }
+          mdSpan={4}
+          smSpan={8}
+          xsSpan={24}
+        />
+        <LabelAndData
+          label='Telegram group'
+          data={
+            <Link href={telegram_group}>
+            <a>Click here</a>
+          </Link>
           }
           mdSpan={4}
           smSpan={8}
