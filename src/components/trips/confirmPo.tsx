@@ -167,7 +167,7 @@ const ConfirmPo = (props) => {
   const customer = get(data, 'customer[0]', null)
   const trip_max_price = get(data, 'config[0].value.trip_max_price', null)
   const system_mamul = get(customer, 'system_mamul', null)
-
+const truck_no = get(po_data,'truck_no',null)
   const origin_name = get(record,'leads[0].channel_id',record && record.origin && record.origin.name)  
    
   const onSubmit = (form) => {
@@ -293,8 +293,8 @@ const ConfirmPo = (props) => {
             <Row>
               <Col xs={24}><h4>PO: {partner_name}</h4></Col>
               <Col xs={24}>
-                <Link href='trucks/[id]' as={`trucks/${po_data.truck_no}`}>
-                  <a>{po_data.truck_no}</a>
+                <Link href='trucks/[id]' as={`trucks/${truck_no}`}>
+                  <a>{truck_no}</a>
                 </Link>
                 {trip_id &&
                   <span> |&nbsp;
