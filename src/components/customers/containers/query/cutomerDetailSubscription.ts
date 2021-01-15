@@ -43,6 +43,9 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
     managed
     pan
     is_exception
+    telegram{
+      group_link
+    }
     customer_exception{
     invoice_pending
     advance_pending_amount
