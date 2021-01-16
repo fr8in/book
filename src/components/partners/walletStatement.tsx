@@ -111,13 +111,13 @@ const WalletStatement = (props) => {
                           <Col span={18}>
                             <p><b>{transactionData.mode} {transactionData.trip_id || ''}</b></p>
                             <p>{transactionData.mode === "Paid To Bank"
-                              ? get(transactionData, 'transaction_refno', null) ? <>
+                              ? get(transactionData, 'transaction_refno', null) && transactionStatus === 'COMPLETED' ? <>
                                 <Tooltip title={transactionStatus}>
                                   <CheckCircleOutlined
                                     style={{
                                       color: '#28a745',
                                       fontSize: '18px',
-                                      paddingTop:'5px'
+                                      paddingTop: '5px'
                                     }}
                                   />
                                 </Tooltip>
@@ -127,7 +127,7 @@ const WalletStatement = (props) => {
                                     style={{
                                       color: transactionData.transaction_status === 'FAILED' ? '#dc3545' : '#FFA500',
                                       fontSize: '18px',
-                                      paddingTop:'5px'
+                                      paddingTop: '5px'
                                     }}
                                   />
                                   &nbsp;&nbsp;{transactionStatus ? transactionStatus : "PENDING"}
