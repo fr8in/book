@@ -1,10 +1,10 @@
-import { Drawer, Row, Col,Tooltip } from 'antd'
+import { Drawer, Row, Col, Tooltip } from 'antd'
 import { gql, useQuery } from '@apollo/client'
 import Loading from '../common/loading'
 import get from 'lodash/get'
 import {
   CheckCircleOutlined,
-  CloseOutlined
+  CloseOutlined, InfoCircleOutlined
 } from '@ant-design/icons'
 import isEmpty from 'lodash/isEmpty'
 
@@ -104,21 +104,34 @@ const WalletStatement = (props) => {
                 <h4>{data.date}</h4>
                 {!isEmpty(transactionDetails)
                   ? transactionDetails.map((transactionData, i) => {
-                    const transactionStatus = get(transactionData,'transaction_status','')
+                    const transactionStatus = get(transactionData, 'transaction_status', null)
                     return (
                       isEmpty(transactionData.mode) ? '' : (
                         <Row key={i}>
                           <Col span={18}>
                             <p><b>{transactionData.mode} {transactionData.trip_id || ''}</b></p>
-                            <p>{ transactionData.mode === "Paid To Bank" 
-                            ? (transactionData.transaction_refno || <Tooltip title={transactionStatus}>
-                            <CheckCircleOutlined
-                              style={{
-                                color: transactionStatus === "FAILED" ? '#dc3545' : '#FFA500',
-                                fontSize: '18px'
-                              }}
-                            />
-                          </Tooltip>):''}</p>
+                            <p>{transactionData.mode === "Paid To Bank"
+                              ? get(transactionData, 'transaction_refno', null) ? <>
+                                <Tooltip title={transactionStatus}>
+                                  <CheckCircleOutlined
+                                    style={{
+                                      color: '#28a745',
+                                      fontSize: '18px',
+                                      paddingTop:'5px'
+                                    }}
+                                  />
+                                </Tooltip>
+                                &nbsp;&nbsp;{get(transactionData, 'transaction_refno', null)}</> :
+                                <>
+                                  <InfoCircleOutlined
+                                    style={{
+                                      color: transactionData.transaction_status === 'FAILED' ? '#dc3545' : '#FFA500',
+                                      fontSize: '18px',
+                                      paddingTop:'5px'
+                                    }}
+                                  />
+                                  &nbsp;&nbsp;{transactionStatus ? transactionStatus : "PENDING"}
+                                </> : ""} </p>
                             {transactionData.trip_id
                               ? <p>{'#' + transactionData.trip_id}, {get(transactionData, 'trip.source.name', null)} - {get(transactionData, 'trip.destination.name', null)}</p>
                               : <p>{transactionData.route || ''}</p>}
