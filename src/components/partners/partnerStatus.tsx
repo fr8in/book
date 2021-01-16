@@ -33,7 +33,7 @@ const PartnerStatus = (props) => {
   const _blockAccess_role = [role.admin,role.bm,role.rm,role.onboarding,role.partner_manager, role.partner_support]
   const admin = u.is_roles(_admin_role,context)
   const blockAccess = u.is_roles(_blockAccess_role,context)
-  const _edit_access = [role.admin,role.partner_manager, role.onboarding,role.rm,role.bm,role.accounts_manager,role.accounts,role.billing,role.billing_manager,role.partner_support]
+  const _edit_access = [role.admin,role.partner_manager, role.onboarding,role.rm,role.bm,role.accounts_manager,role.accounts,role.billing,role.billing_manager,role.partner_support,role.operations]
   const access = u.is_roles(_edit_access,context)
 
   const [updateDnd] = useMutation(

@@ -28,6 +28,7 @@ query partner_wallet_statement($cardcode: String) {
       trip_id
       comment
       type
+      canceled_flag
       transaction_refno
       transaction_status
       route
@@ -60,7 +61,6 @@ const WalletStatement = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
-  console.log('PartnersWalletStatement error', error)
 
   let _data = {}
 
@@ -105,36 +105,43 @@ const WalletStatement = (props) => {
                 {!isEmpty(transactionDetails)
                   ? transactionDetails.map((transactionData, i) => {
                     const transactionStatus = get(transactionData, 'transaction_status', null)
+                    const referrence_number = get(transactionData, 'transaction_refno', null)
                     return (
                       isEmpty(transactionData.mode) ? '' : (
                         <Row key={i}>
                           <Col span={18}>
-                            <p><b>{transactionData.mode} {transactionData.trip_id || ''}</b></p>
+                            <p><b>{transactionData.mode} {transactionData.trip_id || ''}</b>{get(transactionData, 'route', null) ? `- ${transactionData.route}` : ''}</p>
                             <p>{transactionData.mode === "Paid To Bank"
-                              ? get(transactionData, 'transaction_refno', null) && transactionStatus === 'COMPLETED' ? <>
-                                <Tooltip title={transactionStatus}>
-                                  <CheckCircleOutlined
-                                    style={{
-                                      color: '#28a745',
-                                      fontSize: '18px',
-                                      paddingTop: '5px'
-                                    }}
-                                  />
-                                </Tooltip>
+                              ? get(transactionData, 'transaction_refno', null) &&
+                                transactionStatus === 'COMPLETED' && !get(transactionData, 'canceled_flag', null) ? <>
+                                  <Tooltip title={transactionStatus}>
+                                    <CheckCircleOutlined
+                                      style={{
+                                        color: '#28a745',
+                                        fontSize: '18px',
+                                        paddingTop: '5px'
+                                      }}
+                                    />
+                                  </Tooltip>
                                 &nbsp;&nbsp;{get(transactionData, 'transaction_refno', null)}</> :
                                 <>
-                                  <InfoCircleOutlined
-                                    style={{
-                                      color: transactionData.transaction_status === 'FAILED' ? '#dc3545' : '#FFA500',
-                                      fontSize: '18px',
-                                      paddingTop: '5px'
-                                    }}
-                                  />
-                                  &nbsp;&nbsp;{transactionStatus ? transactionStatus : "PENDING"}
+                                  <Tooltip title={get(transactionData, 'canceled_flag', null) ? 'FAILED' : 'PENDING'}>
+                                    <InfoCircleOutlined
+                                      style={{
+                                        color: get(transactionData, 'canceled_flag', null) ? '#dc3545' : '#FFA500',
+                                        fontSize: '18px',
+                                        paddingTop: '5px'
+                                      }}
+                                    />
+                                  </Tooltip>
+                                  &nbsp;&nbsp;
+                                  {referrence_number ? get(transactionData, 'transaction_refno', null) :
+                                    get(transactionData, 'canceled_flag', null) ? "FAILED" : "PENDING"
+                                  }
                                 </> : ""} </p>
                             {transactionData.trip_id
-                              ? <p>{'#' + transactionData.trip_id}, {get(transactionData, 'trip.source.name', null)} - {get(transactionData, 'trip.destination.name', null)}</p>
-                              : <p>{transactionData.route || ''}</p>}
+                              && <p>{'#' + transactionData.trip_id}, {get(transactionData, 'trip.source.name', null)} - {get(transactionData, 'trip.destination.name', null)}</p>
+                            }
                           </Col>
                           <Col span={6} className='text-right'>
                             <span className={transactionData.type === 'Credit' ? 'creditAmount' : 'debitAmount'}>
