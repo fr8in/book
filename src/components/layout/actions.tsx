@@ -24,16 +24,16 @@ const CheckBoxGroup = Checkbox.Group
 const { Text } = Typography
 
 const GLOBAL_TRUCK_TYPE_FILTER = gql`
-query global_truck_type_filter($now: timestamp,$regions: [Int!], $branches: [Int!], $cities: [Int!]) {
+query global_truck_type_filter($now: timestamp, $regions: [Int!], $branches: [Int!], $cities: [Int!]) {
   truck_type(where: {active: {_eq: true}}) {
     id
     shortname
-    trucks_type_total:trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, {partner: {partner_status: {name: {_eq: "Active"}}}}], _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}], city: {branch: {id: {_in: $branches}, region_id: {_in: $regions}, cities: {is_connected_city: {_eq: true}, id: {_in: $cities}}}}}) {
+    trucks_type_total: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, {partner: {partner_status: {name: {_eq: "Active"}}}}], _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}], city: {branch: {id: {_in: $branches}, region_id: {_in: $regions}, cities: {id: {_in: $cities}}}}}) {
       aggregate {
         count
       }
     }
-    trucks_type_current:trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, {partner: {partner_status: {name: {_eq: "Active"}}}}], _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}], city: {branch: {id: {_in: $branches}, region_id: {_in: $regions}, cities: {is_connected_city: {_eq: true}, id: {_in: $cities}}}}, available_at: {_lte: $now}}) {
+    trucks_type_current: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, {partner: {partner_status: {name: {_eq: "Active"}}}}], _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}], city: {branch: {id: {_in: $branches}, region_id: {_in: $regions}, cities: {id: {_in: $cities}}}}, available_at: {_lte: $now}}) {
       aggregate {
         count
       }
@@ -41,7 +41,6 @@ query global_truck_type_filter($now: timestamp,$regions: [Int!], $branches: [Int
   }
 }
 `
-
 const GLOBAL_FILTER = gql`
 query gloabl_filter($now: timestamp, $regions: [Int!], $branches: [Int!], $cities: [Int!]) {
   truck_type(where: {active: {_eq: true}}) {
