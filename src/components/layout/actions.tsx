@@ -115,7 +115,7 @@ const Actions = (props) => {
     now: moment().format('YYYY-MM-DD'),
     regions: !isEmpty(filters.regions) ? filters.regions : null,
     branches: !isEmpty(filters.branches) ? filters.branches : null,
-    cities: !isEmpty(filters.cities) ? filters.cities : null,
+    cities: !isEmpty(filters.cities) ? filters.cities : null
   }
 
 
