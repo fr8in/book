@@ -67,6 +67,9 @@ const PartnerUsers = (props) => {
   const context = useContext(userContext)
   const [form] = Form.useForm()
   const [disableButton, setDisableButton] = useState(false)
+  const { role } = u
+  const edit_access = [role.admin, role.partner_support, role.onboarding]
+  const access = u.is_roles(edit_access, context)
 
   const { loading, error, data } = useSubscription(
     PARTNER_USERS_SUBSCRIPTION,
@@ -141,7 +144,7 @@ const PartnerUsers = (props) => {
       }
     })
   }
-  const onIsAdminChange = (mobile_id,record) => {
+  const onIsAdminChange = (mobile_id, record) => {
     is_admin_update({
       variables: {
         partner_id: partner.id,
@@ -159,12 +162,15 @@ const PartnerUsers = (props) => {
       render: (text, record) => {
 
         return (
-          <Radio
-            checked={record.is_admin}
-            onChange={() => onIsAdminChange(record.id,record)}
-          >
+          access ?
+            <Radio
+              checked={record.is_admin}
+              onChange={() => onIsAdminChange(record.id, record)}
+            >
+              <Phone number={record.mobile} />
+            </Radio> :
+            
             <Phone number={record.mobile} />
-          </Radio>
         )
       }
     },
@@ -201,12 +207,12 @@ const PartnerUsers = (props) => {
         <Row className='mt10' gutter={10}>
           <Col flex='auto'>
             <Form.Item name='mobile' initialValue=''>
-              <Input 
-                 type='number' 
-                 placeholder='Enter Mobile Number' 
-                 min={0}
-                 maxLength={10}
-                 onInput={u.handleLengthCheck}/>
+              <Input
+                type='number'
+                placeholder='Enter Mobile Number'
+                min={0}
+                maxLength={10}
+                onInput={u.handleLengthCheck} />
             </Form.Item>
           </Col>
           <Col flex='90px'>
