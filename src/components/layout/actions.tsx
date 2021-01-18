@@ -23,17 +23,26 @@ const { Panel } = Collapse
 const CheckBoxGroup = Checkbox.Group
 const { Text } = Typography
 
-const GLOBAL_FILTER = gql`
-query gloabl_filter($now: timestamp, $regions: [Int!], $branches: [Int!], $cities: [Int!]) {
+const GLOBAL_TRUCK_TYPE_FILTER = gql`
+query global_truck_type_filter($now: timestamp, $regions: [Int!], $branches: [Int!], $cities: [Int!]) {
   truck_type(where: {active: {_eq: true}}) {
     id
     shortname
-    trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, {partner: {partner_status: {name: {_eq: "Active"}}}}], _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
+    trucks_type_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}, partner: {partner_status: {name: {_eq: "Active"}}}, city: {connected_city: {branch_id: {_in: $branches}, branch: {region_id: {_in: $regions}}, id: {_in: $cities}}}, _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
+      aggregate {
+        count
+      }
+    }
+    trucks_type_current: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}, available_at: {_lte: $now}, city: {connected_city: {branch_id: {_in: $branches}, branch: {region_id: {_in: $regions}}, id: {_in: $cities}}}, partner: {partner_status: {name: {_eq: "Active"}}}, _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
       aggregate {
         count
       }
     }
   }
+}
+`
+const GLOBAL_FILTER = gql`
+query gloabl_filter($now: timestamp, $regions: [Int!], $branches: [Int!], $cities: [Int!]) {
   region {
     id
     name
@@ -93,6 +102,20 @@ const Actions = (props) => {
     notifyOnNetworkStatusChange: true
   })
 
+  const truck_type_variables = {
+    now: moment().format('YYYY-MM-DD'),
+    regions: !isEmpty(filters.regions) ? filters.regions : null,
+    branches: !isEmpty(filters.branches) ? filters.branches : null,
+    cities: !isEmpty(filters.cities) ? filters.cities : null
+  }
+
+
+  const { loading:truck_type_loading, data:truck_type_data, error:truck_type_error } = useQuery(GLOBAL_TRUCK_TYPE_FILTER, {
+    variables:truck_type_variables,
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  })
+
 
   let region_options = []
   //2nd level branch_options 
@@ -104,16 +127,8 @@ const Actions = (props) => {
   let truck_type_options = []
 
   if (!loading) {
-    const { region, truck_type } = data
-    truck_type_options = !isEmpty(truck_type) ? truck_type.map(_truck_type => { 
-       return (
-         { 
-           label: <span>{_truck_type.shortname + '    '}<Text disabled>{get(_truck_type, 'trucks_aggregate.aggregate.count', 0)}</Text></span>, 
-           value: _truck_type.id
-         }
-       )
-      }) : []
-  
+    const { region } = data
+
     region.forEach(_region => {
       let _region_trucks_total = 0
       let _region_trucks_current = 0
@@ -139,6 +154,21 @@ const Actions = (props) => {
       region_options.push({ label: <span>{_region.name + '    '}<Text disabled>{_region_trucks_current + '/' + _region_trucks_total}</Text></span>, value: _region.id, })
     })
   }
+
+   
+  if (!truck_type_loading) {
+    const { truck_type } = truck_type_data
+    
+    truck_type_options = !isEmpty(truck_type) ? truck_type.map(_truck_type => { 
+      return (
+        { 
+          label: <span>{_truck_type.shortname + '    '}<Text disabled>{get(_truck_type, 'trucks_type_current.aggregate.count', 0) + '/' + get(_truck_type, 'trucks_type_total.aggregate.count', 0)}</Text></span>, 
+          value: _truck_type.id 
+        }
+      )
+     }) : []
+  }
+
 
   const branch_options_sort = branch_options.sort((a, b) => a.order - b.order)
 
