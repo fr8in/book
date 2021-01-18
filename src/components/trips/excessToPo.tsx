@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { Modal, Form, Select, Row, Col, Button } from 'antd'
 import TrucksForPO from './trucksForPO'
 import { gql, useQuery } from '@apollo/client'
@@ -39,6 +39,7 @@ const ExcessToPo = (props) => {
   const initial = { search: null, partner_id: null, po_visible: false, truck_id: null }
   const [obj, setObj] = useState(initial)
 const [showModal,setShowModal] = useState(false)
+const [partnerId,setPartnerId]=useState(null)
 
   const { loading, error, data } = useQuery(
     PARTNER_SEARCH_QUERY,
@@ -67,11 +68,16 @@ const [showModal,setShowModal] = useState(false)
     }
   )
 
-  console.log('TrucksForPO Error', error)
   let _partnerPoData = {}
   if (!partnerPoLoading) {
     _partnerPoData = partnerPoData
   }
+
+  useEffect(()=>{
+    if(!loading){
+      setPartnerId(get(partnerPoData, 'truck[0].partner.id', []))
+    }
+  },[loading])
   const [form] = Form.useForm()
 
   const truck = get(_partnerPoData, 'truck[0]', [])
@@ -79,25 +85,30 @@ const [showModal,setShowModal] = useState(false)
   const partner_list = get(truck, 'partner', null)
   const partner_name = get(partner_list, 'name', null)
   const partner_mobile = get(partner_list, 'partner_users[0].mobile', null)
+  const partner_id = get(partner_list, 'id', null)
+
+  console.log('TrucksForPO Error', partner_name)
+
   const onPartnerSearch = (value) => {
     setObj({ ...obj, search: value })
   }
 
   const onPartnerSelect = (value, partner) => {
     setObj({ ...obj, partner_id: partner.key, po_visible: (obj.truck_id && partner.key) })
-  }
+     }
 
   const onTruckSelect = (truck, partner) => {
+    console.log('TrucksForPO data', partner)
     setObj({ ...obj, truck_id: truck.id, po_visible: (truck.id || obj.partner_id) })
   }
 
-  console.log('obj.partner_id', obj.partner_id, 'obj.truck_id', obj.truck_id)
   const onClosePoModal = () => {
     setObj(initial)
   }
   const onProceed = () => {
     setShowModal(true)
   }
+
   return (
     <>
       <Modal
@@ -107,14 +118,15 @@ const [showModal,setShowModal] = useState(false)
         footer={[]}
       >
         <Form form={form}>
-          <Form.Item name='partner'>
+          <Form.Item name='partner' initialValue={partner_list && partner_list.name}>
             <Select
               placeholder='Select Partner'
               showSearch
+              //defaultValue={partner_list && partner_list.name}
+              value={partnerId}
               disabled={false}
               onSearch={onPartnerSearch}
               onChange={onPartnerSelect}
-              defaultValue={ partner_name }
             >
               {partner_list &&
                 <Select.Option key={partner_list.id} value={partner_list.name}>{partner_list.name}</Select.Option>
