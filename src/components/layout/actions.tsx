@@ -28,12 +28,12 @@ query global_truck_type_filter($now: timestamp, $regions: [Int!], $branches: [In
   truck_type(where: {active: {_eq: true}}) {
     id
     shortname
-    trucks_type_total: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, {partner: {partner_status: {name: {_eq: "Active"}}}}], _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}], city: {branch: {id: {_in: $branches}, region_id: {_in: $regions}, cities: {id: {_in: $cities}}}}}) {
+    trucks_type_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}, partner: {partner_status: {name: {_eq: "Active"}}}, city: {connected_city: {branch_id: {_in: $branches}, branch: {region_id: {_in: $regions}}, id: {_in: $cities}}}, _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
       aggregate {
         count
       }
     }
-    trucks_type_current: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, {partner: {partner_status: {name: {_eq: "Active"}}}}], _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}], city: {branch: {id: {_in: $branches}, region_id: {_in: $regions}, cities: {id: {_in: $cities}}}}, available_at: {_lte: $now}}) {
+    trucks_type_current: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}, available_at: {_lte: $now}, city: {connected_city: {branch_id: {_in: $branches}, branch: {region_id: {_in: $regions}}, id: {_in: $cities}}}, partner: {partner_status: {name: {_eq: "Active"}}}, _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
       aggregate {
         count
       }
@@ -43,15 +43,6 @@ query global_truck_type_filter($now: timestamp, $regions: [Int!], $branches: [In
 `
 const GLOBAL_FILTER = gql`
 query gloabl_filter($now: timestamp, $regions: [Int!], $branches: [Int!], $cities: [Int!]) {
-  truck_type(where: {active: {_eq: true}}) {
-    id
-    shortname
-    trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, {partner: {partner_status: {name: {_eq: "Active"}}}}], _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
-      aggregate {
-        count
-      }
-    }
-  }
   region {
     id
     name
