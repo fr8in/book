@@ -24,66 +24,51 @@ const CheckBoxGroup = Checkbox.Group
 const { Text } = Typography
 
 const GLOBAL_FILTER = gql`
-query gloabl_filter($now: timestamp, $regions:[Int!], $branches:[Int!], $cities:[Int!]) {
-  truck(distinct_on: truck_type_id, where: {truck_status_id: {_nin: [6, 12, 13]}, truck_type: {active: {_eq: true}}}) {
-     truck_type {
-       id
-       name
-       trucks_aggregate {
-         aggregate {
-           count
-         }
-       }
-     }
-   }
-   region {
-     id
-     name
-     branches(where:{_and: [ {region_id:{_in:$regions}}, {id:{_in:$branches}}]}) {
-       branch_employees {
-         id
-         employee {
-           id
-           name
-         }
-       }
-       displayposition
-       id
-       name
-       connected_cities: cities(where:{_and: [ {is_connected_city: {_eq: true}},{id:{_in:$cities}}]}) {
-         id
-         name
-         cities {
-           id
-           name
-           trucks_total: trucks_aggregate(where: {
-             _and: [
-                 {truck_status: {name: {_eq: "Waiting for Load"}}}, 
-                 {partner:{partner_status:{name:{_eq:"Active"}}}}
-               ],
-             _or:[{ partner:{dnd:{_neq:true}}}, {truck_type: {id:{_nin: [25,27]}}}]
-           }) {
-             aggregate {
-               count
-             }
-           }
-           trucks_current: trucks_aggregate(where: {
-             _and: [
-                 {available_at: {_lte: $now}},
-                 {truck_status: {name: {_eq: "Waiting for Load"}}}, 
-                 {partner:{partner_status:{name:{_eq:"Active"}}}}
-               ],
-             _or:[{ partner:{dnd:{_neq:true}}}, {truck_type: {id:{_nin: [25,27]}}}]
-             }) {
-             aggregate {
-               count
-             }
-           }
-         }
-       }
-     }
-   }
- }
+query gloabl_filter($now: timestamp, $regions: [Int!], $branches: [Int!], $cities: [Int!]) {
+  truck_type(where: {active: {_eq: true}}) {
+    id
+    shortname
+    trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, {partner: {partner_status: {name: {_eq: "Active"}}}}], _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
+      aggregate {
+        count
+      }
+    }
+  }
+  region {
+    id
+    name
+    branches(where: {_and: [{region_id: {_in: $regions}}, {id: {_in: $branches}}]}) {
+      branch_employees {
+        id
+        employee {
+          id
+          name
+        }
+      }
+      displayposition
+      id
+      name
+      connected_cities: cities(where: {_and: [{is_connected_city: {_eq: true}}, {id: {_in: $cities}}]}) {
+        id
+        name
+        cities {
+          id
+          name
+          trucks_total: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, {partner: {partner_status: {name: {_eq: "Active"}}}}], _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
+            aggregate {
+              count
+            }
+          }
+          trucks_current: trucks_aggregate(where: {_and: [{available_at: {_lte: $now}}, {truck_status: {name: {_eq: "Waiting for Load"}}}, {partner: {partner_status: {name: {_eq: "Active"}}}}], _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
+            aggregate {
+              count
+            }
+          }
+        }
+      }
+    }
+  }
+}
 `
 const Clear = (props) => <span className='clear' onClick={props.onClear}>CLEAR</span>
 
@@ -119,12 +104,12 @@ const Actions = (props) => {
   let truck_type_options = []
 
   if (!loading) {
-    const { region, truck } = data
-    truck_type_options = !isEmpty(truck) ? truck.map(_truck => { 
+    const { region, truck_type } = data
+    truck_type_options = !isEmpty(truck_type) ? truck_type.map(_truck_type => { 
        return (
          { 
-           label: <span>{_truck.truck_type.name + '    '}<Text disabled>{get(_truck, 'truck_type.trucks_aggregate.aggregate.count', 0)}</Text></span>, 
-           value: _truck.truck_type.id
+           label: <span>{_truck_type.shortname + '    '}<Text disabled>{get(_truck_type, 'trucks_aggregate.aggregate.count', 0)}</Text></span>, 
+           value: _truck_type.id
          }
        )
       }) : []
