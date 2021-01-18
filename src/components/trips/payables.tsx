@@ -51,7 +51,7 @@ const Payables = (props) => {
   const payables = get(trip_pay,'trip_payables',[])
   const payments = get(trip_pay,'trip_payments',[])
   const payable_sort =!isEmpty(payables) ? payables.sort((a,b)=> (a.amount > b.amount) ? -1 : 1) : []
-  const payment_sort = !isEmpty(payments) ? payments.sort((a,b)=> (a.amount > b.amount) ? -1 : 1) : []
+  const payment_sort = !isEmpty(payments) ? payments.sort((a,b)=> (a.created_at > b.created_at)) : []
   const payables_sum = sumBy(trip_pay.trip_payables, 'amount').toFixed(2)
   const payments_sum = sumBy(trip_pay.trip_payments, 'amount').toFixed(2)
   const invoiced_at = get(trip_pay, 'trip_accounting.invoiced_at')
