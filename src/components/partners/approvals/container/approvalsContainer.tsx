@@ -31,7 +31,7 @@ const Approvals = () => {
         <TabPane tab='History' key='6'>
           <IncentiveHistory />
         </TabPane>
-        <TabPane tab='Additional advance bank' key='7'>
+        <TabPane tab='Additional Advance Bank' key='7'>
           <AdditionalAdvanceBankApproval />
         </TabPane>
       </Tabs>
