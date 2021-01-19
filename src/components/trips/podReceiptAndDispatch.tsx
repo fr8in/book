@@ -129,7 +129,9 @@ const PodReceiptAndDispatch = (props) => {
     return {
       trip_id: id,
       created_by_id: context.employee_id,
-      by_hand_id: podData.emp_id
+      by_hand_id: podData.emp_id,
+      docket: podData.docket,
+      courier_id: podData.courier
     }
   }) : null
 
@@ -168,7 +170,7 @@ const PodReceiptAndDispatch = (props) => {
   const isTripSelected = trip_ids && trip_ids.length > 0
   return (
     <Modal
-      title={podDispatch ? 'Customer Pod Receipt' : 'Partner Pod Receipt'}
+      title={podDispatch ? 'Customer Pod Dispatch' : 'Partner Pod Receipt'}
       visible={visible}
       onCancel={onClose}
       footer={[
@@ -185,6 +187,7 @@ const PodReceiptAndDispatch = (props) => {
             />
           </Form.Item>
           {selectValue === 'Internal' ? (
+            <div>
             <Form.Item>
               <Select
                 placeholder='Select Employee'
@@ -193,7 +196,23 @@ const PodReceiptAndDispatch = (props) => {
                 optionFilterProp='label'
                 showSearch
               />
-            </Form.Item>)
+            </Form.Item>
+            <Form.Item>
+                  <Select
+                    placeholder='Select Courier'
+                    options={courier_list}
+                    onChange={onCourierChange}
+                    optionFilterProp='label'
+                    showSearch
+                  />
+                </Form.Item>
+                <Form.Item>
+                  <Input
+                    placeholder='Docket No'
+                    onChange={onSetDocket}
+                  />
+                </Form.Item>
+            </div>)
             : (
               <div>
                 <Form.Item>

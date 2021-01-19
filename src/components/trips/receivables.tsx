@@ -53,7 +53,7 @@ const Receivables = (props) => {
   const receivables = get(trip_pay,'trip_receivables',[])
   const receipts = get(trip_pay,'trip_receipts',[])
   const receivables_sort = !isEmpty(receivables) ? receivables.sort((a,b)=> (a.amount > b.amount) ? -1 : 1) : []
-  const receipts_sort = !isEmpty(receipts) ? receipts.sort((a,b)=> (a.amount > b.amount) ? -1 : 1) : []
+  const receipts_sort = !isEmpty(receipts) ? receipts.sort((a,b)=> (a.created_at > b.created_at)) : []
   const receivables_sum = sumBy(trip_pay.trip_receivables, 'amount').toFixed(2)
   const receipts_sum = sumBy(trip_pay.trip_receipts, 'amount').toFixed(2)
   const all_payables = get(trip_pay, 'trip_payables', [])
