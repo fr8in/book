@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Modal, Form, Select } from 'antd'
+import { Modal, Form, Select, Row, Col, Button } from 'antd'
 import TrucksForPO from './trucksForPO'
 import { gql, useQuery } from '@apollo/client'
 import ConfirmPo from './confirmPo'
@@ -17,12 +17,14 @@ query partner_search($search: String){
 const ExcessToPo = (props) => {
   const { visible, onHide, record } = props
 
-  // const initial = { search: null, partner_id: null, po_visible: false, truck_id: null }
-  // const [obj, setObj] = useState(initial)
-  const [search,setSearch] = useState(null)
-  const [partnerId,setPartnerId] = useState(null)
-  const [poVisible,setPoVisible] = useState(false)
-  const [truckId,setTruckId] = useState(null)
+  const [search, setSearch] = useState(null)
+  const [truckId, setTruckId] = useState(null)
+  const [truckNo, setTruckNo] = useState(null)
+  const [partnerId, setPartnerId] = useState(null)
+  const [partnerName, setPartnerName] = useState(null)
+  const [partnerMobile, setPartnerMobile] = useState(null)
+  const [showModal, setShowModal] = useState(false)
+  const [poVisible, setPoVisible] = useState(false)
 
   const { loading, error, data } = useQuery(
     PARTNER_SEARCH_QUERY,
@@ -34,7 +36,6 @@ const ExcessToPo = (props) => {
     }
   )
 
-  console.log('CreateExcessLoad Error', error)
   let _data = {}
   if (!loading) {
     _data = data
@@ -52,17 +53,22 @@ const ExcessToPo = (props) => {
     setPoVisible(truckId && partner.key)
   }
 
-  const onTruckSelect = (truck, partner) => {
+  const onTruckSelect = (truck) => {
+    const partner = truck.partner
+    setPartnerName(partner.name)
+    setPartnerMobile(partner.partner_users[0].mobile)
+    setTruckNo(truck.truck_no)
     setTruckId(truck.id)
     setPoVisible(truck.id || partnerId)
+    setPartnerId(partner.id)
   }
-  
 
   const onClosePoModal = () => {
     setPoVisible(false)
   }
-
-  console.log('search',search,'partnerId',partnerId,'poVisible',poVisible,'truckId',truckId)
+  const onProceed = () => {
+    setShowModal(true)
+  }
   return (
     <>
       <Modal
@@ -72,33 +78,41 @@ const ExcessToPo = (props) => {
         footer={[]}
       >
         <Form form={form}>
-          <Form.Item name='partner'>
+          <Form.Item name='partner' initialValue={partnerName} >
             <Select
               placeholder='Select Partner'
               showSearch
               disabled={false}
+              defaultValue={partnerName}
               onSearch={onPartnerSearch}
               onChange={onPartnerSelect}
             >
-               {/* {partner_list && 
-          <Select.Option key={partner_list.id} value={partner_list.name}>{partner_list.name}</Select.Option>
-        } */}
-              {partnerSearch && partnerSearch.map(_part => (
-                <Select.Option key={_part.id} value={_part.description}>{_part.description}</Select.Option>
+              {partnerSearch && partnerSearch.map(_partner => (
+                <Select.Option key={_partner.id} value={_partner.description}>{_partner.description}</Select.Option>
               ))}
             </Select>
           </Form.Item>
           <TrucksForPO onChange={onTruckSelect} partner_id={partnerId} />
         </Form>
+        {truckId ?
+          <>
+            <Row><p>{partnerName} - {partnerMobile}</p></Row>
+            <Row><p>Truck No : {truckNo}</p></Row>
+            <Row justify='end'>
+              <Button type='primary' size='small' onClick={onProceed}>Proceed</Button>
+            </Row>
+          </>
+          : null
+        }
       </Modal>
-      {/* {obj.po_visible &&
+      {showModal &&
         <ConfirmPo
-          visible={obj.po_visible}
-          truck_id={obj.truck_id}
+          visible={poVisible}
+          truck_id={truckId}
           record={record}
           onHide={onClosePoModal}
           hideExess={onHide}
-        />} */}
+        />}
     </>
   )
 }
