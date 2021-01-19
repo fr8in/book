@@ -145,8 +145,8 @@ const WalletStatement = (props) => {
                             }
                           </Col>
                           <Col span={6} className='text-right'>
-                            <span className={transactionData.amount > 0 ? 'creditAmount' : 'debitAmount'}>
-                              {`₹${transactionData.amount}`}
+                            <span className={transactionData.amount > 0 ? 'creditAmount'  : 'debitAmount'}>
+                             {transactionData.amount > 0 ? `₹+${transactionData.amount}` : `₹${transactionData.amount}`}
                             </span>
                           </Col>
                         </Row>)
