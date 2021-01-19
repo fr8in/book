@@ -24,18 +24,8 @@ import Link from 'next/link'
 import ReferredByPartner from '../partners/referredByPartnerList'
 
 const PARTNERS_LEAD_QUERY = gql`
-query partner_lead_aggregate(
-  $where:partner_bool_exp
-   $offset: Int!
-  $limit: Int!
-  ){
-   partner(
-    offset: $offset
-    limit: $limit
-    order_by: 
-    {lead_priority: desc_nulls_last},
-    where:$where
-      ){
+query partner_lead_aggregate($where: partner_bool_exp, $offset: Int!, $limit: Int!) {
+  partner(offset: $offset, limit: $limit, where: $where) {
     id
     name
     created_at
@@ -45,28 +35,28 @@ query partner_lead_aggregate(
       name
       cardcode
     }
-    onboarded_by{
+    onboarded_by {
       id
       email
     }
-    partner_users{
+    partner_users {
       mobile
     }
-    city{
+    city {
       id
       name
     }
-    channel{
+    channel {
       id
       name
     }
-    partner_status{
+    partner_status {
       name
     }
-    last_comment{
+    last_comment {
       description
     }
-    partner_comments{
+    partner_comments {
       created_at
       description
     }
@@ -76,11 +66,7 @@ query partner_lead_aggregate(
       count
     }
   }
-  partner_status(where:{name: {_in: ["Lead","Registered","Rejected","Verification"]}}, order_by: {id: asc}) {
-    id
-    name
-  }
-  channel(where:{id:{_nin:[7,8,9]}}){
+  channel(where: {id: {_nin: [7, 8, 9]}}) {
     id
     name
   }
@@ -260,15 +246,11 @@ const PartnerLead = (props) => {
   
 
   const partner_aggregate = get(lead_data, 'partner_aggregate', 0)
-  const partner_status = get(lead_data, 'partner_status', [])
+  const partners_status = ["Lead","Registered","Rejected","Verification"]
   const channel = get(lead_data, 'channel', [])
 
   const record_count = get(partner_aggregate, 'aggregate.count', 0)
   
-
-  const partners_status = partner_status.map((data) => {
-    return { value: data.name, label: data.name }
-  })
   const channels = channel.map((data) => {
     return { value: data.name, label: data.name }
   })
