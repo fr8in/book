@@ -4,7 +4,7 @@ import Loading from '../common/loading'
 import get from 'lodash/get'
 import {
   CheckCircleOutlined,
-  CloseOutlined, InfoCircleOutlined
+  InfoCircleOutlined
 } from '@ant-design/icons'
 import isEmpty from 'lodash/isEmpty'
 
@@ -111,40 +111,41 @@ const WalletStatement = (props) => {
                         <Row key={i}>
                           <Col span={18}>
                             <p><b>{transactionData.mode} {transactionData.trip_id || ''}</b>{get(transactionData, 'route', null) ? `- ${transactionData.route}` : ''}</p>
-                            <p>{transactionData.mode === "Paid To Bank"
-                              ? get(transactionData, 'transaction_refno', null) &&
-                                transactionStatus === 'COMPLETED' && !get(transactionData, 'canceled_flag', null) ? <>
-                                  <Tooltip title={transactionStatus}>
-                                    <CheckCircleOutlined
-                                      style={{
-                                        color: '#28a745',
-                                        fontSize: '18px',
-                                        paddingTop: '5px'
-                                      }}
-                                    />
-                                  </Tooltip>
+                            <p>{transactionData.mode === "Reversal( Paid To Bank )" ? get(transactionData, 'transaction_refno', null) :
+                              transactionData.mode === "Paid To Bank"
+                                ? get(transactionData, 'transaction_refno', null) &&
+                                  transactionStatus === 'COMPLETED' && !get(transactionData, 'canceled_flag', null) ? <>
+                                    <Tooltip title={transactionStatus}>
+                                      <CheckCircleOutlined
+                                        style={{
+                                          color: '#28a745',
+                                          fontSize: '18px',
+                                          paddingTop: '5px'
+                                        }}
+                                      />
+                                    </Tooltip>
                                 &nbsp;&nbsp;{get(transactionData, 'transaction_refno', null)}</> :
-                                <>
-                                  <Tooltip title={get(transactionData, 'canceled_flag', null) ? 'FAILED' : 'PENDING'}>
-                                    <InfoCircleOutlined
-                                      style={{
-                                        color: get(transactionData, 'canceled_flag', null) ? '#dc3545' : '#FFA500',
-                                        fontSize: '18px',
-                                        paddingTop: '5px'
-                                      }}
-                                    />
-                                  </Tooltip>
+                                  <>
+                                    <Tooltip title={get(transactionData, 'canceled_flag', null) ? 'FAILED' : 'PENDING'}>
+                                      <InfoCircleOutlined
+                                        style={{
+                                          color: get(transactionData, 'canceled_flag', null) ? '#dc3545' : '#FFA500',
+                                          fontSize: '18px',
+                                          paddingTop: '5px'
+                                        }}
+                                      />
+                                    </Tooltip>
                                   &nbsp;&nbsp;
                                   {referrence_number ? get(transactionData, 'transaction_refno', null) :
-                                    get(transactionData, 'canceled_flag', null) ? "FAILED" : "PENDING"
-                                  }
-                                </> : ""} </p>
+                                      get(transactionData, 'canceled_flag', null) ? "FAILED" : "PENDING"
+                                    }
+                                  </> : ""} </p>
                             {transactionData.trip_id
                               && <p>{'#' + transactionData.trip_id}, {get(transactionData, 'trip.source.name', null)} - {get(transactionData, 'trip.destination.name', null)}</p>
                             }
                           </Col>
                           <Col span={6} className='text-right'>
-                            <span className={transactionData.type === 'Credit' ? 'creditAmount' : 'debitAmount'}>
+                            <span className={transactionData.amount > 0 ? 'creditAmount' : 'debitAmount'}>
                               {`₹${transactionData.amount}`}
                             </span>
                           </Col>

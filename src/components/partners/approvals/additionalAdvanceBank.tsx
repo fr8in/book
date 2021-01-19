@@ -1,4 +1,4 @@
-import { Table, Tooltip, Button, Space } from 'antd'
+import { Table, Tooltip, Button, Space, Pagination } from 'antd'
 import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import Link from 'next/link'
@@ -12,8 +12,8 @@ import { CheckOutlined, CloseOutlined, EyeOutlined } from '@ant-design/icons'
 import AdditionalAdvanceBankAccept from './additionalAdvanceBankAccept'
 import PayablesStatus from '../payables/payablesStatus'
 
-const ADDITIONAL_ADVANCE_BANK_APPROVAL = gql`subscription additional_advance {
-  advance_additional_advance(where: {status: {_eq: "PENDING"},payment_mode:{_eq:"BANK"}},order_by:{id:desc}) {
+const ADDITIONAL_ADVANCE_BANK_APPROVAL = gql`subscription additional_advance($status: String, $offset: Int, $limit: Int) {
+  advance_additional_advance(where: {status: {_eq: $status}, payment_mode: {_eq: "BANK"}}, order_by: {id: desc}, offset: $offset, limit: $limit) {
     id
     trip_id
     account_name
@@ -27,8 +27,7 @@ const ADDITIONAL_ADVANCE_BANK_APPROVAL = gql`subscription additional_advance {
     payment_mode
     status
   }
-}
-`
+}`
 
 const AdditionalAdvanceBankApproval = () => {
   const { role } = u
@@ -53,6 +52,7 @@ const AdditionalAdvanceBankApproval = () => {
   if (!loading) {
     _data = data
   }
+
 
   const additionalAdvance = get(_data, 'advance_additional_advance', [])
   const statusHandle = (record) => {
@@ -157,6 +157,17 @@ const AdditionalAdvanceBankApproval = () => {
         scroll={{ x: 660 }}
         pagination={false}
       />
+      {!loading && record_count
+        ? (
+          <Pagination
+            size='small'
+            // current={currentPage}
+            // pageSize={filter.limit}
+            // showSizeChanger={false}
+            // total={record_count}
+            // onChange={pageChange}
+            className='text-right p10'
+          />) : null}
       {object.approveVisible && (
         <AdditionalAdvanceBankAccept
           visible={object.approveVisible}
