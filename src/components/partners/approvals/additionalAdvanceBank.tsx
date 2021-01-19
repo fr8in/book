@@ -1,9 +1,10 @@
-import { Table, Tooltip, Button, Space } from 'antd'
+import { Table, Tooltip, Button, Space, Checkbox, Pagination } from 'antd'
 import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import Link from 'next/link'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import u from '../../../lib/util'
+import isEmpty from 'lodash/isEmpty'
 import userContext from '../../../lib/userContaxt'
 import Truncate from '../../common/truncate'
 import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
@@ -12,8 +13,8 @@ import { CheckOutlined, CloseOutlined, EyeOutlined } from '@ant-design/icons'
 import AdditionalAdvanceBankAccept from './additionalAdvanceBankAccept'
 import PayablesStatus from '../payables/payablesStatus'
 
-const ADDITIONAL_ADVANCE_BANK_APPROVAL = gql`subscription additional_advance {
-  advance_additional_advance(where: {status: {_eq: "PENDING"},payment_mode:{_eq:"BANK"}},order_by:{id:desc}) {
+const ADDITIONAL_ADVANCE_BANK_APPROVAL = gql`subscription additional_advance($status: [String!], $offset: Int, $limit: Int) {
+  advance_additional_advance(where: {status: {_in: $status}, payment_mode: {_eq: "BANK"}}, order_by: {id: desc}, offset: $offset, limit: $limit) {
     id
     trip_id
     account_name
@@ -27,8 +28,14 @@ const ADDITIONAL_ADVANCE_BANK_APPROVAL = gql`subscription additional_advance {
     payment_mode
     status
   }
-}
-`
+}`
+const ADVANCE_AGGREGATE = gql`subscription additional_advance($status: [String!]) {
+  advance_additional_advance_aggregate(where: {status: {_in: $status}, payment_mode: {_eq: "BANK"}}, order_by: {id: desc}) {
+    aggregate {
+      count
+    }
+  }
+}`
 
 const AdditionalAdvanceBankApproval = () => {
   const { role } = u
@@ -39,25 +46,69 @@ const AdditionalAdvanceBankApproval = () => {
   const rejected_access = u.is_roles(reject_roles, context)
   const initial = {
     approveData: [],
+    offset: 0,
     doc_num: null,
     statusVisible: false,
     approveVisible: false,
-    title: null
+    title: null,
+    status: ['PENDING']
   }
+  const [filter, setFilter] = useState(initial)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
   const { loading, data } = useSubscription(
-    ADDITIONAL_ADVANCE_BANK_APPROVAL)
-
+    ADDITIONAL_ADVANCE_BANK_APPROVAL,
+    {
+      variables:  {
+        offset: filter.offset,
+        limit: u.limit,
+        status: !isEmpty(filter.status) ? filter.status : null
+      }
+  })
+  const { loading: aggregateLoading, data: aggregateData } = useSubscription(ADVANCE_AGGREGATE,
+    {
+      variables: {
+        status: !isEmpty(filter.status) ? filter.status : null
+      }
+    })
+  let _aggregatedata = {}
+  if (!aggregateLoading) {
+    _aggregatedata = aggregateData
+  }
   let _data = {}
   if (!loading) {
     _data = data
   }
+  const [currentPage, setCurrentPage] = useState(1)
+  const advanceStatus = [
+    {id:1,name:'INITIATED'},
+    {id:2,name:'PENDING'},
+    {id:3,name:'COMPLETED'},
+    {id:4,name:'REJECTED'}]
 
   const additionalAdvance = get(_data, 'advance_additional_advance', [])
   const statusHandle = (record) => {
     handleShow('statusVisible', null, 'doc_num', parseFloat(record.docentry))
   }
+  const additional_advance_status = advanceStatus.map((data) => {
+    return { value: data.name , label: data.name }
+  })
+  const onFilter = (value) => {
+    setFilter({ ...filter, status: value, offset: 0 })
+  }
+  const handleStatus = (checked) => {
+    onFilter(checked)
+    setCurrentPage(1)
+  }
+  const onPageChange = (value) => {
+    setFilter({ ...filter, offset: value })
+  }
+  const pageChange = (page, pageSize) => {
+    const newOffset = page * pageSize - u.limit
+    setCurrentPage(page)
+    onPageChange(newOffset)
+  }
+  const record_count = get(aggregateData, 'advance_additional_advance_aggregate.aggregate.count', 0)
   const columns = [
     {
       title: 'Trip Id',
@@ -89,7 +140,16 @@ const AdditionalAdvanceBankApproval = () => {
     {
       title: 'Status',
       dataIndex: 'status',
-      width: '10%'
+      render: (text, record) => get(record, 'status', ''),
+      width: '10%',
+      filterDropdown: (
+        <Checkbox.Group
+          options={additional_advance_status}
+          defaultValue={filter.status}
+          onChange={handleStatus}
+          className='filter-drop-down'
+        />
+      )
     },
     {
       title: 'Created By',
@@ -112,7 +172,7 @@ const AdditionalAdvanceBankApproval = () => {
       render: (text, record) => (
         <Space>
           <Tooltip title='Approve'>
-            {approval_access
+            {approval_access && record.status === 'PENDING'
               ? (
                 <Button
                   type='primary'
@@ -126,7 +186,7 @@ const AdditionalAdvanceBankApproval = () => {
               : null}
           </Tooltip>
           <Tooltip title='Reject'>
-            {rejected_access
+            {rejected_access && record.status === 'PENDING'
               ? (
                 <Button
                   type='primary'
@@ -156,6 +216,7 @@ const AdditionalAdvanceBankApproval = () => {
         size='small'
         scroll={{ x: 660 }}
         pagination={false}
+        loading={loading}
       />
       {object.approveVisible && (
         <AdditionalAdvanceBankAccept
@@ -172,6 +233,18 @@ const AdditionalAdvanceBankApproval = () => {
           doc_num={object.doc_num}
         />
       )}
+      {!loading && record_count 
+      ? (
+        <Pagination
+          size='small'
+          current={currentPage}
+          pageSize={u.limit}
+          showSizeChanger={false}
+          total={record_count}
+          onChange={pageChange}
+          className='text-right p10'
+        />
+      ) : null}
     </>
   )
 }
