@@ -55,7 +55,7 @@ const ExcessToPo = (props) => {
   const onTruckSelect = (truck) => {
     const partner = truck.partner
     setPartnerName(partner.name)
-    setPartnerMobile(partner.partner_users[0].mobile)
+    setPartnerMobile(get(partner,'partner_users[0].mobile',null))
     setTruckNo(truck.truck_no)
     setTruckId(truck.id)
     setPoVisible(truck.id || partnerId)
@@ -104,7 +104,7 @@ const ExcessToPo = (props) => {
         </Form>
         {truckId ?
           <>
-            <Row><p>{partnerName} - {partnerMobile ? <Phone number={partnerMobile} /> : null}</p></Row>
+            <Row><p>{partnerName} - {<Phone number={partnerMobile} />}</p></Row>
             <Row><p>Truck No : {truckNo}</p></Row>
             <Row justify='end'>
               <Button type='primary' size='small' onClick={onProceed}>Proceed</Button>
