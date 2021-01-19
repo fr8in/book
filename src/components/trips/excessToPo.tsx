@@ -43,8 +43,6 @@ const ExcessToPo = (props) => {
   }
   const partnerSearch = get(_data, 'search_partner', [])
 
-  const [form] = Form.useForm()
-
   const onPartnerSearch = (value) => {
     setSearch(value)
   }
@@ -78,7 +76,7 @@ const ExcessToPo = (props) => {
         onCancel={onHide}
         footer={[]}
       >
-        <Form form={form}>
+        <Form>
           {
             truckId ?
             <Form.Item name='partner' >
