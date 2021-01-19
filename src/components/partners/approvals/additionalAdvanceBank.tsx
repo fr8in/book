@@ -54,8 +54,10 @@ const AdditionalAdvanceBankApproval = () => {
     status: ['PENDING']
   }
   const [filter, setFilter] = useState(initial)
-
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+
+const pendingStatus = filter.status=== ['PENDING'] ? true : false
+console.log('pendingStatus',pendingStatus)
 
   const { loading, data } = useSubscription(
     ADDITIONAL_ADVANCE_BANK_APPROVAL,
@@ -110,7 +112,6 @@ const AdditionalAdvanceBankApproval = () => {
     onPageChange(newOffset)
   }
   const record_count = get(aggregateData, 'advance_additional_advance_aggregate.aggregate.count', 0)
-  console.log('record',record_count)
   const columns = [
     {
       title: 'Trip Id',
@@ -174,7 +175,7 @@ const AdditionalAdvanceBankApproval = () => {
       render: (text, record) => (
         <Space>
           <Tooltip title='Approve'>
-            {approval_access
+            {approval_access && pendingStatus
               ? (
                 <Button
                   type='primary'
@@ -188,7 +189,7 @@ const AdditionalAdvanceBankApproval = () => {
               : null}
           </Tooltip>
           <Tooltip title='Reject'>
-            {rejected_access
+            {rejected_access && pendingStatus
               ? (
                 <Button
                   type='primary'
