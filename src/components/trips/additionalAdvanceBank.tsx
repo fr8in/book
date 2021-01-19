@@ -132,7 +132,7 @@ const AdditionalAdvanceBank = (props) => {
           trip_id: trip_info.id,
           amount: parseFloat(form.amount),
           is_exception: false,
-          mode:"BANK"
+          mode: "BANK"
         }
       })
     }
@@ -220,7 +220,7 @@ const AdditionalAdvanceBank = (props) => {
             </Col>
             <Col xs={8}>
               <Form.Item label='save' className='hideLabel'>
-                <Button type='primary' disabled={disable_adv_btn || (radioValue === 'BANK' && !form.getFieldValue('ifsc'))} loading={disableBtn} htmlType='submit'>Create</Button>
+                <Button type='primary' loading={disableBtn} htmlType='submit'>Create</Button>
               </Form.Item>
             </Col>
           </Row>
