@@ -54,6 +54,8 @@ const AdditionalAdvanceBankApproval = () => {
     status: ['PENDING']
   }
   const [filter, setFilter] = useState(initial)
+  const [currentPage, setCurrentPage] = useState(1)
+
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
   const { loading, data } = useSubscription(
@@ -79,7 +81,6 @@ const AdditionalAdvanceBankApproval = () => {
   if (!loading) {
     _data = data
   }
-  const [currentPage, setCurrentPage] = useState(1)
   const advanceStatus = [
     {id:1,name:'INITIATED'},
     {id:2,name:'PENDING'},
