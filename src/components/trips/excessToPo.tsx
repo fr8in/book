@@ -4,6 +4,7 @@ import TrucksForPO from './trucksForPO'
 import { gql, useQuery } from '@apollo/client'
 import ConfirmPo from './confirmPo'
 import get from 'lodash/get'
+import Phone from '../common/phone'
 
 const PARTNER_SEARCH_QUERY = gql`
 query partner_search($search: String){
@@ -105,7 +106,7 @@ const ExcessToPo = (props) => {
         </Form>
         {truckId ?
           <>
-            <Row><p>{partnerName} - {partnerMobile}</p></Row>
+            <Row><p>{partnerName} - {partnerMobile ? <Phone number={partnerMobile} /> : null}</p></Row>
             <Row><p>Truck No : {truckNo}</p></Row>
             <Row justify='end'>
               <Button type='primary' size='small' onClick={onProceed}>Proceed</Button>
