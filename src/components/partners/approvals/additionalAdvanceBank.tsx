@@ -56,9 +56,6 @@ const AdditionalAdvanceBankApproval = () => {
   const [filter, setFilter] = useState(initial)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
-const pendingStatus = filter.status=== ['PENDING'] ? true : false
-console.log('pendingStatus',pendingStatus)
-
   const { loading, data } = useSubscription(
     ADDITIONAL_ADVANCE_BANK_APPROVAL,
     {
@@ -175,7 +172,7 @@ console.log('pendingStatus',pendingStatus)
       render: (text, record) => (
         <Space>
           <Tooltip title='Approve'>
-            {approval_access && pendingStatus
+            {approval_access && record.status === 'PENDING'
               ? (
                 <Button
                   type='primary'
@@ -189,7 +186,7 @@ console.log('pendingStatus',pendingStatus)
               : null}
           </Tooltip>
           <Tooltip title='Reject'>
-            {rejected_access && pendingStatus
+            {rejected_access && record.status === 'PENDING'
               ? (
                 <Button
                   type='primary'
