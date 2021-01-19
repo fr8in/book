@@ -5,87 +5,65 @@ import { useState } from 'react'
 
 
 const TRUCKS_FOR_PO_QUERY = gql`
-query partner_po_creation($id:Int!){
-  partner(where:{id:{_eq:$id}}){
+query trucks_for_po($partner_id: Int, $truck_search: String) {
+  truck(where: {partner_id: {_eq: $partner_id}, truck_status: {name: {_eq: "Waiting for Load"}}, truck_no: {_ilike: $truck_search}}) {
     id
-    cardcode
-    name
-    trucks(where:{truck_status:{name:{_eq:"Waiting for Load"}}}){
+    truck_no
+    truck_type {
       id
-      truck_no
-      truck_type{
+      name
+    }
+    partner {
+      name
+      id
+      partner_users(where:{is_admin:{_eq:true}}){
         id
-        name
+        mobile
       }
     }
   }
-}`
+}
 
-const TRUCKS_SEARCH_QUERY = gql `query truck_search($search: String){
-  search_truck(args:{search:$search, status_ids: "{5}"}){
-      id
-      link
-      description
-    }
-  }`
+`
 
 const TrucksForPO = (props) => {
   const { partner_id, onChange } = props
-  const initial = { search: null }
-  const [obj, setObj] = useState(initial)
 
-
-  const { loading:truck_loading, error:truck_error, data:truck_data } = useQuery(
-    TRUCKS_SEARCH_QUERY,
-    {
-      variables: { search: obj.search || '' },
-      skip: !obj.search,
-      fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
-    }
-  )
-
-  let _truck_data = {}
-  if (!truck_loading) {
-    _truck_data = truck_data
-  }
-  const truckSearch = get(_truck_data, 'search_truck', [])
+  const [truckSearch, setTruckSearch] = useState(null)
 
   const { loading, error, data } = useQuery(
     TRUCKS_FOR_PO_QUERY,
     {
-      variables: { id: partner_id },
-      skip: !partner_id,
+      variables: {
+        partner_id: partner_id || null,
+        truck_search: truckSearch ? `%${truckSearch}%`:null
+      },
+      skip: !partner_id  && !truckSearch,
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
   )
-
   console.log('TrucksForPO Error', error)
+
   let _data = {}
   if (!loading) {
     _data = data
   }
-  const [form] = Form.useForm()
-
-  const partner = get(_data, 'partner[0]', null)
-  const truck_list = get(partner, 'trucks', [])
+  const truck_list = get(_data, 'truck', [])
 
   const onTruckSelect = (value, Item) => {
-    let selectd_truck;
+    let selected_truck;
     let truck;
-  if(truck_list.length > 0){
-    selectd_truck = truck_list && truck_list.filter(t => t.id === parseInt(Item.key, 10))
-    truck = selectd_truck && selectd_truck.length > 0 && selectd_truck[0] 
-  } else if(truckSearch.length > 0) {
-    selectd_truck = truckSearch && truckSearch.filter(t => t.id === parseInt(Item.key, 10))
-    truck = selectd_truck && selectd_truck.length > 0 && selectd_truck[0] 
-  }
-    onChange(truck, partner)
+    if (truck_list.length > 0) {
+      selected_truck = truck_list && truck_list.filter(truck => truck.id === parseInt(Item.key, 10))
+      truck = selected_truck && selected_truck.length > 0 && selected_truck[0]
+    }
+    onChange(truck)
   }
   const onTruckSearch = (value) => {
-    setObj({ ...obj, search: value })
+    setTruckSearch(value)
   }
+  
   return (
     <Form.Item name='truck'>
       <Select
@@ -98,9 +76,6 @@ const TrucksForPO = (props) => {
         {truck_list && truck_list.map(_truck => (
           <Select.Option key={_truck.id} value={_truck.truck_no}>{_truck.truck_no}</Select.Option>
         ))}
-        {truckSearch && truckSearch.map(_part => (
-                <Select.Option key={_part.id} value={_part.description}>{_part.description}</Select.Option>
-              ))}
       </Select>
     </Form.Item>
   )
