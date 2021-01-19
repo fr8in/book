@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Modal, Form, Select, Row, Col, Button } from 'antd'
+import { Modal, Form, Select, Row, Button, Input } from 'antd'
 import TrucksForPO from './trucksForPO'
 import { gql, useQuery } from '@apollo/client'
 import ConfirmPo from './confirmPo'
@@ -78,20 +78,29 @@ const ExcessToPo = (props) => {
         footer={[]}
       >
         <Form form={form}>
-          <Form.Item name='partner' initialValue={partnerName} >
-            <Select
-              placeholder='Select Partner'
-              showSearch
-              disabled={false}
-              defaultValue={partnerName}
-              onSearch={onPartnerSearch}
-              onChange={onPartnerSelect}
-            >
-              {partnerSearch && partnerSearch.map(_partner => (
-                <Select.Option key={_partner.id} value={_partner.description}>{_partner.description}</Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
+          {
+            truckId ?
+            <Form.Item name='partner' >
+             <Input 
+             placeholder='Partner Name'
+             defaultValue={partnerName}
+             /> 
+             </Form.Item>
+              :
+              <Form.Item name='partner' >
+                <Select
+                  placeholder='Select Partner'
+                  showSearch
+                  disabled={false}
+                  defaultValue={partnerName}
+                  onSearch={onPartnerSearch}
+                  onChange={onPartnerSelect}
+                >
+                  {partnerSearch && partnerSearch.map(_partner => (
+                    <Select.Option key={_partner.id} value={_partner.description}>{_partner.description}</Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>}
           <TrucksForPO onChange={onTruckSelect} partner_id={partnerId} />
         </Form>
         {truckId ?
