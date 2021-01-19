@@ -157,7 +157,7 @@ const AdditionalAdvanceBankApproval = () => {
         scroll={{ x: 660 }}
         pagination={false}
       />
-      {!loading && record_count
+      {/* {!loading && record_count
         ? (
           <Pagination
             size='small'
@@ -167,7 +167,7 @@ const AdditionalAdvanceBankApproval = () => {
             // total={record_count}
             // onChange={pageChange}
             className='text-right p10'
-          />) : null}
+          />) : null} */}
       {object.approveVisible && (
         <AdditionalAdvanceBankAccept
           visible={object.approveVisible}
