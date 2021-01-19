@@ -17,7 +17,7 @@ query partner_search($search: String){
 
 const ExcessToPo = (props) => {
   const { visible, onHide, record } = props
-
+  const [form] = Form.useForm()
   const [search, setSearch] = useState(null)
   const [truckId, setTruckId] = useState(null)
   const [truckNo, setTruckNo] = useState(null)
@@ -53,13 +53,12 @@ const ExcessToPo = (props) => {
   }
 
   const onTruckSelect = (truck) => {
-    const partner = truck.partner
-    setPartnerName(partner.name)
-    setPartnerMobile(get(partner,'partner_users[0].mobile',null))
-    setTruckNo(truck.truck_no)
-    setTruckId(truck.id)
-    setPoVisible(truck.id || partnerId)
-    setPartnerId(partner.id)
+    setPartnerName(get(truck, 'partner.name', null))
+    setPartnerMobile(get(truck, 'partner.partner_users[0].mobile', null))
+    setTruckNo(get(truck, 'truck_no', null))
+    setTruckId(get(truck, 'id', null))
+    setPoVisible(get(truck, 'id', null) || partnerId)
+    setPartnerId(get(truck, 'partner.id', null))
   }
 
   const onClosePoModal = () => {
@@ -77,16 +76,14 @@ const ExcessToPo = (props) => {
         footer={[]}
       >
         <Form>
-          {
-            truckId ?
-            <Form.Item name='partner' >
-             <Input 
-             placeholder='Partner Name'
-             defaultValue={partnerName}
-             /> 
-             </Form.Item>
-              :
-              <Form.Item name='partner' >
+          <Form.Item name='partner' >
+            {
+              truckId ?
+                <Input
+                  placeholder='Partner Name'
+                  defaultValue={partnerName}
+                />
+                :
                 <Select
                   placeholder='Select Partner'
                   showSearch
@@ -98,8 +95,8 @@ const ExcessToPo = (props) => {
                   {partnerSearch && partnerSearch.map(_partner => (
                     <Select.Option key={_partner.id} value={_partner.description}>{_partner.description}</Select.Option>
                   ))}
-                </Select>
-              </Form.Item>}
+                </Select>}
+          </Form.Item>
           <TrucksForPO onChange={onTruckSelect} partner_id={partnerId} />
         </Form>
         {truckId ?
