@@ -5,41 +5,50 @@ import { gql, useSubscription, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import Truncate from '../../common/truncate'
 import u from '../../../lib/util'
+import moment from 'moment'
+import LinkComp from '../../common/link'
 
 const ICICIBANK_STATEMENT = gql`
-subscription iciciBank_statement($offset:Int,$limit:Int){
-  iciciBank_statement (offset:$offset,limit:$limit){
-     id
+subscription iciciBank_statement($fromDate: timestamp, $toDate: timestamp,$offset:Int,$limit:Int) {
+  iciciBank_statement (offset:$offset,limit:$limit, where:{_and:[{txn_date:{_gt:$fromDate}},{txn_date:{_lte:$toDate}}]}){
+     id 
      txn_date
      amount
      outgoing_no
      bank_reference_no
      type
+     cardcode
      remarks
      balance
      date
    }
- }`
+ }
+ `
 const ICICIBANK_STATEMENT_AGGREGATE = gql`
-query iciciBank_statement_aggregate{
-  iciciBank_statement_aggregate{
+query iciciBank_statement_aggregate($fromDate: timestamp, $toDate: timestamp){
+  iciciBank_statement_aggregate(where:{_and:[{txn_date:{_gt:$fromDate}},{txn_date:{_lte:$toDate}}]}){
     aggregate{
       count
     }
   }
 }
 `
-const Last7daysPending = (props) => {
+const Last7daysPending = () => {
 
   const [offset,setOffset] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
-
+  
+  const perviousDate = u.getPervious4thDate()
+  const futureDate = u.getfuture3rdDate()
+  
   const { loading, error, data } = useSubscription(
     ICICIBANK_STATEMENT,
     {
       variables:{
         offset:offset,
-        limit:u.limit
+        limit:u.limit,
+        fromDate: moment(perviousDate).format('DD-MMM-YY HH:mm'),
+        toDate:moment(futureDate).format('DD-MMM-YY HH:mm') 
       }
     }
     )
@@ -53,6 +62,10 @@ const Last7daysPending = (props) => {
   const { loading: count_loading, error: count_error, data: count_data } = useQuery(
     ICICIBANK_STATEMENT_AGGREGATE,
     {
+      variables:{
+        fromDate: moment(perviousDate).format('DD-MMM-YY HH:mm'),
+        toDate:moment(futureDate).format('DD-MMM-YY HH:mm') 
+      },
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
     }
@@ -73,13 +86,19 @@ const Last7daysPending = (props) => {
     {
       title: <Tooltip title='Transaction Date'>Tnx Date</Tooltip>,
       dataIndex: 'txn_date',
-      sorter: (a, b) => (a.txn_date > b.txn_date ? -1 : 1),
+      render: (text, render) => text ? moment(text).format('DD-MMM-YY HH:mm:ss') : '-',
+      sorter: (a, b) => (a.txn_date > b.txn_date ? 1 : -1),
       defaultSortOrder: 'descend',
-      width: '10%',
+      width: '12%',
     },
     {
       title: 'Cardcode',
       dataIndex: 'cardcode',
+      render: (text, record) => {
+        return (
+          <LinkComp type='partners' data={text} id={text} />
+        )
+      },
       sorter: (a, b) => (a.cardcode > b.cardcode ? -1 : 1),
       width: '10%',
     },
@@ -114,7 +133,7 @@ const Last7daysPending = (props) => {
         const remarks = get(record, 'remarks', null)
         return (<Truncate data={remarks} length={90} />)
       },
-      width: '48%',
+      width: '46%',
     },
     {
       title: 'Balance',
