@@ -11,7 +11,7 @@ import isNil from 'lodash/isNil'
 import CashBack from '../cashBack'
 import CashBackButton from '../cashBackButton'
 import userContext from '../../../../lib/userContaxt'
-import Last48hrsPending from '../last48hrspending'
+import Last7daysPending from '../last7daysPending'
 
 
 const { RangePicker } = DatePicker
@@ -106,7 +106,7 @@ const PayablesContainer = () => {
 
   const TabBarContent = () => {
     return (
-      (tabIndex === '1') ?
+      (tabIndex === '0') ?
         (
           <Space>
             <RangePicker
@@ -154,7 +154,7 @@ const PayablesContainer = () => {
           <ICICIBankOutgoing />
         </TabPane>
         <TabPane tab='Statement' key='1'>
-          <Last48hrsPending start_date={date} date={_day} />
+          <Last7daysPending />
         </TabPane>
         {access &&
           <TabPane tab='Transaction Fee' key='2'>
