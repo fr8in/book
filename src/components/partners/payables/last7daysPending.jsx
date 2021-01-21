@@ -179,7 +179,7 @@ const Last7daysPending = () => {
     {
       title: 'Type',
       dataIndex: 'type',
-      sorter: (a, b) => a.type - b.type,
+      sorter: (a, b) => (a.type > b.type ? 1 : -1),
       width: '4%',
     },
     {
