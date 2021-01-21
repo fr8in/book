@@ -3,11 +3,12 @@ import { Card } from 'antd'
 import LabelData from '../../components/common/labelData'
 import useShowHide from '../../hooks/useShowHide'
 import OnHoldTrips from '../trips/onholdTrips'
+import ClearedTrips from '../trips/clearedTrips'
 import get from 'lodash/get'
 
 const PendingBalance = (props) => {
   const { partner_summary } = props
-  const initial = { onhold: false }
+  const initial = { onhold: false, cleared: false }
   const { visible, onShow, onHide } = useShowHide(initial)
 
   return (
@@ -23,9 +24,10 @@ const PendingBalance = (props) => {
       />
       <LabelData
         label='Cleared'
-        value={get(partner_summary, 'partner_accounting.cleared', null) || 0}
+        value={<h4 className='link u' onClick={() => onShow('cleared')}> {get(partner_summary, 'partner_accounting.cleared', null) || 0}</h4>}
       />
       {visible.onhold && <OnHoldTrips visible={visible.onhold} onHide={onHide} cardcode={partner_summary.cardcode} />}
+      {visible.cleared && <ClearedTrips visible={visible.cleared} onHide={onHide} partner_id={partner_summary.id} />}
     </Card>
   )
 }
