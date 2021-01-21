@@ -1,4 +1,4 @@
-import { Table, Tooltip, Pagination, Input } from 'antd'
+import { Table, Tooltip, Pagination, Input, Checkbox } from 'antd'
 import { useState } from 'react'
 import { gql, useSubscription, useQuery } from '@apollo/client'
 import get from 'lodash/get'
@@ -7,17 +7,15 @@ import u from '../../../lib/util'
 import moment from 'moment'
 import LinkComp from '../../common/link'
 import { SearchOutlined } from '@ant-design/icons'
+import isEmpty from 'lodash/isEmpty'
 
 const ICICIBANK_STATEMENT = gql`
-subscription iciciBank_Statement($offset:Int, $limit:Int, $fromDate:timestamp, $toDate:timestamp, $cardcode:String, $partner:String) {
+subscription iciciBank_Statement($offset:Int, $limit:Int,$where:iciciBank_statement_bool_exp) {
   iciciBank_statement (
     offset:$offset,
     limit:$limit,
-    where:{
-      _and:[{txn_date:{_gt:$fromDate}}, {txn_date:{_lte:$toDate}}],
-      cardcode:{_ilike:$cardcode},
-      partner:{name:{_ilike:$partner}}
-    }
+    order_by:{txn_date:desc}
+    where:$where
   ){
      id 
      txn_date
@@ -36,34 +34,58 @@ subscription iciciBank_Statement($offset:Int, $limit:Int, $fromDate:timestamp, $
  }
  `
 const ICICIBANK_STATEMENT_AGGREGATE = gql`
-query iciciBank_statement_aggregate($fromDate: timestamp, $toDate: timestamp,$cardcode:String,$partner:String){
-  iciciBank_statement_aggregate(where:{_and:[{txn_date:{_gt:$fromDate}},{txn_date:{_lte:$toDate}}],cardcode:{_ilike:$cardcode},partner:{name:{_ilike:$partner}}}){
+query iciciBank_statement_aggregate($where:iciciBank_statement_bool_exp){
+  iciciBank_statement_aggregate(where:$where){
     aggregate{
       count
     }
   }
 }
 `
+const TypeFilter = [
+  { value: 1, text: 'CR' },
+  { value: 2, text: 'DR' }
+]
+
 const Last7daysPending = () => {
 
-  const [offset, setOffset] = useState(0)
-  const [cardcodeSearch, setCardcodeSearch] = useState(null)
-  const [partner, setPartner] = useState(null)
+  const initial = { 
+    offset: 0, 
+    cardcode:null, 
+    partner: null, 
+    amount: null, 
+    outgoingNo: null, 
+    refNo:null , 
+    remarks: null,
+    type: null
+  }
+  const [filter, setFilter] = useState(initial)
   const [currentPage, setCurrentPage] = useState(1)
 
   const perviousDate = u.getPervious4thDate()
   const futureDate = u.getfuture3rdDate()
 
+const where = {
+      _and:[
+        {txn_date:{_gt:moment(perviousDate).format('DD-MMM-YY HH:mm')}},
+        {txn_date:{_lte: moment(futureDate).format('DD-MMM-YY HH:mm')}}
+      ],
+      cardcode:{_ilike:filter.cardcode ? `%${filter.cardcode}%` : null},
+      partner:{name:{_ilike: filter.partner ? `%${filter.partner}%` : null}},
+      amount:{_ilike:filter.amount ? `%${filter.amount}%` : null},
+      remarks:{_ilike: filter.remarks ? `%${filter.remarks}%` : null},
+      bank_reference_no:{_ilike:filter.refNo ? `%${filter.refNo}%` : null},
+      outgoing_no:{_ilike:filter.outgoingNo ? `%${filter.outgoingNo}%` : null},
+      ...!isEmpty(filter.type) && { type: { _in: filter.type } } ,
+}
+
   const { loading, error, data } = useSubscription(
     ICICIBANK_STATEMENT,
     {
       variables: {
-        offset: offset,
+        offset: filter.offset,
         limit: u.limit,
-        cardcode: cardcodeSearch ? `%${cardcodeSearch}%` : null,
-        partner: partner ? `%${partner}%` : null,
-        fromDate: moment(perviousDate).format('DD-MMM-YY HH:mm'),
-        toDate: moment(futureDate).format('DD-MMM-YY HH:mm')
+        where: where
       }
     }
   )
@@ -79,10 +101,7 @@ const Last7daysPending = () => {
     ICICIBANK_STATEMENT_AGGREGATE,
     {
       variables: {
-        fromDate: moment(perviousDate).format('DD-MMM-YY HH:mm'),
-        toDate: moment(futureDate).format('DD-MMM-YY HH:mm'),
-        cardcode: cardcodeSearch ? `%${cardcodeSearch}%` : null,
-        partner: partner ? `%${partner}%` : null,
+        where: where
       },
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
@@ -95,16 +114,36 @@ const Last7daysPending = () => {
   const statement_count = get(_statement_count, 'iciciBank_statement_aggregate', [])
   const record_count = get(statement_count, 'aggregate.count', null)
 
+  const typeFilterList = TypeFilter.map((data) => {
+    return { value: data.text, label: data.text }
+  })
+
   const onPageChange = (page, pageSize) => {
     const newOffset = page * pageSize - u.limit
     setCurrentPage(page)
-    setOffset(newOffset)
+    setFilter({...filter, offset:newOffset})
   }
   const onCardcodeSearch = (e) => {
-    setCardcodeSearch(e.target.value)
+    setFilter({...filter, cardcode:e.target.value, offset: 0 })
   }
   const onPartnerSearch = (e) => {
-    setPartner(e.target.value)
+    setFilter({...filter, partner:e.target.value, offset: 0 })
+  }
+  const onAmountSearch = (e) => {
+    setFilter({...filter, amount:e.target.value, offset: 0 })
+  }
+  const onOutgoingSearch = (e) => {
+    setFilter({...filter, outgoingNo:e.target.value, offset: 0 })
+  }
+  const onRefNoSearch = (e) => {
+    setFilter({...filter, refNo:e.target.value, offset: 0 })
+  }
+  const onRemarksSearch = (e) => {
+    setFilter({...filter, remarks:e.target.value, offset: 0 })
+  }
+  const onTypeFilter = (checked) => {
+    setFilter({ ...filter, type: checked, offset: 0 })
+    setCurrentPage(1)
   }
   const columns = [
     {
@@ -117,8 +156,8 @@ const Last7daysPending = () => {
       filterDropdown: (
         <div>
           <Input
-            placeholder='Search Cardcode'
-            value={partner}
+            placeholder='Search Partner'
+            value={filter.partner}
             onChange={onPartnerSearch}
           />
         </div>
@@ -141,7 +180,7 @@ const Last7daysPending = () => {
         <div>
           <Input
             placeholder='Search Cardcode'
-            value={cardcodeSearch}
+            value={filter.cardcode}
             onChange={onCardcodeSearch}
           />
         </div>
@@ -155,31 +194,71 @@ const Last7daysPending = () => {
       dataIndex: 'txn_date',
       render: (text, render) => text ? moment(text).format('DD-MMM-YY HH:mm:ss') : '-',
       sorter: (a, b) => (a.txn_date > b.txn_date ? 1 : -1),
-      defaultSortOrder: 'descend',
       width: '13%',
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
-      sorter: (a, b) => a.amount - b.amount,
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search Amount'
+            value={filter.amount}
+            onChange={onAmountSearch}
+          />
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      ),
       width: '5%',
     },
     {
       title: 'Outgoing No',
       dataIndex: 'outgoing_no',
-      sorter: (a, b) => a.outgoing_no - b.outgoing_no,
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search OutGoingNo'
+            value={filter.outgoingNo}
+            onChange={onOutgoingSearch}
+          />
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      ),
       width: '9%',
     },
     {
       title: <Tooltip title='Bank Reference No'>Ref No</Tooltip>,
       dataIndex: 'bank_reference_no',
-      sorter: (a, b) => a.bank_reference_no - b.bank_reference_no,
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search refNo'
+            value={filter.refNo}
+            onChange={onRefNoSearch}
+          />
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      ),
       width: '8%',
     },
     {
       title: 'Type',
       dataIndex: 'type',
-      sorter: (a, b) => (a.type > b.type ? 1 : -1),
+      filters: TypeFilter,
+      filterDropdown: (
+        <Checkbox.Group
+          options={typeFilterList}
+          defaultValue={filter.type}
+          onChange={onTypeFilter}
+          className='filter-drop-down'
+        />
+      ),
       width: '4%',
     },
     {
@@ -189,12 +268,23 @@ const Last7daysPending = () => {
         const remarks = get(record, 'remarks', null)
         return (<Truncate data={remarks} length={90} />)
       },
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search Remarks'
+            value={filter.remarks}
+            onChange={onRemarksSearch}
+          />
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      ),
       width: '38%',
     },
     {
       title: 'Balance',
       dataIndex: 'balance',
-      sorter: (a, b) => a.balance - b.balance,
       width: '6%',
     }
   ]
