@@ -35,24 +35,24 @@ query iciciBank_statement_aggregate($fromDate: timestamp, $toDate: timestamp){
 `
 const Last7daysPending = () => {
 
-  const [offset,setOffset] = useState(0)
+  const [offset, setOffset] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
-  
+
   const perviousDate = u.getPervious4thDate()
   const futureDate = u.getfuture3rdDate()
-  
+
   const { loading, error, data } = useSubscription(
     ICICIBANK_STATEMENT,
     {
-      variables:{
-        offset:offset,
-        limit:u.limit,
+      variables: {
+        offset: offset,
+        limit: u.limit,
         fromDate: moment(perviousDate).format('DD-MMM-YY HH:mm'),
-        toDate:moment(futureDate).format('DD-MMM-YY HH:mm') 
+        toDate: moment(futureDate).format('DD-MMM-YY HH:mm')
       }
     }
-    )
-
+  )
+  console.log('last7daysPending Error', error)
   let _statement = []
   if (!loading) {
     _statement = data
@@ -62,9 +62,9 @@ const Last7daysPending = () => {
   const { loading: count_loading, error: count_error, data: count_data } = useQuery(
     ICICIBANK_STATEMENT_AGGREGATE,
     {
-      variables:{
+      variables: {
         fromDate: moment(perviousDate).format('DD-MMM-YY HH:mm'),
-        toDate:moment(futureDate).format('DD-MMM-YY HH:mm') 
+        toDate: moment(futureDate).format('DD-MMM-YY HH:mm')
       },
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
@@ -81,7 +81,7 @@ const Last7daysPending = () => {
     const newOffset = page * pageSize - u.limit
     setCurrentPage(page)
     setOffset(newOffset)
-}
+  }
   const columns = [
     {
       title: <Tooltip title='Transaction Date'>Tnx Date</Tooltip>,
@@ -150,7 +150,7 @@ const Last7daysPending = () => {
         columns={columns}
         dataSource={statement}
         size='small'
-        scroll={{ x: 1156 }}
+        scroll={{ x: 1250 }}
         pagination={false}
         loading={loading}
       />
