@@ -41,6 +41,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
               type
               file_path
               folder
+              financial_year
         }
         truck_status{
           id

@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { DatePicker, Form ,message} from 'antd'
+import { DatePicker, Space ,message} from 'antd'
 import { gql, useMutation } from '@apollo/client'
 import { EditTwoTone,CloseCircleTwoTone } from '@ant-design/icons'
 import useShowHide from '../../hooks/useShowHide'
@@ -48,6 +48,7 @@ const TruckInsuranceExpiry = (props) => {
         {!visible.dateType ? (
        <label>
          {record.insurance_expiry_at ? moment(record.insurance_expiry_at).format('DD-MMM-YY') : ''}
+         {' '}
           <EditTwoTone
           onClick={() => onShow('dateType')}
         />
@@ -63,7 +64,9 @@ const TruckInsuranceExpiry = (props) => {
         onChange={onSubmit}
         size="small"
       />{' '}
+       <Space>
       <CloseCircleTwoTone onClick={onHide} />
+      </Space>
           </span>)}
     </div>
   )

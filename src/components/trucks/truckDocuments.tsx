@@ -37,7 +37,7 @@ const truckDocuments = (props) => {
   const context = useContext(userContext)
   const dateFormat = 'YYYY-MM-DD'
 
-  const [checked, setChecked] = useState(false)
+  const [checked, setChecked] = useState()
   
 
   const [updateloadingmemo] = useMutation(
@@ -136,8 +136,6 @@ const truckDocuments = (props) => {
     })
   })
 
-  console.log('truck_files',truck_files)
-
   const getTruckTDSDocument = (type, financial_year) => !isEmpty(truck_files) ? truck_files.filter(data => data.type === type && data.financial_year === financial_year) : []
   const truck_tds_file_list_previous = !isEmpty(getTruckTDSDocument( u.fileType.tds,tds_previous_)) && getTruckTDSDocument( u.fileType.tds,tds_previous_).map((file, i) => {
     return ({
@@ -154,9 +152,6 @@ const truckDocuments = (props) => {
       status: 'done'
     })
   })
-
-  console.log('truck_tds_file_list_previous',truck_tds_file_list_current)
-
   
   const vaahan_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.vaahan) : null
   const vaahan_file_list = !isEmpty(vaahan_files) && vaahan_files.map((file, i) => {

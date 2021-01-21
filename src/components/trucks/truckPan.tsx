@@ -2,6 +2,7 @@ import { gql, useMutation } from '@apollo/client'
 import { message } from 'antd'
 import InlineEdit from '../common/inlineEdit'
 import userContext from '../../lib/userContaxt'
+import EditableCell from '../common/editableCell'
 import u from '../../lib/util'
 import { useContext } from 'react'
 
@@ -50,12 +51,11 @@ const TruckPan = (props) => {
   }
 
   return (
-    loading ? null : (
-      <InlineEdit
-        text={pan || '-'}
-        onSetText={onSubmit}
-        edit_access={edit_access}
-      />)
+    <EditableCell
+    label={pan || '-'}
+    onSubmit={onSubmit}
+    edit_access={edit_access}
+  />
   )
 }
 
