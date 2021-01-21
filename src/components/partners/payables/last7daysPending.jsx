@@ -1,5 +1,4 @@
-
-import { Table, Tooltip, Pagination } from 'antd'
+import { Table, Tooltip, Pagination, Input } from 'antd'
 import { useState } from 'react'
 import { gql, useSubscription, useQuery } from '@apollo/client'
 import get from 'lodash/get'
@@ -7,10 +6,18 @@ import Truncate from '../../common/truncate'
 import u from '../../../lib/util'
 import moment from 'moment'
 import LinkComp from '../../common/link'
+import { SearchOutlined } from '@ant-design/icons'
 
 const ICICIBANK_STATEMENT = gql`
-subscription iciciBank_statement($fromDate: timestamp, $toDate: timestamp,$offset:Int,$limit:Int) {
-  iciciBank_statement (offset:$offset,limit:$limit, where:{_and:[{txn_date:{_gt:$fromDate}},{txn_date:{_lte:$toDate}}]}){
+subscription iciciBank_Statement($offset:Int,$limit:Int$fromDate: timestamp, $toDate: timestamp,$cardcode:String) {
+  iciciBank_statement (
+    offset:$offset,
+    limit:$limit,
+    where:{
+      _and:[{txn_date:{_gt:$fromDate}}, {txn_date:{_lte:$toDate}}],
+      cardcode:{_ilike:$cardcode}
+    }
+  ){
      id 
      txn_date
      amount
@@ -25,8 +32,8 @@ subscription iciciBank_statement($fromDate: timestamp, $toDate: timestamp,$offse
  }
  `
 const ICICIBANK_STATEMENT_AGGREGATE = gql`
-query iciciBank_statement_aggregate($fromDate: timestamp, $toDate: timestamp){
-  iciciBank_statement_aggregate(where:{_and:[{txn_date:{_gt:$fromDate}},{txn_date:{_lte:$toDate}}]}){
+query iciciBank_statement_aggregate($fromDate: timestamp, $toDate: timestamp,$cardcode:String){
+  iciciBank_statement_aggregate(where:{_and:[{txn_date:{_gt:$fromDate}},{txn_date:{_lte:$toDate}}],cardcode:{_ilike:$cardcode}}){
     aggregate{
       count
     }
@@ -36,6 +43,7 @@ query iciciBank_statement_aggregate($fromDate: timestamp, $toDate: timestamp){
 const Last7daysPending = () => {
 
   const [offset, setOffset] = useState(0)
+  const [cardcodeSearch, setCardcodeSearch] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
 
   const perviousDate = u.getPervious4thDate()
@@ -47,12 +55,14 @@ const Last7daysPending = () => {
       variables: {
         offset: offset,
         limit: u.limit,
+        cardcode: cardcodeSearch ? `%${cardcodeSearch}%` : null,
         fromDate: moment(perviousDate).format('DD-MMM-YY HH:mm'),
         toDate: moment(futureDate).format('DD-MMM-YY HH:mm')
       }
     }
   )
   console.log('last7daysPending Error', error)
+
   let _statement = []
   if (!loading) {
     _statement = data
@@ -64,7 +74,8 @@ const Last7daysPending = () => {
     {
       variables: {
         fromDate: moment(perviousDate).format('DD-MMM-YY HH:mm'),
-        toDate: moment(futureDate).format('DD-MMM-YY HH:mm')
+        toDate: moment(futureDate).format('DD-MMM-YY HH:mm'),
+        cardcode: cardcodeSearch ? `%${cardcodeSearch}%` : null
       },
       fetchPolicy: 'cache-and-network',
       notifyOnNetworkStatusChange: true
@@ -82,6 +93,9 @@ const Last7daysPending = () => {
     setCurrentPage(page)
     setOffset(newOffset)
   }
+  const onCardcodeSearch = (e) => {
+    setCardcodeSearch(e.target.value)
+  }
   const columns = [
     {
       title: <Tooltip title='Transaction Date'>Tnx Date</Tooltip>,
@@ -89,23 +103,35 @@ const Last7daysPending = () => {
       render: (text, render) => text ? moment(text).format('DD-MMM-YY HH:mm:ss') : '-',
       sorter: (a, b) => (a.txn_date > b.txn_date ? 1 : -1),
       defaultSortOrder: 'descend',
-      width: '12%',
+      width: '13%',
     },
     {
       title: 'Cardcode',
       dataIndex: 'cardcode',
+      width: '9%',
+      sorter: (a, b) => (a.cardcode > b.cardcode ? 1 : -1),
       render: (text, record) => {
         return (
           <LinkComp type='partners' data={text} id={text} />
         )
       },
-      sorter: (a, b) => (a.cardcode > b.cardcode ? -1 : 1),
-      width: '10%',
+      filterDropdown: (
+        <div>
+          <Input
+            placeholder='Search Cardcode'
+            value={cardcodeSearch}
+            onChange={onCardcodeSearch}
+          />
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      )
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
-      sorter: (a, b) => (a.amount > b.amount ? -1 : 1),
+      sorter: (a, b) => (a.amount > b.amount ? 1 : -1),
       width: '5%',
     },
     {
@@ -117,14 +143,14 @@ const Last7daysPending = () => {
     {
       title: <Tooltip title='Bank Reference No'>Ref No</Tooltip>,
       dataIndex: 'bank_reference_no',
-      sorter: (a, b) => (a.bank_reference_no > b.bank_reference_no ? -1 : 1),
+      sorter: (a, b) => (a.bank_reference_no > b.bank_reference_no ? 1 : -1),
       width: '10%',
     },
     {
       title: 'Type',
       dataIndex: 'type',
-      sorter: (a, b) => (a.type > b.type ? -1 : 1),
-      width: '7%',
+      sorter: (a, b) => (a.type > b.type ? 1 : -1),
+      width: '5%',
     },
     {
       title: 'Remarks',
@@ -133,13 +159,13 @@ const Last7daysPending = () => {
         const remarks = get(record, 'remarks', null)
         return (<Truncate data={remarks} length={90} />)
       },
-      width: '46%',
+      width: '40%',
     },
     {
       title: 'Balance',
       dataIndex: 'balance',
-      sorter: (a, b) => (a.balance > b.balance ? -1 : 1),
-      width: '10%',
+      sorter: (a, b) => (a.balance > b.balance ? 1 : -1),
+      width: '8%',
     }
   ]
 
