@@ -55,7 +55,7 @@ mutation update_branch_employee($id: Int!,$employee_id:Int!, $year: Int, $week: 
       id
     }
   }
-  update_branch_employee_weekly_target(where:{employee_id:{_eq:$employee_id},year:{_eq:$year},week:{_eq:$week}},_set: {deleted_at: $date}) {
+  delete_branch_employee_weekly_target(where:{employee_id:{_eq:$employee_id},year:{_eq:$year},week:{_eq:$week}}) {
     returning{
       id
     }
@@ -139,7 +139,7 @@ const AddTraffic = (props) => {
     return { value: branch_employee.id, label: branch_employee.employee.email }
   })
 
-const date =moment(new Date().toISOString())
+const date =moment().format('YYYY-MM-DD')
 
   const onTrafficChange = () => {
     setAddTraffic(!addTraffic)
