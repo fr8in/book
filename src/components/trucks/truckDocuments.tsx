@@ -1,11 +1,17 @@
 
-import { Row, Col, Form } from 'antd'
+import { Row, Col, Form,Checkbox,Divider,message } from 'antd'
+import { useState,useContext } from 'react'
+import userContext from '../../lib/userContaxt'
 import FileUpload from '../common/fileUpload'
 import TdsFileUpload from '../common/tdsFileUpload'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
-import { gql,useQuery} from '@apollo/client'
+import { gql,useQuery,useMutation} from '@apollo/client'
 import u from '../../lib/util'
+import LabelAndData from '../common/labelAndData'
+import TruckPan from '../trucks/truckPan'
+import InsuranceExpiry from './insuranceExpiryDateEdit'
+import moment from 'moment'
 
 const CONFIG_QUERY = gql`
 query config{
@@ -15,8 +21,44 @@ query config{
 } 
 `
 
+const UPDATE_LOADING_MEMO = gql`
+mutation update_loading_memo($truck_id: Int!, $updated_by: String!, $loading_memo: Boolean) {
+    update_truck(_set: {loading_memo: $loading_memo, updated_by: $updated_by}, where: {id: {_eq: $truck_id}}) {
+     returning {
+        id
+      }
+   }
+  }`
+
 const truckDocuments = (props) => {
   const { truck_id, truck_info, partner_id } = props
+  const { role } = u
+  const edit_truck_pan = role.admin
+  const context = useContext(userContext)
+  const dateFormat = 'YYYY-MM-DD'
+
+  const [checked, setChecked] = useState()
+  
+
+  const [updateloadingmemo] = useMutation(
+        UPDATE_LOADING_MEMO,
+       {
+         onError(error) {
+           message.error(error.toString())
+         }
+     }
+      )
+
+      const onChange = (e) => {
+        setChecked(e.target.checked)
+                 updateloadingmemo({
+                    variables: {
+                        truck_id: truck_info.id,
+                       loading_memo: checked  ? false : true,
+                  updated_by: context.email
+                      }
+                 })
+              }
 
   const { loading, error, data } = useQuery(CONFIG_QUERY, {
     fetchPolicy: 'cache-and-network',
@@ -54,8 +96,8 @@ const truckDocuments = (props) => {
     })
   })
 
-  const permit_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.permit) : null
-  const permit_file_list = !isEmpty(permit_files) && permit_files.map((file, i) => {
+  const truck_pan_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.partner_pan) : null
+  const truck_pan_file_list = !isEmpty(truck_pan_files) && truck_pan_files.map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
       name: file.file_path,
@@ -63,14 +105,7 @@ const truckDocuments = (props) => {
     })
   })
 
-  const emi_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.emi) : null
-  const emi_file_list = !isEmpty(emi_files) && emi_files.map((file, i) => {
-    return ({
-      uid: `${file.type}-${i}`,
-      name: file.file_path,
-      status: 'done'
-    })
-  })
+ 
 
   const pan_files = !isEmpty(files) ? files.filter(file => file.type === u.fileType.partner_pan) : null
   const pan_file_list = !isEmpty(pan_files) && pan_files.map((file, i) => {
@@ -82,8 +117,8 @@ const truckDocuments = (props) => {
   })
 
  
-  const getTDSDocument = (type, financial_year) => files && files.length > 0 ? files.filter(data => data.type === type && data.financial_year === financial_year) : []
-  const tds_file_list_previous = !isEmpty(getTDSDocument( u.fileType.tds,tds_previous_)) && getTDSDocument( u.fileType.tds,tds_previous_).map((file, i) => {
+  const getPartnerTDSDocument = (type, financial_year) => files && files.length > 0 ? files.filter(data => data.type === type && data.financial_year === financial_year) : []
+  const partner_tds_file_list_previous = !isEmpty(getPartnerTDSDocument( u.fileType.tds,tds_previous_)) && getPartnerTDSDocument( u.fileType.tds,tds_previous_).map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
       name: file.file_path,
@@ -91,7 +126,9 @@ const truckDocuments = (props) => {
     })
   })
 
-  const tds_file_list_current = !isEmpty(getTDSDocument( u.fileType.tds,tds_current_)) && getTDSDocument( u.fileType.tds,tds_current_).map((file, i) => {
+  
+
+  const partner_tds_file_list_current = !isEmpty(getPartnerTDSDocument( u.fileType.tds,tds_current_)) && getPartnerTDSDocument( u.fileType.tds,tds_current_).map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
       name: file.file_path,
@@ -99,8 +136,8 @@ const truckDocuments = (props) => {
     })
   })
 
-  const cl_files = !isEmpty(files) ? files.filter(file => file.type === u.fileType.check_leaf) : null
-  const cl_file_list = !isEmpty(cl_files) && cl_files.map((file, i) => {
+  const getTruckTDSDocument = (type, financial_year) => !isEmpty(truck_files) ? truck_files.filter(data => data.type === type && data.financial_year === financial_year) : []
+  const truck_tds_file_list_previous = !isEmpty(getTruckTDSDocument( u.fileType.tds,tds_previous_)) && getTruckTDSDocument( u.fileType.tds,tds_previous_).map((file, i) => {
     return ({
       uid: `${file.type}-${i}`,
       name: file.file_path,
@@ -108,6 +145,14 @@ const truckDocuments = (props) => {
     })
   })
 
+  const truck_tds_file_list_current = !isEmpty(getTruckTDSDocument( u.fileType.tds,tds_current_)) && getTruckTDSDocument( u.fileType.tds,tds_current_).map((file, i) => {
+    return ({
+      uid: `${file.type}-${i}`,
+      name: file.file_path,
+      status: 'done'
+    })
+  })
+  
   const vaahan_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.vaahan) : null
   const vaahan_file_list = !isEmpty(vaahan_files) && vaahan_files.map((file, i) => {
     return ({
@@ -116,12 +161,36 @@ const truckDocuments = (props) => {
       status: 'done'
     })
   })
+console.log('truck_info.loading_memo',truck_info.loading_memo)
 
   return (
     <div>
       <Form layout='vertical'>
+      <Form.Item name='ton' className='mb0'>
+          <Checkbox onChange={onChange} checked={checked}  value='value'>Use truck level document for loading memo</Checkbox>
+        </Form.Item>
+        <Divider />
+        <Row>
+        <b>Partner Documents</b>
+        </Row>
+        <Divider />
         <Row gutter={[10, 10]}>
-          <Col xs={24} sm={4}>
+        <Col xs={24} sm={6}>
+            <Form.Item
+              label='PAN Number'
+              name='PAN'
+            >
+               <LabelAndData
+        data={truck_info.partner.pan}
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={12}
+      />
+            </Form.Item>
+          </Col>
+
+
+          <Col xs={24} sm={6}>
             <Form.Item
               label='PAN'
               name='PAN'
@@ -137,22 +206,8 @@ const truckDocuments = (props) => {
             </Form.Item>
           </Col>
 
-          <Col xs={24} sm={5}>
-            <Form.Item
-              label='Cheque/PassBook'
-              name='CL'
-            >
-              <FileUpload
-                id={partner_id}
-                type='partner'
-                folder={u.folder.approvals}
-                file_type={u.fileType.check_leaf}
-                file_list={cl_file_list}
-              />
-            </Form.Item>
-          </Col>
-
-          <Col xs={24} sm={5}>
+          
+          <Col xs={24} sm={6}>
             <Form.Item
               label='TDS 19-20'
               name='TDS'
@@ -163,14 +218,12 @@ const truckDocuments = (props) => {
                 type='partner'
                 folder={u.folder.approvals}
                 file_type={u.fileType.tds}
-                file_list={tds_file_list_previous}
+                file_list={partner_tds_file_list_previous}
                 financial_year={tds_previous_}
               />
             </Form.Item>
           </Col>
-
-
-          <Col xs={24} sm={5}>
+          <Col xs={24} sm={6}>
             <Form.Item
               label='TDS 20-21'
               name='TDS'
@@ -180,26 +233,90 @@ const truckDocuments = (props) => {
                 type='partner'
                 folder={u.folder.approvals}
                 file_type={u.fileType.tds}
-                file_list={tds_file_list_current}
+                file_list={partner_tds_file_list_current}
                 financial_year={tds_current_}
               />
             </Form.Item>
           </Col>
-
-
-          <Col xs={24} sm={5}>
-            <Form.Item label='EMI' name='EMI'>
+        </Row>
+        { 
+        truck_info.loading_memo === true ? (
+            <>
+        <Row>
+        <b>Truck Documents</b>
+        </Row>
+        <Divider />
+        <Row gutter={[10, 10]}>
+        <Col xs={24} sm={6}>
+            <Form.Item
+              label='PAN Number'
+            >
+           <TruckPan  truck_id={truck_id}  pan={truck_info.pan} loading={loading} edit_access={edit_truck_pan}/>
+            </Form.Item>
+          </Col>
+        <Col xs={24} sm={6}>
+            <Form.Item
+              label='PAN'
+              name='PAN'
+            >
               <FileUpload
                 id={truck_id}
                 type='truck'
                 folder={u.folder.approvals}
-                file_type={u.fileType.emi}
-                file_list={emi_file_list}
+                file_type={u.fileType.partner_pan}
+                file_list={truck_pan_file_list}
+              />
+            </Form.Item>
+          </Col>
+       
+        <Col xs={24} sm={6}>
+            <Form.Item
+              label='TDS 19-20'
+              name='TDS'
+            >
+              
+              <TdsFileUpload
+                id={truck_id}
+                type='truck'
+                folder={u.folder.approvals}
+                file_type={u.fileType.tds}
+                file_list={truck_tds_file_list_previous}
+                financial_year={tds_previous_}
+              />
+            </Form.Item>
+          </Col>
+
+
+          <Col xs={24} sm={6}>
+            <Form.Item
+              label='TDS 20-21'
+              name='TDS'
+            >
+              <TdsFileUpload
+                id={truck_id}
+                type='truck'
+                folder={u.folder.approvals}
+                file_type={u.fileType.tds}
+                file_list={truck_tds_file_list_current}
+                financial_year={tds_current_}
               />
             </Form.Item>
           </Col>
         </Row>
+        </>)
+            : null }
+
         <Row gutter={[10, 10]}>
+        <Col xs={24} sm={6}>
+        <Form.Item 
+                label='Insurance Expiry Date'
+                name='insurance_expiry_at'
+                rules={[{ required: true, message: 'Insurance Expiry Date is required field' }]}
+                initialValue={truck_info.insurance_expiry_at ? moment(truck_info.insurance_expiry_at, dateFormat) : null}
+                 >
+                  <InsuranceExpiry record={truck_info} />
+                </Form.Item>
+                </Col>
           <Col xs={24} sm={6}>
             <Form.Item
               label='RC'
@@ -246,23 +363,9 @@ const truckDocuments = (props) => {
               />
             </Form.Item>
           </Col>
+          </Row>
 
-          <Col xs={24} sm={6}>
-            <Form.Item
-              label='Permit'
-              name='permit'
-            >
-              <FileUpload
-                id={truck_id}
-                type='truck'
-                folder={u.folder.approvals}
-                file_type={u.fileType.permit}
-                file_list={permit_file_list}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-      </Form>
+             </Form>
     </div>
   )
 }
