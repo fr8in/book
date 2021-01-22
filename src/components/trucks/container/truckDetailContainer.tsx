@@ -29,7 +29,9 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
         length
         breadth
         height
+        pan
         insurance_expiry_at
+        loading_memo
         driver{
           id
           mobile
@@ -39,6 +41,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
               type
               file_path
               folder
+              financial_year
         }
         truck_status{
           id
@@ -61,6 +64,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
         partner {
           id
           name
+          pan
           partner_files{
             id
                type
@@ -206,9 +210,7 @@ const TruckDetailContainer = (props) => {
                 <TabPane tab='Details' key='1'>
                   <Row>
                     <Col xs={24} className='p20'>
-                      <TruckInfo truck_info={truck_info} loading={loading} id={truck_info.id} partner_id={partner_id} />
-                      <Divider />
-                      <Documents truck_id={truck_info.id} partner_id={partner_id} truck_info={truck_info} />
+                    <Documents truck_id={truck_info.id} partner_id={partner_id} truck_info={truck_info} />
                       <Divider />
                       {access &&
                         <Row>
