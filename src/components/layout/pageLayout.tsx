@@ -37,8 +37,7 @@ const PageLayout = (props) => {
     branches: null,
     cities: null,
     managers: null,
-    types: null,
-    partner_region: null
+    types: null
   }
   const [filters, setFilters] = useState(initialFilter)
 
@@ -92,7 +91,7 @@ const PageLayout = (props) => {
               <meta name='viewport' content='initial-scale=1.0, width=device-width' />
             </Head>
             <div className='pageBox'>
-              {cloneElement(props.children, { filters, setFilters })}
+              {cloneElement(props.children, { filters })}
             </div>
           </div>
         </Content>
