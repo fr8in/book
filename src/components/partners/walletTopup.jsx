@@ -140,7 +140,7 @@ const walletTopup = (props) => {
       dataIndex: 'trip_id',
       key: 'loadid',
       width: '15%',
-      sorter: (a, b) => (a.id > b.id ? 1 : -1)
+      sorter: (a, b) => (a.trip_id - b.trip_id )
     },
     {
       title: 'AP Date',
