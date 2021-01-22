@@ -1,16 +1,5 @@
 import { useState, useContext } from 'react'
-import {
-  Modal,
-  Button,
-  Row,
-  Form,
-  Select,
-  Table,
-  Radio,
-  Col,
-  Space,
-  message
-} from 'antd'
+import { Modal, Button, Row, Form, Select, Table, Radio, Col,Space,message} from 'antd'
 import { DeleteTwoTone, SwapOutlined, PlusOutlined } from '@ant-design/icons'
 import get from 'lodash/get'
 import { gql, useMutation, useQuery } from '@apollo/client'
@@ -45,17 +34,13 @@ mutation update_is_manager($is_manager: Boolean, $branch_id: Int!, $employee_id:
 }`
 
 const INSERT_BRANCH_EMPLOYEE = gql`
-mutation insert_traffic($branch_id: Int!, $employee_id: Int!){
-  insert_branch_employee(objects:{branch_id: $branch_id, employee_id:$employee_id, is_manager: false}){
-    returning{
+mutation insert_traffic($branch_id: Int!, $employee_id: Int!, $trip_target: Int!, $year: Int, $week: Int,$created_at:timestamptz) {
+  insert_branch_employee(objects: {branch_id: $branch_id, employee_id: $employee_id, is_manager: false}) {
+    returning {
       id
     }
   }
-}`
-
-const DELETE_BRANCH_EMPLOYEE = gql`
-mutation update_branch_employee($id: Int!, $date: timestamp) {
-  update_branch_employee(where: {id: {_eq: $id}}, _set: {deleted_at: $date}) {
+  insert_branch_employee_weekly_target(objects: {branch_id: $branch_id, employee_id: $employee_id, year: $year, week: $week, trip_target: $trip_target,created_at:$created_at}) {
     returning {
       id
     }
@@ -63,8 +48,23 @@ mutation update_branch_employee($id: Int!, $date: timestamp) {
 }
 `
 
+const DELETE_BRANCH_EMPLOYEE = gql`
+mutation update_branch_employee($id: Int!,$employee_id:Int!, $year: Int, $week: Int, $date: timestamp) {
+  update_branch_employee(where: {id: {_eq: $id}}, _set: {deleted_at: $date}) {
+    returning {
+      id
+    }
+  }
+  update_branch_employee_weekly_target(where:{employee_id:{_eq:$employee_id},year:{_eq:$year},week:{_eq:$week}},_set: {deleted_at: $date}) {
+    returning{
+      id
+    }
+  }
+}
+`
+
 const AddTraffic = (props) => {
-  const { visible, onHide, branch_data, title, edit_access_delete } = props
+  const { visible, onHide, branch_data, title, edit_access_delete,year,week } = props
   const initial = { customer_branch_employee_ids: 0 }
 
   const [addTraffic, setAddTraffic] = useState(false)
@@ -160,7 +160,11 @@ const date =moment(new Date().toISOString()).format('DD-MMM-YY')
     insert_traffic({
       variables: {
         branch_id: branch_data.id,
-        employee_id: employee_id
+        employee_id: employee_id,
+        week:week,
+        year:year,
+        trip_target:0,
+        created_at: moment().format('YYYY-MM-DD')
       }
     })
   }
@@ -181,10 +185,13 @@ const date =moment(new Date().toISOString()).format('DD-MMM-YY')
       }
     })
   }
-  const onDelete = (id) => {
+  const onDelete = (id,employee_id) => {
     delete_traffic({
       variables: {
         id: id,
+        employee_id:employee_id,
+        week:week,
+        year:year,
         date: date
       }
     })
@@ -227,7 +234,7 @@ const date =moment(new Date().toISOString()).format('DD-MMM-YY')
           ?<Button 
           type="link" 
           icon={<DeleteTwoTone twoToneColor='#eb2f96'/>  }  
-          onClick={() => onDelete(record.id)} 
+          onClick={() => onDelete(record.id,get(record,'employee.id',null))} 
           disabled={record.is_manager || !!count }
           /> : null)}
     }: {},
