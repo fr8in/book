@@ -7,11 +7,10 @@ import moment from 'moment'
 import isEmpty from 'lodash/isEmpty'
 import RelianceCashBack from '../reliancecashback/RelianceCashBack'
 import u from '../../../../lib/util'
-import isNil from 'lodash/isNil'
 import CashBack from '../cashBack'
 import CashBackButton from '../cashBackButton'
 import userContext from '../../../../lib/userContaxt'
-import Last48hrsPending from '../last48hrspending'
+import Last7daysPending from '../last7daysPending'
 
 
 const { RangePicker } = DatePicker
@@ -26,6 +25,7 @@ const PayablesContainer = () => {
   const [tabIndex, setTabIndex] = useState('0')
   const [month, setMonth] = useState(null)
   const [year, setYear] = useState(null)
+  const [dates, setDates] = useState([])
   const initial = { loading: false }
   const [disableBtn, setDisableBtn] = useState(initial)
   const context = useContext(userContext)
@@ -40,13 +40,19 @@ const PayablesContainer = () => {
   let today = new Date()
   let day = today.getDay()
 
-  const handleMonthChange = (date, dateString) => {
+  const disabledDate = (current) => {
+    if (!dates || dates.length === 0) {
+      return false
+    }
+    const tooLate = dates[0] && current.diff(dates[0], 'days') > 30
+    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30
+    return ((tooEarly || tooLate))
+  }  
+   const handleMonthChange = (date, dateString) => {
     const splittedDate = dateString.split('-')
     setYear(parseInt(splittedDate[0]))
     setMonth(parseInt(splittedDate[1]))
   }
-
-
 
   function disabledMonthForFuelCashBack(current) {
     return current && current < moment("2020/11/01") || current > moment();
@@ -55,11 +61,11 @@ const PayablesContainer = () => {
   const [icici_statement] = useMutation(
     DATE_SELECT_MUTATION,
     {
-      onError(error) {
+      onError (error) {
         message.error(error.toString())
         setDisableBtn(disableBtn)
       },
-      onCompleted(data) {
+      onCompleted (data) {
         setDisableBtn(initial)
         const url = data && data.icici_statement
         window.open(url, 'icici_statement')
@@ -87,39 +93,37 @@ const PayablesContainer = () => {
           : [current_date[1], current_date[0].subtract(2, "days")]
 
   const [date, setDate] = useState([_day[1], _day[0]])
-  const fromdate = isNil(date) || !date[0] ? _day[0].format('DD-MM-YYYY') : date[0].format('DD-MM-YYYY')
-  const todate = isNil(date) || !date[1] ? _day[1].format('DD-MM-YYYY') : date[1].format('DD-MM-YYYY')
-
+  
   const onConfirm = () => {
-    if (!isEmpty(date)) {
+    if (!isEmpty(dates)) {
       setDisableBtn({ ...disableBtn, loading: true })
       icici_statement({
         variables: {
-          start_date: fromdate,
-          end_date: todate
+          start_date: dates[0].format('DD-MM-YYYY'),
+          end_date: dates[1].format('DD-MM-YYYY')
         }
       })
     } else {
       message.error('Select Start date and End date!')
     }
   }
-
   const TabBarContent = () => {
     return (
-      (tabIndex === '1') ?
-        (
-          <Space>
-            <RangePicker
-              size='small'
-              format='DD-MM-YYYY'
-              defaultValue={[_day[0], _day[1]]}
-              onCalendarChange={(value) => setDate(value)}
-            />
-            <Button size='small' loading={disableBtn.loading} >
-              <DownloadOutlined onClick={onConfirm} />
-            </Button>
-          </Space>
-        )
+      (tabIndex === '0') ?
+      (
+        <Space>
+          <RangePicker
+            size='small'
+            format='DD-MM-YYYY'
+            disabledDate={(current) => disabledDate(current)}
+            onCalendarChange={(value) => {
+              setDates(value)
+            }}
+          />
+          <Button size='small' loading={disableBtn.loading} >
+            <DownloadOutlined onClick={() => onConfirm()} />
+          </Button>
+        </Space>)
         : (tabIndex === '2')
           ? (
             <Space>
@@ -154,7 +158,7 @@ const PayablesContainer = () => {
           <ICICIBankOutgoing />
         </TabPane>
         <TabPane tab='Statement' key='1'>
-          <Last48hrsPending start_date={date} date={_day} />
+          <Last7daysPending />
         </TabPane>
         {access &&
           <TabPane tab='Transaction Fee' key='2'>
