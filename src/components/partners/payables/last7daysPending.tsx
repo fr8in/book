@@ -67,16 +67,16 @@ const Last7daysPending = () => {
 
 const where = {
       _and:[
-        {txn_date:{_gt:moment(perviousDate).format('DD-MMM-YY HH:mm')}},
-        {txn_date:{_lte: moment(futureDate).format('DD-MMM-YY HH:mm')}}
+        {txn_date:{_gt:moment(perviousDate).format('DD-MMM-YY')}},
+        {txn_date:{_lte: moment(futureDate).format('DD-MMM-YY')}}
       ],
       cardcode:{_ilike:filter.cardcode ? `%${filter.cardcode}%` : null},
-      partner:{name:{_ilike: filter.partner ? `%${filter.partner}%` : null}},
+      ...!isEmpty(filter.partner) ? {partner:{name:{_ilike: filter.partner ? `%${filter.partner}%` : null}}} : null,
       amount:{_ilike:filter.amount ? `%${filter.amount}%` : null},
       remarks:{_ilike: filter.remarks ? `%${filter.remarks}%` : null},
       bank_reference_no:{_ilike:filter.refNo ? `%${filter.refNo}%` : null},
       outgoing_no:{_ilike:filter.outgoingNo ? `%${filter.outgoingNo}%` : null},
-      ...!isEmpty(filter.type) && { type: { _in: filter.type } } ,
+      ...!isEmpty(filter.type) && { type: { _in: filter.type ? filter.type : null } } ,
 }
 
   const { loading, error, data } = useSubscription(
