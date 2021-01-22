@@ -139,7 +139,7 @@ const AddTraffic = (props) => {
     return { value: branch_employee.id, label: branch_employee.employee.email }
   })
 
-const date =moment(new Date().toISOString()).format('DD-MMM-YY')
+const date =moment(new Date().toISOString())
 
   const onTrafficChange = () => {
     setAddTraffic(!addTraffic)
