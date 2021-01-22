@@ -3,7 +3,7 @@ import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
 import moment from 'moment'
 
-const PARTNER_MANUAL_TOPUP = gql`
+const PARTNER_CLEARED_TRIPS = gql`
 query partner_invoiced($id: Int!){
   partner(where:{id:{_eq:$id}}) {
     id
@@ -24,7 +24,7 @@ const ClearedList = (props) => {
   const { visible, onHide, partner_id } = props
 
   const { loading, data, error } = useQuery(
-    PARTNER_MANUAL_TOPUP,
+    PARTNER_CLEARED_TRIPS,
     {
       variables: { id: partner_id },
       fetchPolicy: 'cache-and-network',
@@ -45,15 +45,13 @@ const ClearedList = (props) => {
     {
       title: 'Trip Id',
       dataIndex: 'trip_id',
-      key: 'loadid',
-      width: '15%',
+      width: '20%',
       sorter: (a, b) => (a.trip_id - b.trip_id)
     },
     {
       title: 'AP Date',
       dataIndex: 'date',
-      key: 'date',
-      width: '14%',
+      width: '20%',
       render: (text, record) => {
         const date = parseInt(record.date, 10)
         return (
@@ -65,8 +63,7 @@ const ClearedList = (props) => {
     {
       title: 'Due Date',
       dataIndex: 'due_date',
-      key: 'docDueDate',
-      width: '14%',
+      width: '20%',
       render: (text, record) => {
         const date = parseInt(record.due_date, 10)
         return (
@@ -78,15 +75,14 @@ const ClearedList = (props) => {
     {
       title: 'Price',
       dataIndex: 'amount',
-      key: 'amount',
-      width: '15%',
+      width: '20%',
       sorter: (a, b) => (a.amount > b.amount ? 1 : -1),
       defaultSortOrder: 'ascend'
     },
     {
       title: 'Balance',
       dataIndex: 'balance',
-      width: '12%',
+      width: '20%',
       render: (text, record) => text,
       sorter: (a, b) => (a.balance > b.balance ? 1 : -1)
     }
