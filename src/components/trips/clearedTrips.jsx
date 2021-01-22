@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react'
 import { Modal, Table } from 'antd'
-import _ from 'lodash'
+import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
 import moment from 'moment'
 
@@ -24,8 +23,6 @@ query partner_invoiced($id: Int!){
 const ClearedList = (props) => {
   const { visible, onHide, partner_id } = props
 
-  const [invocedTrips, setInvoicedTrips] = useState([])
-
   const { loading, data, error } = useQuery(
     PARTNER_MANUAL_TOPUP,
     {
@@ -42,17 +39,7 @@ const ClearedList = (props) => {
     _data = data
   }
 
-  const invoiced = _.get(_data, 'partner[0].invoiced', [])
-
-  useEffect(() => {
-    const all = invoiced.map(data => {
-      return {
-        ...data
-      }
-    })
-    setInvoicedTrips(all)
-  }, [loading])
-
+  const invoiced = get(_data, 'partner[0].invoiced', [])
 
   const walletColumns = [
     {
@@ -60,7 +47,7 @@ const ClearedList = (props) => {
       dataIndex: 'trip_id',
       key: 'loadid',
       width: '15%',
-      sorter: (a, b) => (a.id > b.id ? 1 : -1)
+      sorter: (a, b) => (a.trip_id - b.trip_id)
     },
     {
       title: 'AP Date',
@@ -94,7 +81,7 @@ const ClearedList = (props) => {
       key: 'amount',
       width: '15%',
       sorter: (a, b) => (a.amount > b.amount ? 1 : -1),
-      // defaultSortOrder: 'ascend'
+      defaultSortOrder: 'ascend'
     },
     {
       title: 'Balance',
@@ -117,7 +104,7 @@ const ClearedList = (props) => {
     >
       <Table
         columns={walletColumns}
-        dataSource={invocedTrips}
+        dataSource={invoiced}
         rowKey={record => record.docnum}
         size='small'
         scroll={{ x: 650, y: 550 }}
