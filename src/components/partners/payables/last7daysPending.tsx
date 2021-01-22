@@ -76,7 +76,7 @@ const where = {
       remarks:{_ilike: filter.remarks ? `%${filter.remarks}%` : null},
       bank_reference_no:{_ilike:filter.refNo ? `%${filter.refNo}%` : null},
       outgoing_no:{_ilike:filter.outgoingNo ? `%${filter.outgoingNo}%` : null},
-      ...!isEmpty(filter.type) && { type: { _in: filter.type ? filter.type : null } } ,
+      ...!isEmpty(filter.type) && { type: { _in: filter.type } } ,
 }
 
   const { loading, error, data } = useSubscription(
