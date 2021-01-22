@@ -3,6 +3,8 @@ import { useMutation, useSubscription, gql } from '@apollo/client'
 import { useState, useContext } from 'react'
 import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
+import { EditTwoTone,CloseCircleTwoTone } from '@ant-design/icons'
+import useShowHide from '../../hooks/useShowHide'
 import isEmpty from 'lodash/isEmpty'
 
 const { Option } = Select
@@ -39,7 +41,8 @@ mutation truck_driver_update($driver_id:Int,$truck_id:Int,$updated_by: String!) 
 const Driver = (props) => {
   const { partner_id, driverChange, initialValue, truck_id } = props
   if (!partner_id) return null
-
+  const initial = { dateType: false }
+  const { visible, onHide, onShow } = useShowHide(initial)
   const [searchText, setSearchText] = useState('')
   const context = useContext(userContext)
   const onSearch = (value) => {
@@ -110,17 +113,32 @@ const Driver = (props) => {
     drivers = driver_data && driver_data.filter(_driver => _driver.mobile.indexOf(searchText) !== -1)
   }
   return (
-    <Form.Item label='Driver' name='driver' initialValue={initialValue}>
+    <Form.Item  name='driver' initialValue={initialValue}>
+       <div>
+        {!visible.dateType ? (
+          <>
+      {initialValue}
+          <EditTwoTone
+          onClick={() => onShow('dateType')}
+        />
+      </> )
+         : (
+          <span>
       <Select
         showSearch
         placeholder='Select or Enter Driver'
         onSearch={onSearch}
         onChange={onDriverChange}
+        style={{ width: '70%' }}
+        size='small'
       >
         {drivers && drivers.map(_driver => (
           <Option key={_driver.id} value={_driver.mobile}>{_driver.mobile}</Option>
         ))}
-      </Select>
+      </Select>{' '}
+      <CloseCircleTwoTone onClick={onHide} />
+      </span>)}
+    </div>
     </Form.Item>
   )
 }
