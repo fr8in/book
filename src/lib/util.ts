@@ -21,6 +21,18 @@ const util = {
     }
     return period
   },
+  getPervious4thDate: () => {
+   const ourdate = new Date()
+   const pastDate = ourdate. getDate() - 4;  
+   ourdate. setDate(pastDate)
+   return ourdate
+  },
+  getfuture3rdDate: () => {
+    const ourdate = new Date()
+    const futureDate = ourdate. getDate() + 3;  
+    ourdate. setDate(futureDate)
+    return ourdate
+   },
   role: {
     admin: 'Admin',
     rm: 'RM',

@@ -87,6 +87,8 @@ const BillingAndInvoiced = (props) => {
   const [getInvoicePDF, { loading: l, data: d, error: err }] = useLazyQuery(
     GET_INVOICE_PDF,
     {
+      fetchPolicy: 'network-only',
+      notifyOnNetworkStatusChange: true,
       onError (error) {
         message.error(error)
       },
@@ -114,10 +116,14 @@ const BillingAndInvoiced = (props) => {
         message.error(error.toString())
       },
       onCompleted (data) {
-        setDisableButton(false)
+        setDisableButton(true)
         const id = get(data, 'update_trip.returning[0].id', null)
-        message.success('Updated!!')
         onBillingComplete(id)
+        setTimeout(() => {
+          setDisableButton(false)
+          onHide()
+          message.success('Updated!!')
+        }, 5000)
       }
     }
   )
@@ -135,7 +141,11 @@ const BillingAndInvoiced = (props) => {
   const trip_contact = customer_branch || (!isEmpty(headoffice) ? headoffice[0] : null)
 
   const onBillingComplete = (id) => {
-    getInvoicePDF({ variables: { trip_id: id } })
+    setTimeout(() => {
+     getInvoicePDF({ 
+      variables: { trip_id: id }
+     })
+  }, 4000)
   }
 
   const onBranchChange = (value, branch) => {
