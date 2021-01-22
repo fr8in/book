@@ -25,5 +25,5 @@
     "src/components/branches/customerBranchEmployee.jsx", 
     "src/components/trips/onholdTrips.jsx", 
     "src/components/trips/partnerTrips.jsx", "src/components/customers/transferToBank.jsx", "src/components/customers/transferToBankHistory.jsx","src/components/trips/advancePending.jsx", "src/components/trips/dashboardAdvancePending.jsx", "src/components/customers/incomingPayments.jsx", "src/components/trips/tripsTracking.jsx", "src/components/customers/customerTrips.jsx" 
-, "src/components/partners/payables/last48hrspending.jsx"  ]
+, "src/components/partners/payables/last48hrspending.tsx", "src/components/partners/payables/last7daysPending.tsx"  ]
 }

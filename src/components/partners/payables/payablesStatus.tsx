@@ -8,7 +8,6 @@ const TRANSACTION_STATUS = gql`
   query transaction_status($doc_num:Float!) {
     transaction_status(doc_num:$doc_num) {
       message
-      response
       status
     }
   }`
@@ -45,16 +44,7 @@ const PayablesStatus = (props) => {
           : <div>
             <LabelWithData
               label='Status'
-              data={
-         get(transaction_status, 'status', null)
-        }
-              mdSpan={4}
-              smSpan={8}
-              xsSpan={12}
-            />
-            <LabelWithData
-              label='Response'
-              data={get(transaction_status, 'response', null)}
+              data={get(transaction_status, 'status', null)}
               mdSpan={4}
               smSpan={8}
               xsSpan={12}
