@@ -7,6 +7,7 @@ import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import u from '../../lib/util'
 import EditAccess from '../common/editAccess'
+import sumBy from 'lodash/sumBy'
 
 const BRANCHES_QUERY = gql`
 subscription branches($week: Int!, $year: Int!) {
@@ -14,12 +15,9 @@ subscription branches($week: Int!, $year: Int!) {
     id
     name
     displayposition
-    branch_weekly_targets(where: {week: {_eq: $week}, year: {_eq: $year}}) {
-      trip_target
-    }
     branch_employees {
-      customer_branch_employees_aggregate{
-        aggregate{
+      customer_branch_employees_aggregate {
+        aggregate {
           count
         }
       }
@@ -32,22 +30,37 @@ subscription branches($week: Int!, $year: Int!) {
         email
       }
     }
+    branch_employee_weekly_targets(where: {year: {_eq: $year}, week: {_eq: $week}, deleted_at: {_is_null: true}}, order_by: {employee_id: desc}) {
+      id
+      trip_target
+      employee_id
+      branch_id
+      employee {
+        id
+        name
+        mobileno
+      }
+    }
     cities {
       id
       name
     }
   }
-}`
+}
+
+`
 
 const Branches = (props) => {
   const { edit_access, setTotalBranch } = props
 
   const { role } = u
-  const traffic_member_delete = [role.admin,role.hr]
+  const traffic_member_delete = [role.admin, role.hr]
   const initial = {
     trafficVisible: false,
     title: null,
-    trafficData: []
+    trafficData: [],
+    targetVisible: false,
+    targetData:{}
   }
 
   const period = u.getWeekNumber(new Date())
@@ -95,7 +108,7 @@ const Branches = (props) => {
     {
       title: 'Traffic Members',
       dataIndex: 'trafficMembers',
-      width: '48%',
+      width: '40%',
       render: (text, record) => {
         return (
           <div className='cell-wrapper'>
@@ -126,10 +139,17 @@ const Branches = (props) => {
     },
     {
       title: 'Weekly Target',
-      width: '12%',
+      width: '29%',
       render: (text, record) => {
-        const target = get(record, 'branch_weekly_targets[0].trip_target', 0)
-        return <WeeklyTarget id={record.id} label={target} week={period.week} year={period.year} />
+        const array = record.branch_employee_weekly_targets
+        const total = sumBy(array, 'trip_target')
+        return (
+          <>   {total} <EditAccess
+            edit_access={edit_access}
+            onEdit={() => handleShow('targetVisible', record.trip_target, 'targetData', record)}
+          />
+          </>
+        )
       }
     }
   ]
@@ -152,6 +172,19 @@ const Branches = (props) => {
           branch_data={object.trafficData}
           title={object.title}
           edit_access_delete={traffic_member_delete}
+          week={period.week}
+          year={period.year}
+        />
+      )}
+      {object.targetVisible && (
+        <WeeklyTarget
+          visible={object.targetVisible}
+          onHide={handleHide}
+          data={object.targetData}
+          title={object.title}
+          edit_access_delete={traffic_member_delete}
+          week={period.week}
+          year={period.year}
         />
       )}
     </>
