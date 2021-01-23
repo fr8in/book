@@ -16,6 +16,7 @@ subscription branches($week: Int!, $year: Int!) {
     name
     displayposition
     branch_employees {
+      branch_id
       customer_branch_employees_aggregate {
         aggregate {
           count
