@@ -34,7 +34,7 @@ mutation insert_employee_target($trip_target: Int!, $employee_id: Int!, $week: I
 const WeeklyTarget = (props) => {
   const { visible, onHide, data, year, week } = props
   const { role } = u
-  const weekly_target = [role.admin, role.hr]
+  const weekly_target = [role.admin, role.hr,role.rm]
   const {data:target_data,loading,error} = useSubscription(
     TARGET_SUBSCRIPTION,{
       variables:{
