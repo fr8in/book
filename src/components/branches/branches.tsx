@@ -55,7 +55,7 @@ const Branches = (props) => {
   const { edit_access, setTotalBranch } = props
 
   const { role } = u
-  const traffic_member_delete = [role.admin, role.hr,role.rm]
+  const traffic_member_delete = [role.admin, role.hr, role.rm]
   const initial = {
     trafficVisible: false,
     title: null,
@@ -63,8 +63,10 @@ const Branches = (props) => {
     targetVisible: false,
     targetData: {}
   }
-
-  const period = u.getWeekNumber(new Date())
+  var date = new Date();
+  date.setDate(date.getDate() + 1);
+  const fr8Date = date
+  const period = u.getWeekNumber(fr8Date)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
   const { loading, data, error } = useSubscription(
@@ -125,7 +127,7 @@ const Branches = (props) => {
                       className='small-tag'
                       color={data.is_manager ? 'blue' : null}
                     >
-                      <span>{`${get(weeklyTarget[0],'trip_target',0)}- ${name}`}</span>
+                      <span>{`${get(weeklyTarget[0], 'trip_target', 0)}- ${name}`}</span>
                     </Tag>
                   )
                 })
