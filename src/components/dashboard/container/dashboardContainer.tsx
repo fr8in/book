@@ -136,13 +136,13 @@ const onDndChange = (e) =>{
                 {truck_tab_disable ? <Row justify='center'> Use Filter to get Data </Row>: <WaitingForLoadContainer filters={filters} dndCheck={dndCheck}/>}
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Assigned' value={assigned_count} />} key='3'>
-                  <TripsContainer filters={filters} trip_status='Assigned' />
+                  <TripsContainer filters={filters}  trip_status='Assigned' partner_region_filter />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Confirmed' value={confirmed_count} />} key='4'>
-                  <TripsContainer filters={filters} trip_status='Confirmed' />
+                  <TripsContainer filters={filters}  trip_status='Confirmed' partner_region_filter/>
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Loading' value={loading_count} />} key='5'>
-                  <TripsContainer filters={filters} trip_status='Reported at source' />
+                  <TripsContainer filters={filters}  trip_status='Reported at source' partner_region_filter/>
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Intransit(S)' value={intransit_count} />} key='6'>
                   <TripsContainer filters={filters} trip_status='Intransit' intransit />
