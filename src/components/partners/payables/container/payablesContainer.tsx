@@ -11,6 +11,10 @@ import CashBack from '../cashBack'
 import CashBackButton from '../cashBackButton'
 import userContext from '../../../../lib/userContaxt'
 import Last7daysPending from '../last7daysPending'
+import SourcingIncentive from '../sourcingIncentive/incentive'
+import SourcingIncentiveModal from '../sourcingIncentive/modal'
+import useShowHideWithRecord from '../../../../hooks/useShowHideWithRecord'
+import useShowHide from '../../../../hooks/useShowHide'
 
 
 const { RangePicker } = DatePicker
@@ -22,12 +26,13 @@ mutation icici_statement($start_date:String!,$end_date:String!) {
 
 const TabPane = Tabs.TabPane
 const PayablesContainer = () => {
-  const [tabIndex, setTabIndex] = useState('0')
+  const [tabIndex, setTabIndex] = useState('4')
   const [month, setMonth] = useState(null)
   const [year, setYear] = useState(null)
   const [dates, setDates] = useState([])
   const initial = { loading: false }
   const [disableBtn, setDisableBtn] = useState(initial)
+  const [sourcingIncentiveData, setSourcingIncentiveData] = useState([])
   const context = useContext(userContext)
   const { role } = u
 
@@ -47,12 +52,15 @@ const PayablesContainer = () => {
     const tooLate = dates[0] && current.diff(dates[0], 'days') > 30
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30
     return ((tooEarly || tooLate))
-  }  
-   const handleMonthChange = (date, dateString) => {
+  }
+  const handleMonthChange = (date, dateString) => {
     const splittedDate = dateString.split('-')
     setYear(parseInt(splittedDate[0]))
     setMonth(parseInt(splittedDate[1]))
+    setSourcingIncentiveData([])
   }
+
+
 
   function disabledMonthForFuelCashBack(current) {
     return current && current < moment("2020/11/01") || current > moment();
@@ -61,11 +69,11 @@ const PayablesContainer = () => {
   const [icici_statement] = useMutation(
     DATE_SELECT_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         message.error(error.toString())
         setDisableBtn(disableBtn)
       },
-      onCompleted (data) {
+      onCompleted(data) {
         setDisableBtn(initial)
         const url = data && data.icici_statement
         window.open(url, 'icici_statement')
@@ -93,7 +101,7 @@ const PayablesContainer = () => {
           : [current_date[1], current_date[0].subtract(2, "days")]
 
   const [date, setDate] = useState([_day[1], _day[0]])
-  
+
   const onConfirm = () => {
     if (!isEmpty(dates)) {
       setDisableBtn({ ...disableBtn, loading: true })
@@ -107,23 +115,31 @@ const PayablesContainer = () => {
       message.error('Select Start date and End date!')
     }
   }
+
+  const handleSourcingIncentiveData = (data) => {
+    setSourcingIncentiveData(data)
+  }
+
+  const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
+
+
   const TabBarContent = () => {
     return (
       (tabIndex === '0') ?
-      (
-        <Space>
-          <RangePicker
-            size='small'
-            format='DD-MM-YYYY'
-            disabledDate={(current) => disabledDate(current)}
-            onCalendarChange={(value) => {
-              setDates(value)
-            }}
-          />
-          <Button size='small' loading={disableBtn.loading} >
-            <DownloadOutlined onClick={() => onConfirm()} />
-          </Button>
-        </Space>)
+        (
+          <Space>
+            <RangePicker
+              size='small'
+              format='DD-MM-YYYY'
+              disabledDate={(current) => disabledDate(current)}
+              onCalendarChange={(value) => {
+                setDates(value)
+              }}
+            />
+            <Button size='small' loading={disableBtn.loading} >
+              <DownloadOutlined onClick={() => onConfirm()} />
+            </Button>
+          </Space>)
         : (tabIndex === '2')
           ? (
             <Space>
@@ -143,7 +159,10 @@ const PayablesContainer = () => {
           : (tabIndex === '3') ?
             <DatePicker onChange={handleMonthChange} picker='month'
               disabledDate={(current) => disabledMonthForFuelCashBack(current)} />
-            : (tabIndex === '4') ? <DatePicker /> : null
+            : (tabIndex === '4') ? <Space>
+              <Button type="primary" disabled={!(sourcingIncentiveData.length > 0)}
+                onClick={() => handleShow('incentiveVisible', "Process Incentive", 'incentiveData', sourcingIncentiveData)}>Process</Button>
+              <DatePicker onChange={handleMonthChange} picker='month' /> </Space> : null
     )
   }
 
@@ -172,8 +191,14 @@ const PayablesContainer = () => {
             <RelianceCashBack month={month} year={year} />
           </TabPane>}
         <TabPane tab="Sourcing Incentive" key="4">
-
+          <SourcingIncentive year={year} month={month} onChange={handleSourcingIncentiveData} />
         </TabPane>
+        {object.incentiveVisible && <SourcingIncentiveModal
+          visible={object.incentiveVisible}
+          onCancel={handleHide}
+          data={object.incentiveData}
+          title={object.titile}
+        />}
       </Tabs>
     </Card>
   )
