@@ -25,6 +25,7 @@ import LinkComp from '../common/link'
 import userContext from '../../lib/userContaxt'
 import LabelWithData from '../common/labelWithData'
 import LoadingMemo from './loadingMemo'
+import moment from 'moment'
 
 const CONFIG_QUERY = gql`
 query config{
@@ -141,6 +142,7 @@ const TripTime = (props) => {
   const partner_files = get(trip_info, 'partner.partner_files', null)
   const truck_pan_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.partner_pan) : null
   const rc_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.rc) : null
+  const partner_pan_files = !isEmpty(partner_files) ? partner_files.filter(file=> file.type ===  u.fileType.partner_pan) : null
   
   const customerPrice = get(trip_info, 'customer_price', null)
   const km = get(trip_info, 'km', null)
@@ -422,6 +424,25 @@ const TripTime = (props) => {
   const disable_pa = (!customerConfirm && isEmpty(lr_files))
   const lock = get(trip_info, 'transaction_lock', null)
   const getPartnerTDSDocument = (type, financial_year) => partner_files && partner_files.length > 0 ? partner_files.filter(data => data.type === type && data.financial_year === financial_year) : []
+  const tdsYearValidation = moment(trip_info.created_at).isAfter("2020-04-01")
+  const tdsYear = tdsYearValidation ? tds_current_ : tds_previous_;
+  const getTruckTdsDocument = (type,financial_year) => truck_files && truck_files.length > 0 ? truck_files.filter(data => data.type === type && data.financial_year === financial_year) : []
+  const partner_tds_file_list = !isEmpty(getPartnerTDSDocument( u.fileType.tds,tdsYear)) && getPartnerTDSDocument( u.fileType.tds,tdsYear).map((file, i) => {
+    return ({
+      uid: `${file.type}-${i}`,
+      name: file.file_path,
+      status: 'done'
+    })
+  })
+  const truck_tds_file_list = !isEmpty(getTruckTdsDocument( u.fileType.tds,tdsYear)) && getTruckTdsDocument( u.fileType.tds,tdsYear).map((file, i) => {
+    return ({
+      uid: `${file.type}-${i}`,
+      name: file.file_path,
+      status: 'done'
+    })
+  })
+
+const fileValidation = loading_memo ?   rc_files.length>0 && truck_pan_files.length>0  && truck_tds_file_list.length > 0 : partner_tds_file_list.length>0 && rc_files.length>0 && partner_pan_files.length>0
   
 
   return (
@@ -467,17 +488,26 @@ const TripTime = (props) => {
                   <Col xs={12}>
                     <Form.Item label='Partner - Memo'>
                       <Space>                        
-                       { 
-                         (loading_memo === true && truck_pan_files) || (loading_memo === false) ? 
+                      { 
+                         (fileValidation) ? 
                           <Button
                           type='primary' loading={pdfloading} shape='circle'
                           icon={<FilePdfOutlined />} onClick={onClickPartnerPdf}
+                        /> : 
+                        <Popconfirm
+                        title = {`Loading memo generating using truck document.please upload PAN and ${tdsYear} year TDS in 
+                        ${<LinkComp
+                          type='trucks'
+                          data={`${trip_info.truck.truck_no}`}
+                          id={trip_info.truck.truck_no}
+                        />}`}
+                        >
+                        <Button
+                          type='primary' loading={pdfloading} shape='circle'
+                          icon={<FilePdfOutlined />} 
                         />
-                        :  <Button
-                        type='primary' shape='circle'
-                        icon={<FilePdfOutlined />} onClick={() => onShow('loading_memo')}
-                      /> 
-                        }
+                        </Popconfirm>
+                         }
                        <Button
                           type='primary' loading={loading} shape='circle'
                           icon={<FileWordOutlined />} onClick={onClickPartnerWord}
