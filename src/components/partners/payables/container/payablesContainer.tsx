@@ -32,7 +32,7 @@ const SYNC_SOURCING_INCENTIVE_DATA = gql`mutation sync_sourcing_incentive($year:
 
 const TabPane = Tabs.TabPane
 const PayablesContainer = () => {
-  const [tabIndex, setTabIndex] = useState('4')
+  const [tabIndex, setTabIndex] = useState('0')
   const [month, setMonth] = useState(null)
   const [year, setYear] = useState(null)
   const [dates, setDates] = useState([])
