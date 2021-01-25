@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Card, Tabs, Space, Button, Badge } from 'antd'
+import { Card, Tabs, Space, Button, Badge,Tooltip } from 'antd'
 import { DownloadOutlined, FilterOutlined, UndoOutlined } from '@ant-design/icons'
 import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
@@ -122,8 +122,10 @@ const TripsContainer = () => {
                 <Button type='primary' onClick={() => onShow('pod_receipt')}>POD Receipt &nbsp;<Badge count={countFilter.pod_receipt_count} size='small' /> </Button>
               </Space>}
             {tabKey === '4' &&
-              <Space>
-                <Button type='primary' shape='circle' icon={<UndoOutlined />} onClick={() => onShow('reverse_pod_dispatch')}/>
+            <Space>
+                <Tooltip title= 'Reverse'>
+                <Button type='primary' shape='circle' icon={<UndoOutlined />} onClick={() => onShow('reverse_pod_dispatch')}/> 
+                </Tooltip> 
                 <Button shape='circle' icon={<FilterOutlined />} onClick={() => onShow('filterList')} onChange={onFilterChange} />
                 <Button type='primary' onClick={() => onShow('pod_dispatch')}>POD Dispatch &nbsp;<Badge count={countFilter.pod_dispatch_count} size='small' /></Button>
               </Space>}
