@@ -49,6 +49,9 @@ const PayablesContainer = () => {
   const fuelCashback_roles = [role.admin, role.accounts_manager, role.accounts]
   const fuelCashback_access = u.is_roles(fuelCashback_roles, context)
 
+  const sourcing_incentive_roles = [role.admin]
+  const sourcing_incentive_access = u.is_roles(sourcing_incentive_roles, context)
+
   let today = new Date()
   let day = today.getDay()
 
@@ -194,11 +197,11 @@ const PayablesContainer = () => {
             <DatePicker onChange={handleMonthChange} picker='month'
               disabledDate={(current) => disabledMonthForFuelCashBack(current)} />
             : (tabIndex === '4') ? <Space>
-              <Button type="primary" disabled={!(sourcingIncentiveData.length > 0)}
+              {sourcing_incentive_access && <> <Button type="primary" disabled={!(sourcingIncentiveData.length > 0)}
                 onClick={() => handleShow('incentiveVisible', "Process Incentive", 'incentiveData', sourcingIncentiveData)}>Process</Button>
-              <DatePicker
-                disabledDate={(date) => handleCashBackDate(date)}
-                onChange={handleIncentiveMonthChange} picker='month' /> </Space> : null
+                <DatePicker
+                  disabledDate={(date) => handleCashBackDate(date)}
+                  onChange={handleIncentiveMonthChange} picker='month' /></>} </Space> : null
     )
   }
 
