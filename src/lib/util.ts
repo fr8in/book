@@ -33,6 +33,16 @@ const util = {
     ourdate.setDate(futureDate)
     return ourdate
   },
+  regions: [
+    { value: 1, text: 'North' },
+    { value: 2, text: 'South-1' },
+    { value: 3, text: 'East-1' },
+    { value: 4, text: 'West-1' },
+    { value: 5, text: 'South-2' },
+    { value: 6, text: 'East-2' },
+    { value: 7, text: 'West-2' },
+    { value: 8, text: 'Central' }
+  ],
   role: {
     admin: 'Admin',
     rm: 'RM',
@@ -164,7 +174,7 @@ const util = {
   calculatePercentage: (value, totalValue) => parseFloat(((value * 100) / totalValue).toFixed(2)),
   calculateAmountByPercentage: (percentage, totalValue) => parseFloat(((percentage * totalValue) / 100).toFixed(2)),
   groupByMultipleProperty: (array, f) => {
-    var groups= {};
+    var groups = {};
     array.forEach(function (o) {
       var group = JSON.stringify(f(o));
       groups[group] = groups[group] || [];

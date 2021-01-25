@@ -3,20 +3,21 @@ import { gql } from '@apollo/client'
 const DASHBOAD_TRIPS_QUERY = gql`
 subscription dashboard_trips(
   $trip_status: String!,
-  $regions: [Int!], 
-  $branches: [Int!], 
-  $cities: [Int!], 
-  $truck_type: [Int!], 
-  $managers: [Int!]
-  ) {
-  trip(where:{
-    trip_status:{name:{_eq:$trip_status}},
-    branch:{region_id:{_in:$regions}},
-    branch_id:{_in:$branches},
-    source_connected_city_id:{_in:$cities},
-    truck_type_id:{_in:$truck_type},
-    branch_employee_id:{_in: $managers}
-  }) {
+   $regions: [Int!],
+   $branches: [Int!],
+   $cities: [Int!],
+   $truck_type: [Int!],
+   $managers: [Int!],
+   $partner_region: [String!]
+   ) {
+  trip(where: {
+    partner: {city:{connected_city:{branch:{region:{name:{_in:$partner_region}}}}}},
+    trip_status: {name: {_eq: $trip_status}},
+    branch: {region_id: {_in: $regions}},
+    branch_id: {_in: $branches},
+    source_connected_city_id: {_in: $cities},
+    truck_type_id: {_in: $truck_type},
+    branch_employee_id: {_in: $managers}}) {
     id
     source_connected_city_id
     branch_id
@@ -35,9 +36,9 @@ subscription dashboard_trips(
     }
     partner {
       id
-       partner_users(where: {is_admin: {_eq: true}}) {
-                mobile
-              }
+      partner_users(where: {is_admin: {_eq: true}}) {
+        mobile
+      }
       cardcode
       name
     }
@@ -57,7 +58,7 @@ subscription dashboard_trips(
     loading_tat
     intransit_tat
     unloading_tat
-    driver{
+    driver {
       id
       mobile
     }
@@ -73,6 +74,7 @@ subscription dashboard_trips(
       }
     }
   }
-}`
+}
+`
 
 export default DASHBOAD_TRIPS_QUERY

@@ -1,4 +1,4 @@
-import { Table, Tooltip, Button, Popconfirm, message, Badge } from 'antd'
+import { Table, Tooltip, Button, Popconfirm, message, Badge, Checkbox } from 'antd'
 import { CommentOutlined, CheckOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
@@ -24,7 +24,7 @@ mutation update_trip_status($id: Int , $trip_status_id : Int) {
 `
 
 const Trips = (props) => {
-  const { trips, loading } = props
+  const { trips, loading,partnerRegionFilter, setPartnerRegionFilter } = props
   const initial = {
     commentData: [],
     commentVisible: false
@@ -35,6 +35,15 @@ const Trips = (props) => {
   const context = useContext(userContext)
   const ad_am = [role.admin, role.accounts_manager, role.accounts]
   const confirm_access = u.is_roles(ad_am, context)
+  const regions = u.regions
+  const regionsList = regions.map((data) => {
+    return { value: data.text, label: data.text }
+  })
+
+  const onRegionFilter = (checked) => {
+    setPartnerRegionFilter(checked)
+  }
+
   const [assign_to_confirm] = useMutation(
     ASSIGN_TO_CONFIRM_STATUS_MUTATION, {
       onError (error) {
@@ -119,6 +128,15 @@ const Trips = (props) => {
           />
         )
       },
+      filterDropdown: (
+        props.partner_region_filter ?
+        <Checkbox.Group
+          options={regionsList}
+          defaultValue={partnerRegionFilter}
+          onChange={onRegionFilter}
+          className='filter-drop-down'
+        /> : null
+      ),
       sorter: (a, b) => (a.partner.name > b.partner.name ? 1 : -1),
       width: '10%'
     },
