@@ -21,9 +21,10 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import { gql, useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import u from '../../lib/util'
-
+import LinkComp from '../common/link'
 import userContext from '../../lib/userContaxt'
 import LabelWithData from '../common/labelWithData'
+import LoadingMemo from './loadingMemo'
 
 const GET_WORD = gql`
 query loading_memo($id:Int!){
@@ -117,18 +118,23 @@ mutation partner_advance ($tripId: Int!, $createdBy: String!, $customer_confirma
 
 const TripTime = (props) => {
   const { trip_info, customerConfirm, lr_files } = props
-  const initial = { checkbox: false, mail: false, deletePO: false, godownReceipt: false, wh_detail: false }
+  const initial = { checkbox: false, mail: false, deletePO: false, godownReceipt: false, wh_detail: false,loading_memo: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+  
   const [disableBtn, setDisableBtn] = useState(false)
+  const [loadingMemoCheck, setLoadingMemoCheck] = useState(false)
   const context = useContext(userContext)
   const { role } = u
   const po_delete_access = [role.admin, role.rm]
   const process_advance_access = [role.admin, role.rm, role.operations,role.bm]
   const advance_access = u.is_roles(process_advance_access, context)
   const access = (trip_info.loaded === 'No') || u.is_roles(po_delete_access, context)
+  const truck_files = get(trip_info, 'truck.truck_files', null)
+  const truck_pan_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.partner_pan) : null
   const customerPrice = get(trip_info, 'customer_price', null)
   const km = get(trip_info, 'km', null)
   const customerPricePerKm = (customerPrice / km)
+  const loading_memo = get(trip_info,'truck.loading_memo',null)
   console.log('customerPricePerKm', customerPricePerKm)
   const pricePerKm = customerPricePerKm > 100
   const [form] = Form.useForm()
@@ -144,6 +150,7 @@ const TripTime = (props) => {
 
   console.log('tripTime error', error)
   console.log('tripTime error', pdferror)
+  console.log('truck_pan_files',truck_pan_files)
 
   let _data = {}
   if (!loading) {
@@ -271,13 +278,9 @@ const TripTime = (props) => {
   const onClickPdf = () => {
     loadingmemo({
       variables: { id: trip_info.id }
-    })
+    }) 
   }
-  const onClickPartnerPdf = () => {
-    partnerloadingmemo({
-      variables: { id: trip_info.id }
-    })
-  }
+ 
 
   const [processAdvance] = useMutation(
     PROCESS_ADVANCE_MUTATION,
@@ -363,6 +366,18 @@ const TripTime = (props) => {
     })
   }
 
+  const onHandleCancel = () => {
+    setLoadingMemoCheck(false)
+    setDisableBtn(false)
+  }
+
+  const onClickPartnerPdf = () => {
+      partnerloadingmemo({
+        variables: { id: trip_info.id }
+      })
+    }
+  
+
   const trip_status_name = get(trip_info, 'trip_status.name', null)
   const po_delete = (trip_status_name === 'Assigned' || trip_status_name === 'Confirmed' || trip_status_name === 'Reported at source') && !trip_info.source_out
   const process_advance = trip_info.source_out && (trip_info.loaded !== 'Yes')
@@ -381,6 +396,7 @@ const TripTime = (props) => {
   const lock = get(trip_info, 'transaction_lock', null)
 
   return (
+    
     <Card size='small' className='mt10'>
       <Row>
         <Col xs={24}>
@@ -421,12 +437,19 @@ const TripTime = (props) => {
                   </Col>
                   <Col xs={12}>
                     <Form.Item label='Partner - Memo'>
-                      <Space>
-                        <Button
+                      <Space>                        
+                       { 
+                         (loading_memo && truck_pan_files) || (!loading_memo) ? 
+                          <Button
                           type='primary' loading={pdfloading} shape='circle'
                           icon={<FilePdfOutlined />} onClick={onClickPartnerPdf}
                         />
-                        <Button
+                        :  <Button
+                        type='primary' shape='circle'
+                        icon={<FilePdfOutlined />} onClick={() => onShow('loading_memo')}
+                      /> 
+                        }
+                       <Button
                           type='primary' loading={loading} shape='circle'
                           icon={<FileWordOutlined />} onClick={onClickPartnerWord}
                         />
@@ -507,6 +530,7 @@ const TripTime = (props) => {
       </Row>
       {visible.mail && <SendLoadingMemo visible={visible.mail} onHide={onHide} />}
       {visible.deletePO && <DeletePO visible={visible.deletePO} onHide={onHide} trip_info={trip_info} />}
+      {visible.loading_memo && <LoadingMemo visible={visible.loading_memo} onHide={onHide} trip_info={trip_info} />}
       {visible.godownReceipt && <GodownReceipt visible={visible.godownReceipt} trip_id={trip_info.id} trip_info={trip_info} onHide={onHide} />}
       {visible.wh_detail &&
         <Modal
@@ -525,7 +549,7 @@ const TripTime = (props) => {
             </div>}
         </Modal>}
     </Card>
-
+  
   )
 }
 

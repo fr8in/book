@@ -37,7 +37,7 @@ const truckDocuments = (props) => {
   const context = useContext(userContext)
   const dateFormat = 'YYYY-MM-DD'
 
-  const [checked, setChecked] = useState()
+  const [checked, setChecked] = useState(truck_info.loading_memo)
   
 
   const [updateloadingmemo] = useMutation(
