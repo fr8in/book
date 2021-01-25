@@ -2,11 +2,17 @@ import Trips from '../../trips/activeTrips'
 import DASHBOAD_TRIPS_QUERY from './query/tripsQuery'
 import { useSubscription } from '@apollo/client'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
+import { useState } from 'react'
 
 const TripsContainer = (props) => {
-  const { filters, trip_status, intransit } = props
+  const { filters, trip_status, intransit, partner_region_filter } = props
+
+  const [partnerRegionFilter,setPartnerRegionFilter] = useState(null)
+
   const variables = {
     trip_status: trip_status,
+    ...!isEmpty(partnerRegionFilter) && { partner_region: (partnerRegionFilter && partnerRegionFilter.length > 0) ? partnerRegionFilter : null },
     regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
     branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
     cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
@@ -23,7 +29,14 @@ const TripsContainer = (props) => {
 
   const trips = get(newData, 'trip', [])
   return (
-    <Trips trips={trips} loading={loading} intransit={intransit} />
+    <Trips
+      trips={trips}
+      loading={loading}
+      intransit={intransit}
+      partnerRegionFilter={partnerRegionFilter}
+      setPartnerRegionFilter={setPartnerRegionFilter}
+      partner_region_filter={partner_region_filter}
+    />
   )
 }
 
