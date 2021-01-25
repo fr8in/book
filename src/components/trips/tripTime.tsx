@@ -494,24 +494,31 @@ const fileValidation = loading_memo ?   rc_files.length>0 && truck_pan_files.len
                           type='primary' loading={pdfloading} shape='circle'
                           icon={<FilePdfOutlined />} onClick={onClickPartnerPdf}
                         /> : 
-                        <Popconfirm
-                        title = {`Loading memo generating using truck document.please upload PAN and ${tdsYear} year TDS in 
-                        ${<LinkComp
-                          type='trucks'
-                          data={`${trip_info.truck.truck_no}`}
-                          id={trip_info.truck.truck_no}
-                        />}`}
-                        >
                         <Button
-                          type='primary' loading={pdfloading} shape='circle'
-                          icon={<FilePdfOutlined />} 
-                        />
-                        </Popconfirm>
+                        type='primary' loading={pdfloading} shape='circle'
+                        icon={<FilePdfOutlined />}  onClick={() => onShow('loading_memo')}
+                      />
                          }
+                          { 
+                         (fileValidation) ? 
                        <Button
                           type='primary' loading={loading} shape='circle'
                           icon={<FileWordOutlined />} onClick={onClickPartnerWord}
+                        /> : 
+                        <Popconfirm
+                        title = {<p>Loading memo generating using truck document.please upload PAN and {tdsYear} year TDS in 
+                         {<LinkComp
+                          type='trucks'
+                          data={trip_info.truck.truck_no}
+                          id={trip_info.truck.truck_no}
+                        />}</p>}
+                        >
+                        <Button
+                          type='primary' loading={loading} shape='circle'
+                          icon={<FileWordOutlined />} 
                         />
+                        </Popconfirm>
+                         }
                       </Space>
                     </Form.Item>
                   </Col>
@@ -589,7 +596,7 @@ const fileValidation = loading_memo ?   rc_files.length>0 && truck_pan_files.len
       </Row>
       {visible.mail && <SendLoadingMemo visible={visible.mail} onHide={onHide} />}
       {visible.deletePO && <DeletePO visible={visible.deletePO} onHide={onHide} trip_info={trip_info} />}
-      {visible.loading_memo && <LoadingMemo visible={visible.loading_memo} onHide={onHide} trip_info={trip_info} />}
+      {visible.loading_memo && <LoadingMemo visible={visible.loading_memo} onHide={onHide} trip_info={trip_info} tds_current_={tds_current_} tds_previous_={tds_previous_}/>}
       {visible.godownReceipt && <GodownReceipt visible={visible.godownReceipt} trip_id={trip_info.id} trip_info={trip_info} onHide={onHide} />}
       {visible.wh_detail &&
         <Modal
