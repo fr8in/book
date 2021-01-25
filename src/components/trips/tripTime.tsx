@@ -422,13 +422,7 @@ const TripTime = (props) => {
   const disable_pa = (!customerConfirm && isEmpty(lr_files))
   const lock = get(trip_info, 'transaction_lock', null)
   const getPartnerTDSDocument = (type, financial_year) => partner_files && partner_files.length > 0 ? partner_files.filter(data => data.type === type && data.financial_year === financial_year) : []
-  const partner_tds_file_list_previous = !isEmpty(getPartnerTDSDocument( u.fileType.tds,tds_previous_)) && getPartnerTDSDocument( u.fileType.tds,tds_previous_).map((file, i) => {
-    return ({
-      uid: `${file.type}-${i}`,
-      name: file.file_path,
-      status: 'done'
-    })
-  })
+  
 
   return (
     
