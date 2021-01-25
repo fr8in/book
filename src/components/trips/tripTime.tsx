@@ -26,6 +26,14 @@ import userContext from '../../lib/userContaxt'
 import LabelWithData from '../common/labelWithData'
 import LoadingMemo from './loadingMemo'
 
+const CONFIG_QUERY = gql`
+query config{
+  config(where:{key:{_eq:"financial_year"}}){
+    value
+  }
+} 
+`
+
 const GET_WORD = gql`
 query loading_memo($id:Int!){
   trip(where:{id:{_eq:$id}}) {
@@ -130,12 +138,15 @@ const TripTime = (props) => {
   const advance_access = u.is_roles(process_advance_access, context)
   const access = (trip_info.loaded === 'No') || u.is_roles(po_delete_access, context)
   const truck_files = get(trip_info, 'truck.truck_files', null)
+  const partner_files = get(trip_info, 'partner.partner_files', null)
   const truck_pan_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.partner_pan) : null
+  const rc_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.rc) : null
+  
   const customerPrice = get(trip_info, 'customer_price', null)
   const km = get(trip_info, 'km', null)
   const customerPricePerKm = (customerPrice / km)
   const loading_memo = get(trip_info,'truck.loading_memo',null)
-  console.log('customerPricePerKm', customerPricePerKm)
+  console.log('loading_memo', loading_memo)
   const pricePerKm = customerPricePerKm > 100
   const [form] = Form.useForm()
   const [getWord, { loading, data, error, called }] = useLazyQuery(GET_WORD)
@@ -167,6 +178,22 @@ const TripTime = (props) => {
   if (!tokenQueryLoading) {
     token = get(tokenData, 'token', null)
   }
+
+  const { loading:config_loading, error:config_error, data:data_config } = useQuery(CONFIG_QUERY, {
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  })
+
+  console.log('Documents error',config_error)
+
+  let config_data = {}
+  if (!loading) {
+    config_data = data_config
+  }
+ 
+
+  const tds_current_ = get(config_data, 'config[0].value.current', null)
+  const tds_previous_ = get(config_data, 'config[0].value.previous', null)
 
   const word_url = get(_data, 'trip[0].loading_memo', [])
   const pdf_url = get(_pdfdata, 'trip[0].loading_memo', [])
@@ -394,6 +421,14 @@ const TripTime = (props) => {
   const wh_update = (trip_status_id > 5)
   const disable_pa = (!customerConfirm && isEmpty(lr_files))
   const lock = get(trip_info, 'transaction_lock', null)
+  const getPartnerTDSDocument = (type, financial_year) => partner_files && partner_files.length > 0 ? partner_files.filter(data => data.type === type && data.financial_year === financial_year) : []
+  const partner_tds_file_list_previous = !isEmpty(getPartnerTDSDocument( u.fileType.tds,tds_previous_)) && getPartnerTDSDocument( u.fileType.tds,tds_previous_).map((file, i) => {
+    return ({
+      uid: `${file.type}-${i}`,
+      name: file.file_path,
+      status: 'done'
+    })
+  })
 
   return (
     
@@ -439,7 +474,7 @@ const TripTime = (props) => {
                     <Form.Item label='Partner - Memo'>
                       <Space>                        
                        { 
-                         (loading_memo && truck_pan_files) || (!loading_memo) ? 
+                         (loading_memo === true && truck_pan_files) || (loading_memo === false) ? 
                           <Button
                           type='primary' loading={pdfloading} shape='circle'
                           icon={<FilePdfOutlined />} onClick={onClickPartnerPdf}
