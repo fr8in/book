@@ -6,10 +6,10 @@ import { Table, Input } from 'antd'
 import LinkComp from '../../../common/link'
 import SourcingIncentiveDetail from './detail'
 import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
-
+import u from '../../../../lib/util'
 
 const SOURCING_INCENTIVE_SUBSCRIPTION = gql`subscription getSourcingIncentiveLog($year: Int, $month: Int, $employee_name: String) {
-    sourcing_incentive_log(where: {year: {_eq: $year}, month: {_eq: $month}, employee: {name: {_ilike: $employee_name}}}, order_by: {employee: {name: asc}}) {
+    sourcing_incentive_log(where: {year: {_eq: $year}, month: {_eq: $month},status:{_in:["PENDING","INITIATED"]}, employee: {name: {_ilike: $employee_name}}}, order_by: {employee: {name: asc}}) {
         id
       employee_code
       partner_code
@@ -48,23 +48,36 @@ const SourcingIncentive = (props) => {
     const sourcingIncentives = _.get(_data, 'sourcing_incentive_log', [])
 
 
-    const onSelectChange = (selectedRowKeys, selectedRows) => {
-        props.onChange(selectedRows)
-    }
-    const rowSelection = {
-        onChange: onSelectChange
-    }
+    const groupedData = u.groupByMultipleProperty(sourcingIncentives, function (item: any) {
+        return [item.employee_code];
+    })
+    const filteredData = groupedData.map((incentives, i) => {
+        const travel_allowance = _.sumBy(incentives, 'travel_allowance')
+        const order_incentive = _.sumBy(incentives, 'order_incentive')
+        return {
+            id: i,
+            incentive_ids: incentives.map(data => data.id),
+            name: incentives[0].employee.name,
+            travel_allowance,
+            order_incentive,
+            amount: _.sumBy(incentives, 'total_amount'),
+            employee_code: incentives[0].employee_code,
+            partner_code: incentives[0].partner_code,
+            employee_name: _.get(incentives[0], 'employee.name', null)
+        }
+    })
+
     const handleEmployeeSearch = (e) => {
         setSearch(e.target.value)
     }
 
     const columns = [
         {
-            title: 'Employee',
-            dataIndex: 'employee_code',
-            key: 'employee_code',
-            width: '20%',
-            render: (text, record) => _.get(record, 'employee.name'),
+            title: "Employee",
+            dataIndex: 'name',
+            key: 'name',
+            width: "25%",
+            render: (text, record) => _.get(record, 'name'),
             filterDropdown: (
                 <div>
                     <Input
@@ -75,45 +88,48 @@ const SourcingIncentive = (props) => {
                 </div>
             ),
             filterIcon: () => <SearchOutlined style={{ color: search ? '#1890ff' : undefined }} />
+
         },
         {
-            title: 'Partner Name',
-            dataIndex: 'partner_code',
-            key: 'partner_code',
-            width: '20%',
-            render: (text, record) => <LinkComp type='partners' data={_.get(record, 'partner.name')} id={_.get(record, 'partner.id')} />
-        },
-        {
-            title: 'Travel Allowance',
+            title: "Travel Allowance",
             dataIndex: 'travel_allowance',
             key: 'travel_allowance',
-            width: '20%'
+            width: "25%"
         },
         {
-            title: 'Order Incentive',
+            title: "Order Incentive",
             dataIndex: 'order_incentive',
             key: 'order_incentive',
-            width: '20%'
+            width: "25%"
         },
         {
-            title: 'Total Amount',
-            dataIndex: 'total_amount',
-            key: 'total_amount',
-            width: '20%'
-        }
+            title: "Total",
+            dataIndex: 'amount',
+            key: 'amount',
+            width: "25%"
+        },
     ]
+
+    const onSelectChange = (selectedRowKeys, selectedRows) => {
+        props.onChange(selectedRows)
+    }
+    const rowSelection = {
+        onChange: onSelectChange
+    }
+
     return (
         <Table
             columns={columns}
-            dataSource={sourcingIncentives}
+            dataSource={filteredData}
             pagination={false}
             size='small'
             scroll={{ x: 1156 }}
-            loading={loading}
+            loading={loading || props.loading}
             rowSelection={rowSelection}
             expandedRowRender={record =>
-                <SourcingIncentiveDetail partner_code={record.partner_code} employee_code={record.employee_code} />}
-            rowKey={record => record.id}
+                <SourcingIncentiveDetail year={props.year} month={props.month}
+                    partner_code={record.partner_code} employee_code={record.employee_code} />}
+            rowKey={record => record.employee_code}
         />
     )
 

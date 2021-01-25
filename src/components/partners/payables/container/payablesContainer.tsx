@@ -14,7 +14,6 @@ import Last7daysPending from '../last7daysPending'
 import SourcingIncentive from '../sourcingIncentive/incentive'
 import SourcingIncentiveModal from '../sourcingIncentive/modal'
 import useShowHideWithRecord from '../../../../hooks/useShowHideWithRecord'
-import useShowHide from '../../../../hooks/useShowHide'
 
 
 const { RangePicker } = DatePicker
@@ -22,6 +21,13 @@ const { RangePicker } = DatePicker
 const DATE_SELECT_MUTATION = gql`
 mutation icici_statement($start_date:String!,$end_date:String!) {
   icici_statement(start_date:$start_date,end_date:$end_date)
+}`
+
+const SYNC_SOURCING_INCENTIVE_DATA = gql`mutation sync_sourcing_incentive($year: Int!, $month: Int!) {
+  sync_sourcing_incentive(month: $month, year: $year) {
+    status
+    description
+  }
 }`
 
 const TabPane = Tabs.TabPane
@@ -33,6 +39,7 @@ const PayablesContainer = () => {
   const initial = { loading: false }
   const [disableBtn, setDisableBtn] = useState(initial)
   const [sourcingIncentiveData, setSourcingIncentiveData] = useState([])
+  const [loading, setLoading] = useState(false)
   const context = useContext(userContext)
   const { role } = u
 
@@ -57,7 +64,20 @@ const PayablesContainer = () => {
     const splittedDate = dateString.split('-')
     setYear(parseInt(splittedDate[0]))
     setMonth(parseInt(splittedDate[1]))
+  }
+
+  const handleIncentiveMonthChange = (date, dateString) => {
+    const splittedDate = dateString.split('-')
+    setYear(parseInt(splittedDate[0]))
+    setMonth(parseInt(splittedDate[1]))
     setSourcingIncentiveData([])
+    setLoading(true)
+    sync_sourcing_incentive({
+      variables: {
+        year: parseInt(splittedDate[0]),
+        month: parseInt(splittedDate[1])
+      }
+    })
   }
 
 
@@ -78,6 +98,20 @@ const PayablesContainer = () => {
         const url = data && data.icici_statement
         window.open(url, 'icici_statement')
         message.success('Download!!')
+      }
+    }
+  )
+
+  const [sync_sourcing_incentive] = useMutation(
+    SYNC_SOURCING_INCENTIVE_DATA,
+    {
+      onError(error) {
+        message.error(error.toString())
+      },
+      onCompleted(data) {
+        setLoading(false)
+        if (data.sync_sourcing_incentive.status !== "OK")
+          message.error(data.sync_sourcing_incentive.description)
       }
     }
   )
@@ -162,7 +196,9 @@ const PayablesContainer = () => {
             : (tabIndex === '4') ? <Space>
               <Button type="primary" disabled={!(sourcingIncentiveData.length > 0)}
                 onClick={() => handleShow('incentiveVisible', "Process Incentive", 'incentiveData', sourcingIncentiveData)}>Process</Button>
-              <DatePicker onChange={handleMonthChange} picker='month' /> </Space> : null
+              <DatePicker
+                disabledDate={(date) => handleCashBackDate(date)}
+                onChange={handleIncentiveMonthChange} picker='month' /> </Space> : null
     )
   }
 
@@ -191,13 +227,15 @@ const PayablesContainer = () => {
             <RelianceCashBack month={month} year={year} />
           </TabPane>}
         <TabPane tab="Sourcing Incentive" key="4">
-          <SourcingIncentive year={year} month={month} onChange={handleSourcingIncentiveData} />
+          <SourcingIncentive year={year} loading={loading}
+            month={month} onChange={handleSourcingIncentiveData} />
         </TabPane>
         {object.incentiveVisible && <SourcingIncentiveModal
           visible={object.incentiveVisible}
           onCancel={handleHide}
           data={object.incentiveData}
           title={object.titile}
+          onChange={handleSourcingIncentiveData}
         />}
       </Tabs>
     </Card>

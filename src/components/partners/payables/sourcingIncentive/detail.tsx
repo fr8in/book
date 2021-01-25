@@ -3,9 +3,10 @@ import { Table } from 'antd'
 import { useSubscription, gql } from '@apollo/client'
 import _ from 'lodash'
 import moment from 'moment'
+import LinkComp from '../../../common/link'
 
-const SOURCING_INCENTIVE_DETAIL = gql`subscription getSourcingIncentive($year: Int, $month: Int, $employee_code: String, $partner_code: String) {
-    sourcing_incentive(where: {year: {_eq: $year}, month: {_eq: $month}, employee_code: {_eq: $employee_code}, partner_code: {_eq: $partner_code}}) {
+const SOURCING_INCENTIVE_DETAIL = gql`subscription getSourcingIncentive($year: Int, $month: Int, $employee_code: String) {
+    sourcing_incentive(where: {year: {_eq: $year}, month: {_eq: $month}, employee_code: {_eq: $employee_code}}) {
       id
       employee_code
       partner_code
@@ -17,6 +18,11 @@ const SOURCING_INCENTIVE_DETAIL = gql`subscription getSourcingIncentive($year: I
       month
       amount
       year
+      partner{
+        id
+        cardcode
+        name
+      }
       incentive_type {
         id
         name
@@ -26,11 +32,11 @@ const SOURCING_INCENTIVE_DETAIL = gql`subscription getSourcingIncentive($year: I
 
 const SourcingIncentiveDetail = (props) => {
     const { data, loading, error } = useSubscription(SOURCING_INCENTIVE_DETAIL, {
+        skip: !props.year || !props.month,
         variables: {
             year: props.year,
             month: props.month,
-            employee_code: props.employee_code,
-            partner_code: props.partner_code
+            employee_code: props.employee_code
         }
     })
     let _data = {}
@@ -39,6 +45,14 @@ const SourcingIncentiveDetail = (props) => {
     }
     const sourcingIncentives = _.get(_data, 'sourcing_incentive', [])
     const columns = [
+        {
+            title: 'Partner Name',
+            dataIndex: 'partner_code',
+            key: 'partner_code',
+            width: '20%',
+            sorter: (a, b) => (a.partner.name > b.partner.name ? 1 : -1),
+            render: (text, record) => <LinkComp type='partners' data={_.get(record, 'partner.name')} id={_.get(record, 'partner.id')} />
+        },
         {
             title: 'Incentive Type',
             dataIndex: 'incentive_type',
@@ -71,13 +85,15 @@ const SourcingIncentiveDetail = (props) => {
             title: 'Order Count',
             dataIndex: 'order_count',
             key: 'order_count',
-            width: '10%'
+            width: '10%',
+            sorter: (a, b) => a.order_count - b.order_count
         },
         {
             title: 'Amount',
             dataIndex: 'amount',
             key: 'amount',
-            width: '10%'
+            width: '10%',
+            sorter: (a, b) => a.amount - b.amount
         }
     ]
     return (
