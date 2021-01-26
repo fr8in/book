@@ -53,8 +53,9 @@ if(loading_memo) {
       onCancel={onHide}
       footer={[]}
     >
-        <p>Truck document required to generate loading memo.
-            Please upload in 
+        <p>Truck document required to generate loading memo</p>
+        <p>{text}</p>
+        <p> Please upload in 
                          {<LinkComp
                           type='trucks'
                           data={trip_info.truck.truck_no}
