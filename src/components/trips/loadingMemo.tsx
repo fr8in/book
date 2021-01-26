@@ -40,10 +40,6 @@ if(loading_memo) {
   text = rc_files.length === 0 ? "RC" :""
   text =  text.concat( truck_pan_files.length === 0 ? "PAN" : "") 
   text = text.concat(truck_tds_file_list.length === 0 ? "TDS" : "")
-} else {
-  text = rc_files.length === 0 ? "RC" : ""
-  text =  text.concat( partner_pan_files.length === 0 ? "PAN" : "") 
-  text = text.concat(partner_tds_file_list.length === 0 ? "TDS" : "")
 }
   
   return (

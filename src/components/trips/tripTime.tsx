@@ -442,7 +442,7 @@ const TripTime = (props) => {
     })
   })
 
-const fileValidation = loading_memo ?   rc_files.length>0 && truck_pan_files.length>0  && truck_tds_file_list.length > 0 : partner_tds_file_list.length>0 && rc_files.length>0 && partner_pan_files.length>0
+  const fileValidation = loading_memo ?   rc_files.length>0 && truck_pan_files.length>0  && truck_tds_file_list.length > 0 : true
   
 
   return (
