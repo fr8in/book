@@ -505,19 +505,10 @@ const TripTime = (props) => {
                           type='primary' loading={loading} shape='circle'
                           icon={<FileWordOutlined />} onClick={onClickPartnerWord}
                         /> : 
-                        <Popconfirm
-                        title = {<p>Loading memo generating using truck document.please upload PAN and {tdsYear} year TDS in 
-                         {<LinkComp
-                          type='trucks'
-                          data={trip_info.truck.truck_no}
-                          id={trip_info.truck.truck_no}
-                        />}</p>}
-                        >
                         <Button
-                          type='primary' loading={loading} shape='circle'
-                          icon={<FileWordOutlined />} 
-                        />
-                        </Popconfirm>
+                        type='primary' loading={loading} shape='circle'
+                        icon={<FileWordOutlined />}  onClick={() => onShow('loading_memo')}
+                      />
                          }
                       </Space>
                     </Form.Item>
