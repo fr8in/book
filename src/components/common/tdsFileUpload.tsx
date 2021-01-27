@@ -1,6 +1,6 @@
 import { useState ,useContext} from 'react'
 import { Row, Col, Upload, Button, message, Modal } from 'antd'
-import { UploadOutlined } from '@ant-design/icons'
+import { UploadOutlined ,ExclamationCircleOutlined} from '@ant-design/icons'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 
@@ -125,6 +125,24 @@ const FileUpload = (props) => {
     })
   }
 
+  const { confirm } = Modal;
+
+  function showConfirm(file) {
+    confirm({
+      title: `Are you sure want to Delete ${file_type} Document?`,
+      icon: <ExclamationCircleOutlined />,
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk: () => {
+         remove(file)
+      },
+      onCancel: () => {
+        console.log('Cancel');
+      },
+    });
+  }
+
   return (
     <Row>
       <Col xs={24}>
@@ -132,7 +150,7 @@ const FileUpload = (props) => {
           beforeUpload={onChange}
           fileList={file_list}
           onPreview={(file) => download(file)}
-          onRemove={(file) => remove(file)}
+          onRemove={(file) => showConfirm(file)}
           accept='image/*, application/pdf'
         >
           <Button icon={<UploadOutlined />} disabled={disable}>Select File</Button>
