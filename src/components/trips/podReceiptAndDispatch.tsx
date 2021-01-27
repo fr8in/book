@@ -49,7 +49,7 @@ const ALL_EMP_AND_COURIER = gql`
 const PodReceiptAndDispatch = (props) => {
   const { visible, onHide, trip_ids, onRemoveTag, podDispatch } = props
   const context = useContext(userContext)
-
+  const [disableButton, setDisableButton] = useState(false)
   const listType = [
     { label: 'Internal', value: 'Internal' },
     { label: 'Courier', value: 'Courier' }
@@ -147,6 +147,7 @@ const PodReceiptAndDispatch = (props) => {
   const onPodReceiptDispatchSubmit = () => {
     const now = new Date().toISOString()
     if (podDispatch) {
+      setDisableButton(true)
       updatePodDispatchedAt({
         variables: {
           objects: (selectValue === 'Internal') ? empObjects : docketObjects,
@@ -156,6 +157,7 @@ const PodReceiptAndDispatch = (props) => {
         }
       })
     } else {
+      setDisableButton(true)
       updatePodVerifiedAt({
         variables: {
           objects: (selectValue === 'Internal') ? empObjects : docketObjects,
@@ -174,7 +176,7 @@ const PodReceiptAndDispatch = (props) => {
       visible={visible}
       onCancel={onClose}
       footer={[
-        <Button disabled={!isTripSelected} type='primary' key='emp' onClick={onPodReceiptDispatchSubmit}>Submit</Button>
+        <Button loading={disableButton} disabled={!isTripSelected} type='primary' key='emp' onClick={onPodReceiptDispatchSubmit}>Submit</Button>
       ]}
     >
       {isTripSelected ? (

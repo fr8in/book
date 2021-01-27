@@ -16,7 +16,7 @@ subscription trips_receivables($id: Int!) {
         amount
         created_at
       }
-      trip_receipts{
+      trip_receipts (order_by:{created_at:asc}){
         id
         amount
         comment
