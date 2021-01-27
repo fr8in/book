@@ -33,7 +33,7 @@ mutation update_loading_memo($truck_id: Int!, $updated_by: String!, $loading_mem
 const truckDocuments = (props) => {
   const { truck_id, truck_info, partner_id } = props
   const { role } = u
-  const edit_truck_pan = role.admin
+  const edit_truck_pan = role.user
   const context = useContext(userContext)
   const dateFormat = 'YYYY-MM-DD'
 
