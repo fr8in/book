@@ -26,11 +26,11 @@ const LoadingMemo = (props) => {
   console.log('truck_tds_file_list',truck_tds_file_list)
 
   let text;
-if(loading_memo) {
-  text = rc_files.length === 0 ? "RC" :""
-  text =  text.concat( truck_pan_files.length === 0 ? "PAN" : "") 
-  text = text.concat(truck_tds_file_list.length === 0 ? `TDS-${tdsYear}` : "")
-}
+  if(loading_memo) {
+    text = rc_files.length === 0 ? "RC" :""
+    text =  text ? text.concat( truck_pan_files.length === 0 ? " ,PAN" : "")  : text.concat( truck_pan_files.length === 0 ? "PAN" : "")
+    text = text ? text.concat(truck_tds_file_list.length === 0 ? `,TDS-${tdsYear}` : "") : text.concat(truck_tds_file_list.length === 0 ? `TDS-${tdsYear}` : "")
+  }
   
   return (
     <Modal
