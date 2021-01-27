@@ -124,7 +124,7 @@ const Reversepoddispatch = (props) => {
         <Form.Item label='Docket No' name='docket_no' >
           <Input placeholder='Enter the Docket No' onBlur={trip_id} />
         </Form.Item>
-        <Form.Item label='Trip ID' name='trip_id' >
+        <Form.Item label='Trip ID' name='trip_id' rules={[{ required: true }]} >
           <Select options={tripList} mode="multiple" onChange={handleChange} />
         </Form.Item>
         <Row justify='end'>
