@@ -138,8 +138,8 @@ const TripTime = (props) => {
   const process_advance_access = [role.admin, role.rm, role.operations,role.bm]
   const advance_access = u.is_roles(process_advance_access, context)
   const access = (trip_info.loaded === 'No') || u.is_roles(po_delete_access, context)
-  const truck_files = get(trip_info, 'truck.truck_files', null)
-  const partner_files = get(trip_info, 'partner.partner_files', null)
+  const truck_files = get(trip_info, 'truck.truck_files', [])
+  const partner_files = get(trip_info, 'partner.partner_files', [])
   const truck_pan_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.partner_pan) : null
   const rc_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.rc) : null
   const partner_pan_files = !isEmpty(partner_files) ? partner_files.filter(file=> file.type ===  u.fileType.partner_pan) : null

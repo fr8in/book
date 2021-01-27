@@ -170,75 +170,6 @@ console.log('truck_info.loading_memo',truck_info.loading_memo)
           <Checkbox onChange={onChange} checked={checked}  value='value'>Use truck level document for loading memo</Checkbox>
         </Form.Item>
         <Divider />
-        <Row>
-        <b>Partner Documents</b>
-        </Row>
-        <Divider />
-        <Row gutter={[10, 10]}>
-        <Col xs={24} sm={6}>
-            <Form.Item
-              label='PAN Number'
-              name='PAN'
-            >
-               <LabelAndData
-        data={truck_info.partner.pan}
-        mdSpan={4}
-        smSpan={8}
-        xsSpan={12}
-      />
-            </Form.Item>
-          </Col>
-
-
-          <Col xs={24} sm={6}>
-            <Form.Item
-              label='PAN'
-              name='PAN'
-              rules={[{ required: true, message: 'PAN is required field!' }]}
-            >
-              <FileUpload
-                id={partner_id}
-                type='partner'
-                folder={u.folder.approvals}
-                file_type={u.fileType.partner_pan}
-                file_list={pan_file_list}
-              />
-            </Form.Item>
-          </Col>
-
-          
-          <Col xs={24} sm={6}>
-            <Form.Item
-              label='TDS 19-20'
-              name='TDS'
-            >
-              
-              <TdsFileUpload
-                id={partner_id}
-                type='partner'
-                folder={u.folder.approvals}
-                file_type={u.fileType.tds}
-                file_list={partner_tds_file_list_previous}
-                financial_year={tds_previous_}
-              />
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={6}>
-            <Form.Item
-              label='TDS 20-21'
-              name='TDS'
-            >
-              <TdsFileUpload
-                id={partner_id}
-                type='partner'
-                folder={u.folder.approvals}
-                file_type={u.fileType.tds}
-                file_list={partner_tds_file_list_current}
-                financial_year={tds_current_}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
         { 
         truck_info.loading_memo === true ? (
             <>
@@ -364,6 +295,76 @@ console.log('truck_info.loading_memo',truck_info.loading_memo)
             </Form.Item>
           </Col>
           </Row>
+        <Row>
+        <b>Partner Documents</b>
+        </Row>
+        <Divider />
+        <Row gutter={[10, 10]}>
+        <Col xs={24} sm={6}>
+            <Form.Item
+              label='PAN Number'
+              name='PAN'
+            >
+               <LabelAndData
+        data={truck_info.partner.pan}
+        mdSpan={4}
+        smSpan={8}
+        xsSpan={12}
+      />
+            </Form.Item>
+          </Col>
+
+
+          <Col xs={24} sm={6}>
+            <Form.Item
+              label='PAN'
+              name='PAN'
+              rules={[{ required: true, message: 'PAN is required field!' }]}
+            >
+              <FileUpload
+                id={partner_id}
+                type='partner'
+                folder={u.folder.approvals}
+                file_type={u.fileType.partner_pan}
+                file_list={pan_file_list}
+              />
+            </Form.Item>
+          </Col>
+
+          
+          <Col xs={24} sm={6}>
+            <Form.Item
+              label='TDS 19-20'
+              name='TDS'
+            >
+              
+              <TdsFileUpload
+                id={partner_id}
+                type='partner'
+                folder={u.folder.approvals}
+                file_type={u.fileType.tds}
+                file_list={partner_tds_file_list_previous}
+                financial_year={tds_previous_}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={6}>
+            <Form.Item
+              label='TDS 20-21'
+              name='TDS'
+            >
+              <TdsFileUpload
+                id={partner_id}
+                type='partner'
+                folder={u.folder.approvals}
+                file_type={u.fileType.tds}
+                file_list={partner_tds_file_list_current}
+                financial_year={tds_current_}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        
 
              </Form>
     </div>

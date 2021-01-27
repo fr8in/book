@@ -9,7 +9,7 @@ import u from '../../lib/util'
 
 const LoadingMemo = (props) => {
   const { visible, onHide ,trip_info,tds_current_,tds_previous_} = props
-  const truck_files = get(trip_info, 'truck.truck_files', null)
+  const truck_files = get(trip_info, 'truck.truck_files', [])
   const loading_memo = get(trip_info,'truck.loading_memo',null)
   const truck_pan_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.partner_pan) : null
   const rc_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.rc) : null
