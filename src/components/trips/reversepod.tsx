@@ -130,7 +130,7 @@ const Reversepod= (props) => {
   
 
   const trip_id = () => {
-    if (form.getFieldValue('docket_no')) {
+    if (form.getFieldValue('docket_no').length > 3) {
       getTrip_id({ variables: { docket: form.getFieldValue('docket_no') } })
     } else return null
   }
@@ -228,7 +228,7 @@ const Reversepod= (props) => {
     
       <Form layout='vertical' onFinish={onChange} form={form}>
         <Form.Item label='Docket No' name='docket_no' >
-          <Input placeholder='Enter the Docket No' onBlur={trip_id} />
+          <Input placeholder='Enter the Docket No' onChange={trip_id} />
         </Form.Item>
         <Form.Item>
         <Table
