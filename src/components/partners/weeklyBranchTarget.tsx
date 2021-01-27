@@ -38,11 +38,11 @@ subscription monthly($week1: Int!,$week2: Int!,$week3: Int!, $year1: Int!, $year
 
 const WeeklyBranchTarget = (props) => {
   const { visible, onHide } = props
+  const fr8Date=moment().add(1,'days');
+  const cw = moment(fr8Date).format('WW yyyy').split(' ') // Current Week
+  const lw = moment(fr8Date).subtract(1, 'weeks').format('WW yyyy').split(' ') // Last Week
+  const blw = moment(fr8Date).subtract(2, 'weeks').format('WW yyyy').split(' ') // Before Last Week
 
-  const cw = moment().format('WW yyyy').split(' ') // Current Week
-  const lw = moment().subtract(1, 'weeks').format('WW yyyy').split(' ') // Last Week
-  const blw = moment().subtract(2, 'weeks').format('WW yyyy').split(' ') // Before Last Week
-  
   const week = [parseInt(cw[0], 10), parseInt(lw[0], 10), parseInt(blw[0], 10)]// will get cw,lw,blw
   const year = [parseInt(cw[1], 10), parseInt(lw[1], 10), parseInt(blw[1], 10)]// will get 3 years of cw , lw and blw 
 
@@ -93,7 +93,7 @@ const WeeklyBranchTarget = (props) => {
     <Title
       name={<div>{`W - ${week[1]}`}</div>}
       data={`${w2_actual || 0} / ${w2_target || 0}`}
-     alignRight
+      alignRight
     />)
   const beforeLastMonthTitle = (
     <Title
@@ -152,7 +152,7 @@ const WeeklyBranchTarget = (props) => {
 
   return (
     <Modal
-      style={{ top:2 }}
+      style={{ top: 2 }}
       bodyStyle={{ padding: 10 }}
       visible={visible}
       onCancel={onHide}

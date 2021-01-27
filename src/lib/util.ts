@@ -22,17 +22,27 @@ const util = {
     return period
   },
   getPervious4thDate: () => {
-   const ourdate = new Date()
-   const pastDate = ourdate. getDate() - 4;  
-   ourdate. setDate(pastDate)
-   return ourdate
+    const ourdate = new Date()
+    const pastDate = ourdate.getDate() - 4;
+    ourdate.setDate(pastDate)
+    return ourdate
   },
   getfuture3rdDate: () => {
     const ourdate = new Date()
-    const futureDate = ourdate. getDate() + 3;  
-    ourdate. setDate(futureDate)
+    const futureDate = ourdate.getDate() + 3;
+    ourdate.setDate(futureDate)
     return ourdate
-   },
+  },
+  regions: [
+    { value: 1, text: 'North' },
+    { value: 2, text: 'South-1' },
+    { value: 3, text: 'East-1' },
+    { value: 4, text: 'West-1' },
+    { value: 5, text: 'South-2' },
+    { value: 6, text: 'East-2' },
+    { value: 7, text: 'West-2' },
+    { value: 8, text: 'Central' }
+  ],
   role: {
     admin: 'Admin',
     rm: 'RM',
@@ -91,7 +101,7 @@ const util = {
   },
   maxLength: 6,
   MIN_REBATE_PERCENTAGE: 0.25,
-  MAX_INSURANCE_CASHBACK:10000,
+  MAX_INSURANCE_CASHBACK: 10000,
   handleLengthCheck: (e) => {
     if (e.target.value.length > e.target.maxLength) {
       e.target.value = e.target.value.slice(0, e.target.maxLength)
@@ -132,7 +142,7 @@ const util = {
     customer_pan: 'pan/'
   },
   application_error: {
-    JWT_TOKEN_EXPIRE_ERROR:'Could not verify JWT: JWTExpired'
+    JWT_TOKEN_EXPIRE_ERROR: 'Could not verify JWT: JWTExpired'
   },
   is_roles: (allowed_roles, context) => {
     const result = context.roles.some(role => allowed_roles.includes(role))
@@ -161,9 +171,19 @@ const util = {
     }
     return false
   },
-  calculatePercentage: (value,totalValue) =>  parseFloat(((value*100)/totalValue).toFixed(2)),
-  calculateAmountByPercentage:  (percentage,totalValue) =>   parseFloat(((percentage*totalValue)/100).toFixed(2))
-
+  calculatePercentage: (value, totalValue) => parseFloat(((value * 100) / totalValue).toFixed(2)),
+  calculateAmountByPercentage: (percentage, totalValue) => parseFloat(((percentage * totalValue) / 100).toFixed(2)),
+  groupByMultipleProperty: (array, f) => {
+    var groups = {};
+    array.forEach(function (o) {
+      var group = JSON.stringify(f(o));
+      groups[group] = groups[group] || [];
+      groups[group].push(o);
+    });
+    return Object.keys(groups).map(function (group) {
+      return groups[group];
+    })
+  }
 }
 
 export default util

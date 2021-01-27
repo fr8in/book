@@ -20,7 +20,7 @@ subscription trip_payables($id: Int!) {
       onhold
       pending_payable
     }
-    trip_payments {
+    trip_payments (order_by:{created_at:asc}) {
       id
       refno
       amount

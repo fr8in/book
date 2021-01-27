@@ -16,6 +16,7 @@ subscription branches($week: Int!, $year: Int!) {
     name
     displayposition
     branch_employees {
+      branch_id
       customer_branch_employees_aggregate {
         aggregate {
           count
@@ -54,16 +55,18 @@ const Branches = (props) => {
   const { edit_access, setTotalBranch } = props
 
   const { role } = u
-  const traffic_member_delete = [role.admin, role.hr]
+  const traffic_member_delete = [role.admin, role.hr, role.rm]
   const initial = {
     trafficVisible: false,
     title: null,
     trafficData: [],
     targetVisible: false,
-    targetData:{}
+    targetData: {}
   }
-
-  const period = u.getWeekNumber(new Date())
+  var date = new Date();
+  date.setDate(date.getDate() + 1);
+  const fr8Date = date
+  const period = u.getWeekNumber(fr8Date)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
   const { loading, data, error } = useSubscription(
@@ -110,20 +113,21 @@ const Branches = (props) => {
       dataIndex: 'trafficMembers',
       width: '40%',
       render: (text, record) => {
+        const branch_employee_weeklytarget = record.branch_employee_weekly_targets
         return (
           <div className='cell-wrapper'>
             <span>
               {record.branch_employees
                 ? record.branch_employees.map((data, i) => {
-                  const mobile = get(data, 'employee.mobileno', '-')
                   const name = get(data, 'employee.name', '-')
+                  const weeklyTarget = branch_employee_weeklytarget.filter(weeklytarget => weeklytarget.employee_id === data.employee.id)
                   return (
                     <Tag
                       key={i}
                       className='small-tag'
                       color={data.is_manager ? 'blue' : null}
                     >
-                      <span>{`${mobile} - ${name}`}</span>
+                      <span>{`${get(weeklyTarget[0], 'trip_target', 0)}- ${name}`}</span>
                     </Tag>
                   )
                 })

@@ -49,13 +49,13 @@ mutation insert_traffic($branch_id: Int!, $employee_id: Int!, $trip_target: Int!
 `
 
 const DELETE_BRANCH_EMPLOYEE = gql`
-mutation update_branch_employee($id: Int!,$employee_id:Int!, $year: Int, $week: Int, $date: timestamp) {
+mutation update_branch_employee($id: Int!,$employee_id:Int!, $year: Int, $week: Int, $date: timestamp,$branch_id: Int) {
   update_branch_employee(where: {id: {_eq: $id}}, _set: {deleted_at: $date}) {
     returning {
       id
     }
   }
-  update_branch_employee_weekly_target(where:{employee_id:{_eq:$employee_id},year:{_eq:$year},week:{_eq:$week}},_set: {deleted_at: $date}) {
+  delete_branch_employee_weekly_target(where:{employee_id:{_eq:$employee_id},year:{_eq:$year},week:{_eq:$week},branch_id:{_eq:$branch_id}}) {
     returning{
       id
     }
@@ -139,7 +139,7 @@ const AddTraffic = (props) => {
     return { value: branch_employee.id, label: branch_employee.employee.email }
   })
 
-const date =moment(new Date().toISOString())
+const date =moment().format('YYYY-MM-DD')
 
   const onTrafficChange = () => {
     setAddTraffic(!addTraffic)
@@ -185,14 +185,15 @@ const date =moment(new Date().toISOString())
       }
     })
   }
-  const onDelete = (id,employee_id) => {
+  const onDelete = (id,employee_id,branch_id) => {
     delete_traffic({
       variables: {
         id: id,
         employee_id:employee_id,
         week:week,
         year:year,
-        date: date
+        date: date,
+        branch_id:branch_id
       }
     })
   }
@@ -234,7 +235,7 @@ const date =moment(new Date().toISOString())
           ?<Button 
           type="link" 
           icon={<DeleteTwoTone twoToneColor='#eb2f96'/>  }  
-          onClick={() => onDelete(record.id,get(record,'employee.id',null))} 
+          onClick={() => onDelete(record.id,get(record,'employee.id',null),get(record,'branch_id',null))} 
           disabled={record.is_manager || !!count }
           /> : null)}
     }: {},

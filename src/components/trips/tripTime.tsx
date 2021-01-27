@@ -21,9 +21,19 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import { gql, useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import u from '../../lib/util'
-
+import LinkComp from '../common/link'
 import userContext from '../../lib/userContaxt'
 import LabelWithData from '../common/labelWithData'
+import LoadingMemo from './loadingMemo'
+import moment from 'moment'
+
+const CONFIG_QUERY = gql`
+query config{
+  config(where:{key:{_eq:"financial_year"}}){
+    value
+  }
+} 
+`
 
 const GET_WORD = gql`
 query loading_memo($id:Int!){
@@ -117,19 +127,28 @@ mutation partner_advance ($tripId: Int!, $createdBy: String!, $customer_confirma
 
 const TripTime = (props) => {
   const { trip_info, customerConfirm, lr_files } = props
-  const initial = { checkbox: false, mail: false, deletePO: false, godownReceipt: false, wh_detail: false }
+  const initial = { checkbox: false, mail: false, deletePO: false, godownReceipt: false, wh_detail: false,loading_memo: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+  
   const [disableBtn, setDisableBtn] = useState(false)
+  const [loadingMemoCheck, setLoadingMemoCheck] = useState(false)
   const context = useContext(userContext)
   const { role } = u
   const po_delete_access = [role.admin, role.rm]
   const process_advance_access = [role.admin, role.rm, role.operations,role.bm]
   const advance_access = u.is_roles(process_advance_access, context)
   const access = (trip_info.loaded === 'No') || u.is_roles(po_delete_access, context)
+  const truck_files = get(trip_info, 'truck.truck_files', null)
+  const partner_files = get(trip_info, 'partner.partner_files', null)
+  const truck_pan_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.partner_pan) : null
+  const rc_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.rc) : null
+  const partner_pan_files = !isEmpty(partner_files) ? partner_files.filter(file=> file.type ===  u.fileType.partner_pan) : null
+  
   const customerPrice = get(trip_info, 'customer_price', null)
   const km = get(trip_info, 'km', null)
   const customerPricePerKm = (customerPrice / km)
-  console.log('customerPricePerKm', customerPricePerKm)
+  const loading_memo = get(trip_info,'truck.loading_memo',null)
+  console.log('loading_memo', loading_memo)
   const pricePerKm = customerPricePerKm > 100
   const [form] = Form.useForm()
   const [getWord, { loading, data, error, called }] = useLazyQuery(GET_WORD)
@@ -144,6 +163,7 @@ const TripTime = (props) => {
 
   console.log('tripTime error', error)
   console.log('tripTime error', pdferror)
+  console.log('truck_pan_files',truck_pan_files)
 
   let _data = {}
   if (!loading) {
@@ -160,6 +180,22 @@ const TripTime = (props) => {
   if (!tokenQueryLoading) {
     token = get(tokenData, 'token', null)
   }
+
+  const { loading:config_loading, error:config_error, data:data_config } = useQuery(CONFIG_QUERY, {
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  })
+
+  console.log('Documents error',config_error)
+
+  let config_data = {}
+  if (!loading) {
+    config_data = data_config
+  }
+ 
+
+  const tds_current_ = get(config_data, 'config[0].value.current', null)
+  const tds_previous_ = get(config_data, 'config[0].value.previous', null)
 
   const word_url = get(_data, 'trip[0].loading_memo', [])
   const pdf_url = get(_pdfdata, 'trip[0].loading_memo', [])
@@ -271,13 +307,9 @@ const TripTime = (props) => {
   const onClickPdf = () => {
     loadingmemo({
       variables: { id: trip_info.id }
-    })
+    }) 
   }
-  const onClickPartnerPdf = () => {
-    partnerloadingmemo({
-      variables: { id: trip_info.id }
-    })
-  }
+ 
 
   const [processAdvance] = useMutation(
     PROCESS_ADVANCE_MUTATION,
@@ -363,6 +395,18 @@ const TripTime = (props) => {
     })
   }
 
+  const onHandleCancel = () => {
+    setLoadingMemoCheck(false)
+    setDisableBtn(false)
+  }
+
+  const onClickPartnerPdf = () => {
+      partnerloadingmemo({
+        variables: { id: trip_info.id }
+      })
+    }
+  
+
   const trip_status_name = get(trip_info, 'trip_status.name', null)
   const po_delete = (trip_status_name === 'Assigned' || trip_status_name === 'Confirmed' || trip_status_name === 'Reported at source') && !trip_info.source_out
   const process_advance = trip_info.source_out && (trip_info.loaded !== 'Yes')
@@ -379,8 +423,30 @@ const TripTime = (props) => {
   const wh_update = (trip_status_id > 5)
   const disable_pa = (!customerConfirm && isEmpty(lr_files))
   const lock = get(trip_info, 'transaction_lock', null)
+  const getPartnerTDSDocument = (type, financial_year) => partner_files && partner_files.length > 0 ? partner_files.filter(data => data.type === type && data.financial_year === financial_year) : []
+  const tdsYearValidation = moment(trip_info.created_at).isAfter("2020-04-01")
+  const tdsYear = tdsYearValidation ? tds_current_ : tds_previous_;
+  const getTruckTdsDocument = (type,financial_year) => truck_files && truck_files.length > 0 ? truck_files.filter(data => data.type === type && data.financial_year === financial_year) : []
+  const partner_tds_file_list = !isEmpty(getPartnerTDSDocument( u.fileType.tds,tdsYear)) && getPartnerTDSDocument( u.fileType.tds,tdsYear).map((file, i) => {
+    return ({
+      uid: `${file.type}-${i}`,
+      name: file.file_path,
+      status: 'done'
+    })
+  })
+  const truck_tds_file_list = !isEmpty(getTruckTdsDocument( u.fileType.tds,tdsYear)) && getTruckTdsDocument( u.fileType.tds,tdsYear).map((file, i) => {
+    return ({
+      uid: `${file.type}-${i}`,
+      name: file.file_path,
+      status: 'done'
+    })
+  })
+
+  const fileValidation = loading_memo ?   rc_files.length>0 && truck_pan_files.length>0  && truck_tds_file_list.length > 0 : true
+  
 
   return (
+    
     <Card size='small' className='mt10'>
       <Row>
         <Col xs={24}>
@@ -421,15 +487,29 @@ const TripTime = (props) => {
                   </Col>
                   <Col xs={12}>
                     <Form.Item label='Partner - Memo'>
-                      <Space>
-                        <Button
+                      <Space>                        
+                      { 
+                         (fileValidation) ? 
+                          <Button
                           type='primary' loading={pdfloading} shape='circle'
                           icon={<FilePdfOutlined />} onClick={onClickPartnerPdf}
-                        />
+                        /> : 
                         <Button
+                        type='primary' loading={pdfloading} shape='circle'
+                        icon={<FilePdfOutlined />}  onClick={() => onShow('loading_memo')}
+                      />
+                         }
+                          { 
+                         (fileValidation) ? 
+                       <Button
                           type='primary' loading={loading} shape='circle'
                           icon={<FileWordOutlined />} onClick={onClickPartnerWord}
-                        />
+                        /> : 
+                        <Button
+                        type='primary' loading={loading} shape='circle'
+                        icon={<FileWordOutlined />}  onClick={() => onShow('loading_memo')}
+                      />
+                         }
                       </Space>
                     </Form.Item>
                   </Col>
@@ -507,6 +587,7 @@ const TripTime = (props) => {
       </Row>
       {visible.mail && <SendLoadingMemo visible={visible.mail} onHide={onHide} />}
       {visible.deletePO && <DeletePO visible={visible.deletePO} onHide={onHide} trip_info={trip_info} />}
+      {visible.loading_memo && <LoadingMemo visible={visible.loading_memo} onHide={onHide} trip_info={trip_info} tds_current_={tds_current_} tds_previous_={tds_previous_}/>}
       {visible.godownReceipt && <GodownReceipt visible={visible.godownReceipt} trip_id={trip_info.id} trip_info={trip_info} onHide={onHide} />}
       {visible.wh_detail &&
         <Modal
@@ -525,7 +606,7 @@ const TripTime = (props) => {
             </div>}
         </Modal>}
     </Card>
-
+  
   )
 }
 
