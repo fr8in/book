@@ -23,7 +23,7 @@ const LoadingMemo = (props) => {
       status: 'done'
     })
   })
-  console.log('truck_tds_file_list',truck_tds_file_list)
+  
 
   let text;
   if(loading_memo) {
