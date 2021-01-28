@@ -91,12 +91,12 @@ const TruckContainer = () => {
   const [filter, setFilter] = useState(initialFilter)
   const [tabIndex, setTabIndex] = useState('0')
   const [dates, setDates] = useState([])
-  const startDate =isEmpty(dates) ? null : moment(dates[0]).format('DD-MMM-YY')
+  const startDate = isEmpty(dates) ? null : moment(dates[0]).format('DD-MMM-YY')
   const endDate = isEmpty(dates) ? null : moment(dates[1]).format('DD-MMM-YY')
 
   const perviousDate = u.getPervious4thDate()
   const futureDate = u.getfuture3rdDate()
-  const beforeDays = moment(perviousDate).format('DD-MMM-YY')
+  const daysBefore = moment(perviousDate).format('DD-MMM-YY')
   const daysAfter = moment(futureDate).format('DD-MMM-YY')
 
   const where = {
@@ -105,12 +105,12 @@ const TruckContainer = () => {
     truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null },
     _or: {
       ...!isEmpty(filter.no_date) && { insurance_expiry_at: { _is_null: true } },
-      _and: [{ insurance_expiry_at: { _gte: startDate ? startDate : beforeDays } },
-      { insurance_expiry_at: { _lte: endDate ? endDate : daysAfter} }
+      _and: [{ insurance_expiry_at: { _gte: startDate ? startDate : daysBefore } },
+      { insurance_expiry_at: { _lte: endDate ? endDate : daysAfter } }
       ]
     }
   }
-  
+
   const { loading: truck_loading, error: truck_error, data: truck_data } = useSubscription(
     TRUCKS_SUBSCRIPTION,
     {
@@ -181,20 +181,20 @@ const TruckContainer = () => {
     <Card size='small' className='card-body-0 border-top-blue'>
       <Row>
         <Col sm={24}>
-        <Tabs
-        tabBarExtraContent={
-          tabIndex === '0' && 
-          <RangePicker
-          size='small'
-          format='DD-MMM-YYYY'
-          disabledDate={(current) => disabledDate(current)}
-          onCalendarChange={(value) => {
-            setDates(value)
-          }}
-        />
-        }
-        onChange={(e) => setTabIndex(e)}
-      >
+          <Tabs
+            tabBarExtraContent={
+              tabIndex === '0' &&
+              <RangePicker
+                size='small'
+                format='DD-MMM-YYYY'
+                disabledDate={(current) => disabledDate(current)}
+                onCalendarChange={(value) => {
+                  setDates(value)
+                }}
+              />
+            }
+            onChange={(e) => setTabIndex(e)}
+          >
             <Tabs.TabPane tab="Trucks" key="0">
               <Trucks
                 trucks={truck}

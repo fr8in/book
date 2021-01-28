@@ -1,4 +1,4 @@
-import { Table, Pagination, Radio, Input, DatePicker, Checkbox, Button, Tooltip, Space } from 'antd'
+import { Table, Pagination, Radio, Input, Checkbox, Tooltip, Space } from 'antd'
 import { useState } from 'react'
 import { EditTwoTone, SearchOutlined, InsuranceTwoTone, CheckCircleTwoTone } from '@ant-design/icons'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
@@ -65,7 +65,7 @@ const Trucks = (props) => {
   const truck_status = truck_status_list.map((data) => {
     return { value: data.id, label: data.name }
   })
-  
+
   const regionsList = regions.map((data) => {
     return { value: data.text, label: data.text }
   })
@@ -148,12 +148,12 @@ const Trucks = (props) => {
       },
 
       filterDropdown: (
-          <Checkbox.Group
+        <Checkbox.Group
           options={regionsList}
           defaultValue={filter.region}
           onChange={handlePartnerRegion}
           className='filter-drop-down'
-        /> 
+        />
       )
     },
     {
@@ -196,7 +196,7 @@ const Trucks = (props) => {
           defaultValue={filter.no_date}
           onChange={handleNoDateFilter}
           className='filter-drop-down'
-        /> 
+        />
       )
     },
     {

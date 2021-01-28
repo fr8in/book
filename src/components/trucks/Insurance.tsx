@@ -79,7 +79,7 @@ const Insurance = () => {
     const { data, loading, error } = useSubscription(INSURANCE_SUBSCRIPTION, {
         variables: {
             status_id: status,
-            ...!isEmpty(regionFilter) && { region: regionFilter ? regionFilter : null} 
+            ...!isEmpty(regionFilter) && { region: regionFilter ? regionFilter : null }
         }
     })
 
@@ -146,7 +146,7 @@ const Insurance = () => {
                 const name = get(record, 'partner.name', null)
                 const id = get(record, 'partner.id', null)
                 return (
-                <LinkComp data={name} id={id} />
+                    <LinkComp data={name} id={id} />
 
                 )
             }
@@ -228,6 +228,7 @@ const Insurance = () => {
             render: (text, record) =>
                 <Tooltip title="Comment">
                     <Button
+                        size='small'
                         type="link"
                         icon={<CommentOutlined />}
                         onClick={() => handleShow("commentVisible", "Insurance Comment", 'commentData', record.id)}
@@ -235,13 +236,12 @@ const Insurance = () => {
                 </Tooltip>
         }
     ]
-
     return (
         <>
             <Table
                 columns={columns}
                 dataSource={list}
-                size="middle"
+                size='small'
                 loading={loading}
                 pagination={false}
                 scroll={{ x: 1156 }}
