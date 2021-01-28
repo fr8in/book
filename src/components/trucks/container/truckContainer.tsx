@@ -1,142 +1,139 @@
-import { Row, Col, Card, Tabs } from 'antd'
+import { Row, Col, Card, Tabs, DatePicker } from 'antd'
 import Trucks from '../trucks'
 import { useState } from 'react'
 import u from '../../../lib/util'
 import get from 'lodash/get'
-
+import isEmpty from 'lodash/isEmpty'
 import { gql, useQuery, useSubscription } from '@apollo/client'
 import moment from 'moment'
 import Insurance from '../Insurance'
 
-const TRUCKS_SUBSCRIPTION = gql`
-subscription trucks_list(
-  $offset: Int!
-  $limit: Int!
-  $truck_statusId: Int!
-  $name: String
-  $truckno: String
-  $insurance_start: timestamp
-  $insurance_end: timestamp
-  )
-  {
-    truck(
-      offset: $offset
-      limit: $limit
-      where: {
-        truck_status: { id: { _eq: $truck_statusId } }
-        partner: { name: { _ilike: $name } }
-        truck_no: { _ilike: $truckno }
-        _and:[ {insurance_expiry_at: {_gte:$insurance_start}},
-        {insurance_expiry_at: {_lte:$insurance_end}}
-        ]
-      }
-    ) {
-      id
-      truck_no
-      available_at
-      insurance_expiry_at
-      truck_type_id
-      truck_status_id
-      truck_type {
-        name
-      }
-      city {
-       name
-      }
-      truck_status {
-        id
-        name
-      }
-      insurance {
-        id
-      }
-      partner {
-        id
-        name
-        partner_users(limit: 1, where: { is_admin: { _eq: true } }) {
-          mobile
-        }
-        cardcode
-        partner_status{
-          id
-          name
-        }
-      }
-      trips(limit: 1, order_by:{id:desc}, where:{trip_status_id:{_neq:7}}) {
-        id
-        source {
-          name
-        }
-        destination {
-          name
-        }
-     }
-  }
-  }
-`
+const { RangePicker } = DatePicker
 
-const TRUCKS_QUERY = gql`
-  query trucks(
-    
-    $truck_statusId: [Int!]
-    $name: String
-    $truckno: String
-  ) {
-    truck_status(order_by: { id: asc }) {
+const TRUCKS_SUBSCRIPTION = gql`
+subscription trucks_list($offset: Int!, $limit: Int!,$where:truck_bool_exp) {
+  truck(offset: $offset, limit: $limit, where: $where) {
+    id
+    truck_no
+    available_at
+    insurance_expiry_at
+    truck_type_id
+    truck_status_id
+    truck_type {
+      name
+    }
+    city {
+      name
+    }
+    truck_status {
       id
       name
     }
-    truck_aggregate(where: { truck_status: { id: { _in: $truck_statusId } } }) {
-      aggregate {
-        count
+    insurance {
+      id
+    }
+    partner {
+      id
+      name
+      partner_users(limit: 1, where: {is_admin: {_eq: true}}) {
+        mobile
+      }
+      cardcode
+      partner_status {
+        id
+        name
+      }
+      city {
+        branch {
+          region {
+            name
+          }
+        }
+      }
+    }
+    trips(limit: 1, order_by: {id: desc}, where: {trip_status_id: {_neq: 7}}) {
+      id
+      source {
+        name
+      }
+      destination {
+        name
       }
     }
   }
+}
+`
+
+const TRUCKS_QUERY = gql`
+query trucks($where:truck_bool_exp){
+  truck_status(order_by: {id: asc}) {
+    id
+    name
+  }
+  truck_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
 `
 
 const TruckContainer = () => {
   const initialFilter = {
     truck_statusId: 5,
-    name: null,
     truckno: null,
     offset: 0,
-    limit: u.limit,
     insurance_end: null,
-    insurance_start: null
+    insurance_start: null,
+    region: null,
+    no_date: []
   }
   const [filter, setFilter] = useState(initialFilter)
+  const [tabIndex, setTabIndex] = useState('0')
+  const [dates, setDates] = useState([])
+  const startDate = isEmpty(dates) ? null : moment(dates[0]).format('DD-MMM-YY')
+  const endDate = isEmpty(dates) ? null : moment(dates[1]).format('DD-MMM-YY')
 
-  const variables = {
-    offset: filter.offset,
-    limit: filter.limit,
-    truck_statusId: filter.truck_statusId,
-    truckno: filter.truckno ? `%${filter.truckno}%` : null,
-    name: filter.name ? `%${filter.name}%` : null,
-    insurance_end: filter.insurance_end,
-    insurance_start: filter.insurance_start
+  const perviousDate = u.getPervious4thDate()
+  const futureDate = u.getfuture3rdDate()
+  const daysBefore = moment(perviousDate).format('DD-MMM-YY')
+  const daysAfter = moment(futureDate).format('DD-MMM-YY')
+
+  const where = {
+    truck_status: { id: { _eq: filter.truck_statusId ? filter.truck_statusId : null } },
+    partner: { city: { connected_city: { branch: { region: { name: { _in: !isEmpty(filter.region) ? filter.region : null } } } } } },
+    truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null },
+    _or: {
+      ...!isEmpty(filter.no_date) && { insurance_expiry_at: { _is_null: true } },
+      _and: [{ insurance_expiry_at: { _gte: startDate ? startDate : daysBefore } },
+      { insurance_expiry_at: { _lte: endDate ? endDate : daysAfter } }
+      ]
+    }
   }
-  const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
+
+  const { loading: truck_loading, error: truck_error, data: truck_data } = useSubscription(
     TRUCKS_SUBSCRIPTION,
     {
-      variables: variables
+      variables: {
+        offset: filter.offset,
+        limit: u.limit,
+        where: where
+      }
     }
   )
 
-  const trucksQueryVars = {
-    truck_statusId: filter.truck_statusId,
-    truckno: filter.truckno ? `%${filter.truckno}%` : null,
-    name: filter.name ? `%${filter.name}%` : null
-  }
 
   const { loading, error, data } = useQuery(TRUCKS_QUERY, {
-    variables: trucksQueryVars,
+    variables: {
+      where: where
+    },
     fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true
   })
 
   let _sdata = {}
-  if (!s_loading) {
-    _sdata = s_data
+  if (!truck_loading) {
+    _sdata = truck_data
   }
 
   const truck = get(_sdata, 'truck', [])
@@ -160,41 +157,56 @@ const TruckContainer = () => {
     setFilter({ ...filter, offset: value })
   }
 
-  const onNameSearch = (value) => {
-    setFilter({ ...filter, name: value })
-  }
-
   const onTruckNoSearch = (value) => {
     setFilter({ ...filter, truckno: value })
   }
-  const insurance_filter =
-  {
-    'All': { insurance_start: null, insurance_end: null },
-    '15': { insurance_start: moment().add(-1, 'days'), insurance_end: moment().add(15, 'days') },
-    '30': { insurance_start: moment().add(-1, 'days'), insurance_end: moment().add(30, 'days') },
+
+  const onRegionFilter = (value) => {
+    setFilter({ ...filter, region: value })
+  }
+  const onNoDateFilter = (value) => {
+    setFilter({ ...filter, no_date: value })
   }
 
-  const onInsuranceFilter = (value) => {
-    setFilter({ ...filter, ...insurance_filter[value] })
+  const disabledDate = (current) => {
+    if (!dates || dates.length === 0) {
+      return false
+    }
+    const tooLate = dates[0] && current.diff(dates[0], 'days') > 30
+    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30
+    return ((tooEarly || tooLate))
   }
 
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
       <Row>
         <Col sm={24}>
-          <Tabs defaultActiveKey="0">
+          <Tabs
+            tabBarExtraContent={
+              tabIndex === '0' &&
+              <RangePicker
+                size='small'
+                format='DD-MMM-YYYY'
+                disabledDate={(current) => disabledDate(current)}
+                onCalendarChange={(value) => {
+                  setDates(value)
+                }}
+              />
+            }
+            onChange={(e) => setTabIndex(e)}
+          >
             <Tabs.TabPane tab="Trucks" key="0">
               <Trucks
                 trucks={truck}
                 truck_status_list={truck_status_list}
                 status={truck_status}
-                loading={s_loading}
+                loading={truck_loading}
                 filter={filter}
+                onRegionFilter={onRegionFilter}
                 onFilter={onFilter}
+                onNoDateFilter={onNoDateFilter}
                 onPageChange={onPageChange}
-                onNameSearch={onNameSearch}
                 onTruckNoSearch={onTruckNoSearch}
-                onInsuranceFilter={onInsuranceFilter}
                 record_count={record_count}
               />
             </Tabs.TabPane>

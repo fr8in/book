@@ -124,6 +124,12 @@ const PayablesContainer = () => {
     return moment().diff(date, 'months') > 1 || moment().diff(date, 'months') < 1
   }
 
+  const handleSourcingIncentiveDate = (date) => {
+    const listDate=date.format("YYYYMM")
+    const currentDate=moment().format("YYYYMM")
+    return moment().subtract(1,'months').diff(date, 'months') === 0 && listDate== currentDate
+  }
+
 
   let saturday = 6;
   let friday = 5
@@ -200,7 +206,7 @@ const PayablesContainer = () => {
               {sourcing_incentive_access && <> <Button type="primary" disabled={!(sourcingIncentiveData.length > 0)}
                 onClick={() => handleShow('incentiveVisible', "Process Incentive", 'incentiveData', sourcingIncentiveData)}>Process</Button>
                 <DatePicker
-                  disabledDate={(date) => handleCashBackDate(date)}
+                  disabledDate={(date) => !handleSourcingIncentiveDate(date)}
                   onChange={handleIncentiveMonthChange} picker='month' /></>} </Space> : null
     )
   }
