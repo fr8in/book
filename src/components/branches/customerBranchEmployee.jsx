@@ -4,31 +4,35 @@ import get from 'lodash/get'
 import { useState } from 'react'
 
 const CUSTOMER_BRANCH_EMPLOYEE_SUBSCRIPTION = gql`
-subscription customer_branch_employee($branch_employee_id:Int,$branch_id:Int){
-  customer_branch_employee(where:{branch_employee_id:{_eq:$branch_employee_id}}){
+subscription customer_branch_employee($branch_employee_id: Int, $branch_id: Int) {
+  customer_branch_employee(where: {branch_employee_id: {_eq: $branch_employee_id}}) {
     id
-    truck_type_group{
+    truck_type_group {
       id
       name
     }
-    customer{
+    customer {
       id
       name
       mobile
+      customer_truck_type_group_load_count(where: {branch_id: {_eq: $branch_id}}) {
+        truck_type_group_id
+        branch_id
+        loads
+      }
     }
   }
 }
+
 `
 const CustomerBranchEmployee = (props) => {
   const { record, customerBranchEmployee_ids, setCustomerBranchEmployee_ids, branch_id } = props
 
-  const [selectedCustomer, setSelectedCustomer] = useState([])
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
   const onSelectChange = (selectedRowKeys, selectedRows) => {
     const customer_list = selectedRows && selectedRows.length > 0 ? selectedRows.map(row => row.id) : []
     setSelectedRowKeys(selectedRowKeys)
-    setSelectedCustomer(customer_list)
     setCustomerBranchEmployee_ids({ ...customerBranchEmployee_ids, customer_branch_employee_ids: customer_list })
   }
 
@@ -78,7 +82,7 @@ const CustomerBranchEmployee = (props) => {
       title: 'Load',
       key: 'load',
       width: '20%',
-      render: (text, record) => 0
+      render: (text, record) => get(record,'customer_truck_type_group_load_count[0].loads','0')
     //  sorter: (a, b) => a.customer.trips_aggregate.aggregate.count - b.customer.trips_aggregate.aggregate.count,
      // defaultSortOrder: 'descend'
     }
