@@ -70,7 +70,8 @@ const Driver = (props) => {
       onCompleted (data) {
         const value = get(data, 'insert_driver.returning', [])
         setSearchText('')
-        truck_id ? onDriverUpdate(value[0].id) : driverChange(value[0].id)
+        truck_id ? onDriverUpdate(value[0].id) : driverChange(value[0].id),
+        onHide()
       }
     }
   )
@@ -79,7 +80,8 @@ const Driver = (props) => {
     UPDATE_TRUCK_DRIVER_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Saved!!') }
+      onCompleted () { message.success('Saved!!') , onHide()}
+     
     }
   )
 

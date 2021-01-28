@@ -24,7 +24,7 @@ mutation update_trip_status($id: Int , $trip_status_id : Int) {
 `
 
 const Trips = (props) => {
-  const { trips, loading, filters, setFilters } = props
+  const { trips, loading,partnerRegionFilter, setPartnerRegionFilter } = props
   const initial = {
     commentData: [],
     commentVisible: false
@@ -41,7 +41,7 @@ const Trips = (props) => {
   })
 
   const onRegionFilter = (checked) => {
-    setFilters({...filters, partner_region:checked })
+    setPartnerRegionFilter(checked)
   }
 
   const [assign_to_confirm] = useMutation(
@@ -132,7 +132,7 @@ const Trips = (props) => {
         props.partner_region_filter ?
         <Checkbox.Group
           options={regionsList}
-          defaultValue={filters.partner_region}
+          defaultValue={partnerRegionFilter}
           onChange={onRegionFilter}
           className='filter-drop-down'
         /> : null

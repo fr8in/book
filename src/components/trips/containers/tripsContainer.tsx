@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Card, Tabs, Space, Button, Badge } from 'antd'
-import { DownloadOutlined, FilterOutlined } from '@ant-design/icons'
+import { Card, Tabs, Space, Button, Badge,Tooltip } from 'antd'
+import { DownloadOutlined, FilterOutlined, UndoOutlined } from '@ant-design/icons'
 import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
 import useShowHide from '../../../hooks/useShowHide'
@@ -11,6 +11,7 @@ import InvoicedContainer from '../containers/invoicedContainer'
 import AllTripsContainer from './allTripsContainer'
 import FilterList from '../paymentManagerFilter'
 import isEmpty from 'lodash/isEmpty'
+import Reversepoddispatch from '../reversepoddispatch'
 
 const TRIPS_COUNT_QUERY = gql`
 query trips_count($all_trip: trip_bool_exp, $delivered_trip: trip_bool_exp, $pod_verified_trip: trip_bool_exp, $invoiced_trip: trip_bool_exp) {
@@ -59,7 +60,8 @@ const TripsContainer = () => {
   const initial = { 
     pod_receipt: false, 
     pod_dispatch: false,
-    filterList: false
+    filterList: false,
+    reverse_pod_dispatch: false
   }
   const { visible, onShow, onHide } = useShowHide(initial)
 
@@ -120,7 +122,10 @@ const TripsContainer = () => {
                 <Button type='primary' onClick={() => onShow('pod_receipt')}>POD Receipt &nbsp;<Badge count={countFilter.pod_receipt_count} size='small' /> </Button>
               </Space>}
             {tabKey === '4' &&
-              <Space>
+            <Space>
+                <Tooltip title= 'Reverse'>
+                <Button type='primary' shape='circle' icon={<UndoOutlined />} onClick={() => onShow('reverse_pod_dispatch')}/> 
+                </Tooltip> 
                 <Button shape='circle' icon={<FilterOutlined />} onClick={() => onShow('filterList')} onChange={onFilterChange} />
                 <Button type='primary' onClick={() => onShow('pod_dispatch')}>POD Dispatch &nbsp;<Badge count={countFilter.pod_dispatch_count} size='small' /></Button>
               </Space>}
@@ -141,6 +146,7 @@ const TripsContainer = () => {
         </TabPane>
       </Tabs>
       {visible.filterList && <FilterList visible={visible.filterList} onHide={onHide} onFilterChange={onFilterChange} payment_Manager={filter} />}
+      {visible.reverse_pod_dispatch && <Reversepoddispatch visible={visible.reverse_pod_dispatch} onHide={onHide} />}
     </Card>
   )
 }
