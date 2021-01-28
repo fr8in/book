@@ -12,6 +12,7 @@ import get from 'lodash/get'
 import PartnerLink from '../common/PartnerLink'
 import CopyToClipboard from "react-copy-to-clipboard";
 import { useState } from 'react'
+import TrucksList from '../trucks/trucksList'
 
 const WaitingForLoad = (props) => {
   const { trucks, loading, onTruckNoSearch, truckNo } = props
@@ -159,7 +160,7 @@ const onCopy = () => {
       width: '18%'
     },
     {
-      title: 'Action',
+      title: <p>Action {<TrucksList record={trucks}/>}</p>,
       render: (text, record) => {
         return (
           <span>
