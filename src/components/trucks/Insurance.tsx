@@ -37,6 +37,7 @@ subscription insurance_data($status_id:Int,$region:[String!]) {
       }
       partner {
         id
+        cardcode
         name
         partner_users(where: {is_admin: {_eq: true}}) {
           id
@@ -145,9 +146,9 @@ const Insurance = () => {
             width: '15%',
             render: (text, record) => {
                 const name = get(record, 'partner.name', null)
-                const id = get(record, 'partner.id', null)
+                const cardcode = get(record, 'partner.cardcode', null)
                 return (
-                    <LinkComp data={name} id={id} />
+                    <LinkComp data={name} id={cardcode} type='partners'/>
 
                 )
             }
