@@ -4,7 +4,6 @@ import get from 'lodash/get'
 import _ from 'lodash'
 import CopyToClipboard from "react-copy-to-clipboard";
 import { useState } from 'react'
-import u from '../../lib/util'
 
 
 const TrucksList = (props) => {
@@ -12,27 +11,24 @@ const TrucksList = (props) => {
    
     const [copy, setCopy] = useState(false)
 
-    const groupedData = _.groupBy(record, function(item) { return item.truck_type.name})
+    const groupedData = _.groupBy(record, function(item) { return item.truck_type.code})
 
-    console.log('groupedData',groupedData)
-
+    
     const getMessage = (groupedData) => {
-        let   message = 'FR8 Trucks available at Kolkata \n';
+        let   message = 'FR8 Trucks available at Kolkata \n \n';
         let key = Object.keys(groupedData)
         key.forEach((type)=> {
-          message = `${type} \n`
+          message = message + `${type} \n \n`
           let i = 1;
           groupedData[type].map((data)=>{
-            console.log("type,data",data)
-            // message += ${type}: \n
-          message += `${i++}) Partner: ${get(data, 'partner.name')  ? get(data, 'partner.name') : '-'}\n`
-          message += `Truck No: ${get(data, 'truck_no') ?  get(data, 'truck_no') : '-' }- ${get(data, 'tat') ? get(data, 'tat') : '-'} \n`;
-          message += `O: ${get(data, 'driver.mobile') ?  get(data, 'driver.mobile') : '-'} / D: ${get(data, 'trips[0].driver.mobile') ? get(data, 'trips[0].driver.mobile') : '-' } \n`;
-          message += `Last Comment: ${get(data, 'last_comment.description') ? get(data, 'last_comment.description') : '-'} \n`;
+          message = message + `${i++}) Partner: ${get(data, 'partner.name')} \n`
+          message = message + `Truck No: ${data.truck_no} - ${get(data, 'tat')} hrs \n`;
+          message = message + `O: ${get(data, 'partner.partner_users[0].mobile') ? get(data, 'partner.partner_users[0].mobile') : '-'} / D: ${get(data, 'trips[0].driver.mobile') ? get(data, 'trips[0].driver.mobile') : '-'} \n`;
+          message = message + `Comment: ${get(data, 'last_comment.description') ? get(data, 'last_comment.description') : '-'} \n \n`;
           })
-          message = message 
+          message = message  + '\n'
         })
-          console.log("message",message)
+          console.log('messsage',message)
           return message; };
     
     const onCopy = () => {
