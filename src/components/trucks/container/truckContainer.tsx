@@ -1,4 +1,4 @@
-import { Row, Col, Card, Tabs } from 'antd'
+import { Row, Col, Card, Tabs, DatePicker } from 'antd'
 import Trucks from '../trucks'
 import { useState } from 'react'
 import u from '../../../lib/util'
@@ -7,6 +7,8 @@ import isEmpty from 'lodash/isEmpty'
 import { gql, useQuery, useSubscription } from '@apollo/client'
 import moment from 'moment'
 import Insurance from '../Insurance'
+
+const { RangePicker } = DatePicker
 
 const TRUCKS_SUBSCRIPTION = gql`
 subscription trucks_list($offset: Int!, $limit: Int!,$where:truck_bool_exp) {
@@ -83,32 +85,47 @@ const TruckContainer = () => {
     offset: 0,
     insurance_end: null,
     insurance_start: null,
-    region: null
+    region: null,
+    no_date: []
   }
   const [filter, setFilter] = useState(initialFilter)
+  const [tabIndex, setTabIndex] = useState('0')
+  const [dates, setDates] = useState([])
+  const startDate =isEmpty(dates) ? null : moment(dates[0]).format('DD-MMM-YY')
+  const endDate = isEmpty(dates) ? null : moment(dates[1]).format('DD-MMM-YY')
+
+  const perviousDate = u.getPervious4thDate()
+  const futureDate = u.getfuture3rdDate()
+  const beforeDays = moment(perviousDate).format('DD-MMM-YY')
+  const daysAfter = moment(futureDate).format('DD-MMM-YY')
 
   const where = {
-  truck_status: {id: {_eq: filter.truck_statusId ? filter.truck_statusId : null}},
-  partner: {city: {connected_city: {branch: {region: {name: {_in: !isEmpty(filter.region) ?  filter.region : null }}}}}},
-   truck_no: {_ilike: filter.truckno ? `%${filter.truckno}%` : null},
-   _and: [{insurance_expiry_at: {_gte: filter.insurance_start ? filter.insurance_start : null}},
-     {insurance_expiry_at: {_lte: filter.insurance_end ? filter.insurance_end : null}}]
+    truck_status: { id: { _eq: filter.truck_statusId ? filter.truck_statusId : null } },
+    partner: { city: { connected_city: { branch: { region: { name: { _in: !isEmpty(filter.region) ? filter.region : null } } } } } },
+    truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null },
+    _or: {
+      ...!isEmpty(filter.no_date) && { insurance_expiry_at: { _is_null: true } },
+      _and: [{ insurance_expiry_at: { _gte: startDate ? startDate : beforeDays } },
+      { insurance_expiry_at: { _lte: endDate ? endDate : daysAfter} }
+      ]
+    }
   }
+  
   const { loading: truck_loading, error: truck_error, data: truck_data } = useSubscription(
     TRUCKS_SUBSCRIPTION,
     {
       variables: {
-        offset:filter.offset,
-        limit:u.limit,
-        where:where
+        offset: filter.offset,
+        limit: u.limit,
+        where: where
       }
     }
   )
 
-  
+
   const { loading, error, data } = useQuery(TRUCKS_QUERY, {
     variables: {
-      where:where
+      where: where
     },
     fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true
@@ -140,31 +157,44 @@ const TruckContainer = () => {
     setFilter({ ...filter, offset: value })
   }
 
-
   const onTruckNoSearch = (value) => {
     setFilter({ ...filter, truckno: value })
   }
 
-const onRegionFilter = (value) => {
-  setFilter({...filter, region:value})
-}
-
-  const insurance_filter =
-  {
-    'All': { insurance_start: null, insurance_end: null },
-    '15': { insurance_start: moment().add(-1, 'days'), insurance_end: moment().add(15, 'days') },
-    '30': { insurance_start: moment().add(-1, 'days'), insurance_end: moment().add(30, 'days') },
+  const onRegionFilter = (value) => {
+    setFilter({ ...filter, region: value })
+  }
+  const onNoDateFilter = (value) => {
+    setFilter({ ...filter, no_date: value })
   }
 
-  const onInsuranceFilter = (value) => {
-    setFilter({ ...filter, ...insurance_filter[value] })
+  const disabledDate = (current) => {
+    if (!dates || dates.length === 0) {
+      return false
+    }
+    const tooLate = dates[0] && current.diff(dates[0], 'days') > 30
+    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30
+    return ((tooEarly || tooLate))
   }
 
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
       <Row>
         <Col sm={24}>
-          <Tabs defaultActiveKey="0">
+        <Tabs
+        tabBarExtraContent={
+          tabIndex === '0' && 
+          <RangePicker
+          size='small'
+          format='DD-MMM-YYYY'
+          disabledDate={(current) => disabledDate(current)}
+          onCalendarChange={(value) => {
+            setDates(value)
+          }}
+        />
+        }
+        onChange={(e) => setTabIndex(e)}
+      >
             <Tabs.TabPane tab="Trucks" key="0">
               <Trucks
                 trucks={truck}
@@ -174,9 +204,9 @@ const onRegionFilter = (value) => {
                 filter={filter}
                 onRegionFilter={onRegionFilter}
                 onFilter={onFilter}
+                onNoDateFilter={onNoDateFilter}
                 onPageChange={onPageChange}
                 onTruckNoSearch={onTruckNoSearch}
-                onInsuranceFilter={onInsuranceFilter}
                 record_count={record_count}
               />
             </Tabs.TabPane>

@@ -12,6 +12,8 @@ import PartnerLink from '../common/PartnerLink'
 import CreateInsurance from './createInsuranceLead'
 import u from '../../lib/util'
 
+const no_date = [{ value: 1, label: 'No Date' }]
+
 const Trucks = (props) => {
   const initial = {
     usersData: [],
@@ -31,9 +33,9 @@ const Trucks = (props) => {
     loading,
     record_count,
     onPageChange,
-    onInsuranceFilter,
     onTruckNoSearch,
     filter,
+    onNoDateFilter,
     onRegionFilter,
     truck_status_list,
     onFilter
@@ -48,8 +50,9 @@ const Trucks = (props) => {
   const handleStatus = (e) => {
     onFilter(e.target.value)
   }
-  const handleInsuranceFilter = (e) => {
-    onInsuranceFilter(e.target.value)
+
+  const handleNoDateFilter = (checked) => {
+    onNoDateFilter(checked)
   }
 
   const handleTruckNo = (e) => {
@@ -188,13 +191,12 @@ const Trucks = (props) => {
       width: '15%',
       render: (text, record) => <InsuranceExpiry record={record} />,
       filterDropdown: (
-        <Radio.Group
-          options={[{ value: 'All', label: 'All' }, { value: '15', label: '<15' }, { value: '30', label: '<30' }]}
-          defaultValue='All'
-          onChange={handleInsuranceFilter}
+        <Checkbox.Group
+          options={no_date}
+          defaultValue={filter.no_date}
+          onChange={handleNoDateFilter}
           className='filter-drop-down'
-
-        />
+        /> 
       )
     },
     {
