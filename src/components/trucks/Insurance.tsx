@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { Button, message, Table, Tooltip, Modal, Radio } from 'antd'
+import { Button, message, Table, Tooltip, Modal, Radio, Checkbox } from 'antd'
 import { CommentOutlined } from '@ant-design/icons'
 import { gql, useSubscription, useMutation, useQuery } from '@apollo/client'
 import get from 'lodash/get'
@@ -11,9 +11,14 @@ import userContext from '../../lib/userContaxt'
 import InsuranceUpdate from './insuranceUpdate'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import InsuranceComment from './insuranceComment'
+import isEmpty from 'lodash/isEmpty'
 
-const INSURANCE_SUBSCRIPTION = gql`subscription insurance_data($status_id:Int) {
-    insurance(where:{status_id:{_eq:$status_id}}) {
+const INSURANCE_SUBSCRIPTION = gql`
+subscription insurance_data($status_id:Int,$region:[String!]) {
+    insurance(where:{
+      status_id:{_eq:$status_id}
+      partner:{city:{connected_city:{branch:{region:{name:{_in:$region}}}}}}
+    }) {
       id
       status {
         id
@@ -41,7 +46,8 @@ const INSURANCE_SUBSCRIPTION = gql`subscription insurance_data($status_id:Int) {
     }
   }`
 
-const INSURANCE_STATUS = gql`query insurance_status {
+const INSURANCE_STATUS = gql`
+query insurance_status {
     insurance_status {
       id
       name
@@ -63,15 +69,17 @@ const Insurance = () => {
 
 
     const [status, setStatus] = useState(1)
+    const [regionFilter, setRegionFilter] = useState(null)
     const { data: status_data, loading: statusLoading } = useQuery(INSURANCE_STATUS)
     const { object, handleShow, handleHide } = useShowHideWithRecord(initial)
     const { role, MAX_INSURANCE_CASHBACK } = u
-    const edit_access = [role.admin, role.partner_manager, role.onboarding,role.sourcing]
-
+    const edit_access = [role.admin, role.partner_manager, role.onboarding, role.sourcing]
+    const regions = u.regions
 
     const { data, loading, error } = useSubscription(INSURANCE_SUBSCRIPTION, {
         variables: {
-            status_id: status
+            status_id: status,
+            ...!isEmpty(regionFilter) && { region: regionFilter ? regionFilter : null} 
         }
     })
 
@@ -116,6 +124,12 @@ const Insurance = () => {
     const handleStatus = (e) => {
         setStatus(e.target.value)
     }
+    const handlePartnerRegion = (checked) => {
+        setRegionFilter(checked)
+    }
+    const regionsList = regions.map((data) => {
+        return { value: data.text, label: data.text }
+    })
 
     const columns = [
         {
@@ -128,7 +142,23 @@ const Insurance = () => {
             title: 'Partner',
             dataIndex: "partner",
             width: '15%',
-            render: (text, record) => <LinkComp data={get(record, 'partner.name', null)} id={get(record, 'partner.id', null)} />
+            render: (text, record) => {
+                const name = get(record, 'partner.name', null)
+                const id = get(record, 'partner.id', null)
+                return (
+                <LinkComp data={name} id={id} />
+
+                )
+            }
+            ,
+            filterDropdown: (
+                <Checkbox.Group
+                    options={regionsList}
+                    defaultValue={regionFilter}
+                    onChange={handlePartnerRegion}
+                    className='filter-drop-down'
+                />
+            )
         },
         {
             title: 'Phone No',
@@ -167,7 +197,7 @@ const Insurance = () => {
         {
             title: 'Amount',
             dataIndex: "amount",
-            width: '10%',
+            width: '7%',
             render: (text, record) => <InsuranceUpdate updateInsurance={updateInsurance}
                 record={record}
                 type="amount"
@@ -177,7 +207,7 @@ const Insurance = () => {
         {
             title: 'Cash Back Amount',
             dataIndex: "cash_back_amount",
-            width: '10%',
+            width: '15%',
             render: (text, record) =>
                 get(record, 'status.id') === 2 ?
                     <InsuranceUpdate updateInsurance={updateInsurance}
@@ -214,6 +244,7 @@ const Insurance = () => {
                 size="middle"
                 loading={loading}
                 pagination={false}
+                scroll={{ x: 1156 }}
                 rowKey={(record) => record.id}
             />
             {object.commentVisible &&

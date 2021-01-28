@@ -1,4 +1,4 @@
-import { Table, Pagination, Radio, Input, DatePicker, Button, Tooltip, Space } from 'antd'
+import { Table, Pagination, Radio, Input, DatePicker, Checkbox, Button, Tooltip, Space } from 'antd'
 import { useState } from 'react'
 import { EditTwoTone, SearchOutlined, InsuranceTwoTone, CheckCircleTwoTone } from '@ant-design/icons'
 import CreateBreakdown from '../../components/trucks/createBreakdown'
@@ -10,6 +10,7 @@ import LinkComp from '../common/link'
 import InsuranceExpiry from './insuranceExpiryDateEdit'
 import PartnerLink from '../common/PartnerLink'
 import CreateInsurance from './createInsuranceLead'
+import u from '../../lib/util'
 
 const Trucks = (props) => {
   const initial = {
@@ -24,22 +25,22 @@ const Trucks = (props) => {
   }
   const { object, handleHide, handleShow } = useShowHidewithRecord(initial)
   const [currentPage, setCurrentPage] = useState(1)
-
+  const regions = u.regions
   const {
     trucks,
     loading,
     record_count,
     onPageChange,
-    onNameSearch,
     onInsuranceFilter,
     onTruckNoSearch,
     filter,
+    onRegionFilter,
     truck_status_list,
     onFilter
   } = props
 
   const pageChange = (page, pageSize) => {
-    const newOffset = page * pageSize - filter.limit
+    const newOffset = page * pageSize - u.limit
     setCurrentPage(page)
     onPageChange(newOffset)
   }
@@ -51,18 +52,20 @@ const Trucks = (props) => {
     onInsuranceFilter(e.target.value)
   }
 
-  const handleName = (e) => {
-    onNameSearch(e.target.value)
-  }
-
   const handleTruckNo = (e) => {
     onTruckNoSearch(e.target.value)
   }
 
+  const handlePartnerRegion = (checked) => {
+    onRegionFilter(checked)
+  }
   const truck_status = truck_status_list.map((data) => {
     return { value: data.id, label: data.name }
   })
-
+  
+  const regionsList = regions.map((data) => {
+    return { value: data.text, label: data.text }
+  })
 
   const columns = [
     {
@@ -142,18 +145,12 @@ const Trucks = (props) => {
       },
 
       filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search Partner'
-            value={filter.name}
-            onChange={handleName}
-          />
-        </div>
-      ),
-      filterIcon: () => (
-        <SearchOutlined
-          style={{ color: filter.name ? '#1890ff' : undefined }}
-        />
+          <Checkbox.Group
+          options={regionsList}
+          defaultValue={filter.region}
+          onChange={handlePartnerRegion}
+          className='filter-drop-down'
+        /> 
       )
     },
     {
@@ -188,7 +185,7 @@ const Trucks = (props) => {
     },
     {
       title: 'Ins Expiry Date',
-      width: '11%',
+      width: '15%',
       render: (text, record) => <InsuranceExpiry record={record} />,
       filterDropdown: (
         <Radio.Group
@@ -202,7 +199,7 @@ const Trucks = (props) => {
     },
     {
       title: 'City',
-      width: '14%',
+      width: '10%',
       render: (text, record) => {
         return record.city && record.city.name
       }
@@ -244,7 +241,7 @@ const Trucks = (props) => {
         <Pagination
           size='small'
           current={currentPage}
-          pageSize={filter.limit}
+          pageSize={u.limit}
           showSizeChanger={false}
           total={record_count}
           onChange={pageChange}

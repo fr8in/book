@@ -3,140 +3,120 @@ import Trucks from '../trucks'
 import { useState } from 'react'
 import u from '../../../lib/util'
 import get from 'lodash/get'
-
+import isEmpty from 'lodash/isEmpty'
 import { gql, useQuery, useSubscription } from '@apollo/client'
 import moment from 'moment'
 import Insurance from '../Insurance'
 
 const TRUCKS_SUBSCRIPTION = gql`
-subscription trucks_list(
-  $offset: Int!
-  $limit: Int!
-  $truck_statusId: Int!
-  $name: String
-  $truckno: String
-  $insurance_start: timestamp
-  $insurance_end: timestamp
-  )
-  {
-    truck(
-      offset: $offset
-      limit: $limit
-      where: {
-        truck_status: { id: { _eq: $truck_statusId } }
-        partner: { name: { _ilike: $name } }
-        truck_no: { _ilike: $truckno }
-        _and:[ {insurance_expiry_at: {_gte:$insurance_start}},
-        {insurance_expiry_at: {_lte:$insurance_end}}
-        ]
-      }
-    ) {
-      id
-      truck_no
-      available_at
-      insurance_expiry_at
-      truck_type_id
-      truck_status_id
-      truck_type {
-        name
-      }
-      city {
-       name
-      }
-      truck_status {
-        id
-        name
-      }
-      insurance {
-        id
-      }
-      partner {
-        id
-        name
-        partner_users(limit: 1, where: { is_admin: { _eq: true } }) {
-          mobile
-        }
-        cardcode
-        partner_status{
-          id
-          name
-        }
-      }
-      trips(limit: 1, order_by:{id:desc}, where:{trip_status_id:{_neq:7}}) {
-        id
-        source {
-          name
-        }
-        destination {
-          name
-        }
-     }
-  }
-  }
-`
-
-const TRUCKS_QUERY = gql`
-  query trucks(
-    
-    $truck_statusId: [Int!]
-    $name: String
-    $truckno: String
-  ) {
-    truck_status(order_by: { id: asc }) {
+subscription trucks_list($offset: Int!, $limit: Int!,$where:truck_bool_exp) {
+  truck(offset: $offset, limit: $limit, where: $where) {
+    id
+    truck_no
+    available_at
+    insurance_expiry_at
+    truck_type_id
+    truck_status_id
+    truck_type {
+      name
+    }
+    city {
+      name
+    }
+    truck_status {
       id
       name
     }
-    truck_aggregate(where: { truck_status: { id: { _in: $truck_statusId } } }) {
-      aggregate {
-        count
+    insurance {
+      id
+    }
+    partner {
+      id
+      name
+      partner_users(limit: 1, where: {is_admin: {_eq: true}}) {
+        mobile
+      }
+      cardcode
+      partner_status {
+        id
+        name
+      }
+      city {
+        branch {
+          region {
+            name
+          }
+        }
+      }
+    }
+    trips(limit: 1, order_by: {id: desc}, where: {trip_status_id: {_neq: 7}}) {
+      id
+      source {
+        name
+      }
+      destination {
+        name
       }
     }
   }
+}
+`
+
+const TRUCKS_QUERY = gql`
+query trucks($where:truck_bool_exp){
+  truck_status(order_by: {id: asc}) {
+    id
+    name
+  }
+  truck_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
 `
 
 const TruckContainer = () => {
   const initialFilter = {
     truck_statusId: 5,
-    name: null,
     truckno: null,
     offset: 0,
-    limit: u.limit,
     insurance_end: null,
-    insurance_start: null
+    insurance_start: null,
+    region: null
   }
   const [filter, setFilter] = useState(initialFilter)
 
-  const variables = {
-    offset: filter.offset,
-    limit: filter.limit,
-    truck_statusId: filter.truck_statusId,
-    truckno: filter.truckno ? `%${filter.truckno}%` : null,
-    name: filter.name ? `%${filter.name}%` : null,
-    insurance_end: filter.insurance_end,
-    insurance_start: filter.insurance_start
+  const where = {
+  truck_status: {id: {_eq: filter.truck_statusId ? filter.truck_statusId : null}},
+  partner: {city: {connected_city: {branch: {region: {name: {_in: !isEmpty(filter.region) ?  filter.region : null }}}}}},
+   truck_no: {_ilike: filter.truckno ? `%${filter.truckno}%` : null},
+   _and: [{insurance_expiry_at: {_gte: filter.insurance_start ? filter.insurance_start : null}},
+     {insurance_expiry_at: {_lte: filter.insurance_end ? filter.insurance_end : null}}]
   }
-  const { loading: s_loading, error: s_error, data: s_data } = useSubscription(
+  const { loading: truck_loading, error: truck_error, data: truck_data } = useSubscription(
     TRUCKS_SUBSCRIPTION,
     {
-      variables: variables
+      variables: {
+        offset:filter.offset,
+        limit:u.limit,
+        where:where
+      }
     }
   )
 
-  const trucksQueryVars = {
-    truck_statusId: filter.truck_statusId,
-    truckno: filter.truckno ? `%${filter.truckno}%` : null,
-    name: filter.name ? `%${filter.name}%` : null
-  }
-
+  
   const { loading, error, data } = useQuery(TRUCKS_QUERY, {
-    variables: trucksQueryVars,
+    variables: {
+      where:where
+    },
     fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true
   })
 
   let _sdata = {}
-  if (!s_loading) {
-    _sdata = s_data
+  if (!truck_loading) {
+    _sdata = truck_data
   }
 
   const truck = get(_sdata, 'truck', [])
@@ -160,13 +140,15 @@ const TruckContainer = () => {
     setFilter({ ...filter, offset: value })
   }
 
-  const onNameSearch = (value) => {
-    setFilter({ ...filter, name: value })
-  }
 
   const onTruckNoSearch = (value) => {
     setFilter({ ...filter, truckno: value })
   }
+
+const onRegionFilter = (value) => {
+  setFilter({...filter, region:value})
+}
+
   const insurance_filter =
   {
     'All': { insurance_start: null, insurance_end: null },
@@ -188,11 +170,11 @@ const TruckContainer = () => {
                 trucks={truck}
                 truck_status_list={truck_status_list}
                 status={truck_status}
-                loading={s_loading}
+                loading={truck_loading}
                 filter={filter}
+                onRegionFilter={onRegionFilter}
                 onFilter={onFilter}
                 onPageChange={onPageChange}
-                onNameSearch={onNameSearch}
                 onTruckNoSearch={onTruckNoSearch}
                 onInsuranceFilter={onInsuranceFilter}
                 record_count={record_count}
