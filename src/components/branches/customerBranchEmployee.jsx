@@ -82,13 +82,9 @@ const CustomerBranchEmployee = (props) => {
       title: 'Load',
       key: 'load',
       width: '20%',
-      render: (text, record) => {
-        console.log('recordhjkkj',get(record,'customer.customer_truck_type_group_load_count'))
-        return (
-          get(record,'customer.customer_truck_type_group_load_count[0].loads','0')
-        )}
-    //  sorter: (a, b) => a.customer.customer_truck_type_group_load_count[0].loads - b.customer.customer_truck_type_group_load_count[0].loads,
-    //  defaultSortOrder: 'descend'
+      render: (text, record) => get(record,'customer.customer_truck_type_group_load_count[0].loads','0'),
+      sorter: (a, b) => get(a,'customer.customer_truck_type_group_load_count[0].loads',0) - get(b,'customer.customer_truck_type_group_load_count[0].loads',0),
+      defaultSortOrder: 'descend'
     }
   ]
   return (
