@@ -73,8 +73,9 @@ const Insurance = () => {
     const { data: status_data, loading: statusLoading } = useQuery(INSURANCE_STATUS)
     const { object, handleShow, handleHide } = useShowHideWithRecord(initial)
     const { role, MAX_INSURANCE_CASHBACK } = u
-    const edit_access = [role.admin, role.partner_manager, role.onboarding, role.sourcing]
     const regions = u.regions
+    const edit_access = [role.user]
+
 
     const { data, loading, error } = useSubscription(INSURANCE_SUBSCRIPTION, {
         variables: {
