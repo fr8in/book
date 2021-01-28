@@ -103,12 +103,11 @@ const TruckContainer = () => {
     truck_status: { id: { _eq: filter.truck_statusId ? filter.truck_statusId : null } },
     partner: { city: { connected_city: { branch: { region: { name: { _in: !isEmpty(filter.region) ? filter.region : null } } } } } },
     truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null },
-    _or: {
-      ...!isEmpty(filter.no_date) && { insurance_expiry_at: { _is_null: true } },
-      _and: [{ insurance_expiry_at: { _gte: startDate ? startDate : daysBefore } },
+      ...!isEmpty(filter.no_date) ? { insurance_expiry_at: { _is_null: true } }:
+      {_and: [{ insurance_expiry_at: { _gte: startDate ? startDate : daysBefore } },
       { insurance_expiry_at: { _lte: endDate ? endDate : daysAfter } }
-      ]
-    }
+      ]}
+    
   }
 
   const { loading: truck_loading, error: truck_error, data: truck_data } = useSubscription(
