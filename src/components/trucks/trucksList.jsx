@@ -17,14 +17,23 @@ const TrucksList = (props) => {
     console.log('groupedData',groupedData)
 
     const getMessage = (groupedData) => {
-        let message = 'FR8 Trucks available at Kolkata \n';
-        message += 'MXL: \n'
-        message += `Partner: ${get(groupedData, 'partner.name')} \n`
-        message += `Truck No: ${groupedData.truck_no} - ${get(groupedData, 'tat')} \n`;
-        message += `O: ${get(groupedData, 'driver.mobile')} / D: ${get(groupedData, 'trips[0].driver.mobile')} \n`;
-        message += `Last Comment: ${get(groupedData, 'last_comment.description') ? get(groupedData, 'last_comment.description') : '-'}`;
-    
-        return message; };
+        let   message = 'FR8 Trucks available at Kolkata \n';
+        let key = Object.keys(groupedData)
+        key.forEach((type)=> {
+          message = `${type} \n`
+          let i = 1;
+          groupedData[type].map((data)=>{
+            console.log("type,data",data)
+            // message += ${type}: \n
+          message += `${i++}) Partner: ${get(data, 'partner.name')  ? get(data, 'partner.name') : '-'}\n`
+          message += `Truck No: ${get(data, 'truck_no') ?  get(data, 'truck_no') : '-' }- ${get(data, 'tat') ? get(data, 'tat') : '-'} \n`;
+          message += `O: ${get(data, 'driver.mobile') ?  get(data, 'driver.mobile') : '-'} / D: ${get(data, 'trips[0].driver.mobile') ? get(data, 'trips[0].driver.mobile') : '-' } \n`;
+          message += `Last Comment: ${get(data, 'last_comment.description') ? get(data, 'last_comment.description') : '-'} \n`;
+          })
+          message = message 
+        })
+          console.log("message",message)
+          return message; };
     
     const onCopy = () => {
      setCopy({copied:true})
