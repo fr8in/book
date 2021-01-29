@@ -76,6 +76,7 @@ const EmployeeList = (props) => {
   return (
     <Modal
       visible={visible}
+      key='submit'
       onOk={onSubmit}
       onCancel={onHide}
     >

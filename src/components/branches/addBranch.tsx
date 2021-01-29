@@ -152,7 +152,7 @@ const AddBranch = (props) => {
         </Row>
         <Row justify='end'>
           <Col xs={24} className='text-right'>
-            <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
+            <Button type='primary' key='submit' loading={disableButton} htmlType='submit'>Submit</Button>
           </Col>
         </Row>
       </Form>

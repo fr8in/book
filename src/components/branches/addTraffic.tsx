@@ -270,7 +270,7 @@ const date =moment().format('YYYY-MM-DD')
               </Col>
               <Col flex='100px'>
                 <Button
-                  key='submit'
+                  htmlType='submit'
                   type='primary'
                   onClick={onAddTraffic}
                 >
