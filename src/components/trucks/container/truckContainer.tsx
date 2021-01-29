@@ -187,7 +187,7 @@ const TruckContainer = () => {
               tabIndex === '0' &&
               no_date_checked.length > 0 ? 
               <Popover 
-              content='Please uncheck no_date filter of Insurance Expiry Date'
+              content='Please uncheck No Date filter of Insurance Expiry Date'
               >
               <RangePicker
               size='small'
