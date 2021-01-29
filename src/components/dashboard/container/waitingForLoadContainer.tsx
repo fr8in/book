@@ -9,10 +9,12 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
     id
     branches(where: {id: {_in: $branches}}) {
       id
+      name
       connected_cities: cities(where: {_and: [{is_connected_city: {_eq: true}}, {id: {_in: $cities}}]}) {
         id
         cities {
           id
+          name
           trucks(where: {
             truck_status: {name: {_eq: "Waiting for Load"}},
             truck_no: {_ilike: $truck_no},
@@ -91,7 +93,7 @@ const WaitingForLoadContainer = (props) => {
     trucks = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('trucks').value()
   }
   return (
-    <WaitingForLoad trucks={trucks} loading={loading} onTruckNoSearch={onTruckNoSearch} truckNo={truckNo}/>
+    <WaitingForLoad trucks={trucks} data={data} loading={loading} onTruckNoSearch={onTruckNoSearch} truckNo={truckNo}/>
   )
 }
 

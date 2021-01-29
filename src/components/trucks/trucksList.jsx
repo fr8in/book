@@ -7,9 +7,14 @@ import { useState } from 'react'
 
 
 const TrucksList = (props) => {
-    const {record} = props
-   
+    const {record,data} = props
+    console.log('record',record)
+    console.log('data',data)
+
     const [copy, setCopy] = useState(false)
+    
+    const grouped = _.groupBy(data, function(items) { return items.region})
+    console.log('grouped',grouped)
 
     const groupedData = _.groupBy(record, function(item) { return item.truck_type.code})
 

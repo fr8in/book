@@ -15,7 +15,7 @@ import { useState } from 'react'
 import TrucksList from '../trucks/trucksList'
 
 const WaitingForLoad = (props) => {
-  const { trucks, loading, onTruckNoSearch, truckNo } = props
+  const { trucks, loading, onTruckNoSearch, truckNo ,data} = props
   const initial = {
     usersData: [],
     usersVisible: false,
@@ -160,7 +160,7 @@ const onCopy = () => {
       width: '18%'
     },
     {
-      title: <p>Action {<TrucksList record={trucks}/>}</p>,
+      title: <p>Action {<TrucksList record={trucks} data={data}/>}</p>,
       render: (text, record) => {
         return (
           <span>
