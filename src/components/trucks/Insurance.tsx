@@ -12,6 +12,7 @@ import InsuranceUpdate from './insuranceUpdate'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import InsuranceComment from './insuranceComment'
 import isEmpty from 'lodash/isEmpty'
+import Truncate from '../common/truncate'
 
 const INSURANCE_SUBSCRIPTION = gql`
 subscription insurance_data($status_id:Int,$region:[String!]) {
@@ -148,8 +149,7 @@ const Insurance = () => {
                 const name = get(record, 'partner.name', null)
                 const cardcode = get(record, 'partner.cardcode', null)
                 return (
-                    <LinkComp data={name} id={cardcode} type='partners'/>
-
+                    <LinkComp data={name} id={cardcode} type='partners' length={20}/>
                 )
             }
             ,
@@ -188,7 +188,9 @@ const Insurance = () => {
                     className='filter-drop-down'
                 />
             ),
-            render: (text, record) => <InsuranceUpdate updateInsurance={updateInsurance}
+            render: (text, record) =>
+             <InsuranceUpdate 
+                updateInsurance={updateInsurance}
                 record={record}
                 type="status_id"
                 select
@@ -200,7 +202,9 @@ const Insurance = () => {
             title: 'Amount',
             dataIndex: "amount",
             width: '7%',
-            render: (text, record) => <InsuranceUpdate updateInsurance={updateInsurance}
+            render: (text, record) => 
+            <InsuranceUpdate 
+                updateInsurance={updateInsurance}
                 record={record}
                 type="amount"
                 edit_access={edit_access}
@@ -212,7 +216,8 @@ const Insurance = () => {
             width: '15%',
             render: (text, record) =>
                 get(record, 'status.id') === 2 ?
-                    <InsuranceUpdate updateInsurance={updateInsurance}
+                    <InsuranceUpdate 
+                        updateInsurance={updateInsurance}
                         record={record}
                         type="cash_back_amount"
                         edit_access={edit_access}
@@ -222,7 +227,7 @@ const Insurance = () => {
             title: "Last Comment",
             dataIndex: 'lastComment',
             width: '20%',
-            render: (text, record) => get(record, 'last_comment[0].description', null)
+            render: (text, record) => <Truncate data={get(record, 'last_comment[0].description', null)} length={40} /> 
         },
         {
             title: "",
