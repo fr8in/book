@@ -86,11 +86,10 @@ const TruckContainer = () => {
     insurance_end: null,
     insurance_start: null,
     region: null,
-    no_date: [],
-    no_date_checked: null
+    no_date: []
   }
   const [filter, setFilter] = useState(initialFilter)
-  const [checked,setChecked] = useState()
+  const [checked,setChecked] = useState([])
   const [tabIndex, setTabIndex] = useState('0')
   const [dates, setDates] = useState([])
   const startDate = isEmpty(dates) ? null : moment(dates[0]).format('DD-MMM-YY')
@@ -177,8 +176,8 @@ const TruckContainer = () => {
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30
     return ((tooEarly || tooLate))
   }
-  let test = checked === undefined ? [] : checked
-  console.log('test',test)
+  let no_date_checked = checked === undefined ? [] : checked
+  
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
       <Row>
@@ -186,9 +185,9 @@ const TruckContainer = () => {
           <Tabs
             tabBarExtraContent={
               tabIndex === '0' &&
-              test.length > 0 ? 
+              no_date_checked.length > 0 ? 
               <Popover 
-              content='Please uncheck no_date of Insurance Expiary Date'
+              content='Please uncheck no_date filter of Insurance Expiry Date'
               >
               <RangePicker
               size='small'

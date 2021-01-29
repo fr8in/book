@@ -53,9 +53,8 @@ const Trucks = (props) => {
   }
 
   const handleNoDateFilter = (checked) => {
-    console.log('checked',checked)
     onNoDateFilter(checked)
-    setChecked({...checked, no_date_checked:checked })
+    setChecked(checked)
   }
 
   const handleTruckNo = (e) => {
