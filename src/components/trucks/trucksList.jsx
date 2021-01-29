@@ -8,19 +8,13 @@ import { useState } from 'react'
 
 const TrucksList = (props) => {
     const {record,data} = props
-    console.log('record',record)
-    console.log('data',data)
-
+   
     const [copy, setCopy] = useState(false)
-    
-    const grouped = _.groupBy(data, function(items) { return items.region})
-    console.log('grouped',grouped)
-
+  
     const groupedData = _.groupBy(record, function(item) { return item.truck_type.code})
-
-    
+   
     const getMessage = (groupedData) => {
-        let   message = 'FR8 Trucks available at Kolkata \n \n';
+        let   message = 'FR8 Trucks available at  \n \n';
         let key = Object.keys(groupedData)
         key.forEach((type)=> {
           message = message + `${type} \n \n`
@@ -33,7 +27,7 @@ const TrucksList = (props) => {
           })
           message = message  + '\n'
         })
-          console.log('messsage',message)
+         
           return message; };
     
     const onCopy = () => {

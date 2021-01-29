@@ -88,12 +88,14 @@ const WaitingForLoadContainer = (props) => {
   }
 
   let trucks = []
+  let branches = []
   if (!loading) {
     const newData = { data }
     trucks = _.chain(newData).flatMap('region').flatMap('branches').flatMap('connected_cities').flatMap('cities').flatMap('trucks').value()
+    branches = _.chain(newData).flatMap('region').flatMap('branches').value()
   }
   return (
-    <WaitingForLoad trucks={trucks} data={data} loading={loading} onTruckNoSearch={onTruckNoSearch} truckNo={truckNo}/>
+    <WaitingForLoad trucks={trucks} data={branches} loading={loading} onTruckNoSearch={onTruckNoSearch} truckNo={truckNo}/>
   )
 }
 
