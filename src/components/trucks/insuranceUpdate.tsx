@@ -1,4 +1,4 @@
-import InlineEdit from '../common/inlineEdit'
+import EditableCell from '../common/editableCell'
 import InlineSelect from '../common/inlineSelect'
 
 
@@ -19,11 +19,13 @@ function InsuranceUpdate(props) {
                 edit_access={edit_access}
                 style={{ width: '80%' }}
             /> :
-            <InlineEdit
-                edit_access={edit_access}
-                text={text}
-                onSetText={handleUpdate}
-            />}
+
+            <EditableCell
+            label={text }
+            onSubmit={handleUpdate}
+            edit_access={edit_access}
+          />
+            }
         </>
     )
 }

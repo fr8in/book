@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { Button, message, Table, Tooltip, Modal, Radio } from 'antd'
+import { Button, message, Table, Tooltip, Modal, Radio, Checkbox } from 'antd'
 import { CommentOutlined } from '@ant-design/icons'
 import { gql, useSubscription, useMutation, useQuery } from '@apollo/client'
 import get from 'lodash/get'
@@ -11,9 +11,15 @@ import userContext from '../../lib/userContaxt'
 import InsuranceUpdate from './insuranceUpdate'
 import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import InsuranceComment from './insuranceComment'
+import isEmpty from 'lodash/isEmpty'
+import Truncate from '../common/truncate'
 
-const INSURANCE_SUBSCRIPTION = gql`subscription insurance_data($status_id:Int) {
-    insurance(where:{status_id:{_eq:$status_id}}) {
+const INSURANCE_SUBSCRIPTION = gql`
+subscription insurance_data($status_id:Int,$region:[String!]) {
+    insurance(where:{
+      status_id:{_eq:$status_id}
+      partner:{city:{connected_city:{branch:{region:{name:{_in:$region}}}}}}
+    }) {
       id
       status {
         id
@@ -32,6 +38,7 @@ const INSURANCE_SUBSCRIPTION = gql`subscription insurance_data($status_id:Int) {
       }
       partner {
         id
+        cardcode
         name
         partner_users(where: {is_admin: {_eq: true}}) {
           id
@@ -41,7 +48,8 @@ const INSURANCE_SUBSCRIPTION = gql`subscription insurance_data($status_id:Int) {
     }
   }`
 
-const INSURANCE_STATUS = gql`query insurance_status {
+const INSURANCE_STATUS = gql`
+query insurance_status {
     insurance_status {
       id
       name
@@ -63,15 +71,18 @@ const Insurance = () => {
 
 
     const [status, setStatus] = useState(1)
+    const [regionFilter, setRegionFilter] = useState(null)
     const { data: status_data, loading: statusLoading } = useQuery(INSURANCE_STATUS)
     const { object, handleShow, handleHide } = useShowHideWithRecord(initial)
     const { role, MAX_INSURANCE_CASHBACK } = u
+    const regions = u.regions
     const edit_access = [role.user]
 
 
     const { data, loading, error } = useSubscription(INSURANCE_SUBSCRIPTION, {
         variables: {
-            status_id: status
+            status_id: status,
+            ...!isEmpty(regionFilter) && { region: regionFilter ? regionFilter : null }
         }
     })
 
@@ -116,6 +127,12 @@ const Insurance = () => {
     const handleStatus = (e) => {
         setStatus(e.target.value)
     }
+    const handlePartnerRegion = (checked) => {
+        setRegionFilter(checked)
+    }
+    const regionsList = regions.map((data) => {
+        return { value: data.text, label: data.text }
+    })
 
     const columns = [
         {
@@ -128,7 +145,22 @@ const Insurance = () => {
             title: 'Partner',
             dataIndex: "partner",
             width: '15%',
-            render: (text, record) => <LinkComp data={get(record, 'partner.name', null)} id={get(record, 'partner.id', null)} />
+            render: (text, record) => {
+                const name = get(record, 'partner.name', null)
+                const cardcode = get(record, 'partner.cardcode', null)
+                return (
+                    <LinkComp data={name} id={cardcode} type='partners' length={20}/>
+                )
+            }
+            ,
+            filterDropdown: (
+                <Checkbox.Group
+                    options={regionsList}
+                    defaultValue={regionFilter}
+                    onChange={handlePartnerRegion}
+                    className='filter-drop-down'
+                />
+            )
         },
         {
             title: 'Phone No',
@@ -156,7 +188,9 @@ const Insurance = () => {
                     className='filter-drop-down'
                 />
             ),
-            render: (text, record) => <InsuranceUpdate updateInsurance={updateInsurance}
+            render: (text, record) =>
+             <InsuranceUpdate 
+                updateInsurance={updateInsurance}
                 record={record}
                 type="status_id"
                 select
@@ -167,8 +201,10 @@ const Insurance = () => {
         {
             title: 'Amount',
             dataIndex: "amount",
-            width: '10%',
-            render: (text, record) => <InsuranceUpdate updateInsurance={updateInsurance}
+            width: '7%',
+            render: (text, record) => 
+            <InsuranceUpdate 
+                updateInsurance={updateInsurance}
                 record={record}
                 type="amount"
                 edit_access={edit_access}
@@ -177,10 +213,11 @@ const Insurance = () => {
         {
             title: 'Cash Back Amount',
             dataIndex: "cash_back_amount",
-            width: '10%',
+            width: '15%',
             render: (text, record) =>
                 get(record, 'status.id') === 2 ?
-                    <InsuranceUpdate updateInsurance={updateInsurance}
+                    <InsuranceUpdate 
+                        updateInsurance={updateInsurance}
                         record={record}
                         type="cash_back_amount"
                         edit_access={edit_access}
@@ -190,7 +227,7 @@ const Insurance = () => {
             title: "Last Comment",
             dataIndex: 'lastComment',
             width: '20%',
-            render: (text, record) => get(record, 'last_comment[0].description', null)
+            render: (text, record) => <Truncate data={get(record, 'last_comment[0].description', null)} length={40} /> 
         },
         {
             title: "",
@@ -198,6 +235,7 @@ const Insurance = () => {
             render: (text, record) =>
                 <Tooltip title="Comment">
                     <Button
+                        size='small'
                         type="link"
                         icon={<CommentOutlined />}
                         onClick={() => handleShow("commentVisible", "Insurance Comment", 'commentData', record.id)}
@@ -205,15 +243,15 @@ const Insurance = () => {
                 </Tooltip>
         }
     ]
-
     return (
         <>
             <Table
                 columns={columns}
                 dataSource={list}
-                size="middle"
+                size='small'
                 loading={loading}
                 pagination={false}
+                scroll={{ x: 1156 }}
                 rowKey={(record) => record.id}
             />
             {object.commentVisible &&
