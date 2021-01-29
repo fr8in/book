@@ -35,6 +35,7 @@ const Trucks = (props) => {
     onPageChange,
     onTruckNoSearch,
     filter,
+    setChecked,
     onNoDateFilter,
     onRegionFilter,
     truck_status_list,
@@ -52,7 +53,9 @@ const Trucks = (props) => {
   }
 
   const handleNoDateFilter = (checked) => {
+    console.log('checked',checked)
     onNoDateFilter(checked)
+    setChecked({...checked, no_date_checked:checked })
   }
 
   const handleTruckNo = (e) => {

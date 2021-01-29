@@ -1,4 +1,4 @@
-import { Row, Col, Card, Tabs, DatePicker } from 'antd'
+import { Row, Col, Card, Tabs, DatePicker, Popover } from 'antd'
 import Trucks from '../trucks'
 import { useState } from 'react'
 import u from '../../../lib/util'
@@ -86,9 +86,11 @@ const TruckContainer = () => {
     insurance_end: null,
     insurance_start: null,
     region: null,
-    no_date: []
+    no_date: [],
+    no_date_checked: null
   }
   const [filter, setFilter] = useState(initialFilter)
+  const [checked,setChecked] = useState()
   const [tabIndex, setTabIndex] = useState('0')
   const [dates, setDates] = useState([])
   const startDate = isEmpty(dates) ? null : moment(dates[0]).format('DD-MMM-YY')
@@ -175,7 +177,8 @@ const TruckContainer = () => {
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30
     return ((tooEarly || tooLate))
   }
-
+  let test = checked === undefined ? [] : checked
+  console.log('test',test)
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
       <Row>
@@ -183,9 +186,24 @@ const TruckContainer = () => {
           <Tabs
             tabBarExtraContent={
               tabIndex === '0' &&
+              test.length > 0 ? 
+              <Popover 
+              content='Please uncheck no_date of Insurance Expiary Date'
+              >
+              <RangePicker
+              size='small'
+              format='DD-MMM-YYYY'
+              disabled
+              defaultValue={[moment(perviousDate,'DD-MMM-YY'),moment(futureDate,'DD-MMM-YY')]}
+              disabledDate={(current) => disabledDate(current)}
+              onCalendarChange={(value) => {
+                setDates(value)
+              }}
+            /> </Popover>:
               <RangePicker
                 size='small'
                 format='DD-MMM-YYYY'
+                defaultValue={[moment(perviousDate,'DD-MMM-YY'),moment(futureDate,'DD-MMM-YY')]}
                 disabledDate={(current) => disabledDate(current)}
                 onCalendarChange={(value) => {
                   setDates(value)
@@ -203,6 +221,7 @@ const TruckContainer = () => {
                 filter={filter}
                 onRegionFilter={onRegionFilter}
                 onFilter={onFilter}
+                setChecked={setChecked}
                 onNoDateFilter={onNoDateFilter}
                 onPageChange={onPageChange}
                 onTruckNoSearch={onTruckNoSearch}
