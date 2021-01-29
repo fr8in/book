@@ -49,7 +49,7 @@ const PayablesContainer = () => {
   const fuelCashback_roles = [role.admin, role.accounts_manager, role.accounts]
   const fuelCashback_access = u.is_roles(fuelCashback_roles, context)
 
-  const sourcing_incentive_roles = [role.admin]
+  const sourcing_incentive_roles = [role.admin, role.hr]
   const sourcing_incentive_access = u.is_roles(sourcing_incentive_roles, context)
 
   let today = new Date()
