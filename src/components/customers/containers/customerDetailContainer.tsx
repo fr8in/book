@@ -248,7 +248,7 @@ const CustomerDetailContainer = (props) => {
                       <Branch cardcode={cardcode} edit_access={customer_edit_role} customer_id={customer_info && customer_info.id} />
                     </TabPane>
                     <TabPane tab='FR8 Branch' key='10'>
-                      <Fr8Branch cardcode={cardcode} id={customer_info && customer_info.id} />
+                      <Fr8Branch id={customer_info && customer_info.id} />
                     </TabPane>
                     <TabPane tab='Details' key='11'>
                       <Row className='p10'>
