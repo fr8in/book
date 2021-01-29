@@ -1,14 +1,17 @@
 import { Menu, Checkbox, message} from 'antd'
+import { SwapOutlined } from '@ant-design/icons'
 import { useContext } from 'react'
 import { gql, useQuery, useMutation, useSubscription} from '@apollo/client'
 import get from 'lodash/get'
 import u from '../../lib/util'
 import userContext from '../../lib/userContaxt'
+import useShowHide from '../../hooks/useShowHide'
 
 const BANK_BALANCE = gql`
 query bank_balance{
   icici
   reliance
+  icici_incoming
 }`
 
 const TRANSACTION_DOWNTIME = gql` subscription{
@@ -26,7 +29,14 @@ mutation UpdateDowntime($value:jsonb) {
   }
 }`
 
+
+
+
 const BankBalance = () => {
+
+  const initial = { onTransfer: false }
+  const { visible, onHide, onShow } = useShowHide(initial)
+
 
   const context = useContext(userContext)
   const { role } = u
@@ -41,10 +51,11 @@ const BankBalance = () => {
   }
   )
 
-  let displayData = { icici: null, reliance: null, downtime: {icici_bank:null,reliance_fuel:null} }
+  let displayData = { icici: null, reliance: null, icici_incoming : null,downtime: {icici_bank:null,reliance_fuel:null} }
   if (!loading) {
     displayData.icici = get(data, 'icici', null)
     displayData.reliance = get(data, 'reliance', null)
+    displayData.icici_incoming = get(data, 'icici_incoming', null)
 
   }
   const { loading: _loading, data: _data, error: _error } = useSubscription(
@@ -53,7 +64,7 @@ const BankBalance = () => {
     displayData.downtime = get(_data, 'config[0].value', null)
   }
 
-  const { icici, reliance, downtime } = displayData
+  const { icici, reliance, icici_incoming ,downtime } = displayData
 
   const [UpdateDownTime] = useMutation(
     UPDATE_DOWNTIME,
@@ -78,6 +89,9 @@ const BankBalance = () => {
             </Menu.Item>
             <Menu.Item>
               <Checkbox onChange={(e) => onChangeDownTime(e, 'reliance_fuel')} disabled={!access} checked={!displayData.downtime.reliance_fuel} >Reliance <b>₹{reliance ? reliance.toFixed(0) : 0}</b> </Checkbox>
+            </Menu.Item>
+            <Menu.Item>
+            <SwapOutlined onClick={() =>console.log( " transfer clicked")} /> ICICI INCOMING <b>₹{icici_incoming ? icici_incoming.toFixed(0) : 0}</b>   
             </Menu.Item>
           </Menu>
   )
