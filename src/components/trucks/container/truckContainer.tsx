@@ -1,4 +1,4 @@
-import { Row, Col, Card, Tabs, DatePicker } from 'antd'
+import { Row, Col, Card, Tabs, DatePicker, Popover } from 'antd'
 import Trucks from '../trucks'
 import { useState } from 'react'
 import u from '../../../lib/util'
@@ -89,6 +89,7 @@ const TruckContainer = () => {
     no_date: []
   }
   const [filter, setFilter] = useState(initialFilter)
+  const [checked,setChecked] = useState([])
   const [tabIndex, setTabIndex] = useState('0')
   const [dates, setDates] = useState([])
   const startDate = isEmpty(dates) ? null : moment(dates[0]).format('DD-MMM-YY')
@@ -103,12 +104,11 @@ const TruckContainer = () => {
     truck_status: { id: { _eq: filter.truck_statusId ? filter.truck_statusId : null } },
     partner: { city: { connected_city: { branch: { region: { name: { _in: !isEmpty(filter.region) ? filter.region : null } } } } } },
     truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null },
-    _or: {
-      ...!isEmpty(filter.no_date) && { insurance_expiry_at: { _is_null: true } },
-      _and: [{ insurance_expiry_at: { _gte: startDate ? startDate : daysBefore } },
+      ...!isEmpty(filter.no_date) ? { insurance_expiry_at: { _is_null: true } }:
+      {_and: [{ insurance_expiry_at: { _gte: startDate ? startDate : daysBefore } },
       { insurance_expiry_at: { _lte: endDate ? endDate : daysAfter } }
-      ]
-    }
+      ]}
+    
   }
 
   const { loading: truck_loading, error: truck_error, data: truck_data } = useSubscription(
@@ -176,7 +176,8 @@ const TruckContainer = () => {
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30
     return ((tooEarly || tooLate))
   }
-
+  let no_date_checked = checked === undefined ? [] : checked
+  
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
       <Row>
@@ -184,9 +185,24 @@ const TruckContainer = () => {
           <Tabs
             tabBarExtraContent={
               tabIndex === '0' &&
+              no_date_checked.length > 0 ? 
+              <Popover 
+              content='Please uncheck no_date filter of Insurance Expiry Date'
+              >
+              <RangePicker
+              size='small'
+              format='DD-MMM-YYYY'
+              disabled
+              defaultValue={[moment(perviousDate,'DD-MMM-YY'),moment(futureDate,'DD-MMM-YY')]}
+              disabledDate={(current) => disabledDate(current)}
+              onCalendarChange={(value) => {
+                setDates(value)
+              }}
+            /> </Popover>:
               <RangePicker
                 size='small'
                 format='DD-MMM-YYYY'
+                defaultValue={[moment(perviousDate,'DD-MMM-YY'),moment(futureDate,'DD-MMM-YY')]}
                 disabledDate={(current) => disabledDate(current)}
                 onCalendarChange={(value) => {
                   setDates(value)
@@ -204,6 +220,7 @@ const TruckContainer = () => {
                 filter={filter}
                 onRegionFilter={onRegionFilter}
                 onFilter={onFilter}
+                setChecked={setChecked}
                 onNoDateFilter={onNoDateFilter}
                 onPageChange={onPageChange}
                 onTruckNoSearch={onTruckNoSearch}
