@@ -8,12 +8,12 @@ import { useState } from 'react'
 
 
 const TrucksList = (props) => {
-    const {record,data} = props
+    const {trucks,branches} = props
    
     const [copy, setCopy] = useState(false)
   
-    const groupedData = _.groupBy(record, function(item) { return item.truck_type.code})
-    const branch_name = !isEmpty(data) ? data[0].name : null 
+    const groupedData = _.groupBy(trucks, function(item) { return item.truck_type.code})
+    const branch_name = !isEmpty(branches) ? branches[0].name : null 
 
     const getMessage = (groupedData) => {
         let   message = `FR8 Trucks available at ${branch_name} \n \n`;
