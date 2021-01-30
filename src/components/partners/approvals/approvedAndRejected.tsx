@@ -247,7 +247,7 @@ const ApprovedAndRejected = () => {
       dataIndex: 'comment',
       key: 'comment',
       width: '13%',
-      render: (text, record) => <Truncate data={text} length={18} />
+      render: (text, record) => <Truncate data={text} length={12} />
     },
     {
       title: 'Request By',
@@ -292,7 +292,7 @@ const ApprovedAndRejected = () => {
       dataIndex: 'approval_comment',
       key: 'approval_comment',
       width: '13%',
-      render: (text, record) => <Truncate data={text} length={12} />
+      render: (text, record) => <Truncate data={text} length={10} />
     }
   ]
 
