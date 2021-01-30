@@ -8,12 +8,27 @@ import { useState } from 'react'
 
 
 const TrucksList = (props) => {
-    const {trucks,branches} = props
+    const {data,trucks} = props
    
     const [copy, setCopy] = useState(false)
-  
+
+    const branch_data = !isEmpty(data) ? data.region : null
+
+    console.log('branch_data',branch_data)
+
+    const branch = !isEmpty(branch_data) ? branch_data.map(branches_data => branches_data.branches) : null
+  console.log('branch',branch)
+
+  const filter = !isEmpty(branch_data) ?  branch.filter(data => !isEmpty(data))[0] :null
+  console.log('filter',filter)
+  const newData = {data:filter}
+  console.log('newData',newData)
+
+  const trucks_data = _.chain(newData[0]).flatMap('connected_cities').flatMap('cities').flatMap('trucks').value()
+  console.log('trucks',trucks_data)
+
     const groupedData = _.groupBy(trucks, function(item) { return item.truck_type.code})
-    const branch_name = !isEmpty(branches) ? branches[0].name : null 
+    const branch_name = '' //!isEmpty(branches) ? branches[0].name : null 
 
     const getMessage = (groupedData) => {
         let   message = `FR8 Trucks available at ${branch_name} \n \n`;
