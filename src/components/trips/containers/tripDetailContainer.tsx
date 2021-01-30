@@ -59,8 +59,8 @@ const TripDetailContainer = (props) => {
     <h3>
       <span className='text-primary'>{trip_info.id}</span>
       <span>{` ${get(trip_info, 'source.name', null)} - ${get(trip_info, 'destination.name', null)} `}</span>
-      <small className='text-gray normal'>{` ${get(trip_info, 'truck.truck_type.name', null)} - ${customer_branch_employee}`}</small>
-      {/* <small className='text-gray normal'>{customer_branch_employee}</small> */}
+      <small className='text-gray normal'>{get(trip_info, 'truck.truck_type.name', null)},</small>
+      <span className='normal'> {customer_branch_employee}</span>
     </h3>)
   const trip_status_name = get(trip_info, 'trip_status.name', null)
   const trip_status_id = get(trip_info, 'trip_status.id', null)
