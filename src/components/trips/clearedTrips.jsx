@@ -90,7 +90,7 @@ const ClearedList = (props) => {
 
   return (
     <Modal
-      title='Wallet Top Up'
+      title='Cleared'
       visible={visible}
       onCancel={onHide}
       width={750}

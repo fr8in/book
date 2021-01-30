@@ -90,7 +90,7 @@ const WalletStatement = (props) => {
     <Drawer
       title={`Wallet: ₹${wallet_balance ? wallet_balance.toFixed(2) : 0}`}
       placement='right'
-      closable={false}
+      closable
       onClose={onHide}
       visible={visible}
       width={360}
