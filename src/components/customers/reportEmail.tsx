@@ -47,6 +47,7 @@ const ReportEmail = (props) => {
             <Col flex='100px'>
               <Button
                 type='primary'
+                key='submit'
                 htmlType='submit'
               >
                 Send Email

@@ -88,7 +88,7 @@ const CreateCustomerUser = (props) => {
             </Form.Item>
             <Row justify='end'>
               <Form.Item>
-                <Button type='primary' loading={disableButton} htmlType='submit'>Save</Button>
+                <Button type='primary' key='submit' loading={disableButton} htmlType='submit'>Save</Button>
               </Form.Item>
             </Row>
           </Form>

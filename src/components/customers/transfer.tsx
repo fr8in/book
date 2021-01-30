@@ -301,7 +301,7 @@ console.log("totalAmount,",totalAmount)
             </Form.Item>
           </Col>
           <Col flex='90px'>
-            <Button type='primary' disabled={disableButton} htmlType='submit'>Create</Button>
+            <Button type='primary' key='submit' disabled={disableButton} htmlType='submit'>Create</Button>
           </Col>
         </Row>
       </Form>

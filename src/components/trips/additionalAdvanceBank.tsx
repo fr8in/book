@@ -220,7 +220,7 @@ const AdditionalAdvanceBank = (props) => {
             </Col>
             <Col xs={8}>
               <Form.Item label='save' className='hideLabel'>
-                <Button type='primary' loading={disableBtn} htmlType='submit'>Create</Button>
+                <Button type='primary' key='submit' loading={disableBtn} htmlType='submit'>Create</Button>
               </Form.Item>
             </Col>
           </Row>

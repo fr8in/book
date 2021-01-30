@@ -65,7 +65,7 @@ const CreateAnnouncenment = (props) => {
           <Input.TextArea placeholder='Description' />
         </Form.Item>
         <Row justify='end'>
-          <Button type='primary' loading={disableButton} htmlType='submit'>Publish</Button>
+          <Button type='primary' key='submit' loading={disableButton} htmlType='submit'>Publish</Button>
         </Row>
       </Form>
     </Modal>

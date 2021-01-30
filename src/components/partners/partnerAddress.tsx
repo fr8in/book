@@ -90,7 +90,7 @@ const EditAddress = (props) => {
             <Input placeholder='Pin Code' />
           </Form.Item>
           <Row justify='end'>
-            <Button type='primary' loading={disableButton} htmlType='submit'>Save</Button>
+            <Button type='primary' key='submit' loading={disableButton} htmlType='submit'>Save</Button>
           </Row>
         </Form>
       </Modal>

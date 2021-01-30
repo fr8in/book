@@ -100,7 +100,7 @@ const [updateStatusId] = useMutation(
             </Col>
             <Col flex='80px'>
               <Form.Item>
-                <Button type='primary' loading={disableButton}  htmlType='submit'>Submit</Button>
+                <Button type='primary' key='submit' loading={disableButton}  htmlType='submit'>Submit</Button>
               </Form.Item>
             </Col>
           </Row>

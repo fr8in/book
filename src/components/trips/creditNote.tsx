@@ -226,6 +226,7 @@ const CreditNote = (props) => {
             <Form.Item label='save' className='hideLabel'>
               <Button
                 type='primary'
+                key='submit'
                 loading={disableButton}
                 htmlType='submit'
                 disabled={

@@ -191,7 +191,7 @@ const Lead = () => {
                 style={{ width: '100%'}}/>
               </Form.Item>
           <Form.Item className='text-right mb0'>
-              <Button type='primary'  key='back' loading={disableButton} htmlType='submit'>Submit</Button>
+              <Button type='primary'  key='submit' loading={disableButton} htmlType='submit'>Submit</Button>
           </Form.Item>
          
       </Form>

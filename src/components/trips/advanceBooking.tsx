@@ -124,7 +124,7 @@ const AdvanceBooking = (props) => {
             <p>Advance: <b>{pending_data.balance}</b>, (Recievables: <b>{price}</b>, Mamul: <b>{mamul}</b>)</p>
           </Col>
           <Col flex='100px' className='text-right'>
-            <Button type='primary' htmlType='submit' loading={disableButton}>Book</Button>
+            <Button type='primary' key='submit' htmlType='submit' loading={disableButton}>Book</Button>
           </Col>
         </Row>
       </Form>

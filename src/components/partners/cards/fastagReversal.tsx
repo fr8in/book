@@ -79,7 +79,7 @@ const FastagReversal = (props) => {
           <Col xs={24} className='text-right'>
             <Space>
               <Button>Cancel</Button>
-              <Button type='primary' loading={disableButton} htmlType='submit'>Ok</Button>
+              <Button type='primary' key='submit' loading={disableButton} htmlType='submit'>Ok</Button>
             </Space>
           </Col>
         </Row>

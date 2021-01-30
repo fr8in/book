@@ -111,6 +111,7 @@ const Incentive = (props) => {
             <Form.Item label='save' className='hideLabel'>
               <Button
                 type='primary'
+                key='submit'
                 htmlType='submit'
                 loading={disableButton}
                 disabled={

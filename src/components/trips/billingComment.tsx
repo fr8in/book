@@ -102,7 +102,7 @@ const BillingComment = (props) => {
                 </Col>
                 <Col flex='80px'>
                   <Form.Item label='save' className='hideLabel'>
-                    <Button htmlType='submit' type='primary' loading={disableButton} disabled={trip_status || lock}>Save</Button>
+                    <Button htmlType='submit' key='submit' type='primary' loading={disableButton} disabled={trip_status || lock}>Save</Button>
                   </Form.Item>
                 </Col>
               </Row>

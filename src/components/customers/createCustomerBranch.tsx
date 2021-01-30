@@ -213,7 +213,7 @@ const CreateCustomerBranch = (props) => {
               </Row>
               <Row justify='end'>
                 <Form.Item>
-                  <Button type='primary' htmlType='submit' loading={disableButton}>Save</Button>
+                  <Button type='primary' key='submit' htmlType='submit' loading={disableButton}>Save</Button>
                 </Form.Item>
               </Row>
             </Form>

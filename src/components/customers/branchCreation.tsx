@@ -236,7 +236,7 @@ const BranchCreation = (props) => {
           </Row>
           <Row justify='end'>
             <Form.Item>
-              <Button type='primary' loading={disableButton} htmlType='submit'>Create Branch & Approve</Button>
+              <Button type='primary' key='submit' loading={disableButton} htmlType='submit'>Create Branch & Approve</Button>
             </Form.Item>
           </Row>
         </Form>

@@ -117,7 +117,7 @@ const customerComment = (props) => {
           </Col>
           <Col xs={4}>
             <Form.Item>
-              <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
+              <Button type='primary' key='submit' loading={disableButton} htmlType='submit'>Submit</Button>
             </Form.Item>
           </Col>
         </Row>

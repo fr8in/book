@@ -168,7 +168,7 @@ const AddFastagContainer = (props) => {
                 <Link href='/partners/[id]' as={`/partners/${cardcode}`}>
                   <Button icon={<LeftOutlined />}>Back</Button>
                 </Link>
-                <Button type='primary' loading={disableButton} htmlType='submit'>Submit</Button>
+                <Button type='primary' key='submit' loading={disableButton} htmlType='submit'>Submit</Button>
               </Space>
             </Form.Item>
           </Form>

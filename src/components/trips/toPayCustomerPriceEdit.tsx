@@ -302,7 +302,7 @@ const ToPayCustomerPriceEdit = (props) => {
                         </Form.Item>
                         <Row>
                             <Col xs={24} className='text-right mt10'>
-                                <Button type='primary' loading={disableButton} htmlType='submit'>Update</Button>
+                                <Button type='primary' key='submit' loading={disableButton} htmlType='submit'>Update</Button>
                             </Col>
                         </Row>
                     </div>)

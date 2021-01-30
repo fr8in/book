@@ -389,7 +389,7 @@ const CreatePo = (props) => {
         {!cus_loading && (customer && customer.id) &&
           <Row justify='end'>
             <Divider />
-            <Button className='mt10' type='primary' htmlType='submit' loading={disableBtn}>Create</Button>
+            <Button className='mt10' key='submit' type='primary' htmlType='submit' loading={disableBtn}>Create</Button>
           </Row>}
       </Form>
     </Modal>

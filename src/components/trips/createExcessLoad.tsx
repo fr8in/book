@@ -266,7 +266,7 @@ const CreateExcessLoad = (props) => {
           />
         </Form.Item>
         <Form.Item className='text-right'>
-          <Button type='primary' htmlType='submit' loading={obj.disableButton}>Create Load</Button>
+          <Button type='primary' key='submit' htmlType='submit' loading={obj.disableButton}>Create Load</Button>
         </Form.Item>
       </Form>
     </Modal>

@@ -133,7 +133,7 @@ const CheckBoxModal = (props) => {
             </Col>
           </Row>
           <Row justify='end'>
-            <Button htmlType='submit' loading={disableButton} type='primary'>
+            <Button htmlType='submit' key='submit' loading={disableButton} type='primary'>
               Save
             </Button>
           </Row>

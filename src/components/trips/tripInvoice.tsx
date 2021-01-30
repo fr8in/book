@@ -387,6 +387,7 @@ const TripInvoice = (props) => {
             {
               <Button
                 type='primary'
+                key='submit'
                 htmlType='submit'
                 disabled={!calc.completed}
                 loading={calc.loading_submit}

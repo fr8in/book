@@ -476,7 +476,7 @@ const FinalBooking = (props) => {
           visible={visb.excess}
           onCancel={hide}
           footer={[
-            <Button type='primary' disabled={!header} onClick={hide} key='OK'>OK</Button>
+            <Button type='primary' key='submit' disabled={!header} onClick={hide} key='OK'>OK</Button>
           ]}
         >
           {validateAllWriteOffs(excess)

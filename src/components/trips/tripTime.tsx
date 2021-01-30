@@ -568,7 +568,7 @@ const TripTime = (props) => {
                           cancelText='No'
                           onConfirm={onProcessAdvance}
                         >
-                        <Button type='primary' onClick={() => getToken()} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>
+                        <Button type='primary' key='submit' onClick={() => getToken()} disabled={disable_pa || lock} loading={disableBtn}>Process Advance</Button>
                         </Popconfirm>
                       : null)}
                 {remove_sin &&

@@ -309,7 +309,7 @@ const CustomerPrice = (props) => {
             <h4 className='mb0'>Advance ({price.adv_percentage}%): {loaded ? initial_adv : price.advance}</h4>
           </Col>
           <Col flex='100px' className='text-right'>
-            <Button type='primary' loading={disableButton} htmlType='submit'>Update</Button>
+            <Button type='primary' key='submit' loading={disableButton} htmlType='submit'>Update</Button>
           </Col>
         </Row>
       </Form>

@@ -216,7 +216,7 @@ const PartnerUsers = (props) => {
             </Form.Item>
           </Col>
           <Col flex='90px'>
-            <Button type='primary' loading={disableButton} htmlType='submit'>Add User</Button>
+            <Button type='primary' key='submit' loading={disableButton} htmlType='submit'>Add User</Button>
           </Col>
         </Row>
       </Form>

@@ -41,7 +41,7 @@ const AddFuelCardContainer = () => {
             <Form.Item className='text-right'>
               <Space>
                 <Button htmlType='button'>Cancel</Button>
-                <Button type='primary' htmlType='submit'>Submit</Button>
+                <Button type='primary' key='submit' htmlType='submit'>Submit</Button>
               </Space>
             </Form.Item>
           </Form>

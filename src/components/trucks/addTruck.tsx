@@ -67,7 +67,7 @@ const AddTruck = (props) => {
                 <Link href='/partners/[id]' as={`/partners/${partner_info.cardcode}`}>
                   <Button icon={<LeftOutlined />}>Back</Button>
                 </Link>}
-              <Button type='primary' loading={disableButton} disabled={disableAddTruck} htmlType='submit'>Add Truck</Button>
+              <Button type='primary' key='submit' loading={disableButton} disabled={disableAddTruck} htmlType='submit'>Add Truck</Button>
             </Space>
           </Form.Item>
         </Col>

@@ -353,7 +353,7 @@ const ConfirmPo = (props) => {
         {(customer && customer.id) &&
           <Row justify='end'>
             <Divider />
-            <Button className='mt10' type='primary' htmlType='submit' loading={disableButton}>Create</Button>
+            <Button className='mt10' key='submit' type='primary' htmlType='submit' loading={disableButton}>Create</Button>
           </Row>}
       </Form>
     </Modal>
