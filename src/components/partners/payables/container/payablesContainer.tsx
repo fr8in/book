@@ -49,7 +49,7 @@ const PayablesContainer = () => {
   const fuelCashback_roles = [role.admin, role.accounts_manager, role.accounts]
   const fuelCashback_access = u.is_roles(fuelCashback_roles, context)
 
-  const sourcing_incentive_roles = [role.admin]
+  const sourcing_incentive_roles = [role.admin, role.hr]
   const sourcing_incentive_access = u.is_roles(sourcing_incentive_roles, context)
 
   let today = new Date()
@@ -122,6 +122,12 @@ const PayablesContainer = () => {
 
   const handleCashBackDate = (date) => {
     return moment().diff(date, 'months') > 1 || moment().diff(date, 'months') < 1
+  }
+
+  const handleSourcingIncentiveDate = (date) => {
+    const listDate=date.format("YYYYMM")
+    const currentDate=moment().format("YYYYMM")
+    return moment().subtract(1,'months').diff(date, 'months') === 0 && listDate== currentDate
   }
 
 
@@ -200,7 +206,7 @@ const PayablesContainer = () => {
               {sourcing_incentive_access && <> <Button type="primary" disabled={!(sourcingIncentiveData.length > 0)}
                 onClick={() => handleShow('incentiveVisible', "Process Incentive", 'incentiveData', sourcingIncentiveData)}>Process</Button>
                 <DatePicker
-                  disabledDate={(date) => handleCashBackDate(date)}
+                  disabledDate={(date) => !handleSourcingIncentiveDate(date)}
                   onChange={handleIncentiveMonthChange} picker='month' /></>} </Space> : null
     )
   }
