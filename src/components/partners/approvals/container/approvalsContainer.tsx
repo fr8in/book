@@ -1,10 +1,8 @@
 import Pending from '../pending'
 import Approved from '../approvedAndRejected'
-import TransferToBank from '../../../customers/transferToBank'
 import TransferToBankHistory from '../../../customers/transferToBankHistory'
 import { Tabs, Card } from 'antd'
 import Incentive from '../incentive'
-import IncentiveHistory from '../incentiveHistory'
 import AdditionalAdvanceBankApproval from '../additionalAdvanceBank';
 
 const TabPane = Tabs.TabPane
@@ -20,18 +18,12 @@ const Approvals = () => {
           <Approved />
         </TabPane>
         <TabPane tab='Transfer to Bank' key='3'>
-          <TransferToBank />
+         <TransferToBankHistory />
         </TabPane>
-        <TabPane tab='History' key='4'>
-         <TransferToBankHistory status={["APPROVED","REJECTED"]}/>
-        </TabPane>
-        <TabPane tab='Incentive' key='5'>
+        <TabPane tab='Incentive' key='4'>
           <Incentive />
         </TabPane> 
-        <TabPane tab='History' key='6'>
-          <IncentiveHistory />
-        </TabPane>
-        <TabPane tab='Additional Advance Bank' key='7'>
+        <TabPane tab='Additional Advance Bank' key='5'>
           <AdditionalAdvanceBankApproval />
         </TabPane>
       </Tabs>
