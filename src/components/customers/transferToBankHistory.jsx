@@ -1,8 +1,8 @@
 import React from 'react'
-import { Table,Tooltip,Input,Button, Space,Checkbox,Pagination} from 'antd'
-import { useContext,useState } from 'react'
+import { Table, Tooltip, Input, Button, Space, Checkbox, Pagination } from 'antd'
+import { useContext, useState } from 'react'
 import Truncate from '../common/truncate'
-import { gql,  useSubscription,useQuery } from '@apollo/client'
+import { gql, useSubscription, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import LinkComp from '../common/link'
@@ -54,95 +54,96 @@ query CUSTOMERWALLETOUTGOINGAGGREGATE ($where:customer_wallet_outgoing_bool_exp)
 }`
 
 const TransferToBankHistory = (props) => {
- const {cardcode} =props
+  const { cardcode } = props
 
- const { role } = u
+  const { role } = u
   const context = useContext(userContext)
   const approve_roles = [role.admin, role.accounts_manager]
   const approval_access = u.is_roles(approve_roles, context)
   const reject_roles = [role.admin, role.accounts_manager]
   const rejected_access = u.is_roles(reject_roles, context)
 
-  
+
   const initial = {
     approveData: [],
     approveVisible: false,
     title: null,
     customername: null,
     status: ['PENDING'],
-    offset:0,
-    limit:u.limit
+    offset: 0,
+    limit: u.limit
   }
 
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
-const [filter, setFilter] = useState(initial)
-const [currentPage, setCurrentPage] = useState(1)
- const where = {
-    card_code: {_eq:cardcode },
-    customers: {name: {_ilike: filter.customername ? `%${filter.customername}%` : null}},
-    status: {_in: !isEmpty(filter.status) ? filter.status : null }
+  const [filter, setFilter] = useState(initial)
+  const [currentPage, setCurrentPage] = useState(1)
+  const where = {
+    card_code: { _eq: cardcode },
+    customers: { name: { _ilike: filter.customername ? `%${filter.customername}%` : null } },
+    status: { _in: !isEmpty(filter.status) ? filter.status : null }
   }
 
   const { loading, error, data } = useSubscription(
-    TRANSFER_TO_BANK_HISTORY,{
-    variables:{
-     where:where,
-     offset: filter.offset,
-     limit: u.limit
+    TRANSFER_TO_BANK_HISTORY, {
+    variables: {
+      where: where,
+      offset: filter.offset,
+      limit: u.limit
     }
-}
+  }
   )
- 
+
   let _data = {}
   if (!loading) {
     _data = data
   }
-  const approvedAndRejected = get(_data,'customer_wallet_outgoing', null)
+  const approvedAndRejected = get(_data, 'customer_wallet_outgoing', null)
 
   const { loading: aggreagate_loading, error: aggreagate_error, data: aggreagate_data } = useQuery(
     Aggregate, {
     variables: {
-        where: where},
-        fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
-}
-)
+      where: where
+    },
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  }
+  )
 
-let _aggregate = {}
-if (!aggreagate_loading) {
-  _aggregate = aggreagate_data
-}
-  
-const record_count = get(_aggregate, 'customer_wallet_outgoing_aggregate.aggregate.count', 0)
+  let _aggregate = {}
+  if (!aggreagate_loading) {
+    _aggregate = aggreagate_data
+  }
+
+  const record_count = get(_aggregate, 'customer_wallet_outgoing_aggregate.aggregate.count', 0)
 
   const _status = [
-    {id:1,name:'PENDING'},
-    {id:2,name:'APPROVED'},
-    {id:3,name:'REJECTED'}
+    { id: 1, name: 'PENDING' },
+    { id: 2, name: 'APPROVED' },
+    { id: 3, name: 'REJECTED' }
   ]
 
-   const status_list = !isEmpty(_status) ? _status.map((data) => {
+  const status_list = !isEmpty(_status) ? _status.map((data) => {
     return { value: data.name, label: data.name }
   }) : []
 
   const onCustomerSearch = (e) => {
-    setFilter({ ...filter, customername: e.target.value,offset: 0 })
+    setFilter({ ...filter, customername: e.target.value, offset: 0 })
   }
 
   const onFilter = (value) => {
-    setFilter({ ...filter, status: value ,offset: 0})
+    setFilter({ ...filter, status: value, offset: 0 })
   }
   const handleStatus = (checked) => {
     onFilter(checked)
   }
 
-const onPageChange = (page, pageSize) => {
-  const newOffset = page * pageSize - filter.limit
-  setCurrentPage(page)
-  setFilter({...filter, offset:newOffset})
-}
-  
+  const onPageChange = (page, pageSize) => {
+    const newOffset = page * pageSize - filter.limit
+    setCurrentPage(page)
+    setFilter({ ...filter, offset: newOffset })
+  }
+
   const ApproveandRejectHistory = [
     {
       title: (
@@ -173,7 +174,7 @@ const onPageChange = (page, pageSize) => {
     {
       title: 'Trip Id',
       dataIndex: 'load_id',
-      key:'load_id',
+      key: 'load_id',
       width: '7%',
     },
     {
@@ -231,9 +232,9 @@ const onPageChange = (page, pageSize) => {
       dataIndex: 'is_mamul_charges_included',
       key: 'is_mamul_charges_included',
       width: '10%',
-      render: (text, record) => 
-        <Truncate data={record.is_mamul_charges_included === true ? 'Mamul Charge' : 'Special Mamul '}  length={14}/>
-      
+      render: (text, record) =>
+        <Truncate data={record.is_mamul_charges_included === true ? 'Mamul Charge' : 'Special Mamul '} length={14} />
+
     },
     {
       title: (
@@ -276,13 +277,13 @@ const onPageChange = (page, pageSize) => {
         return text ? moment(text).format('DD-MMM-YY') : null
       }
     },
-   {
+    {
       title: 'Action',
       width: '15%',
       render: (text, record) => (
         <Space>
           <Tooltip title='Approve'>
-            {approval_access &&record.status === 'PENDING' ? (
+            {approval_access && record.status === 'PENDING' ? (
               <Button
                 type='primary'
                 shape='circle'
@@ -294,7 +295,7 @@ const onPageChange = (page, pageSize) => {
               />) : null}
           </Tooltip>
           <Tooltip title='Reject'>
-            {rejected_access &&record.status === 'PENDING'? (
+            {rejected_access && record.status === 'PENDING' ? (
               <Button
                 type='primary'
                 shape='circle'
@@ -307,7 +308,7 @@ const onPageChange = (page, pageSize) => {
           </Tooltip>
         </Space>
       )
-    } 
+    }
   ]
 
   return (
@@ -321,7 +322,7 @@ const onPageChange = (page, pageSize) => {
         scroll={{ x: 1156 }}
         pagination={false}
       />
-       {object.approveVisible && (
+      {object.approveVisible && (
         <TransferToBankAccept
           visible={object.approveVisible}
           onHide={handleHide}
@@ -330,17 +331,17 @@ const onPageChange = (page, pageSize) => {
         />
       )}
       {!loading && record_count
-                ? (
-                    <Pagination
-                        size='small'
-                        current={currentPage}
-                        pageSize={u.limit}
-                        showSizeChanger={false}
-                        total={record_count}
-                        onChange={onPageChange}
-                        className='text-right p10'
-                    />
-                ) : null}
+        ? (
+          <Pagination
+            size='small'
+            current={currentPage}
+            pageSize={u.limit}
+            showSizeChanger={false}
+            total={record_count}
+            onChange={onPageChange}
+            className='text-right p10'
+          />
+        ) : null}
     </>
   )
 }

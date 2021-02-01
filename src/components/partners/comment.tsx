@@ -91,17 +91,17 @@ const Comment = (props) => {
     {
       title: 'Comment',
       dataIndex: 'description',
-      width: detailPage ? '48%' : '45%'
+      width: detailPage ? '48%' : '40%'
     },
     {
       title: 'Created By',
       dataIndex: 'created_by',
-      width: detailPage ? '17%' : '30%'
+      width: detailPage ? '17%' : '35%'
     },
     {
       title: 'Created On',
       dataIndex: 'created_at',
-      width: '15%',
+      width: detailPage ? '15%' : '25%',
       render: (text, record) => text ? moment(text).format('DD-MMM-YY HH:mm') : null
     }
   ]
@@ -128,7 +128,7 @@ const Comment = (props) => {
         dataSource={partner_comments}
         rowKey={record => record.id}
         size='small'
-        scroll={{ x: 500, y: 400 }}
+        scroll={{ x: 250, y: 400 }}
         pagination={false}
         loading={loading}
       />
