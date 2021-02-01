@@ -127,7 +127,11 @@ const CreatePartner = (props) => {
                   rules={[{ required: true, message: 'Mobile is required field' }]}
                   initialValue={mobile}
                 >
-                  <Input placeholder='Phone Number' disabled={!!mobile} />
+                  <Input placeholder='Phone Number'
+                  type='number'
+                  maxLength={10}
+                  onInput={u.handleLengthCheck} 
+                  disabled={!!mobile} />
                 </Form.Item>
               </Col>
 
@@ -170,7 +174,7 @@ const CreatePartner = (props) => {
               <Col xs={24} sm={8}>
                 <Form.Item
                   label='Re-enter Account No'
-                  name='confirm'
+                  name='confirm'    
                   dependencies={['account_no']}
                   rules={rules}
                   initialValue={get(partner_info, 'display_account_number', null)}
@@ -231,22 +235,6 @@ const CreatePartner = (props) => {
                     options={employeeList}
                     optionFilterProp='label'
                     showSearch
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} sm={8}>
-                <Form.Item
-                  label='Final Payment date'
-                  name='final_payment_date'
-                  rules={[{ required: true, message: 'Final Payment date is required field!' }]}
-                  initialValue={get(partner_info, 'final_payment_date', null)}
-                >
-                  <Input
-                    placeholder='Final Payment date'
-                    type='number'
-                    min={1}
-                    maxLength={2}
-                    onInput={u.handleLengthCheck}
                   />
                 </Form.Item>
               </Col>
