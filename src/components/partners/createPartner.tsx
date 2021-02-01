@@ -127,7 +127,11 @@ const CreatePartner = (props) => {
                   rules={[{ required: true, message: 'Mobile is required field' }]}
                   initialValue={mobile}
                 >
-                  <Input placeholder='Phone Number' disabled={!!mobile} />
+                  <Input placeholder='Phone Number'
+                  type='number'
+                  maxLength={10}
+                  onInput={u.handleLengthCheck} 
+                  disabled={!!mobile} />
                 </Form.Item>
               </Col>
 
@@ -170,7 +174,7 @@ const CreatePartner = (props) => {
               <Col xs={24} sm={8}>
                 <Form.Item
                   label='Re-enter Account No'
-                  name='confirm'
+                  name='confirm'    
                   dependencies={['account_no']}
                   rules={rules}
                   initialValue={get(partner_info, 'display_account_number', null)}
