@@ -204,7 +204,7 @@ const CreateLead = (props) => {
           />
         </Form.Item>
         <Row justify='end'>
-          <Button type='primary' key='submit' loading={disableButton} htmlType='submit'> Submit </Button>
+          <Button type='primary' loading={disableButton} htmlType='submit'> Submit </Button>
         </Row>
       </Form>
     </Modal>
