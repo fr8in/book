@@ -5,38 +5,38 @@ import _ from 'lodash'
 import isEmpty from 'lodash/isEmpty'
 import CopyToClipboard from "react-copy-to-clipboard";
 import { useState } from 'react'
+import u from '../../lib/util'
 
 
 const TrucksList = (props) => {
-    const {data,trucks} = props
-   
+    const {data,trucks,branches} = props
     const [copy, setCopy] = useState(false)
 
-    const branch_data = !isEmpty(data) ? data.region : null
+    console.log('branches',branches)
+
+    const branch_data = !isEmpty(branches) ? branches.map((branch) =>{
+      const truck_types = _.chain({data:branch}).flatMap('connected_cities').flatMap('cities').flatMap('trucks').groupBy('truck_type.code').value()
+      return {
+     name: branch.name,
+     truck_types:truck_types
+      }
+    })  : []
 
     console.log('branch_data',branch_data)
 
-    const branch = !isEmpty(branch_data) ? branch_data.map(branches_data => branches_data.branches) : null
-  console.log('branch',branch)
+const grouped_data = []
+const branch_name = ''
 
-  const filter = !isEmpty(branch_data) ?  branch.filter(data => !isEmpty(data))[0] :null
-  console.log('filter',filter)
-  const newData = {data:filter}
-  console.log('newData',newData)
 
-  const trucks_data = _.chain(newData[0]).flatMap('connected_cities').flatMap('cities').flatMap('trucks').value()
-  console.log('trucks',trucks_data)
-
-    const groupedData = _.groupBy(trucks, function(item) { return item.truck_type.code})
-    const branch_name = '' //!isEmpty(branches) ? branches[0].name : null 
-
-    const getMessage = (groupedData) => {
+    const getMeessage = (grouped_data) => {
         let   message = `FR8 Trucks available at ${branch_name} \n \n`;
-        let keys = Object.keys(groupedData)
+        let keys = Object.values(grouped_data)
+        console.log('keys',keys)
+        
         keys.forEach((key)=> {
           message = message + `${key} \n \n`
           let i = 1;
-          groupedData[key].map((data)=>{
+          grouped_data[key].map((data)=>{
           message = message + `${i++}) Partner: ${get(data, 'partner.name')} \n`
           message = message + `Truck No: ${data.truck_no} - ${get(data, 'tat')} hrs \n`;
           message = message + `O: ${get(data, 'partner.partner_users[0].mobile') ? get(data, 'partner.partner_users[0].mobile') : '-'} / D: ${get(data, 'trips[0].driver.mobile') ? get(data, 'trips[0].driver.mobile') : '-'} \n`;
@@ -53,7 +53,7 @@ const TrucksList = (props) => {
     };
 
     return(
-           <CopyToClipboard text={getMessage(groupedData)} onCopy={onCopy}>
+           <CopyToClipboard text={getMeessage(grouped_data)} onCopy={onCopy}>
             <Tooltip title='click to copy message'>
               <Button size='small' shape='circle' type='primary' icon={<CopyOutlined  />} />
             </Tooltip>
