@@ -54,7 +54,7 @@ const TripDetailContainer = (props) => {
     _data = data
   }
   const trip_info = get(_data, 'trip[0]', 'ID does not exist')
-  const customer_branch_employee = get(trip_info,'customer.customer_branch_employees[0].branch_employee.employee.name',null)
+  const customer_branch_employee = get(trip_info,'branch_employee.employee.name',null)
   const title = (
     <h3>
       <span className='text-primary'>{trip_info.id}</span>
