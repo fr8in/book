@@ -81,7 +81,10 @@ const CreateCustomerUser = (props) => {
               <Input placeholder='Name' />
             </Form.Item>
             <Form.Item name='mobile'>
-              <Input placeholder='Mobile No' />
+              <Input placeholder='Mobile No' 
+              type='number'
+               maxLength={10}
+               onInput={u.handleLengthCheck} />
             </Form.Item>
             <Form.Item name='email'>
               <Input placeholder='E-Mail' />

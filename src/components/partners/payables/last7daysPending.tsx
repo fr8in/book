@@ -51,7 +51,6 @@ const Last7daysPending = () => {
 
   const initial = { 
     offset: 0, 
-    cardcode:null, 
     partner: null, 
     amount: null, 
     outgoingNo: null, 
@@ -70,7 +69,6 @@ const where = {
         {txn_date:{_gt:moment(perviousDate).format('DD-MMM-YY')}},
         {txn_date:{_lte: moment(futureDate).format('DD-MMM-YY')}}
       ],
-      cardcode:{_ilike:filter.cardcode ? `%${filter.cardcode}%` : null},
       ...!isEmpty(filter.partner) && {partner:{name:{_ilike: filter.partner ? `%${filter.partner}%` : null}}} ,
       amount:{_ilike:filter.amount ? `%${filter.amount}%` : null},
       remarks:{_ilike: filter.remarks ? `%${filter.remarks}%` : null},
@@ -123,9 +121,6 @@ const where = {
     setCurrentPage(page)
     setFilter({...filter, offset:newOffset})
   }
-  const onCardcodeSearch = (e) => {
-    setFilter({...filter, cardcode:e.target.value, offset: 0 })
-  }
   const onPartnerSearch = (e) => {
     setFilter({...filter, partner:e.target.value, offset: 0 })
   }
@@ -151,7 +146,8 @@ const where = {
       dataIndex: 'partner',
       render: (text, record) => {
         const partner = get(record, 'partner.name', null)
-        return( <Truncate data={partner} length={11} />)
+        const cardcode = get(record, 'cardcode', null)
+        return( <LinkComp type='partners' data={partner} id={cardcode}  length={12}/>)
       },
       filterDropdown: (
         <div>
@@ -165,30 +161,9 @@ const where = {
       filterIcon: (filtered) => (
         <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
       ),
-      width: '9%',
+      width: '12%',
     },
-    {
-      title: 'Cardcode',
-      dataIndex: 'cardcode',
-      width: '8%',
-      render: (text, record) => {
-        return (
-          <LinkComp type='partners' data={text} id={text} />
-        )
-      },
-      filterDropdown: (
-        <div>
-          <Input
-            placeholder='Search Cardcode'
-            value={filter.cardcode}
-            onChange={onCardcodeSearch}
-          />
-        </div>
-      ),
-      filterIcon: (filtered) => (
-        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-      )
-    },
+    
     {
       title: <Tooltip title='Transaction Date'>Tnx Date</Tooltip>,
       dataIndex: 'txn_date',
@@ -228,7 +203,7 @@ const where = {
       filterIcon: (filtered) => (
         <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
       ),
-      width: '9%',
+      width: '10%',
     },
     {
       title: <Tooltip title='Bank Reference No'>Ref No</Tooltip>,
@@ -266,7 +241,7 @@ const where = {
       dataIndex: 'remarks',
       render: (text, record) => {
         const remarks = get(record, 'remarks', null)
-        return (<Truncate data={remarks} length={90} />)
+        return (<Truncate data={remarks} length={70} />)
       },
       filterDropdown: (
         <div>
@@ -280,12 +255,7 @@ const where = {
       filterIcon: (filtered) => (
         <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
       ),
-      width: '38%',
-    },
-    {
-      title: 'Balance',
-      dataIndex: 'balance',
-      width: '6%',
+      width: '48%',
     }
   ]
 

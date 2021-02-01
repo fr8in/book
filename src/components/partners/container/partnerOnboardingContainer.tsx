@@ -55,8 +55,7 @@ mutation update_partner(
   $ifsc_code: String!,
   $updated_by:String!,
   $onboarded_by_id: Int!,
-  $partner_advance_percentage_id: Int!,
-  $final_payment_date: Int!
+  $partner_advance_percentage_id: Int!
 ){
   update_partner_track(
     partner_id: $partner_id,
@@ -73,7 +72,6 @@ mutation update_partner(
     fr8_detail: {
       onboarded_by_id: $onboarded_by_id, 
       partner_advance_percentage_id: $partner_advance_percentage_id
-      final_payment_date: $final_payment_date
     }
   ){
     description
@@ -135,14 +133,7 @@ const PartnerOnboardingContainer = (props) => {
     }
   )
 
-
-
-
-
   const onPartnerSubmit = (form) => {
-    if (form.final_payment_date < 1 || form.final_payment_date > 31){
-      message.error('Enter Valid Final Payment Date')
-    } else {
     setDisableButton(true)
     updatePartner({
       variables: {
@@ -162,7 +153,6 @@ const PartnerOnboardingContainer = (props) => {
         final_payment_date: parseInt(form.final_payment_date, 10)
       }
     })
-  }
   }
 
   return (
