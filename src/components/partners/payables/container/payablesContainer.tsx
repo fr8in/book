@@ -14,6 +14,7 @@ import Last7daysPending from '../last7daysPending'
 import SourcingIncentive from '../sourcingIncentive/incentive'
 import SourcingIncentiveModal from '../sourcingIncentive/modal'
 import useShowHideWithRecord from '../../../../hooks/useShowHideWithRecord'
+import Customer_Incoming from './customerIncoming'
 
 
 const { RangePicker } = DatePicker
@@ -238,6 +239,9 @@ const PayablesContainer = () => {
         <TabPane tab="Sourcing Incentive" key="4">
           <SourcingIncentive year={year} loading={loading}
             month={month} onChange={handleSourcingIncentiveData} />
+        </TabPane>
+        <TabPane tab="Customer Incoming" key = "5">
+          <Customer_Incoming />
         </TabPane>
         {object.incentiveVisible && <SourcingIncentiveModal
           visible={object.incentiveVisible}
