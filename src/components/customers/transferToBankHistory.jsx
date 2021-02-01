@@ -28,6 +28,7 @@ subscription customerTransfertoBank_history($where:customer_wallet_outgoing_bool
     created_by
     created_on
     payment_status
+    ifsc_code
     approved_by
     approved_on
     status
