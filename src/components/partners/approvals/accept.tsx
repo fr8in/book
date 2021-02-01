@@ -140,7 +140,7 @@ const Approve = (props) => {
           <Input placeholder='Remarks' />
         </Form.Item>
         <Form.Item className='text-right'>
-          <Button type='primary' key='sumbit' size='middle' loading={disableButton} htmlType='submit'>Submit</Button>
+          <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>Submit</Button>
         </Form.Item>
       </Form>
       {(loading || mutationLoading) &&

@@ -174,7 +174,7 @@ const TransferToBankAccept = (props) => {
           </Col>
         </Row>  
           <Form.Item className='text-right'>
-  <Button type='primary' size='middle' key='submit' loading={disableButton} htmlType='submit'>{title === 'Approve'? 'Approve': 'Reject'}</Button>
+  <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>{title === 'Approve'? 'Approve': 'Reject'}</Button>
          </Form.Item>
       </Form>
        {(loading || mutationLoading) &&

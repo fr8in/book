@@ -128,7 +128,7 @@ const IncentiveApprove = (props) => {
         </Form.Item>
         {incentive_access ? (
           <Form.Item className='text-right'>
-            <Button type='primary' key='submit' size='middle' loading={disableButton} htmlType='submit'>{title === 'Approve' ? 'Approve' : 'Reject'}</Button>
+            <Button type='primary' size='middle' loading={disableButton} htmlType='submit'>{title === 'Approve' ? 'Approve' : 'Reject'}</Button>
           </Form.Item>) : null}
       </Form>
       {(loading || mutationLoading) && title === 'Approve' &&
