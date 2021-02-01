@@ -29,7 +29,6 @@ subscription iciciBank_Statement($offset:Int, $limit:Int,$where:iciciBank_statem
      date
      partner{
        name
-       cardcode
      }
    }
  }
@@ -52,7 +51,6 @@ const Last7daysPending = () => {
 
   const initial = { 
     offset: 0, 
-    cardcode:null, 
     partner: null, 
     amount: null, 
     outgoingNo: null, 
@@ -71,7 +69,6 @@ const where = {
         {txn_date:{_gt:moment(perviousDate).format('DD-MMM-YY')}},
         {txn_date:{_lte: moment(futureDate).format('DD-MMM-YY')}}
       ],
-      cardcode:{_ilike:filter.cardcode ? `%${filter.cardcode}%` : null},
       ...!isEmpty(filter.partner) && {partner:{name:{_ilike: filter.partner ? `%${filter.partner}%` : null}}} ,
       amount:{_ilike:filter.amount ? `%${filter.amount}%` : null},
       remarks:{_ilike: filter.remarks ? `%${filter.remarks}%` : null},
@@ -124,7 +121,6 @@ const where = {
     setCurrentPage(page)
     setFilter({...filter, offset:newOffset})
   }
-  
   const onPartnerSearch = (e) => {
     setFilter({...filter, partner:e.target.value, offset: 0 })
   }
@@ -150,7 +146,7 @@ const where = {
       dataIndex: 'partner',
       render: (text, record) => {
         const partner = get(record, 'partner.name', null)
-        const cardcode = get(record, 'partner.cardcode', null)
+        const cardcode = get(record, 'cardcode', null)
         return( <LinkComp type='partners' data={partner} id={cardcode}  length={12}/>)
       },
       filterDropdown: (

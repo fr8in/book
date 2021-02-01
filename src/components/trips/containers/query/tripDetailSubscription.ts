@@ -4,6 +4,13 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
 subscription trips_detail($id: Int) {
   trip(where: {id:{_eq:$id}}){
     id
+    branch_employee{
+      id
+      employee{
+        id
+        name
+      }
+    }
     is_topay
     order_date
     created_at
@@ -40,16 +47,6 @@ subscription trips_detail($id: Int) {
       name
       id
       walletcode
-      customer_branch_employees{
-        id
-        branch_employee{
-          id
-          employee{
-            id
-            name
-          }
-        }
-      }
       customer_accounting {
         wallet_balance
       }
