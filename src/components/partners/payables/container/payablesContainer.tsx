@@ -2,7 +2,7 @@ import ICICIBankOutgoing from '../iciciBankOutgoing'
 import React, { useContext, useState } from 'react'
 import { Button, Card, DatePicker, message, Space, Tabs } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
-import { gql, useMutation } from '@apollo/client'
+import { gql, useMutation, useSubscription } from '@apollo/client'
 import moment from 'moment'
 import isEmpty from 'lodash/isEmpty'
 import RelianceCashBack from '../reliancecashback/RelianceCashBack'
@@ -14,7 +14,7 @@ import Last7daysPending from '../last7daysPending'
 import SourcingIncentive from '../sourcingIncentive/incentive'
 import SourcingIncentiveModal from '../sourcingIncentive/modal'
 import useShowHideWithRecord from '../../../../hooks/useShowHideWithRecord'
-
+import _ from 'lodash'
 
 const { RangePicker } = DatePicker
 
@@ -27,6 +27,29 @@ const SYNC_SOURCING_INCENTIVE_DATA = gql`mutation sync_sourcing_incentive($year:
   sync_sourcing_incentive(month: $month, year: $year) {
     status
     description
+  }
+}`
+
+const CASH_BACK_QUERY = gql`subscription partner_membership($year: Int, $month: Int) {
+  partner(where: {partner_membership_targets: {year: {_eq: $year}, month: {_eq: $month}, cash_back_applicable: {_eq: true}}, partner_status: {name: {_neq: "Blacklisted"}}}) {
+    id
+    cardcode
+    name
+    partner_membership_targets(where: {month: {_eq: $month}, year: {_eq: $year}}) {
+      id
+      year
+      month
+      partner_code
+      transaction_fee
+      cash_back_amount
+      cash_back_percent
+      cash_back_status
+    }
+    partner_accounting {
+      cleared
+      onhold
+      wallet_balance
+    }
   }
 }`
 
@@ -63,6 +86,15 @@ const PayablesContainer = () => {
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30
     return ((tooEarly || tooLate))
   }
+
+  const { data, loading: cashBackLoading, error } = useSubscription(CASH_BACK_QUERY, {
+    skip: !year || !month,
+    variables: {
+      year: year,
+      month: month
+    }
+  })
+
   const handleMonthChange = (date, dateString) => {
     const splittedDate = dateString.split('-')
     setYear(parseInt(splittedDate[0]))
@@ -125,11 +157,19 @@ const PayablesContainer = () => {
   }
 
   const handleSourcingIncentiveDate = (date) => {
-    const listDate=date.format("YYYYMM")
-    const currentDate=moment().format("YYYYMM")
-    return moment().subtract(1,'months').diff(date, 'months') === 0 && listDate== currentDate
+    const listDate = date.format("YYYYMM")
+    const currentDate = moment().format("YYYYMM")
+    return moment().subtract(1, 'months').diff(date, 'months') === 0 && listDate == currentDate
   }
 
+  let membership_data = []
+  if (!cashBackLoading) {
+    membership_data = _.get(data, 'partner', [])
+  }
+
+  const transactionFeeSum = _.sumBy(membership_data, 'partner_membership_targets[0].transaction_fee')
+  const cashBackSum = _.sumBy(membership_data, 'partner_membership_targets[0].cash_back_amount')
+  const count = membership_data.length
 
   let saturday = 6;
   let friday = 5
@@ -188,6 +228,9 @@ const PayablesContainer = () => {
             <Space>
               {access &&
                 <Space>
+                  <p className='pt10'><b>Partner Count:</b> {count}</p>
+                  <p className='pt10'><b>Total Transaction Fee:</b> {transactionFeeSum}</p>
+                  <p className='pt10'><b>Total Cashback:</b> {cashBackSum}</p>
                   <DatePicker
                     disabledDate={(date) => handleCashBackDate(date)}
                     onChange={handleMonthChange} picker='month'
@@ -229,6 +272,8 @@ const PayablesContainer = () => {
             <CashBack
               month={month}
               year={year}
+              membership_data={membership_data}
+              loading={cashBackLoading}
             />
           </TabPane>}
         {fuelCashback_access &&

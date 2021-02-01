@@ -1,52 +1,13 @@
-import React, { forwardRef } from 'react'
-import { useSubscription, gql, useQuery, useMutation } from '@apollo/client'
-import { Table, message } from 'antd'
+import React from 'react'
+import { Table } from 'antd'
 import get from 'lodash/get'
 import LinkComp from '../../common/link'
-
-const CASH_BACK_QUERY = gql`subscription partner_membership($year: Int, $month: Int) {
-    partner(where: {partner_membership_targets: {year: {_eq: $year}, month: {_eq: $month}, cash_back_applicable: {_eq: true}}, partner_status: {name: {_neq: "Blacklisted"}}}) {
-      id
-      cardcode
-      name
-      partner_membership_targets(where: {month: {_eq: $month}, year: {_eq: $year}}) {
-        id
-        year
-        month
-        partner_code
-        transaction_fee
-        cash_back_amount
-        cash_back_percent
-        cash_back_status
-      }
-      partner_accounting {
-        cleared
-        onhold
-        wallet_balance
-      }
-    }
-  }`
 
 
 
 const cashBack = (props) => {
 
-    const { data, loading, error } = useSubscription(CASH_BACK_QUERY, {
-        skip: !props.year || !props.month,
-        variables: {
-            year: props.year,
-            month: props.month
-        }
-    })
-
-
-
-    console.log("data", data, loading, error)
-
-    let membership_data = []
-    if (!loading) {
-        membership_data = get(data, 'partner', [])
-    }
+    const { loading, membership_data } = props
     const columns = [
         {
             title: 'Partner Code',
