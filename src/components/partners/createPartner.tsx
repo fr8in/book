@@ -234,22 +234,6 @@ const CreatePartner = (props) => {
                   />
                 </Form.Item>
               </Col>
-              <Col xs={24} sm={8}>
-                <Form.Item
-                  label='Final Payment date'
-                  name='final_payment_date'
-                  rules={[{ required: true, message: 'Final Payment date is required field!' }]}
-                  initialValue={get(partner_info, 'final_payment_date', null)}
-                >
-                  <Input
-                    placeholder='Final Payment date'
-                    type='number'
-                    min={1}
-                    maxLength={2}
-                    onInput={u.handleLengthCheck}
-                  />
-                </Form.Item>
-              </Col>
             </Row>
           </Card>
           <Row justify='end'>
