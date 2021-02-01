@@ -7,6 +7,7 @@ import get from 'lodash/get'
 import now from 'lodash/now'
 import userContext from '../../lib/userContaxt'
 import moment from 'moment'
+import isEmpty from 'lodash/isEmpty';
 
 const CUSTOMER_INCOMING_PAYMENTS = gql`
 query  bank_incoming${now()}($search:String,$bank:[String]){
@@ -16,6 +17,12 @@ query  bank_incoming${now()}($search:String,$bank:[String]){
     date
     details
     originno
+    bank
+  }
+}`
+
+const BANK_TYPE = gql `query bank_type {
+  bank_type{
     bank
   }
 }`
@@ -57,6 +64,11 @@ const WalletTopup = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
+  const {loading:typeLoading,data:bankType} = useQuery(BANK_TYPE)
+  const bank_list= get(bankType,'bank_type',null)
+  const bank_list_type = !isEmpty(bank_list) ? bank_list.map((data) =>{
+      return data.bank
+  }): []
   const [customer_topup] = useMutation(
     CUSTOMER_TOPUP_MUTATION,
     {
@@ -147,7 +159,7 @@ const WalletTopup = (props) => {
       width: '8%',
       filterDropdown: (
         <Checkbox.Group
-          options={['ICICI', 'HDFC']}
+          options={bank_list_type}
           onChange={(checked) => setBankFilter(checked)}
           className='filter-drop-down'
         />

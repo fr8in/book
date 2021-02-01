@@ -1,8 +1,8 @@
 import ICICIBankOutgoing from '../iciciBankOutgoing'
-import React, { useContext, useState } from 'react'
-import { Button, Card, DatePicker, message, Space, Tabs } from 'antd'
-import { DownloadOutlined } from '@ant-design/icons'
-import { gql, useMutation } from '@apollo/client'
+import React, { useContext, useState,useEffect } from 'react'
+import { Button, Card, DatePicker, message, Space, Tabs, Input } from 'antd';
+import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import moment from 'moment'
 import isEmpty from 'lodash/isEmpty'
 import RelianceCashBack from '../reliancecashback/RelianceCashBack'
@@ -14,6 +14,10 @@ import Last7daysPending from '../last7daysPending'
 import SourcingIncentive from '../sourcingIncentive/incentive'
 import SourcingIncentiveModal from '../sourcingIncentive/modal'
 import useShowHideWithRecord from '../../../../hooks/useShowHideWithRecord'
+import Customer_Incoming from './customerIncoming'
+import sumBy from 'lodash/sumBy';
+import get from 'lodash/get'
+import now from 'lodash/now'
 
 
 const { RangePicker } = DatePicker
@@ -30,12 +34,29 @@ const SYNC_SOURCING_INCENTIVE_DATA = gql`mutation sync_sourcing_incentive($year:
   }
 }`
 
+const CUSTOMER_INCOMING_PAYMENTS = gql`
+query  bank_incoming${now()}($search:String,$bank:[String]){
+    bank_incoming(search:$search,bank:$bank) {
+      transno
+      amount
+      date
+      details
+      originno
+      bank
+    }
+  }`
+
 const TabPane = Tabs.TabPane
 const PayablesContainer = () => {
   const [tabIndex, setTabIndex] = useState('0')
   const [month, setMonth] = useState(null)
   const [year, setYear] = useState(null)
   const [dates, setDates] = useState([])
+  const [search, setSearch] = useState(null)
+  const [totalSum, setTotalSum] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
+  const [bankFilter, setBankFilter] = useState([])
+
   const initial = { loading: false }
   const [disableBtn, setDisableBtn] = useState(initial)
   const [sourcingIncentiveData, setSourcingIncentiveData] = useState([])
@@ -54,6 +75,28 @@ const PayablesContainer = () => {
 
   let today = new Date()
   let day = today.getDay()
+  const { loading:bankLoading, data, error } = useQuery(
+    CUSTOMER_INCOMING_PAYMENTS,
+    {
+        variables: { search: search || null, bank: bankFilter },
+        fetchPolicy: 'cache-and-network',
+        notifyOnNetworkStatusChange: true
+    }
+)
+let _data = {}
+if (!bankLoading) {
+    _data = data
+}
+const bank_incoming = get(_data, 'bank_incoming', [])
+
+  useEffect(() => {
+    const totalCount = bank_incoming ? bank_incoming.length : 0
+    const totalSum = bank_incoming ? sumBy(bank_incoming, 'amount').toFixed(2) : 0
+    setTotalSum(totalSum)
+    setTotalCount(totalCount)
+  },
+    [bankLoading]
+  )
 
   const disabledDate = (current) => {
     if (!dates || dates.length === 0) {
@@ -67,6 +110,12 @@ const PayablesContainer = () => {
     const splittedDate = dateString.split('-')
     setYear(parseInt(splittedDate[0]))
     setMonth(parseInt(splittedDate[1]))
+  }
+  const onSearch = (e) => {
+    setSearch(e.target.value)
+  }
+  const onBankFilter = (bank) => {
+    setBankFilter(bank)
   }
 
   const handleIncentiveMonthChange = (date, dateString) => {
@@ -125,9 +174,9 @@ const PayablesContainer = () => {
   }
 
   const handleSourcingIncentiveDate = (date) => {
-    const listDate=date.format("YYYYMM")
-    const currentDate=moment().format("YYYYMM")
-    return moment().subtract(1,'months').diff(date, 'months') === 0 && listDate== currentDate
+    const listDate = date.format("YYYYMM")
+    const currentDate = moment().format("YYYYMM")
+    return moment().subtract(1, 'months').diff(date, 'months') === 0 && listDate == currentDate
   }
 
 
@@ -207,7 +256,14 @@ const PayablesContainer = () => {
                 onClick={() => handleShow('incentiveVisible', "Process Incentive", 'incentiveData', sourcingIncentiveData)}>Process</Button>
                 <DatePicker
                   disabledDate={(date) => !handleSourcingIncentiveDate(date)}
-                  onChange={handleIncentiveMonthChange} picker='month' /></>} </Space> : null
+                  onChange={handleIncentiveMonthChange} picker='month' /></>} </Space>
+
+              : (tabIndex === '5') ? <Space>
+                <span className='text-right'>Total Count: <b>{totalCount}</b></span>
+                <span className='text-right'>Total Amount: <b>₹{totalSum}</b></span>
+                <Input placeholder='Search...' suffix={<SearchOutlined />} onChange={onSearch} />
+              </Space>
+                : null
     )
   }
 
@@ -238,6 +294,9 @@ const PayablesContainer = () => {
         <TabPane tab="Sourcing Incentive" key="4">
           <SourcingIncentive year={year} loading={loading}
             month={month} onChange={handleSourcingIncentiveData} />
+        </TabPane>
+        <TabPane tab="Customer Incoming" key="5">
+          <Customer_Incoming onBankFilter={onBankFilter} bank_incoming={bank_incoming} bankLoading={bankLoading} />
         </TabPane>
         {object.incentiveVisible && <SourcingIncentiveModal
           visible={object.incentiveVisible}
