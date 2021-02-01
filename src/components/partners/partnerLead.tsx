@@ -520,8 +520,10 @@ const PartnerLead = (props) => {
         <Modal
           title='Comments'
           visible={object.commentVisible}
-          onCancel={handleHide}
+         onCancel={handleHide}
           bodyStyle={{ padding: 10 }}
+          width={600}
+          footer={[]}
         >
           <Comment partner_id={object.commentData} />
         </Modal>)}
