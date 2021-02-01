@@ -1,12 +1,14 @@
-import { Menu, Checkbox, message} from 'antd'
+import { Menu, Checkbox, message } from 'antd'
 import { SwapOutlined } from '@ant-design/icons'
 import { useContext, useState } from 'react'
-import { gql, useQuery, useMutation, useSubscription} from '@apollo/client'
+import { gql, useQuery, useMutation, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import u from '../../lib/util'
 import userContext from '../../lib/userContaxt'
 import IciciIncomingTransfer from '../../../src/components/layout/iciciIncomingTransfer'
 import useShowHide from '../../../src/hooks/useShowHide'
+const { SubMenu } = Menu;
+
 
 const BANK_BALANCE = gql`
 query bank_balance{
@@ -35,13 +37,13 @@ mutation UpdateDowntime($value:jsonb) {
 
 const BankBalance = () => {
   const context = useContext(userContext)
-  const initial={
-    bankVisible:false
+  const initial = {
+    bankVisible: false
   }
   const { role } = u
   const edit_access = [role.admin]
   const access = u.is_roles(edit_access, context)
-  const {onHide,onShow,visible}=useShowHide(initial)
+  const { onHide, onShow, visible } = useShowHide(initial)
 
   const { loading, data, error } = useQuery(
     BANK_BALANCE, {
@@ -51,7 +53,7 @@ const BankBalance = () => {
   }
   )
 
-  let displayData = { icici: null, reliance: null, icici_incoming : null,downtime: {icici_bank:null,reliance_fuel:null} }
+  let displayData = { icici: null, reliance: null, icici_incoming: null, downtime: { icici_bank: null, reliance_fuel: null } }
   if (!loading) {
     displayData.icici = get(data, 'icici', null)
     displayData.reliance = get(data, 'reliance', null)
@@ -64,7 +66,7 @@ const BankBalance = () => {
     displayData.downtime = get(_data, 'config[0].value', null)
   }
 
-  const { icici, reliance, icici_incoming ,downtime } = displayData
+  const { icici, reliance, icici_incoming, downtime } = displayData
 
   const [UpdateDownTime] = useMutation(
     UPDATE_DOWNTIME,
@@ -83,25 +85,32 @@ const BankBalance = () => {
     })
   }
   const onTransferClick = () => {
-   console.log("transfer clicked - - - ") 
-   onShow({visible:true}) 
+    console.log("transfer clicked - - - ")
+    onShow({ visible: true })
   }
-  
-  console.log("visible",visible)
+
+  console.log("visible", visible)
 
   return (
-          <Menu>
-            <Menu.Item>
-              <Checkbox onChange={(e) => onChangeDownTime(e, 'icici_bank')} disabled={!access} checked={!displayData.downtime.icici_bank} >ICICI <b>₹{icici ? icici.toFixed(0) : 0}</b>   </Checkbox>
-            </Menu.Item>
-            <Menu.Item>
-              <Checkbox onChange={(e) => onChangeDownTime(e, 'reliance_fuel')} disabled={!access} checked={!displayData.downtime.reliance_fuel} >Reliance <b>₹{reliance ? reliance.toFixed(0) : 0}</b> </Checkbox>
-            </Menu.Item>
-            <Menu.Item>
-            <SwapOutlined onClick={() =>onShow('bankVisible')} /> ICICI INCOMING <b>₹{icici_incoming ? icici_incoming.toFixed(0) : 0}</b>   
-            </Menu.Item>
-            {visible.bankVisible && <IciciIncomingTransfer visible={visible.bankVisible} onHide = { onHide}/>}
-          </Menu>
+    <Menu>
+
+      <Menu.ItemGroup key="outgoing" title="Outgoing">
+        <Menu.Item>
+          <Checkbox onChange={(e) => onChangeDownTime(e, 'icici_bank')} disabled={!access} checked={!displayData.downtime.icici_bank} >ICICI <b>₹{icici ? icici.toFixed(0) : 0}</b>   </Checkbox>
+        </Menu.Item>
+        <Menu.Item>
+          <Checkbox onChange={(e) => onChangeDownTime(e, 'reliance_fuel')} disabled={!access} checked={!displayData.downtime.reliance_fuel} >Reliance <b>₹{reliance ? reliance.toFixed(0) : 0}</b> </Checkbox>
+        </Menu.Item>
+      </Menu.ItemGroup>
+
+      <Menu.ItemGroup key="incoming" title="Incoming">
+        <Menu.Item>
+          <SwapOutlined onClick={() => onShow('bankVisible')} disabled={!access} /> ICICI <b>₹{icici_incoming ? icici_incoming.toFixed(0) : 0}</b>
+        </Menu.Item>
+      </Menu.ItemGroup>
+
+      {visible.bankVisible && <IciciIncomingTransfer visible={visible.bankVisible} onHide={onHide} />}
+    </Menu>
   )
 }
 
