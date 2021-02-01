@@ -35,12 +35,12 @@ const SYNC_SOURCING_INCENTIVE_DATA = gql`mutation sync_sourcing_incentive($year:
   }
 }`
 
-const CASH_BACK_QUERY = gql`subscription partner_membership($year: Int, $month: Int) {
-  partner(where: {partner_membership_targets: {year: {_eq: $year}, month: {_eq: $month}, cash_back_applicable: {_eq: true}}, partner_status: {name: {_neq: "Blacklisted"}}}) {
+const CASH_BACK_QUERY = gql`subscription partner_membership($year: Int, $month: Int, $cash_back_status: [String!]) {
+  partner(where: {partner_membership_targets: {year: {_eq: $year}, month: {_eq: $month}, cash_back_status: {_in: $cash_back_status}, cash_back_applicable: {_eq: true}}, partner_status: {name: {_neq: "Blacklisted"}}}) {
     id
     cardcode
     name
-    partner_membership_targets(where: {month: {_eq: $month}, year: {_eq: $year}}) {
+    partner_membership_targets(where: {month: {_eq: $month}, year: {_eq: $year}, cash_back_status: {_in: $cash_back_status}}) {
       id
       year
       month
@@ -79,6 +79,8 @@ const PayablesContainer = () => {
   const [totalSum, setTotalSum] = useState(0)
   const [totalCount, setTotalCount] = useState(0)
   const [bankFilter, setBankFilter] = useState([])
+  const [filter, setFilter] = useState({ status_id: ["PENDING", "PAID"] })
+
 
   const initial = { loading: false }
   const [disableBtn, setDisableBtn] = useState(initial)
@@ -112,6 +114,9 @@ const PayablesContainer = () => {
   }
   const bank_incoming = get(_data, 'bank_incoming', [])
 
+  const handleStatusChange = (value) => {
+    setFilter({ status_id: value })
+  }
   useEffect(() => {
     const totalCount = bank_incoming ? bank_incoming.length : 0
     const totalSum = bank_incoming ? sumBy(bank_incoming, 'amount').toFixed(2) : 0
@@ -134,7 +139,8 @@ const PayablesContainer = () => {
     skip: !year || !month,
     variables: {
       year: year,
-      month: month
+      month: month,
+      cash_back_status: filter.status_id
     }
   })
 
@@ -326,8 +332,8 @@ const PayablesContainer = () => {
         {access &&
           <TabPane tab='Transaction Fee' key='2'>
             <CashBack
-              month={month}
-              year={year}
+              filter={filter}
+              handleStatusChange={handleStatusChange}
               membership_data={membership_data}
               loading={cashBackLoading}
             />

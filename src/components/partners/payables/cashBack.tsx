@@ -1,5 +1,5 @@
-import React from 'react'
-import { Table } from 'antd'
+import React, { useState } from 'react'
+import { Table, Checkbox } from 'antd'
 import get from 'lodash/get'
 import LinkComp from '../../common/link'
 
@@ -8,6 +8,13 @@ import LinkComp from '../../common/link'
 const cashBack = (props) => {
 
     const { loading, membership_data } = props
+
+    const list = [{ label: "PENDING", value: "PENDING" },
+    { label: "PAID", value: "PAID" }]
+
+    const handleStatusChange = (value) => {
+        props.handleStatusChange(value)
+    }
     const columns = [
         {
             title: 'Partner Code',
@@ -62,13 +69,18 @@ const cashBack = (props) => {
             dataIndex: 'cash_back_status',
             key: 'cash_back_status',
             width: '8%',
-            render: (text, record) => get(record, 'partner_membership_targets[0].cash_back_status')
+            render: (text, record) => get(record, 'partner_membership_targets[0].cash_back_status'),
+            filterDropdown: (
+                <Checkbox.Group
+                    options={list}
+                    defaultValue={props.filter.status_id}
+                    onChange={handleStatusChange}
+                    className='filter-drop-down'
+                />
+            ),
         }
 
     ]
-
-
-
 
     return (
         <Table
