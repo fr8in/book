@@ -7,7 +7,6 @@ import u from '../../lib/util'
 import userContext from '../../lib/userContaxt'
 import IciciIncomingTransfer from '../../../src/components/layout/iciciIncomingTransfer'
 import useShowHide from '../../../src/hooks/useShowHide'
-const { SubMenu } = Menu;
 
 
 const BANK_BALANCE = gql`
@@ -83,10 +82,6 @@ const BankBalance = () => {
         value: updated_downtime
       }
     })
-  }
-  const onTransferClick = () => {
-    console.log("transfer clicked - - - ")
-    onShow({ visible: true })
   }
 
   console.log("visible", visible)
