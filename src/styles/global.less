@@ -525,12 +525,15 @@ input[type="number"] {
       display: none;
     }
   }
-  .navAlign{
-    .ant-tabs > .ant-tabs-nav{
-      position: relative;
-      flex: none;
-      align-items: center;
+  .tabExtraFix{
+    &.ant-tabs {
+      .ant-tabs-nav {
       display: block;
+      .ant-tabs-extra-content {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        }
+      }
     }
   }
 }
