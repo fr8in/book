@@ -1,20 +1,30 @@
 import React, { useState } from 'react'
 import { Table, Checkbox } from 'antd'
 import get from 'lodash/get'
+import u from '../../../lib/util'
 import LinkComp from '../../common/link'
+import isEmpty from 'lodash/isEmpty';
 
 
 
 const cashBack = (props) => {
 
-    const { loading, membership_data } = props
-
+    const { loading, membership_data,partnerRegionFilter } = props
+    const regions = u.regions
+    const regionsList = regions.map((data) => {
+        return { value: data.text, label: data.text }
+    })
     const list = [{ label: "PENDING", value: "PENDING" },
     { label: "PAID", value: "PAID" }]
 
     const handleStatusChange = (value) => {
         props.handleStatusChange(value)
     }
+
+    const onRegionFilter = (value) => {
+        props.onRegionFilter(value)
+    }
+  
     const columns = [
         {
             title: 'Partner Code',
@@ -27,7 +37,15 @@ const cashBack = (props) => {
             dataIndex: 'name',
             key: 'name',
             width: '8%',
-            render: (text, record) => <LinkComp type='partners' data={text} id={record.cardcode} />
+            render: (text, record) => <LinkComp type='partners' data={text} id={record.cardcode} />,
+            filterDropdown: (
+                <Checkbox.Group
+                    options={regionsList}
+                    defaultValue={partnerRegionFilter}
+                    onChange={onRegionFilter}
+                    className='filter-drop-down'
+                />
+            )
         },
         {
             title: 'Wallet',
