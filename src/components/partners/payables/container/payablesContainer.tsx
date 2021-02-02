@@ -135,12 +135,12 @@ const PayablesContainer = () => {
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30
     return ((tooEarly || tooLate))
   }
-const variables = {
-  year: year,
-  month: month,
-  cash_back_status: filter.status_id,
-  ...!isEmpty(partnerRegionFilter) && { partner_region: (partnerRegionFilter && partnerRegionFilter.length > 0) ? partnerRegionFilter : null }
-}
+  const variables = {
+    year: year,
+    month: month,
+    cash_back_status: filter.status_id,
+    ...!isEmpty(partnerRegionFilter) && { partner_region: (partnerRegionFilter && partnerRegionFilter.length > 0) ? partnerRegionFilter : null }
+  }
   const { data: cashBackData, loading: cashBackLoading, error: cashBackError } = useSubscription(CASH_BACK_QUERY, {
     skip: !year || !month,
     variables
@@ -261,7 +261,7 @@ const variables = {
   }
   const onRegionFilter = (checked) => {
     setPartnerRegionFilter(checked)
-}
+  }
 
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
@@ -271,54 +271,54 @@ const variables = {
       (tabIndex === '0') ?
         (
           <Space>
-          <span className='text-right'>Total Count: <b>{totalCount}</b></span>
-          <span className='text-right'>Total Amount: <b>₹{totalSum}</b></span>
-          <Input placeholder='Search...' suffix={<SearchOutlined />} onChange={onSearch} />
-        </Space>
-          )
-        : (tabIndex === '2')
+            <span className='text-right'>Total Count: <b>{totalCount}</b></span>
+            <span className='text-right'>Total Amount: <b>₹{totalSum}</b></span>
+            <Input placeholder='Search...' suffix={<SearchOutlined />} onChange={onSearch} />
+          </Space>
+        )
+        : (tabIndex === '1')
           ? (
             <Space>
-              {access &&
-                <Space>
-                  <p className='pt10'><b>Partner Count:</b> {count}</p>
-                  <p className='pt10'><b>Total Transaction Fee:</b> {transactionFeeSum}</p>
-                  <p className='pt10'><b>Total Cashback:</b> {cashBackSum}</p>
-                  <DatePicker
-                    disabledDate={(date) => handleCashBackDate(date)}
-                    onChange={handleMonthChange} picker='month'
-                  />
-                  <CashBackButton
-                    month={month}
-                    year={year}
-                  />
-                </Space>}
-            </Space>
-          )
+              <RangePicker
+                size='small'
+                format='DD-MM-YYYY'
+                disabledDate={(current) => disabledDate(current)}
+                onCalendarChange={(value) => {
+                  setDates(value)
+                }}
+              />
+              <Button size='small' loading={disableBtn.loading} >
+                <DownloadOutlined onClick={() => onConfirm()} />
+              </Button>
+            </Space>)
           : (tabIndex === '3') ?
-            <DatePicker onChange={handleMonthChange} picker='month'
-              disabledDate={(current) => disabledMonthForFuelCashBack(current)} />
-            : (tabIndex === '4') ? <Space>
-              {sourcing_incentive_access && <> <Button type="primary" disabled={!(sourcingIncentiveData.length > 0)}
-                onClick={() => handleShow('incentiveVisible', "Process Incentive", 'incentiveData', sourcingIncentiveData)}>Process</Button>
-                <DatePicker
-                  disabledDate={(date) => !handleSourcingIncentiveDate(date)}
-                  onChange={handleIncentiveMonthChange} picker='month' /></>} </Space>
-
-              : (tabIndex === '5') ? 
+            (
               <Space>
-            <RangePicker
-              size='small'
-              format='DD-MM-YYYY'
-              disabledDate={(current) => disabledDate(current)}
-              onCalendarChange={(value) => {
-                setDates(value)
-              }}
-            />
-            <Button size='small' loading={disableBtn.loading} >
-              <DownloadOutlined onClick={() => onConfirm()} />
-            </Button>
-          </Space>
+                {access &&
+                  <Space>
+                    <p className='pt10'><b>Partner Count:</b> {count}</p>
+                    <p className='pt10'><b>Total Transaction Fee:</b> {transactionFeeSum}</p>
+                    <p className='pt10'><b>Total Cashback:</b> {cashBackSum}</p>
+                    <DatePicker
+                      disabledDate={(date) => handleCashBackDate(date)}
+                      onChange={handleMonthChange} picker='month'
+                    />
+                    <CashBackButton
+                      month={month}
+                      year={year}
+                    />
+                  </Space>}
+              </Space>
+            )
+            : (tabIndex === '4') ? <DatePicker onChange={handleMonthChange} picker='month'
+              disabledDate={(current) => disabledMonthForFuelCashBack(current)} />
+              : (tabIndex === '5') ?
+                <Space>
+                  {sourcing_incentive_access && <> <Button type="primary" disabled={!(sourcingIncentiveData.length > 0)}
+                    onClick={() => handleShow('incentiveVisible', "Process Incentive", 'incentiveData', sourcingIncentiveData)}>Process</Button>
+                    <DatePicker
+                      disabledDate={(date) => !handleSourcingIncentiveDate(date)}
+                      onChange={handleIncentiveMonthChange} picker='month' /></>} </Space>
                 : null
     )
   }
@@ -331,14 +331,17 @@ const variables = {
         defaultActiveKey={tabIndex}
         onChange={(e) => setTabIndex(e)}
       >
-          <TabPane tab="Customer Incoming" key="0">
+        <TabPane tab="Customer Incoming" key="0">
           <Customer_Incoming onBankFilter={onBankFilter} bank_incoming={bank_incoming} bankLoading={bankLoading} />
         </TabPane>
-        <TabPane tab='Statement' key='1'>
+        <TabPane tab='ICICI Bank Outgoing' key='1'>
+          <ICICIBankOutgoing />
+        </TabPane>
+        <TabPane tab='Statement' key='2'>
           <Last7daysPending />
         </TabPane>
         {access &&
-          <TabPane tab='Transaction Fee' key='2'>
+          <TabPane tab='Transaction Fee' key='3'>
             <CashBack
               filter={filter}
               handleStatusChange={handleStatusChange}
@@ -349,16 +352,14 @@ const variables = {
             />
           </TabPane>}
         {fuelCashback_access &&
-          <TabPane tab='Reliance' key='3'>
+          <TabPane tab='Reliance' key='4'>
             <RelianceCashBack month={month} year={year} />
           </TabPane>}
-        <TabPane tab="Sourcing Incentive" key="4">
+        <TabPane tab="Sourcing Incentive" key="5">
           <SourcingIncentive year={year} loading={loading}
             month={month} onChange={handleSourcingIncentiveData} />
         </TabPane>
-        <TabPane tab='ICICI Bank Outgoing' key='5'>
-          <ICICIBankOutgoing />
-        </TabPane>
+
         {object.incentiveVisible && <SourcingIncentiveModal
           visible={object.incentiveVisible}
           onCancel={handleHide}
