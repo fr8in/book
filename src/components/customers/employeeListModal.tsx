@@ -12,7 +12,12 @@ const EmployeeListModal = (props) => {
             title: 'Truck group',
             dataIndex: 'name',
             width: '50%',
-            render: (text, record) => record.truck_type_group.name
+            render: (text, record) => {
+                const truck_types= get(record,'truck_type_group.truck_types',[])
+                const group_name = get(record,'truck_type_group.name',null)
+                const shortname =  truck_types.map((data,i) => data.shortname).join(", ")
+                return `${group_name} (${shortname})`
+            }
         },
         {
             title: 'Employee',

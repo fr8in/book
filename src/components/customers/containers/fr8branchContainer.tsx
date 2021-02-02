@@ -19,6 +19,9 @@ subscription customer_branch_employees($id:Int!){
       truck_type_group{
         id
         name
+        truck_types{
+          shortname
+        }
       }
       branch_employee{
         id
@@ -78,7 +81,7 @@ const CustomersContainer = (props) => {
           <>
            {record.length > 0
           ? record.map((data, i) =>  <Tag className='small-tag' key={i}>        
-             <span>{`${data.truck_type_group.name} - ${data.branch_employee.employee.name}`}</span> 
+             <span>{`${get(data,'truck_type_group.name',null)} - ${get(data,'branch_employee.employee.name',null)}`}</span> 
             </Tag>)
           : null}
             <EditAccess

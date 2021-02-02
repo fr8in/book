@@ -15,7 +15,7 @@ import { useState } from 'react'
 import TrucksList from '../trucks/trucksList'
 
 const WaitingForLoad = (props) => {
-  const { trucks, loading, onTruckNoSearch, truckNo ,data,branches} = props
+  const { trucks, loading, onTruckNoSearch, truckNo ,branches} = props
   const initial = {
     usersData: [],
     usersVisible: false,
