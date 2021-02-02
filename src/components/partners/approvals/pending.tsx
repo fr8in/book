@@ -1,28 +1,22 @@
 import { Table, Input, Tooltip, Button, Space, Checkbox } from 'antd'
-import {
-  SearchOutlined,
-  CommentOutlined,
-  CheckOutlined,
-  CloseOutlined
-} from '@ant-design/icons'
+import {SearchOutlined,CommentOutlined,CheckOutlined,CloseOutlined} from '@ant-design/icons'
 import { useState, useEffect, useContext } from 'react'
 import Truncate from '../../common/truncate'
 import Link from 'next/link'
 import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
 import Comment from '../../trips/tripFeedBack'
 import Approve from './accept'
-import { gql, useSubscription, useQuery } from '@apollo/client'
+import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import moment from 'moment'
 import PartnerOnBoardedBy from '../partnerOnboardedByName'
 import LinkComp from '../../common/link'
 import u from '../../../lib/util'
 import userContext from '../../../lib/userContaxt'
-import isEmpty from 'lodash/isEmpty'
 
 const PENDING_SUBSCRIPTION = gql`
-subscription trip_credit_debit($trip_credit_debit:trip_credit_debit_bool_exp) {
-  trip_credit_debit(where:$trip_credit_debit) {
+subscription trip_credit_debit($trip_credit_debit: trip_credit_debit_bool_exp) {
+  trip_credit_debit(where: $trip_credit_debit,) {
     id
     trip_id
     type
@@ -48,6 +42,15 @@ subscription trip_credit_debit($trip_credit_debit:trip_credit_debit_bool_exp) {
       partner {
         cardcode
         name
+        partner_connected_city {
+          connected_city {
+            branch {
+              region {
+                name
+              }
+            }
+          }
+        }
       }
     }
     responsibility {
@@ -58,15 +61,8 @@ subscription trip_credit_debit($trip_credit_debit:trip_credit_debit_bool_exp) {
       name
     }
   }
-}`
-
-const region_query = gql`
-query region_query{
-  region{
-    id
-    name
-  }
-}`
+}
+`
 
 const Pending = () => {
   const { role } = u
@@ -91,13 +87,11 @@ const Pending = () => {
   const rejected_access = u.is_roles(reject_roles, context)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const [filter, setFilter] = useState(initial)
-
+  console.log('filter', filter)
   const trip_credit_debit = {
-    credit_debit_status: { name: { _in: ['PENDING'] } },
-    trip: {
-      branch: { region: filter.region && filter.region.length > 0 ? { name: { _in: filter.region } } : { name: { _in: null } } },
-      partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } }
-    }
+    credit_debit_type: { name: { _neq: "Shortage" } },
+    credit_debit_status: { name: { _in: ["PENDING"] } },
+    trip: { partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null }, partner_connected_city: { connected_city: { branch: { region: filter.region && filter.region.length > 0 ? { name: { _in: filter.region } } : { name: { _in: null } } } } } } }
   }
 
   const { loading, error, data } = useSubscription(
@@ -108,7 +102,6 @@ const Pending = () => {
       }
     }
   )
-
   let _data = {}
   if (!loading) {
     _data = data
@@ -120,24 +113,15 @@ const Pending = () => {
     setFilter({ ...filter, pending: pending_list })
   }, [pending_list])
 
-  const { loading: region_loading, error: region_error, data: region_data } = useQuery(
-    region_query,
-  )
+  const regions = u.regions
+  const regionsList = regions.map((data) => {
+    return { value: data.text, label: data.text }
+  })
 
-  let _region = {}
-  if (!region_loading) {
-    _region = region_data
-  }
-
-  const region_list = get(_region, 'region', null)
-  const region_options = !isEmpty(region_list) ? region_list.map((data) => {
-    return { value: data.name, label: data.name }
-  }) : []
 
   const onSearch = (e) => {
     setFilter({ ...filter, searchText: e.target.value })
     const searchText = e.target.value
-    console.log('searchText', filter)
     if (searchText.length >= 3) {
       const regex = new RegExp(searchText, 'gi')
       const removeNull = filter.pending.filter(record => record.responsibility != null)
@@ -196,10 +180,10 @@ const Pending = () => {
       dataIndex: 'region',
       key: 'region',
       width: '6%',
-      render: (text, record) => get(record, 'trip.branch.region.name', null),
+      render: (text, record) => get(record, 'trip.partner.partner_connected_city.connected_city.branch.region.name', null),
       filterDropdown: (
         <Checkbox.Group
-          options={region_options}
+          options={regionsList}
           defaultValue={filter.region}
           onChange={onRegionFilter}
           className='filter-drop-down'
