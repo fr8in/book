@@ -15,7 +15,7 @@ import { useState } from 'react'
 import TrucksList from '../trucks/trucksList'
 
 const WaitingForLoad = (props) => {
-  const { trucks, loading, onTruckNoSearch, truckNo ,data,branches} = props
+  const { trucks, loading, onTruckNoSearch, truckNo ,branches} = props
   const initial = {
     usersData: [],
     usersVisible: false,
@@ -39,8 +39,8 @@ const WaitingForLoad = (props) => {
     let message = `Partner: ${get(record, 'partner.name')} \n`;
     message += `Truck No: ${record.truck_no} - ${get(record, 'truck_type.code')} \n`;
     message += `Current City: ${get(record, 'city.name')} \n`;
-    message += `Driver Number: ${get(record, 'trips[0].driver.mobile') ? get(record, 'trips[0].driver.mobile') : '-'} \n`;
-    message += `Last Comment: ${get(record, 'last_comment.description') ? get(record, 'last_comment.description') : '-'}`;
+    message += `Driver Number: ${get(record, 'driver.mobile', '-')} \n`;
+    message += `Last Comment: ${get(record, 'last_comment.description', '-') }`;
 
     return message;
 };
@@ -116,8 +116,7 @@ const onCopy = () => {
       title: 'Driver No',
       width: '10%',
       render: (text, record) => {
-        const trip = get(record, 'trips[0]')
-        const mobile = get(trip, 'driver.mobile') 
+        const mobile = get(record, 'driver.mobile',null)
         return (
           <Phone number={mobile} />
         )
