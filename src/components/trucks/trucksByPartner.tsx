@@ -13,6 +13,8 @@ subscription partners_truck($cardcode: String) {
     trucks(where: {truck_status:{name:{_neq: "Rejected"} }}) {
       id
       truck_no
+      pan
+      loading_memo
       truck_type {
         name
       }
@@ -80,6 +82,13 @@ const TrucksByPartner = (props) => {
           id={record.truck_no}
         />
       )
+    },
+    {
+      title: 'Truck Pan',
+      render: (text, record) => {
+        return (record.loading_memo === true ? record.pan : null)
+      }
+
     },
     {
       title: 'Truck Type',

@@ -526,8 +526,14 @@ input[type="number"] {
     }
   }
   .tabExtraFix{
-    .ant-tabs > .ant-tabs-nav, .ant-tabs > div > .ant-tabs-nav{
+    &.ant-tabs {
+      .ant-tabs-nav {
       display: block;
+      .ant-tabs-extra-content {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        }
+      }
     }
   }
 }
