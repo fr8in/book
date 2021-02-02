@@ -183,7 +183,7 @@ const TruckContainer = () => {
       <Row>
         <Col sm={24}>
           <Tabs
-            className='tabExtraFix'
+           className='tabExtraFix'
             tabBarExtraContent={
               tabIndex === '0' &&
               no_date_checked.length > 0 ? 
