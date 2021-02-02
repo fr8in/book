@@ -87,7 +87,6 @@ const Pending = () => {
   const rejected_access = u.is_roles(reject_roles, context)
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
   const [filter, setFilter] = useState(initial)
-  console.log('filter', filter)
   const trip_credit_debit = {
     credit_debit_type: { name: { _neq: "Shortage" } },
     credit_debit_status: { name: { _in: ["PENDING"] } },
