@@ -94,7 +94,7 @@ const WaitingForLoadContainer = (props) => {
     branches = _.chain(newData).flatMap('region').flatMap('branches').value()
   }
   return (
-    <WaitingForLoad trucks={trucks} data={data} branches={branches} loading={loading} onTruckNoSearch={onTruckNoSearch} truckNo={truckNo}/>
+    <WaitingForLoad  branches={branches} loading={loading} onTruckNoSearch={onTruckNoSearch} truckNo={truckNo}/>
   )
 }
 
