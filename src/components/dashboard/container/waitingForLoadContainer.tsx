@@ -5,23 +5,17 @@ import { useState } from 'react'
 
 const DASHBOARD_TRUCK_QUERY = gql`
 subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $truck_no: String, $dnd: Boolean) {
-  region(where: {id: {_in: $regions}}) {
+  region(where: {id: {_in: $regions}, branches: {id:{_in:$branches}}}) {
     id
     branches(where: {id: {_in: $branches}}) {
       id
       name
       connected_cities: cities(where: {_and: [{is_connected_city: {_eq: true}}, {id: {_in: $cities}}]}) {
         id
-        cities {
+        cities(where: {trucks: {id: {_is_null: false}}}) {
           id
           name
-          trucks(where: {
-            truck_status: {name: {_eq: "Waiting for Load"}},
-            truck_no: {_ilike: $truck_no},
-            truck_type: {id:{_in: $truck_type}},
-            partner:{partner_status:{name:{_eq:"Active"}}},
-            _or:[{ partner:{dnd:{_neq:$dnd}}}, {truck_type: {id:{_nin: [25,27]}}}]
-          } ) {
+          trucks(where: {truck_status: {name: {_eq: "Waiting for Load"}}, truck_no: {_ilike: $truck_no}, truck_type: {id: {_in: $truck_type}}, partner: {partner_status: {name: {_eq: "Active"}}}, _or: [{partner: {dnd: {_neq: $dnd}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
             id
             truck_no
             trips(order_by: {created_at: desc}, limit: 1) {
@@ -53,6 +47,10 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
             city {
               id
               name
+              branch {
+                id
+                name
+              }
             }
             driver {
               mobile
@@ -67,6 +65,7 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
     }
   }
 }
+
 `
 const WaitingForLoadContainer = (props) => {
   const { filters, dndCheck } = props
