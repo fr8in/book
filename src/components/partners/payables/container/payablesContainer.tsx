@@ -325,7 +325,6 @@ const variables = {
     <Card size='small' className='card-body-0 border-top-blue'>
       <Row className='navAlign'>
       <Tabs
-        className='navAlign'
         tabBarExtraContent={TabBarContent()}
         defaultActiveKey={tabIndex}
         onChange={(e) => setTabIndex(e)}
