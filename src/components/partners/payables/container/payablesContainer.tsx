@@ -271,18 +271,11 @@ const variables = {
       (tabIndex === '0') ?
         (
           <Space>
-            <RangePicker
-              size='small'
-              format='DD-MM-YYYY'
-              disabledDate={(current) => disabledDate(current)}
-              onCalendarChange={(value) => {
-                setDates(value)
-              }}
-            />
-            <Button size='small' loading={disableBtn.loading} >
-              <DownloadOutlined onClick={() => onConfirm()} />
-            </Button>
-          </Space>)
+          <span className='text-right'>Total Count: <b>{totalCount}</b></span>
+          <span className='text-right'>Total Amount: <b>₹{totalSum}</b></span>
+          <Input placeholder='Search...' suffix={<SearchOutlined />} onChange={onSearch} />
+        </Space>
+          )
         : (tabIndex === '2')
           ? (
             <Space>
@@ -312,11 +305,20 @@ const variables = {
                   disabledDate={(date) => !handleSourcingIncentiveDate(date)}
                   onChange={handleIncentiveMonthChange} picker='month' /></>} </Space>
 
-              : (tabIndex === '5') ? <Space>
-                <span className='text-right'>Total Count: <b>{totalCount}</b></span>
-                <span className='text-right'>Total Amount: <b>₹{totalSum}</b></span>
-                <Input placeholder='Search...' suffix={<SearchOutlined />} onChange={onSearch} />
-              </Space>
+              : (tabIndex === '5') ? 
+              <Space>
+            <RangePicker
+              size='small'
+              format='DD-MM-YYYY'
+              disabledDate={(current) => disabledDate(current)}
+              onCalendarChange={(value) => {
+                setDates(value)
+              }}
+            />
+            <Button size='small' loading={disableBtn.loading} >
+              <DownloadOutlined onClick={() => onConfirm()} />
+            </Button>
+          </Space>
                 : null
     )
   }
@@ -330,8 +332,8 @@ const variables = {
         defaultActiveKey={tabIndex}
         onChange={(e) => setTabIndex(e)}
       >
-        <TabPane tab='ICICI Bank Outgoing' key='0'>
-          <ICICIBankOutgoing />
+          <TabPane tab="Customer Incoming" key="0">
+          <Customer_Incoming onBankFilter={onBankFilter} bank_incoming={bank_incoming} bankLoading={bankLoading} />
         </TabPane>
         <TabPane tab='Statement' key='1'>
           <Last7daysPending />
@@ -355,8 +357,8 @@ const variables = {
           <SourcingIncentive year={year} loading={loading}
             month={month} onChange={handleSourcingIncentiveData} />
         </TabPane>
-        <TabPane tab="Customer Incoming" key="5">
-          <Customer_Incoming onBankFilter={onBankFilter} bank_incoming={bank_incoming} bankLoading={bankLoading} />
+        <TabPane tab='ICICI Bank Outgoing' key='5'>
+          <ICICIBankOutgoing />
         </TabPane>
         {object.incentiveVisible && <SourcingIncentiveModal
           visible={object.incentiveVisible}
