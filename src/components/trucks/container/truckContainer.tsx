@@ -180,9 +180,10 @@ const TruckContainer = () => {
   
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
-      <Row className='tabExtraFix'>
+      <Row>
         <Col sm={24}>
           <Tabs
+            className='tabExtraFix'
             tabBarExtraContent={
               tabIndex === '0' &&
               no_date_checked.length > 0 ? 
