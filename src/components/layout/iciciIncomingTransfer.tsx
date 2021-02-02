@@ -68,10 +68,10 @@ const IciciIncomingTransfer = (props) => {
     const [incoming_transfer , { loading: transferLoading }] = useMutation(
         INCOMING_TRANSFER,
         {
-            onError(error) { onHide() },
+            onError(error) { onHide(); message.success("Error while transferring payment") },
             onCompleted() {
                 onHide()
-                message.success("transferred Successfully")
+                message.success("Transferred Successfully")
             }
         }
     )
@@ -82,7 +82,7 @@ const IciciIncomingTransfer = (props) => {
             console.log(" error")
             return
         }
-        
+
         let bank = get(account_details, 'name', null)
 
         incoming_transfer(
