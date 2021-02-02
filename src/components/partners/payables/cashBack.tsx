@@ -1,11 +1,13 @@
-import React, { forwardRef } from 'react'
-import { useSubscription, gql, useQuery, useMutation } from '@apollo/client'
-import { Table, message } from 'antd'
+import React, { useState } from 'react'
+import { useSubscription, gql } from '@apollo/client'
+import { Table, Checkbox } from 'antd';
 import get from 'lodash/get'
+import u from '../../../lib/util'
 import LinkComp from '../../common/link'
+import isEmpty from 'lodash/isEmpty';
 
-const CASH_BACK_QUERY = gql`subscription partner_membership($year: Int, $month: Int) {
-    partner(where: {partner_membership_targets: {year: {_eq: $year}, month: {_eq: $month}, cash_back_applicable: {_eq: true}}, partner_status: {name: {_neq: "Blacklisted"}}}) {
+const CASH_BACK_QUERY = gql`subscription partner_membership($year: Int, $month: Int,$partner_region: [String!]) {
+    partner(where: {partner_membership_targets: {year: {_eq: $year}, month: {_eq: $month}, cash_back_applicable: {_eq: true}}, partner_status: {name: {_neq: "Blacklisted"}},city:{connected_city:{branch:{region:{name:{_in:$partner_region}}}}}}) {
       id
       cardcode
       name
@@ -30,18 +32,25 @@ const CASH_BACK_QUERY = gql`subscription partner_membership($year: Int, $month: 
 
 
 const cashBack = (props) => {
-
-    const { data, loading, error } = useSubscription(CASH_BACK_QUERY, {
+    const [partnerRegionFilter, setPartnerRegionFilter] = useState(null)
+    const variables = {
+        ...!isEmpty(partnerRegionFilter) && { partner_region: (partnerRegionFilter && partnerRegionFilter.length > 0) ? partnerRegionFilter : null },
+        year: props.year,
+        month: props.month
+    }
+    const { loading, error, data } = useSubscription(CASH_BACK_QUERY, {
         skip: !props.year || !props.month,
-        variables: {
-            year: props.year,
-            month: props.month
-        }
+        variables
+    })
+    const regions = u.regions
+    const regionsList = regions.map((data) => {
+        return { value: data.text, label: data.text }
     })
 
+    const onRegionFilter = (checked) => {
+        setPartnerRegionFilter(checked)
+    }
 
-
-    console.log("data", data, loading, error)
 
     let membership_data = []
     if (!loading) {
@@ -59,7 +68,15 @@ const cashBack = (props) => {
             dataIndex: 'name',
             key: 'name',
             width: '8%',
-            render: (text, record) => <LinkComp type='partners' data={text} id={record.cardcode} />
+            render: (text, record) => <LinkComp type='partners' data={text} id={record.cardcode} />,
+            filterDropdown: (
+                <Checkbox.Group
+                    options={regionsList}
+                    defaultValue={partnerRegionFilter}
+                    onChange={onRegionFilter}
+                    className='filter-drop-down'
+                />
+            )
         },
         {
             title: 'Wallet',
