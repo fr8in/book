@@ -76,7 +76,7 @@ const CreditNote = (props) => {
   const access = u.is_roles(edit_access, context)
   const [disableButton, setDisableButton] = useState(false)
   const [form] = Form.useForm()
-  const status_s = u.creditDebit
+  const type_list = u.creditDebit
   const invoiced = get(trip_info, 'invoiced_at', null)
   const received = get(trip_info, 'received_at', null)
   const closed = get(trip_info, 'closed_at', null)
@@ -150,7 +150,7 @@ const CreditNote = (props) => {
   if (!loading) {
     issue_type = data && data.credit_debit_type
   }
-  const typeList = status_s.map((data) => {
+  const typeList = type_list.map((data) => {
     return { value: data.value, label: data.text }
   })
 
