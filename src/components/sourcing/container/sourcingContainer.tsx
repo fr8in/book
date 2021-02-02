@@ -65,6 +65,7 @@ const SourcingContainer = () => {
   return (
     <Card size='small' className='border-top-blue card-pt0'>
       <Tabs
+       className='tabExtraFix'
         onChange={mainTabChange}
         tabBarExtraContent={
           <span>
