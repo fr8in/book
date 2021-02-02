@@ -206,6 +206,7 @@ const PartnerDetailContainer = (props) => {
                         <Col xs={24} sm={12} md={12}>
                           <Card size='small' className='card-body-0'>
                             <Tabs
+                             className='tabExtraFix'
                               defaultActiveKey='1'
                               onChange={tabChange}
                               tabBarExtraContent={
