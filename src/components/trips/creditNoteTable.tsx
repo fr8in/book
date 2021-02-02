@@ -42,11 +42,15 @@ const CreditNoteTable = (props) => {
   const { role } = u
   const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing,role.partner_manager,role.partner_support]
   const authorised = u.is_roles(edit_access,context)
-
+  const access = [role.admin]
+  const authorised_role = u.is_roles(access,context)
   const invoiced = get(trip_info, 'invoiced_at', null)
   const received = get(trip_info, 'received_at', null)
   const closed = get(trip_info, 'closed_at', null)
   const lock = get(trip_info, 'transaction_lock', null)
+  const status = get(trip_info,'trip_status.id', null)
+
+  const approval_access =((status === 13) || (status === 15)) ? authorised_role : authorised
 
   const initial = {
     approveData: [],
@@ -120,7 +124,7 @@ const CreditNoteTable = (props) => {
             : get(record, 'credit_debit_status.name', null)
           )}
     },
-    authorised
+    approval_access
       ? {
         title: 'Action',
         width: '12%',
