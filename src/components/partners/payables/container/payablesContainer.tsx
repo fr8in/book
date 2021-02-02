@@ -35,8 +35,8 @@ const SYNC_SOURCING_INCENTIVE_DATA = gql`mutation sync_sourcing_incentive($year:
   }
 }`
 
-const CASH_BACK_QUERY = gql`subscription partner_membership($year: Int, $month: Int, $cash_back_status: [String!]) {
-  partner(where: {partner_membership_targets: {year: {_eq: $year}, month: {_eq: $month}, cash_back_status: {_in: $cash_back_status}, cash_back_applicable: {_eq: true}}, partner_status: {name: {_neq: "Blacklisted"}}}) {
+const CASH_BACK_QUERY = gql`subscription partner_membership($year: Int, $month: Int, $cash_back_status: [String!],$partner_region: [String!]) {
+  partner(where: {partner_membership_targets: {year: {_eq: $year}, month: {_eq: $month}, cash_back_status: {_in: $cash_back_status}, cash_back_applicable: {_eq: true}}, partner_status: {name: {_neq: "Blacklisted"}},city:{connected_city:{branch:{region:{name:{_in:$partner_region}}}}}}) {
     id
     cardcode
     name
@@ -79,6 +79,7 @@ const PayablesContainer = () => {
   const [totalSum, setTotalSum] = useState(0)
   const [totalCount, setTotalCount] = useState(0)
   const [bankFilter, setBankFilter] = useState([])
+  const [partnerRegionFilter, setPartnerRegionFilter] = useState(null)
   const [filter, setFilter] = useState({ status_id: ["PENDING", "PAID"] })
 
 
@@ -134,14 +135,15 @@ const PayablesContainer = () => {
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30
     return ((tooEarly || tooLate))
   }
-
+const variables = {
+  year: year,
+  month: month,
+  cash_back_status: filter.status_id,
+  ...!isEmpty(partnerRegionFilter) && { partner_region: (partnerRegionFilter && partnerRegionFilter.length > 0) ? partnerRegionFilter : null }
+}
   const { data: cashBackData, loading: cashBackLoading, error: cashBackError } = useSubscription(CASH_BACK_QUERY, {
     skip: !year || !month,
-    variables: {
-      year: year,
-      month: month,
-      cash_back_status: filter.status_id
-    }
+    variables
   })
 
   const handleMonthChange = (date, dateString) => {
@@ -257,6 +259,9 @@ const PayablesContainer = () => {
   const handleSourcingIncentiveData = (data) => {
     setSourcingIncentiveData(data)
   }
+  const onRegionFilter = (checked) => {
+    setPartnerRegionFilter(checked)
+}
 
   const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
 
@@ -336,6 +341,8 @@ const PayablesContainer = () => {
               handleStatusChange={handleStatusChange}
               membership_data={membership_data}
               loading={cashBackLoading}
+              partnerRegionFilter={partnerRegionFilter}
+              onRegionFilter={onRegionFilter}
             />
           </TabPane>}
         {fuelCashback_access &&
