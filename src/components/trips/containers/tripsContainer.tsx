@@ -112,6 +112,7 @@ const TripsContainer = () => {
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
       <Tabs
+       className='tabExtraFix'
         defaultActiveKey='1'
         onChange={onTabChange}
         tabBarExtraContent={
