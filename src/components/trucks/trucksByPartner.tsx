@@ -84,9 +84,9 @@ const TrucksByPartner = (props) => {
       )
     },
     {
-      title: 'Truck Pan',
+      title: 'Truck PAN',
       render: (text, record) => {
-        return (get(record,'loading_memo') === true ? (record.pan ? record.pan : 'Pan required') : null)
+        return (get(record,'loading_memo') === true ? (record.pan ? record.pan : 'PAN required') : null)
       }
 
     },
