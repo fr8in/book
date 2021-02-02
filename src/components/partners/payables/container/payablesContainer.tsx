@@ -1,8 +1,8 @@
 import ICICIBankOutgoing from '../iciciBankOutgoing'
-import React, { useContext, useState,useEffect } from 'react'
-import { Button, Card, DatePicker, message, Space, Tabs, Input } from 'antd';
-import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { gql, useMutation, useQuery } from '@apollo/client';
+import React, { useContext, useState, useEffect } from 'react'
+import { Button, Card, DatePicker, message, Space, Tabs, Input } from 'antd'
+import { DownloadOutlined, SearchOutlined } from '@ant-design/icons'
+import { gql, useMutation, useSubscription, useQuery } from '@apollo/client'
 import moment from 'moment'
 import isEmpty from 'lodash/isEmpty'
 import RelianceCashBack from '../reliancecashback/RelianceCashBack'
@@ -14,6 +14,7 @@ import Last7daysPending from '../last7daysPending'
 import SourcingIncentive from '../sourcingIncentive/incentive'
 import SourcingIncentiveModal from '../sourcingIncentive/modal'
 import useShowHideWithRecord from '../../../../hooks/useShowHideWithRecord'
+import _ from 'lodash'
 import Customer_Incoming from './customerIncoming'
 import sumBy from 'lodash/sumBy';
 import get from 'lodash/get'
@@ -34,6 +35,28 @@ const SYNC_SOURCING_INCENTIVE_DATA = gql`mutation sync_sourcing_incentive($year:
   }
 }`
 
+const CASH_BACK_QUERY = gql`subscription partner_membership($year: Int, $month: Int, $cash_back_status: [String!]) {
+  partner(where: {partner_membership_targets: {year: {_eq: $year}, month: {_eq: $month}, cash_back_status: {_in: $cash_back_status}, cash_back_applicable: {_eq: true}}, partner_status: {name: {_neq: "Blacklisted"}}}) {
+    id
+    cardcode
+    name
+    partner_membership_targets(where: {month: {_eq: $month}, year: {_eq: $year}, cash_back_status: {_in: $cash_back_status}}) {
+      id
+      year
+      month
+      partner_code
+      transaction_fee
+      cash_back_amount
+      cash_back_percent
+      cash_back_status
+    }
+    partner_accounting {
+      cleared
+      onhold
+      wallet_balance
+    }
+  }
+}`
 const CUSTOMER_INCOMING_PAYMENTS = gql`
 query  bank_incoming${now()}($search:String,$bank:[String]){
     bank_incoming(search:$search,bank:$bank) {
@@ -56,6 +79,8 @@ const PayablesContainer = () => {
   const [totalSum, setTotalSum] = useState(0)
   const [totalCount, setTotalCount] = useState(0)
   const [bankFilter, setBankFilter] = useState([])
+  const [filter, setFilter] = useState({ status_id: ["PENDING", "PAID"] })
+
 
   const initial = { loading: false }
   const [disableBtn, setDisableBtn] = useState(initial)
@@ -75,20 +100,23 @@ const PayablesContainer = () => {
 
   let today = new Date()
   let day = today.getDay()
-  const { loading:bankLoading, data, error } = useQuery(
+  const { loading: bankLoading, data, error } = useQuery(
     CUSTOMER_INCOMING_PAYMENTS,
     {
-        variables: { search: search || null, bank: bankFilter },
-        fetchPolicy: 'cache-and-network',
-        notifyOnNetworkStatusChange: true
+      variables: { search: search || null, bank: bankFilter },
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
     }
-)
-let _data = {}
-if (!bankLoading) {
+  )
+  let _data = {}
+  if (!bankLoading) {
     _data = data
-}
-const bank_incoming = get(_data, 'bank_incoming', [])
+  }
+  const bank_incoming = get(_data, 'bank_incoming', [])
 
+  const handleStatusChange = (value) => {
+    setFilter({ status_id: value })
+  }
   useEffect(() => {
     const totalCount = bank_incoming ? bank_incoming.length : 0
     const totalSum = bank_incoming ? sumBy(bank_incoming, 'amount').toFixed(2) : 0
@@ -106,6 +134,16 @@ const bank_incoming = get(_data, 'bank_incoming', [])
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30
     return ((tooEarly || tooLate))
   }
+
+  const { data: cashBackData, loading: cashBackLoading, error: cashBackError } = useSubscription(CASH_BACK_QUERY, {
+    skip: !year || !month,
+    variables: {
+      year: year,
+      month: month,
+      cash_back_status: filter.status_id
+    }
+  })
+
   const handleMonthChange = (date, dateString) => {
     const splittedDate = dateString.split('-')
     setYear(parseInt(splittedDate[0]))
@@ -179,6 +217,14 @@ const bank_incoming = get(_data, 'bank_incoming', [])
     return moment().subtract(1, 'months').diff(date, 'months') === 0 && listDate == currentDate
   }
 
+  let membership_data = []
+  if (!cashBackLoading) {
+    membership_data = _.get(cashBackData, 'partner', [])
+  }
+
+  const transactionFeeSum = _.sumBy(membership_data, 'partner_membership_targets[0].transaction_fee')
+  const cashBackSum = _.sumBy(membership_data, 'partner_membership_targets[0].cash_back_amount')
+  const count = membership_data.length
 
   let saturday = 6;
   let friday = 5
@@ -237,6 +283,9 @@ const bank_incoming = get(_data, 'bank_incoming', [])
             <Space>
               {access &&
                 <Space>
+                  <p className='pt10'><b>Partner Count:</b> {count}</p>
+                  <p className='pt10'><b>Total Transaction Fee:</b> {transactionFeeSum}</p>
+                  <p className='pt10'><b>Total Cashback:</b> {cashBackSum}</p>
                   <DatePicker
                     disabledDate={(date) => handleCashBackDate(date)}
                     onChange={handleMonthChange} picker='month'
@@ -283,8 +332,10 @@ const bank_incoming = get(_data, 'bank_incoming', [])
         {access &&
           <TabPane tab='Transaction Fee' key='2'>
             <CashBack
-              month={month}
-              year={year}
+              filter={filter}
+              handleStatusChange={handleStatusChange}
+              membership_data={membership_data}
+              loading={cashBackLoading}
             />
           </TabPane>}
         {fuelCashback_access &&
