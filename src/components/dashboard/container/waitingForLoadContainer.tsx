@@ -47,10 +47,6 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
             city {
               id
               name
-              branch {
-                id
-                name
-              }
             }
             driver {
               mobile
