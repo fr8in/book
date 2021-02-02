@@ -334,7 +334,7 @@ const PayablesContainer = () => {
           <Customer_Incoming onBankFilter={onBankFilter} bank_incoming={bank_incoming} bankLoading={bankLoading} />
         </TabPane>
         <TabPane tab='ICICI Bank Outgoing' key='1'>
-          <ICICIBankOutgoing />
+          <ICICIBankOutgoing /> 
         </TabPane>
         <TabPane tab='Statement' key='2'>
           <Last7daysPending />
