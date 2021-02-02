@@ -180,7 +180,7 @@ const TruckContainer = () => {
   
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
-      <Row>
+      <Row className='navAlign'>
         <Col sm={24}>
           <Tabs
             tabBarExtraContent={

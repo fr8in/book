@@ -1,6 +1,6 @@
 import ICICIBankOutgoing from '../iciciBankOutgoing'
 import React, { useContext, useState, useEffect } from 'react'
-import { Button, Card, DatePicker, message, Space, Tabs, Input } from 'antd'
+import { Button, Card, DatePicker, message, Space, Tabs, Input, Row } from 'antd'
 import { DownloadOutlined, SearchOutlined } from '@ant-design/icons'
 import { gql, useMutation, useSubscription, useQuery } from '@apollo/client'
 import moment from 'moment'
@@ -323,7 +323,9 @@ const variables = {
 
   return (
     <Card size='small' className='card-body-0 border-top-blue'>
+      <Row className='navAlign'>
       <Tabs
+        className='navAlign'
         tabBarExtraContent={TabBarContent()}
         defaultActiveKey={tabIndex}
         onChange={(e) => setTabIndex(e)}
@@ -364,6 +366,7 @@ const variables = {
           onChange={handleSourcingIncentiveData}
         />}
       </Tabs>
+      </Row>
     </Card>
   )
 }

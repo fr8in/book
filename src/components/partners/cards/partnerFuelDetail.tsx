@@ -94,7 +94,7 @@ const PartnerFuelDetail = (props) => {
         partner_id: partner_Info.id,
         created_by: context.email,
         truck_id: truck_id,
-        truck_no: `FR8${truck_no}`,
+        truck_no: `${truck_no}`,
         mobile_no: mobile_no
       }
     })
