@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react'
 import { Row, Col, Radio, Input, Select, Form, Button, message } from 'antd'
-import { gql, useSubscription, useMutation,useQuery } from '@apollo/client'
+import { gql, useSubscription, useMutation, useQuery } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import u from '../../lib/util'
 import isEmpty from 'lodash/isEmpty'
@@ -72,21 +72,23 @@ const CreditNote = (props) => {
   const [radioType, setRadioType] = useState('Credit Note')
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing,role.partner_manager,role.partner_support,role.bm]
-  const access = u.is_roles(edit_access,context)
+  const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing, role.partner_manager, role.partner_support, role.bm]
+  const access = u.is_roles(edit_access, context)
   const [disableButton, setDisableButton] = useState(false)
   const [form] = Form.useForm()
-
+  const status_s = u.creditDebit
   const invoiced = get(trip_info, 'invoiced_at', null)
   const received = get(trip_info, 'received_at', null)
   const closed = get(trip_info, 'closed_at', null)
   const lock = get(trip_info, 'transaction_lock', null)
+  const status = get(trip_info, 'trip_status.id', null)
 
-  const { loading:token_loading, data:token_data , error:token_error,refetch } = useQuery(GET_TOKEN, 
-    { 
-      variables: {trip_id: parseInt(trip_id) }, 
-      fetchPolicy: 'network-only' ,
-      skip: radioType === 'Credit Note'})
+  const { loading: token_loading, data: token_data, error: token_error, refetch } = useQuery(GET_TOKEN,
+    {
+      variables: { trip_id: parseInt(trip_id) },
+      fetchPolicy: 'network-only',
+      skip: radioType === 'Credit Note'
+    })
 
   if (token_error) {
     message.error(token_error.toString())
@@ -101,11 +103,11 @@ const CreditNote = (props) => {
   const [upadateCreditNote] = useMutation(
     CREATE_CREDIT_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         setDisableButton(false)
         message.error(error.toString())
       },
-      onCompleted (data) {
+      onCompleted(data) {
         setDisableButton(false)
         const status = get(data, 'create_credit_track.success', null)
         const msg = get(data, 'create_credit_track.message', 'Created!')
@@ -114,24 +116,24 @@ const CreditNote = (props) => {
           message.success(msg)
           form.resetFields()
         } else {
-           message.error(msg)
+          message.error(msg)
         }
       }
     }
   )
-  const [upadateDebitNote,{ loading: mutationLoading }] = useMutation(
+  const [upadateDebitNote, { loading: mutationLoading }] = useMutation(
     CREATE_DEBIT_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         setDisableButton(false)
         message.error(error.toString())
       },
-      onCompleted (data) {
+      onCompleted(data) {
         setDisableButton(false)
         form.resetFields()
         const status = get(data, 'create_debit_track.status', null)
         const msg = get(data, 'create_debit_track.description', null)
-        if (status ==='OK') {
+        if (status === 'OK') {
           message.success(msg || 'Approved!')
           form.resetFields()
         } else {
@@ -148,6 +150,10 @@ const CreditNote = (props) => {
   if (!loading) {
     issue_type = data && data.credit_debit_type
   }
+  const typeList = status_s.map((data) => {
+    return { value: data.value, label: data.text }
+  })
+
 
   const issue_type_list = !isEmpty(issue_type) ? issue_type.map((data) => {
     return { value: data.id, label: data.name }
@@ -206,11 +212,19 @@ const CreditNote = (props) => {
           </Col>
           <Col xs={24} sm={12}>
             <Form.Item label='Issue Type' name='issue_type' rules={[{ required: true }]}>
+              {
+                ((status === 13) || (status === 15))  ? 
+                <Select
+                id='issueType'
+                placeholder='Select Issue Type'
+                options={typeList}
+              />
+              :
               <Select
                 id='issueType'
                 placeholder='Select Issue Type'
                 options={issue_type_list}
-              />
+              />}
             </Form.Item>
           </Col>
         </Row>
