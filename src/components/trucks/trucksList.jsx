@@ -28,9 +28,10 @@ const getMessage = (branch_data) => {
     Object.entries(branch.truck_types).map(([key,value])=>{
      message += `${key} \n \n`
      let i = 1;
-     const trucks = value.map((truck)=>{
-      message = message + `${i++})  Partner: ${get(truck, 'partner.name')} \n`
-       message = message + `Truck No: ${truck.truck_no} - ${get(truck, 'tat')} hrs \n`;
+     const sorted_data =  value.sort((a,b) => b.tat - a.tat )
+     const trucks = sorted_data.map((truck)=>{
+      message = message + `${i++}) ${get(truck, 'partner.name')} \n`
+       message = message + `${truck.truck_no} - ${get(truck, 'tat')} hrs \n`;
          message = message + `O: ${get(truck, 'partner.partner_users[0].mobile') ? get(truck, 'partner.partner_users[0].mobile') : '-'} / D: ${get(data, 'trips[0].driver.mobile') ? get(data, 'trips[0].driver.mobile') : '-'} \n`;
          message = message + `City: ${truck.city.name}  \n \n`;
      })
