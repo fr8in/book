@@ -119,6 +119,7 @@ const onDndChange = (e) =>{
           <Col xs={24} sm={24}>
             <Card size='small' className='card-body-0 border-top-blue'>
               <Tabs
+                className='tabExtraFix'
                 defaultActiveKey='2'
                 tabBarExtraContent={
                     <Space>
