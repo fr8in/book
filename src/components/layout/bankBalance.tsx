@@ -1,7 +1,7 @@
 import { Menu, Checkbox, message } from 'antd'
 import { SwapOutlined } from '@ant-design/icons'
 import { useContext, useState } from 'react'
-import { gql, useQuery, useMutation, useSubscription ,useLazyQuery} from '@apollo/client'
+import { gql, useQuery, useMutation, useSubscription, useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
 import u from '../../lib/util'
 import userContext from '../../lib/userContaxt'
@@ -47,36 +47,37 @@ const BankBalance = () => {
   const edit_access = [role.admin]
   const access = u.is_roles(edit_access, context)
 
-  
-  const incoming_transfer_access = u.is_roles([role.admin ,role.accounts_manager ], context)
+
+  const incoming_transfer_access = u.is_roles([role.admin, role.accounts_manager], context)
 
   const { onHide, onShow, visible } = useShowHide(initial)
 
-  const [getIncomingIciciBalance, { loading : ic_loading, data : ic_data,error: ic_error }] = useLazyQuery(IC_BANK_BALANCE)
+  const [getIncomingIciciBalance, { loading: ic_loading, data: ic_data, error: ic_error }] = useLazyQuery(IC_BANK_BALANCE)
 
   const { loading, data, error } = useQuery(
     BANK_BALANCE, {
     fetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true,
-    errorPolicy: 'all', 
+    errorPolicy: 'all',
 
-    onCompleted () {
+    onCompleted() {
       getIncomingIciciBalance()
-    }, 
-    onError(){
-       getIncomingIciciBalance()
+    },
+    onError() {
+      getIncomingIciciBalance()
     }
   })
-  
+
   let displayData = { icici: null, reliance: null, icici_incoming: null, downtime: { icici_bank: null, reliance_fuel: null } }
-  
+
   if (!loading) {
     displayData.icici = get(data, 'icici', null)
     displayData.reliance = get(data, 'reliance', null)
     displayData.icici_incoming = get(ic_data, 'icici_incoming', null)
-
   }
-  
+
+  const formatCurrency = (amount) => parseFloat(amount).toLocaleString('en-US', { style: 'currency', currency: 'INR' });
+
   const { loading: _loading, data: _data, error: _error } = useSubscription(
     TRANSACTION_DOWNTIME)
   if (!_loading) {
@@ -102,28 +103,27 @@ const BankBalance = () => {
     })
   }
 
-  console.log("visible", visible)
 
   return (
     <Menu>
 
       <Menu.ItemGroup key="outgoing" title="Outgoing">
         <Menu.Item>
-          <Checkbox onChange={(e) => onChangeDownTime(e, 'icici_bank')} disabled={!access} checked={!displayData.downtime.icici_bank} >ICICI <b>₹{icici ? icici.toFixed(0) : 0}</b>   </Checkbox>
+          <Checkbox onChange={(e) => onChangeDownTime(e, 'icici_bank')} disabled={!access} checked={!displayData.downtime.icici_bank} >ICICI <b>{icici ? formatCurrency(icici.toFixed(0)) : '₹0'}</b>   </Checkbox>
         </Menu.Item>
         <Menu.Item>
-          <Checkbox onChange={(e) => onChangeDownTime(e, 'reliance_fuel')} disabled={!access} checked={!displayData.downtime.reliance_fuel} >Reliance <b>₹{reliance ? reliance.toFixed(0) : 0}</b> </Checkbox>
+          <Checkbox onChange={(e) => onChangeDownTime(e, 'reliance_fuel')} disabled={!access} checked={!displayData.downtime.reliance_fuel} >Reliance <b>{reliance ? formatCurrency(reliance.toFixed(0)) : '₹0'}</b> </Checkbox>
         </Menu.Item>
       </Menu.ItemGroup>
 
       <Menu.ItemGroup key="incoming" title="Incoming">
-        <Menu.Item onClick={incoming_transfer_access ? () => onShow('bankVisible') : ()=>{}}>
-        <SwapOutlined  />
-        <label>ICICI ₹{icici_incoming ? icici_incoming.toFixed(0) : 0}</label>
+        <Menu.Item onClick={incoming_transfer_access ? () => onShow('bankVisible') : () => { }}>
+          <SwapOutlined />
+          <label>ICICI {icici_incoming ? formatCurrency(icici_incoming.toFixed(0)) : '₹0'}</label>
         </Menu.Item>
       </Menu.ItemGroup>
 
-      {visible.bankVisible && <IciciIncomingTransfer visible={visible.bankVisible} onHide={onHide} />}
+      {visible.bankVisible && <IciciIncomingTransfer visible={visible.bankVisible} onHide={onHide} balance={displayData.icici_incoming} />}
     </Menu>
   )
 }

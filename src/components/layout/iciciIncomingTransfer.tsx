@@ -36,7 +36,7 @@ mutation incoming_transfer($bank: String!, $process: String!, $token: String!, $
 
 
 const IciciIncomingTransfer = (props) => {
-    const { visible, onHide } = props
+    const { visible, onHide,balance } = props
 
     const [form] = Form.useForm()
     const [account_details, setAccount_details] = useState({})
@@ -65,7 +65,7 @@ const IciciIncomingTransfer = (props) => {
     const [incoming_transfer, { loading: transferLoading }] = useMutation(
         INCOMING_TRANSFER,
         {
-            onError(error) { onHide(); message.success("Error while transferring payment") },
+            onError(error) { onHide(); message.error("Error while transferring payment") },
             onCompleted() {
                 onHide()
                 message.success("Transferred Successfully")
@@ -75,8 +75,9 @@ const IciciIncomingTransfer = (props) => {
 
 
     const onSubmit = () => {
-        if (isNil(amount) || amount < 0) {
-            console.log(" error")
+        
+        if (isNil(amount) || amount < 0 || amount > balance) {
+            message.error("Invalid Amount")
             return
         }
 
@@ -94,9 +95,6 @@ const IciciIncomingTransfer = (props) => {
         )
 
     }
-
-
-    console.log(amount)
 
     return (<>
         <Modal
