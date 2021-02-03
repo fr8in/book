@@ -36,7 +36,7 @@ const TrucksList = (props) => {
           message += `${truck.truck_no} - ${get(truck, 'tat')} hrs\n`
           message += `O: ${get(truck, 'partner.partner_users[0].mobile','-') } / D: ${get(truck, 'driver.mobile','-') }\n`
           message += `City: ${truck.city.name}\n`
-          message += `Last Comment: ${get(truck, 'last_comment.description', '-') }\n\n`
+          message += `Comment: ${get(truck, 'last_comment.description', '-') }\n\n`
         });
       });
       return message;
