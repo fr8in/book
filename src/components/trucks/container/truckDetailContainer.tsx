@@ -198,7 +198,8 @@ const TruckDetailContainer = (props) => {
           <Col xs={24}>
             <Card size='small' className='card-body-0 border-top-blue'>
               <Tabs
-                defaultActiveKey='1'
+                className='tabExtraFix'
+               defaultActiveKey='1'
                 onChange={subTabChange}
                 tabBarExtraContent={
                   <span>
