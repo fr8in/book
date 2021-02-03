@@ -42,6 +42,10 @@ const BankBalance = () => {
   const { role } = u
   const edit_access = [role.admin]
   const access = u.is_roles(edit_access, context)
+
+  
+  const incoming_transfer_access = u.is_roles([role.admin ,role.accounts_manager ], context)
+
   const { onHide, onShow, visible } = useShowHide(initial)
 
   const { loading, data, error } = useQuery(
@@ -99,8 +103,9 @@ const BankBalance = () => {
       </Menu.ItemGroup>
 
       <Menu.ItemGroup key="incoming" title="Incoming">
-        <Menu.Item>
-          <SwapOutlined onClick={() => onShow('bankVisible')} disabled={!access} /> ICICI <b>₹{icici_incoming ? icici_incoming.toFixed(0) : 0}</b>
+        <Menu.Item onClick={incoming_transfer_access ? () => onShow('bankVisible') : ()=>{}}>
+        <SwapOutlined  />
+        <label>ICICI ₹{icici_incoming ? icici_incoming.toFixed(0) : 0}</label>
         </Menu.Item>
       </Menu.ItemGroup>
 

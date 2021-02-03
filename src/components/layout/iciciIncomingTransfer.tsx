@@ -2,7 +2,7 @@
 import { gql, useQuery, useMutation, useSubscription } from '@apollo/client'
 import { useState, useContext } from 'react'
 
-import { Modal, Form, Button, Input, Col, Row, Select ,message} from 'antd'
+import { Modal, Form, Button, Input, Col, Row, Select, message } from 'antd'
 import React from 'react';
 const { Option } = Select;
 import now from 'lodash/now'
@@ -24,8 +24,8 @@ const GET_ACTIVE_BANK = gql`query getbank_config${now()} {
   }`
 
 const INCOMING_TRANSFER = gql`
-  mutation incoming_transfer($bank: String!, $process: String!, $token: String!) {
-    incoming_transfer(bank: $bank, process: $process, token: $token) {
+mutation incoming_transfer($bank: String!, $process: String!, $token: String!, $amount: Int!) {
+    incoming_transfer(bank: $bank, process: $process, token: $token, amount: $amount) {
       description
       status
     }
@@ -36,14 +36,11 @@ const INCOMING_TRANSFER = gql`
 
 
 const IciciIncomingTransfer = (props) => {
-    const {visible, onHide} = props
+    const { visible, onHide } = props
 
     const [form] = Form.useForm()
     const [account_details, setAccount_details] = useState({})
     const [amount, setAmount] = useState(0)
-
-
-    console.log("in incoming component")
 
     let ref_id = 3434
 
@@ -65,7 +62,7 @@ const IciciIncomingTransfer = (props) => {
 
     let token = data && data.token
 
-    const [incoming_transfer , { loading: transferLoading }] = useMutation(
+    const [incoming_transfer, { loading: transferLoading }] = useMutation(
         INCOMING_TRANSFER,
         {
             onError(error) { onHide(); message.success("Error while transferring payment") },
@@ -75,7 +72,7 @@ const IciciIncomingTransfer = (props) => {
             }
         }
     )
-    
+
 
     const onSubmit = () => {
         if (isNil(amount) || amount < 0) {
@@ -99,7 +96,7 @@ const IciciIncomingTransfer = (props) => {
     }
 
 
-console.log( amount)
+    console.log(amount)
 
     return (<>
         <Modal
@@ -111,8 +108,8 @@ console.log( amount)
             <Form layout='vertical' form={form} onFinish={onSubmit}   >
                 <Row gutter={10} >
                     <Col xs={12} sm={8} >
-                        <Form.Item label='Bank' name='bank' extra = {`A/C No: ${account_details && account_details.account_no ? account_details.account_no : "" }`} >
-                            <Select labelInValue onChange={(value) => setAccount_details({ account_no: value.value, name: value.label })}  >
+                        <Form.Item label='Bank' name='bank' extra={`A/C No: ${get(account_details, 'account_no', "")}`} >
+                            <Select labelInValue onChange={(value) => setAccount_details({ account_no: get(value, 'value', ""), name: get(value, 'label', "") })}  >
                                 {bank_details.map(bank => <Option value={bank.account_no} key={bank.name} >{bank.name}</Option>)}
                             </Select>
                         </Form.Item>
@@ -124,8 +121,8 @@ console.log( amount)
                     </Col>
                     <Col xs={12} sm={8} >
                         <Form.Item label='submit' className='hideLabel' >
-                            
-                            <Button type='primary' htmlType='submit' loading={loading } disabled={ isNaN(amount) || amount < 1} >
+
+                            <Button type='primary' htmlType='submit' loading={loading} disabled={isNaN(amount) || amount < 1} >
                                 Transfer
                                 </Button>
 
@@ -134,7 +131,7 @@ console.log( amount)
                 </Row>
             </Form>
             {(loading || transferLoading) &&
-        <Loading fixed />}
+                <Loading fixed />}
 
         </Modal>
 
