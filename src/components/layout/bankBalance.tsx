@@ -1,7 +1,7 @@
 import { Menu, Checkbox, message } from 'antd'
 import { SwapOutlined } from '@ant-design/icons'
 import { useContext, useState } from 'react'
-import { gql, useQuery, useMutation, useSubscription } from '@apollo/client'
+import { gql, useQuery, useMutation, useSubscription ,useLazyQuery} from '@apollo/client'
 import get from 'lodash/get'
 import u from '../../lib/util'
 import userContext from '../../lib/userContaxt'
@@ -52,29 +52,28 @@ const BankBalance = () => {
 
   const { onHide, onShow, visible } = useShowHide(initial)
 
+  const [getIncomingIciciBalance, { loading : ic_loading, data : ic_data,error: ic_error }] = useLazyQuery(IC_BANK_BALANCE)
+
   const { loading, data, error } = useQuery(
     BANK_BALANCE, {
     fetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true,
-    errorPolicy: 'all'
-  }
-  )
+    errorPolicy: 'all', 
+
+    onCompleted () {
+      getIncomingIciciBalance()
+    }, 
+    onError(){
+       getIncomingIciciBalance()
+    }
+  })
   
   let displayData = { icici: null, reliance: null, icici_incoming: null, downtime: { icici_bank: null, reliance_fuel: null } }
+  
   if (!loading) {
     displayData.icici = get(data, 'icici', null)
     displayData.reliance = get(data, 'reliance', null)
-
-    const { loading : ic_loading, data : ic_data,error: ic_error } = useQuery(
-      IC_BANK_BALANCE, {
-      fetchPolicy: 'network-only',
-      notifyOnNetworkStatusChange: true,
-      errorPolicy: 'all'
-    })
-    
-    if (!ic_loading) {
-      displayData.icici_incoming = get(ic_data, 'icici_incoming', null)
-    }
+    displayData.icici_incoming = get(ic_data, 'icici_incoming', null)
 
   }
   
