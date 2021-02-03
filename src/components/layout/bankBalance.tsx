@@ -7,10 +7,11 @@ import u from '../../lib/util'
 import userContext from '../../lib/userContaxt'
 import IciciIncomingTransfer from '../../../src/components/layout/iciciIncomingTransfer'
 import useShowHide from '../../../src/hooks/useShowHide'
+import now from 'lodash/now'
 
 
 const BANK_BALANCE = gql`
-query bank_balance{
+query bank_balance${now()}{
   icici
   reliance
   icici_incoming
