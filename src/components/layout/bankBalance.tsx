@@ -14,6 +14,9 @@ const BANK_BALANCE = gql`
 query bank_balance${now()}{
   icici
   reliance
+}`
+const IC_BANK_BALANCE = gql`
+query IC_bank_balance${now()}{
   icici_incoming
 }`
 
@@ -56,13 +59,21 @@ const BankBalance = () => {
     errorPolicy: 'all'
   }
   )
+  const { loading : ic_loading, data : ic_data,error: ic_error } = useQuery(
+    IC_BANK_BALANCE, {
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
+    errorPolicy: 'all'
+  }
+  )
 
   let displayData = { icici: null, reliance: null, icici_incoming: null, downtime: { icici_bank: null, reliance_fuel: null } }
   if (!loading) {
     displayData.icici = get(data, 'icici', null)
     displayData.reliance = get(data, 'reliance', null)
-    displayData.icici_incoming = get(data, 'icici_incoming', null)
-
+  }
+  if (!ic_loading) {
+    displayData.icici_incoming = get(ic_data, 'icici_incoming', null)
   }
   const { loading: _loading, data: _data, error: _error } = useSubscription(
     TRANSACTION_DOWNTIME)
