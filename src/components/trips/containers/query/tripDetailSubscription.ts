@@ -1,130 +1,137 @@
 import { gql } from '@apollo/client'
 
 export const TRIP_DETAIL_SUBSCRIPTION = gql`
-  subscription trips_detail($id: Int) {
-    trip(where: {id:{_eq:$id}}){
+subscription trips_detail($id: Int) {
+  trip(where: {id:{_eq:$id}}){
+    id
+    branch_employee{
       id
-      is_topay
-      order_date
-      created_at
-      source_in
-      source_out
-      loaded
-      status_at
-      pod_verified_at
-      pod_dispatched_at
-      destination_in
-      destination_out
-      invoiced_at
-      received_at
-      closed_at
-      transaction_lock
-      km
-      driver{
+      employee{
+        id
+        name
+      }
+    }
+    is_topay
+    order_date
+    created_at
+    source_in
+    source_out
+    loaded
+    status_at
+    pod_verified_at
+    pod_dispatched_at
+    destination_in
+    destination_out
+    invoiced_at
+    received_at
+    closed_at
+    transaction_lock
+    km
+    driver{
+      id
+      mobile
+    }
+    delay
+    eta
+    po_date
+    ap
+    ar
+    unloaded_private_godown
+    private_godown_address
+    lr
+    lr_incentive
+    pod_incentive
+    customer_confirmation
+    customer{
+      cardcode
+      name
+      id
+      walletcode
+      customer_accounting {
+        wallet_balance
+      }
+      customer_advance_percentage{
+        id
+        name
+      }
+      system_mamul
+    }
+    partner{
+      id
+      cardcode
+      name
+      walletcode
+      partner_files{
+        id
+        type
+        file_path
+        folder
+        financial_year
+      }
+      drivers {
         id
         mobile
       }
-      delay
-      eta
-      po_date
-      ap
-      ar
-      unloaded_private_godown
-      private_godown_address
-      lr
-      lr_incentive
-      pod_incentive
-      customer_confirmation
-      customer{
-        cardcode
-        name
-        id
-        walletcode
-        customer_accounting {
-          wallet_balance
-        }
-        customer_advance_percentage{
-          id
-          name
-        }
-        system_mamul
-      }
-      partner{
-        id
-        cardcode
-        name
-        walletcode
-        partner_files{
-          id
-          type
-          file_path
-          folder
-          financial_year
-        }
-        drivers {
-          id
-          mobile
-        }
-        partner_advance_percentage{
-          id
-          name
-        }
-      }
-      truck{
-        id
-        truck_no
-        loading_memo
-        truck_type{
-          id
-          name
-        }
-        truck_files{
-          id
-          type
-          file_path
-          folder
-          financial_year
-        }
-      }
-      source{
+      partner_advance_percentage{
         id
         name
-      }
-      destination{
-        id
-        name
-      }
-      trip_status{
-        id
-        name
-      }
-      trip_payments{
-        amount
-      }
-      trip_receivables{
-        amount
-      }
-      trip_receipts{
-        amount
-      }
-      customer_price
-      partner_price
-      cash
-      to_pay
-      bank
-      mamul
-      including_loading
-      including_unloading
-      ton
-      is_price_per_ton
-      price_per_ton
-      billing_remarks
-      trip_files {
-       id
-       type
-       file_path
-       folder
       }
     }
+    truck{
+      id
+      truck_no
+      loading_memo
+      truck_type{
+        id
+        name
+      }
+      truck_files{
+        id
+        type
+        file_path
+        folder
+        financial_year
+      }
+    }
+    source{
+      id
+      name
+    }
+    destination{
+      id
+      name
+    }
+    trip_status{
+      id
+      name
+    }
+    trip_payments{
+      amount
+    }
+    trip_receivables{
+      amount
+    }
+    trip_receipts{
+      amount
+    }
+    customer_price
+    partner_price
+    cash
+    to_pay
+    bank
+    mamul
+    including_loading
+    including_unloading
+    ton
+    is_price_per_ton
+    price_per_ton
+    billing_remarks
+    trip_files {
+     id
+     type
+     file_path
+     folder
+    }
   }
+}
 `

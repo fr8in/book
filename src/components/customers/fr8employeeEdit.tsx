@@ -4,9 +4,7 @@ import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 import u from '../../lib/util'
-import {  useContext } from 'react'
-
-
+import { useContext } from 'react'
 const EMPLOYEE_QUERY = gql`
   query branch_employee($id: Int!) {
   branch(where:{id:{_eq:$id}}){
@@ -23,19 +21,19 @@ const EMPLOYEE_QUERY = gql`
 }
 `
 const UPDATE_BRABCH_EMPLOYEE_MUTATION = gql`
-mutation update_customer_branch_employee($description: String, $topic: String, $customer_id: Int, $created_by: String,$id:Int,$branch_employee_id: Int!) {
+mutation update_customer_branch_employee($description: String, $topic: String, $customer_id: Int, $created_by: String,$id:Int,$branch_employee_id: Int!,$truck_type_group_id:Int!) {
   insert_customer_comment(objects: {description: $description, customer_id: $customer_id, topic: $topic, created_by: $created_by}) {
     returning {
       description
     }
   }
-  update_customer_branch_employee(_set:{branch_employee_id: $branch_employee_id}, where:{id:{_eq: $id}}){
+  update_customer_branch_employee(_set:{branch_employee_id: $branch_employee_id}, where:{id:{_eq: $id},truck_type_group_id:{_eq:$truck_type_group_id}}){
     returning{ id }
   }
 }`
 
 const Fr8Employee = (props) => {
-  const { employee, id, edit_access, branch_id ,customer_id} = props
+  const { employee, edit_access, branch_id, customer_id, truck_type_group_id, customer_branch_employee_id, onHide } = props
   const context = useContext(userContext)
   const { topic } = u
 
@@ -57,8 +55,11 @@ const Fr8Employee = (props) => {
   const [update_customer_branch_employee] = useMutation(
     UPDATE_BRABCH_EMPLOYEE_MUTATION,
     {
-      onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Saved!!') }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() {
+        message.success('Saved!!')
+        onHide()
+      }
     }
   )
 
@@ -68,14 +69,16 @@ const Fr8Employee = (props) => {
   })
 
   const handleChange = (value) => {
+    console.log('value', customer_branch_employee_id, value, customer_id, truck_type_group_id)
     update_customer_branch_employee({
       variables: {
-        id: id,
+        id: customer_branch_employee_id,
         branch_employee_id: value,
         created_by: context.email,
-        description:`${topic.customer_fr8_employee} updated by ${context.email}`,
-        topic:topic.customer_fr8_employee,
-        customer_id: customer_id
+        description: `${topic.customer_fr8_employee} updated by ${context.email}`,
+        topic: topic.customer_fr8_employee,
+        customer_id: customer_id,
+        truck_type_group_id: truck_type_group_id
       }
     })
   }

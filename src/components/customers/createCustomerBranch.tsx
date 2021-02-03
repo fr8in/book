@@ -56,7 +56,7 @@ const CreateCustomerBranch = (props) => {
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
   const { topic } = u
-  
+
   const { loading, error, data } = useQuery(
     CUSTOMER_BRANCH_QUERY,
     {
@@ -69,11 +69,11 @@ const CreateCustomerBranch = (props) => {
   const [insertCustomerBranch] = useMutation(
     INSERT_CUSTOMER_BRANCH_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         setDisableButton(false)
         message.error(error.toString())
       },
-      onCompleted () {
+      onCompleted() {
         setDisableButton(false)
         message.success('Updated!!')
         setObj(initial)
@@ -85,11 +85,11 @@ const CreateCustomerBranch = (props) => {
   const [updateCustomerBranch] = useMutation(
     UPDATE_CUSTOMER_BRANCH_MUTATION,
     {
-      onError (error) {
+      onError(error) {
         setDisableButton(false)
         message.error(error.toString())
       },
-      onCompleted () {
+      onCompleted() {
         setDisableButton(false)
         message.success('Updated!!')
         setObj(initial)
@@ -127,11 +127,11 @@ const CreateCustomerBranch = (props) => {
           address: form.address,
           pincode: form.pincode,
           state_id: isNaN(form.state_id) ? customerbranches.state_id : form.state_id,
-          state:  obj.state_name ,
+          state: obj.state_name,
           branch_name: form.branch_name,
           created_by: context.email,
-          description:`${topic.customer_branch} updated by ${context.email}`,
-          topic:topic.customer_branch,
+          description: `${topic.customer_branch} updated by ${context.email}`,
+          topic: topic.customer_branch,
           customer_id: customer_id
         }
       })
@@ -150,8 +150,8 @@ const CreateCustomerBranch = (props) => {
           state: obj.state_name,
           branch_name: form.branch_name,
           created_by: context.email,
-          description:`${topic.customer_branch} inserted by ${context.email}`,
-          topic:topic.customer_branch,
+          description: `${topic.customer_branch} inserted by ${context.email}`,
+          topic: topic.customer_branch,
           customer_id: customer_id
         }
       })
@@ -191,11 +191,11 @@ const CreateCustomerBranch = (props) => {
                 <Col xs={12}>
                   <Form.Item
                     label='State'
-                    name='state_id' 
+                    name='state_id'
                     initialValue={get(customerbranches, 'state', null)}
                     rules={[{ required: true, message: 'State is required field' }]}
                   >
-                    <Select onChange={onStateChange} options={StateList} showSearch optionFilterProp='label'/>
+                    <Select onChange={onStateChange} options={StateList} showSearch optionFilterProp='label' />
                   </Form.Item>
                 </Col>
               </Row>
@@ -207,7 +207,12 @@ const CreateCustomerBranch = (props) => {
                 </Col>
                 <Col xs={12}>
                   <Form.Item name='mobile' initialValue={get(customerbranches, 'mobile', null)}>
-                    <Input placeholder='Contact Number' />
+                    <Input
+                      placeholder='Contact Number'
+                      type='number'
+                      maxLength={10}
+                      onInput={u.handleLengthCheck}
+                    />
                   </Form.Item>
                 </Col>
               </Row>
