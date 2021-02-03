@@ -29,6 +29,7 @@ const BranchesContainer = () => {
       className='card-body-0 border-top-blue'
     >
       <Tabs
+        className='tabExtraFix'
         tabBarExtraContent={access ? (
           <Button
             title='Add Branch'

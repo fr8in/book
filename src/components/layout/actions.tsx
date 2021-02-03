@@ -230,6 +230,12 @@ const Actions = (props) => {
               <CheckBoxGroup options={branch_options_sort} defaultValue={filters.branches} value={filters.branches} onChange={(value) => onCheckBoxChange(value, 'branches')} />
             </Panel>
             <Panel
+              header={<b>Type</b>} key="type"
+              extra={filters.types && filters.types.length > 0 ? <Clear onClear={(e) => onClear(e, 'types')} /> : ''}
+            >
+              <CheckBoxGroup options={truck_type_options} value={filters.types} onChange={(value) => onCheckBoxChange(value, 'types')} />
+            </Panel>
+            <Panel
               header={<b>City</b>} key="city"
               extra={filters.cities && filters.cities.length > 0 ? <Clear onClear={(e) => onClear(e, 'cities')} /> : ''}
             >
@@ -240,12 +246,6 @@ const Actions = (props) => {
               extra={filters.managers && filters.managers.length > 0 ? <Clear onClear={(e) => onClear(e, 'managers')} /> : ''}
             >
               <CheckBoxGroup options={branch_employee_options} defaultValue={filters.managers} value={filters.managers} onChange={(value) => onCheckBoxChange(value, 'managers')} />
-            </Panel>
-            <Panel
-              header={<b>Type</b>} key="type"
-              extra={filters.types && filters.types.length > 0 ? <Clear onClear={(e) => onClear(e, 'types')} /> : ''}
-            >
-              <CheckBoxGroup options={truck_type_options} value={filters.types} onChange={(value) => onCheckBoxChange(value, 'types')} />
             </Panel>
           </Collapse>
         </Drawer>}
