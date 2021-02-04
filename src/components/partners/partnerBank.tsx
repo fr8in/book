@@ -69,7 +69,7 @@ const EditBank = (props) => {
 
   const validateIFSC = () => {
     if (form.getFieldValue('ifsc_code')) {
-      getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc_code') } })
+      getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc_code').trim() } })
     } else return null
   }
 
@@ -111,7 +111,7 @@ const EditBank = (props) => {
             rules={[{ required: true }]}
             initialValue={get(partner_info, 'ifsc_code', null)}
           >
-            <Input placeholder=' IFSC Code' onBlur={validateIFSC} />
+            <Input placeholder=' IFSC Code' onBlur={validateIFSC} maxLength={11}/>
           </Form.Item>
           <Form.Item
             name='account_number'
