@@ -2,11 +2,12 @@ import { Row, Col, Form, DatePicker, Checkbox } from 'antd'
 import CitySelect from '../common/citySelect'
 import Loading from '../common/loading'
 import Driver from '../partners/driver'
+import LabelWithData from '../common/labelWithData'
 import get from 'lodash/get'
 import LoadingPointContact from './loadingPointContact'
 
 const PoDetail = (props) => {
-  const { po_data, onSourceChange, onDestinationChange, loading_contact_id, driver_id, customer, loading, record } = props
+  const { po_data, onSourceChange, onDestinationChange, loading_contact_id, driver_id, customer, loading, record ,customer_branch_employee_name} = props
 
   return (
     loading ? <Loading /> : (
@@ -54,6 +55,14 @@ const PoDetail = (props) => {
                 <Checkbox value='Unloading'>Unloading</Checkbox>
               </Checkbox.Group>
             </Form.Item>
+            {customer_branch_employee_name ?
+            <Form.Item label='Customer Branch Employee'>
+            <LabelWithData
+          data={customer_branch_employee_name }
+          labelSpan={10}
+          dataSpan={14}
+        />
+            </Form.Item> : null}
           </Col>
         </Row>
       </>)
