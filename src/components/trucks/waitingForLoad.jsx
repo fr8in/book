@@ -40,7 +40,7 @@ const WaitingForLoad = (props) => {
     message += `Truck No: ${record.truck_no} - ${get(record, 'truck_type.code')} \n`;
     message += `Current City: ${get(record, 'city.name')} \n`;
     message += `Driver Number: ${get(record, 'driver.mobile', '-')} \n`;
-    message += `Last Comment: ${get(record, 'last_comment.description', '-') }`;
+    message += `Comment: ${get(record, 'last_comment.description', '-') }`;
 
     return message;
 };

@@ -23,7 +23,7 @@ const PendingBalance = (props) => {
         value={<h4 className='link u' onClick={() => onShow('onhold')}> {get(partner_summary, 'partner_accounting.onhold', null) || 0}</h4>}
       />
       <LabelData
-        label='Cleared'
+        label='Invoiced'
         value={<h4 className='link u' onClick={() => onShow('cleared')}> {get(partner_summary, 'partner_accounting.cleared', null) || 0}</h4>}
       />
       {visible.onhold && <OnHoldTrips visible={visible.onhold} onHide={onHide} cardcode={partner_summary.cardcode} />}
