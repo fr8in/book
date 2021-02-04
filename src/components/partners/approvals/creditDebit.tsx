@@ -1,5 +1,5 @@
 import { Table, Input, Pagination, Tooltip, Button, Space, Checkbox, Radio } from 'antd'
-import Link from 'next/link'
+import LinkComp from '../../common/link'
 import {
     SearchOutlined,
     CommentOutlined,
@@ -18,6 +18,7 @@ import useShowHideWithRecord from '../../../hooks/useShowHideWithRecord'
 import userContext from '../../../lib/userContaxt'
 import Comment from '../../trips/tripFeedBack'
 import Approve from './accept'
+import PartnerLink from '../../common/PartnerLink'
 
 const CREDIT_DEBIT_LIST = gql`
 query trip_credit_debit($offset:Int,$limit:Int,$where:trip_credit_debit_bool_exp) {
@@ -48,6 +49,7 @@ trip_credit_debit(offset:$offset,where:$where,limit:$limit) {
           }
         }
         partner {
+          id
           cardcode
           name
           partner_connected_city {
@@ -113,18 +115,10 @@ const CreditDebit = () => {
     const { object, handleHide, handleShow } = useShowHideWithRecord(initial)
     const pending_list = filter.status_name.includes("PENDING")
 
-    const creditDebitStatus = u.creditDebitStatus
-    const typeList = u.creditDebitType
-    const region = u.regions
-
     const { role } = u
-    const access = [role.admin, role.rm, role.partner_support]
-    const approve_roles = [role.admin, role.rm, role.partner_manager, role.partner_support]
-    const reject_roles = [role.admin, role.rm, role.partner_manager, role.partner_support]
+    const access = [role.admin, role.rm, role.partner_support, role.partner_manager]
     const context = useContext(userContext)
-    const approval_access = u.is_roles(approve_roles, context)
-    const rejected_access = u.is_roles(reject_roles, context)
-
+    const approval_access = u.is_roles(access, context)
 
     const where = {
         trip_id: { _eq: filter.trip_id ? filter.trip_id : null },
@@ -177,15 +171,15 @@ const CreditDebit = () => {
         return { value: data.name, label: data.name }
     }) : []
     
-    const creditDebitList = typeList.map((data) => {
+    const creditDebitList = u.creditDebitType.map((data) => {
         return { value: data.text, label: data.text }
     })
    
-    const regionsList = region.map((data) => {
+    const regionsList = u.regions.map((data) => {
         return { value: data.text, label: data.text }
     })
     
-    const creditDebitStatusList = creditDebitStatus.map((data) => {
+    const creditDebitStatusList = u.creditDebitStatus.map((data) => {
         return { value: data.text, label: data.text }
     })
 
@@ -203,13 +197,11 @@ const CreditDebit = () => {
             setFilter({ ...filter, pending: tripCreditDebit })
         }
     }
-    const onPageChange = (value) => {
-        setFilter({ ...filter, offset: value })
-    }
+    
     const pageChange = (page, pageSize) => {
         const newOffset = page * pageSize - u.limit
         setCurrentPage(page)
-        onPageChange(newOffset)
+        setFilter({ ...filter, offset: newOffset })
     }
     const onRegionFilter = (checked) => {
         setFilter({ ...filter, region: checked })
@@ -250,9 +242,12 @@ const CreditDebit = () => {
             width: '6%',
             render: (text, record) => {
                 return (
-                    <Link href='/trips/[id]' as={`/trips/${record.trip_id} `}>
-                        <a>{text}</a>
-                    </Link>)
+                    <LinkComp
+                        type='trips'
+                        data={text}
+                        id={text}
+                    />
+              )
             },
             filterDropdown: (
                 <Input
@@ -271,6 +266,7 @@ const CreditDebit = () => {
             dataIndex: 'type',
             key: 'type',
             width: '6%',
+            filterDropdownVisible:pending_list ? false:true, 
             filterDropdown: (
                 <Checkbox.Group
                     options={creditDebitList}
@@ -306,8 +302,7 @@ const CreditDebit = () => {
                 dataIndex: 'approved_amount',
                 key: 'approved',
                 width: '10%'
-            }
-        ,
+            },
         {
             title: 'Region',
             dataIndex: 'region',
@@ -327,7 +322,21 @@ const CreditDebit = () => {
             title: 'Partner',
             key: 'partner',
             width: '10%',
-            render: (text, record) => <Truncate data={get(record, 'trip.partner.name', null)} length={12} />,
+            render: (text, record) => 
+            {
+                const name = get(record, 'trip.partner.name', null)
+                const id = get(record, 'trip.partner.id', null)
+                const cardcode = get(record, 'trip.partner.cardcode', null)
+                return (
+                    <PartnerLink
+                    type='partners'
+                    data={name}
+                    cardcode={cardcode}
+                    id={id}
+                    length={7}
+                  />
+                )
+            },
             filterDropdown: (
                 <div>
                     <Input
@@ -468,7 +477,7 @@ const CreditDebit = () => {
                                 : null}
                         </Tooltip>
                         <Tooltip title='Decline'>
-                            {rejected_access ? (
+                            {approval_access ? (
                                 <Button
                                     type='primary'
                                     shape='circle'
