@@ -191,7 +191,7 @@ const CreatePartner = (props) => {
                   rules={[{ required: true, message: 'IFSC Code is required field!' }]}
                   initialValue={get(partner_info, 'ifsc_code', null)}
                 >
-                  <Input placeholder='IFSC Code' onBlur={validateIFSC} />
+                  <Input placeholder='IFSC Code' onBlur={validateIFSC} maxLength={11}/>
                 </Form.Item>
               </Col>
               <Col xs={24} sm={8}>
