@@ -20,7 +20,7 @@ import Comment from '../../trips/tripFeedBack'
 import Approve from './accept'
 
 const CREDIT_DEBIT_LIST = gql`
-subscription trip_credit_debit($offset:Int,$limit:Int,$where:trip_credit_debit_bool_exp) {
+query trip_credit_debit($offset:Int,$limit:Int,$where:trip_credit_debit_bool_exp) {
 trip_credit_debit(offset:$offset,where:$where,limit:$limit) {
       id
       trip_id
@@ -50,6 +50,15 @@ trip_credit_debit(offset:$offset,where:$where,limit:$limit) {
         partner {
           cardcode
           name
+          partner_connected_city {
+            connected_city {
+              branch {
+                region {
+                  name
+                }
+              }
+            }
+          }
         }
       }
       responsibility {
@@ -118,16 +127,20 @@ const CreditDebit = () => {
 
 
     const where = {
-        trip_id: { _eq: !isEmpty(filter.trip_id) ? filter.trip_id : null },
+        trip_id: { _eq: filter.trip_id ? filter.trip_id : null },
         type: !isEmpty(filter.type) ? { _in: filter.type } : { _in: null },
-        credit_debit_type: { name: { _in: !isEmpty(filter.issue_type) ? filter.issue_type : null } },
+    //     _and : [{credit_debit_type: { name: { _in: !isEmpty(filter.issue_type) ? filter.issue_type : null }}}, 
+    // {credit_debit_type : {name:{_neq : 'Shortage'}}
+    // }],
+    //credit_debit_type:{_and:{name:{_in :!isEmpty(filter.issue_type) ? filter.issue_type : null }},{name:{_neq:''}}},
         credit_debit_status: { name: { _in: filter.status_name ? [filter.status_name] : null } },
         created_by: { _ilike: filter.created_by ? `%${filter.created_by}%` : null },
-        _and: {
+        _and: [{
             trip: {
-                partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } }
-            }
-        }
+                partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
+                partner_connected_city: { connected_city: { branch: { region: !isEmpty(filter.region) ? { name: { _in: filter.region } } : { name: { _in: null } } } } }
+             }
+        }]
     }
 
     const { loading, error, data } = useSubscription(
@@ -303,7 +316,7 @@ const CreditDebit = () => {
             dataIndex: 'region',
             key: 'region',
             width: '5%',
-            render: (text, record) => get(record, 'trip.branch.region.name', null),
+            render: (text, record) =>  get(record.trip, 'partner.partner_connected_city.connected_city.branch.region.name', null),
             filterDropdown: (
                 <Checkbox.Group
                     options={regionsList}
