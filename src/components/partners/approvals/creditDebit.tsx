@@ -129,7 +129,7 @@ const CreditDebit = () => {
     const where = {
         trip_id: { _eq: filter.trip_id ? filter.trip_id : null },
         type: !isEmpty(filter.type) ? { _in: filter.type } : { _in: null },
-        credit_debit_type: { name: { _in: !isEmpty(filter.issue_type) ? filter.issue_type : null }},
+        credit_debit_type:{_and:[{name: {_in: !isEmpty(filter.issue_type) ? filter.issue_type : null, _neq : 'Shortage'}}] },
         credit_debit_status: { name: { _in: filter.status_name ? [filter.status_name] : null } },
         created_by: { _ilike: filter.created_by ? `%${filter.created_by}%` : null },
         _and: [{
