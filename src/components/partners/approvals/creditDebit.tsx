@@ -129,16 +129,13 @@ const CreditDebit = () => {
     const where = {
         trip_id: { _eq: filter.trip_id ? filter.trip_id : null },
         type: !isEmpty(filter.type) ? { _in: filter.type } : { _in: null },
-    //     _and : [{credit_debit_type: { name: { _in: !isEmpty(filter.issue_type) ? filter.issue_type : null }}}, 
-    // {credit_debit_type : {name:{_neq : 'Shortage'}}
-    // }],
-    //credit_debit_type:{_and:{name:{_in :!isEmpty(filter.issue_type) ? filter.issue_type : null }},{name:{_neq:''}}},
+        credit_debit_type: { name: { _in: !isEmpty(filter.issue_type) ? filter.issue_type : null }},
         credit_debit_status: { name: { _in: filter.status_name ? [filter.status_name] : null } },
         created_by: { _ilike: filter.created_by ? `%${filter.created_by}%` : null },
         _and: [{
             trip: {
-                partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } },
-                partner_connected_city: { connected_city: { branch: { region: !isEmpty(filter.region) ? { name: { _in: filter.region } } : { name: { _in: null } } } } }
+                partner: { name: { _ilike: filter.partnername ? `%${filter.partnername}%` : null } ,
+                partner_connected_city: { connected_city: { branch: { region:  { name: { _in: !isEmpty(filter.region) ? filter.region : null } } } } } }
              }
         }]
     }
