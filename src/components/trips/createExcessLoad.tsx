@@ -2,7 +2,7 @@
 import { useState, useContext } from 'react'
 import { Modal, Button, Input, Form, Row, Col, Select, message, Checkbox } from 'antd'
 import CitySelect from '../common/citySelect'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { gql, useQuery, useMutation,useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
 import LinkComp from '../common/link'
@@ -17,6 +17,17 @@ const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
     name
   }
 }`
+
+const TRIP_DATA = gql`
+query ($customer_id: Int, $source_id: Int, $destination_id: Int, $type_id: Int) {
+  trip(where: {customer_id: {_eq: $customer_id}, source_id: {_eq: $source_id}, destination_id: {_eq: $destination_id}, truck_type: {id: {_eq: $type_id}},trip_status_id:{_eq:1}}) {
+    id
+    trip_status{
+      name
+    }
+  }
+}
+`
 
 const EXCESS_LOAD_MUTATION = gql`
 mutation create_excees_load (
@@ -85,6 +96,8 @@ const CreateExcessLoad = (props) => {
   const truck_type_list = truck_type && truck_type.map(truck => {
     return ({ value: truck.id, label: truck.name })
   })
+
+  const [getTripData, { loading: customer_branch_loading, data: customer_branch_data, error: customer_branch_error }] = useLazyQuery(TRIP_DATA)
 
   const [create_excess_load] = useMutation(
     EXCESS_LOAD_MUTATION,
