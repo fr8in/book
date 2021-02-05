@@ -324,7 +324,7 @@ const PartnerDocument = (props) => {
           </List.Item>
         </List>
         <Row justify='end' className='mt10'>
-          <Button key='submit' type='primary'htmlType='submit' disabled={!access || !_pan || !_check_leaf || !_cibil || !Reverification}  >
+          <Button key='submit' type='primary'htmlType='submit' disabled={!access || !_pan || !_check_leaf ||  !Reverification}  >
           Reverification
                     </Button> 
         </Row>

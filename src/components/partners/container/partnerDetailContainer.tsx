@@ -132,6 +132,8 @@ const PartnerDetailContainer = (props) => {
   const after_onboard = partner_status === 'Active' || partner_status === 'De-activate' || partner_status === 'Blacklisted'
   const adhocWalleTopup_validation = wallet_activate_role
 
+  const default_key = partner_status === 'Reverification' ? '3' : '1'
+
   const onCountChange = (value) => {
     setCountFilter({ ...countFilter, status: value.status, truck_no: value.truck_no })
   }
@@ -207,7 +209,7 @@ const PartnerDetailContainer = (props) => {
                           <Card size='small' className='card-body-0'>
                             <Tabs
                              className='tabExtraFix'
-                              defaultActiveKey='1'
+                              defaultActiveKey={default_key}
                               onChange={tabChange}
                               tabBarExtraContent={
                                 <span>
@@ -235,7 +237,7 @@ const PartnerDetailContainer = (props) => {
                                   <Barchart partner_id={partner_info.id} />
                                 </div>
                               </TabPane>
-                              <TabPane tab='Documents' key='3'>
+                              <TabPane tab='Documents'  key='3'>
                                 <Document partnerInfo={partner_info} />
                               </TabPane>
                               <TabPane tab='Fuel Detail' key='4'>
