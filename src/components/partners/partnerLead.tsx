@@ -20,7 +20,6 @@ import isEmpty from 'lodash/isEmpty'
 import EditAccess from '../common/editAccess'
 import Phone from '../common/phone'
 import LinkComp from '../common/link'
-import Link from 'next/link'
 import ReferredByPartner from '../partners/referredByPartnerList'
 
 const PARTNERS_LEAD_QUERY = gql`
@@ -28,6 +27,7 @@ query partner_lead_aggregate($where: partner_bool_exp, $offset: Int!, $limit: In
   partner(offset: $offset, limit: $limit, where: $where) {
     id
     name
+    cardcode
     created_at
     lead_priority
     referred_by {
@@ -242,11 +242,12 @@ const PartnerLead = (props) => {
   
   const partners = get(lead_data, 'partner', [])
   const referredByName = get(partners, 'referred_by.name', null)
+  
 
   
 
   const partner_aggregate = get(lead_data, 'partner_aggregate', 0)
-  const partners_status = ["Lead","Registered","Rejected","Verification"]
+  const partners_status = ["Lead","Registered","Rejected","Verification","Reverification"]
   const channel = get(lead_data, 'channel', [])
 
   const record_count = get(partner_aggregate, 'aggregate.count', 0)
@@ -296,7 +297,12 @@ const PartnerLead = (props) => {
       render: (text, record) => {
         <Truncate data={text} length={9} />
         const id = get(record, 'id', null)
+        const status = get(record,'partner_status.name',null)
+        const cardcode = get(record,'cardcode',null)
+        const name = get(record,'name',null)
         return (
+          status === 'Reverification' ?
+          <LinkComp type='partners' data={name} id={cardcode} length={8} /> :
           <LinkComp type='partners/create-partner' data={text} id={id} length={8} />
         )
       }
