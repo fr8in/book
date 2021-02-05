@@ -39,6 +39,15 @@ const util = {
     {value: 7, text: 'Loading Halting'},
     {value: 8, text: 'Unloading Halting'}
   ],
+  creditDebitType:[
+    { value: 1, text: 'C' },
+    { value: 2, text: 'D' }
+  ],
+  creditDebitStatus:[
+    { value: 1, text: 'APPROVED' },
+    { value: 2, text: 'PENDING' },
+    { value: 3, text: 'REJECTED' }
+  ],
   regions: [
     { value: 1, text: 'North' },
     { value: 2, text: 'South-1' },

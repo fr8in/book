@@ -32,7 +32,7 @@ const PartnerDocument = (props) => {
   const { partnerInfo } = props
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.admin, role.partner_manager, role.onboarding]
+  const edit_access = [role.admin, role.partner_manager, role.onboarding, role.rm]
   const access = u.is_roles(edit_access,context)
 
   const files = partnerInfo.partner_files

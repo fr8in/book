@@ -2,6 +2,7 @@ import { Modal, Table } from 'antd'
 import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
 import moment from 'moment'
+import Link from 'next/link'
 
 const PARTNER_CLEARED_TRIPS = gql`
 query partner_invoiced($id: Int!){
@@ -46,7 +47,13 @@ const ClearedList = (props) => {
       title: 'Trip Id',
       dataIndex: 'trip_id',
       width: '20%',
-      sorter: (a, b) => (a.trip_id - b.trip_id)
+      sorter: (a, b) => (a.trip_id - b.trip_id),
+      render: (text, record) => {
+        return (
+            <Link href='/trips/[id]' as={`/trips/${text} `}>
+                <a>{text}</a>
+            </Link>)
+    },
     },
     {
       title: 'AP Date',
