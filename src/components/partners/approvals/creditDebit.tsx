@@ -266,7 +266,6 @@ const CreditDebit = () => {
             dataIndex: 'type',
             key: 'type',
             width: '6%',
-            filterDropdownVisible:pending_list ? false:true, 
             filterDropdown: (
                 <Checkbox.Group
                     options={creditDebitList}
