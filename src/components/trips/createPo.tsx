@@ -169,9 +169,8 @@ const CreatePo = (props) => {
   const [getCityData,{ loading: city_loading, error:city_error, data:_city_data }] = useLazyQuery(CITY_DATA,
     {
       onCompleted (data) {
-        console.log('data',get(data,'city[0].branch.id',null))
           if(!get(data,'city[0].branch.id',null)) {
-      message.error("Selected source city doesn't mapped with branch")
+      message.warning("Selected source city doesn't mapped with branch")
           } else {
             getCustomerBranchData({
               variables: {
