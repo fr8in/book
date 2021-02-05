@@ -152,24 +152,26 @@ const ConfirmPo = (props) => {
   const [isToPay, setIsToPay] = useState(false)
   const context = useContext(userContext)
 
-  const { loading: city_loading, error:city_error, data:_city_data } = useQuery(
-    CITY_DATA,
+  const [getCityData,{ loading: city_loading, error:city_error, data:_city_data }] = useLazyQuery(CITY_DATA,
     {
-      variables: {city_id:parseInt(obj.source_id, 10) },
+      onCompleted (data) {
+        console.log('data',get(data,'city[0].branch.id',null))
+          if(!get(data,'city[0].branch.id',null)) {
+      message.error("Selected source city doesn't mapped with branch")
+          } else {
+            getCustomerBranchData({
+              variables: {
+                customer_id:get(customer,'id',null),
+                type_id:get(po_data,'truck_type.truck_type_group_id',null),
+                branch_id:get(data,'city[0].branch.id',null)
+              }
+            })
+          }
+      }
     }
-  )
+    )
   
-  let city_data = {}
-  if (!city_loading) {
-    city_data = _city_data
-  }
-
-  console.log('_city_data',_city_data,parseInt(obj.source_id, 10))
-
-  const city_branch_data = get(_city_data,'city[0].branch.id',null)
-
-  console.log('city_branch_data',city_branch_data)
-
+ 
   const { loading, error, data } = useQuery(
     PO_QUERY,
     {
@@ -225,7 +227,6 @@ const ConfirmPo = (props) => {
 
   const customer_branch_employee = get(customer_data, 'customer_branch_employee[0]', [])
     const customer_branch_employee_name = get(customer_branch_employee,'branch_employee.employee.name',null)
-    console.log('customer_branch_employee_name',customer_branch_employee_name)
 
   const onSubmit = (form) => {
     const loading_charge = form.charge_inclue.includes('Loading')
@@ -301,24 +302,14 @@ const ConfirmPo = (props) => {
     }
   }
 
-  const onBranchEmployeeChange = () => {
-    console.log('dddddddd',get(customer,'id',null),get(po_data,'truck_type.truck_type_group_id',null), city_branch_data)
-    if(!city_branch_data) {
-message.error("Selected source city doesn't mapped with branch")
-    } else {
-      getCustomerBranchData({
-        variables: {
-          customer_id:get(customer,'id',null),
-          type_id:get(po_data,'truck_type.truck_type_group_id',null),
-          branch_id: city_branch_data
-        }
-      })
-    }
-    
-  }
+  
   const onSourceChange = (city_id) => {
     setObj({ ...obj, source_id: city_id })
-    onBranchEmployeeChange()
+    getCityData(
+      {
+        variables: {city_id:city_id},
+      }
+    )
   }
 
   const onDestinationChange = (city_id) => {
@@ -402,7 +393,7 @@ message.error("Selected source city doesn't mapped with branch")
                 form={form}
                 customer={customer}
                 record={record}
-                customer_branch_employee_name={customer_branch_employee_name}
+                customer_branch_employee_name={obj.source_id ? customer_branch_employee_name :  get(record,'branch_employee.employee.name',null)}
               />}
           </Col>
           <Col xs={24} sm={10}>

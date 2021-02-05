@@ -166,19 +166,24 @@ const CreatePo = (props) => {
     }
   )
 
-  const [getCityData,{ loading: city_loading, error:city_error, data:_city_data }] = useLazyQuery(
-    CITY_DATA,
+  const [getCityData,{ loading: city_loading, error:city_error, data:_city_data }] = useLazyQuery(CITY_DATA,
     {
-      variables: {city_id: parseInt(obj.source_id, 10)},
+      onCompleted (data) {
+        console.log('data',get(data,'city[0].branch.id',null))
+          if(!get(data,'city[0].branch.id',null)) {
+      message.error("Selected source city doesn't mapped with branch")
+          } else {
+            getCustomerBranchData({
+              variables: {
+                customer_id:get(customer,'id',null),
+                type_id:get(po_data,'truck_type.truck_type_group_id',null),
+                branch_id:get(data,'city[0].branch.id',null)
+              }
+            })
+          }
+      }
     }
-  )
-  
-  let city_data = {}
-  if (!city_loading) {
-    city_data = _city_data
-  }
-  const city_branch_data = get(_city_data,'city[0].branch.id',null)
- 
+    )
 
   const { loading: search_loading, error: search_error, data: search_data } = useQuery(
     CUSTOMER_SEARCH,
@@ -332,25 +337,15 @@ const CreatePo = (props) => {
     }
   }
 
-  const onBranchEmployeeChange = () => {
-    console.log('dddddddd',get(customer,'id',null),get(po_data,'truck_type.truck_type_group_id',null), city_branch_data)
-    if(!city_branch_data) {
-message.error("Selected source city doesn't mapped with branch")
-    } else {
-      getCustomerBranchData({
-        variables: {
-          customer_id:get(customer,'id',null),
-          type_id:get(po_data,'truck_type.truck_type_group_id',null),
-          branch_id: city_branch_data
-        }
-      })
-    }
-  }
+ 
  
   const onSourceChange = (city_id) => {
     setObj({ ...obj, source_id: city_id })
-    getCityData(city_id)
-    onBranchEmployeeChange()
+    getCityData(
+      {
+        variables: {city_id:city_id},
+      }
+    )
   }
 
   const onDestinationChange = (city_id) => {
