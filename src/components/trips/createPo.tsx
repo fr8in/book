@@ -197,11 +197,7 @@ const CreatePo = (props) => {
 
   const [getCustomerData, { loading: cus_loading, data: cus_data, error: cus_error }] = useLazyQuery(CUSTOMER_PO_DATA)
 
-   const [getCustomerBranchData, { loading: customer_branch_loading, data: customer_branch_data, error: customer_branch_error }] = useLazyQuery(CUSTOMER_BRANCH_EMPLOYEE_DATA,
-    {
-      fetchPolicy: 'network-only'
-    }
-    )
+   const [getCustomerBranchData, { loading: customer_branch_loading, data: customer_branch_data, error: customer_branch_error }] = useLazyQuery(CUSTOMER_BRANCH_EMPLOYEE_DATA)
 
 
   const [create_po_mutation] = useMutation(
