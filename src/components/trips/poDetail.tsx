@@ -55,14 +55,9 @@ const PoDetail = (props) => {
                 <Checkbox value='Unloading'>Unloading</Checkbox>
               </Checkbox.Group>
             </Form.Item>
-            {customer_branch_employee_name ?
             <Form.Item label='Customer Branch Employee'>
-            <LabelWithData
-          data={customer_branch_employee_name }
-          labelSpan={10}
-          dataSpan={14}
-        />
-            </Form.Item> : null}
+        <h4>{customer_branch_employee_name }</h4>
+            </Form.Item>
           </Col>
         </Row>
       </>)

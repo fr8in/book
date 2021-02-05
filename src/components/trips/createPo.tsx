@@ -150,6 +150,7 @@ const CreatePo = (props) => {
   const [driver_id, setDriver_id] = useState(null)
   const [disableBtn, setDisableBtn] = useState(false)
   const [isToPay, setIsToPay] = useState(false)
+  
 
   const [form] = Form.useForm()
   const initial = { search: '', source_id: null, destination_id: null }
@@ -165,20 +166,24 @@ const CreatePo = (props) => {
     }
   )
 
-  const { loading: city_loading, error:city_error, data:_city_data } = useQuery(
-    CITY_DATA,
+  const [getCityData,{ loading: city_loading, error:city_error, data:_city_data }] = useLazyQuery(CITY_DATA,
     {
-      variables: {city_id:parseInt(obj.source_id, 10) },
+      onCompleted (data) {
+        console.log('data',get(data,'city[0].branch.id',null))
+          if(!get(data,'city[0].branch.id',null)) {
+      message.error("Selected source city doesn't mapped with branch")
+          } else {
+            getCustomerBranchData({
+              variables: {
+                customer_id:get(customer,'id',null),
+                type_id:get(po_data,'truck_type.truck_type_group_id',null),
+                branch_id:get(data,'city[0].branch.id',null)
+              }
+            })
+          }
+      }
     }
-  )
-  
-  let city_data = {}
-  if (!city_loading) {
-    city_data = _city_data
-  }
-
-  const city_branch_data = get(_city_data,'city[0].branch.id',null)
- 
+    )
 
   const { loading: search_loading, error: search_error, data: search_data } = useQuery(
     CUSTOMER_SEARCH,
@@ -192,7 +197,7 @@ const CreatePo = (props) => {
 
   const [getCustomerData, { loading: cus_loading, data: cus_data, error: cus_error }] = useLazyQuery(CUSTOMER_PO_DATA)
 
-  const [getCustomerBranchData, { loading: customer_branch_loading, data: customer_branch_data, error: customer_branch_error }] = useLazyQuery(CUSTOMER_BRANCH_EMPLOYEE_DATA )
+   const [getCustomerBranchData, { loading: customer_branch_loading, data: customer_branch_data, error: customer_branch_error }] = useLazyQuery(CUSTOMER_BRANCH_EMPLOYEE_DATA)
 
 
   const [create_po_mutation] = useMutation(
@@ -240,6 +245,8 @@ const CreatePo = (props) => {
 
   const customerSearch = get(_search_data, 'search_customer', '')
   const po_data = get(data, 'truck[0]', null)
+
+ 
  
 
   let customer_data = {}
@@ -327,20 +334,14 @@ const CreatePo = (props) => {
   }
 
  
-
-
-  const onBranchEmployeeChange = () => {
-    getCustomerBranchData({
-      variables: {
-        customer_id:get(customer,'id',null),
-        type_id:get(po_data,'truck_type.truck_type_group_id',null),
-        branch_id:city_branch_data
-      }
-    })
-  }
+ 
   const onSourceChange = (city_id) => {
     setObj({ ...obj, source_id: city_id })
-    onBranchEmployeeChange()
+    getCityData(
+      {
+        variables: {city_id:city_id},
+      }
+    )
   }
 
   const onDestinationChange = (city_id) => {
