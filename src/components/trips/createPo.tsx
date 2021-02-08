@@ -73,6 +73,7 @@ query customers_po($id:Int!){
       name
     }
     system_mamul
+    standard_mamul
   }
   config(where:{key:{_eq:"trip"}}){
     value
@@ -239,7 +240,9 @@ const CreatePo = (props) => {
   const customer = get(_cus_data, 'customer[0]', null)
   const trip_max_price = get(_cus_data, 'config[0].value.trip_max_price', null)
   const system_mamul = get(customer, 'system_mamul', null)
+  const standard_mamul = get(customer, 'standard_mamul', null)
 
+  const mamul = Math.max(system_mamul, standard_mamul)
   if (loading) return null
 
   const customerSearch = get(_search_data, 'search_customer', '')
@@ -269,7 +272,7 @@ const CreatePo = (props) => {
       message.error('Customer to Partner, Total and cash is miss matching')
     } else if (parseInt(form.p_total) > form.customer_price) {
       message.error('Customer to Partner should be less than or euqal to customer price')
-    } else if (system_mamul > parseFloat(form.mamul)) {
+    } else if (mamul > parseFloat(form.mamul)) {
       message.error('Mamul Should be greater than system mamul!')
     } else {
       setDisableBtn(true)
@@ -452,6 +455,7 @@ const CreatePo = (props) => {
                 form={form}
                 customer={customer}
                 loading={cus_loading}
+                mamul={mamul}
               />}
               </>}
           </Col>
