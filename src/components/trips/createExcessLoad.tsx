@@ -183,7 +183,7 @@ const CreateExcessLoad = (props) => {
       },
       onCompleted (data) {
         const load_id = get(data, 'insert_trip.returning[0].id', null)
-        message.success(`ExcessLoad ${load_id} Created!`)
+        message.success(`Load: ${load_id} Created!`)
         setObj(initial)
         props.onHide()
       }
@@ -198,7 +198,7 @@ const CreateExcessLoad = (props) => {
         message.error(error.toString())
       },
       onCompleted () {
-        message.success(`ExcessLoad ${trip_id} Created!`)
+        message.success(`Load: ${trip_id} Updated!`)
       props.onHide()
      }
 
