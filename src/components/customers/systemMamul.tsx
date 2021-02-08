@@ -1,7 +1,8 @@
 import React from 'react'
-import { Modal, Table, Button } from 'antd'
-import { gql, useSubscription } from '@apollo/client'
+import { Modal, Table, Button ,Space,message} from 'antd'
+import { gql, useSubscription ,useMutation} from '@apollo/client'
 import get from 'lodash/get'
+import EditableCell from '../common/editableCell';
 
 const SYSTEM_MAMUL = gql`
 subscription customer_mamul_summary($cardcode: String!) {
@@ -18,9 +19,14 @@ subscription customer_mamul_summary($cardcode: String!) {
   }
 }`
 
+const UPDATE_STANDARD_MAMUL = gql `mutation updateStandardMamul($cardcode: String!, $standard_mamul: float8!) {
+  update_customer(where: {cardcode: {_eq: $cardcode}}, _set: {standard_mamul: $standard_mamul}) {
+    affected_rows
+  }
+}
+`
 const SystemMamul = (props) => {
-  const { visible, onHide, cardcode } = props
-
+  const { visible, onHide, cardcode, edit_access,standard_mamul } = props
   const { loading, error, data } = useSubscription(
     SYSTEM_MAMUL, { variables: { cardcode } }
   )
@@ -44,6 +50,29 @@ const SystemMamul = (props) => {
     customer_mamul_summary.push(mamul_summary)
     customer_mamul_summary.push(mamul_summary_avg)
   }
+
+  const updateMamul =  (value) => {
+    updateStandardMamul({
+      variables:{
+        cardcode: cardcode,
+        standard_mamul:value
+      }
+    })
+  }
+  const [updateStandardMamul] = useMutation(
+    UPDATE_STANDARD_MAMUL,
+    {
+      onError (error) {
+        message.error(error.toString())
+      },
+      onCompleted () {
+        message.success('Updated!!')
+        onHide()
+      }
+
+    }
+  )
+
   const columns = [
     {
       title: '',
@@ -98,7 +127,17 @@ const SystemMamul = (props) => {
     <>
       <Modal
         visible={visible}
-        title='System Mamul'
+        title={
+          <Space>
+            <span>System Mamul</span>
+            <span>Standard Mamul</span>
+            <span className='text'>
+            <EditableCell
+              label={standard_mamul}
+              onSubmit={(value)=>updateMamul(value)}
+              edit_access={edit_access}
+            /></span>
+          </Space>}
         width='90%'
         onCancel={onHide}
         footer={[
