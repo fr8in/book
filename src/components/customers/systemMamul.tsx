@@ -51,18 +51,6 @@ const SystemMamul = (props) => {
     customer_mamul_summary.push(mamul_summary_avg)
   }
 
-  const updateMamul =  (value) => {
-    if(system_mamul> value) {
-      message.error('Standard mamul cannot be less than System mamul')
-    }
-    else {
-    updateStandardMamul({
-      variables:{
-        cardcode: cardcode,
-        standard_mamul:value
-      }
-    })
-  }}
   const [updateStandardMamul] = useMutation(
     UPDATE_STANDARD_MAMUL,
     {
@@ -77,6 +65,19 @@ const SystemMamul = (props) => {
     }
   )
 
+  const updateMamul =  (value) => {
+    if(system_mamul < value ) {
+      updateStandardMamul({
+        variables:{
+          cardcode: cardcode,
+          standard_mamul:value
+        }
+      })
+    }
+    else {
+      message.error('Standard mamul cannot be less than System mamul')
+    }
+  }
   const columns = [
     {
       title: '',
