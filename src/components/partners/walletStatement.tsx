@@ -88,13 +88,14 @@ const WalletStatement = (props) => {
   })
 
   return (
+    <div>
     <Drawer
       title={`Wallet: ₹${wallet_balance ? wallet_balance.toFixed(2) : 0}`}
       placement='right'
       closable
       onClose={onHide}
       visible={visible}
-      width={500}
+      width={window.innerWidth > 510 ? 510 : '100%'} 
     >
       {loading ? <Loading /> : (
         <div className='walletList'>
@@ -162,6 +163,7 @@ const WalletStatement = (props) => {
           })}
         </div>)}
     </Drawer>
+    </div>
   )
 }
 
