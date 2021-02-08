@@ -52,13 +52,17 @@ const SystemMamul = (props) => {
   }
 
   const updateMamul =  (value) => {
+    if(system_mamul> value) {
+      message.error('Standard mamul cannot be less than System mamul')
+    }
+    else {
     updateStandardMamul({
       variables:{
         cardcode: cardcode,
         standard_mamul:value
       }
     })
-  }
+  }}
   const [updateStandardMamul] = useMutation(
     UPDATE_STANDARD_MAMUL,
     {
@@ -129,8 +133,8 @@ const SystemMamul = (props) => {
         visible={visible}
         title={
           <Space>
-            <span>System Mamul {system_mamul}</span>
-            <span>Standard Mamul</span>
+            <span style={{fontSize:14}}>{`System Mamul ${system_mamul}`}</span>
+            <span style={{fontSize:14}}>Standard Mamul</span>
             <span className='text'>
             <EditableCell
               label={standard_mamul}
