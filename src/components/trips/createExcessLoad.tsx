@@ -115,15 +115,15 @@ const CreateExcessLoad = (props) => {
 
   const [getTripData, { loading: trip_loading, data: trip_data, error: trip_error }] = useLazyQuery(TRIP_DATA,
     {
-      onCompleted (data) {
-        if (data.trip[0].id) {
+      onCompleted () {
+        if (trip_id) {
           if ((parseInt(form.getFieldValue('price')) < 0) || form.getFieldValue('ton') < 0) {
             message.error('Customer Price and Ton should be positive!')
           } else {
             setObj({ ...obj, disableButton: true })
             updateExcessLoad({
               variables: {
-                trip_id : data.trip[0].id,
+                trip_id : trip_id,
                 source_id: parseInt(obj.source_id, 10),
                 destination_id: parseInt(obj.destination_id, 10),
                 customer_id: parseInt(obj.customer_id, 10),
@@ -164,6 +164,14 @@ const CreateExcessLoad = (props) => {
       }
     }
     )
+
+  let _trip_data = {}
+  if (!trip_loading) {
+    _trip_data = trip_data
+  }
+  
+
+  const trip_id = get(_trip_data, 'trip[0].id', null)
 
   const [create_excess_load] = useMutation(
     EXCESS_LOAD_MUTATION,
@@ -238,6 +246,7 @@ const CreateExcessLoad = (props) => {
     setCus_price(ratePerTon)
   }
 
+ 
 
   const onCreateLoad = (form) => {
     getTripData(
