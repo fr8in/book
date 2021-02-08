@@ -88,7 +88,6 @@ const WalletStatement = (props) => {
   })
 
   return (
-    <div>
     <Drawer
       title={`Wallet: ₹${wallet_balance ? wallet_balance.toFixed(2) : 0}`}
       placement='right'
@@ -163,7 +162,6 @@ const WalletStatement = (props) => {
           })}
         </div>)}
     </Drawer>
-    </div>
   )
 }
 
