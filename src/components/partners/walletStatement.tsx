@@ -109,7 +109,7 @@ const WalletStatement = (props) => {
                     const referrence_number = get(transactionData, 'transaction_refno', null)
                     return (
                       isEmpty(transactionData.mode) ? '' : (
-                        <Row key={i}>
+                        <Row key={i} gutter={6}>
                           <Col span={15}>
                             <p><b>{transactionData.mode} {transactionData.trip_id || ''}</b>{get(transactionData, 'route', null) ? `- ${transactionData.route}` : ''}</p>
                             <p>{transactionData.mode === "Reversal( Paid To Bank )" ? get(transactionData, 'transaction_refno', null) :
