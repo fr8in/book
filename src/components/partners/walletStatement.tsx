@@ -94,7 +94,7 @@ const WalletStatement = (props) => {
       closable
       onClose={onHide}
       visible={visible}
-      width={550}
+      width={500}
     >
       {loading ? <Loading /> : (
         <div className='walletList'>
@@ -151,7 +151,7 @@ const WalletStatement = (props) => {
                             </span>
                           </Col>
                           <Col span={6} className='text-right'>
-                          <span>{`₹${transactionData.running_total}`}</span>
+                          <span>{transactionData.running_total ? `₹${transactionData.running_total}` : ''}</span>
                           </Col>
                         </Row>)
                     )
