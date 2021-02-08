@@ -110,7 +110,7 @@ const WalletStatement = (props) => {
                     return (
                       isEmpty(transactionData.mode) ? '' : (
                         <Row key={i}>
-                          <Col span={16}>
+                          <Col span={15}>
                             <p><b>{transactionData.mode} {transactionData.trip_id || ''}</b>{get(transactionData, 'route', null) ? `- ${transactionData.route}` : ''}</p>
                             <p>{transactionData.mode === "Reversal( Paid To Bank )" ? get(transactionData, 'transaction_refno', null) :
                               transactionData.mode === "Paid To Bank"
@@ -145,12 +145,12 @@ const WalletStatement = (props) => {
                               && <p>{'#' + transactionData.trip_id}, {get(transactionData, 'trip.source.name', null)} - {get(transactionData, 'trip.destination.name', null)}</p>
                             }
                           </Col>
-                          <Col span={2} className='text-right'>
+                          <Col span={4} className='text-right'>
                             <span className={transactionData.amount > 0 ? 'creditAmount'  : 'debitAmount'}>
                              {transactionData.amount > 0 ? `₹+${transactionData.amount}` : `₹${transactionData.amount}`}
                             </span>
                           </Col>
-                          <Col span={6} className='text-right'>
+                          <Col span={5} className='text-right'>
                           <span>{transactionData.running_total ? `₹${transactionData.running_total}` : ''}</span>
                           </Col>
                         </Row>)
