@@ -36,6 +36,7 @@ export const CUSTOMER_DETAIL_SUBSCRIPTION = gql`
     id
     cardcode
     walletcode
+    standard_mamul
     name
     mobile
     approved_by_id

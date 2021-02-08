@@ -1,7 +1,6 @@
 import { Row, Avatar } from 'antd'
 import LabelAndData from '../common/labelAndData'
 import SystemMamul from '../customers/systemMamul'
-// import mockData from '../../../mock/customer/customerDetail'
 import useShowHide from '../../hooks/useShowHide'
 import ManagedCustomer from './managedCustomer'
 import CustomerType from './customerType'
@@ -18,6 +17,7 @@ const CustomerInfo = (props) => {
   const paymentManagerEdit = [role.admin, role.accounts_manager]
   const exceptionDateEdit = [role.admin, role.accounts_manager]
   const managedCustomerEdit = [role.admin, role.accounts_manager]
+  const customerMamulEdit = [role.admin,role.rm]
   const modelInitial = { mamulVisible: false }
   const { visible, onHide, onShow } = useShowHide(modelInitial)
   const system_mamul = get(customer_info, 'system_mamul', 0)
@@ -94,7 +94,7 @@ const CustomerInfo = (props) => {
         /> */}
       </Row>
       {visible.mamulVisible && (
-        <SystemMamul visible={visible.mamulVisible} onHide={onHide} cardcode={customer_info.cardcode} />
+        <SystemMamul visible={visible.mamulVisible} onHide={onHide} cardcode={customer_info.cardcode} edit_access = {customerMamulEdit} standard_mamul={get(customer_info,'standard_mamul',0)}/>
       )}
     </>
   )
