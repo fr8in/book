@@ -94,7 +94,8 @@ const WalletStatement = (props) => {
       closable
       onClose={onHide}
       visible={visible}
-      width={window.innerWidth > 510 ? 510 : '100%'} 
+      className='statement'
+     // width={window.innerWidth > 510 ? 510 : '100%'} 
     >
       {loading ? <Loading /> : (
         <div className='walletList'>
