@@ -2,7 +2,7 @@ import userContext from '../../lib/userContaxt'
 import { useState, useContext } from 'react'
 import { Modal, Row, Button, Form, Col, Select, Divider, message, Checkbox } from 'antd'
 import Link from 'next/link'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { gql, useQuery, useMutation ,useLazyQuery} from '@apollo/client'
 import PoDetail from './poDetail'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
@@ -18,6 +18,7 @@ query po_query($id: Int!, $cus_id: Int!){
     truck_type{
       id
       name
+      truck_type_group_id
     }
     partner{
       id
@@ -52,6 +53,32 @@ query po_query($id: Int!, $cus_id: Int!){
     value
   }
 }`
+
+const CITY_DATA = gql`
+query($city_id:Int){
+  city(where:{id:{_eq:$city_id}}){
+    branch{
+      id
+    }
+  }
+}
+`
+
+const CUSTOMER_BRANCH_EMPLOYEE_DATA = gql`
+query($customer_id:Int,$type_id:Int,$branch_id:Int){
+  customer_branch_employee(where:{customer_id:{_eq:$customer_id},truck_type_group:{id:{_eq:$type_id}},branch_employee:{branch_id:{_eq:$branch_id}}}){
+    customer_id
+    branch_employee{
+      branch{
+        id
+      }
+      employee{
+        name
+      }
+    }
+  }
+}
+`
 
 const CONFIRM_PO = gql`
 mutation confirm_po(
@@ -125,6 +152,25 @@ const ConfirmPo = (props) => {
   const [isToPay, setIsToPay] = useState(false)
   const context = useContext(userContext)
 
+  const [getCityData,{ loading: city_loading, error:city_error, data:_city_data }] = useLazyQuery(CITY_DATA,
+    {
+      onCompleted (data) {
+          if(!get(data,'city[0].branch.id',null)) {
+      message.warning("Selected source city doesn't mapped with branch")
+          } else {
+            getCustomerBranchData({
+              variables: {
+                customer_id:get(customer,'id',null),
+                type_id:get(po_data,'truck_type.truck_type_group_id',null),
+                branch_id:get(data,'city[0].branch.id',null)
+              }
+            })
+          }
+      }
+    }
+    )
+  
+ 
   const { loading, error, data } = useQuery(
     PO_QUERY,
     {
@@ -133,6 +179,8 @@ const ConfirmPo = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
+
+  const [getCustomerBranchData, { loading: customer_branch_loading, data: customer_branch_data, error: customer_branch_error }] = useLazyQuery(CUSTOMER_BRANCH_EMPLOYEE_DATA )
 
   const [confirm_po_mutation] = useMutation(
     CONFIRM_PO,
@@ -170,6 +218,15 @@ const ConfirmPo = (props) => {
 
   const origin_name = get(record,'leads[0].channel_id',record && record.origin && record.origin.name)  
    
+  let customer_data = {}
+  if (!customer_branch_loading) {
+    customer_data = customer_branch_data
+  }
+  
+
+  const customer_branch_employee = get(customer_data, 'customer_branch_employee[0]', [])
+    const customer_branch_employee_name = get(customer_branch_employee,'branch_employee.employee.name',null)
+
   const onSubmit = (form) => {
     const loading_charge = form.charge_inclue.includes('Loading')
     const unloading_charge = form.charge_inclue.includes('Unloading')
@@ -244,8 +301,14 @@ const ConfirmPo = (props) => {
     }
   }
 
+  
   const onSourceChange = (city_id) => {
     setObj({ ...obj, source_id: city_id })
+    getCityData(
+      {
+        variables: {city_id:city_id},
+      }
+    )
   }
 
   const onDestinationChange = (city_id) => {
@@ -329,6 +392,7 @@ const ConfirmPo = (props) => {
                 form={form}
                 customer={customer}
                 record={record}
+                customer_branch_employee_name={obj.source_id ? customer_branch_employee_name :  get(record,'branch_employee.employee.name',null)}
               />}
           </Col>
           <Col xs={24} sm={10}>

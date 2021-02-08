@@ -32,7 +32,7 @@ const PartnerDocument = (props) => {
   const { partnerInfo } = props
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.admin, role.partner_manager, role.onboarding]
+  const edit_access = [role.admin, role.partner_manager, role.onboarding, role.rm]
   const access = u.is_roles(edit_access,context)
 
   const files = partnerInfo.partner_files
@@ -324,7 +324,7 @@ const PartnerDocument = (props) => {
           </List.Item>
         </List>
         <Row justify='end' className='mt10'>
-          <Button key='submit' type='primary'htmlType='submit' disabled={!access || !_pan || !_check_leaf || !_cibil || !Reverification}  >
+          <Button key='submit' type='primary'htmlType='submit' disabled={!access || !_pan || !_check_leaf ||  !Reverification}  >
           Reverification
                     </Button> 
         </Row>
