@@ -152,8 +152,9 @@ const CreateExcessLoad = (props) => {
 
 const [getTripData, { loading: trip_loading, data: trip_data, error: trip_error }] = useLazyQuery(TRIP_DATA,
   {
-    onCompleted () {
-    trip_id ? onUpdateLoad() : onCreateLoad()
+    onCompleted (data) {
+      const id = get(data,'trip[0].id', null)
+      id ? onUpdateLoad() : onCreateLoad()
 }
   }
   )
