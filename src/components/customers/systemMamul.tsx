@@ -26,7 +26,7 @@ const UPDATE_STANDARD_MAMUL = gql `mutation updateStandardMamul($cardcode: Strin
 }
 `
 const SystemMamul = (props) => {
-  const { visible, onHide, cardcode, edit_access,standard_mamul } = props
+  const { visible, onHide, cardcode, edit_access,standard_mamul,system_mamul } = props
   const { loading, error, data } = useSubscription(
     SYSTEM_MAMUL, { variables: { cardcode } }
   )
@@ -129,7 +129,7 @@ const SystemMamul = (props) => {
         visible={visible}
         title={
           <Space>
-            <span>System Mamul</span>
+            <span>System Mamul {system_mamul}</span>
             <span>Standard Mamul</span>
             <span className='text'>
             <EditableCell
