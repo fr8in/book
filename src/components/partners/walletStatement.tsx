@@ -6,6 +6,7 @@ import {
   CheckCircleOutlined,
   InfoCircleOutlined
 } from '@ant-design/icons'
+import isNil from 'lodash/isNil';
 import isEmpty from 'lodash/isEmpty'
 
 const PARTNER_WALLET_STATEMENT_QUERY = gql`
@@ -152,7 +153,7 @@ const WalletStatement = (props) => {
                             </span>
                           </Col>
                           <Col span={5} className='text-right'>
-                          <span>{transactionData.running_total ? `₹${transactionData.running_total}` : ''}</span>
+                          <span>{isNil(transactionData.running_total) ? '': `₹${transactionData.running_total}`}</span>
                           </Col>
                         </Row>)
                     )
