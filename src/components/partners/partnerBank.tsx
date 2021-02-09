@@ -118,7 +118,7 @@ const EditBank = (props) => {
             rules={[{ required: true }]}
             initialValue={get(partner_info, 'display_account_number', null)}
           >
-            <Input placeholder=' Account Number' />
+            <Input placeholder=' Account Number' type='number'/>
           </Form.Item>
           <Form.Item
             name='comment'
