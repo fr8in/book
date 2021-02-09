@@ -15,7 +15,8 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
         cities(where: {trucks: {id: {_is_null: false}}}) {
           id
           name
-          trucks(where: {truck_status: {name: {_eq: "Waiting for Load"}}, truck_no: {_ilike: $truck_no}, truck_type: {id: {_in: $truck_type}}, partner: {partner_status: {name: {_eq: "Active"}}}, _or: [{partner: {dnd: {_neq: $dnd}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
+          trucks(where: {truck_status: {name: {_eq: "Waiting for Load"}}, truck_no: {_ilike: $truck_no}, truck_type: {id: {_in: $truck_type}}, 
+             partner: {partner_status: {name: {_eq: "Active"}}, dnd: {_neq: true}}}   ) {
             id
             truck_no
             truck_type {

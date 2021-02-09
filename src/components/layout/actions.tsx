@@ -28,12 +28,14 @@ query global_truck_type_filter($now: timestamp, $regions: [Int!], $branches: [In
   truck_type(where: {active: {_eq: true}}) {
     id
     shortname
-    trucks_type_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}, partner: {partner_status: {name: {_eq: "Active"}}}, city: {connected_city: {branch_id: {_in: $branches}, branch: {region_id: {_in: $regions}}, id: {_in: $cities}}}, _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
+    trucks_type_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}, city: {connected_city: {branch_id: {_in: $branches}, branch: {region_id: {_in: $regions}}, id: {_in: $cities}}},partner: {partner_status: {name: {_eq: "Active"}}, dnd: {_neq: true}}}) {
       aggregate {
         count
       }
     }
-    trucks_type_current: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}, available_at: {_lte: $now}, city: {connected_city: {branch_id: {_in: $branches}, branch: {region_id: {_in: $regions}}, id: {_in: $cities}}}, partner: {partner_status: {name: {_eq: "Active"}}}, _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
+    trucks_type_current: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}, available_at: {_lte: $now}, city: {connected_city: {branch_id: {_in: $branches}, branch: {region_id: {_in: $regions}}, id: {_in: $cities}}}, 
+    partner: {partner_status: {name: {_eq: "Active"}}, dnd: {_neq: true}}}
+    ) {
       aggregate {
         count
       }
@@ -63,12 +65,15 @@ query gloabl_filter($now: timestamp, $regions: [Int!], $branches: [Int!], $citie
         cities {
           id
           name
-          trucks_total: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, {partner: {partner_status: {name: {_eq: "Active"}}}}], _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
+          trucks_total: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, 
+             {partner: {partner_status: {name: {_eq: "Active"}}, dnd: {_neq: true}}} ]}) {
             aggregate {
               count
             }
           }
-          trucks_current: trucks_aggregate(where: {_and: [{available_at: {_lte: $now}}, {truck_status: {name: {_eq: "Waiting for Load"}}}, {partner: {partner_status: {name: {_eq: "Active"}}}}], _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
+          trucks_current: trucks_aggregate(where: {_and: [{available_at: {_lte: $now}}, {truck_status: {name: {_eq: "Waiting for Load"}}}, 
+            {partner: {partner_status: {name: {_eq: "Active"}}, dnd: {_neq: true}}}
+          ]}) {
             aggregate {
               count
             }
@@ -78,6 +83,7 @@ query gloabl_filter($now: timestamp, $regions: [Int!], $branches: [Int!], $citie
     }
   }
 }
+
 `
 const Clear = (props) => <span className='clear' onClick={props.onClear}>CLEAR</span>
 
