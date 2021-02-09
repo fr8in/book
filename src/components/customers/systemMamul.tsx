@@ -19,7 +19,7 @@ subscription customer_mamul_summary($cardcode: String!) {
   }
 }`
 
-const UPDATE_STANDARD_MAMUL = gql `mutation updateStandardMamul($cardcode: String!, $standard_mamul: float8!) {
+const UPDATE_STANDARD_MAMUL = gql `mutation updateStandardMamul($cardcode: String!, $standard_mamul: Int!) {
   update_customer(where: {cardcode: {_eq: $cardcode}}, _set: {standard_mamul: $standard_mamul}) {
     affected_rows
   }
