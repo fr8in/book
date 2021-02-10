@@ -154,7 +154,7 @@ const AdditionalAdvanceBank = (props) => {
 
   const validateIFSC = () => {
     if (form.getFieldValue('ifsc')) {
-      getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc') } })
+      getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc').trim() } })
     } else return null
   }
 
@@ -191,12 +191,12 @@ const AdditionalAdvanceBank = (props) => {
             </Col>
             <Col xs={12} sm={8}>
               <Form.Item label='Account No' name='account_number' rules={[{ required: true }]}>
-                <Input placeholder='Account Number' type='password' />
+                <Input.Password placeholder='Account Number'/>
               </Form.Item>
             </Col>
             <Col xs={12} sm={8}>
               <Form.Item label='Confirm Account No' rules={rules} dependencies={['account_number']} name='confirm'>
-                <Input placeholder='Confirm' />
+                <Input placeholder='Confirm' type='number'/>
               </Form.Item>
             </Col>
           </Row>

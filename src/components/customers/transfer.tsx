@@ -108,7 +108,7 @@ const Transfer = (props) => {
   )
 
   const validateIFSC = () => {
-    getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc') } })
+    getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc').trim() } })
   }
 
   const validateTrip = () => {
@@ -243,6 +243,7 @@ console.log("totalAmount,",totalAmount)
               <Input
                 placeholder='Confirm Account Number'
                 disabled={false}
+                type='number'
               />
             </Form.Item>
           </Col>
@@ -259,6 +260,7 @@ console.log("totalAmount,",totalAmount)
                 placeholder='IFSC Code'
                 disabled={false}
                 onBlur={validateIFSC}
+                maxLength={11}
               />
             </Form.Item>
           </Col>
