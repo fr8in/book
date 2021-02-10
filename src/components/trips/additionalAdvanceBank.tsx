@@ -203,7 +203,7 @@ const AdditionalAdvanceBank = (props) => {
           <Row gutter={10}>
             <Col xs={12} sm={8}>
               <Form.Item label='IFSC Code' name='ifsc' extra={get(bank_detail, 'bank', null)} rules={[{ required: true, message: 'IFSC required!' }]}>
-                <Input placeholder='IFSC Code' onBlur={validateIFSC} />
+                <Input placeholder='IFSC Code' onBlur={validateIFSC} maxLength={11}/>
               </Form.Item>
             </Col>
             <Col xs={12} sm={8} className='reduceMarginTop1'>
