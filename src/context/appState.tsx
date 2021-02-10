@@ -1,5 +1,5 @@
 import { useReducer } from 'react'
-import filterContext from '.'
+import {filterContext} from './index'
 import {defaultGlobalFilter} from '../context/defaultState'
 import globalFilterReducer from '../context/reducer'
 
