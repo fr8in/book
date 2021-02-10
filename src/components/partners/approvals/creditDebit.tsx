@@ -117,7 +117,7 @@ const CreditDebit = () => {
     const pending_list = filter.status_name.includes("PENDING")
 
     const { role } = u
-    const access = [role.admin, role.rm, role.partner_support, role.partner_manager]
+    const access = [role.admin, role.rm, role.partner_support, role.partner_manager,role.billing,role.accounts_manager]
     const context = useContext(userContext)
   const authorised = u.is_roles(access,context)
   const admin_access = [role.admin]
