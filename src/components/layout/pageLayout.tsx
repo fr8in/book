@@ -11,6 +11,7 @@ import Loading from '../../components/common/loading'
 import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
 import AppState from '../../context/appState'
+import userContext from '../../lib/userContaxt'
 
 const EMPLOYEE_QUERY = gql`
 query employee_name($email:String){
@@ -58,7 +59,8 @@ const PageLayout = (props) => {
 
   const user = { email, roles, employee_id }
   return (
-      <AppState user={user} >
+     
+         <userContext.Provider value={user}>
       <Layout id='page'>
         <Header className='siteLayout'>
           <Row>
@@ -87,7 +89,8 @@ const PageLayout = (props) => {
           </div>
         </Content>
       </Layout>
-      </AppState>
+      </userContext.Provider>
+      
   )
 }
 
