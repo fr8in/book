@@ -215,7 +215,7 @@ const Actions = (props) => {
         <Button icon={<LogoutOutlined />} onClick={signOut}>Logout</Button>
       </Menu.Item>
     </Menu>
-  ).props
+  )
 
   return (
     <Col flex='auto' className='actions'>
