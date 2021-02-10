@@ -101,9 +101,7 @@ const Actions = (props) => {
   const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing_manager, role.partner_manager, role.accounts, role.billing, role.bm]
   const access = u.is_roles(edit_access, context)
   const {dispatch,state} = useContext(filterContext)
-
-  console.log('state',state,dispatch)
-
+  
   const variables = {
     now: moment().format('YYYY-MM-DD'),
     regions: (state.regions && state.regions.length > 0) ? state.regions : null
@@ -186,7 +184,7 @@ const Actions = (props) => {
   useEffect(() => {
     dispatch({
       type: BRANCHES_FILTER,
-      payload: branch_ids
+      payload: state.branches && state.branches.length ? state.branches  : branch_ids
     })
      }, [props])
 

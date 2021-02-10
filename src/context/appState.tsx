@@ -1,5 +1,4 @@
 import { useReducer } from 'react'
-import userContext from '../lib/userContaxt'
 import filterContext from '../lib/filterContaxt'
 import {defaultGlobalFilter} from '../context/defaultState'
 import globalFilterReducer from '../context/reducer'
@@ -12,9 +11,7 @@ const AppState = (props) => {
 
 return(
   <filterContext.Provider value={{state,dispatch}}>
-      <userContext.Provider value={user}>
         {props.children}
-      </userContext.Provider>
   </filterContext.Provider>
 )
 }
