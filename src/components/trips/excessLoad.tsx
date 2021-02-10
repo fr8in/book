@@ -9,6 +9,7 @@ import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import ExcessToPo from '../trips/excessToPo'
 import userContext from '../../lib/userContaxt'
 import { useContext } from 'react'
+import {filterContext} from '../../context'
 import PartnerTrips from './partnerTrips'
 import TripPrceEdit from './excessLoadPriceEdit'
 import isNull from 'lodash/isNull'
@@ -96,19 +97,20 @@ mutation cancel_Excess_load($trip_status_id: Int!, $id: Int!,$updated_by: String
 }
 `
 const ExcessLoad = (props) => {
-  const { trip_status, filters } = props
+  const { trip_status } = props
 
   const initial = { cancel_visible: false, po_visible: false, record: null,partner_trips_visible:false }
   const { object, handleShow, handleHide } = useShowHideWithRecord(initial)
   const context = useContext(userContext)
+  const {state} = useContext(filterContext)
 
   const variables = {
-    regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
-    branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
-    cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
+    regions: (state.regions && state.regions.length > 0) ? state.regions : null,
+    branches: (state.branches && state.branches.length > 0) ? state.branches : null,
+    cities: (state.cities && state.cities.length > 0) ? state.cities : null,
     trip_status: trip_status || null,
-    truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
-    managers: (filters.managers && filters.managers.length > 0) ? filters.managers : null
+    truck_type: (state.types && state.types.length > 0) ? state.types : null,
+    managers: (state.managers && state.managers.length > 0) ? state.managers : null
   }
 
   const { loading, data, error } = useSubscription(
