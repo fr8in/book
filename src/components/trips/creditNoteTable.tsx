@@ -136,7 +136,7 @@ const CreditNoteTable = (props) => {
                 size='small'
                 shape='circle'
                 className='btn-success'
-                disabled={!(invoiced && !received && !closed) || lock}
+                disabled={!(invoiced || received || closed) || lock}
                 icon={<CheckOutlined />}
                 onClick={() => handleShow('approveVisible', 'Approve', 'approveData', record)}
               />
