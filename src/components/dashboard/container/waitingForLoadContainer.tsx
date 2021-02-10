@@ -2,7 +2,7 @@ import WaitingForLoad from '../../trucks/waitingForLoad'
 import { gql, useSubscription } from '@apollo/client'
 import _ from 'lodash'
 import { useState ,useContext} from 'react'
-import filterContext from '../../../context'
+import {filterContext} from '../../../context/index'
 
 
 const DASHBOARD_TRUCK_QUERY = gql`
