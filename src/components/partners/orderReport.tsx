@@ -3,6 +3,8 @@ import { Row, Col, Modal } from 'antd'
 import moment from 'moment'
 import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
+import filterContext from '../../lib/filterContaxt'
+import { useContext } from 'react'
 
 const ANALYTICS_MONTHLY_CHART_QUERY = gql`
 query trip_monthly(
@@ -79,7 +81,8 @@ const TooltipText = (props) => {
 }
 
 const OrderReport = (props) => {
-  const { filters } = props
+  
+  const {state} = useContext(filterContext)
 
   const today = new Date()
   const month_num = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -94,7 +97,7 @@ const OrderReport = (props) => {
     ANALYTICS_MONTHLY_CHART_QUERY,
     {
       variables: {
-        branch_ids: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
+        branch_ids: (state.branches && state.branches.length > 0) ? state.branches : null,
         one_year: period[0].year,
         one_month: period[0].month,
         two_year: period[1].year,

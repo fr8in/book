@@ -168,7 +168,7 @@ const CreatePartner = (props) => {
                   rules={[{ required: true, message: 'Account No is required field!' }]}
                   initialValue={get(partner_info, 'display_account_number', null)}
                 >
-                  <Input.Password placeholder='Account Number' />
+                  <Input.Password placeholder='Account Number'/>
                 </Form.Item>
               </Col>
               <Col xs={24} sm={8}>
@@ -179,7 +179,7 @@ const CreatePartner = (props) => {
                   rules={rules}
                   initialValue={get(partner_info, 'display_account_number', null)}
                 >
-                  <Input placeholder='Confirm Account No' />
+                  <Input placeholder='Confirm Account No' type='number'/>
                 </Form.Item>
               </Col>
             </Row>
@@ -191,7 +191,7 @@ const CreatePartner = (props) => {
                   rules={[{ required: true, message: 'IFSC Code is required field!' }]}
                   initialValue={get(partner_info, 'ifsc_code', null)}
                 >
-                  <Input placeholder='IFSC Code' onBlur={validateIFSC} />
+                  <Input placeholder='IFSC Code' onBlur={validateIFSC} maxLength={11}/>
                 </Form.Item>
               </Col>
               <Col xs={24} sm={8}>

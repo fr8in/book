@@ -3,6 +3,9 @@ import useShowHide from '../../hooks/useShowHide'
 import { Modal } from 'antd'
 import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
+import filterContext from '../../lib/filterContaxt'
+import { useContext } from 'react'
+
 
 const ANALYTICS_QUERY = gql`
 query monthly_billing($branch_ids: [Int!]) {
@@ -17,7 +20,7 @@ query monthly_billing($branch_ids: [Int!]) {
 }`
 
 const Revenue = (props) => {
-  const { filters } = props
+  const {state} = useContext(filterContext)
 
   const initial = { report: false }
   const { visible, onShow, onHide } = useShowHide(initial)
@@ -29,7 +32,7 @@ const Revenue = (props) => {
     ANALYTICS_QUERY,
     {
       variables: {
-        branch_ids: (filters.branches && filters.branches.length > 0) ? filters.branches : null
+        branch_ids: (state.branches && state.branches.length > 0) ? state.branches : null
       }
     }
   )

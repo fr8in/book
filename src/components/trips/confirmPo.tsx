@@ -2,7 +2,7 @@ import userContext from '../../lib/userContaxt'
 import { useState, useContext } from 'react'
 import { Modal, Row, Button, Form, Col, Select, Divider, message, Checkbox } from 'antd'
 import Link from 'next/link'
-import { gql, useQuery, useMutation ,useLazyQuery} from '@apollo/client'
+import { gql, useQuery, useMutation, useLazyQuery } from '@apollo/client'
 import PoDetail from './poDetail'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
@@ -43,6 +43,7 @@ query po_query($id: Int!, $cus_id: Int!){
       name
     }
     system_mamul
+    standard_mamul
     customer_users{
       id
       name
@@ -141,7 +142,6 @@ mutation confirm_po(
 
 const ConfirmPo = (props) => {
   const { visible, onHide, truck_id, record, hideExess } = props
-  
   const [loading_contact_id, setLoading_contact_id] = useState(null)
   const [driver_id, setDriver_id] = useState(null)
 
@@ -151,26 +151,25 @@ const ConfirmPo = (props) => {
   const [disableButton, setDisableButton] = useState(false)
   const [isToPay, setIsToPay] = useState(false)
   const context = useContext(userContext)
-
-  const [getCityData,{ loading: city_loading, error:city_error, data:_city_data }] = useLazyQuery(CITY_DATA,
+  const [getCityData, { loading: city_loading, error: city_error, data: _city_data }] = useLazyQuery(CITY_DATA,
     {
-      onCompleted (data) {
-          if(!get(data,'city[0].branch.id',null)) {
-      message.warning("Selected source city doesn't mapped with branch")
-          } else {
-            getCustomerBranchData({
-              variables: {
-                customer_id:get(customer,'id',null),
-                type_id:get(po_data,'truck_type.truck_type_group_id',null),
-                branch_id:get(data,'city[0].branch.id',null)
-              }
-            })
-          }
+      onCompleted(data) {
+        if (!get(data, 'city[0].branch.id', null)) {
+          message.warning("Selected source city doesn't mapped with branch")
+        } else {
+          getCustomerBranchData({
+            variables: {
+              customer_id: get(customer, 'id', null),
+              type_id: get(po_data, 'truck_type.truck_type_group_id', null),
+              branch_id: get(data, 'city[0].branch.id', null)
+            }
+          })
+        }
       }
     }
-    )
-  
- 
+  )
+
+
   const { loading, error, data } = useQuery(
     PO_QUERY,
     {
@@ -180,7 +179,7 @@ const ConfirmPo = (props) => {
     }
   )
 
-  const [getCustomerBranchData, { loading: customer_branch_loading, data: customer_branch_data, error: customer_branch_error }] = useLazyQuery(CUSTOMER_BRANCH_EMPLOYEE_DATA )
+  const [getCustomerBranchData, { loading: customer_branch_loading, data: customer_branch_data, error: customer_branch_error }] = useLazyQuery(CUSTOMER_BRANCH_EMPLOYEE_DATA)
 
   const [confirm_po_mutation] = useMutation(
     CONFIRM_PO,
@@ -215,17 +214,18 @@ const ConfirmPo = (props) => {
   const customer = get(data, 'customer[0]', null)
   const trip_max_price = get(data, 'config[0].value.trip_max_price', null)
   const system_mamul = get(customer, 'system_mamul', null)
+  const standard_mamul = get(customer, 'standard_mamul', null)
+  const origin_name = get(record, 'leads[0].channel_id', record && record.origin && record.origin.name)
+  const mamul = Math.max(system_mamul, standard_mamul)
 
-  const origin_name = get(record,'leads[0].channel_id',record && record.origin && record.origin.name)  
-   
   let customer_data = {}
   if (!customer_branch_loading) {
     customer_data = customer_branch_data
   }
-  
+
 
   const customer_branch_employee = get(customer_data, 'customer_branch_employee[0]', [])
-    const customer_branch_employee_name = get(customer_branch_employee,'branch_employee.employee.name',null)
+  const customer_branch_employee_name = get(customer_branch_employee, 'branch_employee.employee.name', null)
 
   const onSubmit = (form) => {
     const loading_charge = form.charge_inclue.includes('Loading')
@@ -238,75 +238,75 @@ const ConfirmPo = (props) => {
       message.error('Customer to Partner, Total and cash is miss matching')
     } else if (parseInt(form.p_total) > form.customer_price) {
       message.error('Customer to Partner should be less than or euqal to customer price')
-    } else if (system_mamul > parseFloat(form.mamul)) {
+    } else if (mamul > parseFloat(form.mamul)) {
       message.error('Mamul Should be greater than system mamul!')
     } else {
       setDisableButton(true)
-      isToPay ? 
-      confirm_po_mutation({
-        variables: {
-          trip_id: record.id,
-          po_date: form.po_date.format('YYYY-MM-DD'),
-          source_id: obj.source_id ? parseInt(obj.source_id, 10) : get(record, 'source.id', null),
-          destination_id: obj.destination_id ? parseInt(obj.destination_id, 10) : get(record, 'destination.id', null),
-          customer_id: customer.id,
-          partner_id: po_data && po_data.partner && po_data.partner.id,
-          customer_price: parseFloat(form.customer_price),
-          partner_price: parseFloat(form.partner_price_total),
-          ton: form.ton ? form.ton : null,
-          per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
-          is_per_ton: !!form.ton,
-          bank: 0,
-          including_loading: loading_charge,
-          including_unloading: unloading_charge,
-          cash: parseFloat(form.to_pay_cash),
-          to_pay: parseFloat(form.to_pay_balance),
-          truck_id: po_data && po_data.id,
-          truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
-          driver_id: parseInt(driver_id, 10),
-          updated_by: context.email,
-          customer_user_id: parseInt(loading_contact_id),
-          is_topay: !!isToPay,
-          interest_id: origin_name ===4 ? 4 : origin_name === 6 ? 6 : 7
-        }
-      }) :
-      confirm_po_mutation({
-        variables: {
-          trip_id: record.id,
-          po_date: form.po_date.format('YYYY-MM-DD'),
-          source_id: obj.source_id ? parseInt(obj.source_id, 10) : get(record, 'source.id', null),
-          destination_id: obj.destination_id ? parseInt(obj.destination_id, 10) : get(record, 'destination.id', null),
-          customer_id: customer.id,
-          partner_id: po_data && po_data.partner && po_data.partner.id,
-          customer_price: parseFloat(form.customer_price),
-          partner_price: parseFloat(form.partner_price),
-          ton: form.ton ? form.ton : null,
-          per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
-          is_per_ton: !!form.ton,
-          mamul: parseFloat(form.mamul),
-          including_loading: loading_charge,
-          including_unloading: unloading_charge,
-          bank: parseFloat(form.bank),
-          cash: parseFloat(form.cash),
-          to_pay: parseFloat(form.to_pay),
-          truck_id: po_data && po_data.id,
-          truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
-          driver_id: parseInt(driver_id, 10),
-          updated_by: context.email,
-          customer_user_id: parseInt(loading_contact_id),
-          is_topay: !!isToPay,
-          interest_id: origin_name === 4 ? 4 : origin_name === 6 ? 6 : 7
-        }
-      })
+      isToPay ?
+        confirm_po_mutation({
+          variables: {
+            trip_id: record.id,
+            po_date: form.po_date.format('YYYY-MM-DD'),
+            source_id: obj.source_id ? parseInt(obj.source_id, 10) : get(record, 'source.id', null),
+            destination_id: obj.destination_id ? parseInt(obj.destination_id, 10) : get(record, 'destination.id', null),
+            customer_id: customer.id,
+            partner_id: po_data && po_data.partner && po_data.partner.id,
+            customer_price: parseFloat(form.customer_price),
+            partner_price: parseFloat(form.partner_price_total),
+            ton: form.ton ? form.ton : null,
+            per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
+            is_per_ton: !!form.ton,
+            bank: 0,
+            including_loading: loading_charge,
+            including_unloading: unloading_charge,
+            cash: parseFloat(form.to_pay_cash),
+            to_pay: parseFloat(form.to_pay_balance),
+            truck_id: po_data && po_data.id,
+            truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
+            driver_id: parseInt(driver_id, 10),
+            updated_by: context.email,
+            customer_user_id: parseInt(loading_contact_id),
+            is_topay: !!isToPay,
+            interest_id: origin_name === 4 ? 4 : origin_name === 6 ? 6 : 7
+          }
+        }) :
+        confirm_po_mutation({
+          variables: {
+            trip_id: record.id,
+            po_date: form.po_date.format('YYYY-MM-DD'),
+            source_id: obj.source_id ? parseInt(obj.source_id, 10) : get(record, 'source.id', null),
+            destination_id: obj.destination_id ? parseInt(obj.destination_id, 10) : get(record, 'destination.id', null),
+            customer_id: customer.id,
+            partner_id: po_data && po_data.partner && po_data.partner.id,
+            customer_price: parseFloat(form.customer_price),
+            partner_price: parseFloat(form.partner_price),
+            ton: form.ton ? form.ton : null,
+            per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
+            is_per_ton: !!form.ton,
+            mamul: parseFloat(form.mamul),
+            including_loading: loading_charge,
+            including_unloading: unloading_charge,
+            bank: parseFloat(form.bank),
+            cash: parseFloat(form.cash),
+            to_pay: parseFloat(form.to_pay),
+            truck_id: po_data && po_data.id,
+            truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
+            driver_id: parseInt(driver_id, 10),
+            updated_by: context.email,
+            customer_user_id: parseInt(loading_contact_id),
+            is_topay: !!isToPay,
+            interest_id: origin_name === 4 ? 4 : origin_name === 6 ? 6 : 7
+          }
+        })
     }
   }
 
-  
+
   const onSourceChange = (city_id) => {
     setObj({ ...obj, source_id: city_id })
     getCityData(
       {
-        variables: {city_id:city_id},
+        variables: { city_id: city_id },
       }
     )
   }
@@ -392,7 +392,7 @@ const ConfirmPo = (props) => {
                 form={form}
                 customer={customer}
                 record={record}
-                customer_branch_employee_name={obj.source_id ? customer_branch_employee_name :  get(record,'branch_employee.employee.name',null)}
+                customer_branch_employee_name={obj.source_id ? customer_branch_employee_name : get(record, 'branch_employee.employee.name', null)}
               />}
           </Col>
           <Col xs={24} sm={10}>
@@ -404,13 +404,14 @@ const ConfirmPo = (props) => {
                 form={form}
                 customer={customer}
                 record={record}
-              />:
+              /> :
               <PoPrice
                 po_data={po_data && po_data.partner}
                 form={form}
                 customer={customer}
                 record={record}
-              /> 
+                mamul={mamul}
+              />
             }
           </Col>
         </Row>

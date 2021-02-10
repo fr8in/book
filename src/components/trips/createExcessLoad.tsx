@@ -113,66 +113,7 @@ const CreateExcessLoad = (props) => {
     return ({ value: truck.id, label: truck.name })
   })
 
-  const [getTripData, { loading: trip_loading, data: trip_data, error: trip_error }] = useLazyQuery(TRIP_DATA,
-    {
-      onCompleted () {
-        if (trip_id) {
-          if ((parseInt(form.getFieldValue('price')) < 0) || form.getFieldValue('ton') < 0) {
-            message.error('Customer Price and Ton should be positive!')
-          } else {
-            setObj({ ...obj, disableButton: true })
-            updateExcessLoad({
-              variables: {
-                trip_id : trip_id,
-                source_id: parseInt(obj.source_id, 10),
-                destination_id: parseInt(obj.destination_id, 10),
-                customer_id: parseInt(obj.customer_id, 10),
-                customer_price: (checked && form.getFieldValue('rate_per_ton') && form.getFieldValue('ton')) ? cus_price : (!checked && form.getFieldValue('price')) ? parseFloat(form.getFieldValue('price')) : null,
-                ton: form.getFieldValue('ton') ? parseFloat(form.getFieldValue('ton')) : null,
-                rate_per_ton: form.getFieldValue('rate_per_ton') ? parseFloat(form.getFieldValue('rate_per_ton')) : null,
-                is_per_ton: checked,
-                truck_type_id: parseInt(form.getFieldValue('truck_type'), 10),
-                description: form.getFieldValue('comment'),
-                topic: 'Excess Load Created',
-                created_by: context.email,
-                origin_id: 5
-              }
-            })
-          } } else {
-          if ((parseInt(form.getFieldValue('price')) < 0) || form.getFieldValue('ton') < 0) {
-            message.error('Customer Price and Ton should be positive!')
-          } else {
-            setObj({ ...obj, disableButton: true })
-            create_excess_load({
-              variables: {
-                source_id: parseInt(obj.source_id, 10),
-                destination_id: parseInt(obj.destination_id, 10),
-                customer_id: parseInt(obj.customer_id, 10),
-                customer_price: (checked && form.getFieldValue('rate_per_ton') && form.getFieldValue('ton')) ? cus_price : (!checked && form.getFieldValue('price')) ? parseFloat(form.getFieldValue('price')) : null,
-                ton: form.getFieldValue('ton') ? parseFloat(form.getFieldValue('ton')) : null,
-                rate_per_ton: form.getFieldValue('rate_per_ton') ? parseFloat(form.getFieldValue('rate_per_ton')) : null,
-                is_per_ton: checked,
-                truck_type_id: parseInt(form.getFieldValue('truck_type'), 10),
-                description: form.getFieldValue('comment'),
-                topic: 'Excess Load Created',
-                created_by: context.email,
-                origin_id: 5
-              }
-            })
-          }
-        }
-      }
-    }
-    )
-
-  let _trip_data = {}
-  if (!trip_loading) {
-    _trip_data = trip_data
-  }
   
-
-  const trip_id = get(_trip_data, 'trip[0].id', null)
-
   const [create_excess_load] = useMutation(
     EXCESS_LOAD_MUTATION,
     {
@@ -183,7 +124,7 @@ const CreateExcessLoad = (props) => {
       },
       onCompleted (data) {
         const load_id = get(data, 'insert_trip.returning[0].id', null)
-        message.success(`ExcessLoad ${load_id} Created!`)
+        message.success(`Load: ${load_id} Created!`)
         setObj(initial)
         props.onHide()
       }
@@ -198,12 +139,33 @@ const CreateExcessLoad = (props) => {
         message.error(error.toString())
       },
       onCompleted () {
-        message.success(`ExcessLoad ${trip_id} Created!`)
+        message.success(`Load: ${trip_id} Updated!`)
       props.onHide()
      }
 
     }
   )
+
+
+
+
+
+const [getTripData, { loading: trip_loading, data: trip_data, error: trip_error }] = useLazyQuery(TRIP_DATA,
+  {
+    onCompleted (data) {
+      const id = get(data,'trip[0].id', null)
+      id ? onUpdateLoad() : onCreateLoad()
+}
+  }
+  )
+
+let _trip_data = {}
+if (!trip_loading) {
+  _trip_data = trip_data
+}
+
+
+const trip_id = get(_trip_data, 'trip[0].id', null)
 
   const onChange = (e) => {
     setChecked(e.target.checked)
@@ -239,9 +201,7 @@ const CreateExcessLoad = (props) => {
     setCus_price(ratePerTon)
   }
 
- 
-
-  const onCreateLoad = (form) => {
+  const onTripDataChange = (form) => {
     getTripData(
       {
         variables:{
@@ -252,7 +212,61 @@ const CreateExcessLoad = (props) => {
         }
       }
     )
+  }
+
+  const onCreateLoad = () => {
+    if ((parseInt(form.getFieldValue('price')) < 0) || form.getFieldValue('ton') < 0) {
+      message.error('Customer Price and Ton should be positive!')
+    } else {
+      setObj({ ...obj, disableButton: true })
+      create_excess_load({
+        variables: {
+          source_id: parseInt(obj.source_id, 10),
+          destination_id: parseInt(obj.destination_id, 10),
+          customer_id: parseInt(obj.customer_id, 10),
+          customer_price: (checked && form.getFieldValue('rate_per_ton') && form.getFieldValue('ton')) ? cus_price : (!checked && form.getFieldValue('price')) ? parseFloat(form.getFieldValue('price')) : null,
+          ton: form.getFieldValue('ton') ? parseFloat(form.getFieldValue('ton')) : null,
+          rate_per_ton: form.getFieldValue('rate_per_ton') ? parseFloat(form.getFieldValue('rate_per_ton')) : null,
+          is_per_ton: checked,
+          truck_type_id: parseInt(form.getFieldValue('truck_type'), 10),
+          description: form.getFieldValue('comment'),
+          topic: 'Excess Load Created',
+          created_by: context.email,
+          origin_id: 5
+        }
+      })
+    }
+  }
+
+
+  const onUpdateLoad = () => {
+    if ((parseInt(form.getFieldValue('price')) < 0) || form.getFieldValue('ton') < 0) {
+      message.error('Customer Price and Ton should be positive!')
+    } else {
+      setObj({ ...obj, disableButton: true })
+      updateExcessLoad({
+        variables: {
+          trip_id : trip_id,
+          source_id: parseInt(obj.source_id, 10),
+          destination_id: parseInt(obj.destination_id, 10),
+          customer_id: parseInt(obj.customer_id, 10),
+          customer_price: (checked && form.getFieldValue('rate_per_ton') && form.getFieldValue('ton')) ? cus_price : (!checked && form.getFieldValue('price')) ? parseFloat(form.getFieldValue('price')) : null,
+          ton: form.getFieldValue('ton') ? parseFloat(form.getFieldValue('ton')) : null,
+          rate_per_ton: form.getFieldValue('rate_per_ton') ? parseFloat(form.getFieldValue('rate_per_ton')) : null,
+          is_per_ton: checked,
+          truck_type_id: parseInt(form.getFieldValue('truck_type'), 10),
+          description: form.getFieldValue('comment'),
+          topic: 'Excess Load Created',
+          created_by: context.email,
+          origin_id: 5
+        }
+      })
+    } 
 }
+
+
+
+ 
 
   return (
     <Modal
@@ -263,7 +277,7 @@ const CreateExcessLoad = (props) => {
       bodyStyle={{ paddingBottom: 0 }}
       footer={[]}
     >
-      <Form layout='vertical' form={form} onFinish={onCreateLoad}>
+      <Form layout='vertical' form={form} onFinish={onTripDataChange}>
         <Row gutter={10}>
           <Col xs={24}>
             <Form.Item label='Customer' name='customer' rules={[{ required: true }]}>
