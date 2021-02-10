@@ -3,7 +3,7 @@ import Trips from './activeTrips'
 import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import { useState,useContext } from 'react'
-import filterContext from '../../lib/filterContaxt'
+import filterContext from '../../context/filterContaxt'
 
 const TRIPS_QUERY = gql`
 subscription dashboard_trips(

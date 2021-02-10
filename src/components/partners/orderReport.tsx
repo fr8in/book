@@ -3,7 +3,7 @@ import { Row, Col, Modal } from 'antd'
 import moment from 'moment'
 import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
-import filterContext from '../../lib/filterContaxt'
+import filterContext from '../../context/filterContaxt'
 import { useContext } from 'react'
 
 const ANALYTICS_MONTHLY_CHART_QUERY = gql`

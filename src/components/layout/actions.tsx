@@ -17,7 +17,7 @@ import isEmpty from 'lodash/isEmpty'
 import userContext from '../../lib/userContaxt'
 import moment from 'moment'
 import get from 'lodash/get'
-import filterContext from '../../lib/filterContaxt'
+import filterContext from '../../context/filterContaxt'
 import { REGION_FILTER, BRANCHES_FILTER, CITIES_FILTER, MANAGER_FILTER, TRUCK_TYPE_FILTER} from '../../context/action'
 import { useEffect } from 'react'
 
