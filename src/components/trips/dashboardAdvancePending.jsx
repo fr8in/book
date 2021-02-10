@@ -10,7 +10,7 @@ import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import TripFeedBack from './tripFeedBack'
 import u from '../../lib/util'
 import { useState,useContext } from 'react'
-import {filterContext} from '../../context/index'
+import {filterContext} from '../../context'
 
 const DASHBOARD_ADVANCE_PENDING_QUERY = gql`
 subscription customerAdvancePending($offset: Int, $limit: Int,

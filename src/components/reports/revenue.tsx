@@ -3,7 +3,7 @@ import useShowHide from '../../hooks/useShowHide'
 import { Modal } from 'antd'
 import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
-import {filterContext} from '../../context/index'
+import {filterContext} from '../../context'
 import { useContext } from 'react'
 
 
