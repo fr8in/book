@@ -3,7 +3,7 @@ import useShowHide from '../../hooks/useShowHide'
 import OrderReport from '../partners/orderReport'
 import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
-import filterContext from '../../lib/filterContaxt'
+import {filterContext} from '../../context'
 import { useContext } from 'react'
 
 

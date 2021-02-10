@@ -17,7 +17,7 @@ import isEmpty from 'lodash/isEmpty'
 import userContext from '../../lib/userContaxt'
 import moment from 'moment'
 import get from 'lodash/get'
-import filterContext from '../../lib/filterContaxt'
+import {filterContext} from '../../context'
 import { REGION_FILTER, BRANCHES_FILTER, CITIES_FILTER, MANAGER_FILTER, TRUCK_TYPE_FILTER} from '../../context/action'
 import { useEffect } from 'react'
 
@@ -215,7 +215,7 @@ const Actions = (props) => {
         <Button icon={<LogoutOutlined />} onClick={signOut}>Logout</Button>
       </Menu.Item>
     </Menu>
-  ).props
+  )
 
   return (
     <Col flex='auto' className='actions'>

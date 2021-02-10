@@ -1,12 +1,11 @@
 import { useReducer } from 'react'
-import filterContext from '../lib/filterContaxt'
+import {filterContext} from './index'
 import {defaultGlobalFilter} from '../context/defaultState'
 import globalFilterReducer from '../context/reducer'
 
 
 const AppState = (props) => {
-    const {user} = props
-
+  
     const [state,dispatch] = useReducer(globalFilterReducer,defaultGlobalFilter)
 
 return(

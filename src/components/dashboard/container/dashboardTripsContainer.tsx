@@ -4,7 +4,7 @@ import { useSubscription } from '@apollo/client'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import { useState,useContext } from 'react'
-import filterContext from '../../../lib/filterContaxt'
+import {filterContext} from '../../../context'
 
 const TripsContainer = (props) => {
   const {  trip_status, intransit, partner_region_filter } = props

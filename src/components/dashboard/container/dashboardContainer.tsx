@@ -17,7 +17,7 @@ import Progress from '../../reports/progress'
 import moment from 'moment'
 import WeeklyBranchTarget from '../../partners/weeklyBranchTarget'
 import AdvancePending from '../../trips/dashboardAdvancePending'
-import filterContext from '../../../lib/filterContaxt'
+import {filterContext} from '../../../context'
 import { useContext } from 'react'
 
 const { TabPane } = Tabs
