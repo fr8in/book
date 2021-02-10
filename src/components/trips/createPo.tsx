@@ -18,6 +18,7 @@ query po_query($id: Int!){
     truck_type{
       id
       name
+      truck_type_group_id
     }
     partner{
       id
@@ -29,6 +30,32 @@ query po_query($id: Int!){
     }
   }
 }`
+
+const CITY_DATA = gql`
+query($city_id:Int){
+  city(where:{id:{_eq:$city_id}}){
+    branch{
+      id
+    }
+  }
+}
+`
+
+const CUSTOMER_BRANCH_EMPLOYEE_DATA = gql`
+query($customer_id:Int,$type_id:Int,$branch_id:Int){
+  customer_branch_employee(where:{customer_id:{_eq:$customer_id},truck_type_group:{id:{_eq:$type_id}},branch_employee:{branch_id:{_eq:$branch_id}}}){
+    customer_id
+    branch_employee{
+      branch{
+        id
+      }
+      employee{
+        name
+      }
+    }
+  }
+}
+`
 
 const CUSTOMER_PO_DATA = gql`
 query customers_po($id:Int!){
@@ -46,6 +73,7 @@ query customers_po($id:Int!){
       name
     }
     system_mamul
+    standard_mamul
   }
   config(where:{key:{_eq:"trip"}}){
     value
@@ -123,6 +151,7 @@ const CreatePo = (props) => {
   const [driver_id, setDriver_id] = useState(null)
   const [disableBtn, setDisableBtn] = useState(false)
   const [isToPay, setIsToPay] = useState(false)
+  
 
   const [form] = Form.useForm()
   const initial = { search: '', source_id: null, destination_id: null }
@@ -132,11 +161,29 @@ const CreatePo = (props) => {
   const { loading, error, data } = useQuery(
     PO_QUERY,
     {
-      variables: { id: truck_id },
+      variables: { id: truck_id  },
       fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true
+      notifyOnNetworkStatusChange: true 
     }
   )
+
+  const [getCityData,{ loading: city_loading, error:city_error, data:_city_data }] = useLazyQuery(CITY_DATA,
+    {
+      onCompleted (data) {
+          if(!get(data,'city[0].branch.id',null)) {
+      message.warning("Selected source city doesn't mapped with branch")
+          } else {
+            getCustomerBranchData({
+              variables: {
+                customer_id:get(customer,'id',null),
+                type_id:get(po_data,'truck_type.truck_type_group_id',null),
+                branch_id:get(data,'city[0].branch.id',null)
+              }
+            })
+          }
+      }
+    }
+    )
 
   const { loading: search_loading, error: search_error, data: search_data } = useQuery(
     CUSTOMER_SEARCH,
@@ -149,6 +196,9 @@ const CreatePo = (props) => {
   )
 
   const [getCustomerData, { loading: cus_loading, data: cus_data, error: cus_error }] = useLazyQuery(CUSTOMER_PO_DATA)
+
+   const [getCustomerBranchData, { loading: customer_branch_loading, data: customer_branch_data, error: customer_branch_error }] = useLazyQuery(CUSTOMER_BRANCH_EMPLOYEE_DATA)
+
 
   const [create_po_mutation] = useMutation(
     CREATE_PO,
@@ -190,11 +240,26 @@ const CreatePo = (props) => {
   const customer = get(_cus_data, 'customer[0]', null)
   const trip_max_price = get(_cus_data, 'config[0].value.trip_max_price', null)
   const system_mamul = get(customer, 'system_mamul', null)
+  const standard_mamul = get(customer, 'standard_mamul', null)
 
+  const mamul = Math.max(system_mamul, standard_mamul)
   if (loading) return null
 
   const customerSearch = get(_search_data, 'search_customer', '')
   const po_data = get(data, 'truck[0]', null)
+
+ 
+ 
+
+  let customer_data = {}
+  if (!customer_branch_loading) {
+    customer_data = customer_branch_data
+  }
+  
+
+  const customer_branch_employee = get(customer_data, 'customer_branch_employee[0]', [])
+    const customer_branch_employee_name = get(customer_branch_employee,'branch_employee.employee.name',null)
+
 
   const onSubmit = (form) => {
     const loading_charge = form.charge_inclue.includes('Loading')
@@ -207,7 +272,7 @@ const CreatePo = (props) => {
       message.error('Customer to Partner, Total and cash is miss matching')
     } else if (parseInt(form.p_total) > form.customer_price) {
       message.error('Customer to Partner should be less than or euqal to customer price')
-    } else if (system_mamul > parseFloat(form.mamul)) {
+    } else if (mamul > parseFloat(form.mamul)) {
       message.error('Mamul Should be greater than system mamul!')
     } else {
       setDisableBtn(true)
@@ -270,8 +335,15 @@ const CreatePo = (props) => {
     }
   }
 
+ 
+ 
   const onSourceChange = (city_id) => {
     setObj({ ...obj, source_id: city_id })
+    getCityData(
+      {
+        variables: {city_id:city_id},
+      }
+    )
   }
 
   const onDestinationChange = (city_id) => {
@@ -364,6 +436,7 @@ const CreatePo = (props) => {
                 form={form}
                 customer={customer}
                 loading={cus_loading}
+                customer_branch_employee_name={customer_branch_employee_name}
               />}
           </Col>
           <Col xs={24} sm={10}>
@@ -382,6 +455,7 @@ const CreatePo = (props) => {
                 form={form}
                 customer={customer}
                 loading={cus_loading}
+                mamul={mamul}
               />}
               </>}
           </Col>

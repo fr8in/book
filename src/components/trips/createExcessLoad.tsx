@@ -2,10 +2,10 @@
 import { useState, useContext } from 'react'
 import { Modal, Button, Input, Form, Row, Col, Select, message, Checkbox } from 'antd'
 import CitySelect from '../common/citySelect'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { gql, useQuery, useMutation,useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
-import LinkComp from '../common/link'
+
 
 const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
   search_customer(args:{search:$search, status_ids: "{1,5}"}){
@@ -17,6 +17,17 @@ const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
     name
   }
 }`
+
+const TRIP_DATA = gql`
+query ($customer_id: Int, $source_id: Int, $destination_id: Int, $type_id: Int) {
+  trip(where: {customer_id: {_eq: $customer_id}, source_id: {_eq: $source_id}, destination_id: {_eq: $destination_id}, truck_type: {id: {_eq: $type_id}},trip_status_id:{_eq:1}}) {
+    id
+    trip_status{
+      name
+    }
+  }
+}
+`
 
 const EXCESS_LOAD_MUTATION = gql`
 mutation create_excees_load (
@@ -58,6 +69,22 @@ insert_trip(objects: {
 }
 `
 
+const UPDATE_EXCESS_LOAD_MUTATION = gql`
+mutation update_excees_load($source_id: Int, $destination_id: Int, $customer_id: Int, $customer_price: Float, $ton: Float, $rate_per_ton: Float, $is_per_ton: Boolean, $truck_type_id: Int, $description: String, $topic: String, $created_by: String, $origin_id: Int, $trip_id: Int) {
+  update_trip(_set: {source_id: $source_id, destination_id: $destination_id, customer_id: $customer_id, customer_price: $customer_price, ton: $ton, price_per_ton: $rate_per_ton, is_price_per_ton: $is_per_ton, origin_id: $origin_id, truck_type_id: $truck_type_id}, where: {id: {_eq: $trip_id}}) {
+    returning {
+      id
+    }
+  }
+  insert_trip_comment(objects: {trip_id: $trip_id, description: $description, topic: $topic, created_by: $created_by}) {
+    returning {
+      id
+      trip_id
+    }
+  }
+}
+`
+
 const CreateExcessLoad = (props) => {
   const initial = { search: '', customer_id: null, source_id: null, destination_id: null, disableButton: false }
   const [obj, setObj] = useState(initial)
@@ -86,6 +113,7 @@ const CreateExcessLoad = (props) => {
     return ({ value: truck.id, label: truck.name })
   })
 
+  
   const [create_excess_load] = useMutation(
     EXCESS_LOAD_MUTATION,
     {
@@ -96,19 +124,48 @@ const CreateExcessLoad = (props) => {
       },
       onCompleted (data) {
         const load_id = get(data, 'insert_trip.returning[0].id', null)
-        const msg = (
-          <span>
-            <span>Excess Load&nbsp;</span>
-            <LinkComp type='trips' data={load_id} id={load_id} />
-            <span>&nbsp;Created!</span>
-          </span>
-        )
-        message.success(msg)
+        message.success(`Load: ${load_id} Created!`)
         setObj(initial)
         props.onHide()
       }
     }
   )
+
+  const [updateExcessLoad] = useMutation(
+    UPDATE_EXCESS_LOAD_MUTATION,
+    {
+      onError (error) {
+       
+        message.error(error.toString())
+      },
+      onCompleted () {
+        message.success(`Load: ${trip_id} Updated!`)
+      props.onHide()
+     }
+
+    }
+  )
+
+
+
+
+
+const [getTripData, { loading: trip_loading, data: trip_data, error: trip_error }] = useLazyQuery(TRIP_DATA,
+  {
+    onCompleted (data) {
+      const id = get(data,'trip[0].id', null)
+      id ? onUpdateLoad() : onCreateLoad()
+}
+  }
+  )
+
+let _trip_data = {}
+if (!trip_loading) {
+  _trip_data = trip_data
+}
+
+
+const trip_id = get(_trip_data, 'trip[0].id', null)
 
   const onChange = (e) => {
     setChecked(e.target.checked)
@@ -144,8 +201,21 @@ const CreateExcessLoad = (props) => {
     setCus_price(ratePerTon)
   }
 
-  const onCreateLoad = (form) => {
-    if ((parseInt(form.price) < 0) || form.ton < 0) {
+  const onTripDataChange = (form) => {
+    getTripData(
+      {
+        variables:{
+          source_id: parseInt(obj.source_id, 10),
+          destination_id: parseInt(obj.destination_id, 10),
+          customer_id: parseInt(obj.customer_id, 10),
+          type_id: parseInt(form.truck_type, 10)
+        }
+      }
+    )
+  }
+
+  const onCreateLoad = () => {
+    if ((parseInt(form.getFieldValue('price')) < 0) || form.getFieldValue('ton') < 0) {
       message.error('Customer Price and Ton should be positive!')
     } else {
       setObj({ ...obj, disableButton: true })
@@ -154,12 +224,12 @@ const CreateExcessLoad = (props) => {
           source_id: parseInt(obj.source_id, 10),
           destination_id: parseInt(obj.destination_id, 10),
           customer_id: parseInt(obj.customer_id, 10),
-          customer_price: (checked && form.rate_per_ton && form.ton) ? cus_price : (!checked && form.price) ? parseFloat(form.price) : null,
-          ton: form.ton ? parseFloat(form.ton) : null,
-          rate_per_ton: form.rate_per_ton ? parseFloat(form.rate_per_ton) : null,
+          customer_price: (checked && form.getFieldValue('rate_per_ton') && form.getFieldValue('ton')) ? cus_price : (!checked && form.getFieldValue('price')) ? parseFloat(form.getFieldValue('price')) : null,
+          ton: form.getFieldValue('ton') ? parseFloat(form.getFieldValue('ton')) : null,
+          rate_per_ton: form.getFieldValue('rate_per_ton') ? parseFloat(form.getFieldValue('rate_per_ton')) : null,
           is_per_ton: checked,
-          truck_type_id: parseInt(form.truck_type, 10),
-          description: form.comment,
+          truck_type_id: parseInt(form.getFieldValue('truck_type'), 10),
+          description: form.getFieldValue('comment'),
           topic: 'Excess Load Created',
           created_by: context.email,
           origin_id: 5
@@ -167,6 +237,36 @@ const CreateExcessLoad = (props) => {
       })
     }
   }
+
+
+  const onUpdateLoad = () => {
+    if ((parseInt(form.getFieldValue('price')) < 0) || form.getFieldValue('ton') < 0) {
+      message.error('Customer Price and Ton should be positive!')
+    } else {
+      setObj({ ...obj, disableButton: true })
+      updateExcessLoad({
+        variables: {
+          trip_id : trip_id,
+          source_id: parseInt(obj.source_id, 10),
+          destination_id: parseInt(obj.destination_id, 10),
+          customer_id: parseInt(obj.customer_id, 10),
+          customer_price: (checked && form.getFieldValue('rate_per_ton') && form.getFieldValue('ton')) ? cus_price : (!checked && form.getFieldValue('price')) ? parseFloat(form.getFieldValue('price')) : null,
+          ton: form.getFieldValue('ton') ? parseFloat(form.getFieldValue('ton')) : null,
+          rate_per_ton: form.getFieldValue('rate_per_ton') ? parseFloat(form.getFieldValue('rate_per_ton')) : null,
+          is_per_ton: checked,
+          truck_type_id: parseInt(form.getFieldValue('truck_type'), 10),
+          description: form.getFieldValue('comment'),
+          topic: 'Excess Load Created',
+          created_by: context.email,
+          origin_id: 5
+        }
+      })
+    } 
+}
+
+
+
+ 
 
   return (
     <Modal
@@ -177,7 +277,7 @@ const CreateExcessLoad = (props) => {
       bodyStyle={{ paddingBottom: 0 }}
       footer={[]}
     >
-      <Form layout='vertical' form={form} onFinish={onCreateLoad}>
+      <Form layout='vertical' form={form} onFinish={onTripDataChange}>
         <Row gutter={10}>
           <Col xs={24}>
             <Form.Item label='Customer' name='customer' rules={[{ required: true }]}>
