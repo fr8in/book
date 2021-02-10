@@ -3,6 +3,9 @@ import useShowHide from '../../hooks/useShowHide'
 import OrderReport from '../partners/orderReport'
 import { gql, useQuery } from '@apollo/client'
 import get from 'lodash/get'
+import filterContext from '../../lib/filterContaxt'
+import { useContext } from 'react'
+
 
 const ANALYTICS_QUERY = gql`
 query monthly_orders($branch_ids: [Int!], $month: Int!,$year:Int!) {
@@ -24,10 +27,11 @@ query monthly_orders($branch_ids: [Int!], $month: Int!,$year:Int!) {
 `
 
 const Orders = (props) => {
-  const { filters } = props
+ 
 
   const initial = { orders: false, report: false }
   const { visible, onShow, onHide } = useShowHide(initial)
+  const {state} = useContext(filterContext)
 
   const year = new Date().getFullYear()
   const month = new Date().getMonth() + 1
@@ -36,7 +40,7 @@ const Orders = (props) => {
     ANALYTICS_QUERY,
     {
       variables: {
-        branch_ids: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
+        branch_ids: (state.branches && state.branches.length > 0) ? state.branches : null,
         month: month,
         year: year
       }
@@ -65,7 +69,7 @@ const Orders = (props) => {
         period='Current Month'
         bgColor='yellow'
       />
-      {visible.report && <OrderReport visible={visible.report} onHide={onHide} filters={filters} />}
+      {visible.report && <OrderReport visible={visible.report} onHide={onHide} />}
     </>
   )
 }

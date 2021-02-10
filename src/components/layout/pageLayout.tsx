@@ -1,5 +1,5 @@
 
-import { cloneElement, useState, useEffect } from 'react'
+import { cloneElement, useContext, useEffect } from 'react'
 import Head from 'next/head'
 import { Layout, Row, Col } from 'antd'
 import Link from 'next/link'
@@ -8,9 +8,9 @@ import Actions from './actions'
 import Nav from './nav'
 import Router from 'next/router'
 import Loading from '../../components/common/loading'
-import userContext from '../../lib/userContaxt'
 import get from 'lodash/get'
 import { gql, useQuery } from '@apollo/client'
+import AppState from '../../context/appState'
 
 const EMPLOYEE_QUERY = gql`
 query employee_name($email:String){
@@ -32,17 +32,10 @@ const PageLayout = (props) => {
   } else if (props.authState.status !== 'in') {
     return <Loading preloading />
   }
-  const initialFilter = {
-    regions: null,
-    branches: null,
-    cities: null,
-    managers: null,
-    types: null
-  }
-  const [filters, setFilters] = useState(initialFilter)
-
+ 
   const email = get(props, 'authState.user.email', null)
   const roles = get(props, 'authState.roles', null)
+  
 
   const { loading, data, error } = useQuery(
     EMPLOYEE_QUERY,
@@ -59,22 +52,20 @@ const PageLayout = (props) => {
   }
   const employees = get(_data, 'employee[0].branch_employees', [])
   const employee_id = get(_data, 'employee[0].id', null)
+  const branch_ids = employees.map(employee => employee.branch_id)
 
-  useEffect(() => {
-    const branch_ids = employees.map(employee => employee.branch_id)
-    setFilters({ ...filters, branches: branch_ids })
-  }, [loading])
+  
 
   const user = { email, roles, employee_id }
   return (
-    <userContext.Provider value={user}>
+      <AppState user={user} >
       <Layout id='page'>
         <Header className='siteLayout'>
           <Row>
             <Col flex='70px' className='brand'>
               <Link href='/'><a>FR<span>8</span></a></Link>
             </Col>
-            <Actions onFilter={setFilters} filters={filters} />
+            <Actions   branch_ids={branch_ids}/>
           </Row>
           <Row justify='center'>
             <Col xs={24} sm={24} md={24}>
@@ -91,12 +82,12 @@ const PageLayout = (props) => {
               <meta name='viewport' content='initial-scale=1.0, width=device-width' />
             </Head>
             <div className='pageBox'>
-              {cloneElement(props.children, { filters })}
+              {cloneElement(props.children)}
             </div>
           </div>
         </Content>
       </Layout>
-    </userContext.Provider>
+      </AppState>
   )
 }
 
