@@ -57,9 +57,8 @@ query dashboard_trips($now: timestamp,$regions: [Int!], $branches: [Int!], $citi
         {truck_status: {name: {_eq: "Waiting for Load"}}}, 
         {partner:{partner_status:{name:{_eq:"Active"}}}},
         {truck_type_id: {_in: $truck_type}},
-      {city:{connected_city:{branch_id:{_in:$branches}}}}
-      ],
-    _or:[{ partner:{dnd:{_neq:true}}}, {truck_type: {id:{_nin: [25,27]}}}]
+      {city:{connected_city:{branch_id:{_in:$branches}}}},
+      { partner:{dnd:{_neq:true}}}]
   }) {
     aggregate {
       count
@@ -71,9 +70,9 @@ query dashboard_trips($now: timestamp,$regions: [Int!], $branches: [Int!], $citi
         {truck_status: {name: {_eq: "Waiting for Load"}}}, 
         {partner:{partner_status:{name:{_eq:"Active"}}}},
         {truck_type_id: {_in: $truck_type}},
-      {city:{connected_city:{branch_id:{_in:$branches}}}}
-      ],
-    _or:[{ partner:{dnd:{_neq:true}}}, {truck_type: {id:{_nin: [25,27]}}}]
+      {city:{connected_city:{branch_id:{_in:$branches}}}},
+      { partner:{dnd:{_neq:true}}}
+    ]
     }) {
     aggregate {
       count

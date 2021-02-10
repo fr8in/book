@@ -1,7 +1,6 @@
 import { Row, Avatar } from 'antd'
 import LabelAndData from '../common/labelAndData'
 import SystemMamul from '../customers/systemMamul'
-// import mockData from '../../../mock/customer/customerDetail'
 import useShowHide from '../../hooks/useShowHide'
 import ManagedCustomer from './managedCustomer'
 import CustomerType from './customerType'
@@ -16,14 +15,14 @@ const CustomerInfo = (props) => {
   const { role } = u
   const customerTypeEdit = [role.admin, role.accounts_manager, role.accounts]
   const paymentManagerEdit = [role.admin, role.accounts_manager]
-  const exceptionDateEdit = [role.admin, role.accounts_manager]
   const managedCustomerEdit = [role.admin, role.accounts_manager]
+  const customerMamulEdit = [role.admin,role.rm]
   const modelInitial = { mamulVisible: false }
   const { visible, onHide, onShow } = useShowHide(modelInitial)
   const system_mamul = get(customer_info, 'system_mamul', 0)
   const customer_exception = get(customer_info,'is_exception',null)
   const telegram_group = get(customer_info,'telegram[0].group_link',null)
- 
+ const standard_mamul =get(customer_info,'standard_mamul',0)
   return (
     <>
       <Row gutter={8}>
@@ -67,7 +66,7 @@ const CustomerInfo = (props) => {
           label='S.Mamul'
           data={
             <label className='link' onClick={system_mamul ? () => onShow('mamulVisible') : () => {}}>
-              {system_mamul}
+              {Math.max(system_mamul, standard_mamul)}
             </label>
           }
           mdSpan={4}
@@ -94,7 +93,7 @@ const CustomerInfo = (props) => {
         /> */}
       </Row>
       {visible.mamulVisible && (
-        <SystemMamul visible={visible.mamulVisible} onHide={onHide} cardcode={customer_info.cardcode} />
+        <SystemMamul visible={visible.mamulVisible} onHide={onHide} cardcode={customer_info.cardcode} edit_access = {customerMamulEdit} standard_mamul={standard_mamul} system_mamul={system_mamul}/>
       )}
     </>
   )

@@ -134,7 +134,7 @@ const TripTime = (props) => {
   const [loadingMemoCheck, setLoadingMemoCheck] = useState(false)
   const context = useContext(userContext)
   const { role } = u
-  const po_delete_access = [role.admin, role.rm]
+  const po_delete_access = [role.admin]
   const process_advance_access = [role.admin, role.rm, role.operations,role.bm]
   const advance_access = u.is_roles(process_advance_access, context)
   const access = (trip_info.loaded === 'No') || u.is_roles(po_delete_access, context)

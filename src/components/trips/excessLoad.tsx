@@ -25,6 +25,16 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
     branch_employee_id:{_in: $managers}
   }) {
     id
+    branch{
+      id
+    }
+    branch_employee{
+      id
+      employee{
+        id
+        name
+      }
+    }
     po_date
     origin{
       name
@@ -40,6 +50,7 @@ subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$
     truck_type{
       id
       name
+      truck_type_group_id
     }
     customer {
       id
