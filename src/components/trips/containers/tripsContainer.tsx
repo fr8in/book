@@ -72,8 +72,7 @@ const TripsContainer = () => {
 
   const aggrigation = {
     all_trip: { _and: [{ trip_status: { name: { _in: ['Delivered', 'Invoiced', 'Paid', 'Recieved', 'Closed'] } } }] },
-    delivered_trip: { _and: [{ trip_status: { name: { _in: ['Delivered'] } }, pod_verified_at: { _is_null: true } }], customer: { name: { _ilike: countFilter.delivered_customername ? `%${countFilter.delivered_customername}%` : null } }, partner: { name: { _ilike: countFilter.delivered_partnername ? `%${countFilter.delivered_partnername}%` : null } },
-    branch: {region_id: {_in: (state.regions && state.regions.length > 0) ? state.regions : null}},
+    delivered_trip: { _and: [{ trip_status: { name: { _in: ['Delivered'] } }, pod_verified_at: { _is_null: true } }], customer: { name: { _ilike: countFilter.delivered_customername ? `%${countFilter.delivered_customername}%` : null } }, partner: { name: { _ilike: countFilter.delivered_partnername ? `%${countFilter.delivered_partnername}%` : null } },branch: {region_id: {_in: (state.regions && state.regions.length > 0) ? state.regions : null}},
     branch_id: {_in: (state.branches && state.branches.length > 0) ? state.branches : null},
     source_connected_city_id: {_in:(state.cities && state.cities.length > 0) ? state.cities : null },
     truck_type_id: {_in: (state.types && state.types.length > 0) ? state.types : null},
