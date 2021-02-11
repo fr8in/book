@@ -1,6 +1,6 @@
-import { Menu, Checkbox, message } from 'antd'
+import { Menu, Checkbox, message, Select ,Popconfirm  , Button} from 'antd'
 import { SwapOutlined } from '@ant-design/icons'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { gql, useQuery, useMutation, useSubscription, useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
 import u from '../../lib/util'
@@ -8,6 +8,7 @@ import userContext from '../../lib/userContaxt'
 import IciciIncomingTransfer from '../../../src/components/layout/iciciIncomingTransfer'
 import useShowHide from '../../../src/hooks/useShowHide'
 import now from 'lodash/now'
+import PrimaryBank from './primaryBank'
 
 
 const BANK_BALANCE = gql`
@@ -34,8 +35,6 @@ mutation UpdateDowntime($value:jsonb) {
     }
   }
 }`
-
-
 
 
 const BankBalance = () => {
@@ -106,7 +105,11 @@ const BankBalance = () => {
 
   return (
     <Menu>
-
+      <Menu.ItemGroup key="primary_bank" title="Primary Bank">
+      <Menu.Item>
+        <PrimaryBank/>
+        </Menu.Item>        
+      </Menu.ItemGroup>
       <Menu.ItemGroup key="outgoing" title="Outgoing">
         <Menu.Item>
           <Checkbox onChange={(e) => onChangeDownTime(e, 'icici_bank')} disabled={!access} checked={!displayData.downtime.icici_bank} >ICICI <b>{icici ? formatCurrency(icici.toFixed(0)) : '₹0'}</b>   </Checkbox>
