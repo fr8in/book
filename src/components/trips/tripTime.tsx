@@ -571,9 +571,7 @@ const TripTime = (props) => {
        visible={object.editModal}
        onHide={handleHide}
        advanceData={object.advanceEditData}
-       customer_advance={trip_info.customer_total_advance}
-       customer_price={trip_info.customer_price}
-       customer={trip_info.customer}
+       trip={trip_info}
       />}
       {visible.wh_detail &&
         <Modal

@@ -36,7 +36,8 @@ const DashboardContainer = (props) => {
     branches: (state.branches && state.branches.length > 0) ? state.branches : null,
     cities: (state.cities && state.cities.length > 0) ? state.cities : null,
     truck_type: (state.types && state.types.length > 0) ? state.types : null,
-    managers: (state.managers && state.managers.length > 0) ? state.managers : null
+    managers: (state.managers && state.managers.length > 0) ? state.managers : null,
+    dnd: !dndCheck
   }
   const { loading, data, error } = useQuery(DASHBOAD_QUERY, { variables })
 
@@ -58,6 +59,7 @@ const DashboardContainer = (props) => {
 
     const adv_pending_aggrigate = _.chain(newData).flatMap('adv_pending').flatMap('aggregate').value()
     adv_pending_count = _.sumBy(adv_pending_aggrigate, 'count')
+
     const unloading_aggrigate = _.chain(newData).flatMap('unloading').flatMap('aggregate').value()
     unloading_count = _.sumBy(unloading_aggrigate, 'count')
 
@@ -178,3 +180,4 @@ const onDndChange = (e) =>{
 }
 
 export default DashboardContainer
+
