@@ -118,8 +118,8 @@ const AdditionalAdvanceBank = (props) => {
   }
   const onSubmit = (form) => {
     setAccountName(form.account_name)
-    setAccountNumber(form.account_number)
-    setIfscCode(form.ifsc)
+    setAccountNumber((form.account_number).trim())
+    setIfscCode((form.ifsc).trim())
     setAdvanceAmount(form.amount)
     setComment(form.comment)
     setDisableBtn(true)
@@ -154,7 +154,7 @@ const AdditionalAdvanceBank = (props) => {
 
   const validateIFSC = () => {
     if (form.getFieldValue('ifsc')) {
-      getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc').trim() } })
+      getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc') } })
     } else return null
   }
 
@@ -196,7 +196,7 @@ const AdditionalAdvanceBank = (props) => {
             </Col>
             <Col xs={12} sm={8}>
               <Form.Item label='Confirm Account No' rules={rules} dependencies={['account_number']} name='confirm'>
-                <Input placeholder='Confirm' type='number'/>
+                <Input placeholder='Confirm'/>
               </Form.Item>
             </Col>
           </Row>
@@ -208,7 +208,7 @@ const AdditionalAdvanceBank = (props) => {
             </Col>
             <Col xs={12} sm={8} className='reduceMarginTop1'>
               <Form.Item label='Amount' name='amount' rules={[{ required: true }]}>
-                <Input placeholder='Amount' />
+                <Input placeholder='Amount'  />
               </Form.Item>
             </Col>
           </Row>

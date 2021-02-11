@@ -179,7 +179,7 @@ const CreatePartner = (props) => {
                   rules={rules}
                   initialValue={get(partner_info, 'display_account_number', null)}
                 >
-                  <Input placeholder='Confirm Account No' type='number'/>
+                  <Input placeholder='Confirm Account No'/>
                 </Form.Item>
               </Col>
             </Row>

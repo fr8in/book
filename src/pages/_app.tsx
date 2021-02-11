@@ -8,6 +8,7 @@ import LeadLayout from '../components/layout/leadLayout'
 import { withApollo } from '../lib/apollo'
 
 import { auth } from '../lib/auth'
+import AppState from '../context/appState'
 
 const MyApp = (props) => {
   const [authState, setAuthState] = useState({ status: 'loading' })
@@ -32,7 +33,9 @@ const MyApp = (props) => {
   
 
   return (
+    <AppState>
     <Component {...pageProps} authState={authState} />
+    </AppState>
     
   )
 }
