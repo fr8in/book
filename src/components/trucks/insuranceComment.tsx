@@ -23,8 +23,8 @@ const INSURANCE_COMMENT = gql`subscription insurance_comment($insurance_id: Int!
     }
   }    
 `
-const INSERT_INSURANCE_COMMENT_MUTATION = gql`mutation create_insurance_comment($insurance_id: Int, $description: String, $created_at: timestamp, $created_by: String,$topic:String) {
-    insert_insurance_comment(objects: {insurance_id: $insurance_id, topic:$topic, description: $description, created_at: $created_at, created_by: $created_by}) {
+const INSERT_INSURANCE_COMMENT_MUTATION = gql`mutation create_insurance_comment($insurance_id: Int, $description: String,  $created_by: String,$topic:String) {
+    insert_insurance_comment(objects: {insurance_id: $insurance_id, topic:$topic, description: $description,  created_by: $created_by}) {
       affected_rows
     }
   }`
