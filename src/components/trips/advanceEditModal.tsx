@@ -7,21 +7,6 @@ import { useContext } from 'react'
 import u from '../../lib/util'
 import EditableCell from '../common/editableCell';
 
-const TRIP_CUSTOMER_ADVANCE_PERCENTAGE = gql`query customer_advance_edit($id:Int){
-    trip(where:{id:{_eq:$id}}) {
-      id
-      customer_total_advance
-      customer{
-          id
-        name
-        customer_advance_percentage{
-          id
-          name
-        }
-      }
-    }
-  }`
-
 const CUSTOMERS_ADVANCE_PERCENTAGE_QUERY = gql`
   query customer_advance_percentage{
   customer_advance_percentage{
@@ -57,7 +42,7 @@ mutation customer_advance_update($description: String, $topic: String, $customer
 `
 
 const AdvanceEditModal = (props) => {
-    const { visible, onHide, advanceData, title,customer_advance,customer_price } = props
+    const { visible, onHide, advanceData,customer_advance,customer_price,customer } = props
     const context = useContext(userContext)
     const { role,topic } = u
     const customerAdvancePercentageEdit = [role.admin, role.accounts_manager, role.accounts]
@@ -69,21 +54,10 @@ const AdvanceEditModal = (props) => {
             notifyOnNetworkStatusChange: true
         }
     )
-    const { loading: tripLoading, error: tripError, data: tripData } = useQuery(TRIP_CUSTOMER_ADVANCE_PERCENTAGE,
-        {
-            variables: {
-                id: advanceData
-            }
-        })
-    let _tripData = {}
-    if (!tripLoading) {
-        _tripData = tripData
-    }
     let _data = {}
     if (!loading) {
         _data = data
     }
-    const customer = get(_tripData, 'trip[0].customer', null)
     const customer_advance_percentage = get(_data, 'customer_advance_percentage', [])
     const advancePercentageList = customer_advance_percentage.map(data => {
         return { value: data.id, label: data.name }
@@ -113,8 +87,11 @@ const [updateCustomerAmount] = useMutation(UPDATE_CUSTOMER_ADVANCE_AMOUNT,
       }
     })
   }
-    const handleChange = (value) => {
-    const total_advance= value*customer_price
+    const onPercentageChange = (value) => {
+      const percentageId = advancePercentageList.filter(data =>data.value === value)
+      const percentage = get(percentageId[0],'label',0)
+      const total_advance= parseInt((percentage/100)* customer_price,10)
+    console.log('checking',total_advance,value,customer_price)
         updateCustomerTypeId({
           variables: {
             customer_id: customer_id,
@@ -123,7 +100,9 @@ const [updateCustomerAmount] = useMutation(UPDATE_CUSTOMER_ADVANCE_AMOUNT,
             created_by: context.email,
             description:`${topic.customer_advance_percentage} updated by ${context.email}`,
             topic:topic.customer_advance_percentage,
-            id: customer_id
+            id: customer_id,
+            trip_id:advanceData,
+            customer_total_advance:total_advance
           }
         })
       }
@@ -140,7 +119,7 @@ const [updateCustomerAmount] = useMutation(UPDATE_CUSTOMER_ADVANCE_AMOUNT,
                 label={advancePercentage}
                 value={advancePercentageId}
                 options={advancePercentageList}
-                handleChange={handleChange}
+                handleChange={(value) =>onPercentageChange(value)}
                 style={{ width: '73%' }}
                 edit_access={customerAdvancePercentageEdit}
             /></span>
