@@ -3,6 +3,8 @@ import { LeftOutlined } from '@ant-design/icons'
 import CitySelect from '../common/citySelect'
 import Driver from './driver'
 import Link from 'next/link'
+import get from 'lodash/get'
+import LabelAndData from '../common/labelAndData'
 
 const AddTruck = (props) => {
   const { partner_info, onSubmit, typeList, driverChange, onCityChange, disableButton, disableAddTruck } = props
@@ -44,7 +46,13 @@ const AddTruck = (props) => {
               </Form.Item>
             </Col>
             <Col xs={24} sm={12}>
-              <Driver partner_id={partner_info.id} driverChange={driverChange} />
+            <Form.Item
+                label='Driver Number'
+                name='driver_number'
+                rules={[{ required: true, message: 'Driver Number is required field' }]}
+              >
+          <Driver partner_id={partner_info.id} truck_id={get(partner_info, 'trucks.id', null)} initialValue={get(partner_info, 'trucks.driver.mobile', null)} /> 
+          </Form.Item>
             </Col>
           </Row>
           <Row gutter={10}>
