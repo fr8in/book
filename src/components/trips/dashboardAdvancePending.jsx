@@ -8,8 +8,9 @@ import LinkComp from '../common/link'
 import Phone from '../common/phone'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import TripFeedBack from './tripFeedBack'
-import { useState } from 'react'
 import u from '../../lib/util'
+import { useState,useContext } from 'react'
+import {filterContext} from '../../context'
 
 const DASHBOARD_ADVANCE_PENDING_QUERY = gql`
 subscription customerAdvancePending($offset: Int, $limit: Int,
@@ -72,7 +73,8 @@ subscription customerAdvancePending($offset: Int, $limit: Int,
 
 
 const AdvancePending = (props) => {
-    const { filters } = props
+    
+    const {state} = useContext(filterContext)
 
     const initial = {
         commentData: [],
@@ -93,11 +95,11 @@ const AdvancePending = (props) => {
               trip_status: {name: {_nin: ["Waiting for truck","Assigned","Confirmed","Cancelled","Closed","Recieved"]}},
               trip_accounting: {receipt_ratio: {_lt: 0.5}},
               customer: {name: {_ilike: filter.customer_name ? `%${filter.customer_name}%` : null}},
-              branch:{region_id:{_in: (filters.regions && filters.regions.length > 0) ? filters.regions : null}},
-              branch_id:{_in:(filters.branches && filters.branches.length > 0) ? filters.branches : null},
-              source_connected_city_id:{_in:(filters.cities && filters.cities.length > 0) ? filters.cities : null},
-              truck_type_id:{_in:(filters.types && filters.types.length > 0) ? filters.types : null},
-              branch_employee_id:{_in: (filters.managers && filters.managers.length > 0) ? filters.managers : null}
+              branch:{region_id:{_in: (state.regions && state.regions.length > 0) ? state.regions : null}},
+              branch_id:{_in:(state.branches && state.branches.length > 0) ? state.branches : null},
+              source_connected_city_id:{_in:(state.cities && state.cities.length > 0) ? state.cities : null},
+              truck_type_id:{_in:(state.types && state.types.length > 0) ? state.types : null},
+              branch_employee_id:{_in: (state.managers && state.managers.length > 0) ? state.managers : null}
            }
 
       const variables = {

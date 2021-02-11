@@ -17,6 +17,9 @@ import isEmpty from 'lodash/isEmpty'
 import userContext from '../../lib/userContaxt'
 import moment from 'moment'
 import get from 'lodash/get'
+import {filterContext} from '../../context'
+import { REGION_FILTER, BRANCHES_FILTER, CITIES_FILTER, MANAGER_FILTER, TRUCK_TYPE_FILTER} from '../../context/action'
+import { useEffect } from 'react'
 
 
 const { Panel } = Collapse
@@ -28,12 +31,14 @@ query global_truck_type_filter($now: timestamp, $regions: [Int!], $branches: [In
   truck_type(where: {active: {_eq: true}}) {
     id
     shortname
-    trucks_type_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}, partner: {partner_status: {name: {_eq: "Active"}}}, city: {connected_city: {branch_id: {_in: $branches}, branch: {region_id: {_in: $regions}}, id: {_in: $cities}}}, _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
+    trucks_type_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}, city: {connected_city: {branch_id: {_in: $branches}, branch: {region_id: {_in: $regions}}, id: {_in: $cities}}},partner: {partner_status: {name: {_eq: "Active"}}, dnd: {_neq: true}}}) {
       aggregate {
         count
       }
     }
-    trucks_type_current: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}, available_at: {_lte: $now}, city: {connected_city: {branch_id: {_in: $branches}, branch: {region_id: {_in: $regions}}, id: {_in: $cities}}}, partner: {partner_status: {name: {_eq: "Active"}}}, _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
+    trucks_type_current: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}, available_at: {_lte: $now}, city: {connected_city: {branch_id: {_in: $branches}, branch: {region_id: {_in: $regions}}, id: {_in: $cities}}}, 
+    partner: {partner_status: {name: {_eq: "Active"}}, dnd: {_neq: true}}}
+    ) {
       aggregate {
         count
       }
@@ -63,12 +68,15 @@ query gloabl_filter($now: timestamp, $regions: [Int!], $branches: [Int!], $citie
         cities {
           id
           name
-          trucks_total: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, {partner: {partner_status: {name: {_eq: "Active"}}}}], _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
+          trucks_total: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, 
+             {partner: {partner_status: {name: {_eq: "Active"}}, dnd: {_neq: true}}} ]}) {
             aggregate {
               count
             }
           }
-          trucks_current: trucks_aggregate(where: {_and: [{available_at: {_lte: $now}}, {truck_status: {name: {_eq: "Waiting for Load"}}}, {partner: {partner_status: {name: {_eq: "Active"}}}}], _or: [{partner: {dnd: {_neq: true}}}, {truck_type: {id: {_nin: [25, 27]}}}]}) {
+          trucks_current: trucks_aggregate(where: {_and: [{available_at: {_lte: $now}}, {truck_status: {name: {_eq: "Waiting for Load"}}}, 
+            {partner: {partner_status: {name: {_eq: "Active"}}, dnd: {_neq: true}}}
+          ]}) {
             aggregate {
               count
             }
@@ -78,11 +86,12 @@ query gloabl_filter($now: timestamp, $regions: [Int!], $branches: [Int!], $citie
     }
   }
 }
+
 `
 const Clear = (props) => <span className='clear' onClick={props.onClear}>CLEAR</span>
 
 const Actions = (props) => {
-  const { onFilter, filters } = props
+  const { branch_ids } = props
   const initial = { filter: false, search: false, ssh: false }
   const { visible, onShow, onHide } = useShowHide(initial)
   const [bank_visible, setBank_visible] = useState(false)
@@ -91,10 +100,11 @@ const Actions = (props) => {
   const { role } = u
   const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing_manager, role.partner_manager, role.accounts, role.billing, role.bm]
   const access = u.is_roles(edit_access, context)
-
+  const {dispatch,state} = useContext(filterContext)
+  
   const variables = {
     now: moment().format('YYYY-MM-DD'),
-    regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null
+    regions: (state.regions && state.regions.length > 0) ? state.regions : null
   }
   const { loading, data, error } = useQuery(GLOBAL_FILTER, {
     variables,
@@ -104,11 +114,10 @@ const Actions = (props) => {
 
   const truck_type_variables = {
     now: moment().format('YYYY-MM-DD'),
-    regions: !isEmpty(filters.regions) ? filters.regions : null,
-    branches: !isEmpty(filters.branches) ? filters.branches : null,
-    cities: !isEmpty(filters.cities) ? filters.cities : null
+    regions: !isEmpty(state.regions) ? state.regions : null,
+    branches: !isEmpty(state.branches) ? state.branches : null,
+    cities: !isEmpty(state.cities) ? state.cities : null
   }
-
 
   const { loading:truck_type_loading, data:truck_type_data, error:truck_type_error } = useQuery(GLOBAL_TRUCK_TYPE_FILTER, {
     variables:truck_type_variables,
@@ -172,13 +181,27 @@ const Actions = (props) => {
 
   const branch_options_sort = branch_options.sort((a, b) => a.order - b.order)
 
+  useEffect(() => {
+    dispatch({
+      type: BRANCHES_FILTER,
+      payload: state.branches && state.branches.length ? state.branches  : branch_ids
+    })
+     }, [props])
+
   const onCheckBoxChange = (value, name) => {
-    onFilter({ ...filters, [name]: value })
+       dispatch({
+      type: name,
+      payload: value
+    })
   };
 
+ 
   const onClear = (e, name) => {
     e.stopPropagation()
-    onFilter({ ...filters, [name]: null })
+   dispatch({
+    type: name,
+    payload: null
+  })
   };
 
   const onBankDetailToggle = (visible) => {
@@ -219,33 +242,33 @@ const Actions = (props) => {
           <Collapse className='global-filter' defaultActiveKey={['branch']}>
             <Panel
               header={<b>Region</b>} key='region'
-              extra={filters.regions && filters.regions.length > 0 ? <Clear onClear={(e) => onClear(e, 'regions')} /> : ''}
+              extra={state.regions && state.regions.length > 0 ? <Clear onClear={(e) => onClear(e, REGION_FILTER)} /> : ''}
             >
-              <CheckBoxGroup value={filters.regions} options={region_options} onChange={(value) => onCheckBoxChange(value, 'regions')} />
+              <CheckBoxGroup value={state.regions} options={region_options} onChange={(value) => onCheckBoxChange(value, REGION_FILTER)} />
             </Panel>
             <Panel
               header={<b>Branch</b>} key="branch"
-              extra={filters.branches && filters.branches.length > 0 ? <Clear onClear={(e) => onClear(e, 'branches')} /> : ''}
+              extra={state.branches && state.branches.length > 0 ? <Clear onClear={(e) => onClear(e, BRANCHES_FILTER)} /> : ''}
             >
-              <CheckBoxGroup options={branch_options_sort} defaultValue={filters.branches} value={filters.branches} onChange={(value) => onCheckBoxChange(value, 'branches')} />
+              <CheckBoxGroup options={branch_options_sort} defaultValue={state.branches} value={state.branches} onChange={(value) => onCheckBoxChange(value,BRANCHES_FILTER)} />
             </Panel>
             <Panel
               header={<b>Type</b>} key="type"
-              extra={filters.types && filters.types.length > 0 ? <Clear onClear={(e) => onClear(e, 'types')} /> : ''}
+              extra={state.types && state.types.length > 0 ? <Clear onClear={(e) => onClear(e, TRUCK_TYPE_FILTER)} /> : ''}
             >
-              <CheckBoxGroup options={truck_type_options} value={filters.types} onChange={(value) => onCheckBoxChange(value, 'types')} />
+              <CheckBoxGroup options={truck_type_options} value={state.types} onChange={(value) => onCheckBoxChange(value,TRUCK_TYPE_FILTER)} />
             </Panel>
             <Panel
               header={<b>City</b>} key="city"
-              extra={filters.cities && filters.cities.length > 0 ? <Clear onClear={(e) => onClear(e, 'cities')} /> : ''}
+              extra={state.cities && state.cities.length > 0 ? <Clear onClear={(e) => onClear(e, CITIES_FILTER)} /> : ''}
             >
-              <CheckBoxGroup value={filters.cities} options={connected_city_options} onChange={(value) => onCheckBoxChange(value, 'cities')} />
+              <CheckBoxGroup value={state.cities} options={connected_city_options} onChange={(value) => onCheckBoxChange(value,CITIES_FILTER)} />
             </Panel>
             <Panel
               header={<b>Manager</b>} key="manager"
-              extra={filters.managers && filters.managers.length > 0 ? <Clear onClear={(e) => onClear(e, 'managers')} /> : ''}
+              extra={state.managers && state.managers.length > 0 ? <Clear onClear={(e) => onClear(e, MANAGER_FILTER)} /> : ''}
             >
-              <CheckBoxGroup options={branch_employee_options} defaultValue={filters.managers} value={filters.managers} onChange={(value) => onCheckBoxChange(value, 'managers')} />
+              <CheckBoxGroup options={branch_employee_options} defaultValue={state.managers} value={state.managers} onChange={(value) => onCheckBoxChange(value,MANAGER_FILTER)} />
             </Panel>
           </Collapse>
         </Drawer>}

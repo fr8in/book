@@ -120,7 +120,7 @@ const PayablesContainer = () => {
   }
   useEffect(() => {
     const totalCount = bank_incoming ? bank_incoming.length : 0
-    const totalSum = bank_incoming ? sumBy(bank_incoming, 'amount').toFixed(2) : 0
+    const totalSum = bank_incoming ? sumBy(bank_incoming, 'amount') : 0
     setTotalSum(totalSum)
     setTotalCount(totalCount)
   },
@@ -272,7 +272,7 @@ const PayablesContainer = () => {
         (
           <Space>
             <span className='text-right'>Total Count: <b>{totalCount}</b></span>
-            <span className='text-right'>Total Amount: <b>₹{totalSum}</b></span>
+            <span className='text-right'>Total Amount: <b>₹{totalSum ? totalSum.toFixed(2) : 0}</b></span>
             <Input placeholder='Search...' suffix={<SearchOutlined />} onChange={onSearch} />
           </Space>
         )

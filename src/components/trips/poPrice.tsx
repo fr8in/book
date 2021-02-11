@@ -7,14 +7,13 @@ import get from 'lodash/get'
 import u from '../../lib/util'
 
 const PoPrice = (props) => {
-  const { po_data, form, customer, loading, record } = props
+  const { po_data, form, customer, loading, record,mamul } = props
 
-  const default_mamul = get(customer, 'system_mamul', 0)
   const customer_price = get(record, 'customer_price', null)
   const customer_advance_percentage = get(customer, 'customer_advance_percentage.name', 90)
   const partner_advance_percentage = get(po_data, 'partner_advance_percentage.name', 70)
   const price_type = get(record, 'is_price_per_ton', false)
-  const partner_price = customer_price - default_mamul
+  const partner_price = customer_price - mamul
   const bank = customer_price ? (customer_price * customer_advance_percentage / 100) : 0
   const wallet = partner_price ? (partner_price * partner_advance_percentage / 100) : 0
 
@@ -30,7 +29,7 @@ const PoPrice = (props) => {
   const { visible, onHide, onShow } = useShowHide(modelInitial)
 
   useEffect(() => {
-    form.setFieldsValue({ mamul: default_mamul })
+    form.setFieldsValue({ mamul: mamul })
   }, [loading])
 
   const onRadioChange = (e) => {
@@ -214,7 +213,7 @@ const PoPrice = (props) => {
               name='mamul'
               label={(
                 <span>Mamul Charge
-                  <span className='link' onClick={default_mamul ? () => onShow('mamulVisible') : () => {}}>S.Mamul: <b>{default_mamul || 0}</b></span>
+                  <span className='link' onClick={mamul ? () => onShow('mamulVisible') : () => {}}>S.Mamul: <b>{mamul || 0}</b></span>
                 </span>
               )}
               rules={[{ required: true }]}

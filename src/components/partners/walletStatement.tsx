@@ -6,6 +6,7 @@ import {
   CheckCircleOutlined,
   InfoCircleOutlined
 } from '@ant-design/icons'
+import isNil from 'lodash/isNil';
 import isEmpty from 'lodash/isEmpty'
 
 const PARTNER_WALLET_STATEMENT_QUERY = gql`
@@ -24,6 +25,7 @@ query partner_wallet_statement($cardcode: String) {
       cardcode
       created_at
       amount
+      running_total
       mode
       trip_id
       comment
@@ -93,7 +95,8 @@ const WalletStatement = (props) => {
       closable
       onClose={onHide}
       visible={visible}
-      width={360}
+      className='statement'
+     // width={window.innerWidth > 510 ? 510 : '100%'} 
     >
       {loading ? <Loading /> : (
         <div className='walletList'>
@@ -108,8 +111,8 @@ const WalletStatement = (props) => {
                     const referrence_number = get(transactionData, 'transaction_refno', null)
                     return (
                       isEmpty(transactionData.mode) ? '' : (
-                        <Row key={i}>
-                          <Col span={18}>
+                        <Row key={i} gutter={6}>
+                          <Col span={15}>
                             <p><b>{transactionData.mode} {transactionData.trip_id || ''}</b>{get(transactionData, 'route', null) ? `- ${transactionData.route}` : ''}</p>
                             <p>{transactionData.mode === "Reversal( Paid To Bank )" ? get(transactionData, 'transaction_refno', null) :
                               transactionData.mode === "Paid To Bank"
@@ -144,10 +147,13 @@ const WalletStatement = (props) => {
                               && <p>{'#' + transactionData.trip_id}, {get(transactionData, 'trip.source.name', null)} - {get(transactionData, 'trip.destination.name', null)}</p>
                             }
                           </Col>
-                          <Col span={6} className='text-right'>
+                          <Col span={4} className='text-right'>
                             <span className={transactionData.amount > 0 ? 'creditAmount'  : 'debitAmount'}>
                              {transactionData.amount > 0 ? `₹+${transactionData.amount}` : `₹${transactionData.amount}`}
                             </span>
+                          </Col>
+                          <Col span={5} className='text-right'>
+                          <span>{isNil(transactionData.running_total) ? '': `₹${transactionData.running_total}`}</span>
                           </Col>
                         </Row>)
                     )

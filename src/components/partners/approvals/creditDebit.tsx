@@ -22,56 +22,57 @@ import PartnerLink from '../../common/PartnerLink'
 
 const CREDIT_DEBIT_LIST = gql`
 query trip_credit_debit($offset:Int,$limit:Int,$where:trip_credit_debit_bool_exp) {
-trip_credit_debit(offset:$offset,where:$where,limit:$limit) {
-      id
-      trip_id
-      type
-      amount
-      comment
-      approved_by
-      approved_amount
-      approval_comment
-      created_at
-      created_by
-      is_created_by_partner
-      credit_debit_status {
-        id
-        name
-      }
-      trip {
-        last_comment {
+    trip_credit_debit(offset:$offset,where:$where,limit:$limit) {
           id
-          description
-        }
-        branch {
-          region {
+          trip_id
+          type
+          amount
+          comment
+          approved_by
+          approved_amount
+          approval_comment
+          created_at
+          created_by
+          is_created_by_partner
+          credit_debit_status {
+            id
             name
           }
-        }
-        partner {
-          id
-          cardcode
-          name
-          partner_connected_city {
-            connected_city {
-              branch {
-                region {
-                  name
+          trip {
+            trip_status_id
+            last_comment {
+              id
+              description
+            }
+            branch {
+              region {
+                name
+              }
+            }
+            partner {
+              id
+              cardcode
+              name
+              partner_connected_city {
+                connected_city {
+                  branch {
+                    region {
+                      name
+                    }
+                  }
                 }
               }
             }
           }
+          responsibility {
+            id
+            name
+          }
+          credit_debit_type {
+            name
+          }
         }
       }
-      responsibility {
-        id
-        name
-      }
-      credit_debit_type {
-        name
-      }
-    }
-  }
 `
 
 const CREDIT_DEBIT_TYPE_QUERY = gql`
@@ -116,9 +117,12 @@ const CreditDebit = () => {
     const pending_list = filter.status_name.includes("PENDING")
 
     const { role } = u
-    const access = [role.admin, role.rm, role.partner_support, role.partner_manager]
+    const access = [role.admin, role.rm, role.partner_support, role.partner_manager,role.billing,role.accounts_manager]
     const context = useContext(userContext)
-    const approval_access = u.is_roles(access, context)
+  const authorised = u.is_roles(access,context)
+  const admin_access = [role.admin]
+  const authorised_role = u.is_roles(admin_access,context)
+ 
 
     const where = {
         trip_id: { _eq: filter.trip_id ? filter.trip_id : null },
@@ -233,7 +237,7 @@ const CreditDebit = () => {
     }
 
     let credit_debit_list = !isEmpty(filter.pending) ? filter.pending : tripCreditDebit
-
+    
     const columns = [
         {
             title: '#',
@@ -453,8 +457,11 @@ const CreditDebit = () => {
             {
                 title: 'Action',
                 width: '12%',
-                render: (text, record) => (
-                    <Space>
+                render: (text, record) => {
+                    const status = get(record,'trip.trip_status_id',null)
+                    const approval_access =((status === 13) || (status === 15)) ? authorised_role : authorised
+                    return (
+                        <Space>
                         <Tooltip title='Comment'>
                             <Button
                                 type='link'
@@ -489,7 +496,8 @@ const CreditDebit = () => {
                                 : null}
                         </Tooltip>
                     </Space>
-                )
+                    )
+                }                  
           } : {}
     ]
 
