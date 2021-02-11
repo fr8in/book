@@ -177,7 +177,7 @@ const CreatePartner = (props) => {
                   name='confirm'    
                   dependencies={['account_no']}
                   rules={rules}
-                  initialValue={get(partner_info, 'display_account_number', null)}
+                  initialValue={parseInt(get(partner_info, 'display_account_number', null))}
                 >
                   <Input placeholder='Confirm Account No' type='number'/>
                 </Form.Item>
