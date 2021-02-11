@@ -15,13 +15,13 @@ const CUSTOMERS_ADVANCE_PERCENTAGE_QUERY = gql`
   }
 }
 `
-const UPDATE_CUSTOMER_ADVANCE_AMOUNT =gql`mutation update_customer_advance_amount($id:Int!,$customer_total_advance:Int){
+const UPDATE_CUSTOMER_ADVANCE_AMOUNT =gql`mutation update_customer_advance_amount($id:Int!,$customer_total_advance:Float!){
   update_trip(where:{id:{_eq:$id}},_set:{customer_total_advance:$customer_total_advance}){
     affected_rows
   }
 }`
 const UPDATE_CUSTOMER_ADVANCE_MUTATION = gql`
-mutation customer_advance_update($description: String, $topic: String, $customer_id: Int, $created_by: String,$advance_percentage_id:Int,$updated_by:String!,$id:Int!,$customer_total_advance:Int!,$trip_id:Int!) {
+mutation customer_advance_update($description: String, $topic: String, $customer_id: Int, $created_by: String,$advance_percentage_id:Int,$updated_by:String!,$id:Int!,$customer_total_advance:Float!,$trip_id:Int!) {
   insert_customer_comment(objects: {description: $description, customer_id: $customer_id, topic: $topic, created_by: $created_by}) {
     returning {
       description
