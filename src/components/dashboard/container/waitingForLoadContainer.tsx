@@ -1,7 +1,9 @@
 import WaitingForLoad from '../../trucks/waitingForLoad'
 import { gql, useSubscription } from '@apollo/client'
 import _ from 'lodash'
-import { useState } from 'react'
+import { useState ,useContext} from 'react'
+import {filterContext} from '../../../context'
+
 
 const DASHBOARD_TRUCK_QUERY = gql`
 subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $truck_no: String, $dnd: Boolean) {
@@ -59,15 +61,16 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
 
 `
 const WaitingForLoadContainer = (props) => {
-  const { filters, dndCheck } = props
+  const {  dndCheck } = props
   const initial = { truckno: null}
   const [truckNo , setTruckNo] = useState(initial)
+  const {state} = useContext(filterContext)
 
   const variables = {
-    regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
-    branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
-    cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
-    truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
+    regions: (state.regions && state.regions.length > 0) ? state.regions : null,
+    branches: (state.branches && state.branches.length > 0) ? state.branches : null,
+    cities: (state.cities && state.cities.length > 0) ? state.cities : null,
+    truck_type: (state.types && state.types.length > 0) ? state.types : null,
     truck_no: truckNo.truckno ? `%${truckNo.truckno}%` : null,
     dnd: dndCheck === true ? false : true
   }

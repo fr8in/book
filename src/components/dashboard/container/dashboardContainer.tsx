@@ -17,24 +17,26 @@ import Progress from '../../reports/progress'
 import moment from 'moment'
 import WeeklyBranchTarget from '../../partners/weeklyBranchTarget'
 import AdvancePending from '../../trips/dashboardAdvancePending'
+import {filterContext} from '../../../context'
+import { useContext } from 'react'
 
 const { TabPane } = Tabs
 
 const DashboardContainer = (props) => {
-  const { filters } = props
   const initial = { excessLoad: false,orders:false,Staticticsdata:false }
   const { visible, onShow, onHide } = useShowHide(initial)
   const [dndCheck,setDndCheck] = useState(false)
   const date = new Date(new Date().getFullYear(), 0, 1);
+  const {state} = useContext(filterContext)
 
   const variables = {
     now: moment().format('YYYY-MM-DD'),
     yearStart: moment(date).format('YYYY-MM-DD'),
-    regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
-    branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
-    cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
-    truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
-    managers: (filters.managers && filters.managers.length > 0) ? filters.managers : null
+    regions: (state.regions && state.regions.length > 0) ? state.regions : null,
+    branches: (state.branches && state.branches.length > 0) ? state.branches : null,
+    cities: (state.cities && state.cities.length > 0) ? state.cities : null,
+    truck_type: (state.types && state.types.length > 0) ? state.types : null,
+    managers: (state.managers && state.managers.length > 0) ? state.managers : null
   }
   const { loading, data, error } = useQuery(DASHBOAD_QUERY, { variables })
 
@@ -90,7 +92,7 @@ const DashboardContainer = (props) => {
     truck_current_count = _.sumBy(truck_c_aggrigate, 'count')
   }
 
-  const truck_tab_disable = !!((filters.branches && filters.branches.length === 0) || filters.branches === null)
+  const truck_tab_disable = !!((state.branches && state.branches.length === 0) || state.branches === null)
 
 const onDndChange = (e) =>{
   setDndCheck(e.target.checked)
@@ -104,10 +106,10 @@ const onDndChange = (e) =>{
           <Col xs={24} style={{ overflow: 'hidden' }}>
             <Row gutter={10}>
               <Col xs={24} sm={9} md={8}>
-                <Orders filters={filters} />
+                <Orders  />
               </Col>
               <Col xs={24} sm={15} md={8}>
-                <Revenue filters={filters} />
+                <Revenue  />
               </Col>
               <Col xs={24} sm={24} md={8}>
                 <Progress />
@@ -131,37 +133,37 @@ const onDndChange = (e) =>{
                 }
               >
                 <TabPane tab={<TitleWithCount name='Unloading(S)' value={unloading_count} />} key='1'>
-                  <TripsContainer filters={filters} trip_status='Reported at destination' />
+                  <TripsContainer  trip_status='Reported at destination' />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='WF.Load' value={truck_current_count + '/' + truck_count} />} key='2'>
-                {truck_tab_disable ? <Row justify='center'> Use Filter to get Data </Row>: <WaitingForLoadContainer filters={filters} dndCheck={dndCheck}/>}
+                {truck_tab_disable ? <Row justify='center'> Use Filter to get Data </Row>: <WaitingForLoadContainer  dndCheck={dndCheck}/>}
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Assigned' value={assigned_count} />} key='3'>
-                  <TripsContainer filters={filters}  trip_status='Assigned' partner_region_filter />
+                  <TripsContainer   trip_status='Assigned' partner_region_filter />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Confirmed' value={confirmed_count} />} key='4'>
-                  <TripsContainer filters={filters}  trip_status='Confirmed' partner_region_filter/>
+                  <TripsContainer   trip_status='Confirmed' partner_region_filter/>
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Loading' value={loading_count} />} key='5'>
-                  <TripsContainer filters={filters}  trip_status='Reported at source' partner_region_filter/>
+                  <TripsContainer   trip_status='Reported at source' partner_region_filter/>
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Intransit(S)' value={intransit_count} />} key='6'>
-                  <TripsContainer filters={filters} trip_status='Intransit' intransit />
+                  <TripsContainer  trip_status='Intransit' intransit />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Intransit(D)' value={intransit_d_count} />} key='7'>
-                  <TripsByDestination filters={filters} intransit trip_status='Intransit' />
+                  <TripsByDestination  intransit trip_status='Intransit' />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Unloading(D)' value={unloading_d_count} />} key='8'>
-                  <TripsByDestination filters={filters} trip_status='Reported at destination' />
+                  <TripsByDestination  trip_status='Reported at destination' />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Loads' value={excess_count} />} key='9'>
-                  <ExcessLoad trip_status='Waiting for truck' filters={filters} />
+                  <ExcessLoad trip_status='Waiting for truck'  />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='Hold' value={hold_count} />} key='10'>
-                  <TripsContainer filters={filters} trip_status='Intransit halting' />
+                  <TripsContainer  trip_status='Intransit halting' />
                 </TabPane>
                 <TabPane tab={<TitleWithCount name='ADV.Pending' value={adv_pending_count} />} key='11'>
-                  <AdvancePending   filters={filters}/>
+                  <AdvancePending  />
                 </TabPane>
               </Tabs>
             </Card>
