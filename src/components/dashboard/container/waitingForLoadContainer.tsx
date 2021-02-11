@@ -18,7 +18,7 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
           id
           name
           trucks(where: {truck_status: {name: {_eq: "Waiting for Load"}}, truck_no: {_ilike: $truck_no}, truck_type: {id: {_in: $truck_type}}, 
-             partner: {partner_status: {name: {_eq: "Active"}}, dnd: {_neq: true}}}   ) {
+             partner: {partner_status: {name: {_eq: "Active"}}, dnd: {_neq: $dnd}}}   ) {
             id
             truck_no
             truck_type {
@@ -72,7 +72,7 @@ const WaitingForLoadContainer = (props) => {
     cities: (state.cities && state.cities.length > 0) ? state.cities : null,
     truck_type: (state.types && state.types.length > 0) ? state.types : null,
     truck_no: truckNo.truckno ? `%${truckNo.truckno}%` : null,
-    dnd: dndCheck === true ? false : true
+    dnd: !dndCheck
   }
   const { loading, data, error } = useSubscription(DASHBOARD_TRUCK_QUERY, { variables })
   
