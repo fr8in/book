@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
-import { Button, message, Table, Tooltip, Modal, Radio, Checkbox } from 'antd'
-import { CommentOutlined } from '@ant-design/icons'
+import { Button, message, Table, Tooltip, Modal, Radio, Checkbox,Input } from 'antd'
+import { CommentOutlined,SearchOutlined } from '@ant-design/icons'
 import { gql, useSubscription, useMutation, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
@@ -15,9 +15,10 @@ import isEmpty from 'lodash/isEmpty'
 import Truncate from '../common/truncate'
 
 const INSURANCE_SUBSCRIPTION = gql`
-subscription insurance_data($status_id:Int,$region:[String!]) {
+subscription insurance_data($status_id:[Int!],$region:[String!],$truck_no:String) {
     insurance(where:{
-      status_id:{_eq:$status_id}
+      truck:{truck_no:{_ilike:$truck_no}}
+      status_id:{_in:$status_id}
       partner:{city:{connected_city:{branch:{region:{name:{_in:$region}}}}}}
     }) {
       id
@@ -66,11 +67,12 @@ const Insurance = () => {
 
     const initial = {
         commentVisible: false,
-        commentData: []
+        commentData: [],
+        truckno: null
     }
 
-
-    const [status, setStatus] = useState(1)
+      const [filter, setFilter] = useState(initial)
+    const [status, setStatus] = useState(null)
     const [regionFilter, setRegionFilter] = useState(null)
     const { data: status_data, loading: statusLoading } = useQuery(INSURANCE_STATUS)
     const { object, handleShow, handleHide } = useShowHideWithRecord(initial)
@@ -81,7 +83,8 @@ const Insurance = () => {
 
     const { data, loading, error } = useSubscription(INSURANCE_SUBSCRIPTION, {
         variables: {
-            status_id: status,
+            truck_no: filter.truckno ? `%${filter.truckno}%` : null,
+            ...!isEmpty(status) && {status_id: status ? status : null},
             ...!isEmpty(regionFilter) && { region: regionFilter ? regionFilter : null }
         }
     })
@@ -124,8 +127,17 @@ const Insurance = () => {
         }
     }
 
-    const handleStatus = (e) => {
-        setStatus(e.target.value)
+    const onTruckNoSearch = (value) => {
+        setFilter({ ...filter, truckno: value })
+      }
+    
+
+      const handleTruckNo = (e) => {
+        onTruckNoSearch(e.target.value)
+      }
+
+    const handleStatus = (checked) => {
+        setStatus(checked)
     }
     const handlePartnerRegion = (checked) => {
         setRegionFilter(checked)
@@ -139,7 +151,19 @@ const Insurance = () => {
             title: 'Truck No',
             dataIndex: "truckNo",
             width: '10%',
-            render: (text, record) => get(record, 'truck.truck_no', null)
+            render: (text, record) => get(record, 'truck.truck_no', null),
+            filterDropdown: (
+                <Input
+                  placeholder='Search TruckNo'
+                  value={filter.truckno}
+                  onChange={handleTruckNo}
+                />
+              ),
+              filterIcon: () => (
+                <SearchOutlined
+                  style={{ color: filter.truckno ? '#1890ff' : undefined }}
+                />
+              )
         },
         {
             title: 'Partner',
@@ -181,7 +205,7 @@ const Insurance = () => {
             dataIndex: "status",
             width: '10%',
             filterDropdown: (
-                <Radio.Group
+                <Checkbox.Group
                     options={statusList}
                     defaultValue={status}
                     onChange={handleStatus}

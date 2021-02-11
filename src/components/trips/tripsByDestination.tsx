@@ -2,6 +2,8 @@ import React from 'react'
 import Trips from './activeTrips'
 import { gql, useSubscription } from '@apollo/client'
 import get from 'lodash/get'
+import { useState,useContext } from 'react'
+import {filterContext} from '../../context'
 
 const TRIPS_QUERY = gql`
 subscription dashboard_trips(
@@ -79,14 +81,15 @@ subscription dashboard_trips(
 }
 `
 const TripsByDestination = (props) => {
-  const { filters, trip_status, intransit } = props
+  const {  trip_status, intransit } = props
+  const {state} = useContext(filterContext)
 
   const variables = {
-    regions: (filters.regions && filters.regions.length > 0) ? filters.regions : null,
-    branches: (filters.branches && filters.branches.length > 0) ? filters.branches : null,
-    cities: (filters.cities && filters.cities.length > 0) ? filters.cities : null,
-    truck_type: (filters.types && filters.types.length > 0) ? filters.types : null,
-    managers: (filters.managers && filters.managers.length > 0) ? filters.managers : null,
+    regions: (state.regions && state.regions.length > 0) ? state.regions : null,
+    branches: (state.branches && state.branches.length > 0) ? state.branches : null,
+    cities: (state.cities && state.cities.length > 0) ? state.cities : null,
+    truck_type: (state.types && state.types.length > 0) ? state.types : null,
+    managers: (state.managers && state.managers.length > 0) ? state.managers : null,
     trip_status: trip_status
   }
 

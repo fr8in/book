@@ -8,7 +8,6 @@ import useShowHideWithRecord from '../../hooks/useShowHideWithRecord'
 import { gql, useSubscription } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import u from '../../lib/util'
-import isEmpty from 'lodash/isEmpty'
 
 const CREDIT_NOTE_TABLE_SUBSCRIPTION = gql`
 subscription credit_debits($id:Int){
@@ -40,7 +39,7 @@ const CreditNoteTable = (props) => {
 
   const context = useContext(userContext)
   const { role } = u
-  const edit_access = [role.admin, role.rm, role.accounts_manager, role.billing,role.partner_manager,role.partner_support]
+  const edit_access = [role.admin, role.rm,role.partner_manager,role.partner_support,role.billing,role.accounts_manager]
   const authorised = u.is_roles(edit_access,context)
   const access = [role.admin]
   const authorised_role = u.is_roles(access,context)
@@ -136,7 +135,7 @@ const CreditNoteTable = (props) => {
                 size='small'
                 shape='circle'
                 className='btn-success'
-                disabled={!(invoiced && !received && !closed) || lock}
+                disabled={!(invoiced || received || closed) || lock}
                 icon={<CheckOutlined />}
                 onClick={() => handleShow('approveVisible', 'Approve', 'approveData', record)}
               />
