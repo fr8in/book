@@ -4,7 +4,11 @@ export const TRIP_DETAIL_SUBSCRIPTION = gql`
 subscription trips_detail($id: Int) {
   trip(where: {id:{_eq:$id}}){
     id
+    cash
+    to_pay
+    bank
     customer_total_advance
+    customer_advance_percentage
     branch_employee{
       id
       employee{
