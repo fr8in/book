@@ -97,7 +97,7 @@ const WalletTopup = (props) => {
 
   useEffect(() => {
     const totalCount = bank_incoming ? bank_incoming.length : 0
-    const totalSum = bank_incoming ? sumBy(bank_incoming, 'amount').toFixed(2) : 0
+    const totalSum = bank_incoming ? sumBy(bank_incoming, 'amount') : 0
     setTotalSum(totalSum)
     setTotalCount(totalCount)
   },
@@ -171,7 +171,7 @@ const WalletTopup = (props) => {
   const footerData = (
     <Row>
       <Col flex='auto' className='text-left'>
-        <span>Total Amount: <b>₹{totalSum}</b></span>
+        <span>Total Amount: <b>₹{totalSum ? totalSum.toFixed(2) : 0}</b></span>
       </Col>
       <Col flex='120px'>
         <Button type='primary' disabled={disableButton} onClick={onSubmit}>Top Up</Button>
