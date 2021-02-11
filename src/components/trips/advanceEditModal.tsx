@@ -90,7 +90,7 @@ const [updateCustomerAmount] = useMutation(UPDATE_CUSTOMER_ADVANCE_AMOUNT,
     const onPercentageChange = (value) => {
       const percentageId = advancePercentageList.filter(data =>data.value === value)
       const percentage = get(percentageId[0],'label',0)
-      const total_advance= parseInt((percentage/100)* customer_price,10)
+      const total_advance= (percentage/100)* customer_price
     console.log('checking',total_advance,value,customer_price)
         updateCustomerTypeId({
           variables: {
