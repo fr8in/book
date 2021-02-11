@@ -247,8 +247,6 @@ const ConfirmPo = (props) => {
     } else {
       setDisableButton(true)
       const total_advance = parseFloat(form.bank)+parseFloat(form.cash)+parseFloat(form.to_pay)
-      const advance_amount =form.bank + form.cash+ form.to_pay
-      console.log('chckkkk',parseFloat(form.bank),parseFloat(form.cash),parseFloat(form.to_pay),total_advance)
       isToPay ?
         confirm_po_mutation({
           variables: {
@@ -274,9 +272,7 @@ const ConfirmPo = (props) => {
             updated_by: context.email,
             customer_user_id: parseInt(loading_contact_id),
             is_topay: !!isToPay,
-            interest_id: origin_name === 4 ? 4 : origin_name === 6 ? 6 : 7,
-            customer_advance_percentage:get(customer,'customer_advance_percentage.name',0),
-            customer_total_advance:advance_amount
+            interest_id: origin_name === 4 ? 4 : origin_name === 6 ? 6 : 7
           }
         }) :
         confirm_po_mutation({
@@ -306,7 +302,7 @@ const ConfirmPo = (props) => {
             is_topay: !!isToPay,
             interest_id: origin_name === 4 ? 4 : origin_name === 6 ? 6 : 7,
             customer_advance_percentage:get(customer,'customer_advance_percentage.name',0),
-            customer_total_advance:advance_amount
+            customer_total_advance:total_advance
           }
         })
     }

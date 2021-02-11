@@ -112,6 +112,8 @@ mutation create_po (
   $is_topay: Boolean,
   $customer_user_id: Int,
   $origin_id:Int,
+  $customer_advance_percentage:Int,
+  $customer_total_advance:Float,
   $interest_id:Int) {
 insert_trip(objects: {
   po_date:$po_date
@@ -137,7 +139,9 @@ insert_trip(objects: {
   cash:$cash,
   is_topay: $is_topay,
   origin_id:$origin_id,
-  interest_id:$interest_id
+  interest_id:$interest_id,
+  customer_total_advance:$customer_total_advance
+  customer_advance_percentage:$customer_advance_percentage
 }) {
   returning {
     id
@@ -262,6 +266,7 @@ const CreatePo = (props) => {
 
 
   const onSubmit = (form) => {
+    console.log("form submit",form)
     const loading_charge = form.charge_inclue.includes('Loading')
     const unloading_charge = form.charge_inclue.includes('Unloading')
     if (form.customer_price > trip_max_price) {
@@ -276,6 +281,7 @@ const CreatePo = (props) => {
       message.error('Mamul Should be greater than system mamul!')
     } else {
       setDisableBtn(true)
+      const total_advance = parseFloat(form.bank)+parseFloat(form.cash)+parseFloat(form.to_pay)
       isToPay ? 
       create_po_mutation({
         variables: {
@@ -329,7 +335,9 @@ const CreatePo = (props) => {
           customer_user_id: parseInt(loading_contact_id),
           is_topay: !!isToPay,
           origin_id: 7,
-          interest_id:7
+          interest_id:7,
+          customer_advance_percentage:get(customer,'customer_advance_percentage.name',0),
+            customer_total_advance:total_advance
         }
       }) 
     }
