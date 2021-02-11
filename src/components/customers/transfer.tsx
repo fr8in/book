@@ -108,7 +108,7 @@ const Transfer = (props) => {
   )
 
   const validateIFSC = () => {
-    getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc').trim() } })
+    getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc') } })
   }
 
   const validateTrip = () => {
@@ -148,9 +148,9 @@ console.log("totalAmount,",totalAmount)
           trip_id: parseInt(form.trip_id),
           created_by: context.email,
           account_holder_name: form.account_name,
-          bank_acc_no: form.account_number,
+          bank_acc_no: (form.account_number).trim(),
           bank_name: bank_detail.bank,
-          ifsc_code: form.ifsc,
+          ifsc_code: (form.ifsc).trim(),
           is_mamul_charges_included: (form.mamul_include === 'INCLUDE'),
           created_on:new Date().toISOString(),
           status:"PENDING"
@@ -243,7 +243,6 @@ console.log("totalAmount,",totalAmount)
               <Input
                 placeholder='Confirm Account Number'
                 disabled={false}
-                type='number'
               />
             </Form.Item>
           </Col>

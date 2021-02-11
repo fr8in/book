@@ -83,7 +83,7 @@ const Insurance = () => {
 
     const { data, loading, error } = useSubscription(INSURANCE_SUBSCRIPTION, {
         variables: {
-            truck_no: filter.truckno ? `%${filter.truckno}%` : null,
+             truck_no: filter.truckno ? `%${filter.truckno}%` : null,
             ...!isEmpty(status) && {status_id: status ? status : null},
             ...!isEmpty(regionFilter) && { region: regionFilter ? regionFilter : null }
         }
