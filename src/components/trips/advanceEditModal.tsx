@@ -1,4 +1,4 @@
-import { message, Modal, Row, Col } from 'antd';
+import { message, Modal, Row, Col,Alert } from 'antd';
 import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
@@ -87,11 +87,19 @@ const AdvanceEditModal = (props) => {
   }
   return (
     <Modal
-      title='CustomerAdvance'
+      title='Customer Advance'
       visible={visible}
       onCancel={onHide}
       footer={null}
     >
+      <Row gutter={10}>
+     <Alert
+      message=''
+      description="Customer Advance changes  will be applicable for FR-memo and Partner-memo"
+      type="info"
+      showIcon
+    /></Row>
+    <br />
       <Row>
         <Col span={8}>
           <p>Advance Percentage </p></Col>
