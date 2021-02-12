@@ -7,7 +7,6 @@ import PoDetail from './poDetail'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
 import PoPrice from './poPrice'
-import Truncate from '../common/truncate'
 import ToPayPrice from '../trips/toPayPrice'
 
 const PO_QUERY = gql`
@@ -106,7 +105,9 @@ mutation confirm_po(
   $cash: Float,
   $to_pay: Float,
   $is_topay: Boolean,
-  $interest_id:Int
+  $interest_id:Int,
+  $customer_advance_percentage:Int,
+  $customer_total_advance:Float
   ){
   update_trip(_set:{
     truck_id: $truck_id,
@@ -132,6 +133,8 @@ mutation confirm_po(
     cash:$cash,
     is_topay: $is_topay,
     interest_id:$interest_id
+    customer_total_advance:$customer_total_advance
+    customer_advance_percentage:$customer_advance_percentage
   }, 
   where:{id:{_eq:$trip_id}}){
     returning{
@@ -242,6 +245,7 @@ const ConfirmPo = (props) => {
       message.error('Mamul Should be greater than system mamul!')
     } else {
       setDisableButton(true)
+      const total_advance = parseFloat(form.bank)+parseFloat(form.cash)+parseFloat(form.to_pay)
       isToPay ?
         confirm_po_mutation({
           variables: {
@@ -295,7 +299,9 @@ const ConfirmPo = (props) => {
             updated_by: context.email,
             customer_user_id: parseInt(loading_contact_id),
             is_topay: !!isToPay,
-            interest_id: origin_name === 4 ? 4 : origin_name === 6 ? 6 : 7
+            interest_id: origin_name === 4 ? 4 : origin_name === 6 ? 6 : 7,
+            customer_advance_percentage:get(customer,'customer_advance_percentage.name',0),
+            customer_total_advance:total_advance
           }
         })
     }
