@@ -59,10 +59,15 @@ const DeletePO = (props) => {
     _data = data
   }
   const trip = get(_data, 'trip[0]', [])
-  const trip_payments = get(trip, 'trip_payments[0].mode', null)
-  const trip_receipts = get(trip, 'trip_receipts[0].mode', null)
-  const trip_amount = get(trip, 'trip_receipts[0].amount', null)
-  const payments = trip_payments === 'Wallet' ? sumBy(trip.trip_payments, 'amount') : 0
+  const trip_payments = get(trip, 'trip_payments', null)
+  const trip_receipts = get(trip, 'trip_receipts', null)
+  const partner_payments = trip_payments ? trip_payments.filter(payment => payment.mode === 'Wallet') : []
+
+  const customer_cash = trip_receipts ? trip_receipts.filter(receipt => receipt.mode === 'Cash') : []
+  const customer_cash_amount = sumBy(customer_cash, 'amount')
+  const customer_other_payment = trip_receipts ? trip_receipts.filter(receipt => receipt.mode !== 'Cash') : []
+  const customer_other_payment_amount = sumBy(customer_other_payment, 'amount')
+  const partner_payment_amount = sumBy(partner_payments, 'amount')
 
   let _token_data = {}
   if (!token_loading) {
@@ -112,9 +117,9 @@ const DeletePO = (props) => {
             ]}
           >
             <h3> Below payments will be reversed </h3>
-            <Row> {`Customer To Partner: ${trip_receipts === "Cash" ? trip_amount : 0}`}  </Row>
-            <Row> {`Customer To FR8: ${trip_receipts === "Payment Gateway" ? trip_amount : 0}`}  </Row>
-            <Row> {`FR8 To Partner: ${payments}`}  </Row>
+            <Row> {`Customer To Partner: ${customer_cash_amount}`}  </Row>
+            <Row> {`Customer To FR8: ${customer_other_payment_amount}`}  </Row>
+            <Row> {`FR8 To Partner: ${partner_payment_amount}`}  </Row>
           </Modal>
           :
           <Modal
