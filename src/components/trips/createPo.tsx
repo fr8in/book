@@ -6,7 +6,6 @@ import PoDetail from './poDetail'
 import PoPrice from './poPrice'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
-import LinkComp from '../common/link'
 import Truncate from '../common/truncate'
 import ToPayPrice from '../trips/toPayPrice'
 
@@ -81,7 +80,7 @@ query customers_po($id:Int!){
 }`
 
 const TRIP_DATA = gql`
-query ($customer_id: Int, $source_id: Int, $destination_id: Int, $type_id: Int) {
+query ($customer_id: Int!, $source_id: Int!, $destination_id: Int!, $type_id: Int!) {
   trip(where: {customer_id: {_eq: $customer_id}, source_id: {_eq: $source_id}, destination_id: {_eq: $destination_id}, truck_type: {id: {_eq: $type_id}}}) {
     id
     trip_status{
@@ -291,6 +290,7 @@ if (!trip_loading) {
 
 const trip_id = get(_trip_data, 'trip[0].id', null)
 
+
   const [getCustomerData, { loading: cus_loading, data: cus_data, error: cus_error }] = useLazyQuery(CUSTOMER_PO_DATA)
 
    const [getCustomerBranchData, { loading: customer_branch_loading, data: customer_branch_data, error: customer_branch_error }] = useLazyQuery(CUSTOMER_BRANCH_EMPLOYEE_DATA)
@@ -372,11 +372,13 @@ const trip_id = get(_trip_data, 'trip[0].id', null)
             source_id: parseInt(obj.source_id, 10),
             destination_id: parseInt(obj.destination_id, 10),
             customer_id: customer.id,
-            type_id: parseInt(form.truck_type, 10)
+            type_id: get(po_data,'truck_type.id',null)
           }
         }
       )
     }
+
+   
 
     const onUpdatePo = () => {
       const loading_charge = form.getFieldValue('charge_inclue').includes('Loading')
