@@ -1,4 +1,4 @@
-import { message,Modal, Space } from 'antd'
+import { message, Modal, Row, Col } from 'antd';
 import { gql, useQuery, useMutation } from '@apollo/client'
 import InlineSelect from '../common/inlineSelect'
 import get from 'lodash/get'
@@ -13,7 +13,7 @@ const CUSTOMERS_ADVANCE_PERCENTAGE_QUERY = gql`
   }
 }
 `
-const UPDATE_CUSTOMER_ADVANCE_AMOUNT =gql`mutation update_customer_advance_amount($id:Int!,$customer_total_advance:Float!){
+const UPDATE_CUSTOMER_ADVANCE_AMOUNT = gql`mutation update_customer_advance_amount($id:Int!,$customer_total_advance:Float!){
   update_trip(where:{id:{_eq:$id}},_set:{customer_total_advance:$customer_total_advance}){
     affected_rows
   }
@@ -29,90 +29,95 @@ mutation customer_advance_update($customer_advance_percentage:Int,$customer_tota
 `
 
 const AdvanceEditModal = (props) => {
-    const { visible, onHide, advanceData,trip } = props
-    const customer_advance=get(trip,'customer_total_advance',0)
-    const customer_price = get(trip,'customer_price',0)
-    const customer_advance_percentage = get(trip,'customer_advance_percentage',0)
- 
-    const { role } = u
-    const customerAdvancePercentageEdit = [role.admin, role.accounts_manager, role.accounts]
+  const { visible, onHide, advanceData, trip } = props
+  const customer_advance = get(trip, 'customer_total_advance', 0)
+  const customer_price = get(trip, 'customer_price', 0)
+  const customer_advance_percentage = get(trip, 'customer_advance_percentage', 0)
 
-    const { loading, error, data } = useQuery(
-        CUSTOMERS_ADVANCE_PERCENTAGE_QUERY,
-        {
-            fetchPolicy: 'cache-and-network',
-            notifyOnNetworkStatusChange: true
-        }
-    )
-    let _data = {}
-    if (!loading) {
-        _data = data
+  const { role } = u
+  const customerAdvancePercentageEdit = [role.admin, role.accounts_manager, role.accounts]
+
+  const { loading, error, data } = useQuery(
+    CUSTOMERS_ADVANCE_PERCENTAGE_QUERY,
+    {
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
     }
-    const advance_percentage = get(_data, 'customer_advance_percentage', [])
-    const advancePercentageList = advance_percentage.map(data => {
-        return { value: data.id, label: data.name }
-    })
-    
-    const [updateCustomerTypeId] = useMutation(
-        UPDATE_CUSTOMER_ADVANCE_MUTATION,
-        {
-          onError (error) { message.error(error.toString()) },
-          onCompleted () { message.success('Updated!!') }
-        }
-      )
-const [updateCustomerAmount] = useMutation(UPDATE_CUSTOMER_ADVANCE_AMOUNT,
-  {
-    onError (error) { message.error(error.toString()) },
-    onCompleted () { message.success('Updated!!') }
+  )
+  let _data = {}
+  if (!loading) {
+    _data = data
+  }
+  const advance_percentage = get(_data, 'customer_advance_percentage', [])
+  const advancePercentageList = advance_percentage.map(data => {
+    return { value: data.id, label: data.name }
   })
+
+  const [updateCustomerTypeId] = useMutation(
+    UPDATE_CUSTOMER_ADVANCE_MUTATION,
+    {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
+    }
+  )
+  const [updateCustomerAmount] = useMutation(UPDATE_CUSTOMER_ADVANCE_AMOUNT,
+    {
+      onError(error) { message.error(error.toString()) },
+      onCompleted() { message.success('Updated!!') }
+    })
   const onSumbit = (value) => {
     updateCustomerAmount({
-      variables:{
-        id:advanceData,
-        customer_total_advance:value
+      variables: {
+        id: advanceData,
+        customer_total_advance: value
       }
     })
   }
-    const onPercentageChange = (value) => {
-      const percentageId = advancePercentageList.filter(data =>data.value === value)
-      const percentage = get(percentageId[0],'label',0)
-      const total_advance= (percentage/100)* customer_price
-      console.log('adv',advanceData,total_advance,value)
-        updateCustomerTypeId({
-          variables: {
-            trip_id:advanceData,
-            customer_total_advance:total_advance,
-            customer_advance_percentage:percentage
-          }
-        })
+  const onPercentageChange = (value) => {
+    const percentageId = advancePercentageList.filter(data => data.value === value)
+    const percentage = get(percentageId[0], 'label', 0)
+    const total_advance = (percentage / 100) * customer_price
+    updateCustomerTypeId({
+      variables: {
+        trip_id: advanceData,
+        customer_total_advance: total_advance,
+        customer_advance_percentage: percentage
       }
-    return (
-      <Modal
-          title='CustomerAdvance'
-          visible={visible}
-          onCancel={onHide}
-          footer={null}
-        >
-          <Space>
-          <span>Advance Percentage</span>
-           <span><InlineSelect
-                label={customer_advance_percentage}
-                value={customer_advance_percentage}
-                options={advancePercentageList}
-                handleChange={(value) =>onPercentageChange(value)}
-                style={{ width: '73%' }}
-                edit_access={customerAdvancePercentageEdit}
-            /></span>
-            <span>Advance amount</span>
-            <span><EditableCell
+    })
+  }
+  return (
+    <Modal
+      title='CustomerAdvance'
+      visible={visible}
+      onCancel={onHide}
+      footer={null}
+    >
+      <Row>
+        <Col span={8}>
+          <p>Advance Percentage </p></Col>
+        <Col span={4}>
+          <InlineSelect
+            label={customer_advance_percentage}
+            value={customer_advance_percentage}
+            options={advancePercentageList}
+            handleChange={(value) => onPercentageChange(value)}
+            style={{ width: '73%' }}
+            edit_access={customerAdvancePercentageEdit}
+          />
+        </Col>
+        <Col span={6}>
+          <p>Advance amount </p></Col>
+        <Col span={6}>
+          <EditableCell
             label={customer_advance}
             onSubmit={(value) => onSumbit(value)}
             edit_access={customerAdvancePercentageEdit}
-          /></span>
-            </Space>
-        </Modal>
-    
-    )
+            width={50}
+          /></Col>
+      </Row>
+    </Modal>
+
+  )
 }
 
 export default AdvanceEditModal
