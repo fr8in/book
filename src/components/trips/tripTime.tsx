@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react'
-import { Row, Col, Card, Form, Space, Button, Checkbox, message, Modal, Popconfirm } from 'antd'
+import { Row, Col, Card, Form, Space, Button, Checkbox, message, Modal, Popconfirm, Tooltip } from 'antd';
 import { FilePdfOutlined, FileWordOutlined, DeleteOutlined, CloseCircleOutlined, FileTextOutlined } from '@ant-design/icons'
 import SendLoadingMemo from './sendLoadingMemo'
 import useShowHide from '../../hooks/useShowHide'
@@ -413,7 +413,9 @@ const TripTime = (props) => {
   const MemoEditWithLabel = () => {
     return(
       <>
-      <span>Partner - Memo</span>
+      <Tooltip title='Partner -Memo'>
+        <span>Partner - Memo</span>
+      </Tooltip>
       <EditAccess
       edit_access={loading_memo_edit}
       onEdit={() => handleShow('editModal', 'advance', 'advanceEditData',trip_info.id)}
@@ -449,7 +451,7 @@ const TripTime = (props) => {
               <Col xs={24} sm={8}>
                 <Row>
                   <Col xs={10}>
-                  <Form.Item label='fr8 - Memo'>
+                  <Form.Item label='Fr8 - Memo'>
                       <Space>
                         <Button
                           type='primary' loading={pdfloading} shape='circle'
