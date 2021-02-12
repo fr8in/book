@@ -45,12 +45,7 @@ const AddTruck = (props) => {
               </Form.Item>
             </Col>
             <Col xs={24} sm={12}>
-            <Form.Item
-                label='Driver Number'
-                name='driver_number'
-              >
-          <Driver partner_id={partner_info.id} driverChange={driverChange} truck_id={get(partner_info, 'trucks.id', null)} initialValue={get(partner_info, 'trucks.driver.mobile', null)} /> 
-          </Form.Item>
+          <Driver partner_id={partner_info.id} driverChange={driverChange} truck_id={get(partner_info, 'trucks.id', null)} initialValue={get(partner_info, 'trucks.driver.mobile', null)} label={'Driver Number'}/> 
             </Col>
           </Row>
           <Row gutter={10}>
