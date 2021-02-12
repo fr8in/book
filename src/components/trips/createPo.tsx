@@ -290,7 +290,6 @@ if (!trip_loading) {
 
 const trip_id = get(_trip_data, 'trip[0].id', null)
 
-console.log('trip_id',trip_id)
 
   const [getCustomerData, { loading: cus_loading, data: cus_data, error: cus_error }] = useLazyQuery(CUSTOMER_PO_DATA)
 
@@ -354,7 +353,7 @@ console.log('trip_id',trip_id)
   const customerSearch = get(_search_data, 'search_customer', '')
   const po_data = get(data, 'truck[0]', null)
 
- console.log('po_data',po_data)
+ 
  
 
   let customer_data = {}
@@ -379,7 +378,7 @@ console.log('trip_id',trip_id)
       )
     }
 
-    console.log('type',get(po_data,'truck_type.id',null))
+   
 
     const onUpdatePo = () => {
       const loading_charge = form.getFieldValue('charge_inclue').includes('Loading')
