@@ -35,7 +35,7 @@ const AdvanceEditModal = (props) => {
   const customer_advance_percentage = get(trip, 'customer_advance_percentage', 0)
 
   const { role } = u
-  const customerAdvancePercentageEdit = [role.admin, role.accounts_manager, role.accounts]
+  const customerAdvancePercentageEdit = [role.user]
 
   const { loading, error, data } = useQuery(
     CUSTOMERS_ADVANCE_PERCENTAGE_QUERY,
