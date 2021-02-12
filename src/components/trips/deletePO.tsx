@@ -1,6 +1,6 @@
 
 import { useState, useContext } from 'react'
-import { Modal, Button, message, Row} from 'antd'
+import { Modal, Button, message, Row } from 'antd'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
@@ -21,9 +21,13 @@ query delete_po($id: Int) {
   }
 }
 `
+const TOKEN = gql`query getToken($ref_id:Int!){
+  token(process:"CANCEL_TRIP_ADVANCE",ref_id:$ref_id)
+}`
+
 const PO_DELETE = gql`
-mutation po_cancel($trip_id:Int!,$created_by:String!){
-  cancel_po(trip_id:$trip_id,created_by:$created_by){
+mutation po_cancel($trip_id:Int!,$created_by:String!,$token:String!){
+  cancel_po(trip_id:$trip_id,created_by:$created_by,token:$token){
     description
     status
   }
@@ -33,7 +37,7 @@ const DeletePO = (props) => {
   const { visible, onHide, trip_info } = props
   const [disableButton, setDisableButton] = useState(false)
   const context = useContext(userContext)
-console.log('trip_info',trip_info)
+  console.log('trip_info', trip_info)
 
   const { loading, error, data } = useQuery(
     DELETE_PO_QUERY,
@@ -41,7 +45,14 @@ console.log('trip_info',trip_info)
       variables: { id: trip_info.id }
     }
   )
-  console.log('deletePO Error', error)
+
+  const { loading: token_loading, error: token_error, data: token_data } = useQuery(
+    TOKEN,
+    {
+      variables: { ref_id: trip_info.id }
+    }
+  )
+
 
   let _data = {}
   if (!loading) {
@@ -52,16 +63,20 @@ console.log('trip_info',trip_info)
   const trip_receipts = get(trip, 'trip_receipts[0].mode', null)
   const trip_amount = get(trip, 'trip_receipts[0].amount', null)
   const payments = trip_payments === 'Wallet' ? sumBy(trip.trip_payments, 'amount') : 0
-  
 
+  let _token_data = {}
+  if (!token_loading) {
+    _token_data = get(token_data, 'token', null)
+  }
+  console.log("_token_data", _token_data)
   const [delete_po] = useMutation(
     PO_DELETE,
     {
-      onError (error) {
+      onError(error) {
         setDisableButton(false)
         message.error(error.toString())
       },
-      onCompleted (data) {
+      onCompleted(data) {
         setDisableButton(false)
         const status = get(data, 'cancel_po.status', null)
         const description = get(data, 'cancel_po.description', null)
@@ -78,7 +93,8 @@ console.log('trip_info',trip_info)
     delete_po({
       variables: {
         trip_id: parseInt(trip_info.id, 10),
-        created_by: context.email
+        created_by: context.email,
+        token: _token_data
       }
     })
   }
