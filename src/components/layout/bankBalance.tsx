@@ -1,4 +1,4 @@
-import { Menu, Checkbox, message, Select ,Popconfirm  , Button} from 'antd'
+import { Menu, Checkbox, message} from 'antd'
 import { SwapOutlined } from '@ant-design/icons'
 import { useContext } from 'react'
 import { gql, useQuery, useMutation, useSubscription, useLazyQuery } from '@apollo/client'
@@ -67,10 +67,11 @@ const BankBalance = () => {
     }
   })
 
-  let displayData = { icici: null, reliance: null, icici_incoming: null, downtime: { icici_bank: null, reliance_fuel: null } }
+  let displayData = { icici: null, yes :null, reliance: null, icici_incoming: null, downtime: { icici: null, yes:null,  reliance_fuel: null } }
 
   if (!loading) {
-    displayData.icici = get(data, 'icici', null)
+    displayData.icici = get(data, 'ICICI', null)
+    displayData.yes = get(data, 'YES', null)
     displayData.reliance = get(data, 'reliance', null)
     displayData.icici_incoming = get(ic_data, 'icici_incoming', null)
   }
@@ -83,7 +84,7 @@ const BankBalance = () => {
     displayData.downtime = get(_data, 'config[0].value', null)
   }
 
-  const { icici, reliance, icici_incoming, downtime } = displayData
+  const { icici, yes,reliance, icici_incoming, downtime } = displayData
 
   const [UpdateDownTime] = useMutation(
     UPDATE_DOWNTIME,
@@ -92,9 +93,9 @@ const BankBalance = () => {
     }
   )
 
-  const onChangeDownTime = (e, type) => {
+  const onChangeDownTime = (checked, type) => {
     const updated_downtime = { ...downtime }
-    updated_downtime[type] = !e.target.checked
+    updated_downtime[type] = !checked
     UpdateDownTime({
       variables: {
         value: updated_downtime
@@ -107,15 +108,18 @@ const BankBalance = () => {
     <Menu>
       <Menu.ItemGroup key="primary_bank" title="Primary Bank">
       <Menu.Item>
-        <PrimaryBank/>
+        <PrimaryBank changeDownTime={onChangeDownTime}/>
         </Menu.Item>        
       </Menu.ItemGroup>
       <Menu.ItemGroup key="outgoing" title="Outgoing">
         <Menu.Item>
-          <Checkbox onChange={(e) => onChangeDownTime(e, 'icici_bank')} disabled={!access} checked={!displayData.downtime.icici_bank} >ICICI <b>{icici ? formatCurrency(icici.toFixed(0)) : '₹0'}</b>   </Checkbox>
+          <Checkbox onChange={(e) => onChangeDownTime(e.target.checked, 'ICICI')} disabled={!access} checked={!displayData.downtime.icici_bank} >ICICI <b>{icici ? formatCurrency(icici.toFixed(0)) : '₹0'}</b>   </Checkbox>
         </Menu.Item>
         <Menu.Item>
-          <Checkbox onChange={(e) => onChangeDownTime(e, 'reliance_fuel')} disabled={!access} checked={!displayData.downtime.reliance_fuel} >Reliance <b>{reliance ? formatCurrency(reliance.toFixed(0)) : '₹0'}</b> </Checkbox>
+          <Checkbox onChange={(e) => onChangeDownTime(e.target.checked, 'YES')} disabled={!access} checked={!displayData.downtime.yes_bank} >YES <b>{yes ? formatCurrency(yes.toFixed(0)) : '₹0'}</b>   </Checkbox>
+        </Menu.Item>
+        <Menu.Item>
+          <Checkbox onChange={(e) => onChangeDownTime(e.target.checked, 'reliance_fuel')} disabled={!access} checked={!displayData.downtime.reliance_fuel} >Reliance <b>{reliance ? formatCurrency(reliance.toFixed(0)) : '₹0'}</b> </Checkbox>
         </Menu.Item>
       </Menu.ItemGroup>
 
