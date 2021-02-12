@@ -413,7 +413,7 @@ const TripTime = (props) => {
   const MemoEditWithLabel = () => {
     return(
       <>
-      <span>Fr8 - Memo</span>
+      <span>Partner - Memo</span>
       <EditAccess
       edit_access={loading_memo_edit}
       onEdit={() => handleShow('editModal', 'advance', 'advanceEditData',trip_info.id)}
@@ -448,8 +448,8 @@ const TripTime = (props) => {
               </Col>
               <Col xs={24} sm={8}>
                 <Row>
-                  <Col xs={12}>
-                  <Form.Item label={<MemoEditWithLabel />}>
+                  <Col xs={10}>
+                  <Form.Item label='fr8 - Memo'>
                       <Space>
                         <Button
                           type='primary' loading={pdfloading} shape='circle'
@@ -462,8 +462,8 @@ const TripTime = (props) => {
                       </Space>
                     </Form.Item>
                   </Col>
-                  <Col xs={12}>
-                    <Form.Item label='Partner - Memo'>
+                  <Col xs={14}>
+                  <Form.Item label={<MemoEditWithLabel />}>
                       <Space>                        
                       { 
                          (fileValidation) ? 
