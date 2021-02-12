@@ -470,7 +470,7 @@ const trip_id = get(_trip_data, 'trip[0].id', null)
       message.error('Mamul Should be greater than system mamul!')
     } else {
       setDisableBtn(true)
-      const total_advance = parseFloat(form.bank)+parseFloat(form.cash)+parseFloat(form.to_pay)
+      const total_advance = parseFloat(form.getFieldValue('bank'))+parseFloat(form.getFieldValue('cash'))+parseFloat(form.getFieldValue('to_pay'))
       isToPay ? 
       create_po_mutation({
         variables: {
