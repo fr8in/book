@@ -426,9 +426,9 @@ const trip_id = get(_trip_data, 'trip[0].id', null)
           is_topay: !!isToPay,
           origin_id: 7,
           interest_id:7,
-           mamul: !isToPay ? parseFloat(form.getFieldValue('mamul')) : null,
-           customer_advance_percentage:!isToPay ? get(customer,'customer_advance_percentage.name',0) : null,
-           customer_total_advance:!isToPay ? total_advance : null
+           mamul: isToPay ? null : parseFloat(form.getFieldValue('mamul')),
+           customer_advance_percentage: isToPay ? null : get(customer,'customer_advance_percentage.name',0),
+           customer_total_advance: isToPay ? null : total_advance
         }
       }) 
     }
@@ -476,9 +476,9 @@ const trip_id = get(_trip_data, 'trip[0].id', null)
           is_topay: !!isToPay,
           origin_id: 7,
           interest_id:7,
-           mamul: !isToPay ? parseFloat(form.getFieldValue('mamul')) : null,
-           customer_advance_percentage:!isToPay ? get(customer,'customer_advance_percentage.name',0) : null,
-           customer_total_advance:!isToPay ? total_advance : null
+           mamul: isToPay ? null : parseFloat(form.getFieldValue('mamul')) ,
+           customer_advance_percentage: isToPay ? null : get(customer,'customer_advance_percentage.name',0) ,
+           customer_total_advance: isToPay ? null : total_advance 
         }
       }) 
     }

@@ -271,9 +271,9 @@ const ConfirmPo = (props) => {
             customer_user_id: parseInt(loading_contact_id),
             is_topay: !!isToPay,
             interest_id: origin_name === 4 ? 4 : origin_name === 6 ? 6 : 7,
-            customer_advance_percentage: !isToPay ? get(customer,'customer_advance_percentage.name',0) : null,
-            customer_total_advance: !isToPay ? total_advance : null,
-            mamul: !isToPay ? parseFloat(form.mamul) : null
+            customer_advance_percentage: isToPay ? null  : get(customer,'customer_advance_percentage.name',0),
+            customer_total_advance: isToPay ? null : total_advance ,
+            mamul: isToPay ? null : parseFloat(form.mamul)  
           }
         }) 
     }

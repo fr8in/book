@@ -119,7 +119,7 @@ const Driver = (props) => {
        <div>
         {!visible.dateType ? (
           <>
-      {initialValue}
+      {initialValue || '- '}
           <EditTwoTone
           onClick={() => onShow('dateType')}
         />
