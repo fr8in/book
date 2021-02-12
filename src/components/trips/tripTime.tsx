@@ -414,7 +414,7 @@ const TripTime = (props) => {
     return(
       <>
       <Tooltip title='Partner -Memo'>
-        <span>Partner - Memo</span>
+        <span>P- Memo</span>
       </Tooltip>
       <EditAccess
       edit_access={loading_memo_edit}
