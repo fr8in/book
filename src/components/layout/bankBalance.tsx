@@ -67,7 +67,7 @@ const BankBalance = () => {
     }
   })
 
-  let displayData = { icici: null, yes :null, reliance: null, icici_incoming: null, downtime: { icici: null, yes:null,  reliance_fuel: null } }
+  let displayData = { icici: null, yes :null, reliance: null, icici_incoming: null, downtime: { ICICI: null, YES:null,  reliance_fuel: null } }
 
   if (!loading) {
     displayData.icici = get(data, 'ICICI', null)
@@ -113,10 +113,10 @@ const BankBalance = () => {
       </Menu.ItemGroup>
       <Menu.ItemGroup key="outgoing" title="Outgoing">
         <Menu.Item>
-          <Checkbox onChange={(e) => onChangeDownTime(e.target.checked, 'ICICI')} disabled={!access} checked={!displayData.downtime.icici_bank} >ICICI <b>{icici ? formatCurrency(icici.toFixed(0)) : '₹0'}</b>   </Checkbox>
+          <Checkbox onChange={(e) => onChangeDownTime(e.target.checked, 'ICICI')} disabled={!access} checked={!displayData.downtime.ICICI} >ICICI <b>{icici ? formatCurrency(icici.toFixed(0)) : '₹0'}</b>   </Checkbox>
         </Menu.Item>
         <Menu.Item>
-          <Checkbox onChange={(e) => onChangeDownTime(e.target.checked, 'YES')} disabled={!access} checked={!displayData.downtime.yes_bank} >YES <b>{yes ? formatCurrency(yes.toFixed(0)) : '₹0'}</b>   </Checkbox>
+          <Checkbox onChange={(e) => onChangeDownTime(e.target.checked, 'YES')} disabled={!access} checked={!displayData.downtime.YES} >YES <b>{yes ? formatCurrency(yes.toFixed(0)) : '₹0'}</b>   </Checkbox>
         </Menu.Item>
         <Menu.Item>
           <Checkbox onChange={(e) => onChangeDownTime(e.target.checked, 'reliance_fuel')} disabled={!access} checked={!displayData.downtime.reliance_fuel} >Reliance <b>{reliance ? formatCurrency(reliance.toFixed(0)) : '₹0'}</b> </Checkbox>

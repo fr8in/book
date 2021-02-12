@@ -4,8 +4,6 @@ import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { gql, useQuery, useMutation, useSubscription, useLazyQuery } from '@apollo/client'
 import get from 'lodash/get'
 
-
-import useShowHide from '../../../src/hooks/useShowHide'
 import Loading from '../common/loading'
 
 const { confirm } = Modal;
@@ -17,7 +15,7 @@ import { useState } from 'react'
 const { Option } = Select;
 
 const ACTIVE_BANK = gql`
-query active_banke${'990'}($type: String!) {
+query active_banke${now()}($type: String!) {
   active_transaction_source_by_pk(type: $type) {
     source
     type
@@ -40,49 +38,44 @@ mutation updatePrimaryBank($type: String!, $bank: String!) {
 
 const PrimaryBank = (props) => {
   const { changeDownTime } = props
-const [changePrimaryBankLoading , setPrimaryBankLoading] = useState(false)
-const [bankName , setBankName] = useState(null)
+
+  const [bankName, setBankName] = useState(null)
 
   const { loading, data, error } = useQuery(
     ACTIVE_BANK, {
     variables: { type: 'BANK' },
-    fetchPolicy: 'network-only'  
+    fetchPolicy: 'network-only'
   })
 
   let _data = {}
-
   if (!loading) {
     _data = data
   }
-  //setPrimaryBankLoading(true)
   let active_bank = get(_data, 'active_transaction_source_by_pk.source', null)
+  console.log("🚀 ~ file: primaryBank.tsx ~ line 55 ~ PrimaryBank ~ active_bank", active_bank)
   let available_banks = get(_data, 'gl_account_config', [])
 
-  const [UpdatePrimaryBank] = useMutation(
+  const [UpdatePrimaryBank, { loading: mutationLoading }] = useMutation(
+
     UPDATE_PRIMARY_BANK,
     {
-      onError(error) { setPrimaryBankLoading(true); message.error(error.toString()) },
-      onCompleted(){
-        setPrimaryBankLoading(true);  
-        let nonPrimaryBank =  available_banks.filter(bank=>bank.name !==bankName)
-        console.log('nonPrimaryBank' ,nonPrimaryBank)
-        nonPrimaryBank.length >0 && changeDownTime(false , nonPrimaryBank[0].name)
-        message.success(`primary bank changed`)
-    
-    }
+      onError(error) { message.error(error.toString()) },
+      onCompleted() {
+        let nonPrimaryBank = available_banks.filter(bank => bank.name !== bankName)
+        nonPrimaryBank.length > 0 && changeDownTime(false, nonPrimaryBank[0].name)
+        message.success(`Primary bank changed for Outgoing Transactions`)
+      }
     }
   )
 
-
+  console.log("🚀 ~ file: primaryBank.tsx ~ line 62 ~ PrimaryBank ~ mutationLoading", mutationLoading)
 
   const handleChange = (value) => {
-    
     console.log(`selected ${value}`);
     confirmBankModal(value)
     setBankName(value)
   }
   const onBankChange = (bank) => {
-    setPrimaryBankLoading(true)
     UpdatePrimaryBank({
       variables: {
         type: 'BANK',
@@ -91,13 +84,13 @@ const [bankName , setBankName] = useState(null)
     })
   }
 
-
   const confirmBankModal = (bank) => confirm({
-    title: `Are you sure to change to ${bank}?`,
+    title: `Are you sure to change to ${bank.toLowerCase()} Bank?`,
     icon: <ExclamationCircleOutlined />,
-    content: `1.Partner Wallet to Bank Transfer
-     2.Customer Mamul Transfer 
-     3.Additional advancd to wallet will refer to bank `,
+    content:<p>{`1. Partner Wallet to Bank Transfer`}<br/>
+    {`2. Customer Mamul Transfer`}<br/>
+    {`3. Additional advance to wallet`}<br/>
+    {`will refer to ${bank.toLowerCase()} bank`}</p>,
     maskClosable: true,
     onOk() {
       onBankChange(bank)
@@ -107,7 +100,7 @@ const [bankName , setBankName] = useState(null)
   return (
     <>
       <Select
-        defaultValue={active_bank}
+        value={active_bank}
         style={{ width: 120 }}
         onChange={(value) => handleChange(value)}
         loading={false}
@@ -115,10 +108,9 @@ const [bankName , setBankName] = useState(null)
         {available_banks.map(bank => <Option value={bank.name} key={bank.name}  >{bank.name}</Option>)}
       </Select>
 
-      {changePrimaryBankLoading &&
-        <Loading fixed />} 
+      {mutationLoading &&
+        <Loading fixed />}
     </>
   )
 }
-
 export default PrimaryBank
