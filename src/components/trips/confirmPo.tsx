@@ -231,7 +231,6 @@ const ConfirmPo = (props) => {
   const customer_branch_employee_name = get(customer_branch_employee, 'branch_employee.employee.name', null)
 
   const onSubmit = (form) => {
-    console.log("dsafsafas",form)
     const loading_charge = form.charge_inclue.includes('Loading')
     const unloading_charge = form.charge_inclue.includes('Unloading')
     if (form.customer_price > trip_max_price) {
