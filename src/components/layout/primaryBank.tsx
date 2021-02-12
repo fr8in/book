@@ -37,11 +37,11 @@ mutation updatePrimaryBank($type: String!, $bank: String!) {
 
 
 const PrimaryBank = (props) => {
-  const { changeDownTime } = props
+  const { changeDownTime ,isAdmin} = props
 
   const [bankName, setBankName] = useState(null)
 
-  const { loading, data, error } = useQuery(
+  const { loading, data } = useQuery(
     ACTIVE_BANK, {
     variables: { type: 'BANK' },
     fetchPolicy: 'network-only'
@@ -104,6 +104,7 @@ const PrimaryBank = (props) => {
         style={{ width: 120 }}
         onChange={(value) => handleChange(value)}
         loading={false}
+        disabled={!isAdmin}
       >
         {available_banks.map(bank => <Option value={bank.name} key={bank.name}  >{bank.name}</Option>)}
       </Select>
