@@ -81,7 +81,7 @@ query customers_po($id:Int!){
 
 const TRIP_DATA = gql`
 query ($customer_id: Int!, $source_id: Int!, $destination_id: Int!, $type_id: Int!) {
-  trip(where: {customer_id: {_eq: $customer_id}, source_id: {_eq: $source_id}, destination_id: {_eq: $destination_id}, truck_type: {id: {_eq: $type_id}}}) {
+  trip(where: {customer_id: {_eq: $customer_id}, source_id: {_eq: $source_id}, destination_id: {_eq: $destination_id}, truck_type: {id: {_eq: $type_id}},trip_status_id:{_eq:1}}) {
     id
     trip_status{
       name
@@ -185,7 +185,9 @@ mutation update_po(
   $to_pay: Float,
   $origin_id:Int,
   $is_topay: Boolean,
-  $interest_id:Int
+  $interest_id:Int,
+  $customer_advance_percentage:Int,
+  $customer_total_advance:Float
   ){
   update_trip(_set:{
     truck_id: $truck_id,
@@ -211,7 +213,9 @@ mutation update_po(
     cash:$cash,
     is_topay: $is_topay,
     origin_id:$origin_id,
-    interest_id:$interest_id
+    interest_id:$interest_id,
+    customer_total_advance:$customer_total_advance,
+    customer_advance_percentage:$customer_advance_percentage
   }, 
   where:{id:{_eq:$trip_id}}){
     returning{
@@ -382,78 +386,52 @@ const trip_id = get(_trip_data, 'trip[0].id', null)
 
     const onUpdatePo = () => {
       const loading_charge = form.getFieldValue('charge_inclue').includes('Loading')
-      const unloading_charge = form.getFieldValue('charge_inclue').includes('Unloading')
-      if (form.getFieldValue('customer_price') > trip_max_price) {
-        message.error(`Trip max price limit ₹${trip_max_price}`)
-      } else if (form.getFieldValue('customer_price') <= 0) {
-        message.error('Enter valid trip price')
-      } else if (parseInt(form.getFieldValue('p_total')) < parseInt(form.getFieldValue('cash'))) {
-        message.error('Customer to Partner, Total and cash is miss matching')
-      } else if (parseInt(form.getFieldValue('p_total')) > form.getFieldValue('customer_price')) {
-        message.error('Customer to Partner should be less than or euqal to customer price')
-      } else if (mamul > parseFloat(form.getFieldValue('mamul'))) {
-        message.error('Mamul Should be greater than system mamul!')
-      } else {
-        setDisableBtn(true)
-        isToPay ? 
-        updatePo({
-          variables: {
-            trip_id:trip_id,
-            po_date: form.getFieldValue('po_date').format('YYYY-MM-DD'),
-            source_id: parseInt(obj.source_id, 10),
-            destination_id: parseInt(obj.destination_id, 10),
-            customer_id: customer.id,
-            partner_id: po_data && po_data.partner && po_data.partner.id,
-            customer_price: parseFloat(form.getFieldValue('customer_price')),
-            partner_price: parseFloat(form.getFieldValue('partner_price_total')),
-            ton: form.getFieldValue('ton') ? form.getFieldValue('ton') : null,
-            per_ton: form.getFieldValue('price_per_ton') ? parseFloat(form.getFieldValue('price_per_ton')) : null,
-            is_per_ton: !!form.getFieldValue('ton'),
-            including_loading: loading_charge,
-            including_unloading: unloading_charge,
-            bank:0,
-            cash: parseFloat(form.getFieldValue('to_pay_cash')),
-            to_pay: parseFloat(form.getFieldValue('to_pay_balance')),
-            truck_id: po_data && po_data.id,
-            truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
-            driver_id: driver_id,
-            updated_by: context.email,
-            customer_user_id: parseInt(loading_contact_id),
-            is_topay: !!isToPay,
-            origin_id: 5,
-            interest_id:7
-          }
-        }) : 
-        updatePo({
-          variables: {
-            trip_id:trip_id,
-            po_date: form.getFieldValue('po_date').format('YYYY-MM-DD'),
-            source_id: parseInt(obj.source_id, 10),
-            destination_id: parseInt(obj.destination_id, 10),
-            customer_id: customer.id,
-            partner_id: po_data && po_data.partner && po_data.partner.id,
-            customer_price: parseFloat(form.getFieldValue('customer_price')),
-            partner_price: parseFloat(form.getFieldValue('partner_price')),
-            ton: form.getFieldValue('ton') ? form.getFieldValue('ton') : null,
-            per_ton: form.getFieldValue('price_per_ton') ? parseFloat(form.getFieldValue('price_per_ton')) : null,
-            is_per_ton: !!form.getFieldValue('ton'),
-            mamul: parseFloat(form.getFieldValue('mamul')),
-            including_loading: loading_charge,
-            including_unloading: unloading_charge,
-            bank: parseFloat(form.getFieldValue('bank')),
-            cash: parseFloat(form.getFieldValue('cash')),
-            to_pay: parseFloat(form.getFieldValue('to_pay')),
-            truck_id: po_data && po_data.id,
-            truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
-            driver_id: driver_id,
-            updated_by: context.email,
-            customer_user_id: parseInt(loading_contact_id),
-            is_topay: !!isToPay,
-            origin_id: 5,
-            interest_id:7
-          }
-        }) 
-      }
+    const unloading_charge = form.getFieldValue('charge_inclue').includes('Unloading')
+    if (form.getFieldValue('customer_price') > trip_max_price) {
+      message.error(`Trip max price limit ₹${trip_max_price}`)
+    } else if (form.getFieldValue('customer_price') <= 0) {
+      message.error('Enter valid trip price')
+    } else if (parseInt(form.getFieldValue('p_total')) < parseInt(form.getFieldValue('cash'))) {
+      message.error('Customer to Partner, Total and cash is miss matching')
+    } else if (parseInt(form.getFieldValue('p_total')) > form.getFieldValue('customer_price')) {
+      message.error('Customer to Partner should be less than or euqal to customer price')
+    } else if (mamul > parseFloat(form.getFieldValue('mamul'))) {
+      message.error('Mamul Should be greater than system mamul!')
+    } else {
+      setDisableBtn(true)
+      const total_advance = parseFloat(form.getFieldValue('bank'))+parseFloat(form.getFieldValue('cash'))+parseFloat(form.getFieldValue('to_pay'))
+      updatePo({
+        variables: {
+          trip_id:trip_id,
+          po_date: form.getFieldValue('po_date').format('YYYY-MM-DD'),
+          source_id: parseInt(obj.source_id, 10),
+          destination_id: parseInt(obj.destination_id, 10),
+          customer_id: customer.id,
+          partner_id: po_data && po_data.partner && po_data.partner.id,
+          customer_price: parseFloat(form.getFieldValue('customer_price')),
+          partner_price: isToPay ? parseFloat(form.getFieldValue('partner_price_total')) : parseFloat(form.getFieldValue('partner_price')),
+          ton: form.getFieldValue('ton') ? form.getFieldValue('ton') : null,
+          per_ton: form.getFieldValue('price_per_ton') ? parseFloat(form.getFieldValue('price_per_ton')) : null,
+          is_per_ton: !!form.getFieldValue('ton'),
+          including_loading: loading_charge,
+          including_unloading: unloading_charge,
+          bank: isToPay ? 0 : parseFloat(form.getFieldValue('bank')),
+          cash: isToPay ?  parseFloat(form.getFieldValue('to_pay_cash')) :  parseFloat(form.getFieldValue('cash')),
+          to_pay: isToPay ?  parseFloat(form.getFieldValue('to_pay_balance')) : parseFloat(form.getFieldValue('to_pay')),
+          truck_id: po_data && po_data.id,
+          truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
+          driver_id: driver_id,
+          updated_by: context.email,
+          customer_user_id: parseInt(loading_contact_id),
+          is_topay: !!isToPay,
+          origin_id: 7,
+          interest_id:7,
+           mamul: !isToPay ? parseFloat(form.getFieldValue('mamul')) : null,
+           customer_advance_percentage:!isToPay ? get(customer,'customer_advance_percentage.name',0) : null,
+           customer_total_advance:!isToPay ? total_advance : null
+        }
+      }) 
+    }
     }
 
 
@@ -473,7 +451,6 @@ const trip_id = get(_trip_data, 'trip[0].id', null)
     } else {
       setDisableBtn(true)
       const total_advance = parseFloat(form.getFieldValue('bank'))+parseFloat(form.getFieldValue('cash'))+parseFloat(form.getFieldValue('to_pay'))
-      isToPay ? 
       create_po_mutation({
         variables: {
           po_date: form.getFieldValue('po_date').format('YYYY-MM-DD'),
@@ -482,43 +459,15 @@ const trip_id = get(_trip_data, 'trip[0].id', null)
           customer_id: customer.id,
           partner_id: po_data && po_data.partner && po_data.partner.id,
           customer_price: parseFloat(form.getFieldValue('customer_price')),
-          partner_price: parseFloat(form.getFieldValue('partner_price_total')),
+          partner_price: isToPay ? parseFloat(form.getFieldValue('partner_price_total')) : parseFloat(form.getFieldValue('partner_price')),
           ton: form.getFieldValue('ton') ? form.getFieldValue('ton') : null,
           per_ton: form.getFieldValue('price_per_ton') ? parseFloat(form.getFieldValue('price_per_ton')) : null,
           is_per_ton: !!form.getFieldValue('ton'),
           including_loading: loading_charge,
           including_unloading: unloading_charge,
-          bank:0,
-          cash: parseFloat(form.getFieldValue('to_pay_cash')),
-          to_pay: parseFloat(form.getFieldValue('to_pay_balance')),
-          truck_id: po_data && po_data.id,
-          truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
-          driver_id: driver_id,
-          created_by: context.email,
-          customer_user_id: parseInt(loading_contact_id),
-          is_topay: !!isToPay,
-          origin_id: 7,
-          interest_id:7
-        }
-      }) : 
-      create_po_mutation({
-        variables: {
-          po_date: form.getFieldValue('po_date').format('YYYY-MM-DD'),
-          source_id: parseInt(obj.source_id, 10),
-          destination_id: parseInt(obj.destination_id, 10),
-          customer_id: customer.id,
-          partner_id: po_data && po_data.partner && po_data.partner.id,
-          customer_price: parseFloat(form.getFieldValue('customer_price')),
-          partner_price: parseFloat(form.getFieldValue('partner_price')),
-          ton: form.getFieldValue('ton') ? form.getFieldValue('ton') : null,
-          per_ton: form.getFieldValue('price_per_ton') ? parseFloat(form.getFieldValue('price_per_ton')) : null,
-          is_per_ton: !!form.getFieldValue('ton'),
-          mamul: parseFloat(form.getFieldValue('mamul')),
-          including_loading: loading_charge,
-          including_unloading: unloading_charge,
-          bank: parseFloat(form.getFieldValue('bank')),
-          cash: parseFloat(form.getFieldValue('cash')),
-          to_pay: parseFloat(form.getFieldValue('to_pay')),
+          bank: isToPay ? 0 : parseFloat(form.getFieldValue('bank')),
+          cash: isToPay ?  parseFloat(form.getFieldValue('to_pay_cash')) :  parseFloat(form.getFieldValue('cash')),
+          to_pay: isToPay ?  parseFloat(form.getFieldValue('to_pay_balance')) : parseFloat(form.getFieldValue('to_pay')),
           truck_id: po_data && po_data.id,
           truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
           driver_id: driver_id,
@@ -527,8 +476,9 @@ const trip_id = get(_trip_data, 'trip[0].id', null)
           is_topay: !!isToPay,
           origin_id: 7,
           interest_id:7,
-          customer_advance_percentage:get(customer,'customer_advance_percentage.name',0),
-            customer_total_advance:total_advance
+           mamul: !isToPay ? parseFloat(form.getFieldValue('mamul')) : null,
+           customer_advance_percentage:!isToPay ? get(customer,'customer_advance_percentage.name',0) : null,
+           customer_total_advance:!isToPay ? total_advance : null
         }
       }) 
     }
