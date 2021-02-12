@@ -413,8 +413,8 @@ const TripTime = (props) => {
   const MemoEditWithLabel = () => {
     return(
       <>
-      <Tooltip title='Partner -Memo'>
-        <span>P- Memo</span>
+      <Tooltip title='Partner - Memo'>
+        <span>P - Memo</span>
       </Tooltip>
       <EditAccess
       edit_access={loading_memo_edit}
@@ -451,7 +451,7 @@ const TripTime = (props) => {
               <Col xs={24} sm={8}>
                 <Row>
                   <Col xs={10}>
-                  <Form.Item label='Fr8 - Memo'>
+                  <Form.Item label='FR8 - Memo'>
                       <Space>
                         <Button
                           type='primary' loading={pdfloading} shape='circle'
