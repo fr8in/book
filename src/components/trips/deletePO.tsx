@@ -68,7 +68,7 @@ const DeletePO = (props) => {
   if (!token_loading) {
     _token_data = get(token_data, 'token', null)
   }
-
+  console.log("_token_data", _token_data)
   const [delete_po] = useMutation(
     PO_DELETE,
     {
