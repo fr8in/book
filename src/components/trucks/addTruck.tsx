@@ -3,6 +3,7 @@ import { LeftOutlined } from '@ant-design/icons'
 import CitySelect from '../common/citySelect'
 import Driver from './driver'
 import Link from 'next/link'
+import get from 'lodash/get'
 
 const AddTruck = (props) => {
   const { partner_info, onSubmit, typeList, driverChange, onCityChange, disableButton, disableAddTruck } = props
@@ -44,7 +45,7 @@ const AddTruck = (props) => {
               </Form.Item>
             </Col>
             <Col xs={24} sm={12}>
-              <Driver partner_id={partner_info.id} driverChange={driverChange} />
+          <Driver partner_id={partner_info.id} driverChange={driverChange} truck_id={get(partner_info, 'trucks.id', null)} initialValue={get(partner_info, 'trucks.driver.mobile', null)} label={'Driver Number'}/> 
             </Col>
           </Row>
           <Row gutter={10}>
