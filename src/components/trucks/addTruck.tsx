@@ -48,9 +48,8 @@ const AddTruck = (props) => {
             <Form.Item
                 label='Driver Number'
                 name='driver_number'
-                rules={[{ required: true, message: 'Driver Number is required field' }]}
               >
-          <Driver partner_id={partner_info.id} truck_id={get(partner_info, 'trucks.id', null)} initialValue={get(partner_info, 'trucks.driver.mobile', null)} /> 
+          <Driver partner_id={partner_info.id} driverChange={driverChange} truck_id={get(partner_info, 'trucks.id', null)} initialValue={get(partner_info, 'trucks.driver.mobile', null)} /> 
           </Form.Item>
             </Col>
           </Row>
