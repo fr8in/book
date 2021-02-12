@@ -95,7 +95,7 @@ const AdvanceEditModal = (props) => {
       <Row gutter={10}>
      <Alert
       message=''
-      description="Customer Advance changes  will be applicable for fr8-memo and partner-memo"
+      description="Customer Advance changes  will be applicable for FR-memo and Partner-memo"
       type="info"
       showIcon
     /></Row>
