@@ -123,6 +123,8 @@ mutation create_po (
   $is_topay: Boolean,
   $customer_user_id: Int,
   $origin_id:Int,
+  $customer_advance_percentage:Int,
+  $customer_total_advance:Float,
   $interest_id:Int) {
 insert_trip(objects: {
   po_date:$po_date
@@ -148,7 +150,9 @@ insert_trip(objects: {
   cash:$cash,
   is_topay: $is_topay,
   origin_id:$origin_id,
-  interest_id:$interest_id
+  interest_id:$interest_id,
+  customer_total_advance:$customer_total_advance
+  customer_advance_percentage:$customer_advance_percentage
 }) {
   returning {
     id
@@ -466,6 +470,7 @@ const trip_id = get(_trip_data, 'trip[0].id', null)
       message.error('Mamul Should be greater than system mamul!')
     } else {
       setDisableBtn(true)
+      const total_advance = parseFloat(form.bank)+parseFloat(form.cash)+parseFloat(form.to_pay)
       isToPay ? 
       create_po_mutation({
         variables: {
@@ -519,7 +524,9 @@ const trip_id = get(_trip_data, 'trip[0].id', null)
           customer_user_id: parseInt(loading_contact_id),
           is_topay: !!isToPay,
           origin_id: 7,
-          interest_id:7
+          interest_id:7,
+          customer_advance_percentage:get(customer,'customer_advance_percentage.name',0),
+            customer_total_advance:total_advance
         }
       }) 
     }
