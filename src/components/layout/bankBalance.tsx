@@ -107,8 +107,8 @@ const BankBalance = () => {
   return (
     <Menu>
       <Menu.ItemGroup key="primary_bank" title="Primary Bank">
-      <Menu.Item>
-        <PrimaryBank changeDownTime={onChangeDownTime}/>
+      <Menu.Item  >
+        <PrimaryBank isAdmin={access} changeDownTime={onChangeDownTime}/>
         </Menu.Item>        
       </Menu.ItemGroup>
       <Menu.ItemGroup key="outgoing" title="Outgoing">
