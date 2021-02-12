@@ -144,13 +144,12 @@ const PartnerOnboardingContainer = (props) => {
         pan_no: form.pan_no,
         // bank_detail
         account_holder: form.account_holder_name,
-        account_number: form.account_no,
-        ifsc_code: form.ifsc,
+        account_number: (form.account_no).trim(),
+        ifsc_code: (form.ifsc).trim(),
         updated_by: context.email,
         // fr8_detail
         onboarded_by_id: form.on_boarded_by,
-        partner_advance_percentage_id: form.advance_percentage,
-        final_payment_date: parseInt(form.final_payment_date, 10)
+        partner_advance_percentage_id: form.advance_percentage
       }
     })
   }

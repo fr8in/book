@@ -138,7 +138,7 @@ const TripTime = (props) => {
   const process_advance_access = [role.admin, role.rm, role.operations,role.bm]
   const advance_access = u.is_roles(process_advance_access, context)
   const access = (trip_info.loaded === 'No') || u.is_roles(po_delete_access, context)
-  const loading_memo_edit = [role.admin]
+  const loading_memo_edit = [role.user]
 
   const truck_files = get(trip_info, 'truck.truck_files', [])
   const truck_pan_files = !isEmpty(truck_files) ? truck_files.filter(file => file.type === u.fileType.partner_pan) : null
@@ -571,9 +571,7 @@ const TripTime = (props) => {
        visible={object.editModal}
        onHide={handleHide}
        advanceData={object.advanceEditData}
-       customer_advance={trip_info.customer_total_advance}
-       customer_price={trip_info.customer_price}
-       customer={trip_info.customer}
+       trip={trip_info}
       />}
       {visible.wh_detail &&
         <Modal
