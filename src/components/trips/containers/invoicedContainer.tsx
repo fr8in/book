@@ -5,6 +5,8 @@ import { useState } from 'react'
 import get from 'lodash/get'
 import u from '../../../lib/util'
 import isEmpty from 'lodash/isEmpty'
+import { filterContext } from '../../../context'
+import { useContext } from 'react'
 
 const InvoicedContainer = (props) => {
   const {invoiced_setCountFilter,invoiced_countFilter,payment_Manager} =props
@@ -22,6 +24,7 @@ const InvoicedContainer = (props) => {
     trip_statusName: ['Invoiced', 'Paid', 'Recieved', 'Closed']
   }
   const [filter, setFilter] = useState(initialFilter)
+  const {state} = useContext(filterContext)
 
   const where = {
     _and: [{ trip_status: { name: { _in: filter.trip_statusName && filter.trip_statusName.length > 0 ? filter.trip_statusName : initialFilter.trip_statusName } }, pod_dispatched_at: { _is_null: true } }],
@@ -30,7 +33,12 @@ const InvoicedContainer = (props) => {
     customer:{payment_manager:{name : {_in : !isEmpty(payment_Manager) ? payment_Manager : null }},name: { _ilike: filter.customername ? `%${filter.customername}%` : null }},
     source: { name: { _ilike: filter.sourcename ? `%${filter.sourcename}%` : null } },
     destination: { name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } },
-    truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } }
+    truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } },
+    branch: {region_id: {_in: (state.regions && state.regions.length > 0) ? state.regions : null}},
+    branch_id: {_in: (state.branches && state.branches.length > 0) ? state.branches : null},
+    source_connected_city_id: {_in:(state.cities && state.cities.length > 0) ? state.cities : null },
+    truck_type_id: {_in: (state.types && state.types.length > 0) ? state.types : null},
+    branch_employee_id: {_in:(state.managers && state.managers.length > 0) ? state.managers : null }
   }
 
   const variables = {
