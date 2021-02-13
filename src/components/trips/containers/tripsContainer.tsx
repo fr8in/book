@@ -87,12 +87,14 @@ const TripsContainer = () => {
     branch_employee_id: {_in:(state.managers && state.managers.length > 0) ? state.managers : null },
     truck: { truck_no: { _ilike: countFilter.pod_verified_truckno ? `%${countFilter.pod_verified_truckno}%` : null } } },
 
-    invoiced_trip: { _and: [{ trip_status: { name: { _in: ['Invoiced', 'Paid', 'Recieved', 'Closed'] } }, pod_dispatched_at: { _is_null: true } }], customer: { name: { _ilike: countFilter.invoiced_customername ? `%${countFilter.invoiced_customername}%` : null }, payment_manager: { name: { _in: !isEmpty(filter) ? filter : null } } } },
-    partner: { name: { _ilike: countFilter.invoiced_partnername ? `%${countFilter.invoiced_partnername}%` : null } },
+    invoiced_trip: { _and: [{ trip_status: { name: { _in: ['Invoiced', 'Paid', 'Recieved', 'Closed'] } }, pod_dispatched_at: { _is_null: true } }], customer: { name: { _ilike: countFilter.invoiced_customername ? `%${countFilter.invoiced_customername}%` : null }, payment_manager: { name: { _in: !isEmpty(filter) ? filter : null } } },
     branch_id: {_in: (state.branches && state.branches.length > 0) ? state.branches : null},
     source_connected_city_id: {_in:(state.cities && state.cities.length > 0) ? state.cities : null },
     truck_type_id: {_in: (state.types && state.types.length > 0) ? state.types : null},
-    branch_employee_id: {_in:(state.managers && state.managers.length > 0) ? state.managers : null },
+    branch_employee_id: {_in:(state.managers && state.managers.length > 0) ? state.managers : null } },
+
+    
+    partner: { name: { _ilike: countFilter.invoiced_partnername ? `%${countFilter.invoiced_partnername}%` : null } },
     truck: { truck_no: { _ilike: countFilter.invoiced_truckno ? `%${countFilter.invoiced_truckno}%` : null } }
   }
 
