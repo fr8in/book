@@ -10,8 +10,8 @@ import { SearchOutlined } from '@ant-design/icons'
 import isEmpty from 'lodash/isEmpty'
 
 const ICICIBANK_STATEMENT = gql`
-subscription iciciBank_Statement($offset:Int, $limit:Int,$where:iciciBank_statement_bool_exp) {
-  iciciBank_statement (
+subscription iciciBank_Statement($offset:Int, $limit:Int,$where:icici_bank_statement_bool_exp) {
+  icici_bank_statement (
     offset:$offset,
     limit:$limit,
     order_by:{txn_date:desc}
