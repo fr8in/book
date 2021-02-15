@@ -15,6 +15,7 @@ const BANK_BALANCE = gql`
 query bank_balance${now()}{
   icici
   reliance
+  yes_bank
 }`
 const IC_BANK_BALANCE = gql`
 query IC_bank_balance${now()}{
@@ -70,8 +71,8 @@ const BankBalance = () => {
   let displayData = { icici: null, yes :null, reliance: null, icici_incoming: null, downtime: { ICICI: null, YES:null,  reliance_fuel: null } }
 
   if (!loading) {
-    displayData.icici = get(data, 'ICICI', null)
-    displayData.yes = get(data, 'YES', null)
+    displayData.icici = get(data, 'icici', null)
+    displayData.yes = get(data, 'yes_bank', null)
     displayData.reliance = get(data, 'reliance', null)
     displayData.icici_incoming = get(ic_data, 'icici_incoming', null)
   }
