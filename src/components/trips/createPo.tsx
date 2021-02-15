@@ -214,14 +214,14 @@ const CreatePo = (props) => {
       },
       onCompleted (data) {
         const load_id = get(data, 'insert_trip.returning[0].id', null)
-        const msg = (
-          <span>
-            <span>Load&nbsp;</span>
-            <LinkComp type='trips' data={load_id} id={load_id} />
-            <span>&nbsp;Created!</span>
-          </span>
-        )
-        message.success(msg)
+        // const msg = (
+        //   <span>
+        //     <span>Load&nbsp;</span>
+        //     <LinkComp type='trips' data={load_id} id={load_id} />
+        //     <span>&nbsp;Created!</span>
+        //   </span>
+        // )
+        message.success(`${load_id} Created!`)
         setObj(initial)
         setDisableBtn(false)
         onHide()
