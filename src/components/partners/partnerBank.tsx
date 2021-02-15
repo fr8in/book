@@ -69,7 +69,7 @@ const EditBank = (props) => {
 
   const validateIFSC = () => {
     if (form.getFieldValue('ifsc_code')) {
-      getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc_code').trim() } })
+      getBankDetail({ variables: { ifsc: form.getFieldValue('ifsc_code') } })
     } else return null
   }
 
@@ -78,9 +78,9 @@ const EditBank = (props) => {
     updatePartnerBank({
       variables: {
         id: partner_id,
-        account_number: form.account_number,
+        account_number: (form.account_number).trim(),
         account_holder: form.account_holder,
-        ifsc_code: form.ifsc_code,
+        ifsc_code: (form.ifsc_code).trim(),
         updated_by: context.email,
         partner_comment: {
           description: form.comment,
@@ -118,7 +118,7 @@ const EditBank = (props) => {
             rules={[{ required: true }]}
             initialValue={get(partner_info, 'display_account_number', null)}
           >
-            <Input placeholder=' Account Number' type='number'/>
+            <Input placeholder=' Account Number'/>
           </Form.Item>
           <Form.Item
             name='comment'
