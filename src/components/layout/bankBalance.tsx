@@ -52,7 +52,10 @@ const BankBalance = () => {
 
   const { onHide, onShow, visible } = useShowHide(initial)
 
-  const [getIncomingIciciBalance, { loading: ic_loading, data: ic_data, error: ic_error }] = useLazyQuery(IC_BANK_BALANCE)
+  const [getIncomingIciciBalance, { loading: ic_loading, data: ic_data, error: ic_error }] = useLazyQuery(
+    IC_BANK_BALANCE,
+    {fetchPolicy: 'network-only'}
+    )
 
   const { loading, data, error } = useQuery(
     BANK_BALANCE, {
