@@ -10,8 +10,8 @@ import { SearchOutlined } from '@ant-design/icons'
 import isEmpty from 'lodash/isEmpty'
 
 const ICICIBANK_STATEMENT = gql`
-subscription iciciBank_Statement($offset:Int, $limit:Int,$where:iciciBank_statement_bool_exp) {
-  iciciBank_statement (
+subscription iciciBank_Statement($offset:Int, $limit:Int,$where:icici_bank_statement_bool_exp) {
+  icici_bank_statement (
     offset:$offset,
     limit:$limit,
     order_by:{txn_date:desc}
@@ -34,9 +34,9 @@ subscription iciciBank_Statement($offset:Int, $limit:Int,$where:iciciBank_statem
  }
  `
 const ICICIBANK_STATEMENT_AGGREGATE = gql`
-query iciciBank_statement_aggregate($where:iciciBank_statement_bool_exp){
-  iciciBank_statement_aggregate(where:$where){
-    aggregate{
+query iciciBank_statement_aggregate($where: icici_bank_statement_bool_exp) {
+  icici_bank_statement_aggregate(where: $where) {
+    aggregate {
       count
     }
   }
@@ -87,13 +87,13 @@ const where = {
       }
     }
   )
-  console.log('last7daysPending Error', error)
+  
 
   let _statement = []
   if (!loading) {
     _statement = data
   }
-  const statement = get(_statement, 'iciciBank_statement', [])
+  const statement = get(_statement, 'icici_bank_statement', [])
 
   const { loading: count_loading, error: count_error, data: count_data } = useQuery(
     ICICIBANK_STATEMENT_AGGREGATE,
@@ -109,7 +109,7 @@ const where = {
   if (!count_loading) {
     _statement_count = count_data
   }
-  const statement_count = get(_statement_count, 'iciciBank_statement_aggregate', [])
+  const statement_count = get(_statement_count, 'icici_bank_statement_aggregate', [])
   const record_count = get(statement_count, 'aggregate.count', null)
 
   const typeFilterList = TypeFilter.map((data) => {
