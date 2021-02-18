@@ -31,27 +31,25 @@ const CustomerReceipts = (props) => {
     _data = data
   }
   const customer_receipts = get(_data,'customer[0].customer_6month_receipts',[])
-
   const columns = [
-    {
-        title:'Year',
-        dataIndex: 'year_no',
-        sorter: (a, b) => (a.year_no > b.year_no ? 1 : -1),
-        width: '33%',
-    },
       {
           title:'Month',
           dataIndex:'month_no',
           sorter: (a, b) => (a.month_no > b.month_no ? 1 : -1),
-          width: '33%',
-          render: (text, record) => u.monthName(get(record,'month_no',null))
+          width: '60%',
+          render: (text, record) => {
+            const year = get(record,'year_no',null)
+            return (
+              `${u.monthName(get(record,'month_no',null))} - ${get(record,'year_no',null)}`
+            )
+          }
 
       },
       {
           title:'Amount',
           dataIndex:'sum',
           sorter: (a, b) => (a.sum > b.sum ? 1 : -1),
-          width:'34%'
+          width:'40%'
       }
 
   ]
@@ -60,7 +58,7 @@ const CustomerReceipts = (props) => {
         title='Customer Receipts'
         visible={visible}
         onCancel={onHide}
-        width={500}
+        width={400}
         footer={null}
       >
         <Table

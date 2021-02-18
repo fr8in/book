@@ -187,7 +187,7 @@ const util = {
     return false
   },
   monthName:(mon) => {
-    return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][mon - 1];
+    return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'][mon - 1];
   },
   calculatePercentage: (value, totalValue) => parseFloat(((value * 100) / totalValue).toFixed(2)),
   calculateAmountByPercentage: (percentage, totalValue) => parseFloat(((percentage * totalValue) / 100).toFixed(2)),
