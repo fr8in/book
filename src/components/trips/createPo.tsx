@@ -6,7 +6,6 @@ import PoDetail from './poDetail'
 import PoPrice from './poPrice'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
-import LinkComp from '../common/link'
 import Truncate from '../common/truncate'
 import ToPayPrice from '../trips/toPayPrice'
 
@@ -32,14 +31,16 @@ query po_query($id: Int!){
 }`
 
 const CITY_DATA = gql`
-query($city_id:Int){
-  city(where:{id:{_eq:$city_id}}){
-    branch{
-      id
+query ($city_id: Int) {
+  city(where: {id: {_eq: $city_id}}) {
+    connected_city {
+      branch {
+        id
+        name
+      }
     }
   }
-}
-`
+}`
 
 const CUSTOMER_BRANCH_EMPLOYEE_DATA = gql`
 query($customer_id:Int,$type_id:Int,$branch_id:Int){
@@ -79,6 +80,17 @@ query customers_po($id:Int!){
     value
   }
 }`
+
+const TRIP_DATA = gql`
+query ($customer_id: Int!, $source_id: Int!, $destination_id: Int!, $type_id: Int!) {
+  trip(where: {customer_id: {_eq: $customer_id}, source_id: {_eq: $source_id}, destination_id: {_eq: $destination_id}, truck_type: {id: {_eq: $type_id}},trip_status_id:{_eq:1}}) {
+    id
+    trip_status{
+      name
+    }
+  }
+}
+`
 
 const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
   search_customer(args:{search:$search, status_ids: "{1,5}"}){
@@ -155,7 +167,6 @@ const CreatePo = (props) => {
   const [driver_id, setDriver_id] = useState(null)
   const [disableBtn, setDisableBtn] = useState(false)
   const [isToPay, setIsToPay] = useState(false)
-  
 
   const [form] = Form.useForm()
   const initial = { search: '', source_id: null, destination_id: null }
@@ -165,29 +176,29 @@ const CreatePo = (props) => {
   const { loading, error, data } = useQuery(
     PO_QUERY,
     {
-      variables: { id: truck_id  },
+      variables: { id: truck_id },
       fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true 
+      notifyOnNetworkStatusChange: true
     }
   )
 
-  const [getCityData,{ loading: city_loading, error:city_error, data:_city_data }] = useLazyQuery(CITY_DATA,
+  const [getCityData, { loading: city_loading, error: city_error, data: _city_data }] = useLazyQuery(CITY_DATA,
     {
       onCompleted (data) {
-          if(!get(data,'city[0].branch.id',null)) {
-      message.warning("Selected source city doesn't mapped with branch")
-          } else {
-            getCustomerBranchData({
-              variables: {
-                customer_id:get(customer,'id',null),
-                type_id:get(po_data,'truck_type.truck_type_group_id',null),
-                branch_id:get(data,'city[0].branch.id',null)
-              }
-            })
-          }
+        if (!get(data, 'city[0].connected_city.branch.id', null)) {
+          message.warning("Selected source city doesn't mapped with branch")
+        } else {
+          getCustomerBranchData({
+            variables: {
+              customer_id: get(customer, 'id', null),
+              type_id: get(po_data, 'truck_type.truck_type_group_id', null),
+              branch_id: get(data, 'city[0].connected_city.branch.id', null)
+            }
+          })
+        }
       }
     }
-    )
+  )
 
   const { loading: search_loading, error: search_error, data: search_data } = useQuery(
     CUSTOMER_SEARCH,
@@ -199,10 +210,25 @@ const CreatePo = (props) => {
     }
   )
 
+  const [getTripData, { loading: trip_loading, data: trip_data, error: trip_error }] = useLazyQuery(TRIP_DATA,
+    {
+      onCompleted (data) {
+        const id = get(data, 'trip[0].id', null)
+        onCreatePo(id)
+      }
+    }
+  )
+
+  let _trip_data = {}
+  if (!trip_loading) {
+    _trip_data = trip_data
+  }
+
+  const trip_id = get(_trip_data, 'trip[0].id', null)
+
   const [getCustomerData, { loading: cus_loading, data: cus_data, error: cus_error }] = useLazyQuery(CUSTOMER_PO_DATA)
 
-   const [getCustomerBranchData, { loading: customer_branch_loading, data: customer_branch_data, error: customer_branch_error }] = useLazyQuery(CUSTOMER_BRANCH_EMPLOYEE_DATA)
-
+  const [getCustomerBranchData, { loading: customer_branch_loading, data: customer_branch_data, error: customer_branch_error }] = useLazyQuery(CUSTOMER_BRANCH_EMPLOYEE_DATA)
 
   const [create_po_mutation] = useMutation(
     CREATE_PO,
@@ -214,14 +240,7 @@ const CreatePo = (props) => {
       },
       onCompleted (data) {
         const load_id = get(data, 'insert_trip.returning[0].id', null)
-        // const msg = (
-        //   <span>
-        //     <span>Load&nbsp;</span>
-        //     <LinkComp type='trips' data={load_id} id={load_id} />
-        //     <span>&nbsp;Created!</span>
-        //   </span>
-        // )
-        message.success(`${load_id} Created!`)
+        message.success(`Load: ${load_id} Created!`)
         setObj(initial)
         setDisableBtn(false)
         onHide()
@@ -252,104 +271,81 @@ const CreatePo = (props) => {
   const customerSearch = get(_search_data, 'search_customer', '')
   const po_data = get(data, 'truck[0]', null)
 
- 
- 
-
   let customer_data = {}
   if (!customer_branch_loading) {
     customer_data = customer_branch_data
   }
-  
 
   const customer_branch_employee = get(customer_data, 'customer_branch_employee[0]', [])
-    const customer_branch_employee_name = get(customer_branch_employee,'branch_employee.employee.name',null)
+  const customer_branch_employee_name = get(customer_branch_employee, 'branch_employee.employee.name', null)
 
+  const onTripDataChange = (form) => {
+    getTripData(
+      {
+        variables: {
+          source_id: parseInt(obj.source_id, 10),
+          destination_id: parseInt(obj.destination_id, 10),
+          customer_id: customer.id,
+          type_id: get(po_data, 'truck_type.id', null)
+        }
+      }
+    )
+  }
 
-  const onSubmit = (form) => {
-    console.log("form submit",form)
-    const loading_charge = form.charge_inclue.includes('Loading')
-    const unloading_charge = form.charge_inclue.includes('Unloading')
-    if (form.customer_price > trip_max_price) {
+  const onCreatePo = (id) => {
+    const loading_charge = form.getFieldValue('charge_inclue').includes('Loading')
+    const unloading_charge = form.getFieldValue('charge_inclue').includes('Unloading')
+    if (form.getFieldValue('customer_price') > trip_max_price) {
       message.error(`Trip max price limit ₹${trip_max_price}`)
-    } else if (form.customer_price <= 0) {
+    } else if (form.getFieldValue('customer_price') <= 0) {
       message.error('Enter valid trip price')
-    } else if (parseInt(form.p_total) < parseInt(form.cash)) {
+    } else if (parseInt(form.getFieldValue('p_total')) < parseInt(form.getFieldValue('cash'))) {
       message.error('Customer to Partner, Total and cash is miss matching')
-    } else if (parseInt(form.p_total) > form.customer_price) {
+    } else if (parseInt(form.getFieldValue('p_total')) > form.getFieldValue('customer_price')) {
       message.error('Customer to Partner should be less than or euqal to customer price')
-    } else if (mamul > parseFloat(form.mamul)) {
+    } else if (mamul > parseFloat(form.getFieldValue('mamul'))) {
       message.error('Mamul Should be greater than system mamul!')
     } else {
       setDisableBtn(true)
-      const total_advance = parseFloat(form.bank)+parseFloat(form.cash)+parseFloat(form.to_pay)
-      isToPay ? 
+      const total_advance = parseFloat(form.getFieldValue('bank')) + parseFloat(form.getFieldValue('cash')) + parseFloat(form.getFieldValue('to_pay'))
       create_po_mutation({
         variables: {
-          po_date: form.po_date.format('YYYY-MM-DD'),
+          po_date: form.getFieldValue('po_date').format('YYYY-MM-DD'),
           source_id: parseInt(obj.source_id, 10),
           destination_id: parseInt(obj.destination_id, 10),
           customer_id: customer.id,
           partner_id: po_data && po_data.partner && po_data.partner.id,
-          customer_price: parseFloat(form.customer_price),
-          partner_price: parseFloat(form.partner_price_total),
-          ton: form.ton ? form.ton : null,
-          per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
-          is_per_ton: !!form.ton,
+          customer_price: parseFloat(form.getFieldValue('customer_price')),
+          partner_price: isToPay ? parseFloat(form.getFieldValue('partner_price_total')) : parseFloat(form.getFieldValue('partner_price')),
+          ton: form.getFieldValue('ton') ? form.getFieldValue('ton') : null,
+          per_ton: form.getFieldValue('price_per_ton') ? parseFloat(form.getFieldValue('price_per_ton')) : null,
+          is_per_ton: !!form.getFieldValue('ton'),
           including_loading: loading_charge,
           including_unloading: unloading_charge,
-          bank:0,
-          cash: parseFloat(form.to_pay_cash),
-          to_pay: parseFloat(form.to_pay_balance),
+          bank: isToPay ? 0 : parseFloat(form.getFieldValue('bank')),
+          cash: isToPay ? parseFloat(form.getFieldValue('to_pay_cash')) : parseFloat(form.getFieldValue('cash')),
+          to_pay: isToPay ? parseFloat(form.getFieldValue('to_pay_balance')) : parseFloat(form.getFieldValue('to_pay')),
           truck_id: po_data && po_data.id,
           truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
           driver_id: driver_id,
           created_by: context.email,
           customer_user_id: parseInt(loading_contact_id),
           is_topay: !!isToPay,
-          origin_id: 7,
-          interest_id:7
+          origin_id: id ? 5 : 7,
+          interest_id: 7,
+          mamul: isToPay ? null : parseFloat(form.getFieldValue('mamul')),
+          customer_advance_percentage: isToPay ? null : get(customer, 'customer_advance_percentage.name', 0),
+          customer_total_advance: isToPay ? null : total_advance
         }
-      }) : 
-      create_po_mutation({
-        variables: {
-          po_date: form.po_date.format('YYYY-MM-DD'),
-          source_id: parseInt(obj.source_id, 10),
-          destination_id: parseInt(obj.destination_id, 10),
-          customer_id: customer.id,
-          partner_id: po_data && po_data.partner && po_data.partner.id,
-          customer_price: parseFloat(form.customer_price),
-          partner_price: parseFloat(form.partner_price),
-          ton: form.ton ? form.ton : null,
-          per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
-          is_per_ton: !!form.ton,
-          mamul: parseFloat(form.mamul),
-          including_loading: loading_charge,
-          including_unloading: unloading_charge,
-          bank: parseFloat(form.bank),
-          cash: parseFloat(form.cash),
-          to_pay: parseFloat(form.to_pay),
-          truck_id: po_data && po_data.id,
-          truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
-          driver_id: driver_id,
-          created_by: context.email,
-          customer_user_id: parseInt(loading_contact_id),
-          is_topay: !!isToPay,
-          origin_id: 7,
-          interest_id:7,
-          customer_advance_percentage:get(customer,'customer_advance_percentage.name',0),
-            customer_total_advance:total_advance
-        }
-      }) 
+      })
     }
   }
 
- 
- 
   const onSourceChange = (city_id) => {
     setObj({ ...obj, source_id: city_id })
     getCityData(
       {
-        variables: {city_id:city_id},
+        variables: { city_id: city_id }
       }
     )
   }
@@ -370,21 +366,20 @@ const CreatePo = (props) => {
 
   const onIsToPayChange = (e) => {
     setIsToPay(e.target.checked)
-    form.resetFields(isToPay ?
-      ['trip_rate_type',
-        'price_per_ton', 'ton',
-        'customer_price',
-        'partner_price_total',
-        'customer_to_partner_total',
-        'to_pay_cash', 'to_pay_balance']
-      :
-      ['trip_rate_type',
-        'price_per_ton', 'ton',
-        'customer_price',
-        'partner_price', 'p_total',
-        'cash', 'to_pay', 'total',
-        'bank', 'balance', 'fp_total',
-        'wallet', 'fp_balance'])
+    form.resetFields(isToPay
+      ? ['trip_rate_type',
+          'price_per_ton', 'ton',
+          'customer_price',
+          'partner_price_total',
+          'customer_to_partner_total',
+          'to_pay_cash', 'to_pay_balance']
+      : ['trip_rate_type',
+          'price_per_ton', 'ton',
+          'customer_price',
+          'partner_price', 'p_total',
+          'cash', 'to_pay', 'total',
+          'bank', 'balance', 'fp_total',
+          'wallet', 'fp_balance'])
   }
 
   const partner_name = get(po_data, 'partner.name', '-')
@@ -395,7 +390,7 @@ const CreatePo = (props) => {
   return (
     <Modal
       visible={visible}
-      onOk={onSubmit}
+      onOk={onTripDataChange}
       onCancel={onHide}
       width={900}
       style={{ top: 10 }}
@@ -403,7 +398,7 @@ const CreatePo = (props) => {
       footer={[]}
       className='no-header'
     >
-      <Form form={form} className='create-po form-sheet' labelAlign='left' colon={false} {...layout} onFinish={onSubmit}>
+      <Form form={form} className='create-po form-sheet' labelAlign='left' colon={false} {...layout} onFinish={onTripDataChange}>
         <Row gutter={20}>
           <Col xs={24} sm={14}>
             <Row>
@@ -448,23 +443,23 @@ const CreatePo = (props) => {
               />}
           </Col>
           <Col xs={24} sm={10}>
-          {!cus_loading && (customer && customer.id) &&
-          <>
-         <Checkbox checked={isToPay} onChange={onIsToPayChange}> To Pay </Checkbox> 
-            { isToPay ?
-             <ToPayPrice
-                po_data={po_data && po_data.partner}
-                form={form}
-                customer={customer}
-                loading={cus_loading}
-              />:
-              <PoPrice
-                po_data={po_data && po_data.partner}
-                form={form}
-                customer={customer}
-                loading={cus_loading}
-                mamul={mamul}
-              />}
+            {!cus_loading && (customer && customer.id) &&
+              <>
+                <Checkbox checked={isToPay} onChange={onIsToPayChange}> To Pay </Checkbox>
+                {isToPay
+                  ? <ToPayPrice
+                      po_data={po_data && po_data.partner}
+                      form={form}
+                      customer={customer}
+                      loading={cus_loading}
+                    />
+                  : <PoPrice
+                      po_data={po_data && po_data.partner}
+                      form={form}
+                      customer={customer}
+                      loading={cus_loading}
+                      mamul={mamul}
+                    />}
               </>}
           </Col>
         </Row>
