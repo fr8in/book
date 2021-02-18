@@ -176,9 +176,9 @@ const CreatePo = (props) => {
   const { loading, error, data } = useQuery(
     PO_QUERY,
     {
-      variables: { id: truck_id  },
+      variables: { id: truck_id },
       fetchPolicy: 'cache-and-network',
-      notifyOnNetworkStatusChange: true 
+      notifyOnNetworkStatusChange: true
     }
   )
 
