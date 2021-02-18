@@ -1,11 +1,15 @@
 
-import { Row, Col, Alert } from 'antd'
+import { Row, Col } from 'antd'
 import LabelWithData from '../common/labelWithData'
 import get from 'lodash/get'
 import { InfoCircleOutlined } from '@ant-design/icons'
+import useShowHide from '../../hooks/useShowHide';
+import CustomerReceipts from './customerReceipts';
 
 const PendingPayments = (props) => {
   const { customer_info } = props
+  const initial = { receipts: false }
+  const { visible, onShow, onHide } =useShowHide(initial)
   const customer_exception = get(customer_info, 'customer_exception', [])
   const receivable_ratio = get(customer_exception, 'receipts_and_receivables_ratio', null)
   
@@ -40,7 +44,7 @@ const PendingPayments = (props) => {
           />
           <LabelWithData
             label='Receipts (<30 D)'
-            data={get(customer_exception, 'final_payment_received_in_the_last_30_days', 0)}
+            data={<h4 className='link u' onClick={() => onShow('receipts')}> {get(customer_exception, 'final_payment_received_in_the_last_30_days', 0)}</h4>}
             mdSpan={4}
             smSpan={8}
             xsSpan={12}
@@ -79,6 +83,7 @@ const PendingPayments = (props) => {
       <p>{'a) Advance Pending (> 5D) = 0'}<br />
         {'b) Receipts (<30 D) > Invoiced (>30 D)'}<br />
         {'No Payment block for managed customers.'}</p>
+        {visible.receipts && <CustomerReceipts visible={visible.receipts} onHide={onHide} cardcode={customer_info.cardcode} />}
     </>
   )
 }
