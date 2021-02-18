@@ -6,6 +6,7 @@ import PoDetail from './poDetail'
 import PoPrice from './poPrice'
 import get from 'lodash/get'
 import userContext from '../../lib/userContaxt'
+import LinkComp from '../common/link'
 import Truncate from '../common/truncate'
 import ToPayPrice from '../trips/toPayPrice'
 
@@ -79,17 +80,6 @@ query customers_po($id:Int!){
   }
 }`
 
-const TRIP_DATA = gql`
-query ($customer_id: Int!, $source_id: Int!, $destination_id: Int!, $type_id: Int!) {
-  trip(where: {customer_id: {_eq: $customer_id}, source_id: {_eq: $source_id}, destination_id: {_eq: $destination_id}, truck_type: {id: {_eq: $type_id}}}) {
-    id
-    trip_status{
-      name
-    }
-  }
-}
-`
-
 const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
   search_customer(args:{search:$search, status_ids: "{1,5}"}){
     id
@@ -159,68 +149,6 @@ insert_trip(objects: {
 }
 }`
 
-const UPDATE_PO = gql`
-mutation update_po(
-  $trip_id: Int!
-  $updated_by: String!
-  $truck_id: Int!
-  $partner_id: Int
-  $po_date: timestamp
-  $customer_user_id: Int
-  $source_id: Int!, 
-  $destination_id: Int!, 
-  $customer_id: Int,
-  $truck_type_id: Int,
-  $driver_id: Int
-  $customer_price: Float,
-  $partner_price: Float,
-  $ton: Float,
-  $per_ton:Float,
-  $is_per_ton:Boolean, 
-  $mamul: Float,
-  $including_loading: Boolean,
-  $including_unloading: Boolean,
-  $bank:Float,
-  $cash: Float,
-  $to_pay: Float,
-  $origin_id:Int,
-  $is_topay: Boolean,
-  $interest_id:Int
-  ){
-  update_trip(_set:{
-    truck_id: $truck_id,
-    partner_id: $partner_id,
-    po_date: $po_date,
-    updated_by:$updated_by,
-    customer_user_id: $customer_user_id,
-    source_id: $source_id,
-    destination_id: $destination_id,
-    customer_id: $customer_id,
-    truck_type_id: $truck_type_id,
-    driver_id: $driver_id,
-    customer_price: $customer_price,
-    partner_price: $partner_price,
-    ton: $ton,
-    price_per_ton:$per_ton,
-    is_price_per_ton: $is_per_ton,
-    mamul: $mamul,
-    including_loading: $including_loading,
-    including_unloading: $including_unloading,
-    bank: $bank,
-    to_pay:$to_pay,
-    cash:$cash,
-    is_topay: $is_topay,
-    origin_id:$origin_id,
-    interest_id:$interest_id
-  }, 
-  where:{id:{_eq:$trip_id}}){
-    returning{
-      id
-    }
-  }
-}
-`
-
 const CreatePo = (props) => {
   const { visible, onHide, truck_id } = props
   const [loading_contact_id, setLoading_contact_id] = useState(null)
@@ -271,26 +199,6 @@ const CreatePo = (props) => {
     }
   )
 
-
-
-const [getTripData, { loading: trip_loading, data: trip_data, error: trip_error }] = useLazyQuery(TRIP_DATA,
-  {
-    onCompleted (data) {
-      const id = get(data,'trip[0].id', null)
-      id ? onUpdatePo() : onCreatePo()
-}
-  }
-  )
-
-let _trip_data = {}
-if (!trip_loading) {
-  _trip_data = trip_data
-}
-
-
-const trip_id = get(_trip_data, 'trip[0].id', null)
-
-
   const [getCustomerData, { loading: cus_loading, data: cus_data, error: cus_error }] = useLazyQuery(CUSTOMER_PO_DATA)
 
    const [getCustomerBranchData, { loading: customer_branch_loading, data: customer_branch_data, error: customer_branch_error }] = useLazyQuery(CUSTOMER_BRANCH_EMPLOYEE_DATA)
@@ -306,27 +214,18 @@ const trip_id = get(_trip_data, 'trip[0].id', null)
       },
       onCompleted (data) {
         const load_id = get(data, 'insert_trip.returning[0].id', null)
-        message.success(`Load: ${load_id} Created!`)
+        // const msg = (
+        //   <span>
+        //     <span>Load&nbsp;</span>
+        //     <LinkComp type='trips' data={load_id} id={load_id} />
+        //     <span>&nbsp;Created!</span>
+        //   </span>
+        // )
+        message.success(`${load_id} Created!`)
         setObj(initial)
         setDisableBtn(false)
         onHide()
       }
-    }
-  )
-
-
-  const [updatePo] = useMutation(
-    UPDATE_PO,
-    {
-      onError (error) {
-       
-        message.error(error.toString())
-      },
-      onCompleted () {
-        message.success(`Load: ${trip_id} Updated!`)
-      onHide()
-     }
-
     }
   )
 
@@ -365,132 +264,42 @@ const trip_id = get(_trip_data, 'trip[0].id', null)
   const customer_branch_employee = get(customer_data, 'customer_branch_employee[0]', [])
     const customer_branch_employee_name = get(customer_branch_employee,'branch_employee.employee.name',null)
 
-    const onTripDataChange = (form) => {
-      getTripData(
-        {
-          variables:{
-            source_id: parseInt(obj.source_id, 10),
-            destination_id: parseInt(obj.destination_id, 10),
-            customer_id: customer.id,
-            type_id: get(po_data,'truck_type.id',null)
-          }
-        }
-      )
-    }
 
-   
-
-    const onUpdatePo = () => {
-      const loading_charge = form.getFieldValue('charge_inclue').includes('Loading')
-      const unloading_charge = form.getFieldValue('charge_inclue').includes('Unloading')
-      if (form.getFieldValue('customer_price') > trip_max_price) {
-        message.error(`Trip max price limit ₹${trip_max_price}`)
-      } else if (form.getFieldValue('customer_price') <= 0) {
-        message.error('Enter valid trip price')
-      } else if (parseInt(form.getFieldValue('p_total')) < parseInt(form.getFieldValue('cash'))) {
-        message.error('Customer to Partner, Total and cash is miss matching')
-      } else if (parseInt(form.getFieldValue('p_total')) > form.getFieldValue('customer_price')) {
-        message.error('Customer to Partner should be less than or euqal to customer price')
-      } else if (mamul > parseFloat(form.getFieldValue('mamul'))) {
-        message.error('Mamul Should be greater than system mamul!')
-      } else {
-        setDisableBtn(true)
-        isToPay ? 
-        updatePo({
-          variables: {
-            trip_id:trip_id,
-            po_date: form.getFieldValue('po_date').format('YYYY-MM-DD'),
-            source_id: parseInt(obj.source_id, 10),
-            destination_id: parseInt(obj.destination_id, 10),
-            customer_id: customer.id,
-            partner_id: po_data && po_data.partner && po_data.partner.id,
-            customer_price: parseFloat(form.getFieldValue('customer_price')),
-            partner_price: parseFloat(form.getFieldValue('partner_price_total')),
-            ton: form.getFieldValue('ton') ? form.getFieldValue('ton') : null,
-            per_ton: form.getFieldValue('price_per_ton') ? parseFloat(form.getFieldValue('price_per_ton')) : null,
-            is_per_ton: !!form.getFieldValue('ton'),
-            including_loading: loading_charge,
-            including_unloading: unloading_charge,
-            bank:0,
-            cash: parseFloat(form.getFieldValue('to_pay_cash')),
-            to_pay: parseFloat(form.getFieldValue('to_pay_balance')),
-            truck_id: po_data && po_data.id,
-            truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
-            driver_id: driver_id,
-            updated_by: context.email,
-            customer_user_id: parseInt(loading_contact_id),
-            is_topay: !!isToPay,
-            origin_id: 5,
-            interest_id:7
-          }
-        }) : 
-        updatePo({
-          variables: {
-            trip_id:trip_id,
-            po_date: form.getFieldValue('po_date').format('YYYY-MM-DD'),
-            source_id: parseInt(obj.source_id, 10),
-            destination_id: parseInt(obj.destination_id, 10),
-            customer_id: customer.id,
-            partner_id: po_data && po_data.partner && po_data.partner.id,
-            customer_price: parseFloat(form.getFieldValue('customer_price')),
-            partner_price: parseFloat(form.getFieldValue('partner_price')),
-            ton: form.getFieldValue('ton') ? form.getFieldValue('ton') : null,
-            per_ton: form.getFieldValue('price_per_ton') ? parseFloat(form.getFieldValue('price_per_ton')) : null,
-            is_per_ton: !!form.getFieldValue('ton'),
-            mamul: parseFloat(form.getFieldValue('mamul')),
-            including_loading: loading_charge,
-            including_unloading: unloading_charge,
-            bank: parseFloat(form.getFieldValue('bank')),
-            cash: parseFloat(form.getFieldValue('cash')),
-            to_pay: parseFloat(form.getFieldValue('to_pay')),
-            truck_id: po_data && po_data.id,
-            truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
-            driver_id: driver_id,
-            updated_by: context.email,
-            customer_user_id: parseInt(loading_contact_id),
-            is_topay: !!isToPay,
-            origin_id: 5,
-            interest_id:7
-          }
-        }) 
-      }
-    }
-
-
-  const onCreatePo = () => {
-    const loading_charge = form.getFieldValue('charge_inclue').includes('Loading')
-    const unloading_charge = form.getFieldValue('charge_inclue').includes('Unloading')
-    if (form.getFieldValue('customer_price') > trip_max_price) {
+  const onSubmit = (form) => {
+    console.log("form submit",form)
+    const loading_charge = form.charge_inclue.includes('Loading')
+    const unloading_charge = form.charge_inclue.includes('Unloading')
+    if (form.customer_price > trip_max_price) {
       message.error(`Trip max price limit ₹${trip_max_price}`)
-    } else if (form.getFieldValue('customer_price') <= 0) {
+    } else if (form.customer_price <= 0) {
       message.error('Enter valid trip price')
-    } else if (parseInt(form.getFieldValue('p_total')) < parseInt(form.getFieldValue('cash'))) {
+    } else if (parseInt(form.p_total) < parseInt(form.cash)) {
       message.error('Customer to Partner, Total and cash is miss matching')
-    } else if (parseInt(form.getFieldValue('p_total')) > form.getFieldValue('customer_price')) {
+    } else if (parseInt(form.p_total) > form.customer_price) {
       message.error('Customer to Partner should be less than or euqal to customer price')
-    } else if (mamul > parseFloat(form.getFieldValue('mamul'))) {
+    } else if (mamul > parseFloat(form.mamul)) {
       message.error('Mamul Should be greater than system mamul!')
     } else {
       setDisableBtn(true)
-      const total_advance = parseFloat(form.getFieldValue('bank'))+parseFloat(form.getFieldValue('cash'))+parseFloat(form.getFieldValue('to_pay'))
+      const total_advance = parseFloat(form.bank)+parseFloat(form.cash)+parseFloat(form.to_pay)
       isToPay ? 
       create_po_mutation({
         variables: {
-          po_date: form.getFieldValue('po_date').format('YYYY-MM-DD'),
+          po_date: form.po_date.format('YYYY-MM-DD'),
           source_id: parseInt(obj.source_id, 10),
           destination_id: parseInt(obj.destination_id, 10),
           customer_id: customer.id,
           partner_id: po_data && po_data.partner && po_data.partner.id,
-          customer_price: parseFloat(form.getFieldValue('customer_price')),
-          partner_price: parseFloat(form.getFieldValue('partner_price_total')),
-          ton: form.getFieldValue('ton') ? form.getFieldValue('ton') : null,
-          per_ton: form.getFieldValue('price_per_ton') ? parseFloat(form.getFieldValue('price_per_ton')) : null,
-          is_per_ton: !!form.getFieldValue('ton'),
+          customer_price: parseFloat(form.customer_price),
+          partner_price: parseFloat(form.partner_price_total),
+          ton: form.ton ? form.ton : null,
+          per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
+          is_per_ton: !!form.ton,
           including_loading: loading_charge,
           including_unloading: unloading_charge,
           bank:0,
-          cash: parseFloat(form.getFieldValue('to_pay_cash')),
-          to_pay: parseFloat(form.getFieldValue('to_pay_balance')),
+          cash: parseFloat(form.to_pay_cash),
+          to_pay: parseFloat(form.to_pay_balance),
           truck_id: po_data && po_data.id,
           truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
           driver_id: driver_id,
@@ -503,22 +312,22 @@ const trip_id = get(_trip_data, 'trip[0].id', null)
       }) : 
       create_po_mutation({
         variables: {
-          po_date: form.getFieldValue('po_date').format('YYYY-MM-DD'),
+          po_date: form.po_date.format('YYYY-MM-DD'),
           source_id: parseInt(obj.source_id, 10),
           destination_id: parseInt(obj.destination_id, 10),
           customer_id: customer.id,
           partner_id: po_data && po_data.partner && po_data.partner.id,
-          customer_price: parseFloat(form.getFieldValue('customer_price')),
-          partner_price: parseFloat(form.getFieldValue('partner_price')),
-          ton: form.getFieldValue('ton') ? form.getFieldValue('ton') : null,
-          per_ton: form.getFieldValue('price_per_ton') ? parseFloat(form.getFieldValue('price_per_ton')) : null,
-          is_per_ton: !!form.getFieldValue('ton'),
-          mamul: parseFloat(form.getFieldValue('mamul')),
+          customer_price: parseFloat(form.customer_price),
+          partner_price: parseFloat(form.partner_price),
+          ton: form.ton ? form.ton : null,
+          per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
+          is_per_ton: !!form.ton,
+          mamul: parseFloat(form.mamul),
           including_loading: loading_charge,
           including_unloading: unloading_charge,
-          bank: parseFloat(form.getFieldValue('bank')),
-          cash: parseFloat(form.getFieldValue('cash')),
-          to_pay: parseFloat(form.getFieldValue('to_pay')),
+          bank: parseFloat(form.bank),
+          cash: parseFloat(form.cash),
+          to_pay: parseFloat(form.to_pay),
           truck_id: po_data && po_data.id,
           truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
           driver_id: driver_id,
@@ -586,7 +395,7 @@ const trip_id = get(_trip_data, 'trip[0].id', null)
   return (
     <Modal
       visible={visible}
-      onOk={onTripDataChange}
+      onOk={onSubmit}
       onCancel={onHide}
       width={900}
       style={{ top: 10 }}
@@ -594,7 +403,7 @@ const trip_id = get(_trip_data, 'trip[0].id', null)
       footer={[]}
       className='no-header'
     >
-      <Form form={form} className='create-po form-sheet' labelAlign='left' colon={false} {...layout} onFinish={onTripDataChange}>
+      <Form form={form} className='create-po form-sheet' labelAlign='left' colon={false} {...layout} onFinish={onSubmit}>
         <Row gutter={20}>
           <Col xs={24} sm={14}>
             <Row>

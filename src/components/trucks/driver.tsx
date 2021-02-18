@@ -39,7 +39,7 @@ mutation truck_driver_update($driver_id:Int,$truck_id:Int,$updated_by: String!) 
 `
 
 const Driver = (props) => {
-  const { partner_id, driverChange, initialValue, truck_id } = props
+  const { partner_id, driverChange, initialValue, truck_id ,label} = props
   if (!partner_id) return null
   const initial = { dateType: false }
   const { visible, onHide, onShow } = useShowHide(initial)
@@ -115,11 +115,11 @@ const Driver = (props) => {
     drivers = driver_data && driver_data.filter(_driver => _driver.mobile.indexOf(searchText) !== -1)
   }
   return (
-    <Form.Item  name='driver' initialValue={initialValue}>
+    <Form.Item  name='driver' initialValue={initialValue} label={label ? label : ''}>
        <div>
         {!visible.dateType ? (
           <>
-      {initialValue}
+      {initialValue || '- '}
           <EditTwoTone
           onClick={() => onShow('dateType')}
         />

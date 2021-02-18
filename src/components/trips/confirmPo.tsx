@@ -132,8 +132,8 @@ mutation confirm_po(
     to_pay:$to_pay,
     cash:$cash,
     is_topay: $is_topay,
-    interest_id:$interest_id
-    customer_total_advance:$customer_total_advance
+    interest_id:$interest_id,
+    customer_total_advance:$customer_total_advance,
     customer_advance_percentage:$customer_advance_percentage
   }, 
   where:{id:{_eq:$trip_id}}){
@@ -246,7 +246,6 @@ const ConfirmPo = (props) => {
     } else {
       setDisableButton(true)
       const total_advance = parseFloat(form.bank)+parseFloat(form.cash)+parseFloat(form.to_pay)
-      isToPay ?
         confirm_po_mutation({
           variables: {
             trip_id: record.id,
@@ -256,43 +255,15 @@ const ConfirmPo = (props) => {
             customer_id: customer.id,
             partner_id: po_data && po_data.partner && po_data.partner.id,
             customer_price: parseFloat(form.customer_price),
-            partner_price: parseFloat(form.partner_price_total),
+            partner_price: isToPay ?  parseFloat(form.partner_price_total) :  parseFloat(form.partner_price),
             ton: form.ton ? form.ton : null,
             per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
             is_per_ton: !!form.ton,
-            bank: 0,
+            bank: isToPay ? 0 : parseFloat(form.bank),
             including_loading: loading_charge,
             including_unloading: unloading_charge,
-            cash: parseFloat(form.to_pay_cash),
-            to_pay: parseFloat(form.to_pay_balance),
-            truck_id: po_data && po_data.id,
-            truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
-            driver_id: parseInt(driver_id, 10),
-            updated_by: context.email,
-            customer_user_id: parseInt(loading_contact_id),
-            is_topay: !!isToPay,
-            interest_id: origin_name === 4 ? 4 : origin_name === 6 ? 6 : 7
-          }
-        }) :
-        confirm_po_mutation({
-          variables: {
-            trip_id: record.id,
-            po_date: form.po_date.format('YYYY-MM-DD'),
-            source_id: obj.source_id ? parseInt(obj.source_id, 10) : get(record, 'source.id', null),
-            destination_id: obj.destination_id ? parseInt(obj.destination_id, 10) : get(record, 'destination.id', null),
-            customer_id: customer.id,
-            partner_id: po_data && po_data.partner && po_data.partner.id,
-            customer_price: parseFloat(form.customer_price),
-            partner_price: parseFloat(form.partner_price),
-            ton: form.ton ? form.ton : null,
-            per_ton: form.price_per_ton ? parseFloat(form.price_per_ton) : null,
-            is_per_ton: !!form.ton,
-            mamul: parseFloat(form.mamul),
-            including_loading: loading_charge,
-            including_unloading: unloading_charge,
-            bank: parseFloat(form.bank),
-            cash: parseFloat(form.cash),
-            to_pay: parseFloat(form.to_pay),
+            cash: isToPay ? parseFloat(form.to_pay_cash) : parseFloat(form.cash),
+            to_pay: isToPay ? parseFloat(form.to_pay_balance) : parseFloat(form.to_pay),
             truck_id: po_data && po_data.id,
             truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
             driver_id: parseInt(driver_id, 10),
@@ -300,10 +271,11 @@ const ConfirmPo = (props) => {
             customer_user_id: parseInt(loading_contact_id),
             is_topay: !!isToPay,
             interest_id: origin_name === 4 ? 4 : origin_name === 6 ? 6 : 7,
-            customer_advance_percentage:get(customer,'customer_advance_percentage.name',0),
-            customer_total_advance:total_advance
+            customer_advance_percentage: isToPay ? null  : get(customer,'customer_advance_percentage.name',0),
+            customer_total_advance: isToPay ? null : total_advance ,
+            mamul: isToPay ? null : parseFloat(form.mamul)  
           }
-        })
+        }) 
     }
   }
 

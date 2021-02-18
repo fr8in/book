@@ -4,6 +4,8 @@ import { TRIPS_QUERY, TRIPS } from './query/tripsQuery'
 import { useState } from 'react'
 import get from 'lodash/get'
 import u from '../../../lib/util'
+import { filterContext } from '../../../context'
+import { useContext } from 'react'
 
 const DeliveredContainer = (props) => {
   const {PodVerified_setCountFilter,PodVerified_countFilter} =props
@@ -20,6 +22,7 @@ const DeliveredContainer = (props) => {
     id: null
   }
   const [filter, setFilter] = useState(initialFilter)
+  const {state} = useContext(filterContext)
 
   const where = {
     _and: [{ trip_status: { name: { _in: filter.trip_statusName } }, pod_verified_at: { _is_null: false } }],
@@ -28,7 +31,12 @@ const DeliveredContainer = (props) => {
     customer: { name: { _ilike: filter.customername ? `%${filter.customername}%` : null } },
     source: { name: { _ilike: filter.sourcename ? `%${filter.sourcename}%` : null } },
     destination: { name: { _ilike: filter.destinationname ? `%${filter.destinationname}%` : null } },
-    truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } }
+    truck: { truck_no: { _ilike: filter.truckno ? `%${filter.truckno}%` : null } },
+    branch: {region_id: {_in: (state.regions && state.regions.length > 0) ? state.regions : null}},
+    branch_id: {_in: (state.branches && state.branches.length > 0) ? state.branches : null},
+    source_connected_city_id: {_in:(state.cities && state.cities.length > 0) ? state.cities : null },
+    truck_type_id: {_in: (state.types && state.types.length > 0) ? state.types : null},
+    branch_employee_id: {_in:(state.managers && state.managers.length > 0) ? state.managers : null }
   }
 
   const variables = {
