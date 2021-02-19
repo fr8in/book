@@ -9,9 +9,10 @@ import LinkComp from '../common/link'
 import Phone from '../common/phone'
 import { gql, useMutation } from '@apollo/client'
 import u from '../../lib/util'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import userContext from '../../lib/userContaxt'
 import PartnerLink from '../common/PartnerLink'
+import EditDriver from './editDriver'
 
 const ASSIGN_TO_CONFIRM_STATUS_MUTATION = gql`
 mutation update_trip_status($id: Int , $trip_status_id : Int) {
@@ -24,7 +25,7 @@ mutation update_trip_status($id: Int , $trip_status_id : Int) {
 `
 
 const Trips = (props) => {
-  const { trips, loading,partnerRegionFilter, setPartnerRegionFilter } = props
+  const { trips, loading, partnerRegionFilter, setPartnerRegionFilter } = props
   const initial = {
     commentData: [],
     commentVisible: false
@@ -85,12 +86,12 @@ const Trips = (props) => {
                 data={text}
                 id={record.id}
               />
-            </span>
+              </span>
             : <LinkComp
-              type='trips'
-              data={text}
-              id={record.id}
-            />)
+                type='trips'
+                data={text}
+                id={record.id}
+              />)
       },
       sorter: (a, b) => a.id - b.id,
       width: '6%'
@@ -129,8 +130,8 @@ const Trips = (props) => {
         )
       },
       filterDropdown: (
-        props.partner_region_filter ?
-        <Checkbox.Group
+        props.partner_region_filter
+        ? <Checkbox.Group
           options={regionsList}
           defaultValue={partnerRegionFilter}
           onChange={onRegionFilter}
@@ -145,7 +146,7 @@ const Trips = (props) => {
       render: (text, record) => {
         const mobile = get(record, 'driver.mobile', null)
         return (
-          mobile ? <Phone number={mobile} /> : null
+          !mobile ? null : <EditDriver trip_info={record} mobile={mobile} />
         )
       },
       width: props.intransit ? '8%' : '9%'

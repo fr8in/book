@@ -41,7 +41,7 @@ update_truck(_set: {driver_id:$truck_driver_id,updated_by:$updated_by}, where: {
 `
 
 const Driver = (props) => {
-  const { trip_info, initialValue, disable } = props
+  const { trip_info, initialValue, disable, size, toggleDriver, nolabel } = props
 
   const partner_id = get(trip_info, 'partner.id', null)
   if (!partner_id) return null
@@ -75,6 +75,9 @@ const Driver = (props) => {
         const value = get(data, 'insert_driver.returning', [])
         setSearchText('')
         onDriverUpdate(value[0].id)
+        if (toggleDriver) {
+          toggleDriver()
+        }
       }
     }
   )
@@ -101,7 +104,7 @@ const Driver = (props) => {
 
   const onDriverChange = (value) => {
     const driver = driver_data.find(_driver => _driver.mobile === value)
-    if (driver)  {
+    if (driver) {
       onDriverUpdate(driver.id)
     } else {
       insertDriver({
@@ -121,13 +124,14 @@ const Driver = (props) => {
   }
 
   return (
-    <Form.Item label='Driver' name='driver' initialValue={initialValue}>
+    <Form.Item label={nolabel ? '' : 'Driver'} name='driver' initialValue={initialValue}>
       <Select
         showSearch
         placeholder='Select or Enter Driver'
         onSearch={onSearch}
         onChange={onDriverChange}
         disabled={disable}
+        size={size || 'middle'}
       >
         {drivers && drivers.map(_driver => (
           <Option key={_driver.id} value={_driver.mobile}>{_driver.mobile}</Option>
