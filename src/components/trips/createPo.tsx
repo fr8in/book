@@ -14,6 +14,10 @@ query po_query($id: Int!){
   truck(where:{id: {_eq: $id}}) {
     id
     truck_no
+    driver{
+      id
+      mobile
+    }
     truck_type{
       id
       name
@@ -167,7 +171,6 @@ const CreatePo = (props) => {
   const [driver_id, setDriver_id] = useState(null)
   const [disableBtn, setDisableBtn] = useState(false)
   const [isToPay, setIsToPay] = useState(false)
-
   const [form] = Form.useForm()
   const initial = { search: '', source_id: null, destination_id: null }
   const [obj, setObj] = useState(initial)
@@ -181,6 +184,10 @@ const CreatePo = (props) => {
       notifyOnNetworkStatusChange: true
     }
   )
+
+  const getDriverId = (id) => {
+    setDriver_id(id)
+  }
 
   const [getCityData, { loading: city_loading, error: city_error, data: _city_data }] = useLazyQuery(CITY_DATA,
     {
@@ -327,9 +334,9 @@ const CreatePo = (props) => {
           to_pay: isToPay ? parseFloat(form.getFieldValue('to_pay_balance')) : parseFloat(form.getFieldValue('to_pay')),
           truck_id: po_data && po_data.id,
           truck_type_id: po_data && po_data.truck_type && po_data.truck_type.id,
-          driver_id: driver_id,
+          driver_id: parseInt(driver_id, 10) || get(po_data, 'driver.id', null),
           created_by: context.email,
-          customer_user_id: parseInt(loading_contact_id),
+          customer_user_id: parseInt(loading_contact_id, 10),
           is_topay: !!isToPay,
           origin_id: id ? 5 : 7,
           interest_id: 7,
@@ -432,7 +439,7 @@ const CreatePo = (props) => {
             {!cus_loading && (customer && customer.id) &&
               <PoDetail
                 loading_contact_id={setLoading_contact_id}
-                driver_id={setDriver_id}
+                driver_id={getDriverId}
                 po_data={po_data && po_data.partner}
                 onSourceChange={onSourceChange}
                 onDestinationChange={onDestinationChange}
@@ -440,6 +447,7 @@ const CreatePo = (props) => {
                 customer={customer}
                 loading={cus_loading}
                 customer_branch_employee_name={customer_branch_employee_name}
+                driver={get(po_data, 'driver', null)}
               />}
           </Col>
           <Col xs={24} sm={10}>
