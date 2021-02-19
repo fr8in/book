@@ -229,7 +229,12 @@ const TruckContainer = () => {
               />
             </Tabs.TabPane>
             <Tabs.TabPane tab="Insurance" key="1">
-              <Insurance />
+              <Insurance
+              startDate={startDate}
+              daysBefore={daysBefore}
+              daysAfter={daysAfter}
+              endDate={endDate}
+               />
             </Tabs.TabPane>
           </Tabs>
         </Col>
