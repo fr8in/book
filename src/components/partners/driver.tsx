@@ -2,7 +2,6 @@ import { message, Select, Form } from 'antd'
 import { useMutation, useSubscription, gql } from '@apollo/client'
 import { useState } from 'react'
 import get from 'lodash/get'
-import isEmpty from 'lodash/isEmpty'
 
 const { Option } = Select
 
@@ -26,7 +25,7 @@ mutation driver_insert($id: Int!, $mobile: String){
 }`
 
 const Driver = (props) => {
-  const { partner_id, driver_id, required, size, style } = props
+  const { partner_id, driver_id, required, size, style, driver } = props
   if (!partner_id) return null
 
   const [searchText, setSearchText] = useState('')
@@ -76,8 +75,14 @@ const Driver = (props) => {
   } else {
     drivers = driver_data && driver_data.filter(_driver => _driver.mobile.indexOf(searchText) !== -1)
   }
+
   return (
-    <Form.Item label='Driver' name='driver' rules={[{ required: required }]} className={style || ''}>
+    <Form.Item
+      label='Driver'
+      name='driver'
+      initialValue={get(driver, 'mobile', null)}
+      rules={[{ required: required }]} className={style || ''}
+    >
       <Select
         showSearch
         placeholder='Select Driver...'
