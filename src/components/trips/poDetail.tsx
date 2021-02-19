@@ -2,12 +2,11 @@ import { Row, Col, Form, DatePicker, Checkbox } from 'antd'
 import CitySelect from '../common/citySelect'
 import Loading from '../common/loading'
 import Driver from '../partners/driver'
-import LabelWithData from '../common/labelWithData'
 import get from 'lodash/get'
 import LoadingPointContact from './loadingPointContact'
 
 const PoDetail = (props) => {
-  const { po_data, onSourceChange, onDestinationChange, loading_contact_id, driver_id, customer, loading, record ,customer_branch_employee_name} = props
+  const { po_data, onSourceChange, onDestinationChange, loading_contact_id, driver_id, customer, loading, record, customer_branch_employee_name, driver } = props
 
   return (
     loading ? <Loading /> : (
@@ -41,7 +40,7 @@ const PoDetail = (props) => {
               style='mobile-100percent hide-label '
             />
             <LoadingPointContact customer={customer} onUserChange={loading_contact_id} />
-            <Driver partner_id={po_data.id} driver_id={driver_id} required size='small' style='mobile-100percent hide-label ' />
+            <Driver partner_id={po_data.id} driver_id={driver_id} required size='small' style='mobile-100percent hide-label' driver={driver} />
             <Form.Item
               label='Including'
               initialValue=''
@@ -56,7 +55,7 @@ const PoDetail = (props) => {
               </Checkbox.Group>
             </Form.Item>
             <Form.Item label='Customer Branch Employee'>
-        <h4>{customer_branch_employee_name }</h4>
+              <h4>{customer_branch_employee_name}</h4>
             </Form.Item>
           </Col>
         </Row>
