@@ -1,6 +1,5 @@
 import { Row, Col, Space, Tooltip} from 'antd'
 import LabelWithData from '../common/labelWithData'
-import AdvancePercentage from './partnerAdvancePercentage'
 import EditAddress from './partnerAddress'
 import EditBank from './partnerBank'
 import CibilScore from '../partners/partnerCibilScore'
@@ -119,13 +118,7 @@ const PartnerDetail = (props) => {
         <LabelWithData
           label='Advance Percentage'
           data={
-            <AdvancePercentage
-              advance={get(partnerDetail, 'partner_advance_percentage.name', null)}
-              advance_id={get(partnerDetail, 'partner_advance_percentage.id', null)}
-              cardcode={cardcode}
-              partner_id={partnerDetail.id}
-              edit_access={ad_pm_on}
-            />
+           get(partnerDetail, 'partner_advance_percentage.name', null)
           }
           labelSpan={10}
           dataSpan={14}
