@@ -1,5 +1,5 @@
 import userContext from '../../../lib/userContaxt'
-import { useState, useContext, useEffect } from 'react'
+import { useState, useContext } from 'react'
 import { Form, message } from 'antd'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import get from 'lodash/get'
@@ -149,7 +149,7 @@ const PartnerOnboardingContainer = (props) => {
         updated_by: context.email,
         // fr8_detail
         onboarded_by_id: form.on_boarded_by,
-        partner_advance_percentage_id: form.advance_percentage
+        partner_advance_percentage_id: 3
       }
     })
   }

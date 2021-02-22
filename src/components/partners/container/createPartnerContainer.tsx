@@ -102,7 +102,7 @@ const PartnerOnboardingContainer = () => {
         updated_by: context.email,
         // fr8_detail
         onboarded_by_id: form.on_boarded_by,
-        partner_advance_percentage_id: form.advance_percentage
+        partner_advance_percentage_id: 3
       }
     })
   }
