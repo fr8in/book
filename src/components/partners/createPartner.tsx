@@ -1,5 +1,4 @@
 import React from 'react'
-import CitySelect from '../common/citySelect'
 import Link from 'next/link'
 import { Row, Col, Card, Input, Form, Button, Select, Space, message, Tag } from 'antd'
 import { gql, useQuery, useLazyQuery } from '@apollo/client'
@@ -12,10 +11,6 @@ const PARTNERS_SUBSCRIPTION = gql`
     employee(where:{active: {_eq: 1}}){
       id
       email
-    }
-    partner_advance_percentage{
-      id
-      name
     }
     state{
       id
@@ -63,7 +58,7 @@ const CreatePartner = (props) => {
     _data = data
   }
 
-  const partner_advance_percentage = get(_data, 'partner_advance_percentage', [])
+ 
   const employee = get(_data, 'employee', [])
   const state = get(_data, 'state', [])
 
@@ -71,9 +66,7 @@ const CreatePartner = (props) => {
     return { value: data.name, label: data.name }
   })
 
-  const advancePercentageList = partner_advance_percentage.map((data) => {
-    return { value: data.id, label: data.name }
-  })
+ 
   const employeeList = employee.map((data) => {
     return { value: data.id, label: data.email }
   })
@@ -208,22 +201,6 @@ const CreatePartner = (props) => {
           </Card>
           <Card title='FR8 Details' size='small' className='border-top-blue mb10'>
             <Row gutter={10}>
-              <Col xs={24} sm={8}>
-                <Form.Item
-                  label='Advance Percentage'
-                  name='advance_percentage'
-                  rules={[{ required: true }]}
-                  initialValue={get(partner_info, 'partner_advance_percentage.id', null)}
-                >
-                  <Select
-                    placeholder='Advance Percentage'
-                    options={advancePercentageList}
-                    optionFilterProp='label'
-                    showSearch
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} sm={8}>
                 <Form.Item
                   label='On Boarded By'
                   name='on_boarded_by'
@@ -237,7 +214,6 @@ const CreatePartner = (props) => {
                     showSearch
                   />
                 </Form.Item>
-              </Col>
             </Row>
           </Card>
           <Row justify='end'>

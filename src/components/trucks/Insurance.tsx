@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
-import { Button, message, Table, Tooltip, Modal, Radio, Checkbox,Input } from 'antd'
-import { CommentOutlined,SearchOutlined } from '@ant-design/icons'
+import { Button, message, Table, Tooltip, Modal, Radio, Checkbox, Input } from 'antd'
+import { CommentOutlined, SearchOutlined } from '@ant-design/icons'
 import { gql, useSubscription, useMutation, useQuery } from '@apollo/client'
 import get from 'lodash/get'
 import LinkComp from '../common/link'
@@ -15,12 +15,8 @@ import isEmpty from 'lodash/isEmpty'
 import Truncate from '../common/truncate'
 
 const INSURANCE_SUBSCRIPTION = gql`
-subscription insurance_data($status_id:[Int!],$region:[String!],$truck_no:String) {
-    insurance(where:{
-      truck:{truck_no:{_ilike:$truck_no}}
-      status_id:{_in:$status_id}
-      partner:{city:{connected_city:{branch:{region:{name:{_in:$region}}}}}}
-    }) {
+query insurance_data($where: insurance_bool_exp) {
+    insurance(where: $where) {
       id
       status {
         id
@@ -47,7 +43,8 @@ subscription insurance_data($status_id:[Int!],$region:[String!],$truck_no:String
         }
       }
     }
-  }`
+  }
+  `
 
 const INSURANCE_STATUS = gql`
 query insurance_status {
@@ -63,16 +60,17 @@ const UPDATE_INSURANCE = gql`mutation update_insurance($amount: float8, $cash_ba
     }
   }`
 
-const Insurance = () => {
-
+const Insurance = (props) => {
+    const {  startDate, daysBefore, daysAfter, endDate } = props
     const initial = {
         commentVisible: false,
         commentData: [],
-        truckno: null
+        truckno:null
     }
+    const [filter, setFilter] = useState(initial)
 
-      const [filter, setFilter] = useState(initial)
     const [status, setStatus] = useState(null)
+
     const [regionFilter, setRegionFilter] = useState(null)
     const { data: status_data, loading: statusLoading } = useQuery(INSURANCE_STATUS)
     const { object, handleShow, handleHide } = useShowHideWithRecord(initial)
@@ -80,15 +78,21 @@ const Insurance = () => {
     const regions = u.regions
     const edit_access = [role.user]
 
+    const where = {
+    status_id: {_in:!isEmpty(status) ? status : null},
+        partner: {city: {connected_city: {branch: {region: {name: {_in: !isEmpty(regionFilter) ? regionFilter : null } } } } } },
+        truck: {truck_no: {_ilike: filter.truckno ? `%${filter.truckno}%` : null},
+  	_and: [{
+       insurance_expiry_at:{ _gte: startDate ? startDate : daysBefore}},{insurance_expiry_at: {_lte: endDate ? endDate : daysAfter }}
+    ]
+    }
 
-    const { data, loading, error } = useSubscription(INSURANCE_SUBSCRIPTION, {
+}
+    const { data, loading, error , refetch} = useQuery(INSURANCE_SUBSCRIPTION, {
         variables: {
-             truck_no: filter.truckno ? `%${filter.truckno}%` : null,
-            ...!isEmpty(status) && {status_id: status ? status : null},
-            ...!isEmpty(regionFilter) && { region: regionFilter ? regionFilter : null }
+            where: where
         }
     })
-
     const context = useContext(userContext)
     let list = []
     if (!loading) {
@@ -105,6 +109,7 @@ const Insurance = () => {
         onCompleted(data) {
             if (data.update_insurance.affected_rows = 1) {
                 message.success("Updated")
+                refetch()
             }
         }
     })
@@ -154,16 +159,16 @@ const Insurance = () => {
             render: (text, record) => get(record, 'truck.truck_no', null),
             filterDropdown: (
                 <Input
-                  placeholder='Search TruckNo'
-                  value={filter.truckno}
-                  onChange={handleTruckNo}
+                    placeholder='Search TruckNo'
+                    value={filter.truckno}
+                    onChange={handleTruckNo}
                 />
-              ),
-              filterIcon: () => (
+            ),
+            filterIcon: () => (
                 <SearchOutlined
-                  style={{ color: filter.truckno ? '#1890ff' : undefined }}
+                    style={{ color: filter.truckno ? '#1890ff' : undefined }}
                 />
-              )
+            )
         },
         {
             title: 'Partner',
@@ -173,7 +178,7 @@ const Insurance = () => {
                 const name = get(record, 'partner.name', null)
                 const cardcode = get(record, 'partner.cardcode', null)
                 return (
-                    <LinkComp data={name} id={cardcode} type='partners' length={20}/>
+                    <LinkComp data={name} id={cardcode} type='partners' length={20} />
                 )
             }
             ,
@@ -213,26 +218,26 @@ const Insurance = () => {
                 />
             ),
             render: (text, record) =>
-             <InsuranceUpdate 
-                updateInsurance={updateInsurance}
-                record={record}
-                type="status_id"
-                select
-                options={statusList}
-                edit_access={edit_access}
-                text={get(record, 'status.name', "")} />
+                <InsuranceUpdate
+                    updateInsurance={updateInsurance}
+                    record={record}
+                    type="status_id"
+                    select
+                    options={statusList}
+                    edit_access={edit_access}
+                    text={get(record, 'status.name', "")} />
         },
         {
             title: 'Amount',
             dataIndex: "amount",
             width: '7%',
-            render: (text, record) => 
-            <InsuranceUpdate 
-                updateInsurance={updateInsurance}
-                record={record}
-                type="amount"
-                edit_access={edit_access}
-                text={text ? text : 0} />
+            render: (text, record) =>
+                <InsuranceUpdate
+                    updateInsurance={updateInsurance}
+                    record={record}
+                    type="amount"
+                    edit_access={edit_access}
+                    text={text ? text : 0} />
         },
         {
             title: 'Cash Back Amount',
@@ -240,7 +245,7 @@ const Insurance = () => {
             width: '15%',
             render: (text, record) =>
                 get(record, 'status.id') === 2 ?
-                    <InsuranceUpdate 
+                    <InsuranceUpdate
                         updateInsurance={updateInsurance}
                         record={record}
                         type="cash_back_amount"
@@ -251,7 +256,7 @@ const Insurance = () => {
             title: "Last Comment",
             dataIndex: 'lastComment',
             width: '20%',
-            render: (text, record) => <Truncate data={get(record, 'last_comment[0].description', null)} length={40} /> 
+            render: (text, record) => <Truncate data={get(record, 'last_comment[0].description', null)} length={40} />
         },
         {
             title: "",
