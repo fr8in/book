@@ -81,14 +81,14 @@ const Insurance = (props) => {
     const where = {
     status_id: {_in:!isEmpty(status) ? status : null},
         partner: {city: {connected_city: {branch: {region: {name: {_in: !isEmpty(regionFilter) ? regionFilter : null } } } } } },
-        truck: {truck_no: {_like: filter.truckno ? `%${filter.truckno}%` : null},
+        truck: {truck_no: {_ilike: filter.truckno ? `%${filter.truckno}%` : null},
   	_and: [{
        insurance_expiry_at:{ _gte: startDate ? startDate : daysBefore}},{insurance_expiry_at: {_lte: endDate ? endDate : daysAfter }}
     ]
     }
 
 }
-    const { data, loading, error } = useQuery(INSURANCE_SUBSCRIPTION, {
+    const { data, loading, error , refetch} = useQuery(INSURANCE_SUBSCRIPTION, {
         variables: {
             where: where
         }
@@ -109,6 +109,7 @@ const Insurance = (props) => {
         onCompleted(data) {
             if (data.update_insurance.affected_rows = 1) {
                 message.success("Updated")
+                refetch()
             }
         }
     })
