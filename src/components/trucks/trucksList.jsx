@@ -33,7 +33,7 @@ const TrucksList = (props) => {
         const sorted_data = value.sort((a, b) => b.tat - a.tat);
         sorted_data.map((truck) => {
           message += `${i++}) ${get(truck, 'partner.name')}\n`
-          message += `${truck.truck_no} - ${get(truck, 'tat')} hrs\n`
+          message += `${truck.truck_no} - ${get(truck, 'truck_type.code')} - ${get(truck, 'tat')} hrs\n`
           message += `O: ${get(truck, 'partner.partner_users[0].mobile','-') } / D: ${get(truck, 'driver.mobile','-') }\n`
           message += `City: ${truck.city.name}\n`
           message += `Comment: ${get(truck, 'last_comment.description', '-') }\n\n`
