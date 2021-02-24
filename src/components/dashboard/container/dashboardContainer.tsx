@@ -74,7 +74,7 @@ const DashboardContainer = (props) => {
   }
 
   const w1_actual = get(_data,'analytics_weekly_booking_aggregate.aggregate.sum.trip_actual',null)
-  const weekly_gmv = get(_data, 'analytics_weekly_booking_aggregate.aggregate.sum.amount',null) / 100000
+  const weekly_gmv =  get(_data, 'analytics_weekly_booking_aggregate.aggregate.sum.amount',null) / 100000
   
   const variables = {
     now: moment().format('YYYY-MM-DD'),
@@ -175,7 +175,7 @@ const onDndChange = (e) =>{
                 tabBarExtraContent={
                     <Space>
                   <Checkbox defaultChecked={dndCheck} onChange={onDndChange} >DND</Checkbox>
-                  <Badge count={weekly_gmv.toFixed(1)} className='badgeCount'   overflowCount={1000}>
+                  <Badge count={Math.round(weekly_gmv)} className='badgeCount'   overflowCount={1000}>
                   <Button size='small' type='primary' shape='circle' icon={<DashboardOutlined />}  onClick={() => onShow('Staticticsdata')} /> 
                   </Badge>
                   <Badge count={w1_actual} className='badgeCount'   overflowCount={1000}>
