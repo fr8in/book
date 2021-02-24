@@ -9,9 +9,10 @@ import LinkComp from '../common/link'
 import Phone from '../common/phone'
 import { gql, useMutation } from '@apollo/client'
 import u from '../../lib/util'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import userContext from '../../lib/userContaxt'
 import PartnerLink from '../common/PartnerLink'
+import EditDriver from './editDriver'
 
 const ASSIGN_TO_CONFIRM_STATUS_MUTATION = gql`
 mutation update_trip_status($id: Int , $trip_status_id : Int) {
@@ -24,7 +25,7 @@ mutation update_trip_status($id: Int , $trip_status_id : Int) {
 `
 
 const Trips = (props) => {
-  const { trips, loading,partnerRegionFilter, setPartnerRegionFilter } = props
+  const { trips, loading, partnerRegionFilter, setPartnerRegionFilter } = props
   const initial = {
     commentData: [],
     commentVisible: false
@@ -78,19 +79,17 @@ const Trips = (props) => {
       render: (text, record) => {
         return (
           props.intransit
-            ? <span className='pl10'>
-              {record.loaded === 'Yes' ? '' : <Badge className='pl5' dot style={{ backgroundColor: '#dc3545' }} />}
-              <LinkComp
-                type='trips'
-                data={text}
-                id={record.id}
-              />
-            </span>
-            : <LinkComp
-              type='trips'
-              data={text}
-              id={record.id}
-            />)
+            ? (
+              <span className='pl10'>
+                {record.loaded === 'Yes' ? '' : <Badge className='pl5' dot style={{ backgroundColor: '#dc3545' }} />}
+                <LinkComp
+                  type='trips'
+                  data={text}
+                  id={record.id}
+                />
+              </span>)
+            : <LinkComp type='trips' data={text} id={record.id} />
+        )
       },
       sorter: (a, b) => a.id - b.id,
       width: '6%'
@@ -105,12 +104,12 @@ const Trips = (props) => {
             type='customers'
             data={name}
             id={cardcode}
-            length={10}
+            length={9}
           />
         )
       },
       sorter: (a, b) => (a.customer.name > b.customer.name ? 1 : -1),
-      width: '10%'
+      width: '8%'
     },
     {
       title: 'Partner',
@@ -124,31 +123,27 @@ const Trips = (props) => {
             type='partners'
             data={name}
             cardcode={cardcode}
-            length={10}
+            length={9}
           />
         )
       },
       filterDropdown: (
-        props.partner_region_filter ?
-        <Checkbox.Group
-          options={regionsList}
-          defaultValue={partnerRegionFilter}
-          onChange={onRegionFilter}
-          className='filter-drop-down'
-        /> : null
+        props.partner_region_filter
+          ? <Checkbox.Group options={regionsList} defaultValue={partnerRegionFilter} onChange={onRegionFilter} className='filter-drop-down' />
+          : null
       ),
       sorter: (a, b) => (a.partner.name > b.partner.name ? 1 : -1),
-      width: '10%'
+      width: '8%'
     },
     {
       title: 'Driver No',
       render: (text, record) => {
         const mobile = get(record, 'driver.mobile', null)
         return (
-          mobile ? <Phone number={mobile} /> : null
+          <EditDriver trip_info={record} mobile={mobile} />
         )
       },
-      width: props.intransit ? '8%' : '9%'
+      width: '13%'
     },
     {
       title: 'Partner No',
@@ -158,7 +153,7 @@ const Trips = (props) => {
           mobile ? <Phone number={mobile} /> : null
         )
       },
-      width: props.intransit ? '8%' : '9%'
+      width: '8%'
     },
     {
       title: 'Truck',
@@ -174,7 +169,7 @@ const Trips = (props) => {
           />
         )
       },
-      width: '13%'
+      width: '14%'
     },
     {
       title: 'Source',
@@ -183,7 +178,7 @@ const Trips = (props) => {
         return <Truncate data={source} length={7} />
       },
       sorter: (a, b) => (a.source.name > b.source.name ? 1 : -1),
-      width: '8%'
+      width: '7%'
     },
     {
       title: 'Destination',
@@ -192,7 +187,7 @@ const Trips = (props) => {
         return <Truncate data={destination} length={7} />
       },
       sorter: (a, b) => (a.destination.name > b.destination.name ? 1 : -1),
-      width: '8%'
+      width: '7%'
     },
     !props.intransit
       ? {
@@ -206,14 +201,14 @@ const Trips = (props) => {
             return tat[status](a) > tat[status](b) ? 1 : -1
           },
           defaultSortOrder: 'descend',
-          width: '3%'
+          width: '4%'
         }
       : {},
     props.intransit
       ? {
           title: 'TAT',
           dataIndex: 'delay',
-          width: '5%',
+          width: '4%',
           sorter: (a, b) => (a.delay > b.delay ? 1 : -1),
           defaultSortOrder: 'descend'
         }
@@ -236,7 +231,7 @@ const Trips = (props) => {
             ? <Truncate data={comment} length={9} />
             : <Truncate data={comment} length={15} />)
       },
-      width: '12%'
+      width: props.intransit ? '13%' : '15%'
     },
     {
       title: 'Action',
@@ -277,7 +272,7 @@ const Trips = (props) => {
         className='withAction'
         rowKey={record => record.id}
         size='small'
-        scroll={{ x: 1256 }}
+        scroll={{ x: 1180 }}
         pagination={false}
         loading={loading}
       />

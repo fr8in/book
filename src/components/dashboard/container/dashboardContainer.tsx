@@ -1,4 +1,4 @@
-import { Row, Col, Card, Tabs,Space, Button,Checkbox} from 'antd'
+import { Row, Col, Card, Tabs,Space, Button,Checkbox,Badge} from 'antd'
 import { useState } from 'react'
 import TripsContainer from './dashboardTripsContainer'
 import TripsByDestination from '../../trips/tripsByDestination'
@@ -8,8 +8,8 @@ import TitleWithCount from '../../common/titleWithCount'
 import useShowHide from '../../../hooks/useShowHide'
 import CreateExcessLoad from '../../trips/createExcessLoad'
 import DASHBOAD_QUERY from './query/dashboardQuery'
-import { useQuery } from '@apollo/client'
-import _ from 'lodash'
+import {gql, useQuery,useSubscription } from '@apollo/client'
+import _, {get,  sumBy } from 'lodash'
 import WaitingForLoadContainer from './waitingForLoadContainer'
 import Orders from '../../reports/orders'
 import Revenue from '../../reports/revenue'
@@ -20,7 +20,21 @@ import AdvancePending from '../../trips/dashboardAdvancePending'
 import {filterContext} from '../../../context'
 import { useContext } from 'react'
 
+
 const { TabPane } = Tabs
+
+const WEEKLY_TARGET_QUERY = gql`
+subscription monthly($week1: Int!, $year1: Int!,$branches:[Int!]) {
+  branch(order_by:{displayposition: asc},where: {id: {_in: $branches}}) {
+    id
+    name
+    week1: weekly_booking(where: {_and: {week: {_eq: $week1}, year: {_eq: $year1}}}) {
+      trip_actual
+      amount
+    }
+  }
+}
+`
 
 const DashboardContainer = (props) => {
   const initial = { excessLoad: false,orders:false,Staticticsdata:false }
@@ -29,6 +43,35 @@ const DashboardContainer = (props) => {
   const date = new Date(new Date().getFullYear(), 0, 1);
   const {state} = useContext(filterContext)
 
+  const fr8Date=moment().add(1,'days');
+  const cw = moment(fr8Date).format('WW yyyy').split(' ') // Current Week
+
+  const week = [parseInt(cw[0], 10)]// will get cw,lw,blw
+  const year = [parseInt(cw[1], 10)]// will get 3 years of cw , lw and blw 
+
+  const { loading:weekly_target_loading, data:weekly_target_data, error:weekly_target_error } = useSubscription(
+    WEEKLY_TARGET_QUERY,
+    {
+      variables: {
+        week1: week[0],
+        branches: (state.branches && state.branches.length > 0) ? state.branches : null,
+        year1: year[0]
+      }
+    }
+  )
+
+  console.log('WeeklyBranchTargetCount Error', weekly_target_error)
+
+  let _data = {}
+  if (!weekly_target_loading) {
+    _data = weekly_target_data
+    
+  }
+  const branch = get(_data, 'branch', [])
+
+  const w1_actual = sumBy(branch, 'week1[0].trip_actual')
+  const weekly_gmv = sumBy(branch, 'week1[0].amount') / 100000
+  
   const variables = {
     now: moment().format('YYYY-MM-DD'),
     yearStart: moment(date).format('YYYY-MM-DD'),
@@ -128,8 +171,12 @@ const onDndChange = (e) =>{
                 tabBarExtraContent={
                     <Space>
                   <Checkbox defaultChecked={dndCheck} onChange={onDndChange} >DND</Checkbox>
-                  <Button size='small' type='primary' shape='circle' icon={<DashboardOutlined />} onClick={() => onShow('Staticticsdata')} /> 
-                  <Button size='small' type='primary' shape='circle' icon={<InsertRowAboveOutlined />} onClick={() => onShow('orders')}  /> 
+                  <Badge count={weekly_gmv.toFixed(1)} className='badgeCount'   overflowCount={1000}>
+                  <Button size='small' type='primary' shape='circle' icon={<DashboardOutlined />}  onClick={() => onShow('Staticticsdata')} /> 
+                  </Badge>
+                  <Badge count={w1_actual} className='badgeCount'   overflowCount={1000}>
+                  <Button size='small' type='primary' shape='circle' icon={<InsertRowAboveOutlined />} onClick={() => onShow('orders')} /> 
+                  </Badge>
                   <Button size='small' type='primary' shape='circle' icon={<CarOutlined />} onClick={() => onShow('excessLoad')} />
                   </Space>
                 }
