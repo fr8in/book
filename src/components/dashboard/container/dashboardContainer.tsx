@@ -52,8 +52,8 @@ const DashboardContainer = (props) => {
   const fr8Date=moment().add(1,'days');
   const cw = moment(fr8Date).format('WW yyyy').split(' ') // Current Week
 
-  const week = [parseInt(cw[0], 10)]// will get cw,lw,blw
-  const year = [parseInt(cw[1], 10)]// will get 3 years of cw , lw and blw 
+  const week = [parseInt(cw[0], 10)]// will get cw
+  const year = [parseInt(cw[1], 10)]// will get 3 years of cw 
 
   const { loading:weekly_target_loading, data:weekly_target_data, error:weekly_target_error } = useSubscription(
     WEEKLY_TARGET_QUERY,
@@ -71,10 +71,8 @@ const DashboardContainer = (props) => {
   let _data = {}
   if (!weekly_target_loading) {
     _data = weekly_target_data
-    
   }
 
-  
   const w1_actual = get(_data,'analytics_weekly_booking_aggregate.aggregate.sum.trip_actual',null)
   const weekly_gmv = get(_data, 'analytics_weekly_booking_aggregate.aggregate.sum.amount',null) / 100000
   
