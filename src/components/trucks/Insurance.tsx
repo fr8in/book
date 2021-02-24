@@ -87,7 +87,7 @@ const Insurance = (props) => {
     ]
     }
 }
-    const { data, loading, error } = useQuery(INSURANCE_SUBSCRIPTION, {
+    const { data, loading, error , refetch} = useQuery(INSURANCE_SUBSCRIPTION, {
         variables: {
             where: where
         }
@@ -108,6 +108,7 @@ const Insurance = (props) => {
         onCompleted(data) {
             if (data.update_insurance.affected_rows = 1) {
                 message.success("Updated")
+                refetch()
             }
         }
     })
