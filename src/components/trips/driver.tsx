@@ -75,9 +75,6 @@ const Driver = (props) => {
         const value = get(data, 'insert_driver.returning', [])
         setSearchText('')
         onDriverUpdate(value[0].id)
-        if (toggleDriver) {
-          toggleDriver()
-        }
       }
     }
   )
@@ -86,7 +83,12 @@ const Driver = (props) => {
     UPDATE_TRIP_DRIVER_MUTATION,
     {
       onError (error) { message.error(error.toString()) },
-      onCompleted () { message.success('Saved!!') }
+      onCompleted () {
+        message.success('Saved!!')
+        if (toggleDriver) {
+          toggleDriver()
+        }
+      }
     }
   )
 

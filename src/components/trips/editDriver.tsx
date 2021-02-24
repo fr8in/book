@@ -15,29 +15,30 @@ const EditDriver = (props) => {
   const { role } = u
   const employee_role = [role.user]
   return (
-    !mobile
-      ? null
-      : edit_driver
-        ? (
-          <Row>
-            <Col xs={20}>
-              <Form className='mb0'>
-                <Driver nolabel trip_info={trip_info} initialValue={mobile} toggleDriver={toggleDriver} size='small' />
-              </Form>
-            </Col>
-            <Col xs={4} className='text-right'>
-              <CloseCircleTwoTone onClick={toggleDriver} />
-            </Col>
-          </Row>
-          )
-        : (
-          <Space>
+    edit_driver
+      ? (
+        <Row>
+          <Col xs={20}>
+            <Form className='mb0'>
+              <Driver nolabel trip_info={trip_info} initialValue={mobile} toggleDriver={toggleDriver} size='small' />
+            </Form>
+          </Col>
+          <Col xs={4} className='text-right'>
+            <CloseCircleTwoTone onClick={toggleDriver} />
+          </Col>
+        </Row>)
+      : (
+        <Row>
+          <Col xs={20}>
             <Phone number={mobile} />
+          </Col>
+          <Col xs={4} className='text-right'>
             <EditAccess
               edit_access={employee_role}
               onEdit={toggleDriver}
             />
-          </Space>)
+          </Col>
+        </Row>)
   )
 }
 
