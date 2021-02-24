@@ -9,7 +9,8 @@ import {
   Divider,
   message,
   DatePicker,
-  Space
+  Space,
+  Checkbox
 } from 'antd'
 import moment from 'moment'
 import { gql, useSubscription, useMutation } from '@apollo/client'
@@ -30,6 +31,7 @@ subscription truck_activation_detail($truck_id : Int){
     height
     insurance_expiry_at
     truck_no
+    single_trip
     truck_files {
       id
        type
@@ -66,6 +68,23 @@ mutation truck_activation($available_at:timestamp,$id:Int,$city_id:Int,$truck_ty
   }
 }`
 
+const UPDATE_SINGLE_TRIP_MUTATION = gql`
+mutation single_trip($id:Int,$single_trip:Boolean,$description:String, $topic:String,$updated_by:String){
+  insert_truck_comment(objects:{truck_id:$id,topic:$topic,description:$description,created_by:$updated_by})
+     {
+       returning
+       {
+         id
+       }
+     }
+ update_truck(_set: {single_trip:$single_trip}, where: {id: {_eq:$id}}) {
+   returning {
+     id
+   }
+ }
+}
+`
+
 
 
 const TruckActivation = (props) => {
@@ -75,6 +94,8 @@ const TruckActivation = (props) => {
   const context = useContext(userContext)
   const [city, setCity] = useState(initial)
   const [disableButton, setDisableButton] = useState(false)
+  const [checked, setChecked] = useState(false)
+  const { topic } = u
 
   const { loading, error, data } = useSubscription(
     TRUCKS_QUERY,
@@ -96,6 +117,16 @@ const TruckActivation = (props) => {
       }
     }
   )
+
+  const [updateSingleTrip] = useMutation(
+    UPDATE_SINGLE_TRIP_MUTATION,
+    {
+      onError (error) {
+        message.error(error.toString()) }
+    }
+  )
+
+ 
 
   let _data = {}
 
@@ -138,6 +169,18 @@ const TruckActivation = (props) => {
         }
       })
     }
+  }
+
+  const onChange = (e) => {
+    setChecked(e.target.checked)
+    updateSingleTrip({
+      variables: {
+       id:truck_id,
+       single_trip:checked  ? false : true,
+       topic:  checked  ? topic.single_trip_deactivation_enable  :  topic.single_trip_deactivation_disable,
+       updated_by: context.email
+      }
+    })
   }
 
   const dateFormat = 'YYYY-MM-DD'
@@ -252,6 +295,7 @@ const TruckActivation = (props) => {
                 </Col>
               </Row>
               <Row gutter={20}>
+              <Col xs={24} sm={12}>
               <Form.Item 
                 label='Insurance Expiry Date'
                 name='insurance_expiry_at'
@@ -265,6 +309,12 @@ const TruckActivation = (props) => {
                     size='middle'
                   />
                 </Form.Item>
+                </Col>
+                <Col xs={24} sm={12}>
+                <Form.Item name='trip' className='mb0' label='Single Trip'>
+          <Checkbox onChange={onChange} checked={truck_info.single_trip}  value='value'></Checkbox>
+        </Form.Item>
+        </Col>
               </Row>
               <Row>
                 <Col xs={24} sm={12}>
