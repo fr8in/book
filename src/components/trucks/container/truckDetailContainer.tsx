@@ -5,7 +5,7 @@ import Documents from '../truckDocuments'
 import TripDetail from '../../trips/tripsByStages'
 import Truck from '../truck'
 import TruckTimeline from '../truckTimeline'
-import { Row, Col, Button, Card, Divider, Space, Tag, Tabs, message, Tooltip } from 'antd'
+import { Row, Col, Button, Card, Divider, Space, Tag, Tabs, message, Tooltip ,Checkbox} from 'antd'
 import { CommentOutlined, SnippetsOutlined } from '@ant-design/icons'
 import DetailPageHeader from '../../common/detailPageHeader'
 import TruckType from '../../trucks/truckType'
@@ -18,6 +18,7 @@ import get from 'lodash/get'
 import u from '../../../lib/util'
 import isEmpty from 'lodash/isEmpty'
 import Loading from '../../common/loading'
+import SingleTripDeactivation from '../singleTripDeactivation'
 
 import { gql, useSubscription } from '@apollo/client'
 
@@ -26,6 +27,7 @@ const TRUCK_DETAIL_SUBSCRIPTION = gql`
     truck(where: {truck_no: {_eq: $truck_no}}) {
         id
         truck_no
+        single_trip
         length
         breadth
         height
@@ -115,19 +117,21 @@ const TruckDetailContainer = (props) => {
   const { role } = u
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
   const access = u.is_roles(edit_access,context)
+  const [checked, setChecked] = useState(false)
 
   const [subTabKey, setSubTabKey] = useState('1')
 
-  const initial = { commment: false,deactivate_comment: false }
+  const initial = { commment: false,deactivate_comment: false,dectivate: false }
   const { visible, onShow, onHide } = useShowHide(initial)
-
-  
   const subTabChange = (key) => {
     setSubTabKey(key)
   }
 
+  const onCheck=(e) => {
+    setChecked(e.target.checked)
+  }
 
-  const { loading, error, data } = useSubscription(
+const { loading, error, data } = useSubscription(
     TRUCK_DETAIL_SUBSCRIPTION,
     {
       variables: { truck_no: truckNo, trip_status_id: tripStatusId }
@@ -215,9 +219,15 @@ const TruckDetailContainer = (props) => {
                       <Divider />
                       {access &&
                         <Row>
-                          <Col span={8}>
+                           <Space>
+                          <Col >
                             <Button danger={admin && !status_check} onClick={() => onShow('deactivate_comment')}>  {status_check ? 'Re-Activate' : 'De-Activate'} </Button>
                           </Col>
+                          {!status_check && 
+                          <Col>
+                      <Checkbox onClick={() => onShow('dectivate')} onChange={onCheck} checked={truck_info.single_trip}  value='value'>Single Trip</Checkbox>
+                          </Col>}
+                          </Space>
                         </Row>}
                     </Col>
                   </Row>
@@ -239,6 +249,7 @@ const TruckDetailContainer = (props) => {
         {visible.comment && <TruckComment visible={visible.comment} onHide={onHide} id={truck_info.id} truck_status={truck_info && truck_info.truck_status && truck_info.truck_status.name} />}
         {visible.poModal && <CreatePo visible={visible.poModal} onHide={onHide} truck_id={truck_info.id} />}
         {visible.deactivate_comment && <TruckDeactivation visible={visible.deactivate_comment} onHide={onHide} truck_info={truck_info} />}
+        {visible.dectivate && <SingleTripDeactivation visible={visible.dectivate} onHide={onHide} truck_info={truck_info} checked={checked} />}
       </Card>)
   )
 }

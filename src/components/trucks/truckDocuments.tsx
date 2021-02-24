@@ -161,7 +161,7 @@ const truckDocuments = (props) => {
       status: 'done'
     })
   })
-console.log('truck_info.loading_memo',truck_info.loading_memo)
+
 
   return (
     <div>

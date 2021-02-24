@@ -112,7 +112,9 @@ const util = {
     customer_advance_percentage: 'Customer Advance Percentage',
     billing_comment: 'Billing Comment',
     truck_owner_registration: 'Truck Owner Registration',
-    trip_price_change: 'Trip Price Changed'
+    trip_price_change: 'Trip Price Changed',
+    single_trip_deactivation_enable: 'Single Trip Deactivation Enabled',
+    single_trip_deactivation_disable: 'Single Trip Deactivation Disabled'
   },
   maxLength: 6,
   MIN_REBATE_PERCENTAGE: 0.25,
