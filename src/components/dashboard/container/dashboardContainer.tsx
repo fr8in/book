@@ -25,14 +25,20 @@ const { TabPane } = Tabs
 
 const WEEKLY_TARGET_QUERY = gql`
 subscription monthly($week1: Int!, $year1: Int!,$branches:[Int!]) {
-  branch(order_by:{displayposition: asc},where: {id: {_in: $branches}}) {
-    id
-    name
-    week1: weekly_booking(where: {_and: {week: {_eq: $week1}, year: {_eq: $year1}}}) {
-      trip_actual
-      amount
-    }
-  }
+  analytics_weekly_booking_aggregate(where: {_and: 
+   {
+     branch_id: {_in: $branches}, 
+     week: {_eq: $week1},
+     year: {_eq: $year1}
+   
+   }}) {
+   aggregate {
+     sum {
+       trip_actual
+       amount
+     }
+   }
+ }
 }
 `
 
@@ -67,10 +73,10 @@ const DashboardContainer = (props) => {
     _data = weekly_target_data
     
   }
-  const branch = get(_data, 'branch', [])
 
-  const w1_actual = sumBy(branch, 'week1[0].trip_actual')
-  const weekly_gmv = sumBy(branch, 'week1[0].amount') / 100000
+  
+  const w1_actual = get(_data,'analytics_weekly_booking_aggregate.aggregate.sum.trip_actual',null)
+  const weekly_gmv = get(_data, 'analytics_weekly_booking_aggregate.aggregate.sum.amount') / 100000
   
   const variables = {
     now: moment().format('YYYY-MM-DD'),
