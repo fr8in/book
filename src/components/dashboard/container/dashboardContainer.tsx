@@ -76,7 +76,7 @@ const DashboardContainer = (props) => {
 
   
   const w1_actual = get(_data,'analytics_weekly_booking_aggregate.aggregate.sum.trip_actual',null)
-  const weekly_gmv = get(_data, 'analytics_weekly_booking_aggregate.aggregate.sum.amount') / 100000
+  const weekly_gmv = get(_data, 'analytics_weekly_booking_aggregate.aggregate.sum.amount',null) / 100000
   
   const variables = {
     now: moment().format('YYYY-MM-DD'),
