@@ -60,16 +60,7 @@ subscription truck_activation_detail($truck_id : Int){
 }`
 
 const UPDATE_TRUCK_ACTIVATION_MUTATION = gql`
-mutation truck_activation($available_at:timestamp,$id:Int,$city_id:Int,$truck_type_id:Int,$truck_status_id:Int,$updated_by: String!,$insurance_expiry_at:timestamp) {
-  update_truck(_set: {available_at: $available_at, city_id:$city_id, truck_type_id:$truck_type_id,truck_status_id:$truck_status_id,updated_by:$updated_by,insurance_expiry_at:$insurance_expiry_at}, where: {id: {_eq: $id}}) {
-    returning {
-      id
-    }
-  }
-}`
-
-const UPDATE_SINGLE_TRIP_MUTATION = gql`
-mutation single_trip($id:Int,$single_trip:Boolean,$description:String, $topic:String,$updated_by:String){
+mutation truck_activation($available_at:timestamp,$id:Int,$city_id:Int,$truck_type_id:Int,$truck_status_id:Int,$updated_by: String!,$insurance_expiry_at:timestamp,$single_trip:Boolean,$description:String, $topic:String) {
   insert_truck_comment(objects:{truck_id:$id,topic:$topic,description:$description,created_by:$updated_by})
      {
        returning
@@ -77,13 +68,14 @@ mutation single_trip($id:Int,$single_trip:Boolean,$description:String, $topic:St
          id
        }
      }
- update_truck(_set: {single_trip:$single_trip}, where: {id: {_eq:$id}}) {
-   returning {
-     id
-   }
- }
-}
-`
+  update_truck(_set: {available_at: $available_at,single_trip:$single_trip, city_id:$city_id, truck_type_id:$truck_type_id,truck_status_id:$truck_status_id,updated_by:$updated_by,insurance_expiry_at:$insurance_expiry_at}, where: {id: {_eq: $id}}) {
+    returning {
+      id
+    }
+  }
+}`
+
+
 
 
 
@@ -118,13 +110,7 @@ const TruckActivation = (props) => {
     }
   )
 
-  const [updateSingleTrip] = useMutation(
-    UPDATE_SINGLE_TRIP_MUTATION,
-    {
-      onError (error) {
-        message.error(error.toString()) }
-    }
-  )
+  
 
  
 
@@ -165,7 +151,10 @@ const TruckActivation = (props) => {
           updated_by: context.email,
           city_id: parseInt(city.city_id, 10),
           truck_type_id: parseInt(form.truck_type_id, 10),
-          insurance_expiry_at:form.insurance_expiry_at.format('YYYY-MM-DD')
+          insurance_expiry_at:form.insurance_expiry_at.format('YYYY-MM-DD'),
+          single_trip:checked  ? true : false,
+          topic:  checked  ? topic.single_trip_deactivation_enable  :  topic.single_trip_deactivation_disable,
+          description:form.comment
         }
       })
     }
@@ -173,14 +162,6 @@ const TruckActivation = (props) => {
 
   const onChange = (e) => {
     setChecked(e.target.checked)
-    updateSingleTrip({
-      variables: {
-       id:truck_id,
-       single_trip:checked  ? false : true,
-       topic:  checked  ? topic.single_trip_deactivation_enable  :  topic.single_trip_deactivation_disable,
-       updated_by: context.email
-      }
-    })
   }
 
   const dateFormat = 'YYYY-MM-DD'
@@ -295,7 +276,7 @@ const TruckActivation = (props) => {
                 </Col>
               </Row>
               <Row gutter={20}>
-              <Col xs={24} sm={12}>
+              <Col xs={24} sm={9}>
               <Form.Item 
                 label='Insurance Expiry Date'
                 name='insurance_expiry_at'
@@ -310,11 +291,19 @@ const TruckActivation = (props) => {
                   />
                 </Form.Item>
                 </Col>
-                <Col xs={24} sm={12}>
+                <Col xs={24} sm={5}>
                 <Form.Item name='trip' className='mb0' label='Single Trip'>
-          <Checkbox onChange={onChange} checked={truck_info.single_trip}  value='value'></Checkbox>
+          <Checkbox onChange={onChange} checked={checked}  value='value'></Checkbox>
         </Form.Item>
         </Col>
+        {checked &&
+        <Col flex='auto' xs={24} sm={10}>
+              <Form.Item name='comment' label='Comment'>
+                <Input
+                  placeholder='Please Enter Comments......'
+                />
+              </Form.Item>
+            </Col>}
               </Row>
               <Row>
                 <Col xs={24} sm={12}>
