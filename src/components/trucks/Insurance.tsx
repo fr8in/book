@@ -86,7 +86,6 @@ const Insurance = (props) => {
        insurance_expiry_at:{ _gte: startDate ? startDate : daysBefore}},{insurance_expiry_at: {_lte: endDate ? endDate : daysAfter }}
     ]
     }
-
 }
     const { data, loading, error , refetch} = useQuery(INSURANCE_SUBSCRIPTION, {
         variables: {
