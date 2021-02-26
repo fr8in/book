@@ -56,7 +56,8 @@ const util = {
     { value: 5, text: 'South-2' },
     { value: 6, text: 'East-2' },
     { value: 7, text: 'West-2' },
-    { value: 8, text: 'Central' }
+    { value: 8, text: 'Central' },
+    { value: 9, text: 'South-3' }
   ],
   role: {
     admin: 'Admin',
