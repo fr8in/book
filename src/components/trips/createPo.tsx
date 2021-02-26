@@ -408,7 +408,7 @@ const CreatePo = (props) => {
             <Row>
               <Col xs={12}><h4>PO: <Truncate data={partner_name} length={12} /></h4></Col>
               <Col xs={12} className='text-right'>
-                <Link href='trucks/[id]' as={`trucks/${po_data && po_data.truck_no}`}>
+                <Link href='/trucks/[id]' as={`/trucks/${po_data && po_data.truck_no}`}>
                   <a>{po_data.truck_no}</a>
                 </Link>
               </Col>
