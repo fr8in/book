@@ -13,6 +13,7 @@ import { useContext, useState } from 'react'
 import userContext from '../../lib/userContaxt'
 import PartnerLink from '../common/PartnerLink'
 import EditDriver from './editDriver'
+import TruckLink from '../common/truckLink'
 
 const ASSIGN_TO_CONFIRM_STATUS_MUTATION = gql`
 mutation update_trip_status($id: Int , $trip_status_id : Int) {
@@ -161,11 +162,18 @@ const Trips = (props) => {
         const truck_no = get(record, 'truck.truck_no', null)
         const truck_type_code = get(record, 'truck.truck_type.code', null)
         const truck_type = truck_type_code ? truck_type_code.slice(0, 9) : null
+       const avg_km =  get(record, 'truck.partner.avg_km', null)
+       const avg_km_speed_category_id =  get(record, 'truck.partner.avg_km_speed_category_id', null)
+       const count = (avg_km_speed_category_id === 3) ? 'F' : (avg_km_speed_category_id === 4) ? 'S' : (avg_km_speed_category_id === 5) ? 'E' : null
         return (
-          <LinkComp
+          <TruckLink
             type='trucks'
             data={truck_no + ' - ' + truck_type}
             id={truck_no}
+           avg_km={avg_km}
+           count={count}
+           avg_km_speed_category_id={avg_km_speed_category_id}
+           length={14}
           />
         )
       },

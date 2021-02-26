@@ -74,7 +74,7 @@ const DashboardContainer = (props) => {
   }
 
   const w1_actual = get(_data,'analytics_weekly_booking_aggregate.aggregate.sum.trip_actual',null)
-  const weekly_gmv = get(_data, 'analytics_weekly_booking_aggregate.aggregate.sum.amount',null) / 100000
+  const weekly_gmv =  get(_data, 'analytics_weekly_booking_aggregate.aggregate.sum.amount',null) / 100000
   
   const variables = {
     now: moment().format('YYYY-MM-DD'),
@@ -84,9 +84,11 @@ const DashboardContainer = (props) => {
     cities: (state.cities && state.cities.length > 0) ? state.cities : null,
     truck_type: (state.types && state.types.length > 0) ? state.types : null,
     managers: (state.managers && state.managers.length > 0) ? state.managers : null,
+    speed: (state.speed && state.speed.length > 0) ? state.speed : null,
     dnd: !dndCheck
   }
   const { loading, data, error } = useQuery(DASHBOAD_QUERY, { variables })
+
 
   let unloading_count = 0
   let assigned_count = 0
@@ -175,7 +177,7 @@ const onDndChange = (e) =>{
                 tabBarExtraContent={
                     <Space>
                   <Checkbox defaultChecked={dndCheck} onChange={onDndChange} >DND</Checkbox>
-                  <Badge count={weekly_gmv.toFixed(1)} className='badgeCount'   overflowCount={1000}>
+                  <Badge count={Math.round(weekly_gmv)} className='badgeCount'   overflowCount={1000}>
                   <Button size='small' type='primary' shape='circle' icon={<DashboardOutlined />}  onClick={() => onShow('Staticticsdata')} /> 
                   </Badge>
                   <Badge count={w1_actual} className='badgeCount'   overflowCount={1000}>

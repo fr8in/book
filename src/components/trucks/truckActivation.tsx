@@ -276,7 +276,7 @@ const TruckActivation = (props) => {
                 </Col>
               </Row>
               <Row gutter={20}>
-              <Col xs={24} sm={9}>
+              <Col xs={24} sm={8}>
               <Form.Item 
                 label='Insurance Expiry Date'
                 name='insurance_expiry_at'
@@ -291,13 +291,13 @@ const TruckActivation = (props) => {
                   />
                 </Form.Item>
                 </Col>
-                <Col xs={24} sm={5}>
+                <Col xs={24} sm={4}>
                 <Form.Item name='trip' className='mb0' label='Single Trip'>
           <Checkbox onChange={onChange} checked={checked}  value='value'></Checkbox>
         </Form.Item>
         </Col>
         {checked &&
-        <Col flex='auto' xs={24} sm={10}>
+        <Col flex='auto' xs={24} sm={12}>
               <Form.Item name='comment' label='Comment'>
                 <Input
                   placeholder='Please Enter Comments......'
