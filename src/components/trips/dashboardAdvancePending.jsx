@@ -1,6 +1,6 @@
 import { Table, Input, Tooltip, Button,Pagination,Avatar,Badge } from 'antd'
 import { gql, useSubscription,useQuery } from '@apollo/client'
-import { SearchOutlined, CommentOutlined,PlusOutlined ,ArrowDownOutlined,ArrowUpOutlined } from '@ant-design/icons'
+import { SearchOutlined, CommentOutlined,PlusOutlined ,ArrowDownOutlined,ArrowUpOutlined,MinusOutlined } from '@ant-design/icons'
 import get from 'lodash/get'
 import moment from 'moment'
 import Truncate from '../common/truncate'
@@ -204,7 +204,7 @@ const AdvancePending = (props) => {
                 const partner = get(record, 'partner.name', null)
                 const cardcode = get(record, 'partner.cardcode', null)
                 const active_category_id =  get(record, 'partner.active_category_id', null)
-                const count = (active_category_id === 2) ?<Avatar  style={{ backgroundColor: '#3b7ddd',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<PlusOutlined />} /> : (active_category_id === 3) ?<Avatar  style={{ backgroundColor: '#28a745',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<ArrowUpOutlined/>}/> : (active_category_id === 4) ? <Avatar  style={{ backgroundColor: '#dc3545',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<ArrowDownOutlined/>}/>  : (active_category_id === 5) ? <Avatar  style={{ fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} /> : null
+                const count = (active_category_id === 2) ?<Avatar  style={{ backgroundColor: '#3b7ddd',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<PlusOutlined />} /> : (active_category_id === 3) ?<Avatar  style={{ backgroundColor: '#28a745',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<ArrowUpOutlined/>}/> : (active_category_id === 4) ? <Avatar  style={{ backgroundColor: '#fd7e14',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<ArrowDownOutlined/>}/>  : (active_category_id === 5) ? <Avatar  style={{ fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} /> : (active_category_id === 6) ? <Avatar icon={<MinusOutlined />} style={{ fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px',backgroundColor:'#dc3545'}} /> : null
                 return (
                   <>
                  <Badge  count={count} />
