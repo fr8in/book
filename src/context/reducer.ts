@@ -1,5 +1,5 @@
 import {defaultGlobalFilter} from './defaultState'
-import { REGION_FILTER, BRANCHES_FILTER, CITIES_FILTER, MANAGER_FILTER, TRUCK_TYPE_FILTER} from './action'
+import { REGION_FILTER, BRANCHES_FILTER, CITIES_FILTER, MANAGER_FILTER, TRUCK_TYPE_FILTER,SPEED_FILTER} from './action'
 
 const globalFilter = (state = defaultGlobalFilter, action) => {
     const { type, payload } = action
@@ -28,6 +28,11 @@ const globalFilter = (state = defaultGlobalFilter, action) => {
                             return {
                                 ...state,
                                 types: payload
+                            }
+                            case SPEED_FILTER:
+                            return {
+                                ...state,
+                                speed: payload
                             }
                             default:
                                 return state

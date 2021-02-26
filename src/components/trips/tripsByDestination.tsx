@@ -12,7 +12,8 @@ subscription dashboard_trips(
   $branches: [Int!], 
   $cities: [Int!], 
   $truck_type: [Int!], 
-  $managers: [Int!]
+  $managers: [Int!],
+  $speed : [Int!]
   ) {
   trip(where:{
     trip_status:{name:{_eq:$trip_status}},
@@ -20,7 +21,8 @@ subscription dashboard_trips(
     destination_branch_id:{_in:$branches},
     destination_connected_city_id:{_in:$cities},
     truck_type_id:{_in:$truck_type},
-    branch_employee_id:{_in: $managers}
+    branch_employee_id:{_in: $managers},
+    partner:{avg_km_speed_category_id:{_in:$speed}}
   }) {
     id
     source_connected_city_id
@@ -42,6 +44,8 @@ subscription dashboard_trips(
       id
       cardcode
       name
+      avg_km
+      avg_km_speed_category_id
       partner_users(where: {is_admin: {_eq: true}}) {
         mobile
       }
@@ -90,6 +94,7 @@ const TripsByDestination = (props) => {
     cities: (state.cities && state.cities.length > 0) ? state.cities : null,
     truck_type: (state.types && state.types.length > 0) ? state.types : null,
     managers: (state.managers && state.managers.length > 0) ? state.managers : null,
+    speed: (state.speed && state.speed.length > 0) ? state.speed : null,
     trip_status: trip_status
   }
 

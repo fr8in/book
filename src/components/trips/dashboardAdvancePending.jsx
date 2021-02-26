@@ -5,6 +5,7 @@ import get from 'lodash/get'
 import moment from 'moment'
 import Truncate from '../common/truncate'
 import LinkComp from '../common/link'
+import TruckLink from '../common/truckLink'
 import Phone from '../common/phone'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import TripFeedBack from './tripFeedBack'
@@ -55,6 +56,10 @@ subscription customerAdvancePending($offset: Int, $limit: Int,
        }
        truck {
          truck_no
+         partner{
+          avg_km
+          avg_km_speed_category_id
+         }
          truck_type {
            code
          }
@@ -99,7 +104,8 @@ const AdvancePending = (props) => {
               branch_id:{_in:(state.branches && state.branches.length > 0) ? state.branches : null},
               source_connected_city_id:{_in:(state.cities && state.cities.length > 0) ? state.cities : null},
               truck_type_id:{_in:(state.types && state.types.length > 0) ? state.types : null},
-              branch_employee_id:{_in: (state.managers && state.managers.length > 0) ? state.managers : null}
+              branch_employee_id:{_in: (state.managers && state.managers.length > 0) ? state.managers : null},
+              partner:{avg_km_speed_category_id : {_in:(state.speed && state.speed.length > 0) ? state.speed : null}}
            }
 
       const variables = {
@@ -174,12 +180,19 @@ const AdvancePending = (props) => {
             render: (text, record) => {
                 const truck_no = get(record, 'truck.truck_no', null)
                 const truck_type = get(record, 'truck.truck_type.code', null)
+                const avg_km =  get(record, 'truck.partner.avg_km', null)
+                const avg_km_speed_category_id =  get(record, 'truck.partner.avg_km_speed_category_id', null)
+                const count = (avg_km_speed_category_id === 3) ? 'F' : (avg_km_speed_category_id === 4) ? 'S' : (avg_km_speed_category_id === 5) ? 'E' : null         
                 return (
-                    <LinkComp
-                        type='trucks'
-                        data={`${truck_no} - ${truck_type}`}
-                        id={truck_no}
-                    />
+                  <TruckLink
+                  type='trucks'
+                  data={`${truck_no} - ${truck_type}`}
+                  id={truck_no}
+                 avg_km={avg_km}
+                 count={count}
+                 avg_km_speed_category_id={avg_km_speed_category_id}
+                 length={14}
+                />
                 )
             },
         },

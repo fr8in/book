@@ -5,7 +5,7 @@ import PartnerUsers from '../partners/partnerUsers'
 import TruckComment from './truckComment'
 import CreateBreakdown from './createBreakdown'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
-import LinkComp from '../common/link'
+import TruckLink from '../common/truckLink'
 import Truncate from '../common/truncate'
 import Phone from '../common/phone'
 import get from 'lodash/get'
@@ -52,18 +52,29 @@ const onCopy = () => {
 
   const columns = [
     {
+     title: '',
+     width:'1%'
+    },
+    {
       title: 'Truck No',
       dataIndex: 'truck_no',
       width: '14%',
       sorter: (a, b) => (a.truck_no > b.truck_no ? 1 : -1),
       render: (text, record) => {
         const truck_type = get(record,'truck_type.code',null)
+        const avg_km =  get(record, 'partner.avg_km', null)
+        const avg_km_speed_category_id =  get(record, 'partner.avg_km_speed_category_id', null)
+        const count = (avg_km_speed_category_id === 3) ? 'F' : (avg_km_speed_category_id === 4) ? 'S' : (avg_km_speed_category_id === 5) ? 'E' : null
         return (
-          <LinkComp
-            type='trucks'
+          <TruckLink
+          type='trucks'
             data={text + ' - ' + truck_type.slice(0, 9)}
             id={text}
-          />
+         avg_km={avg_km}
+         count={count}
+         avg_km_speed_category_id={avg_km_speed_category_id}
+         length={14}
+        />
         )
       },
       filterDropdown: (

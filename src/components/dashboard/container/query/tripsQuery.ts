@@ -8,10 +8,11 @@ subscription dashboard_trips(
    $cities: [Int!],
    $truck_type: [Int!],
    $managers: [Int!],
-   $partner_region: [String!]
+   $partner_region: [String!],
+  $speed:[Int!]
    ) {
   trip(where: {
-    partner: {city:{connected_city:{branch:{region:{name:{_in:$partner_region}}}}}},
+    partner: {avg_km_speed_category_id:{_in: $speed}, city:{connected_city:{branch:{region:{name:{_in:$partner_region}}}}}},
     trip_status: {name: {_eq: $trip_status}},
     branch: {region_id: {_in: $regions}},
     branch_id: {_in: $branches},
@@ -36,6 +37,8 @@ subscription dashboard_trips(
     }
     partner {
       id
+      avg_km
+      avg_km_speed_category_id
       partner_users(where: {is_admin: {_eq: true}}) {
         mobile
       }
