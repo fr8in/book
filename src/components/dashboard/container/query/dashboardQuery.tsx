@@ -37,7 +37,7 @@ query dashboard_trips($now: timestamp,$regions: [Int!], $branches: [Int!], $citi
       count
     }
   }
-  excess: trip_aggregate(where: {trip_status: {name: {_eq: "Waiting for truck"}}, branch: {region_id: {_in: $regions}}, branch_id: {_in: $branches}, source_connected_city_id: {_in: $cities}, truck_type_id: {_in: $truck_type}, branch_employee_id: {_in: $managers}, partner: {avg_km_speed_category_id : {_in: $speed}}}) {
+  excess: trip_aggregate(where: {trip_status: {name: {_eq: "Waiting for truck"}}, branch: {region_id: {_in: $regions}}, branch_id: {_in: $branches}, source_connected_city_id: {_in: $cities}, truck_type_id: {_in: $truck_type}, branch_employee_id: {_in: $managers}}) {
     aggregate {
       count
     }
