@@ -1,6 +1,6 @@
-import { Table, Input, Tooltip, Button,Pagination } from 'antd'
+import { Table, Input, Tooltip, Button,Pagination,Avatar,Badge } from 'antd'
 import { gql, useSubscription,useQuery } from '@apollo/client'
-import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
+import { SearchOutlined, CommentOutlined,PlusOutlined ,ArrowDownOutlined,ArrowUpOutlined } from '@ant-design/icons'
 import get from 'lodash/get'
 import moment from 'moment'
 import Truncate from '../common/truncate'
@@ -12,6 +12,7 @@ import TripFeedBack from './tripFeedBack'
 import u from '../../lib/util'
 import { useState,useContext } from 'react'
 import {filterContext} from '../../context'
+
 
 const DASHBOARD_ADVANCE_PENDING_QUERY = gql`
 subscription customerAdvancePending($offset: Int, $limit: Int,
@@ -28,6 +29,9 @@ subscription customerAdvancePending($offset: Int, $limit: Int,
          id
          name
          cardcode
+         active_category_id
+         avg_km
+         avg_km_speed_category_id
          partner_users(where: {is_admin: {_eq: true}}) {
              mobile
            }
@@ -56,10 +60,6 @@ subscription customerAdvancePending($offset: Int, $limit: Int,
        }
        truck {
          truck_no
-         partner{
-          avg_km
-          avg_km_speed_category_id
-         }
          truck_type {
            code
          }
@@ -180,8 +180,8 @@ const AdvancePending = (props) => {
             render: (text, record) => {
                 const truck_no = get(record, 'truck.truck_no', null)
                 const truck_type = get(record, 'truck.truck_type.code', null)
-                const avg_km =  get(record, 'truck.partner.avg_km', null)
-                const avg_km_speed_category_id =  get(record, 'truck.partner.avg_km_speed_category_id', null)
+                const avg_km =  get(record, 'partner.avg_km', null)
+                const avg_km_speed_category_id =  get(record, 'partner.avg_km_speed_category_id', null)
                 const count = (avg_km_speed_category_id === 3) ? 'F' : (avg_km_speed_category_id === 4) ? 'S' : (avg_km_speed_category_id === 5) ? 'E' : null         
                 return (
                   <TruckLink
@@ -203,13 +203,18 @@ const AdvancePending = (props) => {
             render: (text, record) => {
                 const partner = get(record, 'partner.name', null)
                 const cardcode = get(record, 'partner.cardcode', null)
+                const active_category_id =  get(record, 'partner.active_category_id', null)
+                const count = (active_category_id === 2) ?<Avatar  style={{ backgroundColor: '#3b7ddd',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<PlusOutlined />} /> : (active_category_id === 3) ?<Avatar  style={{ backgroundColor: '#28a745',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<ArrowUpOutlined/>}/> : (active_category_id === 4) ? <Avatar  style={{ backgroundColor: '#dc3545',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<ArrowDownOutlined/>}/>  : (active_category_id === 5) ? <Avatar  style={{ fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} /> : null
                 return (
+                  <>
+                 <Badge  count={count} />
                     <LinkComp
                         type='partners'
                         data={partner}
                         id={cardcode}
                         length={10}
                     />
+                    </>
                 )
             }
         },

@@ -1,11 +1,12 @@
-import { Space, Button, Tooltip } from 'antd'
-import { CheckCircleOutlined, CrownFilled, UserOutlined } from '@ant-design/icons'
+import { Space, Button, Tooltip, Avatar ,Badge} from 'antd'
+import { ArrowDownOutlined, ArrowUpOutlined, CheckCircleOutlined, CrownFilled, PlusOutlined, UserOutlined } from '@ant-design/icons'
 import PartnerUsers from '../../components/partners/partnerUsers'
 import PartnerName from './partnerName'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import get from 'lodash/get'
 import u from '../../lib/util'
 import Phone from '../common/phone'
+import React from 'react'
 
 const PartnerInfo = (props) => {
   const { partner, loading } = props
@@ -17,6 +18,8 @@ const PartnerInfo = (props) => {
   const partner_id = get(partner, 'id', null)
   const partnerKycStatus = get(partner, 'partner_status.id', null)
   const partnerStatusName = get(partner, 'partner_status.name', null)
+  const active_category_id =  get(partner, 'active_category_id', null)
+  const count = (active_category_id === 2) ?<Avatar  style={{ backgroundColor: '#3b7ddd',fontSize: '7px' ,top: '-7px',right:'-20px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<PlusOutlined />} /> : (active_category_id === 3) ?<Avatar  style={{ backgroundColor: '#28a745',fontSize: '7px' ,top: '-7px',right:'-20px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<ArrowUpOutlined/>}/> : (active_category_id === 4) ? <Avatar  style={{ backgroundColor: '#dc3545',fontSize: '7px' ,top: '-7px',right:'-20px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<ArrowDownOutlined/>}/>  : (active_category_id === 5) ? <Avatar  style={{ fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} /> : null
 
   return (
     <>
@@ -30,6 +33,7 @@ const PartnerInfo = (props) => {
             }}
           />
         </Tooltip>
+        <Badge  count={count} />
         <PartnerName
           cardcode={partner.cardcode}
           name={partner.name}

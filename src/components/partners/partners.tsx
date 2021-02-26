@@ -1,9 +1,10 @@
-import { Table, Tooltip, Button, Space, Modal, Pagination, Radio, Input } from 'antd'
+import { Table, Tooltip, Button, Space, Modal, Pagination, Radio, Input,Avatar,Badge } from 'antd'
 import {
   CommentOutlined,
-  CheckOutlined,
-  CloseOutlined,
-  SearchOutlined
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+  SearchOutlined,
+  PlusOutlined
 } from '@ant-design/icons'
 import LinkComp from '../common/link'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
@@ -13,7 +14,6 @@ import moment from 'moment'
 import Truncate from '../common/truncate'
 import get from 'lodash/get'
 import Phone from '../common/phone'
-import Link from 'next/link'
 
 const PartnerKyc = (props) => {
   const {
@@ -28,7 +28,8 @@ const PartnerKyc = (props) => {
     partner_status_list,
     onNameSearch,
     onCardCodeSearch,
-    edit_access
+    partner_active_category,
+    onPartnerFilter
   } = props
 
   const [currentPage, setCurrentPage] = useState(1)
@@ -51,8 +52,8 @@ const PartnerKyc = (props) => {
     setCurrentPage(1)
   }
 
-  const handleName = (e) => {
-    onNameSearch(e.target.value)
+  const handlePartnerActiveCategory = (e) => {
+    onPartnerFilter(e.target.value)
     setCurrentPage(1)
   }
 
@@ -75,6 +76,11 @@ const PartnerKyc = (props) => {
     return { value: data.name, label: data.name }
   })
 
+  const partner_active_category_list = partner_active_category && partner_active_category.map(data => {
+    return { value: data.id, label: data.name }
+  })
+
+  
   const columnsCurrent = [
     {
       title: 'C.Code',
@@ -98,15 +104,23 @@ const PartnerKyc = (props) => {
       title: 'Partner',
       dataIndex: 'name',
       width: '10%',
-      render: (text, record) => <Truncate data={text} length={12} />,
+      render: (text, record) => {
+        const active_category_id =  get(record, 'active_category_id', null)
+        const count = (active_category_id === 2) ?<Avatar  style={{ backgroundColor: '#3b7ddd',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<PlusOutlined />} /> : (active_category_id === 3) ?<Avatar  style={{ backgroundColor: '#28a745',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<ArrowUpOutlined/>}/> : (active_category_id === 4) ? <Avatar  style={{ backgroundColor: '#dc3545',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<ArrowDownOutlined/>}/>  : (active_category_id === 5) ? <Avatar  style={{ fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} /> : null
+        return (
+      <>
+      <Badge  count={count} />
+      <Truncate data={text} length={12} /> </>
+       )
+      },
       filterDropdown: (
-        <Input
-          placeholder='Search Partner'
-          value={filter.name}
-          onChange={handleName}
-        />
-      ),
-      filterIcon: () => <SearchOutlined style={{ color: filter.name ? '#1890ff' : undefined }} />
+        <Radio.Group
+        options={partner_active_category_list}
+        defaultValue={filter.activecategory}
+        onChange={handlePartnerActiveCategory}
+        className='filter-drop-down'
+      />
+      )
     },
     {
       title: 'On Boarded By',
