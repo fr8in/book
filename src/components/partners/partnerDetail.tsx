@@ -131,7 +131,7 @@ const PartnerDetail = (props) => {
           dataSpan={14}
         />
         <LabelWithData
-          label='Avg KM\Day'
+          label='Avg KM/Day'
           data={<>
           <Badge count={count}  size='default' style={{ backgroundColor: (partnerDetail.avg_km_speed_category_id ===3) ? '#eca92b' :  (partnerDetail.avg_km_speed_category_id ===4) ? '#28a745' : (partnerDetail.avg_km_speed_category_id ===5) ? '#3b7ddd' : null }}></Badge>
           <span> </span>
