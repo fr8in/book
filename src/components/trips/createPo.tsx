@@ -85,16 +85,14 @@ query customers_po($id:Int!){
   }
 }`
 
-const TRIP_DATA = gql`
-query ($customer_id: Int!, $source_id: Int!, $destination_id: Int!, $type_id: Int!) {
-  trip(where: {customer_id: {_eq: $customer_id}, source_id: {_eq: $source_id}, destination_id: {_eq: $destination_id}, truck_type: {id: {_eq: $type_id}},trip_status_id:{_eq:1}}) {
+const TRIP_DATA = gql`query ($source_id: Int!, $destination_id: Int!, $type_id: Int!) {
+  trip(where: {source_id: {_eq: $source_id}, destination_id: {_eq: $destination_id}, truck_type: {id: {_eq: $type_id}},trip_status_id:{_eq:1}}) {
     id
     trip_status{
       name
     }
   }
-}
-`
+}`
 
 const CUSTOMER_SEARCH = gql`query cus_search($search:String!){
   search_customer(args:{search:$search, status_ids: "{1,5}"}){
@@ -292,7 +290,6 @@ const CreatePo = (props) => {
         variables: {
           source_id: parseInt(obj.source_id, 10),
           destination_id: parseInt(obj.destination_id, 10),
-          customer_id: customer.id,
           type_id: get(po_data, 'truck_type.id', null)
         }
       }
