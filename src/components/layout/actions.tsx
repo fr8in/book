@@ -50,6 +50,8 @@ query speed_filter{
   speed_category{
     id
     name
+    end_range
+    start_range
   }
 }
 `
@@ -186,7 +188,7 @@ console.log('speed_error',speed_error)
     speed_options = !isEmpty(speed_category) ? speed_category.map(_speed_data => { 
       return (
         { 
-          label:_speed_data.name, 
+          label:<span>{_speed_data.name + '    '}<Text disabled>{get(_speed_data, 'start_range', 0) + '-' + get(_speed_data, 'end_range', 0)}</Text></span>, 
           value: _speed_data.id 
         }
       )

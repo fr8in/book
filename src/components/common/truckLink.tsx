@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { Tooltip,Badge } from 'antd'
 import React from 'react'
-import { BulbTwoTone } from '@ant-design/icons'
 
 
 const LinkComp = (props) => {

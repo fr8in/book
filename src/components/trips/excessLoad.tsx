@@ -16,15 +16,14 @@ import isNull from 'lodash/isNull'
 
 
 const EXCESS_LOAD = gql`
-subscription excess_loads($regions: [Int!], $branches: [Int!],$speed: [Int!] , $cities: [Int!],$trip_status: String, $truck_type:[Int!], $managers: [Int!]) {
+subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$trip_status: String, $truck_type:[Int!], $managers: [Int!]) {
   trip(where: {
     trip_status:{name:{_eq:$trip_status}},
     branch:{region_id:{_in:$regions}},
     branch_id:{_in:$branches},
     source_connected_city_id:{_in:$cities},
     truck_type_id:{_in:$truck_type},
-    branch_employee_id:{_in: $managers},
-    partner:{avg_km_speed_category_id:{_in: $speed}}
+    branch_employee_id:{_in: $managers}
   }) {
     id
     branch{
@@ -111,8 +110,7 @@ const ExcessLoad = (props) => {
     cities: (state.cities && state.cities.length > 0) ? state.cities : null,
     trip_status: trip_status || null,
     truck_type: (state.types && state.types.length > 0) ? state.types : null,
-    managers: (state.managers && state.managers.length > 0) ? state.managers : null,
-    speed: (state.speed && state.speed.length > 0) ? state.speed : null
+    managers: (state.managers && state.managers.length > 0) ? state.managers : null
   }
 
   const { loading, data, error } = useSubscription(

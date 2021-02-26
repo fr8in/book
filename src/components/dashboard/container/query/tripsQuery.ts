@@ -37,6 +37,7 @@ subscription dashboard_trips(
     }
     partner {
       id
+      avg_km
       avg_km_speed_category_id
       partner_users(where: {is_admin: {_eq: true}}) {
         mobile
@@ -70,10 +71,6 @@ subscription dashboard_trips(
     }
     truck {
       truck_no
-      partner{
-        avg_km
-        avg_km_speed_category_id
-      }
       truck_type {
         name
         code
