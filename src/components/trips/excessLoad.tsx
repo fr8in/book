@@ -16,7 +16,7 @@ import isNull from 'lodash/isNull'
 
 
 const EXCESS_LOAD = gql`
-subscription excess_loads($regions: [Int!], $branches: [Int!],$speed: [Int!] , $cities: [Int!],$trip_status: String, $truck_type:[Int!], $managers: [Int!]) {
+subscription excess_loads($regions: [Int!], $branches: [Int!], $cities: [Int!],$trip_status: String, $truck_type:[Int!], $managers: [Int!]) {
   trip(where: {
     trip_status:{name:{_eq:$trip_status}},
     branch:{region_id:{_in:$regions}},
