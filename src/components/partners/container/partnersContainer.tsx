@@ -1,23 +1,27 @@
 import { useState, useContext } from 'react'
-import { Button, Card } from 'antd'
+import { Button, Card, Space,Input } from 'antd'
 import Link from 'next/link'
 import Partners from '../partners'
 import u from '../../../lib/util'
 import get from 'lodash/get'
 import { gql, useQuery, useSubscription } from '@apollo/client'
-import isEmpty from 'lodash/isEmpty'
 import userContext from '../../../lib/userContaxt'
+import React from 'react'
+import { SearchOutlined } from '@ant-design/icons'
+
 
 const PARTNERS_SUBSCRIPTION = gql`
 subscription partners(
   $offset: Int!, $limit: Int!, 
   $partner_statusId: [Int!], 
+  $active_category:[Int!],
   $name: String, $cardcode: String, $region: [String!]) {
   partner(offset: $offset,
      limit: $limit, where: 
      {_or: [{city: {connected_city: {branch: {region: {name: {_in: $region}}}}}}, 
       {city: {connected_city: {branch_id: {_is_null: true}}}}], 
-      partner_status: {id: {_in: $partner_statusId}}, name: {_ilike: $name}, 
+      partner_status: { id: {_in: $partner_statusId}}, name: {_ilike: $name}, 
+      active_category_id:{_in:$active_category}
       cardcode: {_ilike: $cardcode}}) {
     id
     name
@@ -26,6 +30,7 @@ subscription partners(
     gst
     cibil
     onboarded_by_id
+    active_category_id
     partner_advance_percentage_id
     emi
     tds_percentage_id
@@ -63,10 +68,10 @@ subscription partners(
 }`
 
 const PARTNERS_QUERY = gql`
-query partners($partner_statusId: [Int!], $name: String, $cardcode: String, $region: [String!]) {
+query partners($partner_statusId: [Int!], $name: String,$active_category:[Int!], $cardcode: String, $region: [String!]) {
   partner_aggregate(where: {_or: [{city: {connected_city: {branch: {region: {name: {_in: $region}}}}}},
      {city: {connected_city: {branch_id: {_is_null: true}}}}], 
-     partner_status: {id: {_in: $partner_statusId}}, name: {_ilike: $name}, cardcode: {_ilike: $cardcode}}) {
+     partner_status: {id: {_in: $partner_statusId}}, name: {_ilike: $name}, cardcode: {_ilike: $cardcode},active_category_id:{_in:$active_category}}) {
     aggregate {
       count
     }
@@ -79,12 +84,20 @@ query partners($partner_statusId: [Int!], $name: String, $cardcode: String, $reg
     name
     id
   }
+  partner_active_category{
+    id
+    name
+  }
 }`
 
 const PartnerContainer = () => {
   const context = useContext(userContext)
   const { role } = u
   const edit_access = [role.admin, role.partner_manager, role.onboarding]
+  
+  const { Search } = Input;
+
+  const [currentPage, setCurrentPage] = useState(1)
   const access = u.is_roles(edit_access,context)
   const initialFilter = {
     partner_statusId: [4],
@@ -92,11 +105,13 @@ const PartnerContainer = () => {
     offset: 0,
     limit: u.limit,
     name: null,
-    cardcode: null
+    cardcode: null,
+    activecategory:null
   }
   const [filter, setFilter] = useState(initialFilter)
   const partnersQueryVars = {
     region: filter.region,
+    active_category: filter.activecategory,
     partner_statusId: filter.partner_statusId,
     name: filter.name ? `%${filter.name}%` : null,
     cardcode: filter.cardcode ? `%${filter.cardcode}%` : null
@@ -105,6 +120,7 @@ const PartnerContainer = () => {
     offset: filter.offset,
     limit: filter.limit,
     region: filter.region,
+    active_category: filter.activecategory,
     partner_statusId: filter.partner_statusId,
     name: filter.name ? `%${filter.name}%` : null,
     cardcode: filter.cardcode ? `%${filter.cardcode}%` : null
@@ -141,6 +157,7 @@ const PartnerContainer = () => {
   const partner_status = get(_data, 'partner_status', [])
   const partner_aggregate = get(_data, 'partner_aggregate', 0)
   const region = get(_data, 'region', [])
+  const partner_active_category = get(_data, 'partner_active_category', [])
 
   const record_count = get(partner_aggregate, 'aggregate.count', 0)
 
@@ -149,6 +166,10 @@ const PartnerContainer = () => {
   }
   const onRegionFilter = (name) => {
     setFilter({ ...filter, region: name })
+  }
+
+  const onPartnerFilter = (name) => {
+    setFilter({ ...filter, activecategory: name })
   }
 
   const onPageChange = (name) => {
@@ -163,13 +184,22 @@ const PartnerContainer = () => {
     setFilter({ ...filter, cardcode: name })
   }
 
+  const handleName = (e) => {
+    onNameSearch(e.target.value)
+    setCurrentPage(1)
+  }
+
+
   return (
     <Card
       size='small'
-      extra={access ? (
+      extra={
+        <Space>
+  <Input placeholder="Partner Search" suffix={<SearchOutlined/>}   value={filter.name} onChange={handleName} style={{ width: 200 }} />
+       { access ? (
         <Link href='partners/create-partner'>
           <Button type='primary'>Create Partner</Button>
-        </Link>) : ''}
+        </Link>) : ''} </Space>}
       className='card-body-0 border-top-blue'
     >
       <Partners
@@ -180,8 +210,10 @@ const PartnerContainer = () => {
         filter={filter}
         onFilter={onFilter}
         onRegionFilter={onRegionFilter}
+        onPartnerFilter={onPartnerFilter}
         partner_status_list={partner_status}
         region_list={region}
+        partner_active_category={partner_active_category}
         onNameSearch={onNameSearch}
         onCardCodeSearch={onCardCodeSearch}
         edit_access={access}
