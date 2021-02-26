@@ -96,13 +96,11 @@ const onCopy = () => {
         const id = get(record,'partner.id',null)
         const partner = get(record,'partner.name',null)
         const cardcode = get(record,'partner.cardcode',null)
-        const membership_id = get(record,'partner.partner_memberships.membership_type_id',null)
         const active_category_id =  get(record, 'partner.active_category_id', null)
                 const count = (active_category_id === 2) ?<Avatar  style={{ backgroundColor: '#3b7ddd',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<PlusOutlined />} /> : (active_category_id === 3) ?<Avatar  style={{ backgroundColor: '#28a745',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<ArrowUpOutlined/>}/> : (active_category_id === 4) ? <Avatar  style={{ backgroundColor: '#dc3545',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<ArrowDownOutlined/>}/>  : (active_category_id === 5) ? <Avatar  style={{ fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} /> : null
         return (
           <span>
             <Badge  count={count} />
-            <Badge dot style={{ backgroundColor: (membership_id === 1 ? '#FFD700' : '#C0C0C0') }} />
             <PartnerLink
               id={id}
               type='partners'
