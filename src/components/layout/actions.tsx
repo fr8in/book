@@ -18,7 +18,7 @@ import userContext from '../../lib/userContaxt'
 import moment from 'moment'
 import get from 'lodash/get'
 import {filterContext} from '../../context'
-import { REGION_FILTER, BRANCHES_FILTER, CITIES_FILTER, MANAGER_FILTER, TRUCK_TYPE_FILTER} from '../../context/action'
+import { REGION_FILTER, BRANCHES_FILTER, CITIES_FILTER, MANAGER_FILTER, TRUCK_TYPE_FILTER,SPEED_FILTER} from '../../context/action'
 import { useEffect } from 'react'
 
 
@@ -31,14 +31,12 @@ query global_truck_type_filter($now: timestamp, $regions: [Int!], $branches: [In
   truck_type(where: {active: {_eq: true}}) {
     id
     shortname
-    trucks_type_total: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}, city: {connected_city: {branch_id: {_in: $branches}, branch: {region_id: {_in: $regions}}, id: {_in: $cities}}},partner: {partner_status: {name: {_eq: "Active"}}, dnd: {_neq: true}}}) {
+    trucks_type_total: trucks_aggregate(where: {dnd: {_neq: true},truck_status: {name: {_eq: "Waiting for Load"}}, city: {connected_city: {branch_id: {_in: $branches}, branch: {region_id: {_in: $regions}}, id: {_in: $cities}}}, partner: {partner_status: {name: {_eq: "Active"}}}}) {
       aggregate {
         count
       }
     }
-    trucks_type_current: trucks_aggregate(where: {truck_status: {name: {_eq: "Waiting for Load"}}, available_at: {_lte: $now}, city: {connected_city: {branch_id: {_in: $branches}, branch: {region_id: {_in: $regions}}, id: {_in: $cities}}}, 
-    partner: {partner_status: {name: {_eq: "Active"}}, dnd: {_neq: true}}}
-    ) {
+    trucks_type_current: trucks_aggregate(where: {dnd: {_neq: true}, truck_status: {name: {_eq: "Waiting for Load"}}, available_at: {_lte: $now}, city: {connected_city: {branch_id: {_in: $branches}, branch: {region_id: {_in: $regions}}, id: {_in: $cities}}}, partner: {partner_status: {name: {_eq: "Active"}}}}) {
       aggregate {
         count
       }
@@ -46,6 +44,16 @@ query global_truck_type_filter($now: timestamp, $regions: [Int!], $branches: [In
   }
 }
 `
+
+const GLOBAL_SPEED_FILTER = gql`
+query speed_filter{
+  speed_category{
+    id
+    name
+  }
+}
+`
+
 const GLOBAL_FILTER = gql`
 query gloabl_filter($now: timestamp, $regions: [Int!], $branches: [Int!], $cities: [Int!]) {
   region {
@@ -68,14 +76,14 @@ query gloabl_filter($now: timestamp, $regions: [Int!], $branches: [Int!], $citie
         cities {
           id
           name
-          trucks_total: trucks_aggregate(where: {_and: [{truck_status: {name: {_eq: "Waiting for Load"}}}, 
-             {partner: {partner_status: {name: {_eq: "Active"}}, dnd: {_neq: true}}} ]}) {
+          trucks_total: trucks_aggregate(where: {_and: [{dnd:{_neq:true}},{truck_status: {name: {_eq: "Waiting for Load"}}}, 
+             {partner: {partner_status: {name: {_eq: "Active"}}}} ]}) {
             aggregate {
               count
             }
           }
-          trucks_current: trucks_aggregate(where: {_and: [{available_at: {_lte: $now}}, {truck_status: {name: {_eq: "Waiting for Load"}}}, 
-            {partner: {partner_status: {name: {_eq: "Active"}}, dnd: {_neq: true}}}
+          trucks_current: trucks_aggregate(where: {_and: [{dnd:{_neq:true}},{available_at: {_lte: $now}}, {truck_status: {name: {_eq: "Waiting for Load"}}}, 
+            {partner: {partner_status: {name: {_eq: "Active"}}}}
           ]}) {
             aggregate {
               count
@@ -126,6 +134,13 @@ const Actions = (props) => {
   })
 
 
+  const { loading:speed_loading, data:speed_data, error:speed_error } = useQuery(GLOBAL_SPEED_FILTER, {
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
+  })
+
+console.log('speed_error',speed_error)
+
   let region_options = []
   //2nd level branch_options 
   let branch_options = []
@@ -134,6 +149,7 @@ const Actions = (props) => {
   //4th level connected_city_options
   let connected_city_options = []
   let truck_type_options = []
+  let speed_options = []
 
   if (!loading) {
     const { region } = data
@@ -164,7 +180,20 @@ const Actions = (props) => {
     })
   }
 
-   
+  if (!speed_loading) {
+    const { speed_category } = speed_data
+    
+    speed_options = !isEmpty(speed_category) ? speed_category.map(_speed_data => { 
+      return (
+        { 
+          label:_speed_data.name, 
+          value: _speed_data.id 
+        }
+      )
+     }) : []
+  }
+
+
   if (!truck_type_loading) {
     const { truck_type } = truck_type_data
     
@@ -178,6 +207,7 @@ const Actions = (props) => {
      }) : []
   }
 
+ 
 
   const branch_options_sort = branch_options.sort((a, b) => a.order - b.order)
 
@@ -269,6 +299,12 @@ const Actions = (props) => {
               extra={state.managers && state.managers.length > 0 ? <Clear onClear={(e) => onClear(e, MANAGER_FILTER)} /> : ''}
             >
               <CheckBoxGroup options={branch_employee_options} defaultValue={state.managers} value={state.managers} onChange={(value) => onCheckBoxChange(value,MANAGER_FILTER)} />
+            </Panel>
+            <Panel
+              header={<b>Speed</b>} key="speed"
+              extra={state.speed && state.speed.length > 0 ? <Clear onClear={(e) => onClear(e, SPEED_FILTER)} /> : ''}
+            >
+              <CheckBoxGroup options={speed_options} value={state.speed} onChange={(value) => onCheckBoxChange(value,SPEED_FILTER)} />
             </Panel>
           </Collapse>
         </Drawer>}
