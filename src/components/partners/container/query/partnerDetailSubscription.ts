@@ -59,6 +59,7 @@ subscription partner_detail($cardcode: String!, $ongoing: [String!], $pod: [Stri
     ifsc_code
     avg_km
     avg_km_speed_category_id
+    active_category_id
     account_holder
     address
     pan

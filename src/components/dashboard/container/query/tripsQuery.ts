@@ -39,6 +39,7 @@ subscription dashboard_trips(
       id
       avg_km
       avg_km_speed_category_id
+      active_category_id
       partner_users(where: {is_admin: {_eq: true}}) {
         mobile
       }

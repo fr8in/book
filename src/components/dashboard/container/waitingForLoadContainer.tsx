@@ -33,6 +33,7 @@ subscription waiting_for_load($regions: [Int!],$speed:[Int!], $branches: [Int!],
               name
               avg_km
               avg_km_speed_category_id
+              active_category_id
               partner_advance_percentage {
                 id
                 name
