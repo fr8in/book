@@ -3,5 +3,6 @@ export const defaultGlobalFilter= {
     branches: null,
     cities: null,
     managers: null,
-    types: null
+    types: null,
+    speed:null
 };

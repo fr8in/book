@@ -6,7 +6,7 @@ import {filterContext} from '../../../context'
 
 
 const DASHBOARD_TRUCK_QUERY = gql`
-subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $truck_no: String, $dnd: Boolean) {
+subscription waiting_for_load($regions: [Int!],$speed:[Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $truck_no: String, $dnd: Boolean) {
   region(where: {id: {_in: $regions}, branches: {id:{_in:$branches}}}) {
     id
     branches(where: {id: {_in: $branches}}) {
@@ -18,7 +18,7 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
           id
           name
           trucks(where: {truck_status: {name: {_eq: "Waiting for Load"}}, truck_no: {_ilike: $truck_no}, truck_type: {id: {_in: $truck_type}},dnd:{_neq:$dnd}
-             partner: {partner_status: {name: {_eq: "Active"}}}}   ) {
+             partner: {avg_km_speed_category_id:{_in:$speed}, partner_status: {name: {_eq: "Active"}}}}   ) {
             id
             truck_no
             dnd
@@ -31,6 +31,8 @@ subscription waiting_for_load($regions: [Int!], $branches: [Int!], $cities: [Int
               id
               cardcode
               name
+              avg_km
+              avg_km_speed_category_id
               partner_advance_percentage {
                 id
                 name
@@ -72,6 +74,7 @@ const WaitingForLoadContainer = (props) => {
     branches: (state.branches && state.branches.length > 0) ? state.branches : null,
     cities: (state.cities && state.cities.length > 0) ? state.cities : null,
     truck_type: (state.types && state.types.length > 0) ? state.types : null,
+    speed: (state.speed && state.speed.length > 0) ? state.speed : null,
     truck_no: truckNo.truckno ? `%${truckNo.truckno}%` : null,
     dnd: !dndCheck
   }
