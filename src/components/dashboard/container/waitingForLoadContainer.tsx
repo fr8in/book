@@ -22,6 +22,12 @@ subscription waiting_for_load($regions: [Int!],$active_category:[Int!],$speed:[I
             id
             truck_no
             dnd
+            trips(order_by: {created_at: desc}, limit: 1) {
+              created_at
+              driver {
+                mobile
+              }
+            }
             truck_type {
               id
               name
@@ -48,9 +54,6 @@ subscription waiting_for_load($regions: [Int!],$active_category:[Int!],$speed:[I
             city {
               id
               name
-            }
-            driver {
-              mobile
             }
             tat
             last_comment {

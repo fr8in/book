@@ -26,13 +26,8 @@ mutation driver_insert($id: Int!, $mobile: String){
 }`
 
 const UPDATE_TRIP_DRIVER_MUTATION = gql`
-mutation trip_driver($driver_id:Int,$trip_id:Int!,$updated_by: String!,$truck_id:Int!,$truck_driver_id:Int) {
+mutation trip_driver($driver_id:Int,$trip_id:Int!,$updated_by: String!) {
   update_trip(_set: {driver_id: $driver_id,updated_by:$updated_by}, where: {id: {_eq: $trip_id}}){
-    returning{
-      id
-    }
-  }
-update_truck(_set: {driver_id:$truck_driver_id,updated_by:$updated_by}, where: {id: {_eq: $truck_id}}){
     returning{
       id
     }
@@ -97,9 +92,7 @@ const Driver = (props) => {
       variables: {
         trip_id: trip_info.id,
         driver_id: id,
-        updated_by: context.email,
-        truck_id: trip_info.truck.id,
-        truck_driver_id: id
+        updated_by: context.email
       }
     })
   }
