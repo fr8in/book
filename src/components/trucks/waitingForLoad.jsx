@@ -143,7 +143,8 @@ const onCopy = () => {
       title: 'Driver No',
       width: '10%',
       render: (text, record) => {
-        const mobile = get(record, 'driver.mobile',null)
+        const trip = get(record, 'trips[0]')
+        const mobile = get(trip, 'driver.mobile') 
         return (
           <Phone number={mobile} />
         )
