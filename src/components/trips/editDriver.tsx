@@ -27,19 +27,19 @@ const EditDriver = (props) => {
             <CloseCircleTwoTone onClick={toggleDriver} />
           </Col>
         </Row>)
-      : <Phone number={mobile} />
-      // (
-      //   <Row>
-      //     <Col xs={20}>
-      //       <Phone number={mobile} />
-      //     </Col>
-      //     <Col xs={4} className='text-right'>
-      //       <EditAccess
-      //         edit_access={employee_role}
-      //         onEdit={toggleDriver}
-      //       />
-      //     </Col>
-      //   </Row>)
+      : 
+      (
+        <Row>
+          <Col xs={20}>
+            <Phone number={mobile} />
+          </Col>
+          <Col xs={4} className='text-right'>
+            <EditAccess
+              edit_access={employee_role}
+              onEdit={toggleDriver}
+            />
+          </Col>
+        </Row>)
   )
 }
 

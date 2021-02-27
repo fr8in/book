@@ -72,7 +72,7 @@ const onCopy = () => {
         const truck_type = get(record,'truck_type.code',null)
         const avg_km =  get(record, 'partner.avg_km', null)
         const avg_km_speed_category_id =  get(record, 'partner.avg_km_speed_category_id', null)
-        const count = (avg_km_speed_category_id === 3) ? 'F' : (avg_km_speed_category_id === 4) ? 'S' : (avg_km_speed_category_id === 5) ? 'E' : null
+        const count = (avg_km_speed_category_id === 2) ? 'N' : (avg_km_speed_category_id === 3) ? 'F' : (avg_km_speed_category_id === 4) ? 'S' : (avg_km_speed_category_id === 5) ? 'E' : null
         return (
           <TruckLink
           type='trucks'
@@ -143,7 +143,8 @@ const onCopy = () => {
       title: 'Driver No',
       width: '10%',
       render: (text, record) => {
-        const mobile = get(record, 'driver.mobile',null)
+        const trip = get(record, 'trips[0]')
+        const mobile = get(trip, 'driver.mobile') 
         return (
           <Phone number={mobile} />
         )
