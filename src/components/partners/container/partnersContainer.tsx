@@ -7,6 +7,7 @@ import get from 'lodash/get'
 import { gql, useQuery, useSubscription } from '@apollo/client'
 import userContext from '../../../lib/userContaxt'
 import React from 'react'
+import isEmpty from 'lodash/isEmpty'
 import { SearchOutlined } from '@ant-design/icons'
 
 
@@ -111,7 +112,7 @@ const PartnerContainer = () => {
   const [filter, setFilter] = useState(initialFilter)
   const partnersQueryVars = {
     region: filter.region,
-    active_category: filter.activecategory,
+    ...!isEmpty(filter.activecategory) && { active_category: filter.activecategory ? filter.activecategory : null},
     partner_statusId: filter.partner_statusId,
     name: filter.name ? `%${filter.name}%` : null,
     cardcode: filter.cardcode ? `%${filter.cardcode}%` : null
@@ -120,7 +121,7 @@ const PartnerContainer = () => {
     offset: filter.offset,
     limit: filter.limit,
     region: filter.region,
-    active_category: filter.activecategory,
+    ...!isEmpty(filter.activecategory) && { active_category: filter.activecategory ? filter.activecategory : null},
     partner_statusId: filter.partner_statusId,
     name: filter.name ? `%${filter.name}%` : null,
     cardcode: filter.cardcode ? `%${filter.cardcode}%` : null
