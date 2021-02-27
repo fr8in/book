@@ -1,4 +1,4 @@
-import { Table, Tooltip, Badge, Button, Input, message,Avatar } from 'antd'
+import { Table, Tooltip, Badge, Button, Input, message,Avatar,Checkbox } from 'antd'
 import { CommentOutlined, RocketFilled, SearchOutlined, EditTwoTone, WhatsAppOutlined,PlusOutlined ,ArrowDownOutlined,ArrowUpOutlined,MinusOutlined } from '@ant-design/icons'
 import CreatePo from '../trips/createPo'
 import PartnerUsers from '../partners/partnerUsers'
@@ -15,7 +15,7 @@ import { useState } from 'react'
 import TrucksList from '../trucks/trucksList'
 
 const WaitingForLoad = (props) => {
-  const { trucks, loading, onTruckNoSearch, truckNo ,branches} = props
+  const { trucks, loading, onTruckNoSearch, truckNo ,branches,onPartnerFilter,partner_active_category,filter} = props
   const initial = {
     usersData: [],
     usersVisible: false,
@@ -34,6 +34,14 @@ const WaitingForLoad = (props) => {
   const handleTruckNo = (e) => {
     onTruckNoSearch(e.target.value)
   }
+
+  const handlePartnerActiveCategory = (checked) => {
+    onPartnerFilter(checked)
+  }
+
+  const partner_active_category_list = partner_active_category && partner_active_category.map(data => {
+    return { value: data.id, label: data.name }
+  })
 
   const getMessage = (record) => {
     let message = `${get(record, 'partner.name')} \n`;
@@ -110,7 +118,15 @@ const onCopy = () => {
             />
           </span>
         )
-      }
+      },
+      filterDropdown: (
+        <Checkbox.Group
+          options={partner_active_category_list}
+          defaultValue={filter.activecategory}
+          onChange={handlePartnerActiveCategory}
+          className='filter-drop-down'
+        />
+      ),
     },
     {
       title: 'Partner No',

@@ -1,4 +1,4 @@
-import { Table, Tooltip, Button, Space, Modal, Pagination, Radio, Input,Avatar,Badge } from 'antd'
+import { Table, Tooltip, Button, Space, Modal, Pagination, Radio, Input,Avatar,Badge,Checkbox } from 'antd'
 import {
   CommentOutlined,
   ArrowUpOutlined,
@@ -53,8 +53,8 @@ const PartnerKyc = (props) => {
     setCurrentPage(1)
   }
 
-  const handlePartnerActiveCategory = (e) => {
-    onPartnerFilter(e.target.value)
+  const handlePartnerActiveCategory = (checked) => {
+    onPartnerFilter(checked)
     setCurrentPage(1)
   }
 
@@ -115,7 +115,7 @@ const PartnerKyc = (props) => {
        )
       },
       filterDropdown: (
-        <Radio.Group
+        <Checkbox.Group
         options={partner_active_category_list}
         defaultValue={filter.activecategory}
         onChange={handlePartnerActiveCategory}

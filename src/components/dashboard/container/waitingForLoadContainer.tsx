@@ -1,12 +1,12 @@
 import WaitingForLoad from '../../trucks/waitingForLoad'
-import { gql, useSubscription } from '@apollo/client'
-import _ from 'lodash'
+import { gql, useSubscription ,useQuery } from '@apollo/client'
+import _, { get } from 'lodash'
 import { useState ,useContext} from 'react'
 import {filterContext} from '../../../context'
-
+import isEmpty from 'lodash/isEmpty'
 
 const DASHBOARD_TRUCK_QUERY = gql`
-subscription waiting_for_load($regions: [Int!],$speed:[Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $truck_no: String, $dnd: Boolean) {
+subscription waiting_for_load($regions: [Int!],$active_category:[Int!],$speed:[Int!], $branches: [Int!], $cities: [Int!], $truck_type: [Int!], $truck_no: String, $dnd: Boolean) {
   region(where: {id: {_in: $regions}, branches: {id:{_in:$branches}}}) {
     id
     branches(where: {id: {_in: $branches}}) {
@@ -18,7 +18,7 @@ subscription waiting_for_load($regions: [Int!],$speed:[Int!], $branches: [Int!],
           id
           name
           trucks(where: {truck_status: {name: {_eq: "Waiting for Load"}}, truck_no: {_ilike: $truck_no}, truck_type: {id: {_in: $truck_type}},dnd:{_neq:$dnd}
-             partner: {avg_km_speed_category_id:{_in:$speed}, partner_status: {name: {_eq: "Active"}}}}   ) {
+             partner: {active_category_id:{_in:$active_category} ,avg_km_speed_category_id:{_in:$speed}, partner_status: {name: {_eq: "Active"}}}}   ) {
             id
             truck_no
             dnd
@@ -64,11 +64,26 @@ subscription waiting_for_load($regions: [Int!],$speed:[Int!], $branches: [Int!],
 }
 
 `
+
+const PARTNERS_ACTIVE_QUERY = gql`
+query partner_active_category{
+  partner_active_category{
+    id
+    name
+  }
+}
+`
+
 const WaitingForLoadContainer = (props) => {
   const {  dndCheck } = props
   const initial = { truckno: null}
   const [truckNo , setTruckNo] = useState(initial)
   const {state} = useContext(filterContext)
+
+  const initialFilter = {
+    activecategory:null
+  }
+  const [filter, setFilter] = useState(initialFilter)
 
   const variables = {
     regions: (state.regions && state.regions.length > 0) ? state.regions : null,
@@ -77,6 +92,7 @@ const WaitingForLoadContainer = (props) => {
     truck_type: (state.types && state.types.length > 0) ? state.types : null,
     speed: (state.speed && state.speed.length > 0) ? state.speed : null,
     truck_no: truckNo.truckno ? `%${truckNo.truckno}%` : null,
+    ...!isEmpty(filter.activecategory) && { active_category: filter.activecategory ? filter.activecategory : null},
     dnd: !dndCheck
   }
   const { loading, data, error } = useSubscription(DASHBOARD_TRUCK_QUERY, { variables })
@@ -84,6 +100,25 @@ const WaitingForLoadContainer = (props) => {
   const onTruckNoSearch = (value) => {
     setTruckNo({ ...truckNo, truckno: value })
   }
+
+  const onPartnerFilter = (name) => {
+    setFilter({ ...filter, activecategory: name })
+  }
+
+  const { loading : active_loading, error : active_error, data : active_data } = useQuery(
+    PARTNERS_ACTIVE_QUERY,
+    {
+      fetchPolicy: 'cache-and-network',
+      notifyOnNetworkStatusChange: true
+    }
+  )
+
+  let _data = {}
+  if (!active_loading) {
+    _data = active_data
+  }
+
+  const partner_active_category = get(_data, 'partner_active_category', [])
 
   let trucks = []
   let branches = []
@@ -93,7 +128,7 @@ const WaitingForLoadContainer = (props) => {
     branches = _.chain(newData).flatMap('region').flatMap('branches').value()
   }
   return (
-    <WaitingForLoad trucks={trucks} branches={branches} loading={loading} onTruckNoSearch={onTruckNoSearch} truckNo={truckNo}/>
+    <WaitingForLoad trucks={trucks} branches={branches}  onPartnerFilter={onPartnerFilter}  partner_active_category={partner_active_category} loading={loading} onTruckNoSearch={onTruckNoSearch} filter={filter} truckNo={truckNo}/>
   )
 }
 
