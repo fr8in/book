@@ -8,7 +8,7 @@ const LinkComp = (props) => {
 
  return (
      <>
-      <Badge count={count}  className='truckBadgeCount' style={{ backgroundColor: (avg_km_speed_category_id ===3) ? '#eca92b' :  (avg_km_speed_category_id ===4) ? '#28a745' : (avg_km_speed_category_id ===5) ? '#3b7ddd' : null }}></Badge>
+      <Badge count={count}  className='truckBadgeCount' style={{ backgroundColor: (avg_km_speed_category_id === 2) ? '#6c757d' : (avg_km_speed_category_id ===3) ? '#eca92b' :  (avg_km_speed_category_id ===4) ? '#28a745' : (avg_km_speed_category_id ===5) ? '#3b7ddd' : null }}></Badge>
     {blank ? (
       <Link href={`/${type}/[id]`} as={`/${type}/${id} `}>
         {data && data.length > length
