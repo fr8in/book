@@ -157,7 +157,8 @@ const util = {
     customer_lr: 'lr/',
     approvals: 'approvals/',
     wh: 'warehousereceipt/',
-    customer_pan: 'pan/'
+    customer_pan: 'pan/',
+    ticket:'ticket/'
   },
   application_error: {
     JWT_TOKEN_EXPIRE_ERROR: 'Could not verify JWT: JWTExpired'
