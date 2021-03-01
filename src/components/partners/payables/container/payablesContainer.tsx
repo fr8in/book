@@ -216,7 +216,7 @@ const PayablesContainer = () => {
   const handleSourcingIncentiveDate = (date) => {
     const listDate = date.format("YYYYMM")
     const currentDate = moment().format("YYYYMM")
-    return moment().subtract(1, 'months').diff(date, 'months') === 0 && listDate == currentDate
+   return moment().subtract(1, 'months').diff(date, 'months') === 0 && listDate == currentDate
   }
 
   let membership_data = []
@@ -317,7 +317,7 @@ const PayablesContainer = () => {
                   {sourcing_incentive_access && <> <Button type="primary" disabled={!(sourcingIncentiveData.length > 0)}
                     onClick={() => handleShow('incentiveVisible', "Process Incentive", 'incentiveData', sourcingIncentiveData)}>Process</Button>
                     <DatePicker
-                      disabledDate={(date) => !handleSourcingIncentiveDate(date)}
+                      disabledDate={(date) => handleCashBackDate(date)}
                       onChange={handleIncentiveMonthChange} picker='month' /></>} </Space>
                 : null
     )
