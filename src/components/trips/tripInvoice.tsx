@@ -5,6 +5,7 @@ import get from 'lodash/get'
 import { gql, useMutation } from '@apollo/client'
 import userContext from '../../lib/userContaxt'
 import sumBy from 'lodash/sumBy'
+import EndCustomer from '../customers/endCustomer'
 
 const CALCULATE_ONHOLD = gql`
 mutation calculate_onHold(
@@ -330,6 +331,15 @@ const TripInvoice = (props) => {
         amount
         value={get(trip_info, 'pod_incentive', 0)}
       />
+      <Row gutter={6} className='item'> 
+      <Col  flex='auto'>
+      <label>End Customer</label>
+      </Col>
+      <Col  flex='auto' >
+      <EndCustomer trip_info={trip_info}/>
+      </Col>
+      </Row>
+            
       {calc.completed &&
         <>
           <InvoiceItem
