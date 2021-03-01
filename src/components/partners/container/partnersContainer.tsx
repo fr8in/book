@@ -111,7 +111,7 @@ const PartnerContainer = () => {
   }
   const [filter, setFilter] = useState(initialFilter)
   const partnersQueryVars = {
-    region: filter.region,
+    ...!isEmpty(filter.region) && { region: filter.region ? filter.region : null},
     ...!isEmpty(filter.activecategory) && { active_category: filter.activecategory ? filter.activecategory : null},
     partner_statusId: filter.partner_statusId,
     name: filter.name ? `%${filter.name}%` : null,
@@ -120,7 +120,7 @@ const PartnerContainer = () => {
   const variables = {
     offset: filter.offset,
     limit: filter.limit,
-    region: filter.region,
+    ...!isEmpty(filter.region) && { region: filter.region ? filter.region : null},
     ...!isEmpty(filter.activecategory) && { active_category: filter.activecategory ? filter.activecategory : null},
     partner_statusId: filter.partner_statusId,
     name: filter.name ? `%${filter.name}%` : null,

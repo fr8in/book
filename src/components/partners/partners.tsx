@@ -48,8 +48,8 @@ const PartnerKyc = (props) => {
     setCurrentPage(1)
   }
 
-  const handleRegionStatus = (e) => {
-    onRegionFilter(e.target.value)
+  const handleRegionStatus = (checked) => {
+    onRegionFilter(checked)
     setCurrentPage(1)
   }
 
@@ -134,7 +134,7 @@ const PartnerKyc = (props) => {
       filters: region_list,
       render: (text, record) => get(record, 'city.branch.region.name', '-'),
       filterDropdown: (
-        <Radio.Group
+        <Checkbox.Group
           options={regions}
           defaultValue={filter.region}
           onChange={handleRegionStatus}
