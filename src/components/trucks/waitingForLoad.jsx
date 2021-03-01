@@ -1,11 +1,11 @@
-import { Table, Tooltip, Badge, Button, Input, message } from 'antd'
-import { CommentOutlined, RocketFilled, SearchOutlined, EditTwoTone, WhatsAppOutlined } from '@ant-design/icons'
+import { Table, Tooltip, Badge, Button, Input, message,Avatar,Checkbox } from 'antd'
+import { CommentOutlined, RocketFilled, SearchOutlined, EditTwoTone, WhatsAppOutlined,PlusOutlined ,ArrowDownOutlined,ArrowUpOutlined,MinusOutlined } from '@ant-design/icons'
 import CreatePo from '../trips/createPo'
 import PartnerUsers from '../partners/partnerUsers'
 import TruckComment from './truckComment'
 import CreateBreakdown from './createBreakdown'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
-import LinkComp from '../common/link'
+import TruckLink from '../common/truckLink'
 import Truncate from '../common/truncate'
 import Phone from '../common/phone'
 import get from 'lodash/get'
@@ -15,7 +15,7 @@ import { useState } from 'react'
 import TrucksList from '../trucks/trucksList'
 
 const WaitingForLoad = (props) => {
-  const { trucks, loading, onTruckNoSearch, truckNo ,branches} = props
+  const { trucks, loading, onTruckNoSearch, truckNo ,branches,onPartnerFilter,partner_active_category,filter} = props
   const initial = {
     usersData: [],
     usersVisible: false,
@@ -35,11 +35,19 @@ const WaitingForLoad = (props) => {
     onTruckNoSearch(e.target.value)
   }
 
+  const handlePartnerActiveCategory = (checked) => {
+    onPartnerFilter(checked)
+  }
+
+  const partner_active_category_list = partner_active_category && partner_active_category.map(data => {
+    return { value: data.id, label: data.name }
+  })
+
   const getMessage = (record) => {
-    let message = `Partner: ${get(record, 'partner.name')} \n`;
-    message += `Truck No: ${record.truck_no} - ${get(record, 'truck_type.code')} \n`;
-    message += `Current City: ${get(record, 'city.name')} \n`;
-    message += `Driver Number: ${get(record, 'driver.mobile', '-')} \n`;
+    let message = `${get(record, 'partner.name')} \n`;
+    message += `${record.truck_no} - ${get(record, 'truck_type.code')} - ${get(record, 'tat')} hrs\n`;
+    message += `O: ${get(record, 'partner.partner_users[0].mobile','-') } / D: ${get(record, 'driver.mobile', '-')} \n`;
+    message += `City: ${get(record, 'city.name')} \n`;
     message += `Comment: ${get(record, 'last_comment.description', '-') }`;
 
     return message;
@@ -52,18 +60,29 @@ const onCopy = () => {
 
   const columns = [
     {
+     title: '',
+     width:'1%'
+    },
+    {
       title: 'Truck No',
       dataIndex: 'truck_no',
       width: '14%',
       sorter: (a, b) => (a.truck_no > b.truck_no ? 1 : -1),
       render: (text, record) => {
         const truck_type = get(record,'truck_type.code',null)
+        const avg_km =  get(record, 'partner.avg_km', null)
+        const avg_km_speed_category_id =  get(record, 'partner.avg_km_speed_category_id', null)
+        const count = (avg_km_speed_category_id === 2) ? 'N' : (avg_km_speed_category_id === 3) ? 'F' : (avg_km_speed_category_id === 4) ? 'S' : (avg_km_speed_category_id === 5) ? 'E' : null
         return (
-          <LinkComp
-            type='trucks'
+          <TruckLink
+          type='trucks'
             data={text + ' - ' + truck_type.slice(0, 9)}
             id={text}
-          />
+         avg_km={avg_km}
+         count={count}
+         avg_km_speed_category_id={avg_km_speed_category_id}
+         length={14}
+        />
         )
       },
       filterDropdown: (
@@ -85,11 +104,11 @@ const onCopy = () => {
         const id = get(record,'partner.id',null)
         const partner = get(record,'partner.name',null)
         const cardcode = get(record,'partner.cardcode',null)
-        const membership_id = get(record,'partner.partner_memberships.membership_type_id',null)
-       
+        const active_category_id =  get(record, 'partner.active_category_id', null)
+                const count = (active_category_id === 2) ?<Avatar  style={{ backgroundColor: '#3b7ddd',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<PlusOutlined />} /> : (active_category_id === 3) ?<Avatar  style={{ backgroundColor: '#28a745',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<ArrowUpOutlined/>}/> : (active_category_id === 4) ? <Avatar  style={{ backgroundColor: '#fd7e14',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<ArrowDownOutlined/>}/>  : (active_category_id === 5) ? <Avatar  style={{ fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} /> : (active_category_id === 6) ? <Avatar icon={<MinusOutlined />} style={{ fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px',backgroundColor:'#dc3545'}} /> : null
         return (
           <span>
-            <Badge dot style={{ backgroundColor: (membership_id === 1 ? '#FFD700' : '#C0C0C0') }} />
+            <Badge  count={count} />
             <PartnerLink
               id={id}
               type='partners'
@@ -99,7 +118,15 @@ const onCopy = () => {
             />
           </span>
         )
-      }
+      },
+      filterDropdown: (
+        <Checkbox.Group
+          options={partner_active_category_list}
+          defaultValue={filter.activecategory}
+          onChange={handlePartnerActiveCategory}
+          className='filter-drop-down'
+        />
+      ),
     },
     {
       title: 'Partner No',
@@ -116,7 +143,8 @@ const onCopy = () => {
       title: 'Driver No',
       width: '10%',
       render: (text, record) => {
-        const mobile = get(record, 'driver.mobile',null)
+        const trip = get(record, 'trips[0]')
+        const mobile = get(trip, 'driver.mobile') 
         return (
           <Phone number={mobile} />
         )

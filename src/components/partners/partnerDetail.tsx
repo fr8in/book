@@ -1,6 +1,5 @@
-import { Row, Col, Space, Tooltip} from 'antd'
+import { Row, Col, Space, Tooltip,Badge} from 'antd'
 import LabelWithData from '../common/labelWithData'
-import AdvancePercentage from './partnerAdvancePercentage'
 import EditAddress from './partnerAddress'
 import EditBank from './partnerBank'
 import CibilScore from '../partners/partnerCibilScore'
@@ -38,6 +37,7 @@ const PartnerDetail = (props) => {
          ${address.state || null},
          ${address.pin_code || null}`) : address
   const cardcode = partnerDetail.cardcode
+  const count = (partnerDetail.avg_km_speed_category_id === 3) ? 'F' : (partnerDetail.avg_km_speed_category_id === 4) ? 'S' : (partnerDetail.avg_km_speed_category_id === 5) ? 'E' : null
 
   return (
     <Row gutter={8}>
@@ -119,13 +119,7 @@ const PartnerDetail = (props) => {
         <LabelWithData
           label='Advance Percentage'
           data={
-            <AdvancePercentage
-              advance={get(partnerDetail, 'partner_advance_percentage.name', null)}
-              advance_id={get(partnerDetail, 'partner_advance_percentage.id', null)}
-              cardcode={cardcode}
-              partner_id={partnerDetail.id}
-              edit_access={ad_pm_on}
-            />
+           get(partnerDetail, 'partner_advance_percentage.name', null)
           }
           labelSpan={10}
           dataSpan={14}
@@ -133,6 +127,16 @@ const PartnerDetail = (props) => {
         <LabelWithData
           label='Status'
           data={<Tooltip title={'Id: ' + partnerDetail.id}><span>{get(partnerDetail, 'partner_status.name', '-')}</span></Tooltip>}
+          labelSpan={10}
+          dataSpan={14}
+        />
+        <LabelWithData
+          label='Avg KM/Day'
+          data={<>
+          <Badge count={count}  size='default' style={{ backgroundColor: (partnerDetail.avg_km_speed_category_id ===3) ? '#eca92b' :  (partnerDetail.avg_km_speed_category_id ===4) ? '#28a745' : (partnerDetail.avg_km_speed_category_id ===5) ? '#3b7ddd' : null }}></Badge>
+          <span> </span>
+          <span>{get(partnerDetail,'avg_km',null)}</span> 
+          </>}
           labelSpan={10}
           dataSpan={14}
         />

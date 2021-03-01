@@ -56,7 +56,8 @@ const util = {
     { value: 5, text: 'South-2' },
     { value: 6, text: 'East-2' },
     { value: 7, text: 'West-2' },
-    { value: 8, text: 'Central' }
+    { value: 8, text: 'Central' },
+    { value: 9, text: 'South-3' }
   ],
   role: {
     admin: 'Admin',
@@ -112,7 +113,9 @@ const util = {
     customer_advance_percentage: 'Customer Advance Percentage',
     billing_comment: 'Billing Comment',
     truck_owner_registration: 'Truck Owner Registration',
-    trip_price_change: 'Trip Price Changed'
+    trip_price_change: 'Trip Price Changed',
+    single_trip_deactivation_enable: 'Single Trip Deactivation Enabled',
+    single_trip_deactivation_disable: 'Single Trip Deactivation Disabled'
   },
   maxLength: 6,
   MIN_REBATE_PERCENTAGE: 0.25,
@@ -154,7 +157,8 @@ const util = {
     customer_lr: 'lr/',
     approvals: 'approvals/',
     wh: 'warehousereceipt/',
-    customer_pan: 'pan/'
+    customer_pan: 'pan/',
+    ticket:'ticket/'
   },
   application_error: {
     JWT_TOKEN_EXPIRE_ERROR: 'Could not verify JWT: JWTExpired'

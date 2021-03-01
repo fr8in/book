@@ -1,16 +1,18 @@
-import { Table, Input, Tooltip, Button,Pagination } from 'antd'
+import { Table, Input, Tooltip, Button,Pagination,Avatar,Badge } from 'antd'
 import { gql, useSubscription,useQuery } from '@apollo/client'
-import { SearchOutlined, CommentOutlined } from '@ant-design/icons'
+import { SearchOutlined, CommentOutlined,PlusOutlined ,ArrowDownOutlined,ArrowUpOutlined,MinusOutlined } from '@ant-design/icons'
 import get from 'lodash/get'
 import moment from 'moment'
 import Truncate from '../common/truncate'
 import LinkComp from '../common/link'
+import TruckLink from '../common/truckLink'
 import Phone from '../common/phone'
 import useShowHidewithRecord from '../../hooks/useShowHideWithRecord'
 import TripFeedBack from './tripFeedBack'
 import u from '../../lib/util'
 import { useState,useContext } from 'react'
 import {filterContext} from '../../context'
+
 
 const DASHBOARD_ADVANCE_PENDING_QUERY = gql`
 subscription customerAdvancePending($offset: Int, $limit: Int,
@@ -27,6 +29,9 @@ subscription customerAdvancePending($offset: Int, $limit: Int,
          id
          name
          cardcode
+         active_category_id
+         avg_km
+         avg_km_speed_category_id
          partner_users(where: {is_admin: {_eq: true}}) {
              mobile
            }
@@ -99,7 +104,8 @@ const AdvancePending = (props) => {
               branch_id:{_in:(state.branches && state.branches.length > 0) ? state.branches : null},
               source_connected_city_id:{_in:(state.cities && state.cities.length > 0) ? state.cities : null},
               truck_type_id:{_in:(state.types && state.types.length > 0) ? state.types : null},
-              branch_employee_id:{_in: (state.managers && state.managers.length > 0) ? state.managers : null}
+              branch_employee_id:{_in: (state.managers && state.managers.length > 0) ? state.managers : null},
+              partner:{avg_km_speed_category_id : {_in:(state.speed && state.speed.length > 0) ? state.speed : null}}
            }
 
       const variables = {
@@ -174,12 +180,19 @@ const AdvancePending = (props) => {
             render: (text, record) => {
                 const truck_no = get(record, 'truck.truck_no', null)
                 const truck_type = get(record, 'truck.truck_type.code', null)
+                const avg_km =  get(record, 'partner.avg_km', null)
+                const avg_km_speed_category_id =  get(record, 'partner.avg_km_speed_category_id', null)
+                const count = (avg_km_speed_category_id === 2) ? 'N' : (avg_km_speed_category_id === 3) ? 'F' : (avg_km_speed_category_id === 4) ? 'S' : (avg_km_speed_category_id === 5) ? 'E' : null         
                 return (
-                    <LinkComp
-                        type='trucks'
-                        data={`${truck_no} - ${truck_type}`}
-                        id={truck_no}
-                    />
+                  <TruckLink
+                  type='trucks'
+                  data={`${truck_no} - ${truck_type}`}
+                  id={truck_no}
+                 avg_km={avg_km}
+                 count={count}
+                 avg_km_speed_category_id={avg_km_speed_category_id}
+                 length={14}
+                />
                 )
             },
         },
@@ -190,13 +203,18 @@ const AdvancePending = (props) => {
             render: (text, record) => {
                 const partner = get(record, 'partner.name', null)
                 const cardcode = get(record, 'partner.cardcode', null)
+                const active_category_id =  get(record, 'partner.active_category_id', null)
+                const count = (active_category_id === 2) ?<Avatar  style={{ backgroundColor: '#3b7ddd',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<PlusOutlined />} /> : (active_category_id === 3) ?<Avatar  style={{ backgroundColor: '#28a745',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<ArrowUpOutlined/>}/> : (active_category_id === 4) ? <Avatar  style={{ backgroundColor: '#fd7e14',fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} icon={<ArrowDownOutlined/>}/>  : (active_category_id === 5) ? <Avatar  style={{ fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px'}} /> : (active_category_id === 6) ? <Avatar icon={<MinusOutlined />} style={{ fontSize: '7px' ,top: '-7px',right:'-6px',height:'12px',width:'12px',lineHeight:'12px',backgroundColor:'#dc3545'}} /> : null
                 return (
+                  <>
+                 <Badge  count={count} />
                     <LinkComp
                         type='partners'
                         data={partner}
                         id={cardcode}
                         length={10}
                     />
+                    </>
                 )
             }
         },

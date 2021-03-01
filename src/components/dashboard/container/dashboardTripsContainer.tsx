@@ -19,7 +19,8 @@ const TripsContainer = (props) => {
     branches: (state.branches && state.branches.length > 0) ? state.branches : null,
     cities: (state.cities && state.cities.length > 0) ? state.cities : null,
     truck_type: (state.types && state.types.length > 0) ? state.types : null,
-    managers: (state.managers && state.managers.length > 0) ? state.managers : null
+    managers: (state.managers && state.managers.length > 0) ? state.managers : null,
+    speed:(state.speed && state.speed.length > 0) ? state.speed : null
   }
   const { loading, data, error } = useSubscription(DASHBOAD_TRIPS_QUERY, { variables })
 
