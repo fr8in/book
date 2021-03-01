@@ -83,7 +83,7 @@ const BillingComment = (props) => {
               <FileUpload
                 id={trip_id}
                 type='trip'
-                folder={u.folder.approvals}
+                folder={u.folder.ticket}
                 file_type={u.fileType.evidence}
                 file_list={evidence_file_list}
                 disable={trip_status || lock}
