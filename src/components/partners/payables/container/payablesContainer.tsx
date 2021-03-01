@@ -216,7 +216,8 @@ const PayablesContainer = () => {
   const handleSourcingIncentiveDate = (date) => {
     const listDate = date.format("YYYYMM")
     const currentDate = moment().format("YYYYMM")
-   return moment().subtract(1, 'months').diff(date, 'months') === 0 && listDate == currentDate
+    return !(moment().diff(date, 'months') > 1 || moment().diff(date, 'months') < 1)
+    //return moment().subtract(1, 'months').diff(date, 'months') === 0 && listDate == currentDate
   }
 
   let membership_data = []
